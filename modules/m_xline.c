@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.7 2003/05/17 18:59:13 joshk Exp $
+ *  $Id: m_xline.c,v 1.8 2003/05/22 03:55:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&xline_msgtab);
   mod_del_cmd(&unxline_msgtab);
 }
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 #endif
 
 
@@ -100,7 +100,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
   struct ConfItem *aconf;
   const char *type=NULL, *reason=NULL, *current_date;
   char *pattern=NULL, *target_server=NULL;
-  int type_i = 1;
+  int type_i = 1;	/* default */
   time_t cur_time;
 
   if (!IsOperX(source_p))
@@ -110,67 +110,20 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  aconf = find_x_conf(parv[1]);
-  if (aconf != NULL)
-  {
-    sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
-               me.name, source_p->name, parv[1], aconf->name, aconf->reason);
-    return;
-  }
-
-  /* XLINE <gecos> <type> ON <server> :reason */
-  if (parc == 6)
-  {
-    if (irccmp(parv[3], "ON") == 0)
-    {
-      target_server = parv[4];
-      reason = parv[5];
-      type = parv[2];
-    }
-    else
-    {
-      /*
-       * perhaps we should show usage here?  also,
-       * this may be a bit nitpicky, but we are being
-       * painfully inconsistent by sending 'XLINE'
-       * rather than duplicating the case with which
-       * the command was issued.
-       */
-      sendto_one(source_p, form_str(ERR_NORECIPIENT),
-                 me.name, source_p->name, "XLINE");
-      return;
-    }
-  }
-  /* XLINE <gecos> <type> ON <server> */
-  else if (parc == 5)
-  {
-    if (irccmp(parv[3], "ON") == 0)
-    {
-      target_server = parv[4];
-      type = parv[2];
-    }
-    else
-    {
-      sendto_one(source_p, form_str(ERR_NORECIPIENT),
-                 me.name, source_p->name, "XLINE");
-      return;
-    }
-  }
-  /* XLINE <gecos> <type> :<reason> */
-  else if (parc == 4)
-  {
-    reason = parv[3];
-    type = parv[2];
-  }
-  /* XLINE <gecos> :<reason> */
-  else if (parc == 3)
-  {
-    reason = parv[2];
-  }
-  else
+  if (parc < 4)
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                me.name, source_p->name, "XLINE");
+    return;
+  }
+
+  type = parv[1];
+  pattern = parv[2];
+
+  if ((aconf = find_x_conf(pattern)) != NULL)
+  {
+    sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
+               me.name, source_p->name, parv[1], aconf->name, aconf->reason);
     return;
   }
 
@@ -181,6 +134,32 @@ mo_xline(struct Client *client_p, struct Client *source_p,
   else if (irccmp(type,"SILENT") == 0)
     type_i = 2;
 
+
+  /* XLINE <type> <gecos> ON <server> */
+  if (parc >= 5)
+  {
+    if (irccmp(parv[3], "ON") == 0)
+    {
+      target_server = parv[4];
+    }
+    else
+    {
+      sendto_one(source_p, form_str(ERR_NORECIPIENT),
+		 me.name, source_p->name, "XLINE");
+      return;
+    }
+    if (parc < 6)
+    {
+      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+		 me.name, source_p->name, "XLINE");
+      return;
+    }
+    else
+      reason = parv[5];
+  }
+  else
+    reason = parv[3];
+
   if (target_server != NULL)
   {
     /* XXX - CAP_CLUSTER?  Perhaps we can think of something better. */
@@ -190,10 +169,6 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     if (!match(target_server, me.name))
       return;
   }
-#if 0
-  /* XXX - CLUSTER code here! */
-  else
-#endif
 
   aconf = make_conf(CONF_XLINE);
   aconf->port = type_i;
@@ -210,6 +185,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
   write_conf_line(source_p, aconf, current_date, cur_time);
   conf_add_conf(aconf);
 
+  check_xlines();
 } /* mo_xline() */
 
 /*

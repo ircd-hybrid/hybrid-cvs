@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.370 2003/05/22 02:28:30 metalrock Exp $
+ *  $Id: client.c,v 7.371 2003/05/22 03:55:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -548,6 +548,70 @@ check_klines(void)
 
       sendto_one(client_p, "NOTICE DLINE :*** You have been D-lined");
       exit_client(client_p, client_p, &me, "D-lined");
+    }
+  }
+}
+
+/* check_xlines()
+ *
+ * inputs       - NONE
+ * output       - NONE
+ * side effects - Check all connections for a pending xline against the
+ * 		  client, exit the client if a xline matches.
+ */
+void 
+check_xlines(void)
+{               
+  struct Client *client_p;       /* current local client_p being examined */
+  struct ConfItem *aconf = NULL;
+  const char *reason;            /* pointer to reason string */
+  dlink_node *ptr, *next_ptr;
+ 
+  DLINK_FOREACH_SAFE(ptr, next_ptr, local_client_list.head)
+  {
+    client_p = ptr->data;
+
+    /* If a client is already being exited
+     */
+    if (IsDead(client_p))
+      continue;
+	
+    /* if there is a returned struct ConfItem then kill it */
+    if ((aconf = find_x_conf(client_p->info)) != NULL)
+    {
+      sendto_realops_flags(UMODE_ALL, L_ALL,"XLINE active for %s",
+			   get_client_name(client_p, HIDE_IP));
+      
+      if (ConfigFileEntry.kline_with_connection_closed &&
+	  ConfigFileEntry.kline_with_reason)
+      {
+	reason = "Connection closed";
+
+	if (IsPerson(client_p))
+	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
+		     me.name, client_p->name,
+		     aconf->passwd ? aconf->passwd : "X-lined");
+	else
+	  sendto_one(client_p, "NOTICE XLINE :*** You have been X-lined");
+      }
+      else
+      {
+	if (ConfigFileEntry.kline_with_connection_closed)
+	  reason = "Connection closed";
+	else if (ConfigFileEntry.kline_with_reason && aconf->passwd)
+	  reason = aconf->passwd;
+	else
+	  reason = "X-lined";
+
+	if(IsPerson(client_p))
+	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
+		     me.name, client_p->name, reason);
+	else
+	  sendto_one(client_p, "NOTICE DLINE :*** You have been X-lined");
+      }
+
+      exit_client(client_p, client_p, &me, reason);
+      continue; /* and go examine next fd/client_p */
     }
   }
 }
