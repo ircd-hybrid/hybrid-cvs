@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.33 2001/07/01 05:30:53 greg Exp $
+$Id: Hybrid-team,v 7.34 2001/07/18 20:57:51 wcampbel Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -38,6 +38,7 @@ this release of hybrid, in nick alphabetical order:
  
 einride, anon <einride@einride.net>
 Hwy101, Walter Campbell <wcampbel@botbay.net>
+jv, Jakub Vlasek <jv@pilsedu.cz>
 kre, Dinko Korunic <kreator@fly.srk.fer.hr>
 LarZ, Matthew Ramsey <mjr@blackened.com>
 orabidoo, Roger Espel Llima <espel@unix.bigots.org>
