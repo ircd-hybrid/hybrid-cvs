@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.136 2001/04/14 15:34:06 davidt Exp $
+ *   $Id: send.c,v 7.137 2001/04/25 03:37:42 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -200,9 +200,15 @@ _send_message(struct Client *to, char *msg, int len)
      * data to the FD, it'd be an optimisation, and we can deal with it
      * later.
      *     -- adrian
+     * So I took adrian's comments to heart..whether it works or not remains
+     * to been seen...
+     * -- Aaron
      */
+    send_queued_write(to->fd, to);	
+#if 0
     comm_setselect(to->fd, FDLIST_IDLECLIENT, COMM_SELECT_WRITE,
       send_queued_write, to, 0);
+#endif
     return 0;
 } /* send_message() */
 
