@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.157 2001/04/09 08:29:54 a1kmm Exp $
+ * $Id: ircd_parser.y,v 1.158 2001/04/11 09:51:34 a1kmm Exp $
  */
 
 %{
@@ -1521,7 +1521,7 @@ deny_item:      deny_ip | deny_reason | error
 deny_ip:        IP '=' QSTRING ';'
   {
     char *p;
-    yy_aconf->host = yylval.string;
+    DupString(yy_aconf->host, yylval.string);
   };
 
 deny_reason:    REASON '=' QSTRING ';' 
