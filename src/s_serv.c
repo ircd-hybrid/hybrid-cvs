@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.256 2002/05/31 00:12:34 androsyn Exp $
+ *  $Id: s_serv.c,v 7.257 2002/05/31 00:22:51 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -1060,10 +1060,14 @@ int server_estab(struct Client *client_p)
   add_client_to_llist(&(me.serv->servers), client_p);
 
   m = dlinkFind(&unknown_list, client_p);
+  assert(m == NULL);
   if(m != NULL)
     {
       dlinkDelete(m, &unknown_list);
       dlinkAdd(client_p, m, &serv_list);
+    } else {
+      sendto_realops_flags(FLAGS_ALL, L_ADMIN, "Tried to register (%s) server but it was already registered!?!", host);
+      exit_client(client_p, client_p, client_p, "Tried to register server but it was already registered?!?"); 
     }
 
   Count.server++;
