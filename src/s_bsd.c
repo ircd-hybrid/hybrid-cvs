@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.50 2000/11/02 14:29:02 adrian Exp $
+ *  $Id: s_bsd.c,v 7.51 2000/11/02 14:52:51 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -82,6 +82,10 @@ int            highest_fd = -1;
 
 static struct sockaddr_in mysk;
 static char               readBuf[READBUF_SIZE];
+
+static const char *comm_errstr[] = { "Comm OK", "Error during bind()",
+  "Error during DNS lookup", "connect timeout", "Error during connect()",
+  "Comm Error" };
 
 static void comm_connect_callback(int fd, int status);
 static PF comm_connect_timeout;
@@ -1161,4 +1165,16 @@ comm_connect_tryconnect(int fd, void *notused)
 
     /* If we get here, we've suceeded, so call with COMM_OK */
     comm_connect_callback(fd, COMM_OK);
+}
+
+
+/*
+ * comm_error_str() - return an error string for the given error condition
+ */
+const char *
+comm_error_str(int error)
+{
+    if (error < 0 || error >= COMM_ERR_MAX)
+        return "Invalid error number!";
+    return comm_errstr[error];
 }

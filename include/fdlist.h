@@ -1,7 +1,7 @@
 /*
  * fdlist.h
  *
- * $Id: fdlist.h,v 7.5 2000/11/01 15:19:25 adrian Exp $
+ * $Id: fdlist.h,v 7.6 2000/11/02 14:52:54 adrian Exp $
  */
 #ifndef INCLUDED_fdlist_h
 #define INCLUDED_fdlist_h
@@ -43,7 +43,8 @@ enum {
     COMM_ERR_DNS,
     COMM_ERR_TIMEOUT,
     COMM_ERR_CONNECT,
-    COMM_ERROR
+    COMM_ERROR,
+    COMM_ERR_MAX
 };
 
 typedef struct _fde fde_t;
