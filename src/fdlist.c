@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.36 2003/06/18 06:26:32 metalrock Exp $
+ *  $Id: fdlist.c,v 7.37 2003/06/18 09:15:14 michael Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -30,6 +30,7 @@
 #include "s_bsd.h"   /* highest_fd */
 #include "send.h"
 #include "memory.h"
+#include "numeric.h"
 
 fde_t *fd_table = NULL;
 
@@ -66,18 +67,17 @@ fdlist_update_biggest(int fd, int opening)
     highest_fd--;
 }
 
-
 void
 fdlist_init(void)
 {
   static int initialized = 0;
 
   if (!initialized)
-    {
+  {
       /* Since we're doing this once .. */
       fd_table = MyMalloc((HARD_FDLIMIT + 1) * sizeof(fde_t));
       initialized = 1;
-    }
+  }
 }
 
 /* Called to open a given filedescriptor */
@@ -114,7 +114,6 @@ fd_open(int fd, unsigned int type, const char *desc)
   number_fd++;
 }
 
-
 /* Called to close a given filedescriptor */
 void
 fd_close(int fd)
@@ -144,7 +143,6 @@ fd_close(int fd)
   close(fd);
 }
 
-
 /*
  * fd_dump() - dump the list of active filedescriptors
  */
@@ -154,14 +152,14 @@ fd_dump(struct Client *source_p)
   int i;
 
   for (i = 0; i <= highest_fd; i++)
-    {
-      if (!fd_table[i].flags.open)
-	continue;
+  {
+    if (!fd_table[i].flags.open)
+      continue;
 
-      sendto_one(source_p, ":%s NOTICE %s :*** fd %d, desc '%s'", me.name,
-		 source_p->name, i, fd_table[i].desc);
-    }
-  sendto_one(source_p, ":%s NOTICE %s :*** Finished", me.name, source_p->name);
+    sendto_one(source_p, ":%s %d %s :fd %-5d desc '%s'",
+               me.name, RPL_STATSDEBUG, source_p->name,
+               i, fd_table[i].desc);
+  }
 }
 
 /*
