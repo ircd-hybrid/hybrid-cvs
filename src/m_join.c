@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 7.25 2000/10/19 16:20:30 toot Exp $
+ *   $Id: m_join.c,v 7.26 2000/10/22 16:36:43 toot Exp $
  */
 
 #include "handlers.h"
@@ -176,6 +176,13 @@ int     m_join(struct Client *cptr,
                        me.name, parv[0], name);
           continue;
         }
+
+      if (strlen(name) > CHANNELLEN-15)
+        {
+          sendto_one(sptr, form_str(ERR_BADCHANNAME),me.name, parv[0], name);
+          continue;
+        }
+
 
 #ifdef NO_JOIN_ON_SPLIT_SIMPLE
       if (server_was_split && MyClient(sptr) && (*name != '&'))
