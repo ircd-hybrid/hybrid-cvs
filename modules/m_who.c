@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.81 2003/06/02 05:35:06 michael Exp $
+ *  $Id: m_who.c,v 1.82 2003/06/02 06:11:49 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -62,14 +62,14 @@ _moddeinit(void)
   mod_del_cmd(&who_msgtab);
 }
 
-const char *_version = "$Revision: 1.81 $";
+const char *_version = "$Revision: 1.82 $";
 #endif
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);
 static void do_who(struct Client *source_p, struct Client *target_p,
                    char *chname, char *op_flags);
 static void do_who_on_channel(struct Client *source_p, struct Channel *chptr,
-                              char *chname, int member);
+                              char *chname, int member, int server_oper);
 
 /*
 ** m_who
@@ -123,8 +123,7 @@ m_who(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    do_who_on_channel(source_p, mychannel, "*", YES);
-
+    do_who_on_channel(source_p, mychannel, "*", YES, server_oper);
     sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], "*");
     return;
   }
@@ -139,9 +138,9 @@ m_who(struct Client *client_p, struct Client *source_p,
     if (chptr != NULL)
     {
       if (IsMember(source_p, chptr))
-        do_who_on_channel(source_p, chptr, chptr->chname, YES);
+        do_who_on_channel(source_p, chptr, chptr->chname, YES, server_oper);
       else if (!SecretChannel(chptr))
-        do_who_on_channel(source_p, chptr, chptr->chname, NO);
+        do_who_on_channel(source_p, chptr, chptr->chname, NO, server_oper);
     }
     sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
     return;
@@ -323,12 +322,13 @@ who_global(struct Client *source_p,char *mask, int server_oper)
  *		- The "real name" of this channel
  *		- int if source_p is a server oper or not
  *		- int if client is member or not
+ *		- int server_op flag
  * output	- NONE
  * side effects - do a who on given channel
  */
 static void
 do_who_on_channel(struct Client *source_p, struct Channel *chptr,
-                  char *chname, int member)
+                  char *chname, int member, int server_oper)
 {
   dlink_node *ptr;
   struct Client *target_p;
@@ -340,7 +340,11 @@ do_who_on_channel(struct Client *source_p, struct Channel *chptr,
     target_p = ms->client_p;
 
     if (member || !IsInvisible(target_p))
+    {
+      if (server_oper && !IsOper(target_p))
+	continue;
       do_who(source_p, target_p, chname, get_member_status(ms, NO));
+    }
   }
 }
 
