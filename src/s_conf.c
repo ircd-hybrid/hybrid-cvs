@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.334 2003/01/16 03:28:22 db Exp $
+ *  $Id: s_conf.c,v 7.335 2003/01/16 23:10:56 db Exp $
  */
 
 #include "stdinc.h"
@@ -214,6 +214,7 @@ free_conf(struct ConfItem* aconf)
   MyFree(aconf->name);
   MyFree(aconf->className);
   MyFree(aconf->user);
+  MyFree(aconf->fakename);
 #ifdef HAVE_LIBCRYPTO
   if (aconf->rsa_public_key)        { RSA_free(aconf->rsa_public_key); }
   if (aconf->rsa_public_key_file)   { MyFree(aconf->rsa_public_key_file); }
@@ -304,7 +305,7 @@ report_configured_links(struct Client* source_p, int mask)
 	      *s++ = 'L';
 	    if (tmp->flags & CONF_FLAGS_COMPRESSED)
 	      *s++ = 'Z';
-	    if (tmp->fakename)
+	    if (tmp->fakename != NULL)
 	      *s++ = 'M';
 	    
 	    if (!buf[0])
