@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: version.c.SH,v 7.18 2001/07/18 15:39:16 androsyn blalloc.c $ 
+# $Id: version.c.SH,v 7.19 2001/11/13 08:59:01 leeh Exp $ 
 
 spitshell=cat
 package=IRC
@@ -63,6 +63,7 @@ char *infotext[] =
   "$package --",
   "Based on the original code written by Jarkko Oikarinen",
   "Copyright 1988, 1989, 1990, 1991 University of Oulu, Computing Center",
+  "Copyright (c) 1996-2001 Hybrid Development Team", 
   "",
   "This program is free software; you can redistribute it and/or",
   "modify it under the terms of the GNU General Public License as",
