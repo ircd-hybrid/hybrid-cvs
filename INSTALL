@@ -1,6 +1,6 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.34 2003/06/12 03:40:23 joshk Exp $
+   $Id: INSTALL,v 7.35 2003/06/13 04:45:51 db Exp $
 
    Copyright (c) 2001 by ircd-hybrid team
 
@@ -16,7 +16,7 @@
    |   minimum. Try ./configure --help or read this file for more info on   |
    |   the possible options you can pass to configure.                      |
    |                                                                        |
-   | - Important: The old config format WILL NOT WORK. Please see point 7!  |
+   | - Important: The old config format WILL NOT WORK. Please see point 6!  |
    |                                                                        |
    | - The old kline format WILL NOT WORK. Please see point 8!              |
    +------------------------------------------------------------------------+
@@ -36,20 +36,16 @@
    Config script. The Makefile has also been updated to include CFLAGS
    defines for popular modern OSes.
 
-   1. 
-
-       Read the ChangeLog file to find out about the exciting new features in
+   1.  Read the ChangeLog file to find out about the exciting new features in
        this version. Other good reads are doc/whats-new.txt, BUGS,
        doc/example.conf, and README.FIRST.
 
        An example.conf for EFnet is in doc/ with the values "approved" on 12
        December 2001.
 
-   2. 
-
-       Run the configure script. It will create include/setup.h and the
+   2.  Run the configure script. It will create include/setup.h and the
        Makefiles to match your system. In hybrid-7, the paths are now handled
-       with the --prefix option to configure, not in config.h.
+       with the --prefix option to configure.
        /usr/local/ircd is the default if no prefix is specified.
 
        ./configure --prefix="/usr/local/ircd"
@@ -109,41 +105,21 @@
 	    entire network. Defaults are 9 and 120, respectively.
 
           * --with-maxclients - Sets the maximum number of clients support by
-            the server. Note that this also twiddles the HARD_FDLIMIT_ define
-            so it is no longer necessary to modify include/config.h for this.
+            the server. Note that this also twiddles the HARD_FDLIMIT_.
             If HARD_FDLIMIT_ ends up being larger that FD_SETSIZE when using
             select() for your I/O loop, s_bsd_select.c will refuse to compile
             (and tell you to use poll instead). Take this error's advice and
             use --enable-poll or something a bit more efficient. You'll be
             happier at the end of the day for it.
 
-   3. 
+   3.  make should build ircd.
 
-       Look over the "include/config.h" file. This allows you to change the
-       few remaining hard coded options of how the ircd will operate. Most
-       admins will only have to change a few settings. USE_SYSLOG is the only
-       one that most admins will need to edit.
-
-         Note: Note that you must have permission by the sysadmin to send
-         messages to the system log files.
-
-         All other settings in config.h are not necessary to edit.
-
-   4. 
-
-       make should build ircd.
-
-   5. 
-
-       make install will install the server, modules(1), and tools in the
-       path defined in config.h and the prefix specified when configure was
-       run.
+   4.  make install will install the server, modules(1), and tools in the
+       path with the prefix specified when configure was run.
 
        (1) Unless the server was compiled without module support.
 
-   6. 
-
-       If you wish to enable the user log, oper log, and failed oper log,
+   5.  If you wish to enable the user log, oper log, and failed oper log,
        issue these commands at the shell prompt (in the prefix directory)
 
  $ touch logs/userlog
@@ -153,9 +129,7 @@
          Note: If you use different names in ircd.conf, you must 'touch' the
          specific names.
 
-   7. 
-
-       If you are upgrading from Hybrid 5 or Hybrid 6, the config file has
+   6.  If you are upgrading from Hybrid 5 or Hybrid 6, the config file has
        changed drastically...
 
        There is a utility to convert your old config file to the new format.
@@ -170,9 +144,7 @@
        EDIT IT! There are still things that need changing in the config,
        including the fact that classes MUST be above auth/connect blocks!
 
-   8. 
-
-       If you are upgrading from Hybrid 5 or Hybrid 6, the kline file has
+   7.  If you are upgrading from Hybrid 5 or Hybrid 6, the kline file has
        also changed...
 
        There is a utility to convert the old kline configuration file to the
@@ -207,30 +179,20 @@
    The best way to get a backtrace of the core is to follow this sequence of
    instructions:
 
-   1. 
+   1.  Change to the directory containing the core file
 
-       Change to the directory containing the core file
-
-   2. 
-
-       Run gdb on the binary and the core file. With an unmodified Hybrid-7
+   2.  Run gdb on the binary and the core file. With an unmodified Hybrid-7
        installation, an example command line is below (in the /usr/local/ircd
        directory)
 
  $ gdb bin/ircd ircd.core
 
-   3. 
+   3.  At the "(gdb)" prompt, enter the command "bt"
 
-       At the "(gdb)" prompt, enter the command "bt"
-
-   4. 
-
-       Save the output of the backtrace command and send it to
+   4.  Save the output of the backtrace command and send it to
        ircd-hybrid@the-project.org.
 
-   5. 
-
-       Be sure to save the ircd binary, the modules, and the core file in a
+   5.  Be sure to save the ircd binary, the modules, and the core file in a
        safe place in case the developers need to look deeper than a backtrace
        provides.
 
