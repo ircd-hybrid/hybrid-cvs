@@ -25,7 +25,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_sigio.c,v 7.9 2001/12/16 09:58:32 androsyn Exp $
+ *  $Id: s_bsd_sigio.c,v 7.10 2001/12/18 07:20:08 a1kmm Exp $
  */
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE 1 /* Needed for F_SETSIG */
@@ -238,21 +238,30 @@ void
 comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
     void *client_data, time_t timeout)
 {  
+    int new_hdl;
     fde_t *F = &fd_table[fd];
     assert(fd >= 0);
     assert(F->flags.open);
 #if 0
     fprintf(stderr, "fd[%d]: type: %s %s handler: %p\n", fd, type & COMM_SELECT_READ ? "COMM_SELECT_READ" : "", type & COMM_SELECT_WRITE ? "COMM_SELECT_WRITE" : "", handler); 
 #endif
-    if (type & COMM_SELECT_READ) {
+    if (type & COMM_SELECT_READ)
+    {
+        new_hdl = (F->read_handler == NULL);
         F->read_handler = handler;
         F->read_data = client_data;
         poll_update_pollfds(fd, POLLIN, handler);
+        if (new_hdl && handler != NULL)
+          handler(fd, client_data);
     }
-    if (type & COMM_SELECT_WRITE) {
+    if (type & COMM_SELECT_WRITE)
+    {
+        new_hdl = (F->write_handler == NULL);
         F->write_handler = handler;
         F->write_data = client_data;
         poll_update_pollfds(fd, POLLOUT, handler);
+        if (new_hdl && handler != NULL)
+          handler(fd, client_data);
     }
     if (timeout)
         F->timeout = CurrentTime + (timeout / 1000);
