@@ -1,3 +1,15 @@
+db          2002/03/07 09:04:35 EST	(20020307_3)
+
+  Modified files:
+    .                    INSTALL 
+  Log:
+  - Corrected email address
+  
+  Revision  Changes    Path
+  7.25      +1 -1      ircd-hybrid-7/INSTALL
+
+
+
 db          2002/03/07 08:44:30 EST	(20020307_2)
 
   Modified files:
@@ -23927,4 +23939,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3487 2002/03/07 13:44:36 db Exp $
+$Id: ChangeLog,v 7.3488 2002/03/07 14:04:41 db Exp $
