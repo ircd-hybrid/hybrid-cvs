@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.38 2001/01/02 00:35:22 davidt Exp $
+ *   $Id: m_join.c,v 1.39 2001/01/02 01:22:46 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -326,6 +326,9 @@ int     ms_join(struct Client *cptr,
                char *parv[])
 {
   char *name;
+  
+  if (!(sptr->user))
+    return 0;
   
   name = parv[1];
 
