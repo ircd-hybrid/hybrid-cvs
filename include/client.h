@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.132 2001/10/25 02:36:20 db Exp $
+ * $Id: client.h,v 7.133 2001/11/11 15:17:38 leeh Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -392,7 +392,7 @@ struct LocalUser
 #define FLAGS_CRYPTOUT     0x4000 /* outgoing data must be encrypted */
 #define FLAGS_WAITAUTH     0x8000 /* waiting for CRYPTLINK AUTH command */
 #define FLAGS_SERVLINK     0x10000 /* servlink has servlink process */
-
+#define FLAGS_MARK	   0x20000 /* marked client */
 /* umodes, settable flags */
 
 #define FLAGS_SERVNOTICE   0x0001 /* server notices such as kill */
@@ -484,6 +484,9 @@ struct LocalUser
 #define SetServlink(x)          ((x)->flags |= FLAGS_SERVLINK)
 #define MyConnect(x)            ((x)->localClient != NULL)
 #define MyClient(x)             (MyConnect(x) && IsClient(x))
+#define SetMark(x)		((x)->flags |= FLAGS_MARK)
+#define ClearMark(x)		((x)->flags &= ~FLAGS_MARK)
+#define IsMarked(x)		((x)->flags & FLAGS_MARK)
 
 /* oper flags */
 #define MyOper(x)               (MyConnect(x) && IsOper(x))
