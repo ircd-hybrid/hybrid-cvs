@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_accept.c,v 1.2 2000/12/05 05:45:38 db Exp $
+ *   $Id: m_accept.c,v 1.3 2000/12/07 00:23:14 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -84,14 +84,13 @@ int m_accept(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       return 0;
     }
 
-  if( (source = find_client(nick,NULL)) == NULL)
+  if ((source = find_client(nick,NULL)) == NULL)
     {
-      sendto_one(sptr, form_str(ERR_ERRONEUSNICKNAME),
-		 me.name, parv[0], parv[1]);
+      sendto_one(sptr, form_str(ERR_NOSUCHNICK), me.name, parv[0], nick);
       return 0;
     }
 
-  if(add == 1)
+  if (add == 1)
     {
       add_to_accept(source,sptr);
       sendto_one(sptr, ":%s NOTICE %s :Now allowing %s", 
