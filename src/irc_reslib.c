@@ -92,7 +92,7 @@
 #define DNS_LABELTYPE_BITSTRING 0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.16 2003/05/31 06:14:57 michael Exp $ */
+/* $Id: irc_reslib.c,v 7.17 2003/06/05 15:02:46 adx Exp $ */
 
 static FBFILE *file;
 
@@ -179,7 +179,7 @@ parse_resvconf(void)
     opt = input;
     p = input;
     /* skip until something thats not a space is seen */
-    while (!IsSpace(*p))
+    while (IsSpace(*p))
       p++;
 
     /* if at this point, have a '\0' then continue */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.172 2003/06/04 02:07:11 db Exp $
+ *  $Id: parse.c,v 7.173 2003/06/05 15:02:46 adx Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,8 @@
  *				 'i' -> [MessageTree *] -> 'e' and matches
  */
 
-#define MAXPTRLEN	32	/* Must be a power of 2, and
+#define MAXPTRLEN	32
+                                /* Must be a power of 2, and
 				 * larger than 26 [a-z]|[A-Z]
 				 * its used to allocate the set
 				 * of pointers at each node of the tree
@@ -343,7 +344,7 @@ handle_command(struct Message *mptr, struct Client *client_p,
     mptr->rcount++;
 
   mptr->count++;
-	
+
   /* New patch to avoid server flooding from unregistered connects
    * - Pie-Man 07/27/2000 */
   if (!IsRegistered(client_p))
