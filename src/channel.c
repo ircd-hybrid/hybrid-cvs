@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.145 2000/12/28 22:19:33 davidt Exp $
+ * $Id: channel.c,v 7.146 2000/12/28 22:28:22 bill Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1266,10 +1266,7 @@ void set_channel_mode(struct Client *cptr,
 	  if(chptr->mode.mode & MODE_HIDEOPS)
 	    {
 	      if(the_mode == MODE_CHANOP && whatt == MODE_DEL)
-		if (IsServer(who))
-		  sendto_one(who,":%s MODE %s -o %s",
-			     sptr->name,chname,who->name);
-		else
+		if (MyClient(who))
 		  sendto_one(who,":%s!%s@%s MODE %s -o %s",
 			     sptr->name,sptr->username, sptr->host,
 			     chname,who->name);
