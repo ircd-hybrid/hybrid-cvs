@@ -1,3 +1,17 @@
+jmallett    2002/02/08 01:04:27 EST	(20020208_2)
+
+  Modified files:
+    .                    configure 
+    autoconf             configure.in 
+  Log:
+  Check for Apple's GCC, rework PICFLAGS a little.
+  
+  Revision  Changes    Path
+  7.119     +25 -23    ircd-hybrid-7/autoconf/configure.in
+  7.122     +206 -197  ircd-hybrid-7/configure
+
+
+
 lusky       2002/02/07 23:55:56 EST	(20020208_1)
 
   Modified files:
@@ -22340,4 +22354,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3391 2002/02/08 04:56:01 lusky Exp $
+$Id: ChangeLog,v 7.3392 2002/02/08 06:04:33 jmallett Exp $
