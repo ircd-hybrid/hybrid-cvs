@@ -1,6 +1,6 @@
 diff -ur nohalfops/contrib/m_clearchan.c halfops/contrib/m_clearchan.c
---- nohalfops/contrib/m_clearchan.c	Sun Oct 12 20:51:17 2003
-+++ halfops/contrib/m_clearchan.c	Sun Oct 12 20:57:26 2003
+--- nohalfops/contrib/m_clearchan.c	Mon Oct 13 11:36:23 2003
++++ halfops/contrib/m_clearchan.c	Mon Oct 13 11:36:29 2003
 @@ -197,6 +197,7 @@
  remove_our_modes(struct Channel *chptr, struct Client *source_p)
  {
@@ -10,8 +10,8 @@ diff -ur nohalfops/contrib/m_clearchan.c halfops/contrib/m_clearchan.c
  
    /* Clear all +beI modes */
 diff -ur nohalfops/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
---- nohalfops/contrib/m_ojoin.c	Sun Oct 12 20:51:17 2003
-+++ halfops/contrib/m_ojoin.c	Sun Oct 12 20:51:26 2003
+--- nohalfops/contrib/m_ojoin.c	Mon Oct 13 11:36:24 2003
++++ halfops/contrib/m_ojoin.c	Mon Oct 13 11:36:29 2003
 @@ -103,6 +103,8 @@
                  modeletter = 'o'; name++; break;
        case '+': tmp_flags = CHFL_VOICE;
@@ -22,8 +22,8 @@ diff -ur nohalfops/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
        case '&':
          tmp_flags = 0;
 diff -ur nohalfops/modules/core/m_join.c halfops/modules/core/m_join.c
---- nohalfops/modules/core/m_join.c	Sun Oct 12 20:51:17 2003
-+++ halfops/modules/core/m_join.c	Sun Oct 12 20:57:08 2003
+--- nohalfops/modules/core/m_join.c	Mon Oct 13 11:36:23 2003
++++ halfops/modules/core/m_join.c	Mon Oct 13 11:36:29 2003
 @@ -713,6 +713,7 @@
  remove_our_modes(struct Channel *chptr, struct Client *source_p)
  {
@@ -33,8 +33,8 @@ diff -ur nohalfops/modules/core/m_join.c halfops/modules/core/m_join.c
  }
  
 diff -ur nohalfops/modules/core/m_kick.c halfops/modules/core/m_kick.c
---- nohalfops/modules/core/m_kick.c	Sun Oct 12 20:51:17 2003
-+++ halfops/modules/core/m_kick.c	Sun Oct 12 20:51:26 2003
+--- nohalfops/modules/core/m_kick.c	Mon Oct 13 11:36:23 2003
++++ halfops/modules/core/m_kick.c	Mon Oct 13 11:36:29 2003
 @@ -135,7 +135,7 @@
          return;
        }
@@ -63,8 +63,8 @@ diff -ur nohalfops/modules/core/m_kick.c halfops/modules/core/m_kick.c
      * - In the case of a server kicking a user (i.e. CLEARCHAN),
      *   the kick should show up as coming from the server which did
 diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
---- nohalfops/modules/core/m_sjoin.c	Sun Oct 12 20:51:17 2003
-+++ halfops/modules/core/m_sjoin.c	Sun Oct 12 20:53:14 2003
+--- nohalfops/modules/core/m_sjoin.c	Mon Oct 13 11:36:23 2003
++++ halfops/modules/core/m_sjoin.c	Mon Oct 13 11:36:58 2003
 @@ -318,7 +318,7 @@
      fl = 0;
      num_prefix = 0;
@@ -119,7 +119,7 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
 +    if (fl & CHFL_HALFOP)
 +    {
 +      *mbuf++ = 'h';
-+      para[pargs++] = s;
++      para[pargs++] = target_p->name;
 +
 +      if (pargs >= MAXMODEPARAMS)
 +      {
@@ -146,8 +146,8 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
  }
  
 diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
---- nohalfops/src/channel_mode.c	Sun Oct 12 20:51:17 2003
-+++ halfops/src/channel_mode.c	Sun Oct 12 20:51:26 2003
+--- nohalfops/src/channel_mode.c	Mon Oct 13 11:36:23 2003
++++ halfops/src/channel_mode.c	Mon Oct 13 11:36:29 2003
 @@ -72,6 +72,10 @@
  static void chm_op(struct Client *, struct Client *, struct Channel *, int,
                     int *, char **, int *, int, int, char, void *,
