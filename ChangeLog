@@ -1,3 +1,15 @@
+gregp       2002/12/29 16:42:48 EST	(20021229_1)
+
+  Added files:
+    contrib              challenge.irc 
+  Log:
+  - ahem, actually add challenge.irc
+  
+  Revision  Changes    Path
+  1.1       +75 -0     ircd-hybrid-7/contrib/challenge.irc (new)
+
+
+
 gregp       2002/12/29 16:42:08 EST	(20021229_0)
 
   Modified files:
@@ -33744,4 +33756,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4150 2002/12/29 21:42:10 gregp Exp $
+$Id: ChangeLog,v 7.4151 2002/12/29 21:42:50 gregp Exp $
