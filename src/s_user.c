@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.262 2003/05/20 06:51:52 michael Exp $
+ *  $Id: s_user.c,v 7.263 2003/05/22 06:03:55 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1226,10 +1226,10 @@ check_X_line(struct Client *client_p, struct Client *source_p)
 
   if ((aconf = find_x_conf(source_p->info)) != NULL)
   {
-    if (aconf->passwd != NULL)
-      reason = aconf->passwd;
+    if (aconf->reason != NULL)
+      reason = aconf->reason;
     else
-      reason = "NONE";
+      reason = "No Reason";
 
     if (aconf->port)
     {
