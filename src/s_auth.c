@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.137 2003/08/19 17:52:08 adx Exp $
+ *  $Id: s_auth.c,v 7.138 2003/08/19 18:13:56 stu Exp $
  */
 
 /*
@@ -450,7 +450,10 @@ timeout_auth_queries_event(void *notused)
 	ClearDNSPending(auth);
 	dlinkDelete(&auth->dns_node, &auth_doing_dns_list);
 	if (client_p->localClient->dns_query != NULL)
+    {
 	  delete_resolver_queries(client_p->localClient->dns_query);
+      MyFree(client_p->localClient->dns_query);
+    }
 	auth->client->localClient->dns_query = NULL;
 	sendheader(client_p, REPORT_FAIL_DNS);
       }
