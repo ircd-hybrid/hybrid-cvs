@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.36 2003/05/18 11:45:09 adx Exp $
+ *  $Id: numeric.h,v 7.37 2003/05/18 14:15:56 adx Exp $
  */
 
 #ifndef INCLUDED_numeric_h
@@ -125,9 +125,6 @@ extern const char *get_locale(void);
 
 /*	RPL_RULES	     232	unreal */
 
-#define RPL_SERVLIST         234
-#define RPL_SERVLISTEND      235
-
 /*      RPL_STATSIAUTH       239           IRCnet extension */
 /*      RPL_STATSVLINE       240           IRCnet extension */
 /*	RPL_STATSXLINE	     240	austnet */
@@ -153,7 +150,6 @@ extern const char *get_locale(void);
 #define RPL_ADMINLOC2        258
 #define RPL_ADMINEMAIL       259
 
-#define RPL_TRACELOG         261
 #define RPL_ENDOFTRACE       262
 #define RPL_LOAD2HI          263
 
@@ -200,7 +196,6 @@ extern const char *get_locale(void);
 
 /* numeric_replies */
 
-#define RPL_NONE             300
 #define RPL_AWAY             301
 #define RPL_USERHOST         302
 #define RPL_ISON             303
@@ -272,7 +267,6 @@ extern const char *get_locale(void);
 #define RPL_NAMREPLY         353
 #define RPL_ENDOFNAMES       366
 
-#define RPL_KILLDONE         361
 #define RPL_CLOSING          362
 #define RPL_CLOSEEND         363
 #define RPL_LINKS            364
@@ -298,8 +292,6 @@ extern const char *get_locale(void);
 #define RPL_YOUREOPER        381
 #define RPL_REHASHING        382
 /*	RPL_YOURSERVICE	     383	   Numeric List: various */
-#define RPL_MYPORTIS         384
-#define RPL_NOTOPERANYMORE   385
 #define RPL_RSACHALLENGE     386
 
 /*	RPL_QLIST	     386	unreal */
@@ -334,7 +326,6 @@ extern const char *get_locale(void);
 #define ERR_UNKNOWNCOMMAND   421
 #define ERR_NOMOTD           422
 #define ERR_NOADMININFO      423
-#define ERR_FILEERROR        424
 
 /* 	ERR_TOOMANYAWAY	     429	    Dalnet */
 
@@ -356,9 +347,6 @@ extern const char *get_locale(void);
 #define ERR_USERNOTINCHANNEL 441
 #define ERR_NOTONCHANNEL     442
 #define ERR_USERONCHANNEL    443
-#define ERR_NOLOGIN          444
-#define ERR_SUMMONDISABLED   445
-#define ERR_USERSDISABLED    446
 
 #define ERR_NOTREGISTERED    451
 
@@ -376,11 +364,8 @@ extern const char *get_locale(void);
 
 #define ERR_NEEDMOREPARAMS   461
 #define ERR_ALREADYREGISTRED 462
-#define ERR_NOPERMFORHOST    463
 #define ERR_PASSWDMISMATCH   464
 #define ERR_YOUREBANNEDCREEP 465
-#define ERR_YOUWILLBEBANNED  466
-#define ERR_KEYSET           467
 /* 	ERR_ONLYSERVERSCANCHANGE 468	   Dalnet,unreal */
 /*	ERR_LINKSET	     469	unreal */
 /*	ERR_LINKCHANNEL	     470	unreal */
@@ -390,8 +375,7 @@ extern const char *get_locale(void);
 #define ERR_INVITEONLYCHAN   473
 #define ERR_BANNEDFROMCHAN   474
 #define ERR_BADCHANNELKEY    475
-#define ERR_BADCHANMASK      476
-#define ERR_MODELESS         477        /* ircu numeric -db */
+/*      ERR_MODELESS         477           ircu numeric -db */
 #define ERR_BANLISTFULL      478        /* I stole the numeric from ircu -db */
 #define ERR_BADCHANNAME      479
 /* 	ERR_LINKFAIL	     479	unreal */
@@ -401,7 +385,6 @@ extern const char *get_locale(void);
 #define ERR_CHANOPRIVSNEEDED 482
 #define ERR_CANTKILLSERVER   483
 #define ERR_RESTRICTED       484
-#define ERR_BANNEDNICK       485
 /*	ERR_DESYNC	     484	 Dalnet,PTlink */
 /*	ERR_ATTACKDENY	     484	 unreal */
 /*	ERR_RESTRICTED	     484	   IRCnet extension */

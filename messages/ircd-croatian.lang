@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2000
 ; David Taylor <davidt@yadt.co.uk>, 2000.
-; $Id: ircd-croatian.lang,v 1.3 2003/05/18 09:37:51 adx Exp $
+; $Id: ircd-croatian.lang,v 1.4 2003/05/18 14:15:58 adx Exp $
 
 RPL_WELCOME:             :%s 001 %s :Dobro do¹li na %s Internet Relay Chat Network %s
 RPL_YOURHOST:            :%s 002 %s :Va¹ host je %s, i koristi verziju %s
@@ -48,7 +48,6 @@ RPL_MOTDSTART:           :%s 375 %s :- %s Poruka dana -
 RPL_ENDOFMOTD:           :%s 376 %s :Kraj /MOTD komande.
 RPL_YOUREOPER:           :%s 381 %s :Au, sad si veliki jebaè! :).
 RPL_REHASHING:           :%s 382 %s %s :Uèitavam promijenjenu konfiguraciju
-RPL_MYPORTIS:            :%s 384 %s %d :Port na lokalnom serveru je
 ERR_NOSUCHNICK:          :%s 401 %s %s :Nema takvog nicka/kanala
 ERR_NOSUCHSERVER:        :%s 402 %s %s :Nema takvog servera
 ERR_NOSUCHCHANNEL:       :%s 403 %s %s :Nema takvog kanala
@@ -64,43 +63,33 @@ ERR_WILDTOPLEVEL:        :%s 414 %s %s :Nedovoljno precizno definirana vr¹na dom
 ERR_UNKNOWNCOMMAND:      :%s 421 %s %s :Nepoznata komanda
 ERR_NOMOTD:              :%s 422 %s :MOTD spis ne postoji
 ERR_NOADMININFO:         :%s 423 %s %s :Nema administrativnih informacija
-ERR_FILEERROR:           :%s 424 %s :Gre¹ka u spisu %s na %s
 ERR_NONICKNAMEGIVEN:     :%s 431 %s :Nisi naveo nick
 ERR_ERRONEUSNICKNAME:    :%s 432 %s %s :Pogre¹an nick.
 ERR_NICKNAMEINUSE:       :%s 433 %s %s :Nick je veæ u upotrebi.
 ERR_NICKCOLLISION:       :%s 436 %s %s :Nick kolizija, KILL
-ERR_ERR_UNAVAILRESOURCE: :%s 437 %s %s :Nick/kanal trenutno nije na raspolaganju
+ERR_UNAVAILRESOURCE:     :%s 437 %s %s :Nick/kanal trenutno nije na raspolaganju
 ERR_NICKTOOFAST:         :%s 438 %s %s %s :Prebrza promjena nicka. Molim, prièekaj %d sekundi
 ERR_USERNOTINCHANNEL:    :%s 441 %s %s %s :Nije na tom kanalu
 ERR_NOTONCHANNEL:        :%s 442 %s %s :Nisi na tom kanalu
 ERR_USERONCHANNEL:       :%s 443 %s %s %s :je veæ na kanalu
-ERR_NOLOGIN:             :%s 444 %s %s :Korisnik nije prisutan
-ERR_SUMMONDISABLED:      :%s 445 %s :SUMMON je maknut
-ERR_USERSDISABLED:       :%s 446 %s :USERS je maknut
 ERR_NOTREGISTERED:       :%s 451 %s :Nisi se registrirao/la
 ERR_NEEDMOREPARAMS:      :%s 461 %s %s :Nedovoljno parametara
 ERR_ALREADYREGISTRED:    :%s 462 %s :Ne mo¾e¹ se ponovo registrirati
-ERR_NOPERMFORHOST:       :%s 463 %s :Tvoj host nije meðu privilegiranima
 ERR_PASSWDMISMATCH:      :%s 464 %s :Kriva lozinka - poku¹aj ponovo!
 ERR_YOUREBANNEDCREEP:    :%s 465 %s :Zabranjen ti je pristup ovom serveru- %s
-ERR_KEYSET:              :%s 467 %s %s :Kljuè za kanal je veæ postavljen
 ERR_CHANNELISFULL:       :%s 471 %s %s :Ne mo¾e¹ uæi na kanal (+l)
 ERR_UNKNOWNMODE:         :%s 472 %s %c :je meni nepoznata oznaka moda
 ERR_INVITEONLYCHAN:      :%s 473 %s %s :Ne mo¾e¹ uæi na kanal (+i)
 ERR_BANNEDFROMCHAN:      :%s 474 %s %s :Ne mo¾e¹ uæi na kanal (+b)
 ERR_BADCHANNELKEY:       :%s 475 %s %s :Ne mo¾e¹ uæi na kanal (+k)
-ERR_BADCHANMASK:         :%s 476 %s %s :Kriva maska kanala
-ERR_MODELESS:            :%s 477 %s %s :Kanal ne podr¾ava modove
 ERR_BANLISTFULL:         :%s 478 %s %s %s :Lista banova na kanalu je puna
 ERR_BADCHANNAME:         :%s 479 %s %s :Krivo ime kanala
 ERR_NOPRIVILEGES:        :%s 481 %s :Nije ti dozvoljeno, ¾ao mi je, nisi IRC operator
 ERR_CHANOPRIVSNEEDED:    :%s 482 %s %s :Ne mo¾e¹ to napraviti, nisi operator na kanalu.
 ERR_CANTKILLSERVER:      :%s 483 %s :Ne budi blesav, ne mo¾e¹ /KILL-ati server :)
 ERR_RESTRICTED:          :%s 484 %s :Na ogranièenoj si vezi
-ERR_BANNEDNICK:          :%s 485 %s :Ne mo¾e¹ mijenjati nick kad si baniran ili na moderiranom kanalu (%s)
 ERR_NOOPERHOST:          :%s 491 %s :®ao mi je, ne mo¾e¹ se /OPER-ati ovdje.
 ERR_UMODEUNKNOWNFLAG:    :%s 501 %s :Nepoznata MODE oznaka
 ERR_USERSDONTMATCH:      :%s 502 %s :Ne mo¾e¹ mijenjati modove drugim korisnicima
 ERR_GHOSTEDCLIENT:       :%s 503 %s :Poruku nije moguæe dostaviti na %s
 ERR_USERNOTONSERV:       :%s 504 %s %s :Korisnik nije na ovom serveru
-ERR_LAST_ERR_MSG:        :%s 999 %s :Posljednja poruka o gre¹ci

@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2000
 ; David Taylor <davidt@yadt.co.uk>, 2000.
-; $Id: ircd-german.lang,v 1.6 2003/05/18 09:37:52 adx Exp $
+; $Id: ircd-german.lang,v 1.7 2003/05/18 14:15:58 adx Exp $
 
 RPL_WELCOME:             :%s 001 %s :Wilkommen im %s Internet Relay Chat Network %s
 RPL_YOURHOST:            :%s 002 %s :Ihr host ist %s, die aktuelle version is %s
@@ -24,7 +24,6 @@ RPL_LUSERUNKNOWN:        :%s 253 %s %d :Unbekannte Verbindungen
 RPL_LUSERCHANNELS:       :%s 254 %s %d :Chat Räume stehen zu Ihrer Verfügung
 RPL_LUSERME:             :%s 255 %s :Ich beherberge %d Besucher und %d Server sind mit mir verbunden
 RPL_ADMINME:             :%s 256 %s :Administrative Informationen für %s
-RPL_TRACELOG:            :%s 261 %s Datei %s %d
 RPL_ENDOFTRACE:          :%s 262 %s %s :Ende der TRACE Nachricht
 RPL_LOAD2HI:             :%s 263 %s :Zur Zeit kann Ihre Anfrage nicht bearbeitet werden. Der Server ist zu beschäftigt.
 RPL_LOCALUSERS:          :%s 265 %s :Anzahl aller lokalen User, zur Zeit: %d  Maximum: %d
@@ -50,7 +49,6 @@ RPL_ENDOFINFO:           :%s 374 %s :Ende des /INFO Reportes.
 RPL_ENDOFMOTD:           :%s 376 %s :Ende des /MOTD
 RPL_YOUREOPER:           :%s 381 %s :Wilkommen in Olymp.
 RPL_REHASHING:           :%s 382 %s %s :Die Konfiguration wurde erneut geladen
-RPL_MYPORTIS:            :%s 384 %s %d :Port zum lokalen Server
 ERR_NOSUCHNICK:          :%s 401 %s %s :Diesen Raum oder Nicknamen, gibt es nicht
 ERR_NOSUCHSERVER:        :%s 402 %s %s :Diesen Server gibt es nicht
 ERR_NOSUCHCHANNEL:       :%s 403 %s %s :Diesen Chat Raum gibt es nicht
@@ -70,37 +68,28 @@ ERR_NONICKNAMEGIVEN:     :%s 431 %s :Kein Nickname wurde angegeben
 ERR_ERRONEUSNICKNAME:    :%s 432 %s %s :Diesen Nicknamen können Sie nicht benutzen
 ERR_NICKNAMEINUSE:       :%s 433 %s %s :Dieser Nickname wird schon verwendet
 ERR_NICKCOLLISION:       :%s 436 %s %s :Nicknamen Kollision deswegen KILL
-ERR_ERR_UNAVAILRESOURCE: :%s 437 %s %s :Der Nickname oder Raum steht vorübergehend nicht zur Verfügung
+ERR_UNAVAILRESOURCE:     :%s 437 %s %s :Der Nickname oder Raum steht vorübergehend nicht zur Verfügung
 ERR_USERNOTINCHANNEL:    :%s 441 %s %s %s :Die Empfänger sind nicht in diesem Raum
 ERR_NOTONCHANNEL:        :%s 442 %s %s :Sie sind nicht in diesem Raum
 ERR_USERONCHANNEL:       :%s 443 %s %s %s :ist schon in diesem Raum
-ERR_NOLOGIN:             :%s 444 %s %s :Besucher ist nicht eingeloggt
-ERR_SUMMONDISABLED:      :%s 445 %s :SUMMON wurde entfernt
-ERR_USERSDISABLED:       :%s 446 %s :USERS wurde entfernt
 ERR_NOTREGISTERED:       :%s 451 %s :Sie haben sich nicht registriert
 ERR_NEEDMOREPARAMS:      :%s 461 %s %s :Es wurden nicht genügend Parameter übertragen
 ERR_ALREADYREGISTRED:    :%s 462 %s :Sie dürfen sich nicht nocheinmal registrieren
-ERR_NOPERMFORHOST:       :%s 463 %s :Ihr Host hat keinen Zugriff
 ERR_PASSWDMISMATCH:      :%s 464 %s :Das Passwort ist falsch.
 ERR_YOUREBANNEDCREEP:    :%s 465 %s :Sie haben keinen Zutritt zu diesem Server- %s
-ERR_KEYSET:              :%s 467 %s %s :Es existiert schon ein Passwort für diesen Raum
 ERR_CHANNELISFULL:       :%s 471 %s %s :Sie haben keinen zutritt zu diesem Raum (+l)
 ERR_UNKNOWNMODE:         :%s 472 %s %c :Ich kenne diese mode nicht, sorry
 ERR_INVITEONLYCHAN:      :%s 473 %s %s :Sie können diesen Raum nur mit einer Einladung betreten
 ERR_BANNEDFROMCHAN:      :%s 474 %s %s :Sie haben keinen Zutritt zu diesem Raum (+b)
 ERR_BADCHANNELKEY:       :%s 475 %s %s :Sie können diesen Raum nur mit dem richtigen Passwort betreten
-ERR_BADCHANMASK:         :%s 476 %s %s :Nicht unterstüztes Raum Muster
-ERR_MODELESS:            :%s 477 %s %s :Dieser Raum unterstüzt keine modes
 ERR_BANLISTFULL:         :%s 478 %s %s %s :Die ban Liste ist voll
 ERR_BADCHANNAME:         :%s 479 %s %s :Sie können diesen Raumnamen nicht benutzen
 ERR_NOPRIVILEGES:        :%s 481 %s :Der Zutritt zum Olymp wurde Ihnen verweigert
 ERR_CHANOPRIVSNEEDED:    :%s 482 %s %s :Sie besitzen nicht die nötigen Privilegien für diese Aktion
 ERR_CANTKILLSERVER:      :%s 483 %s :Ein Server reagiert nicht auf das KILL Kommando
 ERR_RESTRICTED:          :%s 484 %s :Sie unterliegen Restriktionen
-ERR_BANNEDNICK:          :%s 485 %s :Sie können Ihren Namen nicht ändern während Sie gebannt sind in diesem moderierten Raum (%s)
 ERR_NOOPERHOST:          :%s 491 %s :Sie haben keinen Zugriff auf die erweiterten Funktionen dieses Servers
 ERR_UMODEUNKNOWNFLAG:    :%s 501 %s :Dieser MODE ist mir nicht bekannt
 ERR_USERSDONTMATCH:      :%s 502 %s :Sie können die modes für einen anderen Besucher nicht ändern
 ERR_GHOSTEDCLIENT:       :%s 503 %s :Die Nachricht konnte nicht an %s geschickt werden
 ERR_USERNOTONSERV:       :%s 504 %s %s :Der Besucher ist nicht auf diesem Server
-ERR_LAST_ERR_MSG:        :%s 999 %s :Letzte Fehlermeldung

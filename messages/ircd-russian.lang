@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2003
 ; Ilya Shtift <ishtift@tagil.svrw.ru>, 2003.
-; $Id: ircd-russian.lang,v 1.4 2003/05/18 11:45:11 adx Exp $
+; $Id: ircd-russian.lang,v 1.5 2003/05/18 14:15:58 adx Exp $
 
 RPL_WELCOME:             :%s 001 %s :Добро пожаловать в %s Internet Relay Chat Network %s
 RPL_YOURHOST:            :%s 002 %s :Ваш сервер %s, версия %s
@@ -58,32 +58,26 @@ ERR_NONICKNAMEGIVEN:     :%s 431 %s :Вы не указали ник
 ERR_ERRONEUSNICKNAME:    :%s 432 %s %s :Неверный ник
 ERR_NICKNAMEINUSE:       :%s 433 %s %s :Этот ник уже используется.
 ERR_NICKCOLLISION:       :%s 436 %s %s :Коллизия ника KILL
-ERR_ERR_UNAVAILRESOURCE: :%s 437 %s %s :Ник/канал временно недоступен
+ERR_UNAVAILRESOURCE:     :%s 437 %s %s :Ник/канал временно недоступен
 ERR_USERNOTINCHANNEL:    :%s 441 %s %s %s :Он не находится на этом канале
 ERR_NOTONCHANNEL:        :%s 442 %s %s :Вы не находитесь на этом канале
 ERR_USERONCHANNEL:       :%s 443 %s %s %s :вы уже находитесь на канале
-ERR_SUMMONDISABLED:      :%s 445 %s :SUMMON был удален
-ERR_USERSDISABLED:       :%s 446 %s :USERS был удален
 ERR_NOTREGISTERED:       :%s 451 %s :Вы не зарегистрировались
 ERR_NEEDMOREPARAMS:      :%s 461 %s %s :Слишком мало параметров
 ERR_ALREADYREGISTRED:    :%s 462 %s :Вы не можете зарегистрироватся
 ERR_PASSWDMISMATCH:      :%s 464 %s :Неверный пароль
 ERR_YOUREBANNEDCREEP:    :%s 465 %s :Вы забанены на этом сервере- %s
-ERR_KEYSET:              :%s 467 %s %s :Ключ для канала уже установлен
 ERR_CHANNELISFULL:       :%s 471 %s %s :Невозможно зайти на канал (+l)
 ERR_UNKNOWNMODE:         :%s 472 %s %c :неизвестный символ режима
 ERR_INVITEONLYCHAN:      :%s 473 %s %s :Невозможно зайти на канал (+i)
 ERR_BANNEDFROMCHAN:      :%s 474 %s %s :Невозможно зайти на канал (+b)
 ERR_BADCHANNELKEY:       :%s 475 %s %s :Невозможно зайти на канал (+k)
-ERR_BADCHANMASK:         :%s 476 %s %s :Неправильная маска канала
-ERR_MODELESS:            :%s 477 %s %s :Канал не поддерживает этих режимов
 ERR_BANLISTFULL:         :%s 478 %s %s %s :Бан лист канала переполнен
 ERR_BADCHANNAME:         :%s 479 %s %s :Недопустимое имя канала
 ERR_NOPRIVILEGES:        :%s 481 %s :В доступе отказано - Вы не IRC Оператор
 ERR_CHANOPRIVSNEEDED:    :%s 482 %s %s :Вы не оператор канала
 ERR_CANTKILLSERVER:      :%s 483 %s :Вы не можете убить сервер!
 ERR_RESTRICTED:          :%s 484 %s :Вы ограничены
-ERR_BANNEDNICK:          :%s 485 %s :Вы не можете изменить ник когда вы забанены или находитесь на модерируемом канале (%s)
 ERR_UMODEUNKNOWNFLAG:    :%s 501 %s :Неизвестный MODE флаг
 ERR_USERSDONTMATCH:      :%s 502 %s :Вы не можете изменить режим другого пользователя
 ERR_GHOSTEDCLIENT:       :%s 503 %s :Невозможно доставить сообщение для %s
@@ -98,4 +92,3 @@ ERR_TOOMANYKNOCK:        :%s 712 %s %s :Слишком много KNOCKs (%s).
 ERR_CHANOPEN:            :%s 713 %s %s :Канал открыт.
 ERR_KNOCKONCHAN:         :%s 714 %s %s :Вы уже находитесь на этом канале.
 ERR_KNOCKDISABLED:       :%s 715 %s :KNOCKs недоступны
-ERR_LAST_ERR_MSG:        :%s 999 %s :Последнее сообщение об ошибке
