@@ -1,3 +1,16 @@
+db          2002/12/16 00:00:40 EST	(20021216_0)
+
+  Modified files:
+    src                  channel.c 
+  Log:
+  - Don't decrement the joined count unless actually succeeded in removing
+    a channel join!
+  
+  Revision  Changes    Path
+  7.345     +2 -3      ircd-hybrid-7/src/channel.c
+
+
+
 db          2002/12/15 18:50:18 EST	(20021215_0)
 
   Modified files:
@@ -33542,4 +33555,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4135 2002/12/15 23:50:20 db Exp $
+$Id: ChangeLog,v 7.4136 2002/12/16 05:00:43 db Exp $
