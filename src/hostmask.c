@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.14 2001/02/13 08:46:11 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.15 2001/02/14 07:22:34 a1kmm Exp $ 
  */
 #include <unistd.h>
 #include <string.h>
@@ -75,6 +75,8 @@ get_uhosthash(const char *uhost)
      }
  if ((c == '?' || c == '*') && (!lastdot || *lastdot == 0))
    return 0;
+ if (end < uhost)
+   return hash_text(uhost);
  return hash_text(lastdot ? lastdot : uhost);
 }
 
@@ -139,7 +141,7 @@ match_hostmask(const char *uhost, int type)
        ? hmk : hmc = hme;
        prec = hme->precedence;
      }
- for (pos = strcchr(uhost, "@!."); pos; pos = strcchr(pos, "@!."))
+ for (pos = uhost; pos; pos = strcchr(pos, "@!."))
   {
    hash = hash_text(pos);
    for (hme = hmhash[hash]; hme; hme=hme->nexthash)
