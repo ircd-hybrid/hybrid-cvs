@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_client.c,v 1.9 2001/01/20 06:28:10 db Exp $
+ *   $Id: m_client.c,v 1.10 2001/01/28 15:59:08 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -465,7 +465,11 @@ nick_from_server(struct Client *cptr, struct Client *sptr, int parc,
   
   sptr = make_client(cptr);
   add_client_to_list(sptr);         /* double linked list */
-	
+
+  /* We don't need to introduce leafs clients back to them! */
+  if (ConfigFileEntry.hub && IsCapable(cptr, CAP_LL))
+    add_lazylinkclient(cptr, sptr);
+
   sptr->hopcount = atoi(parv[2]);
   sptr->tsinfo = newts;
 
