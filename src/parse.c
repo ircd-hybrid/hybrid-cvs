@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.52 2000/12/23 22:12:38 ejb Exp $
+ *   $Id: parse.c,v 7.53 2000/12/24 01:57:35 ejb Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -256,20 +256,14 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
 		  char *longarg = NULL;
 		  char *ap;
 		  
-		  longarg = s;
-		  
-		  if(strsep(&longarg,":")) /* Tear off short args */
-			  if(longarg)
-				  *(longarg-2) = '\0';
-		  
 		  while((ap = strsep(&s, " ")) != NULL) 
 		  {
 			  if(*ap != '\0') 
 			  {
 				  para[i] = ap;
 					  
-				  if ((mpara > 0) && (i >= mpara)) {
-						  if ( ap < end ) /* more tokens to follow */
+				  if (ap[0] == ':' || (mpara && (i >= mpara))) {
+					  if ( ap < end ) /* more tokens to follow */
 						  ap [ strlen (ap) ] = ' '; 
 					  longarg = ap;
 					  break;
