@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.180 2003/02/15 16:32:46 lusky Exp $
+ *  $Id: s_bsd.c,v 7.180.2.1 2003/04/03 01:29:04 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -359,7 +359,7 @@ add_connection(struct Listener* listener, int fd)
    * get the client socket name from the socket
    * the client has already been checked out in accept_connection
    */
-  new_client = make_client(NULL);
+
   if (getpeername(fd, (struct sockaddr *)&SOCKADDR(irn), (socklen_t *)&len))
     {
       report_error(L_ALL, "Failed in adding new connection %s :%s", 
@@ -368,6 +368,8 @@ add_connection(struct Listener* listener, int fd)
       fd_close(fd);
       return;
     }
+
+  new_client = make_client(NULL);
 
   /* 
    * copy address to 'sockhost' as a string, copy it to host too

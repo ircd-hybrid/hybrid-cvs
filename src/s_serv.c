@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.280 2003/02/15 16:32:46 lusky Exp $
+ *  $Id: s_serv.c,v 7.280.2.1 2003/04/03 01:29:04 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -2080,7 +2080,6 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
             sendto_one(by, ":%s NOTICE %s :Connect to host %s failed.",
               me.name, by->name, client_p->name);
         det_confs_butmask(client_p, 0);
-        free_client(client_p);
         return 0;
       }
     /*

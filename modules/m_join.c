@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.95 2003/02/01 20:11:45 db Exp $
+ *  $Id: m_join.c,v 1.95.2.1 2003/04/03 01:29:00 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.95 $";
+const char *_version = "$Revision: 1.95.2.1 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);
@@ -90,7 +90,7 @@ m_join(struct Client *client_p,
   int joining_vchan = 0;
   char  *name, *key = NULL;
   char *vkey = NULL; /* !key for vchans */
-  int   i, flags = 0;
+  int   i, flags = 0, error_reported = 0;
   char  *p = NULL, *p2 = NULL, *p3 = NULL;
   int   successful_join_count = 0; /* Number of channels successfully joined */
 #ifdef VCHANS
@@ -153,6 +153,7 @@ m_join(struct Client *client_p,
           continue;
 	  
         do_join_0(&me,source_p);
+	error_reported = 0;
 	continue;
       }
       
@@ -195,11 +196,15 @@ m_join(struct Client *client_p,
          (!IsOper(source_p) || (source_p->user->joined >=
 	                        ConfigChannel.max_chans_per_user*3)))
 	{
-	  sendto_one(source_p, form_str(ERR_TOOMANYCHANNELS),
-		     me.name, parv[0], name);
+	  if (!error_reported)
+	  {
+	    sendto_one(source_p, form_str(ERR_TOOMANYCHANNELS),
+		       me.name, parv[0], name);
+	    error_reported = 1;
+	  }
 	  if(successful_join_count != 0)
 	    source_p->localClient->last_join_time = CurrentTime;
-	  return;
+	  continue;
 	}
 
       /* look for the channel */
@@ -489,7 +494,6 @@ do_join_0(struct Client *client_p, struct Client *source_p)
       sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s PART %s",
 			   source_p->name, source_p->username,
 			   source_p->host, RootChan(chptr)->chname);
-      if (!IsDefunct(source_p))
-	remove_user_from_channel(chptr, source_p);
+      remove_user_from_channel(chptr, source_p);
     }
 }
