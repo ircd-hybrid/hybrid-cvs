@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.34 2000/11/24 14:13:43 db Exp $
+ * $Id: config.h,v 7.35 2000/11/24 23:45:01 bill Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -98,9 +98,9 @@
  *
  */
 
-#define DPATH   "/usr/ejb/ircd/"
-#define SPATH   "/usr/ejb/ircd/ircd"
-#define MODPATH "/usr/ejb/ircd/modules/autoload/"
+#define DPATH   "/usr/local/ircd/"
+#define SPATH   "/usr/local/ircd/ircd"
+#define MODPATH "/usr/local/ircd/modules/autoload/"
 #define CPATH   "ircd.conf"
 #define KPATH   "kline.conf"
 #define DLPATH  "kline.conf"
