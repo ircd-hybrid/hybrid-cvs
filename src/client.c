@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.56 2000/12/05 07:27:08 db Exp $
+ *  $Id: client.c,v 7.57 2000/12/06 03:28:08 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -104,8 +104,10 @@ void init_client_heap(void)
 
   /*
    * start off the check ping event ..  -- adrian
+   *
+   * Every 30 seconds is plenty -- db
    */
-  eventAdd("check_pings", check_pings, NULL, 1, 0);
+  eventAdd("check_pings", check_pings, NULL, 30, 0);
 }
 
 /*
@@ -401,7 +403,7 @@ check_pings(void *notused)
   exit_marked_for_death_clients(dying_clients);
 
   /* Reschedule a new address */
-  eventAdd("check_pings", check_pings, NULL, 1, 0);
+  eventAdd("check_pings", check_pings, NULL, 30, 0);
 }
 
 

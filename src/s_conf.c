@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.90 2000/12/05 17:41:26 db Exp $
+ *  $Id: s_conf.c,v 7.91 2000/12/06 03:28:09 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -1569,14 +1569,14 @@ static void initconf(FBFILE* file)
       if ((p = strchr(line, '\n')))
         *p = '\0';
 
-      if ((p = strchr(line, '\r')))
-        *p = '\0';
-
       if (!*line || line[0] == '#')
         continue;
 
       if(line[1] != ':')
 	{
+	  if(p == NULL)
+	    p = strchr(line, '\0');
+
 	  while (p != line)
 	    {
 	      fbungetc(*p,file);
@@ -1624,6 +1624,7 @@ static void initconf(FBFILE* file)
 	      else
 		{
 		  initconf(includeFile);
+		  fbclose(includeFile);
 		  continue;
 		}
 	    }

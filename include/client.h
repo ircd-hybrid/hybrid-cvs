@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.48 2000/12/05 07:27:03 db Exp $
+ * $Id: client.h,v 7.49 2000/12/06 03:28:07 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -410,7 +410,6 @@ struct LocalUser
  */
 #define IsPerson(x)             (IsClient(x) && (x)->user)
 #define DoAccess(x)             ((x)->flags & FLAGS_CHKACCESS)
-#define IsLocal(x)              ((x)->flags & FLAGS_LOCAL)
 #define IsDead(x)               ((x)->flags & FLAGS_DEADSOCKET)
 #define SetAccess(x)            ((x)->flags |= FLAGS_CHKACCESS)
 #define NoNewLine(x)            ((x)->flags & FLAGS_NONL)

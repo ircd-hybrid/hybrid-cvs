@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: oldparse.c,v 1.11 2000/12/04 05:50:13 db Exp $
+ *  $Id: oldparse.c,v 1.12 2000/12/06 03:28:09 db Exp $
  */
 #include "tools.h"
 #include "s_log.h"
@@ -101,6 +101,7 @@ void oldParseOneLine(char* line,struct ConfItem* aconf,
       break;
 
     case 'C':
+    case 'c':
       aconf->status = CONF_CONNECT_SERVER;
       ++*pccount;
       aconf->flags |= CONF_FLAGS_ALLOW_AUTO_CONN;
