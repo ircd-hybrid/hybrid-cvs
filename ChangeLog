@@ -1,3 +1,15 @@
+db          2003/01/21 09:26:52 EST	(20030121_1)
+
+  Modified files:
+    src                  modules.c 
+  Log:
+  - fixed leak found by Michael
+  
+  Revision  Changes    Path
+  7.106     +1 -0      ircd-hybrid-7/src/modules.c
+
+
+
 db          2003/01/21 01:13:37 EST	(20030121_0)
 
   Modified files:
@@ -34306,4 +34318,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4187 2003/01/21 06:13:40 db Exp $
+$Id: ChangeLog,v 7.4188 2003/01/21 14:26:55 db Exp $
