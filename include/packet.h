@@ -19,7 +19,7 @@
  *
  * "packet.h". - Headers file.
  *
- * $Id: packet.h,v 7.5 2000/11/30 16:27:30 adrian Exp $
+ * $Id: packet.h,v 7.6 2000/12/04 16:53:56 db Exp $
  *
  */
 #ifndef INCLUDED_packet_h
@@ -29,11 +29,20 @@
 #define INCLUDED_sys_types_h
 #endif
 
-struct Client;
+/*
+ * this hides in here rather than a config.h because it really shouldn't
+ * be tweaked unless you *REALLY REALLY* know what you're doing!
+ * Remember, messages are only anti-flooded on incoming from the client, not on
+ * incoming from a server for a given client, so if you tweak this you risk
+ * allowing a client to flood differently depending upon where they are on
+ * the network..
+ *   -- adrian
+ */
+#define MAX_FLOOD_PER_SEC               5
 
-extern int client_dopacket(struct Client* client, char* buf, size_t len);
+
 extern PF  read_packet;
-extern int parse_client_queued(struct Client *);
+extern PF  flood_recalc;
 
 #endif /* INCLUDED_packet_h */
 

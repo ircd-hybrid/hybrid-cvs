@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.37 2000/11/30 16:01:53 db Exp $
+ *   $Id: parse.c,v 7.38 2000/12/04 16:54:01 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -232,25 +232,6 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
       paramcount = mptr->parameters;
       i = bufend - ((s) ? s : ch);
       mptr->bytes += i;
-
-      /* Allow only 1 msg per 2 seconds
-       * (on average) to prevent dumping.
-       * to keep the response rate up,
-       * bursts of up to 5 msgs are allowed
-       * -SRB
-       * Opers can send 1 msg per second, burst of ~20
-       * -Taner
-       */
-      if ((mptr->flags & 1) && !(IsServer(cptr)))
-        {
-	  if (ConfigFileEntry.no_oper_flood) {
-            if (IsAnyOper(cptr))
-              /* "randomly" (weighted) increase the since */
-              cptr->since += (cptr->localClient->receiveM % 5) ? 1 : 0;
-            else
-            cptr->since += (2 + i / 120);
-	  }
-        }
     }
   /*
   ** Must the following loop really be so devious? On

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_bsd.h,v 7.19 2000/11/30 16:27:31 adrian Exp $
+ *   $Id: s_bsd.h,v 7.20 2000/12/04 16:53:56 db Exp $
  *
  */
 #ifndef INCLUDED_s_bsd_h
@@ -60,6 +60,7 @@ extern int   get_sockerr(int);
 extern int   ignoreErrno(int ierrno);
 
 extern void  comm_settimeout(int, time_t, PF *, void *);
+extern void  comm_setflush(int, time_t, PF *, void *);
 extern void  comm_checktimeouts(void *);
 extern void  comm_connect_tcp(int, const char *, u_short,
                  struct sockaddr *, int, CNCB *, void *);

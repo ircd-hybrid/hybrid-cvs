@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.26 2000/11/30 16:27:35 adrian Exp $
+ *   $Id: s_auth.c,v 7.27 2000/12/04 16:54:02 db Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -183,6 +183,8 @@ static void release_auth_client(struct Client* client)
    */
   comm_setselect(client->fd, FDLIST_IDLECLIENT, COMM_SELECT_READ, read_packet,
     client, 0);
+  client->localClient->allow_read = MAX_FLOOD_PER_SEC;
+  comm_setflush(client->fd, 1, flood_recalc, client);
   add_client_to_list(client);
 }
  
