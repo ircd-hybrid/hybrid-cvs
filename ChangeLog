@@ -1,3 +1,7 @@
+*** 20001205_4 by toot
+removed zlib from configure, and updated version number
+
+
 *** 20001205_3 by db
 - updated opers.txt for h7, its more or less right now
 - added new 'u' flag for opers, show unauth clients on that flag instead
@@ -1653,7 +1657,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.701 2000/12/05 07:27:02 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.702 2000/12/05 11:50:52 toot Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
