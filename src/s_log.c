@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.22 2001/01/19 03:15:42 db Exp $
+ *   $Id: s_log.c,v 7.23 2001/03/02 04:37:42 db Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -38,7 +38,8 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef HAVE_SYSLOG_H
+#ifdef USE_SYSLOG
+/* XXX #ifdef HAVE_SYSLOG_H */
 #include <syslog.h>
 #endif
 #include <unistd.h>
