@@ -19,7 +19,7 @@ PowerPC      gcc              OpenBSD       Juli Mallett <jmallett@FreeBSD.org>
 SPARC        gcc              OpenBSD       Juli Mallett <jmallett@FreeBSD.org>
 x86          gcc              OpenBSD       Joshua Kwan <joshk@triplehelix.org>
 x86          gcc              FreeBSD       Juli Mallett <jmallett@FreeBSD.org>
-x86          TenDRA*          FreeBSD       Juli Mallett <jmallett@FreeBSD.org>
+x86          TenDRA           FreeBSD       Stuart Walsh <stu@ipng.org.uk>
 x86          gcc              NetBSD        Juli Mallett <jmallett@FreeBSD.org>
 SPARC        Forte C v6,v7    Solaris       Joan Touzet <joant@ieee.org>
 SPARC        gcc              Solaris       Joan Touzet <joant@ieee.org>
@@ -32,4 +32,4 @@ Alpha        cc               Tru64 5.2b    Joshua Kwan <joshk@triplehelix.org>
 PA-RISC 2.0  cc		      HP-UX B.11    Yusuf Iskenderoglu 
 						<uhc0@stud.uni-karlsruhe.de>
 
-$Id: README.PLATFORMS,v 7.24 2003/10/13 02:15:16 metalrock Exp $
+$Id: README.PLATFORMS,v 7.25 2003/10/22 23:36:35 stu Exp $
