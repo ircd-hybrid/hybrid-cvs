@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.39 2004/03/26 20:25:39 metalrock Exp $
+ *  $Id: m_xline.c,v 1.40 2004/04/12 04:01:46 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.39 $";
+const char *_version = "$Revision: 1.40 $";
 #endif
 
 /* mo_xline()
@@ -101,7 +101,8 @@ mo_xline(struct Client *client_p, struct Client *source_p,
 {
   struct ConfItem *conf;
   struct MatchItem *match_item;
-  char *reason, *target_server;
+  char *reason;
+  char *target_server = NULL;
   const char *type;
   int type_i = 1;
   char def_reason[] = "No Reason";
