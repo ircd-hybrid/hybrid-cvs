@@ -1,3 +1,12 @@
+*** 20001110_1 by db
+- nasty DoS 
+  if user enters long prefix, it puts the parser into an infinite loop
+
+:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa bb
+will hang the ircd
+
+
+
 *** 20001109_7 by ejb
 
 some fixes in makefile
@@ -370,7 +379,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.525 2000/11/09 23:18:48 ejb Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.526 2000/11/10 08:14:33 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
