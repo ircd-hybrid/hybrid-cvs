@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.36 2001/05/26 16:54:27 cosine Exp $
+ *   $Id: ircdauth.c,v 7.37 2001/05/28 13:45:45 jdc Exp $
  */
 
 #include <stdio.h>
@@ -727,19 +727,30 @@ GreetUser(struct Client *client)
 #endif
 
   if (!ServerInfo.hub && uplink && IsCapable(uplink,CAP_LL))
+  {
     sendto_one(uplink, "NICK %s %d %lu %s %s %s %s :%s",
-               client->name, client->hopcount+1, client->tsinfo,
-               ubuf, client->username, client->host, client->user->server,
-               client->info);
+		client->name,
+		client->hopcount+1,
+		(unsigned long) client->tsinfo,
+		ubuf,
+		client->username, client->host,
+		client->user->server, client->info);
+  }
   else
+  {
     sendto_nocap_serv_butone(CAP_LL, NULL,
-                             "NICK %s %d %lu %s %s %s %s :%s",
-                             client->name, client->hopcount+1, client->tsinfo,
-                             ubuf, client->username, client->host,
-                             client->user->server, client->info);
-  
+				"NICK %s %d %lu %s %s %s %s :%s",
+				client->name,
+				client->hopcount+1,
+				(unsigned long) client->tsinfo,
+				ubuf,
+				client->username, client->host,
+				client->user->server, client->info);
+  }
   if (ubuf[1])
+  {
     send_umode_out(client, client, 0);
+  }
 } /* GreetUser() */
 
 /*

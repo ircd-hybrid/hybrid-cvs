@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.30 2001/05/24 09:29:11 leeh Exp $
+ *   $Id: s_log.c,v 7.31 2001/05/28 13:45:46 jdc Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -204,8 +204,10 @@ void log_user_exit(struct Client *source_p)
   if (IsPerson(source_p))
     {
       log(L_INFO, "%s (%3ld:%02ld:%02ld): %s!%s@%s %ld/%ld\n",
-	  myctime(source_p->firsttime), on_for / 3600,
-	  (on_for % 3600)/60, on_for % 60,
+	  myctime(source_p->firsttime),
+	  (signed long) on_for / 3600,
+	  (signed long) (on_for % 3600)/60,
+	  (signed long) on_for % 60,
 	  source_p->name,
 	  source_p->username,
 	  source_p->host,
@@ -242,9 +244,9 @@ void log_user_exit(struct Client *source_p)
 	    ircsprintf(linebuf,
 		       "%s (%3ld:%02ld:%02ld): %s!%s@%s %d/%d\n",
 		       myctime(source_p->firsttime),
-		       on_for / 3600,
-		       (on_for % 3600)/60,
-		       on_for % 60,
+		       (signed long) on_for / 3600,
+		       (signed long) (on_for % 3600)/60,
+		       (signed long) on_for % 60,
 		       source_p->name,
 		       source_p->username,
 		       source_p->host,

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.150 2001/05/28 04:27:14 jdc Exp $
+ * $Id: ircd.c,v 7.151 2001/05/28 13:45:45 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -282,7 +282,9 @@ set_time(void)
  if (newtime < CurrentTime)
  {
   ircsprintf(to_send, "System clock is running backwards - (%lu < %lu)",
-             newtime, CurrentTime);
+		(unsigned long) newtime,
+		(unsigned long) CurrentTime);
+
   report_error(to_send, me.name, 0);
   set_back_events(CurrentTime - newtime);
  }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.77 2001/05/24 09:29:00 leeh Exp $
+ *   $Id: m_kline.c,v 1.78 2001/05/28 13:45:34 jdc Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -216,7 +216,8 @@ static void mo_kline(struct Client *client_p,
 			   ":%s KLINE %s %lu %s %s :%s",
 			   source_p->name,
 			   target_server,
-			   tkline_time, user, host, reason);
+			   (unsigned long) tkline_time,
+			   user, host, reason);
 
       /* If we are sending it somewhere that doesnt include us, we stop
        * else we apply it locally too

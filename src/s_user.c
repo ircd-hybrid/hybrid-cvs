@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.155 2001/05/24 09:29:12 leeh Exp $
+ *  $Id: s_user.c,v 7.156 2001/05/28 13:45:46 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -660,15 +660,21 @@ introduce_client(struct Client *client_p, struct Client *source_p,
       if (IsCapable(uplink, CAP_UID) && HasID(source_p))
 	{
 	  sendto_one(uplink, "CLIENT %s %d %lu %s %s %s %s %s :%s",
-		     nick, source_p->hopcount+1, source_p->tsinfo,
-		     ubuf, source_p->username, source_p->host, user->server,
+		     nick,
+		     source_p->hopcount+1,
+		     (unsigned long) source_p->tsinfo,
+		     ubuf,
+		     source_p->username, source_p->host, user->server,
 		     user->id, source_p->info);
 	}
       else
 	{
 	  sendto_one(uplink, "NICK %s %d %lu %s %s %s %s :%s",
-		     nick, source_p->hopcount+1, source_p->tsinfo,
-		     ubuf, source_p->username, source_p->host, user->server,
+		     nick,
+		     source_p->hopcount+1,
+		     (unsigned long) source_p->tsinfo,
+		     ubuf,
+		     source_p->username, source_p->host, user->server,
 		     source_p->info);
 	}
     }
@@ -683,13 +689,19 @@ introduce_client(struct Client *client_p, struct Client *source_p,
 		  
 	  if (IsCapable(server, CAP_UID) && HasID(source_p))
 	    sendto_one(server, "CLIENT %s %d %lu %s %s %s %s %s :%s",
-		       nick, source_p->hopcount+1, source_p->tsinfo,
-		       ubuf, source_p->username, source_p->host, user->server,
+		       nick,
+		       source_p->hopcount+1,
+		       (unsigned long) source_p->tsinfo,
+		       ubuf,
+		       source_p->username, source_p->host, user->server,
 		       user->id, source_p->info);
 	  else
 	    sendto_one(server, "NICK %s %d %lu %s %s %s %s :%s",
-		       nick, source_p->hopcount+1, source_p->tsinfo,
-		       ubuf, source_p->username, source_p->host, user->server,
+		       nick,
+		       source_p->hopcount+1,
+		       (unsigned long) source_p->tsinfo,
+		       ubuf,
+		       source_p->username, source_p->host, user->server,
 		       source_p->info);
 	}
     }

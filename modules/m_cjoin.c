@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.33 2001/05/24 09:28:59 leeh Exp $
+ *   $Id: m_cjoin.c,v 1.34 2001/05/28 13:45:34 jdc Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -175,15 +175,16 @@ static void m_cjoin(struct Client *client_p,
   add_user_to_channel(chptr, source_p, CHFL_CHANOP);
 
   sendto_channel_local(ALL_MEMBERS, chptr,
-                       ":%s!%s@%s JOIN :%s",
-                       source_p->name,
-                       source_p->username,
-                       source_p->host,
-                       root_vchan->chname);
+			":%s!%s@%s JOIN :%s",
+			source_p->name,
+			source_p->username,
+			source_p->host,
+			root_vchan->chname);
 
   sendto_channel_remote(chptr, client_p,
-			":%s SJOIN %lu %s + :@%s", me.name,
-			chptr->channelts,
+			":%s SJOIN %lu %s + :@%s",
+			me.name,
+			(unsigned long) chptr->channelts,
 			chptr->chname,
 			source_p->name);
 
@@ -191,8 +192,9 @@ static void m_cjoin(struct Client *client_p,
   vchan_chptr->mode.mode |= MODE_NOPRIVMSGS;
 
   sendto_channel_local(ALL_MEMBERS,chptr,
-                       ":%s MODE %s +nt",
-                       me.name, root_vchan->chname);
+			":%s MODE %s +nt",
+			me.name,
+			root_vchan->chname);
 
   sendto_channel_remote(vchan_chptr, source_p, 
 			":%s MODE %s +nt",

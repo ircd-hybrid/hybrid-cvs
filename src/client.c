@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.174 2001/05/27 19:57:25 davidt Exp $
+ *  $Id: client.c,v 7.175 2001/05/28 13:45:44 jdc Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1790,7 +1790,9 @@ int change_local_nick(struct Client *client_p, struct Client *source_p,
 	   * does not know about that client yet.
 	   */
           sendto_ll_serv_butone(client_p, source_p, 0, ":%s NICK %s :%lu",
-                                source_p->name, nick, source_p->tsinfo);
+				source_p->name,
+				nick,
+				(unsigned long) source_p->tsinfo);
 	}
     }
   else

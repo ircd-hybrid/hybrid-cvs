@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.41 2001/05/24 09:29:00 leeh Exp $
+ * $Id: m_lljoin.c,v 1.42 2001/05/28 13:45:35 jdc Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -250,20 +250,29 @@ static void ms_lljoin(struct Client *client_p,
         }
 
       sendto_one(uplink,
-		 ":%s SJOIN %lu %s + :@%s", me.name,
-		 chptr->channelts, chptr->chname, nick);
+		 ":%s SJOIN %lu %s + :@%s",
+		 me.name,
+		 (unsigned long) chptr->channelts,
+		 chptr->chname,
+		 nick);
     }
   else if ((flags == CHFL_HALFOP) && (IsCapable(uplink, CAP_HOPS)))
     {
       sendto_one(uplink,
-		 ":%s SJOIN %lu %s + :%%%s", me.name,
-		 chptr->channelts, chptr->chname, nick);      
+		 ":%s SJOIN %lu %s + :%%%s",
+		 me.name,
+		 (unsigned long) chptr->channelts,
+		 chptr->chname,
+		 nick);
     }
   else
     {
       sendto_one(uplink,
-		 ":%s SJOIN %lu %s + :%s", me.name,
-		 chptr->channelts, chptr->chname, nick);
+		 ":%s SJOIN %lu %s + :%s",
+		 me.name,
+		 (unsigned long) chptr->channelts,
+		 chptr->chname,
+		 nick);
     }
 
   add_user_to_channel(chptr, target_p, flags);
