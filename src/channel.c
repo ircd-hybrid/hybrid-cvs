@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.117 2000/12/09 19:32:43 db Exp $
+ * $Id: channel.c,v 7.118 2000/12/09 23:24:32 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1963,20 +1963,20 @@ void set_channel_mode(struct Client *cptr,
 
   if(*modebuf)
     {
-      if(sptr->user)
+      if(IsServer(sptr))
+	sendto_channel_local(type,
+			     chptr,
+			     ":%s MODE %s %s %s", 
+			     sptr->name,
+			     real_name,
+			     modebuf, parabuf);
+      else
 	sendto_channel_local(type,
 			     chptr,
 			     ":%s!%s@%s MODE %s %s %s", 
 			     sptr->name,
 			     sptr->user,
 			     sptr->host,
-			     real_name,
-			     modebuf, parabuf);
-      else
-	sendto_channel_local(type,
-			     chptr,
-			     ":%s MODE %s %s %s", 
-			     sptr->name,
 			     real_name,
 			     modebuf, parabuf);
 
@@ -1987,7 +1987,14 @@ void set_channel_mode(struct Client *cptr,
 
   if(*modebuf_ex)
     {
-      if(sptr->user)
+      if(IsServer(sptr))
+	sendto_channel_local(type,
+			     chptr,
+			     ":%s MODE %s %s %s", 
+			     sptr->name,
+			     real_name,
+			     modebuf_ex, parabuf_ex);
+      else
 	sendto_channel_local(type,
 			     chptr,
 			     ":%s!%s@%s MODE %s %s %s", 
@@ -1996,14 +2003,6 @@ void set_channel_mode(struct Client *cptr,
 			     sptr->host,
 			     real_name,
 			     modebuf_ex, parabuf_ex);
-      else
-	sendto_channel_local(type,
-			     chptr,
-			     ":%s MODE %s %s %s", 
-			     sptr->name,
-			     real_name,
-			     modebuf_ex, parabuf_ex);
-
 
       sendto_match_cap_servs(chptr, cptr, CAP_EX, ":%s MODE %s %s %s",
                              sptr->name, chptr->chname,
@@ -2011,20 +2010,20 @@ void set_channel_mode(struct Client *cptr,
     }
   if(*modebuf_de)
     {
-      if(sptr->user)
+      if(IsServer(sptr))
+	sendto_channel_local(type,
+			     chptr,
+			     ":%s MODE %s %s %s",
+			     sptr->name,
+			     real_name,
+			     modebuf_de, parabuf_de);
+      else
 	sendto_channel_local(type,
 			     chptr,
 			     ":%s!%s@%s MODE %s %s %s",
 			     sptr->name,
 			     sptr->user,
 			     sptr->host,
-			     real_name,
-			     modebuf_de, parabuf_de);
-      else
-	sendto_channel_local(type,
-			     chptr,
-			     ":%s MODE %s %s %s",
-			     sptr->name,
 			     real_name,
 			     modebuf_de, parabuf_de);
 
@@ -2034,7 +2033,14 @@ void set_channel_mode(struct Client *cptr,
     }
   if(*modebuf_invex)
     {
-      if(sptr->user)
+      if(IsServer(sptr))
+	sendto_channel_local(type,
+			     chptr,
+			     ":%s MODE %s %s %s",
+			     sptr->name,
+			     real_name,
+			     modebuf_invex, parabuf_invex);
+      else
 	sendto_channel_local(type,
 			     chptr,
 			     ":%s!%s@%s MODE %s %s %s",
@@ -2043,14 +2049,6 @@ void set_channel_mode(struct Client *cptr,
 			     sptr->host,
 			     real_name,
 			     modebuf_invex, parabuf_invex);
-      else
-	sendto_channel_local(type,
-			     chptr,
-			     ":%s MODE %s %s %s",
-			     sptr->name,
-			     real_name,
-			     modebuf_invex, parabuf_invex);
-
 
       sendto_match_cap_servs(chptr, cptr, CAP_IE, ":%s MODE %s %s %s",
 			     sptr->name, chptr->chname,

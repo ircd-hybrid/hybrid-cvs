@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.11 2000/12/09 08:01:45 db Exp $
+ *   $Id: m_kick.c,v 1.12 2000/12/09 23:24:30 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -182,13 +182,20 @@ int     m_kick(struct Client *cptr,
 			       name, who->name, comment);
 
 	  sendto_channel_local(ONLY_CHANOPS, chptr,
-			       ":%s KICK %s %s :%s", parv[0],
-			       name, who->name, comment);
+			       ":%s!%s@%s KICK %s %s :%s",
+			       sptr->name,
+			       sptr->user,
+			       sptr->host,
+			       name,
+			       who->name, comment);
 	}
       else
 	{
-	  sendto_channel_local(ONLY_CHANOPS, chptr,
-			       ":%s KICK %s %s :%s", parv[0],
+	  sendto_channel_local(ALL_MEMBERS, chptr,
+			       ":%s!%s@%s KICK %s %s :%s",
+			       sptr->name,
+			       sptr->user,
+			       sptr->host,
 			       name, who->name, comment);
 	}
 
