@@ -1,3 +1,15 @@
+leeh        2002/07/21 15:22:10 EDT	(20020721_6)
+
+  Modified files:
+    contrib              lmh.diff 
+  Log:
+  - fixed my diff with the latest commits
+  
+  Revision  Changes    Path
+  1.11      +121 -115  ircd-hybrid-7/contrib/lmh.diff
+
+
+
 leeh        2002/07/21 13:53:17 EDT	(20020721_5)
 
   Modified files:
@@ -30382,4 +30394,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3918 2002/07/21 17:53:24 leeh Exp $
+$Id: ChangeLog,v 7.3919 2002/07/21 19:22:17 leeh Exp $
