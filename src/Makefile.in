@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.77 2001/04/09 08:29:51 a1kmm Exp $
+# $Id: Makefile.in,v 7.78 2001/04/10 23:43:43 kreator Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -48,7 +48,7 @@ y.tab.c:	ircd_parser.y
 	${YACC} -d ircd_parser.y
 
 lex.yy.o:	lex.yy.c ircd_lexer.l
-	${CC} -g -I ../include -c lex.yy.c
+	${CC} ${CFLAGS} -I ../include -c lex.yy.c
 
 lex.yy.c:	ircd_lexer.l
 	${LEX} ircd_lexer.l
