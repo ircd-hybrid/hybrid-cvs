@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.227 2002/04/13 14:46:00 leeh Exp $
+ *  $Id: ircd.c,v 7.228 2002/04/23 14:26:29 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -406,6 +406,8 @@ static void initialize_global_set_options(void)
     splitmode = 1;
     splitchecking = 1;
   }
+
+  GlobalSetOptions.ident_timeout = IDENT_TIMEOUT;
 
   /* memset( &ConfigChannel, 0, sizeof(ConfigChannel)); */
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.45 2002/03/09 21:48:35 androsyn Exp $
+ *  $Id: ircd.h,v 7.46 2002/04/23 14:26:24 leeh Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -43,6 +43,7 @@ struct SetOptions
   int idletime;
 
   int floodcount;	/* Number of messages in 1 second */
+  int ident_timeout;     /* timeout for identd lookups */
 
   int spam_num;
   int spam_time;

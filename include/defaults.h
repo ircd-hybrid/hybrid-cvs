@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.4 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: defaults.h,v 7.5 2002/04/23 14:26:24 leeh Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -67,6 +67,8 @@ error HARD_FDLIMIT_ undefined
 #define MAX_TARGETS_DEFAULT 4           /* default for max_targets */
 
 #define INIT_LOG_LEVEL L_NOTICE         /* default for log_level */
+
+#define IDENT_TIMEOUT 10
 
 #define MIN_JOIN_LEAVE_TIME  60
 #define MAX_JOIN_LEAVE_COUNT  25

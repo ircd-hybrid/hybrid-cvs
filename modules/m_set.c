@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.43 2002/03/07 06:21:47 db Exp $
+ *  $Id: m_set.c,v 1.44 2002/04/23 14:26:26 leeh Exp $
  */
 
 /* rewritten by jdc */
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 /* Structure used for the SET table itself */
 struct SetStruct
@@ -82,6 +82,7 @@ struct SetStruct
 static void quote_autoconn(struct Client *, char *, int);
 static void quote_autoconnall(struct Client *, int);
 static void quote_floodcount(struct Client *, int);
+static void quote_identtimeout(struct Client *, int);
 static void quote_idletime(struct Client *, int);
 static void quote_log(struct Client *, int);
 static void quote_max(struct Client *, int);
@@ -109,6 +110,7 @@ static struct SetStruct set_cmd_table[] =
   { "AUTOCONN",		quote_autoconn,		1,	1 },
   { "AUTOCONNALL",	quote_autoconnall,	0,	1 },
   { "FLOODCOUNT",	quote_floodcount,	0,	1 },
+  { "IDENTTIMEOUT",	quote_identtimeout,	0,	1 },
   { "IDLETIME",		quote_idletime,		0,	1 },
   { "LOG",		quote_log,		0,	1 },
   { "MAX",		quote_max,		0,	1 },
@@ -199,6 +201,28 @@ static void quote_floodcount( struct Client *source_p, int newval)
     sendto_one(source_p, ":%s NOTICE %s :FLOODCOUNT is currently %i",
                me.name, source_p->name, GlobalSetOptions.floodcount);
   }
+}
+
+/* SET IDENTTIMEOUT */
+static void quote_identtimeout(struct Client *source_p, int newval)
+{
+  if(!IsOperAdmin(source_p))
+  {
+    sendto_one(source_p, ":%s NOTICE %s :You have no A flag", 
+	       me.name, source_p->name);
+    return;
+  }
+
+  if(newval > 0)
+  {
+    sendto_realops_flags(FLAGS_ALL, L_ALL,
+		         "%s has changed IDENTTIMEOUT to %d",
+			 get_oper_name(source_p), newval);
+    GlobalSetOptions.ident_timeout = newval;
+  }
+  else
+    sendto_one(source_p, ":%s NOTICE %s :IDENTTIMEOUT is currently %d",
+	       me.name, source_p->name, GlobalSetOptions.ident_timeout);
 }
 
 /* SET IDLETIME */
