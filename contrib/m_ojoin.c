@@ -1,10 +1,5 @@
-/************************************************************************
- *   IRC - Internet Relay Chat, contrib/m_clearchan.c
- *   Copyright (C) 1990 Jarkko Oikarinen and
- *                      University of Oulu, Computing Center
- *
- *   See file AUTHORS in IRC package for additional names of
- *   the programmers. 
+/*   contrib/m_ojoin.c
+ *   Copyright (C) 2002 Hybrid Development Team
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.4 2002/03/08 23:36:33 leeh Exp $
+ *   $Id: m_ojoin.c,v 1.5 2002/04/14 14:56:29 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -63,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-char *_version = "$Revision: 1.4 $";
+char *_version = "$Revision: 1.5 $";
 
 /*
 ** mo_ojoin

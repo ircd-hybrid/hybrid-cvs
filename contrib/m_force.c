@@ -1,7 +1,7 @@
-/* developers/m_force.c
+/* contrib/m_force.c
  * Copyright (C) 2002 Hybrid Development Team
  *
- * $Id: m_force.c,v 1.3 2002/04/14 09:50:01 leeh Exp $
+ * $Id: m_force.c,v 1.4 2002/04/14 14:56:29 leeh Exp $
  */
 
 #include "handlers.h"
@@ -54,7 +54,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-char *_version = "$Revision: 1.3 $";
+char *_version = "$Revision: 1.4 $";
 #endif
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.247 2002/04/09 00:04:29 db Exp $
+ *  $Id: client.c,v 7.248 2002/04/14 14:56:32 leeh Exp $
  */
 
 #include "tools.h"
@@ -1401,13 +1401,10 @@ int exit_client(
     {        
       if(ConfigServerHide.hide_servers)
 	{
-          /* 
-          ** Replaces the name of the splitting server with
-          ** a.server.on.<networkname>.net        
-          ** when a client exits from a split, in an attempt to 
-          ** hide topology but let clients detect a split still.
-          */
-	  ircsprintf(comment1,"%s a.server.on.%s.net",me.name, ServerInfo.network_name);
+          /* set netsplit message to "me.name *.split" to still show 
+	   * that its a split, but hide the servers splitting
+	   */
+	  ircsprintf(comment1,"%s *.split", me.name);
 	}
       else
 	{

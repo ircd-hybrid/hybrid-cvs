@@ -1,10 +1,5 @@
-/************************************************************************
- *   IRC - Internet Relay Chat, contrib/m_opme.c
- *   Copyright (C) 1990 Jarkko Oikarinen and
- *                      University of Oulu, Computing Center
- *
- *   See file AUTHORS in IRC package for additional names of
- *   the programmers. 
+/*   contrib/m_opme.c
+ *   Copyright (C) 2002 Hybrid Development Team
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.19 2002/01/14 00:01:37 leeh Exp $
+ *   $Id: m_opme.c,v 1.20 2002/04/14 14:56:29 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -62,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-char *_version = "$Revision: 1.19 $";
+char *_version = "$Revision: 1.20 $";
 
 static int chan_is_opless(struct Channel *chptr)
 {
