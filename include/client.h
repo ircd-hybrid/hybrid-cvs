@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.214 2003/08/21 21:12:54 michael Exp $
+ *  $Id: client.h,v 7.215 2003/08/21 21:31:21 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -344,30 +344,30 @@ struct LocalUser
 #define FLAGS_DEADSOCKET  0x00000002 /* Local socket is dead--Exiting soon       */
 #define FLAGS_KILLED      0x00000004 /* Prevents "QUIT" from being sent for this */
 #define FLAGS_CLOSING     0x00000008 /* set when closing to suppress errors      */
-#define FLAGS_CHKACCESS   0x00000010 /* ok to check clients access if set        */
-#define FLAGS_GOTID       0x00000020 /* successful ident lookup achieved         */
-#define FLAGS_NEEDID      0x00000040 /* I-lines say must use ident return        */
-#define FLAGS_SENDQEX     0x00000080 /* Sendq exceeded                           */
-#define FLAGS_IPHASH      0x00000100 /* iphashed this client                     */
-#define FLAGS_CRYPTIN     0x00000200 /* incoming data must be decrypted          */
-#define FLAGS_CRYPTOUT    0x00000400 /* outgoing data must be encrypted          */
-#define FLAGS_WAITAUTH    0x00000800 /* waiting for CRYPTLINK AUTH command       */
-#define FLAGS_SERVLINK    0x00001000 /* servlink has servlink process            */
-#define FLAGS_MARK	  0x00002000 /* marked client                            */
-#define FLAGS_CANFLOOD	  0x00004000 /* client has the ability to flood          */
-#define FLAGS_EXEMPTGLINE 0x00008000 /* client can't be G-lined                  */
-#define FLAGS_EXEMPTKLINE 0x00010000 /* client is exempt from kline              */
-#define FLAGS_NOLIMIT     0x00020000 /* client is exempt from limits             */
-#define FLAGS_RESTRICTED  0x00040000 /* client cannot op others                  */
-#define FLAGS_PING_COOKIE 0x00080000 /* PING Cookie                              */
-#define FLAGS_IDLE_LINED  0x00100000
-#define FLAGS_IP_SPOOFING 0x00200000 /* client IP is spoofed                     */
-#define FLAGS_FLOODDONE   0x00400000 /* Flood grace period has been ended.       */
-#define FLAGS_EOB         0x00800000 /* server has received EOB                  */
-#define FLAGS_HIDDEN      0x01000000
-#define FLAGS_BLOCKED     0x02000000 /* must wait for COMM_SELECT_WRITE          */
-#define FLAGS_SBLOCKED    0x04000000 /* slinkq is blocked                        */
-#define FLAGS_USERHOST    0x08000000 /* client is in userhost hash               */
+#define FLAGS_GOTID       0x00000010 /* successful ident lookup achieved         */
+#define FLAGS_NEEDID      0x00000020 /* I-lines say must use ident return        */
+#define FLAGS_SENDQEX     0x00000040 /* Sendq exceeded                           */
+#define FLAGS_IPHASH      0x00000080 /* iphashed this client                     */
+#define FLAGS_CRYPTIN     0x00000100 /* incoming data must be decrypted          */
+#define FLAGS_CRYPTOUT    0x00000200 /* outgoing data must be encrypted          */
+#define FLAGS_WAITAUTH    0x00000400 /* waiting for CRYPTLINK AUTH command       */
+#define FLAGS_SERVLINK    0x00000800 /* servlink has servlink process            */
+#define FLAGS_MARK	  0x00001000 /* marked client                            */
+#define FLAGS_CANFLOOD	  0x00002000 /* client has the ability to flood          */
+#define FLAGS_EXEMPTGLINE 0x00004000 /* client can't be G-lined                  */
+#define FLAGS_EXEMPTKLINE 0x00008000 /* client is exempt from kline              */
+#define FLAGS_NOLIMIT     0x00010000 /* client is exempt from limits             */
+#define FLAGS_RESTRICTED  0x00020000 /* client cannot op others                  */
+#define FLAGS_PING_COOKIE 0x00040000 /* PING Cookie                              */
+#define FLAGS_IDLE_LINED  0x00080000 /* client is exempt from idle-time limits   */
+#define FLAGS_IP_SPOOFING 0x00100000 /* client IP is spoofed                     */
+#define FLAGS_FLOODDONE   0x00200000 /* Flood grace period has been ended.       */
+#define FLAGS_EOB         0x00400000 /* server has received EOB                  */
+#define FLAGS_HIDDEN      0x00800000 /* a hidden server. not shown in /links     */
+#define FLAGS_BLOCKED     0x01000000 /* must wait for COMM_SELECT_WRITE          */
+#define FLAGS_SBLOCKED    0x02000000 /* slinkq is blocked                        */
+#define FLAGS_USERHOST    0x04000000 /* client is in userhost hash               */
+/*                        0x08000000  */
 /*                        0x10000000  */
 /*                        0x20000000  */
 /*                        0x40000000  */
@@ -424,15 +424,12 @@ struct LocalUser
 
 /* flags macros. */
 #define IsPerson(x)             (IsClient(x) && (x)->user)
-#define DoAccess(x)             ((x)->flags & FLAGS_CHKACCESS)
 #define IsDead(x)               ((x)->flags & FLAGS_DEADSOCKET)
 #define SetDead(x)              ((x)->flags |= FLAGS_DEADSOCKET)
-#define SetAccess(x)            ((x)->flags |= FLAGS_CHKACCESS)
 #define IsClosing(x)		((x)->flags & FLAGS_CLOSING)
 #define SetClosing(x)		((x)->flags |= FLAGS_CLOSING)
 #define IsKilled(x)		((x)->flags & FLAGS_KILLED)
 #define SetKilled(x)		((x)->flags |= FLAGS_KILLED)
-#define ClearAccess(x)          ((x)->flags &= ~FLAGS_CHKACCESS)
 #define IsCryptIn(x)            ((x)->flags &  FLAGS_CRYPTIN)
 #define SetCryptIn(x)           ((x)->flags |= FLAGS_CRYPTIN)
 #define IsCryptOut(x)           ((x)->flags &  FLAGS_CRYPTOUT)

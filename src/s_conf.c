@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.469 2003/08/19 17:52:08 adx Exp $
+ *  $Id: s_conf.c,v 7.470 2003/08/21 21:31:23 michael Exp $
  */
 
 #include "stdinc.h"
@@ -678,8 +678,6 @@ check_client(struct Client *client_p, struct Client *source_p, const char *usern
 {
   int i;
  
-  ClearAccess(source_p);
-
   /* I'm already in big trouble if source_p->localClient is NULL -db */
   if ((i = verify_access(source_p, username)))
   {

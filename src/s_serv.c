@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.370 2003/08/19 17:52:08 adx Exp $
+ *  $Id: s_serv.c,v 7.371 2003/08/21 21:31:23 michael Exp $
  */
 
 #include "stdinc.h"
@@ -955,7 +955,6 @@ server_estab(struct Client *client_p)
   if (client_p == NULL)
     return(-1);
 
-  ClearAccess(client_p);
   strlcpy(inpath_ip, get_client_name(client_p, SHOW_IP), sizeof(inpath_ip));
 
   inpath = get_client_name(client_p, MASK_IP); /* "refresh" inpath with host */
