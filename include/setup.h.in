@@ -1,4 +1,4 @@
-/* include/setup.h.in.  Generated from autoconf/configure.in by autoheader.  */
+/* include/setup.h.in.  Generated from configure.ac by autoheader.  */
 
 /* Define if this ircd will be an EFnet server. */
 #undef EFNET
@@ -111,17 +111,11 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
 
-/* Define if uintptr_t is available */
+/* Define to 1 if the system has the type `uintptr_t'. */
 #undef HAVE_UINTPTR_T
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
-
-/* Define to 1 if the system has the type `unsigned int'. */
-#undef HAVE_UNSIGNED_INT
-
-/* Define to 1 if the system has the type `u_int32_t'. */
-#undef HAVE_U_INT32_T
 
 /* Define to 1 if you have the `vsnprintf' function. */
 #undef HAVE_VSNPRINTF

@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.2 2003/05/07 20:40:33 stu Exp $
+dnl $Id: configure.ac,v 7.3 2003/05/07 23:19:01 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -221,18 +221,16 @@ AC_CHECK_HEADER(stdarg.h, , [AC_MSG_ERROR([** stdarg.h could not be found - ircd
 dnl Checks for the existance of strlcat
 AC_CHECK_FUNCS([strlcat strlcpy socketpair])
 
-AC_CHECK_TYPES([u_int32_t, unsigned int],, [AC_MSG_ERROR([u_int32_t is not defined, aborting])])
-AC_CHECK_TYPE(uintptr_t, [AC_DEFINE(HAVE_UINTPTR_T, 1, [Define if uintptr_t is available])])
+AC_CHECK_TYPE([u_int32_t], [], [AC_MSG_ERROR([u_int32_t is not defined; aborting])])
+AC_CHECK_TYPE([unsigned int], [], [AC_MSG_ERROR([unsigned int is not defined; aborting])])
+AC_CHECK_TYPES([uintptr_t])
 
 dnl check for snprintf
 AC_CHECK_FUNCS(snprintf, [have_snprintf=1])
 dnl check for vsnprintf
 AC_CHECK_FUNCS(vsnprintf, [have_vsnprintf=1])
 dnl Tell src/Makefile.in if we need its snprintf.c
-if test -z "$have_snprintf"; then
-	SNPRINTF_C="snprintf.c"
-fi
-if test -z "$have_vsnprintf"; then
+if test -z "$have_snprintf" -o -z "$have_vsnprintf"; then
 	SNPRINTF_C="snprintf.c"
 fi
 
@@ -417,8 +415,8 @@ AC_CACHE_CHECK([for IPv6 support], have_v6,
     AC_COMPILE_IFELSE(
 
 	[AC_LANG_PROGRAM(
-		[[#define IN_AUTOCONF]]
-		[[#include "include/stdinc.h"]],
+		[[#define IN_AUTOCONF
+		#include "include/stdinc.h"]],
     [[struct sockaddr_in6 s; s.sin6_family = 0;]]
 	)],
 
@@ -551,8 +549,11 @@ dnl =============
 
 AC_ARG_ENABLE(small-net,
 AC_HELP_STRING([--enable-small-net],[Enable small network support.]),
-[small-net=yes; IRC_CFLAGS="$IRC_CFLAGS -DSMALL_NET=1"],
-[])
+[
+	small_net="yes"
+	IRC_CFLAGS="$IRC_CFLAGS -DSMALL_NET"
+],
+[small_net="no"])
 
 AC_ARG_ENABLE(efnet,
 AC_HELP_STRING([--enable-efnet],[For IRCDs running on EFnet.]),
@@ -798,7 +799,7 @@ echo
 
 echo "Installing into: $prefix"
 
-echo -n "Ziplinks? ................ "
+echo -n "Ziplinks ................ "
 
 if test "$zlib" != no; then
 	echo yes
@@ -806,7 +807,7 @@ else
 	echo no
 fi
 
-echo -n "OpenSSL? ................. "
+echo -n "OpenSSL ................. "
 
 if test "X${cf_openssl_ciphers}" != "X"; then
 	echo "yes - ${cf_openssl_ciphers}"
@@ -814,7 +815,7 @@ else
 	echo no
 fi
 
-echo -n "Modules? ................. "
+echo -n "Modules ................. "
 
 if test "$ac_cv_shared_modules" = yes; then
 	echo shared
@@ -822,10 +823,10 @@ else
 	echo static
 fi
 
-echo  "IPv6 support? ............ $have_v6"
-echo  "Net I/O implementation? .. $SELECT_TYPE"
+echo  "IPv6 support ............ $have_v6"
+echo  "Net I/O implementation .. $SELECT_TYPE"
 
-echo -n "EFnet server? ............ "
+echo -n "EFnet server ............ "
 
 if test "$efnet" = "yes"; then
 	echo "yes (use example.efnet.conf)"
@@ -833,14 +834,10 @@ else
 	echo "no (use example.conf)"
 fi
 
-echo -n "Small network? ........... "
-
-if test "$small-net" = yes; then
-	echo yes
-else
-	echo no
-fi
+echo "Small network ........... $small_net"
 
 echo
-
-AC_MSG_RESULT([Server is configured with NICKLEN=$ac_cv_nicklen TOPICLEN=$ac_cv_topiclen MAX_CLIENTS=$ac_cv_maxclients])
+echo "Configured limits:"
+echo "NICKLEN ................. $ac_cv_nicklen"
+echo "TOPICLEN ................ $ac_cv_topiclen"
+echo "MAXCLIENTS .............. $ac_cv_maxclients"
