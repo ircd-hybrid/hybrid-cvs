@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.70 2000/12/15 08:04:11 db Exp $
+ *   $Id: s_serv.c,v 7.71 2000/12/15 08:10:59 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -458,9 +458,6 @@ int check_server(struct Client* cptr)
             }
           else
             {
-              /* its full folks, 32 leaves? wow. I never thought I'd
-               * see the day. Now this will have to be recoded!
-               */
               cptr->localClient->serverMask = nextFreeMask();
 
               if(!cptr->localClient->serverMask)

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_eob.c,v 1.7 2000/12/15 08:04:10 db Exp $
+ *   $Id: m_eob.c,v 1.8 2000/12/15 08:10:55 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -67,8 +67,5 @@ int ms_eob(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     sendto_realops_flags(FLAGS_ALL,"*** End of burst from %s",
 			 sptr->name);
 
-  if(!IsCapable(cptr, CAP_LL))
-    {
-      SetEob(cptr);
-    }
+  SetEob(cptr);
 }
