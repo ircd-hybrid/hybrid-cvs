@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.32 2001/06/05 01:45:42 ejb Exp $
+ *   $Id: s_log.c,v 7.33 2001/07/18 04:28:31 androsyn blalloc.c $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -203,7 +203,8 @@ void log_user_exit(struct Client *source_p)
 
   if (IsPerson(source_p))
     {
-      log(L_INFO, "%s (%3ld:%02ld:%02ld): %s!%s@%s %ld/%ld\n",
+
+      ilog(L_INFO, "%s (%3ld:%02ld:%02ld): %s!%s@%s %ld/%ld\n",
 	  myctime(source_p->firsttime),
 	  (signed long) on_for / 3600,
 	  (signed long) (on_for % 3600)/60,
