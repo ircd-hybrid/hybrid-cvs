@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.134 2001/06/09 08:36:09 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.135 2001/06/11 19:56:50 leeh Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -441,12 +441,12 @@ void error_exit_client(struct Client* client_p, int error)
       if (error == 0)
         {
 	  /* Admins get the real IP */
-	  sendto_realops_flags(FLAGS_ADMIN,
+	  sendto_realops_flags(FLAGS_SERVADMIN,
 				"Server %s closed the connection",
 				get_client_name(client_p, SHOW_IP));
 
 	  /* Opers get a masked IP */
-	  sendto_realops_flags(FLAGS_NOTADMIN,
+	  sendto_realops_flags(FLAGS_SERVOPER,
 				"Server %s closed the connection",
 				get_client_name(client_p, MASK_IP));
 

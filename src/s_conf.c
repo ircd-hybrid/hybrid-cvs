@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.238 2001/06/10 16:41:20 toot Exp $
+ *  $Id: s_conf.c,v 7.239 2001/06/11 19:56:51 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -539,7 +539,7 @@ int attach_Iline(struct Client* client_p, const char* username)
 	    {
 	      if (IsConfSpoofNotice(aconf))
 		{
-		  sendto_realops_flags(FLAGS_ADMIN,
+		  sendto_realops_flags(FLAGS_SERVADMIN,
 				       "%s spoofing: %s as %s", client_p->name,
 				       client_p->host, aconf->name);
 		}

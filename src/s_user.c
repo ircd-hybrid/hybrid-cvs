@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.156 2001/05/28 13:45:46 jdc Exp $
+ *  $Id: s_user.c,v 7.157 2001/06/11 19:56:52 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -978,7 +978,7 @@ int user_mode(struct Client *client_p, struct Client *source_p, int parc, char *
   /* Dont know why these were commented out.. put them back using new sendto() funcs */
   if (IsServer(source_p))
     {
-       sendto_realops_flags(FLAGS_ADMIN, "*** Mode for User %s from %s",
+       sendto_realops_flags(FLAGS_SERVADMIN, "*** Mode for User %s from %s",
                             parv[1], source_p->name);
        return 0;
     }

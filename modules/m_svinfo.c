@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_svinfo.c,v 1.24 2001/06/05 16:11:28 leeh Exp $
+ *   $Id: m_svinfo.c,v 1.25 2001/06/11 19:56:47 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -91,10 +91,10 @@ static void ms_svinfo(struct Client *client_p, struct Client *source_p,
        * TS_ONLY we can't fall back to the non-TS protocol so
        * we drop the link  -orabidoo
        */
-      sendto_realops_flags(FLAGS_ADMIN,
+      sendto_realops_flags(FLAGS_SERVADMIN,
             "Link %s dropped, wrong TS protocol version (%s,%s)",
 	    get_client_name(source_p, SHOW_IP), parv[1], parv[2]);
-      sendto_realops_flags(FLAGS_NOTADMIN,
+      sendto_realops_flags(FLAGS_SERVOPER,
 	         "Link %s dropped, wrong TS protocol version (%s,%s)",
                  get_client_name(source_p, MASK_IP), parv[1], parv[2]);
       exit_client(source_p, source_p, source_p, "Incompatible TS version");
@@ -110,13 +110,13 @@ static void ms_svinfo(struct Client *client_p, struct Client *source_p,
 
   if (deltat > ConfigFileEntry.ts_max_delta)
     {
-      sendto_realops_flags(FLAGS_ADMIN,
+      sendto_realops_flags(FLAGS_SERVADMIN,
           "Link %s dropped, excessive TS delta (my TS=%lu, their TS=%lu,delta=%d)",
 	  get_client_name(source_p, SHOW_IP),
 	  (unsigned long) CurrentTime,
 	  (unsigned long) theirtime,
 	  (int) deltat);
-      sendto_realops_flags(FLAGS_NOTADMIN,
+      sendto_realops_flags(FLAGS_SERVOPER,
        "Link %s dropped, excessive TS delta (my TS=%lu, their TS=%lu, delta=%d)",
 		 get_client_name(source_p, MASK_IP),
 		 (unsigned long) CurrentTime,

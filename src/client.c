@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.179 2001/06/06 14:27:18 leeh Exp $
+ *  $Id: client.c,v 7.180 2001/06/11 19:56:48 leeh Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -310,10 +310,10 @@ check_pings_list(dlink_list *list)
               if (IsServer(client_p) || IsConnecting(client_p) ||
                   IsHandshake(client_p))
                 {
-                  sendto_realops_flags(FLAGS_ADMIN,
+                  sendto_realops_flags(FLAGS_SERVADMIN,
 				       "No response from %s, closing link",
 				       get_client_name(client_p, HIDE_IP));
-                  sendto_realops_flags(FLAGS_NOTADMIN,
+                  sendto_realops_flags(FLAGS_SERVOPER,
                                        "No response from %s, closing link",
                                        get_client_name(client_p, MASK_IP));
                   ilog(L_NOTICE, "No response from %s, closing link",

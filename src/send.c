@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.150 2001/06/05 16:41:47 leeh Exp $
+ *   $Id: send.c,v 7.151 2001/06/11 19:56:53 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -127,9 +127,9 @@ dead_link(struct Client *to, char *notice)
   linebuf_donebuf(&to->localClient->buf_sendq);
   if (!IsPerson(to) && !IsUnknown(to) && !(to->flags & FLAGS_CLOSING))
     {
-      sendto_realops_flags(FLAGS_ADMIN,
+      sendto_realops_flags(FLAGS_SERVADMIN,
            notice, get_client_name(to, HIDE_IP));
-    sendto_realops_flags(FLAGS_NOTADMIN,
+    sendto_realops_flags(FLAGS_SERVOPER,
                          notice, get_client_name(to, MASK_IP));
     }
   Debug((DEBUG_ERROR, notice, get_client_name(to, HIDE_IP)));
@@ -1080,9 +1080,13 @@ sendto_realops_flags(int flags, const char *pattern, ...)
     {
       client_p = ptr->data;
 
-      if((flags == FLAGS_NOTADMIN) && IsAdmin(client_p)) 
+      if((flags == FLAGS_SERVADMIN) & !IsAdmin(client_p))
         continue;
-      if(client_p->umodes & flags)
+      if((flags == FLAGS_SERVOPER) && IsAdmin(client_p)) 
+        continue;
+
+      if(client_p->umodes & flags || 
+      (((flags == FLAGS_SERVADMIN) || (flags == FLAGS_SERVOPER)) && SendServNotice(client_p)))
 	{
 	  len =ircsprintf(sendbuf, ":%s NOTICE %s :*** Notice -- %s",
 			  me.name,

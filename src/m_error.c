@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_error.c,v 7.16 2001/06/06 14:06:18 leeh Exp $
+ *   $Id: m_error.c,v 7.17 2001/06/11 19:56:49 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -80,19 +80,19 @@ void m_error(struct Client *client_p, struct Client *source_p,
     return;
   if (client_p == source_p)
     {
-      sendto_realops_flags(FLAGS_ADMIN,
+      sendto_realops_flags(FLAGS_SERVADMIN,
             "ERROR :from %s -- %s",
 	    get_client_name(client_p, HIDE_IP), para);
-      sendto_realops_flags(FLAGS_NOTADMIN,
+      sendto_realops_flags(FLAGS_SERVOPER,
             "ERROR :from %s -- %s",
 	    get_client_name(client_p, MASK_IP), para);
     }
   else
     {
-      sendto_realops_flags(FLAGS_NOTADMIN,
+      sendto_realops_flags(FLAGS_SERVOPER,
             "ERROR :from %s via %s -- %s",
 	    source_p->name, get_client_name(client_p, MASK_IP), para);
-      sendto_realops_flags(FLAGS_ADMIN,"ERROR :from %s via %s -- %s", source_p->name,
+      sendto_realops_flags(FLAGS_SERVADMIN,"ERROR :from %s via %s -- %s", source_p->name,
 			 get_client_name(client_p, HIDE_IP), para);
     }
 }
