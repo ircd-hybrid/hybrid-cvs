@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.265 2003/02/23 04:16:11 db Exp $
+ *  $Id: ircd_parser.y,v 1.266 2003/02/23 19:10:16 db Exp $
  */
 
 %{
@@ -388,11 +388,9 @@ modules_module:  MODULE '=' QSTRING ';'
     /* I suppose we should just ignore it if it is already loaded(since
      * otherwise we would flood the opers on rehash) -A1kmm.
      */
-    if(findmodule_byname(m_bn) != -1)
-      break;
-
-    /* XXX - should we unload this module on /rehash, if it isn't listed? */
-    load_one_module (yylval.string, 0);
+    if(findmodule_byname(m_bn) == -1)
+      /* XXX - should we unload this module on /rehash, if it isn't listed? */
+      load_one_module (yylval.string, 0);
 
     MyFree(m_bn);
   }
