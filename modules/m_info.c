@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.84 2004/10/03 06:17:07 metalrock Exp $
+ *  $Id: m_info.c,v 1.85 2004/11/29 05:40:06 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&info_msgtab);
 }
 
-const char *_version = "$Revision: 1.84 $";
+const char *_version = "$Revision: 1.85 $";
 #endif
 
 /*
@@ -118,7 +118,7 @@ static struct InfoStruct info_table[] =
     "client_flood",
     OUTPUT_DECIMAL,
     &ConfigFileEntry.client_flood,
-    "Number of lines before a client Excess Flood's",
+    "Maximum amount of data in a client's queue before they are disconnected",
   },
   {
     "default_floodcount",
