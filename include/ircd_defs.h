@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.33 2003/04/09 11:19:32 stu Exp $
+ *  $Id: ircd_defs.h,v 7.34 2003/05/12 21:56:56 stu Exp $
  */
 
 /*
@@ -60,6 +60,8 @@
 #define MAX_DATE_STRING 32      /* maximum string length for a date string */
 
 #define HELPLEN         400
+#define IRCD_MAXNS      2       /* Maximum number of nameservers in 
+                                   /etc/resolv.conf we care about */
 
 #define LOWEST_SAFE_FD  4	/* skip stdin, stdout, stderr, and profiler */
 

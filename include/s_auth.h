@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.h,v 7.18 2003/04/09 11:19:32 stu Exp $
+ *  $Id: s_auth.h,v 7.19 2003/05/12 21:56:56 stu Exp $
  */
 
 #ifndef INCLUDED_s_auth_h
@@ -68,7 +68,6 @@ struct AuthRequest {
 #define ClearAuth(x)         ((x)->flags &= ~(AM_AUTH_PENDING | AM_AUTH_CONNECTING))
 #define IsDoingAuth(x)       ((x)->flags &  (AM_AUTH_PENDING | AM_AUTH_CONNECTING))
 /* #define SetGotId(x)       ((x)->flags |= FLAGS_GOTID) */
-
 
 
 extern void start_auth(struct Client *);

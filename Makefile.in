@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.50 2003/05/11 01:10:05 joshk Exp $
+#*   $Id: Makefile.in,v 7.51 2003/05/12 21:56:54 stu Exp $
 #*/
 
 RM=@RM@
@@ -26,7 +26,7 @@ exec_prefix=@exec_prefix@
 
 # Default make flags - you may want to uncomment this on a multicpu machine
 #MFLAGS   = -j 4
-SUBDIRS   = modules adns src tools doc include servlink
+SUBDIRS   = modules src tools doc include servlink
 CLEANDIRS = ${SUBDIRS} contrib
 
 # The make used HAS to set $(MAKE). But then, if we don't do it this

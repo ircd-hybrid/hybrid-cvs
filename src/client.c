@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.364 2003/05/11 22:27:44 joshk Exp $
+ *  $Id: client.c,v 7.365 2003/05/12 21:56:59 stu Exp $
  */
 
 #include "stdinc.h"
@@ -1192,8 +1192,9 @@ exit_client(
 
     if (IsIpHash(source_p))
       remove_one_ip(&source_p->localClient->ip);
-
-    delete_adns_queries(source_p->localClient->dns_query);
+    
+    /* ZZZ IP RES */
+    delete_resolver_queries(source_p);
     delete_identd_queries(source_p);
     
     /* This source_p could have status of one of STAT_UNKNOWN, STAT_CONNECTING

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.196 2003/05/11 22:27:45 joshk Exp $
+ *  $Id: s_bsd.c,v 7.197 2003/05/12 21:56:59 stu Exp $
  */
 
 #include "stdinc.h"
@@ -70,7 +70,7 @@ static const char *comm_err_str[] = { "Comm OK", "Error during bind()",
 
 static void comm_connect_callback(int fd, int status);
 static PF comm_connect_timeout;
-static void comm_connect_dns_callback(void *vptr, adns_answer *reply);
+static void comm_connect_dns_callback(void *vptr, struct DNSReply *reply);
 static PF comm_connect_tryconnect;
 
 /* close_all_connections() can be used *before* the system come up! */
@@ -638,7 +638,7 @@ comm_connect_tcp(int fd, const char *host, u_short port,
   fd_table[fd].dns_query = MyMalloc(sizeof(struct DNSQuery));
   fd_table[fd].dns_query->ptr = &fd_table[fd];
   fd_table[fd].dns_query->callback = comm_connect_dns_callback;
-  adns_gethost(host, aftype, fd_table[fd].dns_query);
+  gethost_byname(host, fd_table[fd].dns_query);
  }
  else
  {
@@ -697,25 +697,16 @@ comm_connect_timeout(int fd, void *notused)
  * otherwise we initiate the connect()
  */
 static void
-comm_connect_dns_callback(void *vptr, adns_answer *reply)
+comm_connect_dns_callback(void *vptr, struct DNSReply *reply)
 {
     fde_t *F = vptr;
 
-    if(!reply)
-      {
-	comm_connect_callback(F->fd, COMM_ERR_DNS);
-	return;
-      }
+    if(reply == NULL)
+    {
+      comm_connect_callback(F->fd, COMM_ERR_DNS);
+      return;
+    }
     
-    if (reply->status != adns_s_ok)
-      {
-        /* Yes, callback + return */
-        comm_connect_callback(F->fd, COMM_ERR_DNS);
-	MyFree(reply);
-	MyFree(F->dns_query);
-        return;
-      } 
-
     /* No error, set a 10 second timeout */
     comm_settimeout(F->fd, 30*1000, comm_connect_timeout, NULL);
 
@@ -726,15 +717,15 @@ comm_connect_dns_callback(void *vptr, adns_answer *reply)
      *     -- adrian
      */
 #ifdef IPV6
-    if(reply->rrs.addr->addr.sa.sa_family == AF_INET6)
+    if(reply->h_addrtype == AF_INET6)
     {
-      memcpy(&F->connect.hostaddr, &reply->rrs.addr->addr.inet6, 
+      memcpy(&F->connect.hostaddr, &reply->addr, 
             sizeof(struct irc_ssaddr));
     }
     else
 #endif
     {
-      memcpy(&F->connect.hostaddr, &reply->rrs.addr->addr.inet,
+      memcpy(&F->connect.hostaddr, &reply->addr,
             sizeof(struct irc_ssaddr));
     }
     /* Now, call the tryconnect() routine to try a connect() */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.383 2003/05/12 08:09:33 michael Exp $
+ *  $Id: s_conf.c,v 7.384 2003/05/12 21:57:00 stu Exp $
  */
 
 #include "stdinc.h"
@@ -117,33 +117,21 @@ struct ConfItem *u_conf = NULL;
 /* conf_dns_callback()
  *
  * inputs	- pointer to struct ConfItem
- *		- pointer to adns reply
+ *		- pointer to DNSReply reply
  * output	- none
  * side effects	- called when resolver query finishes
  * if the query resulted in a successful search, hp will contain
  * a non-null pointer, otherwise hp will be null.
  * if successful save hp in the conf item it was called with
  */
-static void
-conf_dns_callback(void* vptr, adns_answer *reply)
+conf_dns_callback(void* vptr, struct DNSReply *reply)
 {
   struct ConfItem *aconf = (struct ConfItem *)vptr;
 
-  if (reply && reply->status == adns_s_ok)
-  {
-#ifdef IPV6
-    if (aconf->aftype == AF_INET6)
-      memcpy(&aconf->ipnum, &reply->rrs.addr->addr.inet6, 
-             sizeof(struct irc_ssaddr));
-    else
-#endif
-      if (aconf->aftype == AF_INET)
-        memcpy(&aconf->ipnum, &reply->rrs.addr->addr.inet,
-               sizeof(struct irc_ssaddr));
-    MyFree(reply);
-  }
+  /* ZZZ IP RES */
+  if (reply != NULL)
+    memcpy(&aconf->ipnum, &reply->addr, sizeof(struct in_addr));
 
-  MyFree(aconf->dns_query);
   aconf->dns_query = NULL;
 }
 
@@ -161,7 +149,7 @@ conf_dns_lookup(struct ConfItem *aconf)
     aconf->dns_query = MyMalloc(sizeof(struct DNSQuery));
     aconf->dns_query->ptr = aconf;
     aconf->dns_query->callback = conf_dns_callback;
-    adns_gethost(aconf->host, aconf->aftype, aconf->dns_query);
+    gethost_byname(aconf->host, aconf->dns_query);
   }
 }
 
@@ -195,7 +183,9 @@ free_conf(struct ConfItem *aconf)
   if (aconf == NULL)
     return;
 
-  delete_adns_queries(aconf->dns_query);
+  if (aconf->dns_query != NULL)
+    delete_resolver_queries(aconf);
+
   MyFree(aconf->host);
 
   if (aconf->passwd)

@@ -1,53 +1,49 @@
 /*
- *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  res.h: A header with the DNS functions.
+ * include/res.h (C)opyright 1992 Darren Reed.
  *
- *  Copyright (C) 2002 by the past and present ircd coders, and others.
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
- *  USA
- *
- *  $Id: res.h,v 7.23 2003/04/09 11:19:32 stu Exp $
+ * $Id: res.h,v 7.24 2003/05/12 21:56:56 stu Exp $
  */
+#ifndef INCLUDED_res_h
+#define INCLUDED_res_h
 
-#ifndef _RES_H_INCLUDED
-#define _RES_H_INCLUDED 1
+#ifndef INCLUDED_sys_types_h
+#include <sys/types.h>       /* time_t */
+#define INCLUDED_sys_types_h
+#endif
 
-#include "config.h"
-#include "ircd_defs.h"
-#include "fileio.h"
-#include "adns.h"
+struct Client;
 
-#define DNS_BLOCK_SIZE 64
-
-struct DNSQuery {
-	void *ptr;
-	adns_query query;
-	adns_answer answer;
-	void (*callback)(void* vptr, adns_answer *reply);
+struct DNSReply {
+  char *h_name;
+  int h_addrtype;
+  struct irc_ssaddr addr;
 };
 
-void init_resolver(void);
-void restart_resolver(void);
-void timeout_adns (void * );
-void dns_writeable (int fd , void *ptr );
-void dns_readable (int fd , void *ptr );
-void dns_do_callbacks(void);
-void dns_select (void);
-int adns_gethost (const char *name , int aftype , struct DNSQuery *req );
-int adns_getaddr (struct irc_ssaddr *addr , int aftype , struct DNSQuery *req, int arpa_type );
-void delete_adns_queries(struct DNSQuery *q);
-void report_adns_servers(struct Client *);
-#endif
+
+struct DNSQuery {
+  void *ptr;               /* pointer used by callback to identify request */
+  void (*callback)(void* vptr, struct DNSReply *reply); /* callback to call */
+};
+
+extern void get_res(void);
+extern void gethost_byname(const char* name, const struct DNSQuery* req);
+extern void gethost_byaddr(const struct irc_ssaddr* name, int aftype, 
+    const struct DNSQuery* req);
+extern int             init_resolver(void);
+extern void            restart_resolver(void);
+extern void            timeout_resolver(void *);
+extern void            delete_resolver_queries(const void* vptr);
+extern unsigned long   cres_mem(struct Client* cptr);
+
+/*
+ * add_local_domain - append local domain suffix to hostnames that 
+ * don't contain a dot '.'
+ * name - string to append to
+ * len  - total length of the buffer
+ * name is modified only if there is enough space in the buffer to hold
+ * the suffix
+ */
+extern void add_local_domain(char* name, int len);
+
+#endif /* INCLUDED_res_h */
+

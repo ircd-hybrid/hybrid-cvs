@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.120 2003/05/11 22:27:45 joshk Exp $
+ *  $Id: s_auth.c,v 7.121 2003/05/12 21:56:59 stu Exp $
  */
 
 /*
@@ -182,58 +182,69 @@ release_auth_client(struct Client *client)
  * of success of failure
  */
 static void
-auth_dns_callback(void* vptr, adns_answer* reply)
+auth_dns_callback(void* vptr, struct DNSReply *reply)
 {
   struct AuthRequest* auth = (struct AuthRequest*) vptr;
   ClearDNSPending(auth);
-  if(reply && (reply->status == adns_s_ok))
-    {
-      if(strlen(*reply->rrs.str) <= HOSTLEN)
-        {
-          strlcpy(auth->client->host, *reply->rrs.str, sizeof(auth->client->host));
-          sendheader(auth->client, REPORT_FIN_DNS);
-        } else
-          sendheader(auth->client, REPORT_HOST_TOOLONG);
-    }
-  else
-    {
-#ifdef IPV6
-      if(auth->client->localClient->aftype == AF_INET6 && 
-              ConfigFileEntry.fallback_to_ip6_int == 1 && auth->ip6_int == 0)
-      {
-        struct Client *client = auth->client;
-        auth->ip6_int = 1;
-	MyFree(reply);
-	reply = NULL;
 
-	/* Only set DNS pending if no error! -- Dianora */
-	if (adns_getaddr(&client->localClient->ip, client->localClient->aftype,
-			 client->localClient->dns_query, 0) == 0)
-	{
-	  SetDNSPending(auth);
-	  return;
-	}
-      }
+  if (reply != NULL)
+  {
+    struct sockaddr_in *v4, *v4dns;
+#ifdef IPV6
+    struct sockaddr_in6 *v6, *v6dns;
 #endif
-      sendheader(auth->client, REPORT_FAIL_DNS);
+    int good = 1;
+    
+#ifdef IPV6
+    if(auth->client->localClient->ip.ss.ss_family == AF_INET6)
+    {
+      v6 = (struct sockaddr_in6 *)&auth->client->localClient->ip;
+      v6dns = (struct sockaddr_in6 *)&reply->addr;
+      if(memcmp(&v6->sin6_addr, &v6dns->sin6_addr, sizeof(struct in6_addr)) != 0)
+      {
+        sendheader(auth->client, REPORT_IP_MISMATCH);
+        good = 0;
+      }
     }
+    else
+#endif
+    {
+      v4 = (struct sockaddr_in *)&auth->client->localClient->ip;
+      v4dns = (struct sockaddr_in *)&reply->addr;
+      if(v4->sin_addr.s_addr != v4dns->sin_addr.s_addr)
+      {
+        sendheader(auth->client, REPORT_IP_MISMATCH);
+        good = 0;
+      }
+    }
+    if(good && strlen(reply->h_name) <= HOSTLEN)
+    {
+      strlcpy(auth->client->host, reply->h_name,
+	      sizeof(auth->client->host));
+      sendheader(auth->client, REPORT_FIN_DNS);
+    }
+    else
+      sendheader(auth->client, REPORT_HOST_TOOLONG);
+  }
+  else
+      sendheader(auth->client, REPORT_FAIL_DNS);
 
   MyFree(reply);
   MyFree(auth->client->localClient->dns_query);
 
   auth->client->localClient->dns_query = NULL;
   if (!IsDoingAuth(auth))
-    {
-      struct Client *client_p = auth->client;
-      unlink_auth_request(auth, &auth_poll_list);
+  {
+    struct Client *client_p = auth->client;
+    unlink_auth_request(auth, &auth_poll_list);
 #ifdef USE_IAUTH
-      ilog(L_ERROR, "Linking to auth client list");
-      link_auth_request(auth, &auth_client_list);
+    ilog(L_ERROR, "Linking to auth client list");
+    link_auth_request(auth, &auth_client_list);
 #else
-      free_auth_request(auth);
+    free_auth_request(auth);
 #endif
-      release_auth_client(client_p);
-    }
+    release_auth_client(client_p);
+  }
 }
 
 /*
@@ -433,9 +444,9 @@ start_auth(struct Client* client)
 
   /* No DNS cache now, remember? -- adrian */
   /* Only set DNS pending if no error! -- Dianora */
-  if (adns_getaddr(&client->localClient->ip, client->localClient->aftype,
-		   client->localClient->dns_query, 0) == 0)
-    SetDNSPending(auth);
+  gethost_byaddr(&client->localClient->ip, client->localClient->aftype,
+		  client->localClient->dns_query);
+  SetDNSPending(auth);
 
   (void)start_auth_query(auth);
   link_auth_request(auth, &auth_poll_list);
@@ -454,36 +465,36 @@ timeout_auth_queries_event(void *notused)
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, auth_poll_list.head)
   {
-      auth = ptr->data;
+    auth = ptr->data;
 
-      if (auth->timeout < CurrentTime)
-	{
-	  if (auth->fd >= 0)
-	    fd_close(auth->fd);
+    if (auth->timeout < CurrentTime)
+    {
+      if (auth->fd >= 0)
+	fd_close(auth->fd);
 
-	  if (IsDoingAuth(auth))
-	    sendheader(auth->client, REPORT_FAIL_ID);
-	  if (IsDNSPending(auth))
-	    {
-	      delete_adns_queries(auth->client->localClient->dns_query);
-	      auth->client->localClient->dns_query->query = NULL;
-	      sendheader(auth->client, REPORT_FAIL_DNS);
-	    }
-	  ilog(L_INFO, "DNS/AUTH timeout %s",
-	      get_client_name(auth->client, SHOW_IP));
+      if (IsDoingAuth(auth))
+	sendheader(auth->client, REPORT_FAIL_ID);
+      if (IsDNSPending(auth))
+      {
+	delete_resolver_queries(auth);
+	auth->client->localClient->dns_query = NULL;
+	sendheader(auth->client, REPORT_FAIL_DNS);
+      }
+      ilog(L_INFO, "DNS/AUTH timeout %s",
+	   get_client_name(auth->client, SHOW_IP));
 
-	  auth->client->since = CurrentTime;
-	  dlinkDelete(ptr, &auth_poll_list);
-	  free_dlink_node(ptr);
-	  release_auth_client(auth->client);
+      auth->client->since = CurrentTime;
+      dlinkDelete(ptr, &auth_poll_list);
+      free_dlink_node(ptr);
+      release_auth_client(auth->client);
 #ifdef USE_IAUTH
-    ilog(L_ERROR, "linking to auth client list 3");
-	  link_auth_request(auth, &auth_client_list);
+      ilog(L_ERROR, "linking to auth client list 3");
+      link_auth_request(auth, &auth_client_list);
 #else
-	  free_auth_request(auth);
+      free_auth_request(auth);
 #endif
-	}
     }
+  }
 }
 
 /*

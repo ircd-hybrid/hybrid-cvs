@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.20 2003/05/03 12:14:03 michael Exp $
+ *  $Id: resv.c,v 7.21 2003/05/12 21:56:59 stu Exp $
  */
 
 #include "stdinc.h"
@@ -34,6 +34,7 @@
 #include "numeric.h"
 #include "resv.h"
 #include "hash.h"
+#include "irc_string.h"
 #include "ircd_defs.h"
 
 dlink_list resv_channel_list = { NULL, NULL, 0 };
