@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.301 2002/10/09 15:08:32 db Exp $
+ *  $Id: client.c,v 7.302 2002/10/10 18:49:30 androsyn Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1123,9 +1123,9 @@ remove_dependents(struct Client* client_p,
        */
 
       if ((aconf = to->serv->sconf) != NULL)
-        strlcpy(myname, my_name_for_link(me.name, aconf), HOSTLEN + 1);
+        strlcpy(myname, my_name_for_link(me.name, aconf), sizeof(myname));
       else
-        strlcpy(myname, me.name, HOSTLEN + 1);
+        strlcpy(myname, me.name, sizeof(myname));
       recurse_send_quits(client_p, source_p, to, comment1, myname);
     }
 
@@ -1567,7 +1567,7 @@ set_initial_nick(struct Client *client_p, struct Client *source_p,
 
  if (source_p->user != NULL)
  {
-  strlcpy(buf, source_p->username, USERLEN);
+  strlcpy(buf, source_p->username, sizeof(buf));
   /*
    * USER already received, now we have NICK.
    * *NOTE* For servers "NICK" *must* precede the

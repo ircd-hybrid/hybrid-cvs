@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.326 2002/10/03 15:33:45 bill Exp $
+ *  $Id: s_conf.c,v 7.327 2002/10/10 18:49:30 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -524,8 +524,8 @@ verify_access(struct Client* client_p, const char* username)
     }
   else
     {
-      non_ident[0] = '~';
-      strlcpy(&non_ident[1],username, USERLEN + 1);
+      strlcpy(non_ident, "~", sizeof(non_ident));
+      strlcat(non_ident, username, USERLEN + 1);
       aconf = find_address_conf(client_p->host,non_ident,
 				&client_p->localClient->ip,
 				client_p->localClient->aftype);
@@ -576,7 +576,7 @@ verify_access(struct Client* client_p, const char* username)
 				       client_p->host, aconf->name);
 		}
 #endif
-	      strlcpy(client_p->host, aconf->name, HOSTLEN + 1);
+	      strlcpy(client_p->host, aconf->name, sizeof(client_p->host));
 	      SetIPSpoof(client_p);
 	    }
 	  return(attach_iline(client_p, aconf));
@@ -1307,7 +1307,7 @@ rehash(int sig)
 
   if (ServerInfo.description != NULL)
     {
-      strlcpy(me.info, ServerInfo.description, REALLEN);
+      strlcpy(me.info, ServerInfo.description, sizeof(me.info));
     }
 
   flush_deleted_I_P();
@@ -1975,7 +1975,7 @@ read_conf_files(int cold)
 
      - Gozem 2002-07-21 
   */
-  strlcpy(conffilebuf, filename, IRCD_BUFSIZE);
+  strlcpy(conffilebuf, filename, sizeof(conffilebuf));
 
   if ((conf_fbfile_in = fbopen(filename,"r")) == NULL)
     {

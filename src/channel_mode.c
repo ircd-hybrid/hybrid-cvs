@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.61 2002/09/03 17:15:43 db Exp $
+ *  $Id: channel_mode.c,v 7.62 2002/10/10 18:49:30 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -1768,7 +1768,7 @@ chm_key(struct Client *client_p, struct Client *source_p,
       fix_key_old(key);
 
     assert(key[0] != ' ');
-    strlcpy(chptr->mode.key, key, KEYLEN);
+    strlcpy(chptr->mode.key, key, sizeof(chptr->mode.key));
 
     /* if somebody does MODE #channel +kk a b, accept latter --fl */
     for (i = 0; i < mode_count; i++)

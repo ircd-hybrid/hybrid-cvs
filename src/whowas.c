@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.c,v 7.19 2002/05/31 02:21:06 androsyn Exp $
+ *  $Id: whowas.c,v 7.20 2002/10/10 18:49:31 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ void add_history(struct Client* client_p, int online)
    * NOTE: strcpy ok here, the sizes in the client struct MUST
    * match the sizes in the whowas struct
    */
-  strlcpy(who->name, client_p->name, NICKLEN);
+  strlcpy(who->name, client_p->name, sizeof(client_p->name));
   strcpy(who->username, client_p->username);
   strcpy(who->hostname, client_p->host);
   strcpy(who->realname, client_p->info);

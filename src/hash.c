@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.45 2002/10/04 04:18:38 db Exp $
+ *  $Id: hash.c,v 7.46 2002/10/10 18:49:30 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -577,7 +577,7 @@ hash_find_masked_server(const char* name)
   /*
    * copy the damn thing and be done with it
    */
-  strlcpy(buf, name, HOSTLEN + 1);
+  strlcpy(buf, name, sizeof(buf));
 
   while ((s = strchr(p, '.')) != 0)
     {
@@ -732,7 +732,7 @@ get_or_create_channel(struct Client *client_p, char *chname, int *isnew)
 
   chptr = BlockHeapAlloc(channel_heap);
   memset(chptr, 0, sizeof(struct Channel));
-  strlcpy(chptr->chname, chname, CHANNELLEN+1);
+  strlcpy(chptr->chname, chname, sizeof(chptr->chname));
 
   if (GlobalChannelList)
     GlobalChannelList->prevch = chptr;
