@@ -2186,11 +2186,8 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 CFLAGS="$OLD_CFLAGS"
 
-if test -z "$libdir"; then
-	echo setting libdir
-	libdir='${prefix}/modules'
-fi
 
+if test "$CC" != gcc; then
 
 SGS=no
 echo "$as_me:$LINENO: checking if we are using TenDRA or MIPSpro" >&5
@@ -2239,6 +2236,8 @@ echo "${ECHO_T}Tru64 cc" >&6
 echo "${ECHO_T}no" >&6
 ;;
 esac
+
+fi
 
 echo "$as_me:$LINENO: checking if we are using Apple GCC" >&5
 echo $ECHO_N "checking if we are using Apple GCC... $ECHO_C" >&6
@@ -3409,7 +3408,7 @@ else
 fi
 
 
-if test "$YACC" = "yacc" -a -z "`which $YACC >/dev/null 2>&1`"; then
+if test "$YACC" = "yacc" -a -z "`which $YACC 2>/dev/null`"; then
 	{ { echo "$as_me:$LINENO: error: could not locate a suitable parser generator; install bison, yacc, or byacc" >&5
 echo "$as_me: error: could not locate a suitable parser generator; install bison, yacc, or byacc" >&2;}
    { (exit 1); exit 1; }; }
