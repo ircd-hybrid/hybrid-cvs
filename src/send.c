@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.74 2000/12/11 03:18:42 db Exp $
+ *   $Id: send.c,v 7.75 2000/12/11 06:00:25 db Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -691,23 +691,6 @@ sendto_list_local(dlink_list *list, const char *sendbuf, int len)
 } /* sendto_list() */
 
 /*
-** send a msg to all ppl on servers/hosts that match a specified mask
-** (used for enhanced PRIVMSGs)
-**
-** addition -- Armin, 8jun90 (gruner@informatik.tu-muenchen.de)
-*/
-
-static int
-match_it(const struct Client *one, const char *mask, int what)
-
-{
-  if(what == MATCH_HOST)
-    return match(mask, one->host);
-  else
-    return match(mask, one->user->server);
-} /* match_it() */
-
-/*
  * sendto_channel_remote
  *
  * inputs	- pointer to channel
@@ -800,6 +783,34 @@ sendto_match_cap_servs(struct Channel *chptr, struct Client *from, int cap,
       send_message (cptr, (char *)sendbuf, len);
     }
 } /* sendto_match_cap_servs() */
+
+/*
+** match_it() and sendto_match_butone() ARE only used
+** to send a msg to all ppl on servers/hosts that match a specified mask
+** (used for enhanced PRIVMSGs) for opers
+**
+** addition -- Armin, 8jun90 (gruner@informatik.tu-muenchen.de)
+**
+*/
+
+/*
+ * match_it
+ *
+ * inputs	- client pointer to match on
+ *		- actual mask to match
+ *		- what to match on, HOST or SERVER
+ * output	- 1 or 0 if match or not
+ * side effects	- NONE
+ */
+static int
+match_it(const struct Client *one, const char *mask, int what)
+
+{
+  if(what == MATCH_HOST)
+    return match(mask, one->host);
+  else
+    return match(mask, one->user->server);
+} /* match_it() */
 
 /*
  * sendto_match_butone

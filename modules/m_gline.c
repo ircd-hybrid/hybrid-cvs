@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.13 2000/12/10 23:59:00 db Exp $
+ *  $Id: m_gline.c,v 1.14 2000/12/11 06:00:21 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -965,7 +965,6 @@ remove_gline_match(const char* user, const char* host)
 {
   struct ConfItem *kill_ptr;
   struct ConfItem *last_ptr=NULL;
-  struct ConfItem *tmp_ptr;
 
   for( kill_ptr = glines; kill_ptr; kill_ptr = kill_ptr->next)
     {
