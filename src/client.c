@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.355 2003/04/20 15:14:05 adx Exp $
+ *  $Id: client.c,v 7.356 2003/04/20 22:05:17 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ dlink_list global_serv_list = {NULL, NULL, 0};
 dlink_list oper_list = {NULL, NULL, 0};
 
 static void check_pings_list(dlink_list *list);
-static void check_unknowns_list(dlink_list *list);
+static void check_unknowns_list(void);
 
 static EVH check_pings;
 
@@ -239,7 +239,7 @@ check_pings(void *notused)
 {               
   check_pings_list(&local_client_list);
   check_pings_list(&serv_list);
-  check_unknowns_list(&unknown_list);
+  check_unknowns_list();
 }
 
 /* Check_pings_list()
@@ -351,17 +351,17 @@ check_pings_list(dlink_list *list)
 
 /* check_unknowns_list()
  *
- * inputs	- pointer to list of unknown clients
- * output	- NONE
- * side effects	- unknown clients get marked for termination after n seconds
+ * inputs       - pointer to list of unknown clients
+ * output       - NONE
+ * side effects - unknown clients get marked for termination after n seconds
  */
 static void
-check_unknowns_list(dlink_list *list)
+check_unknowns_list(void)
 {
   dlink_node *ptr, *next_ptr;
   struct Client *client_p;
 
-  DLINK_FOREACH_SAFE(ptr, next_ptr, list->head)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, unknown_list.head)
   {
     client_p = ptr->data;
 
@@ -375,8 +375,8 @@ check_unknowns_list(dlink_list *list)
 
 /* check_klines()
  *
- * inputs	- NONE
- * output	- NONE
+ * inputs       - NONE
+ * output       - NONE
  * side effects - Check all connections for a pending kline against the
  * 		  client, exit the client if a kline matches.
  */
