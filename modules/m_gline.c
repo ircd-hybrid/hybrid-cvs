@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.23 2000/12/18 06:17:11 db Exp $
+ *  $Id: m_gline.c,v 1.24 2000/12/18 21:43:08 bill Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -501,7 +501,7 @@ log_gline_request(
            oper_nick,oper_user,oper_host,oper_server,
            timebuffer);
 
-  if ( (fbputs(buffer, out) == NULL) )
+  if (fbputs(buffer, out) == -1)
     {
       sendto_realops_flags(FLAGS_ALL,"*** Problem writing to %s (%s)",
 				     filenamebuf, strerror(errno));
@@ -551,7 +551,7 @@ log_gline(struct Client *sptr,
   ircsprintf(buffer,"#Gline for %s@%s %s added by the following\n",
                    user,host,timebuffer);
 
-  if ( (fbputs(buffer,out) == NULL) )
+  if (fbputs(buffer,out) == -1)
     {
       sendto_realops_flags(FLAGS_ALL,"*** Problem writing to %s",filenamebuf);
       fbclose(out);
@@ -566,7 +566,7 @@ log_gline(struct Client *sptr,
                    (gline_pending_ptr->reason1)?
                    (gline_pending_ptr->reason1):"No reason");
 
-  if ( (fbputs(buffer,out) == NULL) )
+  if (fbputs(buffer,out) == -1)
     {
       sendto_realops_flags(FLAGS_ALL,"*** Problem writing to %s",filenamebuf);
       return;
@@ -580,7 +580,7 @@ log_gline(struct Client *sptr,
                    (gline_pending_ptr->reason2)?
                    (gline_pending_ptr->reason2):"No reason");
 
-  if ( (fbputs(buffer,out) == NULL) )
+  if (fbputs(buffer,out) == -1)
     {
       sendto_realops_flags(FLAGS_ALL,"*** Problem writing to %s",filenamebuf);
       fbclose(out);
@@ -594,7 +594,7 @@ log_gline(struct Client *sptr,
                    oper_server,
                    (reason)?reason:"No reason");
 
-  if ( (fbputs(buffer,out) == NULL) )
+  if (fbputs(buffer,out) == -1)
     {
       sendto_realops_flags(FLAGS_ALL,"*** Problem writing to %s",filenamebuf);
       fbclose(out);
@@ -602,7 +602,7 @@ log_gline(struct Client *sptr,
     }
 
   ircsprintf(buffer, "K:%s:%s:%s\n", host,user,reason);
-  if ( (fbputs(buffer,out) == NULL) )
+  if (fbputs(buffer,out) == -1)
     {
       sendto_realops_flags(FLAGS_ALL,"*** Problem writing to %s",filenamebuf);
       fbclose(out);

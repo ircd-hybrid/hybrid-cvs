@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.106 2000/12/18 06:17:16 db Exp $
+ *  $Id: s_conf.c,v 7.107 2000/12/18 21:43:12 bill Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -2672,7 +2672,7 @@ void WriteKlineOrDline( KlineType type,
 	       sptr->name, sptr->username, sptr->host,
 	       host, reason);
   
-  if ( (fbputs(buffer,out) == NULL) )
+  if (fbputs(buffer,out) == -1)
     {
       sendto_realops_flags(FLAGS_ALL,"*** Problem writing to %s",filename);
       fbclose(out);
@@ -2692,7 +2692,7 @@ void WriteKlineOrDline( KlineType type,
                current_date);
 
 
-  if ( (fbputs(buffer,out) == NULL) )
+  if (fbputs(buffer,out) == -1)
     {
       sendto_realops_flags(FLAGS_ALL,"*** Problem writing to %s",filename);
       fbclose(out);
