@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.131 2002/04/10 12:33:08 db Exp $
+ *  $Id: m_sjoin.c,v 1.132 2002/04/20 17:33:58 leeh Exp $
  */
 
 #include "tools.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.131 $";
+const char *_version = "$Revision: 1.132 $";
 #endif
 /*
  * ms_sjoin
@@ -336,10 +336,6 @@ static void ms_sjoin(struct Client *client_p,
     {
       remove_our_modes(hide_or_not, chptr, top_chptr, source_p);
     }
-  if(!keep_our_modes)
-     chptr->ts_winner = NO;
-  else
-     chptr->ts_winner = YES;
      
   if (*modebuf != '\0')
     {
@@ -562,6 +558,7 @@ static void ms_sjoin(struct Client *client_p,
           *mbuf++ = 'o';
 	  para[pargs++] = s;
 
+#ifdef REQUIRE_OANDV
           /* a +ov user.. bleh */
 	  if(fl & MODE_VOICE)
 	  {
@@ -585,6 +582,7 @@ static void ms_sjoin(struct Client *client_p,
 	    *mbuf++ = 'v';
 	    para[pargs++] = s;
 	  }
+#endif
         }
       else if (fl & MODE_VOICE)
         {
@@ -796,21 +794,27 @@ static void remove_our_modes( int hide_or_not,
   remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->chanops, 'o');
   remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->halfops, 'h');
   remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->voiced, 'v');
+#ifdef REQUIRE_OANDV
   remove_a_mode(hide_or_not, chptr, top_chptr, source_p,
                 &chptr->chanops_voiced, 'o');
   remove_a_mode(hide_or_not, chptr, top_chptr, source_p,
                 &chptr->chanops_voiced, 'v');    
+#endif
 
   /* Move all voice/ops etc. to non opped list */
   dlinkMoveList(&chptr->chanops, &chptr->peons);
   dlinkMoveList(&chptr->halfops, &chptr->peons);
   dlinkMoveList(&chptr->voiced, &chptr->peons);
+#ifdef REQUIRE_OANDV
   dlinkMoveList(&chptr->chanops_voiced, &chptr->peons);
-
+#endif
+  
   dlinkMoveList(&chptr->locchanops, &chptr->locpeons);
   dlinkMoveList(&chptr->lochalfops, &chptr->locpeons);
   dlinkMoveList(&chptr->locvoiced, &chptr->locpeons);
+#ifdef REQUIRE_OANDV
   dlinkMoveList(&chptr->locchanops_voiced, &chptr->locpeons);
+#endif
 }
 
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.107 2002/04/19 16:21:04 leeh Exp $
+ *  $Id: channel.h,v 7.108 2002/04/20 17:33:54 leeh Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -98,7 +98,6 @@ struct Channel
 
   int             num_mask;              /* number of bans+exceptions+invite exceptions */
   time_t          channelts;
-  int             ts_winner;
   char            chname[CHANNELLEN+1];
 };
 

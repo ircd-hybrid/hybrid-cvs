@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.56 2002/04/18 19:11:09 leeh Exp $
+ *  $Id: m_who.c,v 1.57 2002/04/20 17:33:56 leeh Exp $
  */
 
 #include "tools.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 static void do_who_on_channel(struct Client *source_p,
 			      struct Channel *chptr, char *real_name,
@@ -332,7 +332,9 @@ static void who_global(struct Client *source_p,char *mask, int server_oper)
   {
      chptr = lp->data;
      who_common_channel(source_p,chptr->chanops,mask,server_oper,&maxmatches);
+#ifdef REQUIRE_OANDV
      who_common_channel(source_p,chptr->chanops_voiced,mask,server_oper,&maxmatches);
+#endif
      who_common_channel(source_p,chptr->halfops,mask,server_oper,&maxmatches);
      who_common_channel(source_p,chptr->voiced,mask,server_oper,&maxmatches);
      who_common_channel(source_p,chptr->peons,mask,server_oper,&maxmatches);
