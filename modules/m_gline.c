@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.91 2003/03/10 03:12:41 db Exp $
+ *  $Id: m_gline.c,v 1.92 2003/03/21 18:54:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -109,7 +109,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.91 $";
+const char *_version = "$Revision: 1.92 $";
 #endif
 /*
  * mo_gline()
@@ -133,8 +133,8 @@ mo_gline(struct Client *client_p, struct Client *source_p,
   char *user = NULL;
   char *host = NULL;	              /* user and host of GLINE "victim" */
   const char *reason = NULL;          /* reason for "victims" demise */
-  char tempuser[USERLEN + 2];
-  char temphost[HOSTLEN + 1];
+  char tempuser[USERLEN*2 + 2];
+  char temphost[HOSTLEN*2 + 2];
 
   if (!ConfigFileEntry.glines)
   {
@@ -170,9 +170,9 @@ mo_gline(struct Client *client_p, struct Client *source_p,
 	      
     if (*host == '\0')	/* duh. no host found, assume its '*' host */
       host = "*";
-	      
-    strlcpy(tempuser, user, USERLEN + 1);     /* allow for '*' */
-    strlcpy(temphost, host, HOSTLEN + 1);
+
+    strlcpy(tempuser, collapse(user), sizeof(tempuser));   /* allow for '*' */
+    strlcpy(temphost, collapse(host), sizeof(temphost));
     user = tempuser;
     host = temphost;
   }
@@ -668,14 +668,14 @@ add_new_majority_gline(const char* oper_nick, const char* oper_user,
   struct gline_pending *pending = (struct gline_pending*)
     MyMalloc(sizeof(struct gline_pending));
 
-  strlcpy(pending->oper_nick1, oper_nick, NICKLEN + 1);
-  strlcpy(pending->oper_user1, oper_user, USERLEN + 1);
-  strlcpy(pending->oper_host1, oper_host, HOSTLEN + 1);
+  strlcpy(pending->oper_nick1, oper_nick, sizeof(pending->oper_nick1));
+  strlcpy(pending->oper_user1, oper_user, sizeof(pending->oper_user1));
+  strlcpy(pending->oper_host1, oper_host, sizeof(pending->oper_host1));
 
   pending->oper_server1 = find_or_add(oper_server);
 
-  strlcpy(pending->user, user, USERLEN + 1);
-  strlcpy(pending->host, host, HOSTLEN + 1);
+  strlcpy(pending->user, user, sizeof(pending->user));
+  strlcpy(pending->host, host, sizeof(pending->host));
   DupString(pending->reason1, reason);
   pending->reason2 = NULL;
 
@@ -762,9 +762,12 @@ check_majority_gline(struct Client *source_p, const char *oper_nick,
       }
       else
       {
-	strlcpy(gline_pending_ptr->oper_nick2, oper_nick, NICKLEN + 1);
-	strlcpy(gline_pending_ptr->oper_user2, oper_user, USERLEN + 1);
-	strlcpy(gline_pending_ptr->oper_host2, oper_host, HOSTLEN + 1);
+	strlcpy(gline_pending_ptr->oper_nick2, oper_nick,
+	        sizeof(gline_pending_ptr->oper_nick2));
+	strlcpy(gline_pending_ptr->oper_user2, oper_user,
+	        sizeof(gline_pending_ptr->oper_user2));
+	strlcpy(gline_pending_ptr->oper_host2, oper_host,
+	        sizeof(gline_pending_ptr->oper_host2));
 	DupString(gline_pending_ptr->reason2, reason);
 	gline_pending_ptr->oper_server2 = find_or_add(oper_server);
 	gline_pending_ptr->last_gline_time = CurrentTime;

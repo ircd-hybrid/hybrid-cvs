@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.h,v 7.12 2003/03/01 01:15:37 db Exp $
+ *  $Id: s_gline.h,v 7.13 2003/03/21 18:54:01 db Exp $
  */
 
 #ifndef INCLUDED_s_gline_h
@@ -55,8 +55,8 @@ typedef struct gline_pending
   time_t time_request2;
   
   time_t last_gline_time;       /* for expiring entry */
-  char user[USERLEN + 1];
-  char host[HOSTLEN + 1];
+  char user[USERLEN*2 + 2];
+  char host[HOSTLEN*2 + 2];
 }gline_pending_t;
 
 /* how long a pending G line can be around
