@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.h,v 1.11 2002/07/12 00:43:19 androsyn Exp $
+ *  $Id: balloc.h,v 1.12 2002/07/12 16:14:04 androsyn Exp $
  */
 
 #ifndef INCLUDED_blalloc_h
@@ -89,10 +89,8 @@ typedef struct BlockHeap BlockHeap;
 /* This is really kludgy, passing ints as pointers is always bad. */
 #define BlockHeapCreate(es, epb) ((BlockHeap*)(es))
 #define BlockHeapDestroy(x)
-#ifdef NOBALLOC
 #define BlockHeapAlloc(x) MyMalloc((int)x)
 #define BlockHeapFree(x,y) MyFree(y)
-#endif
 
 
 #endif /* NOBALLOC */
