@@ -2,7 +2,7 @@
  * send.h
  * Copyright (C) 1999 Patrick Alken
  *
- * $Id: send.h,v 7.44 2001/05/22 19:11:39 davidt Exp $
+ * $Id: send.h,v 7.45 2001/05/26 23:56:42 davidt Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -27,8 +27,6 @@ extern void send_queued_write(int fd, void *data);
 extern void send_queued_slink_write(int fd, void *data);
   
 #ifndef __GNUC__
-extern  void sendto_all_local_opers(struct Client *, char *message_type,
-				    const char *pattern,...);
 extern  void sendto_one(struct Client *, const char *, ...);
 extern  void sendto_channel_butone(struct Client *one, struct Client *from,
                                    struct Channel *chptr, char *command,
@@ -45,9 +43,6 @@ extern  void sendto_channel_local(int type,
 				  struct Channel *,
 				  const char *, ...);
 #else /* !__GNUC__*/
-extern  void sendto_all_local_opers(struct Client *, char *message_type,
-				    const char *pattern,...)
-	    __attribute__((format (printf, 3, 4)));
 extern  void sendto_one(struct Client *, const char *, ...)
 	    __attribute__((format (printf, 2, 3)));
 

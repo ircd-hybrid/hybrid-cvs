@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.111 2001/05/26 00:25:13 davidt Exp $
+ * $Id: config.h,v 7.112 2001/05/26 23:56:41 davidt Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -418,9 +418,6 @@ error CLIENT_FLOOD undefined.
 #define MIN_SPAM_TIME 60
 
 /* This may belong elsewhere... -dt */
-#if defined( HAVE_LIBINTL ) && !defined ( HAVE_GETTEXT )
-#define HAVE_GETTEXT 1
-#endif
 #if defined( HAVE_GETTEXT ) && defined( MSGPATH )
 #define USE_GETTEXT 1
 #define _(a)       (gettext(a))
