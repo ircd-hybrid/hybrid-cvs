@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.150 2003/09/27 23:19:40 bill Exp $
+ *  $Id: m_stats.c,v 1.151 2003/09/29 05:09:37 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.150 $";
+const char *_version = "$Revision: 1.151 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -873,8 +873,8 @@ stats_servlinks(struct Client *source_p)
     sendK += target_p->localClient->sendK;
     receiveK += target_p->localClient->receiveK;
 
-    sendto_one(source_p, ":%s %d %s %s %u %u %u %u %u :%u %u %s",
-               me.name, RPL_STATSLINKINFO, source_p->name, 
+    sendto_one(source_p, form_str(RPL_STATSLINKINFO),
+               me.name, source_p->name,
                IsAdmin(source_p) ? get_client_name(target_p, SHOW_IP)
 	       : get_client_name(target_p, MASK_IP),
                (int)dbuf_length(&target_p->localClient->buf_sendq),
@@ -979,70 +979,70 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
    */
   DLINK_FOREACH(ptr, list->head)
   {
-      target_p = ptr->data;
+    target_p = ptr->data;
 
-      if (IsInvisible(target_p) && (doall || wilds) &&
-	  !(MyConnect(source_p) && IsOper(source_p)) &&
-	  !IsOper(target_p) && (target_p != source_p))
-	continue;
-      if (!doall && wilds && !match(name, target_p->name))
-	continue;
-      if (!(doall || wilds) && irccmp(name, target_p->name))
-	continue;
+    if (IsInvisible(target_p) && (doall || wilds) &&
+	!(MyConnect(source_p) && IsOper(source_p)) &&
+	!IsOper(target_p) && (target_p != source_p))
+      continue;
+    if (!doall && wilds && !match(name, target_p->name))
+      continue;
+    if (!(doall || wilds) && irccmp(name, target_p->name))
+      continue;
 
-      /* This basically shows ips for our opers if its not a server/admin, or
-       * its one of our admins.  */
-      if(MyClient(source_p) && IsOper(source_p) && 
-        (IsAdmin(source_p) || 
-	(!IsServer(target_p) && !IsAdmin(target_p) && 
-	 !IsHandshake(target_p) && !IsConnecting(target_p))))
-	{
-	  sendto_one(source_p, ":%s %d %s %s %u %u %u %u %u :%u %u %s", me.name,
-                     RPL_STATSLINKINFO, source_p->name,
-                     (IsUpper(statchar)) ?
-                     get_client_name(target_p, SHOW_IP) :
-                     get_client_name(target_p, HIDE_IP),
-                     (int)dbuf_length(&target_p->localClient->buf_sendq),
-                     (int)target_p->localClient->sendM,
-		     (int)target_p->localClient->sendK,
-                     (int)target_p->localClient->receiveM,
-		     (int)target_p->localClient->receiveK,
-                     (unsigned)(CurrentTime - target_p->firsttime),
-                     (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since):0,
-                     IsServer(target_p) ? show_capabilities(target_p) : "-");
-	}
-      else
-	{
-          /* If its a hidden ip, an admin, or a server, mask the real IP */
-	  if(IsIPSpoof(target_p) || IsServer(target_p) || IsAdmin(target_p)
-	     || IsHandshake(target_p) || IsConnecting(target_p))
-	    sendto_one(source_p, ":%s %d %s %s %u %u %u %u %u :%u %u %s", me.name,
-		       RPL_STATSLINKINFO, source_p->name,
-		       get_client_name(target_p, MASK_IP),
-		       (int)dbuf_length(&target_p->localClient->buf_sendq),
-		       (int)target_p->localClient->sendM,
-		       (int)target_p->localClient->sendK,
-		       (int)target_p->localClient->receiveM,
-		       (int)target_p->localClient->receiveK,
-		       (unsigned)(CurrentTime - target_p->firsttime),
-		       (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since):0,
-		       IsServer(target_p) ? show_capabilities(target_p) : "-");
-	  else /* show the real IP */
-	    sendto_one(source_p, ":%s %d %s %s %u %u %u %u %u :%u %u %s", me.name,
-		       RPL_STATSLINKINFO, source_p->name,
-		       (IsUpper(statchar)) ?
-		       get_client_name(target_p, SHOW_IP) :
-		       get_client_name(target_p, HIDE_IP),
-		       (int)dbuf_length(&target_p->localClient->buf_sendq),
-		       (int)target_p->localClient->sendM,
-		       (int)target_p->localClient->sendK,
-		       (int)target_p->localClient->receiveM,
-		       (int)target_p->localClient->receiveK,
-		       (unsigned)(CurrentTime - target_p->firsttime),
-		       (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since):0,
-		       IsServer(target_p) ? show_capabilities(target_p) : "-");
-	}
+    /* This basically shows ips for our opers if its not a server/admin, or
+     * its one of our admins.  */
+    if(MyClient(source_p) && IsOper(source_p) && 
+       (IsAdmin(source_p) || 
+       (!IsServer(target_p) && !IsAdmin(target_p) && 
+       !IsHandshake(target_p) && !IsConnecting(target_p))))
+    {
+      sendto_one(source_p, form_str(RPL_STATSLINKINFO),
+		 me.name, source_p->name, 
+                 (IsUpper(statchar)) ?
+                 get_client_name(target_p, SHOW_IP) :
+                 get_client_name(target_p, HIDE_IP),
+                 (int)dbuf_length(&target_p->localClient->buf_sendq),
+                 (int)target_p->localClient->sendM,
+                 (int)target_p->localClient->sendK,
+                 (int)target_p->localClient->receiveM,
+                 (int)target_p->localClient->receiveK,
+                 (unsigned)(CurrentTime - target_p->firsttime),
+                 (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since):0,
+                 IsServer(target_p) ? show_capabilities(target_p) : "-");
     }
+    else
+    {
+      /* If its a hidden ip, an admin, or a server, mask the real IP */
+      if(IsIPSpoof(target_p) || IsServer(target_p) || IsAdmin(target_p)
+         || IsHandshake(target_p) || IsConnecting(target_p))
+        sendto_one(source_p, form_str(RPL_STATSLINKINFO),
+                   me.name, source_p->name,
+		   get_client_name(target_p, MASK_IP),
+		   (int)dbuf_length(&target_p->localClient->buf_sendq),
+		   (int)target_p->localClient->sendM,
+		   (int)target_p->localClient->sendK,
+		   (int)target_p->localClient->receiveM,
+		   (int)target_p->localClient->receiveK,
+		   (unsigned)(CurrentTime - target_p->firsttime),
+		   (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since):0,
+		   IsServer(target_p) ? show_capabilities(target_p) : "-");
+      else /* show the real IP */
+        sendto_one(source_p, form_str(RPL_STATSLINKINFO),
+                   me.name, source_p->name,
+	           (IsUpper(statchar)) ?
+		   get_client_name(target_p, SHOW_IP) :
+		   get_client_name(target_p, HIDE_IP),
+		   (int)dbuf_length(&target_p->localClient->buf_sendq),
+		   (int)target_p->localClient->sendM,
+		   (int)target_p->localClient->sendK,
+		   (int)target_p->localClient->receiveM,
+		   (int)target_p->localClient->receiveK,
+		   (unsigned)(CurrentTime - target_p->firsttime),
+		   (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since):0,
+		   IsServer(target_p) ? show_capabilities(target_p) : "-");
+    }
+  }
 }
 
 /* stats_spy()
