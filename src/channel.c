@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.50 2000/10/16 22:54:09 toot Exp $
+ * $Id: channel.c,v 7.51 2000/10/16 23:17:44 toot Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -2504,6 +2504,7 @@ static  void    sub1_from_channel(struct Channel *chptr)
 
               if (!HasVchans(root_chptr))
                 {
+                  chptr = root_chptr;
                   if (chptr->prevch)
                     chptr->prevch->nextch = chptr->nextch;
                   else
