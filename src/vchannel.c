@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: vchannel.c,v 7.65 2002/05/31 02:21:06 androsyn Exp $
+ *  $Id: vchannel.c,v 7.66 2002/07/06 14:03:54 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -285,7 +285,7 @@ on_sub_vchan(struct Channel *chptr, struct Client *source_p)
   struct Vchan_map *vchan_info;
 
   assert(source_p != NULL);
-  if(source_p == NULL);
+  if(source_p == NULL)
     return NO;
 
   /* they are in the root chan */
