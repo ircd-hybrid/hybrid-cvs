@@ -1,3 +1,23 @@
+leeh        2001/12/14 10:46:25 EST	(20011214_8)
+
+  Modified files:
+    .                    INSTALL 
+    doc                  example.conf 
+    src                  s_conf.c 
+  Added files:
+    doc                  example.conf.efnet 
+  Log:
+  - added example.conf.efnet, which allows us to make exmaple.conf more
+    userfriendly with features..
+  
+  Revision  Changes    Path
+  7.18      +5 -2      ircd-hybrid-7/INSTALL
+  7.144     +6 -6      ircd-hybrid-7/doc/example.conf
+  7.1       +1035 -0   ircd-hybrid-7/doc/example.conf.efnet (new)
+  7.282     +1 -1      ircd-hybrid-7/src/s_conf.c
+
+
+
 leeh        2001/12/14 10:36:24 EST	(20011214_7)
 
   Modified files:
@@ -406,7 +426,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3169 2001/12/14 15:36:29 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3170 2001/12/14 15:46:31 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18760,4 +18780,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3169 2001/12/14 15:36:29 leeh Exp $
+$Id: ChangeLog,v 7.3170 2001/12/14 15:46:31 leeh Exp $
