@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_error.c,v 7.23 2002/03/09 21:57:08 androsyn Exp $
+ *  $Id: m_error.c,v 7.24 2002/04/26 12:30:36 leeh Exp $
  */
 
 #include "handlers.h"
@@ -75,7 +75,9 @@ void m_error(struct Client *client_p, struct Client *source_p,
 			   source_p->name,
 			   get_client_name(client_p, HIDE_IP), para);
     }
-  exit_client(client_p, source_p, source_p, "ERROR");
+
+  if(MyClient(source_p))
+    exit_client(client_p, source_p, source_p, "ERROR");
 }
 
 void ms_error(struct Client *client_p, struct Client *source_p,
