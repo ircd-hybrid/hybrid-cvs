@@ -9,7 +9,7 @@
 ** VMS support by Edward Brocklesby, crypt.c implementation
 ** phk@login.dknet.dk
 **
-** $Id: mkpasswd.c,v 7.10 2001/11/04 05:20:21 wcampbel Exp $
+** $Id: mkpasswd.c,v 7.11 2002/01/09 19:38:45 jmallett Exp $
 */
 #include <stdio.h>
 #include <string.h>
@@ -49,7 +49,6 @@ int main(int argc, char *argv[])
 {
   char *plaintext = NULL;
   extern char *optarg;
-  extern int optind;
   int c;
   char *saltpara = NULL;
   char *salt;
