@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.319 2002/06/11 01:39:41 androsyn Exp $
+ *  $Id: channel.c,v 7.320 2002/06/11 01:41:26 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -671,6 +671,8 @@ destroy_channel(struct Channel *chptr)
   free_channel_list(&chptr->exceptlist);
   free_channel_list(&chptr->invexlist);
 
+  /* Free the topic */
+  free_topic(chptr);
   /* This should be redundant at this point but JIC */
   chptr->banlist.head = chptr->exceptlist.head = chptr->invexlist.head = NULL;
 
