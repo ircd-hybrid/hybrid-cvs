@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.22 2002/01/13 23:33:59 androsyn Exp $
+ *  $Id: balloc.c,v 7.23 2002/01/14 00:56:04 androsyn Exp $
  */
 
 /* 
@@ -122,7 +122,7 @@ static inline void *get_block(size_t size)
 {
   void *ptr;
   ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, zero_fd, 0);
-  if(ptr == MAP_FAILED
+  if(ptr == MAP_FAILED)
   	ptr = NULL;
   return(ptr);
 }
