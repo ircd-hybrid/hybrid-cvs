@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: sprintf_irc.c,v 7.7 2001/06/11 19:20:06 androsyn Exp $
+ *   $Id: sprintf_irc.c,v 7.8 2001/07/20 15:30:02 androsyn blalloc.c $
  */
 #include "sprintf_irc.h"
 #include "irc_string.h"
@@ -259,7 +259,7 @@ static char scratch_buffer[32];
  * --Run
  */
 
-int
+inline int
 vsprintf_irc(register char *str, register const char *format,
              register va_list args)
 
