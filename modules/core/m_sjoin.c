@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.122 2001/12/24 16:15:11 androsyn Exp $
+ *   $Id: m_sjoin.c,v 1.123 2001/12/30 07:49:44 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-char *_version = "$Revision: 1.122 $";
+char *_version = "$Revision: 1.123 $";
 #endif
 /*
  * ms_sjoin
@@ -779,8 +779,6 @@ static void remove_our_modes( int hide_or_not,
   dlinkMoveList(&chptr->locchanops, &chptr->locpeons);
   dlinkMoveList(&chptr->lochalfops, &chptr->locpeons);
   dlinkMoveList(&chptr->locvoiced, &chptr->locpeons);
-
-  chptr->opcount = 0;
 }
 
 

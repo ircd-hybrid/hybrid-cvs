@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.97 2001/12/29 23:29:28 db Exp $
+ * $Id: channel.h,v 7.98 2001/12/30 07:49:41 a1kmm Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -31,6 +31,9 @@
 #ifndef INCLUDED_ircd_defs_h
 #include "ircd_defs.h"        /* buffer sizes */
 #endif
+
+/* Efnet wanted this... Maybe we should do this from configure? */
+#define REQUIRE_OANDV
 
 struct Client;
 
@@ -57,7 +60,6 @@ struct Channel
   char            vchan_id[NICKLEN*2];   /* use this for empty vchans */
   int             users;      /* user count */
   int             locusers;   /* local user count */
-  int             opcount;    /* number of chanops */
   unsigned long   lazyLinkChannelExists;
   time_t          users_last;		/* when last user was in channel */
   time_t          last_knock;           /* don't allow knock to flood */
@@ -71,7 +73,9 @@ struct Channel
   dlink_list      peons;                /* non ops, just members */
 
   dlink_list      locchanops;           /* local versions of the above */
+#ifdef REQUIRE_OANDV
   dlink_list	  locchanops_voiced;	/* UGH I'm sorry */
+#endif
   dlink_list      lochalfops;
   dlink_list      locvoiced;
   dlink_list      locpeons;             /* ... */
