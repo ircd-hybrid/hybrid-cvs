@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.33 2000/10/25 00:04:19 adrian Exp $
+ *  $Id: s_bsd.c,v 7.34 2000/10/25 07:36:11 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -226,6 +226,7 @@ int set_non_blocking(int fd)
   if (-1 == res || fcntl(fd, F_SETFL, res | nonb) == -1)
     return 0;
 #endif /* !NBLOCK_SYSV */
+  fd_table[fd].flags.nonblocking = 1;
   return 1;
 }
 
