@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.101 2001/03/11 17:44:12 fl_ Exp $
+ * $Id: client.h,v 7.102 2001/03/12 05:31:31 androsyn Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -522,7 +522,6 @@ struct LocalUser
 extern void           check_klines(void);
 extern const char*    get_client_name(struct Client* client, int show_ip);
 extern const char*    get_client_host(struct Client* client);
-extern void           release_client_dns_reply(struct Client* client);
 extern void           init_client_heap(void);
 extern void           clean_client_heap(void);
 extern struct Client* make_client(struct Client* from);
