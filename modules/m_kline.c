@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.106 2002/07/12 03:29:55 joant Exp $
+ *  $Id: m_kline.c,v 1.107 2002/08/01 13:55:08 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.106 $";
+const char *_version = "$Revision: 1.107 $";
 #endif
 
 /* Local function prototypes */
@@ -773,8 +773,14 @@ find_user_host(struct Client *source_p,
       if(hostp != NULL)                            /* I'm a little user@host */
         {
           *(hostp++) = '\0';                       /* short and squat */
-          strlcpy(luser,user_host_or_nick,USERLEN); /* here is my user */
-          strlcpy(lhost,hostp,HOSTLEN);             /* here is my host */
+	  if (*user_host_or_nick)
+            strlcpy(luser,user_host_or_nick,USERLEN); /* here is my user */
+	  else
+	    strcpy(luser,"*");
+	  if (*hostp)
+            strlcpy(lhost,hostp,HOSTLEN);             /* here is my host */
+	  else
+	    strcpy(lhost,"*");
         }
       else
         {
