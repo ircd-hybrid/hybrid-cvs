@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.324 2002/09/11 15:27:09 db Exp $
+ *  $Id: s_conf.c,v 7.325 2002/10/02 23:09:39 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1765,6 +1765,8 @@ oper_privs_as_string(struct Client *client_p,int port)
         SetOperN(client_p);
       *privs_ptr++ = 'N';
     }
+  else
+    *privs_ptr++ = 'n';
 
   if(port & CONF_OPER_GLOBAL_KILL)
     {
