@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.22 2000/12/08 07:30:09 db Exp $
+ *   $Id: m_kline.c,v 1.23 2000/12/08 08:19:56 db Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -272,15 +272,13 @@ int ms_kline(struct Client *cptr,
   else
     {
       /* These should never happen but... */
-      if( rcptr->name == NULL )
-	return 0;
       if( rcptr->user == NULL )
 	return 0;
       if( rcptr->host == NULL )
 	return 0;
 
       sendto_realops("*** Received kline from %s!%s@%s on %s",
-		     rcptr->name,
+		     slave_oper,
 		     rcptr->user,
 		     rcptr->host,
 		     sptr->name);
