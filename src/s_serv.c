@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.280.2.2 2003/05/29 05:13:27 lusky Exp $
+ *  $Id: s_serv.c,v 7.280.2.3 2003/05/31 07:30:34 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -111,7 +111,7 @@ struct Capability captab[] = {
 struct EncCapability CipherTable[] =
 {
 #ifdef HAVE_EVP_BF_CFB
-  { "BF/256",     CAP_ENC_BF_256,     32, CIPHER_BF     },
+  { "BF/168",     CAP_ENC_BF_168,     24, CIPHER_BF     },
   { "BF/128",     CAP_ENC_BF_128,     16, CIPHER_BF     },
 #endif
 #ifdef HAVE_EVP_CAST5_CFB

@@ -1,4 +1,12 @@
---ircd-hybrid-7rc10 RELNOTES
+-- ircd-hybrid-7.0 RELNOTES
+o) BF/256 encryption replaced by BF168
+o) many intermittant cryptlink bugs fixed
+o) fixed FLAG_NCHANGE perms
+o) fixed splitmode behavior to wait for both splitnum and splituser
+o) fixed parallel make
+o) added ctrace, classlist and omotd to contrib
+
+-- ircd-hybrid-7rc10 RELNOTES
 o) fixed 99% CPU bug
 o) fixed rare core bug in s_bsd.c
 o) fixed compile warning in m_nick.c
@@ -166,4 +174,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.65.2.2 2003/05/06 05:43:46 db Exp $
+$Id: RELNOTES,v 1.65.2.3 2003/05/31 07:30:18 lusky Exp $

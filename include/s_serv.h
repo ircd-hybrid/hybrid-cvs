@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.66 2002/05/24 23:34:08 androsyn Exp $
+ *  $Id: s_serv.h,v 7.66.4.1 2003/05/31 07:30:29 lusky Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -113,7 +113,7 @@ struct EncCapability
 
 /* Cipher Capabilities */
 #define CAP_ENC_BF_128          0x00000001
-#define CAP_ENC_BF_256          0x00000002
+#define CAP_ENC_BF_168          0x00000002
 #define CAP_ENC_CAST_128        0x00000004
 #define CAP_ENC_DES_56          0x00000008
 #define CAP_ENC_3DES_168        0x00000010
@@ -173,7 +173,7 @@ struct EncCapability
 /* Only enable ciphers supported by available version of OpenSSL */
 #define CAP_ENC_MASK    \
              (((USE_CIPHER_BF   * CAP_ENC_ALL) & CAP_ENC_BF_128)         | \
-              ((USE_CIPHER_BF_V * CAP_ENC_ALL) & CAP_ENC_BF_256)         | \
+              ((USE_CIPHER_BF_V * CAP_ENC_ALL) & CAP_ENC_BF_168)         | \
               ((USE_CIPHER_CAST * CAP_ENC_ALL) & CAP_ENC_CAST_128)       | \
               ((USE_CIPHER_DES  * CAP_ENC_ALL) & CAP_ENC_DES_56)         | \
               ((USE_CIPHER_3DES * CAP_ENC_ALL) & CAP_ENC_3DES_168)       | \

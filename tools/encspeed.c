@@ -2,7 +2,7 @@
  * encspeed.c - originally written by einride
  *            - modified for ircd-hybrid-7 by davidt
  *
- * $Id: encspeed.c,v 7.6 2003/02/07 07:17:02 a1kmm Exp $
+ * $Id: encspeed.c,v 7.6.2.1 2003/05/31 07:30:36 lusky Exp $
  */
 
 #include "../include/setup.h"
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 #include <openssl/rand.h>
 
 #define CIPHER_BF128 0
-#define CIPHER_BF256 1
+#define CIPHER_BF168 1
 #define CIPHER_3DES168 2
 #define CIPHER_DES56 3
 #define CIPHER_CAST128 4
@@ -81,13 +81,12 @@ int main(int argc, char * argv[]) {
     skipped = 1;
     switch(n)
     {
-      case CIPHER_BF256:
-        cipherstr = "Blowfish 256-bit";
+      case CIPHER_BF168:
+        cipherstr = "Blowfish 168-bit";
 #ifdef HAVE_EVP_BF_CFB
         cipher = EVP_bf_cfb();
-        *(unsigned int *)(&cipher->flags) |= EVP_CIPH_VARIABLE_LENGTH;
         EVP_EncryptInit(&ctx, cipher, NULL, NULL);
-        EVP_CIPHER_CTX_set_key_length(&ctx, 32);
+        EVP_CIPHER_CTX_set_key_length(&ctx, 24);
 #else
         continue;
 #endif

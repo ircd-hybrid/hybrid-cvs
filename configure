@@ -5474,7 +5474,7 @@ if test `eval echo '${'$as_ac_var'}'` = yes; then
   cat >>confdefs.h <<_ACEOF
 #define `echo "HAVE_$ac_func" | $as_tr_cpp` 1
 _ACEOF
- cf_openssl_ciphers="${cf_openssl_ciphers}BF/256 BF/128 "
+ cf_openssl_ciphers="${cf_openssl_ciphers}BF/168 BF/128 "
 fi
 done
 
