@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.h,v 7.12 2003/04/09 11:19:32 stu Exp $
+ *  $Id: listener.h,v 7.13 2003/05/25 01:05:20 michael Exp $
  */
 
 #ifndef INCLUDED_listener_h
@@ -29,7 +29,8 @@
 #include "tools.h"
 struct Client;
 
-struct Listener {
+struct Listener
+{
   dlink_node	   listener_node;      /* list node pointer */
   const char*      name;               /* listener name */
   int              fd;                 /* file descriptor */
@@ -47,11 +48,11 @@ struct Listener {
   char             vhost[HOSTLEN + 1]; /* virtual name of listener */
 };
 
-extern void        add_listener(int port, const char* vaddr_ip);
-extern void        close_listener(struct Listener* listener);
-extern void        close_listeners(void);
-extern const char* get_listener_name(const struct Listener* listener);
-extern void        show_ports(struct Client* client);
-extern void free_listener(struct Listener * );
+extern void add_listener(int port, const char *vaddr_ip);
+extern void close_listener(struct Listener *listener);
+extern void close_listeners(void);
+extern const char *get_listener_name(const struct Listener *listener);
+extern void show_ports(struct Client *source_p);
+extern void free_listener(struct Listener *);
 
 #endif /* INCLUDED_listener_h */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.h,v 7.12 2003/05/20 06:51:45 michael Exp $
+ *  $Id: whowas.h,v 7.13 2003/05/25 01:05:20 michael Exp $
  */
 #ifndef INCLUDED_whowas_h
 #define INCLUDED_whowas_h
@@ -87,7 +87,7 @@ extern void off_history(struct Client *);
 **      nickname within the timelimit. Returns NULL, if no
 **      one found...
 */
-extern struct Client *get_history(char *, time_t);
+extern struct Client *get_history(const char *, time_t);
 
 /*
 ** for debugging...counts related structures stored in whowas array.

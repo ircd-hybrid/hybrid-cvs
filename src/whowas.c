@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.c,v 7.24 2003/05/20 06:51:52 michael Exp $
+ *  $Id: whowas.c,v 7.25 2003/05/25 01:05:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -121,14 +121,12 @@ off_history(struct Client *client_p)
 }
 
 struct Client *
-get_history(char *nick, time_t timelimit)
+get_history(const char *nick, time_t timelimit)
 {
   struct Whowas *temp;
-  int blah;
 
   timelimit = CurrentTime - timelimit;
-  blah = hash_whowas_name(nick);
-  temp = WHOWASHASH[blah];
+  temp = WHOWASHASH[hash_whowas_name(nick)];
 
   for (; temp; temp = temp->next)
   {

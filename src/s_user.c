@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.268 2003/05/24 12:28:29 db Exp $
+ *  $Id: s_user.c,v 7.269 2003/05/25 01:05:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -177,10 +177,10 @@ show_lusers(struct Client *source_p, char *show_mask)
 {
   if (show_mask != NULL)
   {
-    int total_global_count = 0;
-    int total_local_count = 0;
     dlink_node *ptr;
     struct Client *target_p;
+    unsigned int total_global_count = 0;
+    unsigned int total_local_count  = 0;
 
     (void)collapse(show_mask);
 
@@ -190,8 +190,10 @@ show_lusers(struct Client *source_p, char *show_mask)
       if (match(show_mask, target_p->host))
 	++total_local_count;
     }
+
     sendto_one(source_p, form_str(RPL_LOCALUSERS), 
-	       me.name, source_p->name, total_local_count, Count.max_tot);
+	       me.name, source_p->name, total_local_count,
+               Count.max_tot);
 
     DLINK_FOREACH(ptr, global_client_list.head)
     {
@@ -199,8 +201,10 @@ show_lusers(struct Client *source_p, char *show_mask)
       if (match(show_mask, target_p->host))
 	++total_global_count;
     }
+
     sendto_one(source_p, form_str(RPL_GLOBALUSERS),
-	       me.name, source_p->name, total_global_count, Count.max_tot);
+	       me.name, source_p->name, total_global_count,
+               Count.max_tot);
   }
   else
   {
@@ -301,7 +305,7 @@ show_isupport(struct Client *source_p)
 */
 int
 register_local_user(struct Client *client_p, struct Client *source_p, 
-                    const char *nick, char *username)
+                    const char *nick, const char *username)
 {
   struct ConfItem *aconf;
   char tmpstr2[IRCD_BUFSIZE];
@@ -826,8 +830,9 @@ report_and_set_user_flags(struct Client *source_p, struct ConfItem *aconf)
  * side effects -
  */
 int
-do_local_user(char *nick, struct Client *client_p, struct Client *source_p,
-              char *username, char *host, char *server, char *realname)
+do_local_user(const char *nick, struct Client *client_p, struct Client *source_p,
+              const char *username, const char *host, const char *server,
+              const char *realname)
 {
   assert(source_p != NULL);
   assert(source_p->username != username);

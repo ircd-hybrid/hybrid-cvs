@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.50 2003/05/24 08:03:01 michael Exp $
+ *  $Id: class.c,v 7.51 2003/05/25 01:05:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -71,10 +71,7 @@ make_class(void)
   struct Class *aclass;
 
   aclass = (struct Class *)MyMalloc(sizeof(struct Class));
-#if 0
-  aclass->className = NULL;
-  aclass->servname = NULL;
-#endif
+
   return(aclass);
 }
 
@@ -199,7 +196,7 @@ get_con_freq(struct Class *clptr)
  * immediately after the first one (class 0).
  */
 void
-add_class(char *classname, int ping, int confreq, int maxli, long sendq)
+add_class(const char *classname, int ping, int confreq, int maxli, long sendq)
 {
   dlink_node *ptr;
   struct Class *aclass;
@@ -249,7 +246,7 @@ find_class(const char *classname)
     else
     {
       aclass = make_class();
-      DupString(ClassName(aclass),"default");
+      DupString(ClassName(aclass), "default");
       ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
       PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
       MaxLinks(aclass) = ConfigFileEntry.maximum_links;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.h,v 7.15 2003/05/24 08:02:52 michael Exp $
+ *  $Id: class.h,v 7.16 2003/05/25 01:05:20 michael Exp $
  */
 
 #ifndef INCLUDED_class_h
@@ -68,7 +68,7 @@ extern int get_client_ping(struct Client *);
 extern void check_class(void);
 extern void init_class(void);
 extern void free_class(struct Class *);
-extern void add_class(char *, int, int, int, long);
+extern void add_class(const char *, int, int, int, long);
 extern void fix_class(struct ConfItem *, struct ConfItem *);
 extern void report_classes(struct Client *);
 #endif /* INCLUDED_class_h */

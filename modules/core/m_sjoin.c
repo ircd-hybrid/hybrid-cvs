@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.153 2003/05/22 17:09:05 michael Exp $
+ *  $Id: m_sjoin.c,v 1.154 2003/05/25 01:05:22 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,10 +63,11 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.153 $";
+const char *_version = "$Revision: 1.154 $";
 #endif
-/*
- * ms_sjoin
+
+/* ms_sjoin()
+ *
  * parv[0] - sender
  * parv[1] - TS
  * parv[2] - channel
@@ -86,8 +87,8 @@ static int pargs;
 
 static void set_final_mode(struct Mode *mode,struct Mode *oldmode);
 static void remove_our_modes(struct Channel *chptr, struct Client *source_p);
-static void remove_a_mode(struct Channel *chptr,
-                          struct Client *source_p, dlink_list *list, char flag);
+static void remove_a_mode(struct Channel *chptr, struct Client *source_p,
+                          dlink_list *list, char flag);
 
 static void
 ms_sjoin(struct Client *client_p, struct Client *source_p,
@@ -137,7 +138,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
   mode.mode = 0;
   mode.limit = 0;
-  mode.key[0] = '\0';;
+  mode.key[0] = '\0';
   s = parv[3];
 
   while (*s)
@@ -194,7 +195,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 			 (unsigned long)newts, chptr->chname,
 			 client_p->name);
 
-    newts = (oldts==0) ? oldts : 800000000;
+    newts = (oldts == 0) ? oldts : 800000000;
   }
 #else
   if (!isnew && !newts && oldts)
@@ -269,8 +270,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
      * It contains only +aimnstlki, etc */
     sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s",
 	                 (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
-		         me.name : source_p->name,
-			 chptr->chname, modebuf, parabuf);
+		         me.name : source_p->name, chptr->chname, modebuf, parabuf);
   }
 
   *modebuf = *parabuf = '\0';
@@ -356,8 +356,8 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     if (!(target_p = find_client(s)) ||
         (target_p->from != client_p) || !IsPerson(target_p))
     {
-      sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
-                 source_p->name, s);
+      sendto_one(source_p, form_str(ERR_NOSUCHNICK),
+                 me.name, source_p->name, s);
 
       nhops -= num_prefix;
       *nhops = '\0';
@@ -413,11 +413,10 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     {
       add_user_to_channel(chptr, target_p, fl);
       sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s JOIN :%s",
-                           target_p->name,
-                           target_p->username,
-                           target_p->host,
-                           parv[2]);
+                           target_p->name, target_p->username,
+                           target_p->host, parv[2]);
     }
+
     if (fl & MODE_CHANOP)
     {
       *mbuf++ = 'o';
@@ -491,17 +490,16 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   }
 
   *mbuf = '\0';
-  if(pargs)
+
+  if (pargs)
   {
-    sendto_channel_local(ALL_MEMBERS, chptr,
-                         ":%s MODE %s %s %s %s %s %s",
+    sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
                          (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
-                         me.name : source_p->name,
-                         chptr->chname, modebuf,
+                         me.name : source_p->name, chptr->chname, modebuf,
                          para[0],para[1], para[2], para[3]);
   }
 
-  if(!people)
+  if (!people)
     return;
 
   /* relay the SJOIN to other servers */
@@ -553,82 +551,89 @@ struct mode_letter flags[] =
 };
 
 static void
-set_final_mode(struct Mode *mode,struct Mode *oldmode)
+set_final_mode(struct Mode *mode, struct Mode *oldmode)
 {
-  int what = 0;
-  char *pbuf=parabuf;
-  int  len;
-  int  i;
+  int what   = 0;
+  char *pbuf = parabuf;
+  int len;
+  int i;
 
   for (i = 0; flags[i].letter; i++)
+  {
+    if ((flags[i].mode & mode->mode) &&
+        !(flags[i].mode & oldmode->mode))
     {
-      if((flags[i].mode & mode->mode) && !(flags[i].mode & oldmode->mode))
-	{
-	  if(what != 1)
-	    {
-	      *mbuf++ = '+';
-	      what = 1;
-	    }
-	  *mbuf++ = flags[i].letter;
-	}
+      if (what != 1)
+      {
+        *mbuf++ = '+';
+        what = 1;
+      }
+      *mbuf++ = flags[i].letter;
     }
+  }
+
   for (i = 0; flags[i].letter; i++)
+  {
+    if ((flags[i].mode & oldmode->mode) &&
+        !(flags[i].mode & mode->mode))
     {
-      if((flags[i].mode & oldmode->mode) && !(flags[i].mode & mode->mode))
-	{
-	  if(what != -1)
-	    {
-	      *mbuf++ = '-';
-	      what = -1;
-	    }
-	  *mbuf++ = flags[i].letter;
-	}
+      if (what != -1)
+      {
+        *mbuf++ = '-';
+        what = -1;
+      }
+      *mbuf++ = flags[i].letter;
     }
-  if(oldmode->limit && !mode->limit)
+  }
+
+  if (oldmode->limit && !mode->limit)
+  {
+    if (what != -1)
     {
-      if(what != -1)
-        {
-          *mbuf++ = '-';
-          what = -1;
-        }
-      *mbuf++ = 'l';
+      *mbuf++ = '-';
+      what = -1;
     }
-  if(oldmode->key[0] && !mode->key[0])
+    *mbuf++ = 'l';
+  }
+
+  if (oldmode->key[0] && !mode->key[0])
+  {
+    if (what != -1)
     {
-      if(what != -1)
-        {
-          *mbuf++ = '-';
-          what = -1;
-        }
-      *mbuf++ = 'k';
-      len = ircsprintf(pbuf, "%s ", oldmode->key);
-      pbuf += len;
-      pargs++;
+      *mbuf++ = '-';
+      what = -1;
     }
-  if(mode->limit && oldmode->limit != mode->limit)
+    *mbuf++ = 'k';
+    len = ircsprintf(pbuf, "%s ", oldmode->key);
+    pbuf += len;
+    pargs++;
+  }
+
+  if (mode->limit && oldmode->limit != mode->limit)
+  {
+    if (what != 1)
     {
-      if(what != 1)
-        {
-          *mbuf++ = '+';
-          what = 1;
-        }
-      *mbuf++ = 'l';
-      len = ircsprintf(pbuf, "%d ", mode->limit);
-      pbuf += len;
-      pargs++;
+      *mbuf++ = '+';
+      what = 1;
     }
-  if(mode->key[0] && strcmp(oldmode->key, mode->key))
+    *mbuf++ = 'l';
+    len = ircsprintf(pbuf, "%d ", mode->limit);
+    pbuf += len;
+    pargs++;
+  }
+
+  if (mode->key[0] && strcmp(oldmode->key, mode->key))
+  {
+    if (what != 1)
     {
-      if(what != 1)
-        {
-          *mbuf++ = '+';
-          what = 1;
-        }
-      *mbuf++ = 'k';
-      len = ircsprintf(pbuf, "%s ", mode->key);
-      pbuf += len;
-      pargs++;
+      *mbuf++ = '+';
+      what = 1;
     }
+    *mbuf++ = 'k';
+    len = ircsprintf(pbuf, "%s ", mode->key);
+    pbuf += len;
+    pargs++;
+  }
   *mbuf = '\0';
 }
 
@@ -676,15 +681,12 @@ void remove_a_mode(struct Channel *chptr, struct Client *source_p,
   struct Client *target_p;
   char lmodebuf[MODEBUFLEN];
   char *lpara[MAXMODEPARAMS];
-  char *chname;
   int count = 0;
 
   mbuf = lmodebuf;
   *mbuf++ = '-';
 
   lpara[0] = lpara[1] = lpara[2] = lpara[3] = "";
-
-  chname = chptr->chname;
 
   DLINK_FOREACH(ptr, list->head)
   {
@@ -702,7 +704,7 @@ void remove_a_mode(struct Channel *chptr, struct Client *source_p,
 			   (IsHidden(source_p) ||
 			   ConfigServerHide.hide_servers) ?
 			   me.name : source_p->name,
-			   chname, lmodebuf,
+			   chptr->chname, lmodebuf,
 			   lpara[0], lpara[1], lpara[2], lpara[3]);
 
       mbuf = lmodebuf;
@@ -719,7 +721,7 @@ void remove_a_mode(struct Channel *chptr, struct Client *source_p,
 			 ":%s MODE %s %s %s %s %s %s",
 			 (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
 			 me.name : source_p->name,
-			 chname, lmodebuf,
+			 chptr->chname, lmodebuf,
 			 lpara[0], lpara[1], lpara[2], lpara[3]);
   }
 }

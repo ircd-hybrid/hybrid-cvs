@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.376 2003/05/24 08:03:00 michael Exp $
+ *  $Id: channel.c,v 7.377 2003/05/25 01:05:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -56,9 +56,9 @@ static void free_channel_list(dlink_list *list);
 static int sub1_from_channel(struct Channel *);
 static void destroy_channel(struct Channel *);
 static void delete_members(struct Channel *chptr, dlink_list *list);
-static void send_mode_list(struct Client *client_p, char *chname,
+static void send_mode_list(struct Client *client_p, const char *chname,
                            dlink_list *top, char flag, int clear);
-static int check_banned(struct Channel *chptr, char *s, char *s2);
+static int check_banned(struct Channel *chptr, const char *s, const char *s2);
 static const char *channel_pub_or_secret(struct Channel *chptr);
 
 static char buf[BUFSIZE];
@@ -303,8 +303,8 @@ send_channel_modes(struct Client *client_p, struct Channel *chptr)
  *
  */
 static void
-send_mode_list(struct Client *client_p,
-               char *chname, dlink_list * top, char flag, int clear)
+send_mode_list(struct Client *client_p, const char *chname, dlink_list *top,
+               char flag, int clear)
 {
   dlink_node *lp;
   struct Ban *banptr;
@@ -575,7 +575,8 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
     set_channel_mode_flags(ptr_flags, chptr, source_p);
     is_member = IsMember(source_p, chptr);
     ircsprintf(lbuf, form_str(RPL_NAMREPLY),
-	       me.name, source_p->name, channel_pub_or_secret(chptr));
+               me.name, source_p->name,
+               channel_pub_or_secret(chptr));
 
     mlen = strlen(lbuf);
     ircsprintf(lbuf + mlen, " %s :", chptr->chname);
@@ -609,11 +610,11 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
       }
     }
 
-    if(reply_to_send)
+    if (reply_to_send)
       sendto_one(source_p, "%s", lbuf);
   }
 
-  if(show_eon)
+  if (show_eon)
     sendto_one(source_p, form_str(RPL_ENDOFNAMES),
                me.name, source_p->name, chptr->chname);
 }
@@ -763,7 +764,7 @@ is_banned(struct Channel *chptr, struct Client *who)
  * +e code from orabidoo
  */
 static int
-check_banned(struct Channel *chptr, char *s, char *s2)
+check_banned(struct Channel *chptr, const char *s, const char *s2)
 {
   dlink_node *ban;
   dlink_node *except;
@@ -817,9 +818,9 @@ can_join(struct Client *source_p, struct Channel *chptr, const char *key)
 
   assert(source_p->localClient != NULL);
 
-  ircsprintf(src_host,
-	     "%s!%s@%s", source_p->name, source_p->username, source_p->host);
-  ircsprintf(src_iphost,"%s!%s@%s", source_p->name, source_p->username,
+  ircsprintf(src_host, "%s!%s@%s", source_p->name, source_p->username,
+             source_p->host);
+  ircsprintf(src_iphost, "%s!%s@%s", source_p->name, source_p->username,
 	     source_p->localClient->sockhost);
 
   if ((check_banned(chptr, src_host, src_iphost)) == CHFL_BAN)
@@ -838,6 +839,7 @@ can_join(struct Client *source_p, struct Channel *chptr, const char *key)
       DLINK_FOREACH(ptr, chptr->invexlist.head)
       {
         invex = ptr->data;
+
         if (match(invex->banstr, src_host) || match(invex->banstr, src_iphost) ||
             match_cidr(invex->banstr, src_iphost))
           break;
@@ -919,7 +921,7 @@ can_send(struct Channel *chptr, struct Client *source_p)
      (find_channel_resv(chptr->chname) &&
       !(IsOper(source_p)) && ConfigChannel.oper_pass_resv))
     return(CAN_SEND_NO);
-    
+
   if (is_chan_op(chptr, source_p))
     return(CAN_SEND_OPV);
   if (is_voiced(chptr, source_p))
@@ -955,6 +957,7 @@ check_spambot_warning(struct Client *source_p, const char *name)
 {
   int t_delta;
   int decrement_count;
+
   if ((GlobalSetOptions.spam_num &&
        (source_p->localClient->join_leave_count >=
         GlobalSetOptions.spam_num)))

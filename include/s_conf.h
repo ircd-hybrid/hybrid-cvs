@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.224 2003/05/24 19:25:27 michael Exp $
+ *  $Id: s_conf.h,v 7.225 2003/05/25 01:05:20 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -357,7 +357,7 @@ extern void read_conf_files(int cold);
 extern int attach_conf(struct Client *, struct ConfItem *);
 extern int attach_confs(struct Client *client, const char *name, unsigned int statmask);
 extern int attach_connect_block(struct Client *client, const char *name, const char *host);
-extern int check_client(struct Client *client_p, struct Client *source_p, char *);
+extern int check_client(struct Client *client_p, struct Client *source_p, const char *);
 extern void det_confs_butmask(struct Client *, unsigned int);
 extern int detach_conf(struct Client *, struct ConfItem *);
 extern struct ConfItem *det_confs_butone(struct Client *, struct ConfItem *);
@@ -367,7 +367,7 @@ extern struct ConfItem *find_conf_by_name(const char *name, unsigned int status)
 extern struct ConfItem *find_conf_by_host(const char *host, unsigned int status);
 extern struct ConfItem *find_kill(struct Client *);
 extern int conf_connect_allowed(struct irc_ssaddr *addr, int aftype);
-extern char *oper_privs_as_string(struct Client *, int);
+extern char *oper_privs_as_string(struct Client *, unsigned int);
 extern void split_user_host(struct ConfItem *aconf);
 
 extern int find_u_conf(const char *, const char *, const char *, int);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.25 2003/05/24 12:26:32 db Exp $
+ *  $Id: s_user.h,v 7.26 2003/05/25 01:05:20 michael Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -36,9 +36,9 @@ extern void show_lusers(struct Client *source_p, char *show_mask);
 extern void show_isupport(struct Client *);
 extern void oper_up(struct Client *source_p, struct ConfItem *aconf);
 
-extern int register_local_user(struct Client *, struct Client *, const char *, char *);
+extern int register_local_user(struct Client *, struct Client *, const char *, const char *);
 extern int register_remote_user(struct Client *, struct Client *, const char *, const char *,
                                 const char *, const char *, const char *);
-extern int do_local_user(char *, struct Client *, struct Client *, char *, char *, char *, char *);
+extern int do_local_user(const char *, struct Client *, struct Client *, const char *, const char *, const char *, const char *);
 extern unsigned int user_modes_from_c_to_bitmask[];
 #endif

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.84 2003/05/22 17:09:08 michael Exp $
+ *  $Id: listener.c,v 7.85 2003/05/25 01:05:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -55,10 +55,10 @@ make_listener(int port, struct irc_ssaddr *addr)
     (struct Listener *)MyMalloc(sizeof(struct Listener));
   assert(listener != 0);
 
-  listener->name        = me.name;
-  listener->fd          = -1;
+  listener->name = me.name;
+  listener->port = port;
+  listener->fd   = -1;
   memcpy(&listener->addr, addr, sizeof(struct irc_ssaddr));
-  listener->port        = port;
 
   return(listener);
 }
@@ -237,7 +237,6 @@ find_listener(int port, struct irc_ssaddr *addr)
   return(last_closed);
 }
 
-
 /*
  * add_listener- create a new listener
  * port - the port number to listen on
@@ -247,9 +246,9 @@ find_listener(int port, struct irc_ssaddr *addr)
 void 
 add_listener(int port, const char* vhost_ip)
 {
-  struct Listener*  listener;
+  struct Listener *listener;
   struct irc_ssaddr vaddr;
-  struct addrinfo   hints, *res;
+  struct addrinfo hints, *res;
   char portname[PORTNAMELEN + 1];
 
   /*
@@ -268,7 +267,7 @@ add_listener(int port, const char* vhost_ip)
   hints.ai_flags = AI_PASSIVE | AI_NUMERICHOST;
 
 #ifdef IPV6
-  if(ServerInfo.can_use_v6)
+  if (ServerInfo.can_use_v6)
   {
     struct sockaddr_in6 *v6 = (struct sockaddr_in6*) &vaddr;
     memcpy(&vaddr, &in6addr_any, sizeof(in6addr_any));
@@ -285,11 +284,12 @@ add_listener(int port, const char* vhost_ip)
     vaddr.ss_len = sizeof(struct sockaddr_in);
     v4->sin_port = htons(port);
   }
+
   snprintf(portname, PORTNAMELEN, "%d", port);
 
   if (vhost_ip)
   {
-    if(irc_getaddrinfo(vhost_ip, portname, &hints, &res))
+    if (irc_getaddrinfo(vhost_ip, portname, &hints, &res))
         return;
 
     assert(res != NULL);
@@ -369,12 +369,12 @@ close_listeners(void)
 static void 
 accept_connection(int pfd, void *data)
 {
-  static time_t      last_oper_notice = 0;
+  static time_t last_oper_notice = 0;
   struct irc_ssaddr sai;
   struct irc_ssaddr addr;
-  int                fd;
+  int fd;
   int pe;
-  struct Listener *  listener = data;
+  struct Listener *listener = data;
 
   memset(&sai, 0, sizeof(sai));
   memset(&addr, 0, sizeof(addr));
@@ -383,8 +383,8 @@ accept_connection(int pfd, void *data)
   if (listener == NULL)
     return;
   listener->last_accept = CurrentTime;
-  /*
-   * There may be many reasons for error return, but
+
+  /* There may be many reasons for error return, but
    * in otherwise correctly working environment the
    * probable cause is running out of file descriptors
    * (EMFILE, ENFILE or others?). The man pages for
@@ -411,8 +411,8 @@ accept_connection(int pfd, void *data)
    * check for connection limit
    */
   if ((MAXCONNECTIONS - 10) < fd)
-    {
-      ++ServerStats->is_ref;
+  {
+    ++ServerStats->is_ref;
       /*
        * slow down the whining to opers bit
        */

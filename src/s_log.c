@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.49 2003/05/13 02:32:19 joshk Exp $
+ *  $Id: s_log.c,v 7.50 2003/05/25 01:05:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -86,7 +86,7 @@ static const char *logLevelToString[] =
 #if defined(USE_LOGFILE) 
 
 static int 
-open_log(const char* filename)
+open_log(const char *filename)
 {
   if (!server_state.foreground)
     close(2); /* let the logfile grab fd 2 to catch stderr */
@@ -212,10 +212,9 @@ log_user_exit(struct Client *source_p)
 
 #ifdef SYSLOG_USERS
   if (IsPerson(source_p))
-    {
-
-      ilog(L_INFO, "%s (%3ld:%02ld:%02ld): %s!%s@%s %ld/%ld\n",
-	  myctime(source_p->firsttime),
+  {
+    ilog(L_INFO, "%s (%3ld:%02ld:%02ld): %s!%s@%s %ld/%ld\n",
+         myctime(source_p->firsttime),
 	  (signed long) on_for / 3600,
 	  (signed long) (on_for % 3600)/60,
 	  (signed long) on_for % 60,

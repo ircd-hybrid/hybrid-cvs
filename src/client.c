@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.374 2003/05/24 00:14:39 db Exp $
+ *  $Id: client.c,v 7.375 2003/05/25 01:05:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -149,28 +149,12 @@ make_client(struct Client *from)
 
   client_p->status = STAT_UNKNOWN;
   strcpy(client_p->username, "unknown");
-#if 0
-  client_p->name[0] = '\0';
-  client_p->flags   = 0;
-  client_p->next    = NULL;
-  client_p->prev    = NULL;
-  client_p->hnext   = NULL;
-  client_p->lnext   = NULL;
-  client_p->lprev   = NULL;
-  client_p->user    = NULL;
-  client_p->serv    = NULL;
-  client_p->servptr = NULL;
-  client_p->whowas  = NULL;
-  client_p->allow_list.head = NULL;
-  client_p->allow_list.tail = NULL;
-  client_p->on_allow_list.head = NULL;
-  client_p->on_allow_list.tail = NULL;
-#endif
+
   return(client_p);
 }
 
 void
-free_client(struct Client* client_p)
+free_client(struct Client *client_p)
 {
   assert(client_p != NULL);
   assert(client_p != &me);
@@ -251,10 +235,10 @@ check_pings(void *notused)
 static void
 check_pings_list(dlink_list *list)
 {
-  char         scratch[32];     /* way too generous but... */
-  struct Client *client_p;      /* current local client_p being examined */
-  int           ping = 0;       /* ping time value from client */
-  dlink_node    *ptr, *next_ptr;
+  char scratch[32];        /* way too generous but... */
+  struct Client *client_p; /* current local client_p being examined */
+  int ping = 0;            /* ping time value from client */
+  dlink_node *ptr, *next_ptr;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, list->head)
   {
@@ -543,7 +527,7 @@ check_klines(void)
     if ((aconf = find_dline_conf(&client_p->localClient->ip,
                                  client_p->localClient->aftype)))
     {
-      if(aconf->status & CONF_EXEMPTDLINE)
+      if (aconf->status & CONF_EXEMPTDLINE)
         continue;
 
       sendto_one(client_p, "NOTICE DLINE :*** You have been D-lined");
@@ -652,7 +636,7 @@ update_client_exit_stats(struct Client *client_p)
  * side effects	- 
  */
 static void
-release_client_state(struct Client* client_p)
+release_client_state(struct Client *client_p)
 {
   if (client_p->user != NULL)
     free_user(client_p->user, client_p); /* try this here */
@@ -672,7 +656,7 @@ release_client_state(struct Client* client_p)
  * side effects - find person by (nick)name
  */
 struct Client *
-find_person(char *name)
+find_person(const char *name)
 {
   struct Client *c2ptr;
 
@@ -690,7 +674,7 @@ find_person(char *name)
  *      through the history, chasing will be 1 and otherwise 0.
  */
 struct Client *
-find_chasing(struct Client *source_p, char *user, int *chasing)
+find_chasing(struct Client *source_p, const char *user, int *chasing)
 {
   struct Client *who = find_client(user);
   
@@ -698,7 +682,7 @@ find_chasing(struct Client *source_p, char *user, int *chasing)
     *chasing = 0;
   if (who)
     return(who);
-  if ((who = get_history(user, (long)KILLCHASETIMELIMIT)) == NULL)
+  if ((who = get_history(user, (time_t)KILLCHASETIMELIMIT)) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                me.name, source_p->name, user);
@@ -864,8 +848,8 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
 
     if (target_p && IsServer(target_p) && target_p != client_p &&
         !IsMe(target_p) && !IsKilled(source_p))
-      sendto_one(target_p, ":%s SQUIT %s :%s", from->name, source_p->name,
-                 comment);
+      sendto_one(target_p, ":%s SQUIT %s :%s",
+                 from->name, source_p->name, comment);
   }
   else if (IsPerson(source_p)) /* ...just clean all others with QUIT... */
   {
@@ -875,8 +859,8 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
      */
     if (!IsKilled(source_p))
     {
-      sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS,
-                    NOFLAGS, ":%s QUIT :%s", source_p->name, comment);
+      sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, NOFLAGS,
+                    ":%s QUIT :%s", source_p->name, comment);
     }
 
     /* If a person is on a channel, send a QUIT notice
@@ -888,18 +872,14 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
                                  source_p->name, source_p->username,
                                  source_p->host, comment);
     DLINK_FOREACH_SAFE(lp, next_lp, source_p->user->channel.head)
-    {
       remove_user_from_channel(lp->data, source_p);
-    }
 
     /* Should not be in any channels now */
     assert(source_p->user->channel.head == NULL);
 
     /* Clean up invitefield */
     DLINK_FOREACH_SAFE(lp, next_lp, source_p->user->invited.head)
-    {
       del_invite(lp->data, source_p);
-    }
 
     /* Clean up allow lists */
     del_all_accepts(source_p);
@@ -941,8 +921,8 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
 */
 static void
 recurse_send_quits(struct Client *client_p, struct Client *source_p,
-		   struct Client *to, const char *comment, /* for servers */
-		   const char *myname)
+                   struct Client *to, const char *comment, /* for servers */
+                   const char *myname)
 {
   dlink_node *ptr;
   dlink_node *next;
@@ -1040,7 +1020,7 @@ recurse_remove_clients(struct Client *source_p, const char *comment)
 static void
 remove_dependents(struct Client *client_p, struct Client *source_p,
                   struct Client *from, const char *comment,
-                  const char* comment1)
+                  const char *comment1)
 {
   struct Client *to;
   struct ConfItem *aconf;
@@ -1051,9 +1031,9 @@ remove_dependents(struct Client *client_p, struct Client *source_p,
   {
     to = ptr->data;
 
-      if (IsMe(to) || to == source_p->from || (to == client_p &&
+    if (IsMe(to) || to == source_p->from || (to == client_p &&
                                                IsCapable(to, CAP_QS)))
-        continue;
+      continue;
 
       /* MyConnect(source_p) is rotten at this point: if source_p
        * was mine, ->from is NULL. 
@@ -1117,7 +1097,7 @@ dead_link_on_write(struct Client *client_p, int ierrno)
  *
  */
 void
-dead_link_on_read(struct Client* client_p, int error)
+dead_link_on_read(struct Client *client_p, int error)
 {
   char errmsg[255];
   int current_error;
@@ -1264,6 +1244,7 @@ exit_client(
       delete_resolver_queries(source_p->localClient->dns_query->ptr);
       source_p->localClient->dns_query = NULL;
     }
+
     delete_identd_queries(source_p);
     
     /* This source_p could have status of one of STAT_UNKNOWN, STAT_CONNECTING
@@ -1318,10 +1299,9 @@ exit_client(
     }
 
     if (IsPerson(source_p))
-      sendto_realops_flags(UMODE_CCONN, L_ALL,
-                           "Client exiting: %s (%s@%s) [%s] [%s]",
+      sendto_realops_flags(UMODE_CCONN, L_ALL, "Client exiting: %s (%s@%s) [%s] [%s]",
                            source_p->name, source_p->username, source_p->host,
-                           comment, 
+                           comment,
 #ifdef HIDE_SPOOF_IPS
                            IsIPSpoof(source_p) ? "255.255.255.255" :
 #endif
@@ -1545,7 +1525,7 @@ del_all_accepts(struct Client *client_p)
  */
 int
 set_initial_nick(struct Client *client_p, struct Client *source_p,
-                 char *nick)
+                 const char *nick)
 {
  char buf[USERLEN + 1];
  /* Client setting NICK the first time */
@@ -1583,55 +1563,50 @@ set_initial_nick(struct Client *client_p, struct Client *source_p,
    return CLIENT_EXITED;
 #endif
  }
- return 0;
+ return(0);
 }
 
-/*
- * change_local_nick
+/* change_local_nick()
+ *
  * inputs	- pointer to server
  *		- pointer to client
  * output	- 
  * side effects	- changes nick of a LOCAL user
- *
  */
 int
-change_local_nick(struct Client *client_p, struct Client *source_p, char *nick)
+change_local_nick(struct Client *client_p, struct Client *source_p, const char *nick)
 {
   /*
   ** Client just changing his/her nick. If he/she is
   ** on a channel, send note of change to all clients
   ** on that channel. Propagate notice to other servers.
   */
-
   source_p->tsinfo = CurrentTime;
 
-  if((source_p->localClient->last_nick_change +
+  if ((source_p->localClient->last_nick_change +
        ConfigFileEntry.max_nick_time) < CurrentTime)
     source_p->localClient->number_of_nick_changes = 0;
   source_p->localClient->last_nick_change = CurrentTime;
   source_p->localClient->number_of_nick_changes++;
 
-  if((ConfigFileEntry.anti_nick_flood && 
+  if ((ConfigFileEntry.anti_nick_flood && 
       (source_p->localClient->number_of_nick_changes
        <= ConfigFileEntry.max_nick_changes)) ||
      !ConfigFileEntry.anti_nick_flood || 
      (IsOper(source_p) && ConfigFileEntry.no_oper_flood))
-    {
-      /* XXX - the format of this notice should eventually be changed
-       * to either %s[%s@%s], or even better would be get_client_name() -bill
-       */
-      sendto_realops_flags(UMODE_NCHANGE, L_ALL,
-			   "Nick change: From %s to %s [%s@%s]",
-			   source_p->name, nick, source_p->username,
-			   source_p->host);
+  {
+    /* XXX - the format of this notice should eventually be changed
+     * to either %s[%s@%s], or even better would be get_client_name() -bill
+     */
+    sendto_realops_flags(UMODE_NCHANGE, L_ALL, "Nick change: From %s to %s [%s@%s]",
+                         source_p->name, nick, source_p->username, source_p->host);
+    sendto_common_channels_local(source_p, 1, ":%s!%s@%s NICK :%s",
+                                 source_p->name, source_p->username,
+                                 source_p->host, nick);
 
-      sendto_common_channels_local(source_p, 1,
-                                   ":%s!%s@%s NICK :%s",
-				   source_p->name, source_p->username,
-				   source_p->host, nick);
-      if (source_p->user)
-	{
-	  add_history(source_p, 1);
+    if (source_p->user != NULL)
+    {
+      add_history(source_p, 1);
 	  
 	  /* Only hubs care about lazy link nicks not being sent on yet
 	   * lazylink leafs/leafs always send their nicks up to hub,
@@ -1639,18 +1614,18 @@ change_local_nick(struct Client *client_p, struct Client *source_p, char *nick)
 	   * hubs might not propogate a nick change, if the leaf
 	   * does not know about that client yet.
 	   */
-          sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS,
-                        NOFLAGS, ":%s NICK %s :%lu", source_p->name,
-                        nick, (unsigned long) source_p->tsinfo);
-	}
+      sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS,
+                    NOFLAGS, ":%s NICK %s :%lu", source_p->name,
+                    nick, (unsigned long)source_p->tsinfo);
     }
+  }
   else
-    {
-      sendto_one(source_p,
-                 form_str(ERR_NICKTOOFAST),me.name, source_p->name,
-                 source_p->name, nick, ConfigFileEntry.max_nick_time);
-      return 0;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NICKTOOFAST),
+               me.name, source_p->name, source_p->name,
+               nick, ConfigFileEntry.max_nick_time);
+    return(0);
+  }
 
   /* Finally, add to hash */
   del_from_client_hash_table(source_p->name, source_p);
@@ -1660,12 +1635,11 @@ change_local_nick(struct Client *client_p, struct Client *source_p, char *nick)
   /* Make sure everyone that has this client on its accept list
    * loses that reference. 
    */
-
   del_all_accepts(source_p);
 
   /* fd_desc is long enough */
   fd_note(client_p->localClient->fd, "Nick: %s", nick);
 
-  return 1;
+  return(1);
 }
 

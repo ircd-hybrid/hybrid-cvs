@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.403 2003/05/24 19:25:31 michael Exp $
+ *  $Id: s_conf.c,v 7.404 2003/05/25 01:05:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -352,17 +352,17 @@ report_configured_links(struct Client *source_p, unsigned int mask)
  *
  * inputs	- pointer to client
  * output	- 0 = Success
- * 		  NOT_AUTHORIZED (-1) = Access denied (no I line match)
- * 		  IRCD_SOCKET_ERROR   (-2) = Bad socket.
- * 		  I_LINE_FULL    (-3) = I-line is full
- *		  TOO_MANY       (-4) = Too many connections from hostname
- * 		  BANNED_CLIENT  (-5) = K-lined
+ * 		  NOT_AUTHORIZED    (-1) = Access denied (no I line match)
+ * 		  IRCD_SOCKET_ERROR (-2) = Bad socket.
+ * 		  I_LINE_FULL       (-3) = I-line is full
+ *		  TOO_MANY          (-4) = Too many connections from hostname
+ * 		  BANNED_CLIENT     (-5) = K-lined
  * side effects - Ordinary client access check.
  *		  Look for conf lines which have the same
  * 		  status as the flags passed.
  */
 int
-check_client(struct Client *client_p, struct Client *source_p, char *username)
+check_client(struct Client *client_p, struct Client *source_p, const char *username)
 {
   int i;
  
@@ -451,7 +451,7 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
  * side effect	- find the first (best) I line to attach.
  */
 static int
-verify_access(struct Client* client_p, const char* username)
+verify_access(struct Client* client_p, const char *username)
 {
   struct ConfItem *aconf;
   struct ConfItem *gkill_conf;
@@ -747,7 +747,7 @@ hash_ip(struct irc_ssaddr *addr)
  * used in the hash.
  */
 void
-count_ip_hash(int *number_ips_stored,unsigned long *mem_ips_stored)
+count_ip_hash(int *number_ips_stored, unsigned long *mem_ips_stored)
 {
   struct ip_entry *ptr;
   int i;
@@ -812,7 +812,7 @@ garbage_collect_ip_entries(void)
  */
 void 
 iphash_stats(struct Client *client_p, struct Client *source_p,
-	     int parc, char *parv[],FBFILE* out)
+             int parc, char *parv[], FBFILE *out)
 {
   struct ip_entry *ptr;
   int i;
@@ -861,7 +861,7 @@ iphash_stats(struct Client *client_p, struct Client *source_p,
  *		  Also removes a class from the list if marked for deleting.
  */
 int
-detach_conf(struct Client* client_p, struct ConfItem* aconf)
+detach_conf(struct Client *client_p, struct ConfItem *aconf)
 {
   dlink_node *ptr;
   struct Class *aclass;
@@ -1712,7 +1712,7 @@ expire_tklines(dlink_list *tklist)
  * also, set the oper privs if given client_p non NULL
  */
 char *
-oper_privs_as_string(struct Client *client_p, int port)
+oper_privs_as_string(struct Client *client_p, unsigned int port)
 {
   static char privs_out[16];
   char *privs_ptr;
