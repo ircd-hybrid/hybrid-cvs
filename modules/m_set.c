@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.53 2003/05/30 08:05:38 michael Exp $
+ *  $Id: m_set.c,v 1.54 2003/10/11 22:41:34 metalrock Exp $
  */
 
 /* rewritten by jdc */
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.54 $";
 #endif
 
 /* Structure used for the SET table itself */
@@ -572,6 +572,13 @@ mo_set(struct Client *client_p, struct Client *source_p,
         {
           arg = NULL;
           intarg = NULL;
+        }
+
+        if ((set_cmd_table[i].name == "AUTOCONN") && (parc < 4))
+        {
+          sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+                     me.name, source_p->name, "SET");
+          return;
         }
 
         if (set_cmd_table[i].wants_int && (parc > 2))
