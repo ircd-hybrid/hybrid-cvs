@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.25 2003/06/07 17:28:01 michael Exp $
+ *  $Id: resv.c,v 7.26 2003/06/13 22:07:42 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -124,15 +124,13 @@ clear_conf_resv(void)
   DLINK_FOREACH_SAFE(ptr, next_ptr, resv_channel_list.head)
   {
     resv_cp = ptr->data;
-    if (resv_cp->conf == 0)
-      delete_channel_resv(resv_cp);
+    delete_channel_resv(resv_cp);
   }
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, resv_nick_list.head)
   {
     resv_np = ptr->data;
-    if (resv_np->conf == 0)
-      delete_nick_resv(resv_np);
+    delete_nick_resv(resv_np);
   }
 }
 
