@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.161 2001/11/09 12:27:31 leeh Exp $
+ * $Id: s_conf.h,v 7.162 2001/11/21 14:51:01 androsyn Exp $
  */
 
 #include "setup.h"
@@ -285,6 +285,7 @@ struct server_info
   int         no_hack_ops;
   int         specific_ipv4_vhost;
   int         specific_ipv6_vhost;
+  struct      sockaddr_in dns_host;
 };
 
 struct admin_info

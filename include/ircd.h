@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.40 2001/10/11 17:18:28 jdc Exp $
+ * $Id: ircd.h,v 7.41 2001/11/21 14:51:01 androsyn Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -86,7 +86,11 @@ extern struct Client  me;
 extern struct Client* GlobalClientList;
 extern struct Client* local[];
 extern struct Counter Count;
+#if 0
 extern time_t         CurrentTime;
+#endif
+extern struct timeval SystemTime;
+#define CurrentTime SystemTime.tv_sec
 extern time_t         nextconnect;
 extern int            default_server_capabs;
 

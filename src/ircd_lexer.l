@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.125 2001/10/30 23:39:15 bill Exp $
+ * $Id: ircd_lexer.l,v 1.126 2001/11/21 14:51:07 androsyn Exp $
  */
 
 %option case-insensitive
@@ -130,6 +130,8 @@ deny		{ return DENY; }
 description	{ return DESCRIPTION; }
 die		{ return DIE; }
 disable_remote_commands	{ return DISABLE_REMOTE_COMMANDS; }
+dns_host	{ return DNS_HOST; }
+dns_port	{ return DNS_PORT; }
 dot_in_ip6_addr { return DOT_IN_IP6_ADDR; }
 dots_in_ident   { return DOTS_IN_IDENT; }
 egdpool_path        { return EGDPOOL_PATH; }

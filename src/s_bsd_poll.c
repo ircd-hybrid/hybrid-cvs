@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.49 2001/11/17 20:16:42 androsyn Exp $
+ *  $Id: s_bsd_poll.c,v 7.50 2001/11/21 14:51:08 androsyn Exp $
  */
 #include "config.h"
 #ifdef USE_POLL
@@ -236,8 +236,8 @@ comm_select(unsigned long delay)
    break;
   if (ignoreErrno(errno))
    continue;
-  set_time();
   /* error! */
+  set_time();
   return -1;
   /* NOTREACHED */
  }
