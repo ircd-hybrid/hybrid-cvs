@@ -1,3 +1,16 @@
+androsyn    2002/02/28 10:54:02 EST	(20020228_5)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  localClient must have fd set to -1 upon creation otherwise it will have all
+  sorts of weird problems.
+  
+  Revision  Changes    Path
+  7.240     +2 -0      ircd-hybrid-7/src/client.c
+
+
+
 androsyn    2002/02/28 09:12:33 EST	(20020228_4)
 
   Modified files:
@@ -23496,4 +23509,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3467 2002/02/28 14:12:40 androsyn Exp $
+$Id: ChangeLog,v 7.3468 2002/02/28 15:54:08 androsyn Exp $
