@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.21 2001/07/02 19:03:15 jdc Exp $
+ * $Id: modules.h,v 7.22 2001/07/09 02:00:02 androsyn Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -118,6 +118,7 @@ extern struct Message post_msgtab;
 extern struct Message quit_msgtab;
 extern struct Message rehash_msgtab;
 extern struct Message restart_msgtab;
+extern struct Message resv_msgtab;
 extern struct Message server_msgtab;
 extern struct Message set_msgtab;
 extern struct Message sjoin_msgtab;
@@ -129,6 +130,7 @@ extern struct Message time_msgtab;
 extern struct Message topic_msgtab;
 extern struct Message trace_msgtab;
 extern struct Message msgtabs[];
+extern struct Message unresv_msgtab;
 extern struct Message user_msgtab;
 extern struct Message userhost_msgtab;
 extern struct Message users_msgtab;
