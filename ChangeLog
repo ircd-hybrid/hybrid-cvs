@@ -1,3 +1,26 @@
+androsyn    2002/10/10 14:49:33 EDT	(20021010_2)
+
+  Modified files:
+    src                  channel_mode.c client.c hash.c motd.c 
+                         resv.c s_auth.c s_conf.c s_serv.c 
+                         scache.c whowas.c 
+  Log:
+  More strlcpy() cleanups.  Also fixed a buffer overflow.
+  
+  Revision  Changes    Path
+  7.62      +1 -1      ircd-hybrid-7/src/channel_mode.c
+  7.302     +3 -3      ircd-hybrid-7/src/client.c
+  7.46      +2 -2      ircd-hybrid-7/src/hash.c
+  7.26      +2 -2      ircd-hybrid-7/src/motd.c
+  7.17      +2 -2      ircd-hybrid-7/src/resv.c
+  7.100     +5 -6      ircd-hybrid-7/src/s_auth.c
+  7.327     +5 -5      ircd-hybrid-7/src/s_conf.c
+  7.270     +2 -2      ircd-hybrid-7/src/s_serv.c
+  7.17      +1 -1      ircd-hybrid-7/src/scache.c
+  7.20      +1 -1      ircd-hybrid-7/src/whowas.c
+
+
+
 androsyn    2002/10/10 14:30:32 EDT	(20021010_1)
 
   Modified files:
@@ -32330,4 +32353,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4054 2002/10/10 18:30:34 androsyn Exp $
+$Id: ChangeLog,v 7.4055 2002/10/10 18:49:35 androsyn Exp $
