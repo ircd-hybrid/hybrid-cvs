@@ -19,14 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.198 2003/06/01 18:45:29 db Exp $
+ *  $Id: client.h,v 7.199 2003/06/06 07:17:43 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
-
 #include "config.h"
-
 #if !defined(CONFIG_H_LEVEL_7)
 #error Incorrect config.h for this revision of ircd.
 #endif
@@ -143,7 +141,7 @@ struct Client
   /*
    * client->name is the unique name for a client nick or host
    */
-  char              name[HOSTLEN + 1]; 
+  char name[HOSTLEN + 1]; 
   char id[IDLEN + 1];       /* client ID, unique ID per client */
   /*
    * client->llname is used to store the clients requested nick
@@ -183,8 +181,7 @@ struct Client
 
 struct LocalUser
 {
-  /*
-   * The following fields are allocated only for local clients
+  /* The following fields are allocated only for local clients
    * (directly connected to *this* server with a socket.
    */
   /* Anti flooding part, all because of lamers... */
@@ -209,8 +206,8 @@ struct LocalUser
   /* Send and receive dbufs .. */
   struct dbuf_queue buf_sendq;
   struct dbuf_queue buf_recvq;
-  /*
-   * we want to use unsigned int here so the sizes have a better chance of
+
+  /* we want to use unsigned int here so the sizes have a better chance of
    * staying the same on 64 bit machines. The current trend is to use
    * I32LP64, (32 bit ints, 64 bit longs and pointers) and since ircd
    * will NEVER run on an operating system where ints are less than 32 bits, 
@@ -236,15 +233,14 @@ struct LocalUser
   unsigned long     serverMask; /* Only used for Lazy Links */
   time_t            last_nick_change;
   int               number_of_nick_changes;
-  /*
-   * client->sockhost contains the ip address gotten from the socket as a
+
+  /* client->sockhost contains the ip address gotten from the socket as a
    * string, this field should be considered read-only once the connection
    * has been made. (set in s_bsd.c only)
    */
   char              sockhost[HOSTIPLEN + 1]; /* This is the host name from the 
                                               socket ip address as string */
-  /*
-   * XXX - there is no reason to save this, it should be checked when it's
+  /* XXX - there is no reason to save this, it should be checked when it's
    * received and not stored, this is not used after registration
    */
   char              passwd[PASSWDLEN + 1];
@@ -264,8 +260,7 @@ struct LocalUser
   int               fd_r;       /* fd for reading */
 #endif
 
-  int               ctrlfd;     /* For servers:
-                                   control fd used for sending commands
+  int               ctrlfd;     /* For servers: control fd used for sending commands
                                    to servlink */
 #ifndef HAVE_SOCKETPAIR
   int              ctrlfd_r;    /* control fd for reading */
@@ -278,10 +273,9 @@ struct LocalUser
 
   struct ZipStats  zipstats;
 
-  /*
-   * Anti-flood stuff. We track how many messages were parsed and how
-   * many we were allowed in the current second, and apply a simple decay
-   * to avoid flooding.
+  /* Anti-flood stuff. We track how many messages were parsed and how
+   * many we were allowed in the current second, and apply a simple
+   * decay to avoid flooding.
    *   -- adrian
    */
   int allow_read;	/* how many we're allowed to read in this second */
@@ -425,17 +419,17 @@ struct LocalUser
 
 
 /* oper priv flags */
-#define OPER_FLAG_GLOBAL_KILL 0x00000001 /* oper can global kill        */
-#define OPER_FLAG_REMOTE      0x00000002 /* oper can do squits/connects */
-#define OPER_FLAG_UNKLINE     0x00000004 /* oper can use unkline        */
-#define OPER_FLAG_GLINE       0x00000008 /* oper can use gline          */
-#define OPER_FLAG_N           0x00000010 /* oper can umode n            */
-#define OPER_FLAG_K           0x00000020 /* oper can kill/kline         */
-#define OPER_FLAG_X           0x00000040 /* oper can xline              */
-#define OPER_FLAG_DIE         0x00000080 /* oper can die                */
-#define OPER_FLAG_REHASH      0x00000100 /* oper can rehash             */
-#define OPER_FLAG_ADMIN       0x00000200 /* oper can set umode +a       */
-#define OPER_FLAG_HIDDEN_ADMIN 0x00000400 /* admin is hidden            */
+#define OPER_FLAG_GLOBAL_KILL  0x00000001 /* oper can global kill        */
+#define OPER_FLAG_REMOTE       0x00000002 /* oper can do squits/connects */
+#define OPER_FLAG_UNKLINE      0x00000004 /* oper can use unkline        */
+#define OPER_FLAG_GLINE        0x00000008 /* oper can use gline          */
+#define OPER_FLAG_N            0x00000010 /* oper can umode n            */
+#define OPER_FLAG_K            0x00000020 /* oper can kill/kline         */
+#define OPER_FLAG_X            0x00000040 /* oper can xline              */
+#define OPER_FLAG_DIE          0x00000080 /* oper can die                */
+#define OPER_FLAG_REHASH       0x00000100 /* oper can rehash             */
+#define OPER_FLAG_ADMIN        0x00000200 /* oper can set umode +a       */
+#define OPER_FLAG_HIDDEN_ADMIN 0x00000400 /* admin is hidden             */
 
 #define SetOFlag(x, y) ((x)->localClient->operflags |= (y))
 
@@ -448,7 +442,6 @@ struct LocalUser
 #define SetAccess(x)            ((x)->flags |= FLAGS_CHKACCESS)
 #define IsClosing(x)		((x)->flags & FLAGS_CLOSING)
 #define SetClosing(x)		((x)->flags |= FLAGS_CLOSING)
-#define ClearClosing(x)		((x)->flags &= ~FLAGS_CLOSING)
 #define IsKilled(x)		((x)->flags & FLAGS_KILLED)
 #define SetKilled(x)		((x)->flags |= FLAGS_KILLED)
 #define ClearAccess(x)          ((x)->flags &= ~FLAGS_CHKACCESS)
@@ -467,7 +460,6 @@ struct LocalUser
 #define ClearMark(x)		((x)->flags &= ~FLAGS_MARK)
 #define IsMarked(x)		((x)->flags & FLAGS_MARK)
 #define SetCanFlood(x)		((x)->flags |= FLAGS_CANFLOOD)
-#define ClearCanFlood(x)	((x)->flags &= ~FLAGS_CANFLOOD)
 #define IsCanFlood(x)		((x)->flags & FLAGS_CANFLOOD)
 #define IsDefunct(x)            ((x)->flags & (FLAGS_DEADSOCKET|FLAGS_CLOSING| \
 					       FLAGS_KILLED))
@@ -486,10 +478,7 @@ struct LocalUser
 
 /* umode flags */
 #define IsInvisible(x)          ((x)->umodes & UMODE_INVISIBLE)
-#define SetInvisible(x)         ((x)->umodes |= UMODE_INVISIBLE)
-#define ClearInvisible(x)       ((x)->umodes &= ~UMODE_INVISIBLE)
 #define SendWallops(x)          ((x)->umodes & UMODE_WALLOP)
-#define ClearWallops(x)         ((x)->umodes &= ~UMODE_WALLOP)
 #define SendLocops(x)           ((x)->umodes & UMODE_LOCOPS)
 #define SendServNotice(x)       ((x)->umodes & UMODE_SERVNOTICE)
 #define SendOperwall(x)         ((x)->umodes & UMODE_OPERWALL)
@@ -500,8 +489,6 @@ struct LocalUser
 #define SendSpyNotice(x)        ((x)->umodes & UMODE_SPY)
 #define SendDebugNotice(x)      ((x)->umodes & UMODE_DEBUG)
 #define SendNickChange(x)       ((x)->umodes & UMODE_NCHANGE)
-#define SetWallops(x)           ((x)->umodes |= UMODE_WALLOP)
-#define SetCallerId(x)		((x)->umodes |= UMODE_CALLERID)
 #define IsSetCallerId(x)	((x)->umodes & UMODE_CALLERID)
 
 #define SetSendQExceeded(x)	((x)->flags |= FLAGS_SENDQEX)
@@ -543,7 +530,6 @@ struct LocalUser
 #define SetFloodDone(x)         ((x)->flags |= FLAGS_FLOODDONE)
 #define HasPingCookie(x)        ((x)->flags & FLAGS_PING_COOKIE)
 #define SetPingCookie(x)        ((x)->flags |= FLAGS_PING_COOKIE)
-#define ClearPingCookie(x)      ((x)->flags &= ~FLAGS_PING_COOKIE)
 #define IsHidden(x)             ((x)->flags &  FLAGS_HIDDEN)
 #define SetHidden(x)            ((x)->flags |= FLAGS_HIDDEN)
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.304 2003/06/06 04:31:50 michael Exp $
+ *  $Id: ircd_parser.y,v 1.305 2003/06/06 07:17:45 michael Exp $
  */
 
 %{
@@ -879,7 +879,7 @@ oper_hidden_admin: HIDDEN_ADMIN '=' TYES ';'
 {
   if (ypass == 2)
     yy_aconf->port |= OPER_FLAG_HIDDEN_ADMIN;
-}   | HIDDEN_ADMIN '=' TNO ';'
+} | HIDDEN_ADMIN '=' TNO ';'
 {
   if (ypass == 2)
     yy_aconf->port &= ~OPER_FLAG_HIDDEN_ADMIN;
@@ -1282,7 +1282,7 @@ auth_passwd: PASSWORD '=' QSTRING ';'
       memset(yy_aconf->passwd, 0, strlen(yy_aconf->passwd));
 
     MyFree(yy_aconf->passwd);
-    DupString(yy_aconf->passwd,yylval.string);
+    DupString(yy_aconf->passwd, yylval.string);
   }
 };
 
@@ -1517,8 +1517,8 @@ shared_type: TYPE
     yy_aconf->port = 0;
 } '=' shared_types ';' ;
 
-shared_types:	shared_types ',' shared_type_item | shared_type_item;
-shared_type_item:	KLINE
+shared_types: shared_types ',' shared_type_item | shared_type_item;
+shared_type_item: KLINE
 {
   if (ypass == 2)
     yy_aconf->port |= SHARED_KLINE;
@@ -1545,10 +1545,7 @@ shared_type_item:	KLINE
 } | T_ALL
 {
   if (ypass == 2)
-  {
-    yy_aconf->port = 0;
-    yy_aconf->port |= SHARED_ALL;
-  }
+    yy_aconf->port = SHARED_ALL;
 };
 
 /***************************************************************************
@@ -1588,7 +1585,7 @@ cluster_type: TYPE
 } '=' cluster_types ';' ;
 
 cluster_types:	cluster_types ',' cluster_type_item | cluster_type_item;
-cluster_type_item:	KLINE
+cluster_type_item: KLINE
 {
   if (ypass == 2)
     cptr->type |= CLUSTER_KLINE;
@@ -1619,10 +1616,7 @@ cluster_type_item:	KLINE
 } | T_ALL
 {
   if (ypass == 2)
-  {
-    cptr->type = 0;
-    cptr->type |= CLUSTER_ALL;
-  }
+    cptr->type = CLUSTER_ALL;
 };
 
 /***************************************************************************

@@ -19,12 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.81 2003/05/31 07:01:42 lusky Exp $
+ *  $Id: s_serv.h,v 7.82 2003/06/06 07:17:43 michael Exp $
  */
 
 #ifndef INCLUDED_serv_h
 #define INCLUDED_serv_h
-
 #include "config.h"
 
 /* collect ziplinks compression ratios/etc every minute */
@@ -156,9 +155,8 @@ struct EncCapability
 #define USE_CIPHER_RC5      0
 #endif
 
-
 /* Only enable ciphers supported by available version of OpenSSL */
-#define CAP_ENC_MASK    \
+#define CAP_ENC_MASK \
              (((USE_CIPHER_BF   * CAP_ENC_ALL) & CAP_ENC_BF_128)         | \
               ((USE_CIPHER_BF_V * CAP_ENC_ALL) & CAP_ENC_BF_168)         | \
               ((USE_CIPHER_CAST * CAP_ENC_ALL) & CAP_ENC_CAST_128)       | \
@@ -242,43 +240,38 @@ extern int MaxConnectionCount; /* GLOBAL - highest number of connections */
 #define HUNTED_ISME     0       /* if this server should execute the command */
 #define HUNTED_PASS     1       /* if message passed onwards successfully */
 
-
 extern int check_server(const char *name, struct Client *server, int cryptlink);
-extern int hunt_server(struct Client *client_p,
-                               struct Client *source_p,
-                               const char *command, int server, 
-                               int parc, char **parv);
+extern int hunt_server(struct Client *client_p, struct Client *source_p,
+                       const char *command, int server, int parc, char **parv);
 extern const char *my_name_for_link(struct ConfItem* conf);
-void add_capability(const char *capab_name, int cap_flag, int defaults_flag);
-int delete_capability(const char *capab_name);
-int find_capability(const char *capab);
-extern void send_capabilities(struct Client*, struct ConfItem* conf,
-                                     int, int);
-extern void	   write_links_file(void *);				     
-extern int         server_estab(struct Client *client_p);
+extern void add_capability(const char *capab_name, int cap_flag, int defaults_flag);
+extern int delete_capability(const char *capab_name);
+extern int find_capability(const char *capab);
+extern void send_capabilities(struct Client *, struct ConfItem *conf, int, int);
+extern void write_links_file(void *);
+extern int server_estab(struct Client *client_p);
 extern void set_autoconn(struct Client *, const char *, int);
-extern const char* show_capabilities(struct Client* client);
-extern void        try_connections(void *unused);
-extern void        start_collect_zipstats(void);
-extern void        collect_zipstats(void *unused);
-extern void        initServerMask(void);
-extern void        burst_channel(struct Client *client_p, struct Channel *chptr);
-extern void	   sendnick_TS(struct Client *, struct Client *);
-extern int         serv_connect(struct ConfItem *, struct Client *);
+extern const char *show_capabilities(struct Client* client);
+extern void try_connections(void *unused);
+extern void start_collect_zipstats(void);
+extern void collect_zipstats(void *unused);
+extern void initServerMask(void);
+extern void burst_channel(struct Client *client_p, struct Channel *chptr);
+extern void sendnick_TS(struct Client *, struct Client *);
+extern int serv_connect(struct ConfItem *, struct Client *);
 extern unsigned long nextFreeMask(void);
-extern void        cryptlink_init(struct Client *client_p,
-                                  struct ConfItem *aconf, int fd);
+extern void cryptlink_init(struct Client *client_p, struct ConfItem *aconf, int fd);
 extern void cryptlink_regen_key(void *);
 extern void cryptlink_error(struct Client *client_p, const char *type,
                             const char *reason, const char *client_reason);
 
 extern struct Client *uplink; /* NON NULL if leaf and is this servers uplink */
 
-void remove_lazylink_flags(unsigned long mask);
-void client_burst_if_needed(struct Client *client_p, struct Client *target_p);
-struct EncCapability *check_cipher(struct Client *client_p,
+extern void remove_lazylink_flags(unsigned long mask);
+extern void client_burst_if_needed(struct Client *client_p, struct Client *target_p);
+extern struct EncCapability *check_cipher(struct Client *client_p,
                                    struct ConfItem *aconf);
-void        add_lazylinkclient(struct Client *client_p, struct Client *source_p);
+extern void add_lazylinkclient(struct Client *client_p, struct Client *source_p);
 
 /* XXX don't belong in the now gone md5, but do these belong in s_serv.c ? */
 extern int base64_block(char **output, char *data, int len);
