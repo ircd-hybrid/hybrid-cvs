@@ -20,13 +20,14 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 7.4 2000/01/08 01:59:22 db Exp $
+ *   $Id: m_message.c,v 7.5 2000/01/08 17:22:21 wnder Exp $
  */
 #include "m_commands.h"
 #include "client.h"
 #include "flud.h"
 #include "ircd.h"
 #include "numeric.h"
+#include "s_conf.h"
 #include "s_serv.h"
 #include "send.h"
 
