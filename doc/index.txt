@@ -1,5 +1,5 @@
 
-# $Id: index.txt,v 1.5 2001/01/27 04:47:00 wcampbel Exp $
+# $Id: index.txt,v 1.6 2001/02/03 14:51:12 wcampbel Exp $
 Here is the overview of the documents in the doc/ directory.
 
 CIDR.txt		- Description of CIDR in IPv4
@@ -10,6 +10,8 @@ Persistent_Clients.txt  - A global UID and Persistent client (with cookies)
 README.TSora            - Description of the TS3 protocol
 Tao-of-IRC.940110
 blalloc.txt		- Outline of the block memory allocator
+challenge.txt           - Overview of the challenge/response system for
+                          obtaining operator status
 event.txt		- Outline of the event system
 example.conf            - An example ircd.conf file describing most of the
                           user settable options
@@ -17,7 +19,6 @@ fd-management.txt	- Outline of the file descriptor management system
 file-management.txt	- Outline of the disk file management system
 iauth.txt               - Outline of the ircd-authd authorization daemon
 index.txt		- This file
-ircd.8			- ircd manpage
 kline.conf              - A blank kline.conf file used by make install
 kline.txt               - Outline of the remote K-line protocol for both
                           opers and servers
