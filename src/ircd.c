@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.235 2002/05/25 01:22:43 androsyn Exp $
+ *  $Id: ircd.c,v 7.236 2002/06/04 05:30:16 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -661,7 +661,12 @@ int main(int argc, char *argv[])
   init_auth();                  /* Initialise the auth code */
   init_resolver();      /* Needs to be setup before the io loop */
   read_conf_files(YES);         /* cold start init conf files */
+#ifndef STATIC_MODULES
 
+  mod_add_path(IRCD_PREFIX "/modules");
+  mod_add_path(IRCD_PREFIX "/modules/autoload");
+#endif
+   
   initialize_server_capabs();   /* Set up default_server_capabs */
   initialize_global_set_options();
 
