@@ -1,3 +1,15 @@
+bill        2002/12/28 02:02:39 EST	(20021228_0)
+
+  Modified files:
+    modules              m_gline.c 
+  Log:
+  - removed duplicated DupString() call, pointed out by Michael W.
+  
+  Revision  Changes    Path
+  1.85      +1 -2      ircd-hybrid-7/modules/m_gline.c
+
+
+
 lusky       2002/12/20 23:40:37 EST	(20021221_0)
 
   Modified files:
@@ -33718,4 +33730,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4148 2002/12/21 04:40:40 lusky Exp $
+$Id: ChangeLog,v 7.4149 2002/12/28 07:02:42 bill Exp $
