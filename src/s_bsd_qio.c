@@ -1,5 +1,5 @@
 /*
- *  ircd-ratbox: A slightly useful ircd.
+ *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  s_bsd_qio.c: VMS sys$qio() compatible network routines.
  *
  *  Copyright (C) 1990 Jarkko Oikarinen and University of Oulu, Co Center
@@ -23,7 +23,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_qio.c,v 7.1 2003/05/28 05:02:27 joshk Exp $
+ *  $Id: s_bsd_qio.c,v 7.2 2003/05/28 06:01:27 metalrock Exp $
  */
 
 #include "stdinc.h"
