@@ -1,3 +1,20 @@
+bill        2002/11/01 09:38:04 EST	(20021101_1)
+
+  Modified files:
+    modules              m_motd.c m_oper.c m_stats.c m_whowas.c 
+  Log:
+  - remote STATS and MOTD requests always treated the source as an oper, fixed.
+  - whowas now gives correct reply when 'null nick' is provided
+  - fixed trivial bug that would skew oper count
+  
+  Revision  Changes    Path
+  1.32      +19 -4     ircd-hybrid-7/modules/m_motd.c
+  1.57      +3 -6      ircd-hybrid-7/modules/m_oper.c
+  1.113     +7 -2      ircd-hybrid-7/modules/m_stats.c
+  1.29      +3 -3      ircd-hybrid-7/modules/m_whowas.c
+
+
+
 db          2002/11/01 08:24:42 EST	(20021101_0)
 
   Modified files:
@@ -32957,4 +32974,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4095 2002/11/01 13:24:44 db Exp $
+$Id: ChangeLog,v 7.4096 2002/11/01 14:38:07 bill Exp $
