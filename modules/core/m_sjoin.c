@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.44 2000/12/28 01:51:57 davidt Exp $
+ *   $Id: m_sjoin.c,v 1.45 2000/12/28 02:15:49 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -497,7 +497,7 @@ int     ms_sjoin(struct Client *cptr,
 	}
     }
 
-  sendto_ll_channel_remote(chptr, cptr, NULL, "%s %s", buf, sjbuf);
+  sendto_channel_remote(chptr, cptr, "%s %s", buf, sjbuf);
 
   return 0;
 }
