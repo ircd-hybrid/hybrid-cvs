@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.108 2003/06/06 04:31:50 michael Exp $
+ *  $Id: channel_mode.c,v 7.109 2003/06/07 09:56:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1416,21 +1416,21 @@ static struct ChannelMode ModeTable[255] =
 
 /* int get_channel_access(struct Client *source_p, struct Channel *chptr)
  * Input: The client, the channel
- * Output: MODE_CHANOP if we should let them have chanop level access,
- *         MODE_PEON for peon level access.
+ * Output: CHACCESS_CHANOP if we should let them have chanop level access,
+ *         0 for peon level access.
  * Side-effects: None.
  */
 static int
 get_channel_access(struct Client *source_p, struct Channel *chptr)
 {
   /* Let hacked servers in for now... */
-
   if (!MyClient(source_p))
-    return CHACCESS_CHANOP;
+    return(CHACCESS_CHANOP);
 
   if (is_chan_op(chptr, source_p))
-    return CHACCESS_CHANOP;
-  return CHACCESS_PEON;
+    return(CHACCESS_CHANOP);
+
+  return(0);
 }
 
 /* void send_cap_mode_changes(struct Client *client_p,

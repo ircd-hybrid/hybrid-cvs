@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.41 2003/05/31 18:52:46 adx Exp $
+ *   $Id: m_clearchan.c,v 1.42 2003/06/07 09:56:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -43,16 +43,11 @@
 
 extern BlockHeap *ban_heap;
 
-static void mo_clearchan(struct Client *, struct Client *, int, char *[]);
-
-static void kick_list(struct Client *, struct Client *, struct Channel *,
-                      char *);
-
+static char *mbuf;
+static void mo_clearchan(struct Client *, struct Client *, int, char **);
+static void kick_list(struct Client *, struct Client *, struct Channel *, char *);
 static void remove_our_modes(struct Channel *, struct Client *);
 static void remove_a_mode(struct Channel *, int, char);
-
-static char *mbuf;
-
 
 struct Message clearchan_msgtab = {
   "CLEARCHAN", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -71,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 
 /*
 ** mo_clearchan
@@ -179,8 +174,8 @@ static void kick_list(struct Client *client_p, struct Client *source_p,
   }
 
   sendto_one(source_p, ":%s!%s@%s JOIN %s",
-	     source_p->name, source_p->username,
-	     source_p->host, chname);
+             source_p->name, source_p->username,
+             source_p->host, chname);
   channel_member_names(source_p, chptr, 1);
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.159 2003/06/04 06:25:52 michael Exp $
+ *  $Id: m_sjoin.c,v 1.160 2003/06/07 09:56:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.159 $";
+const char *_version = "$Revision: 1.160 $";
 #endif
 
 /* ms_sjoin()
@@ -315,7 +315,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     {
       if (*s == '@')
       {
-        fl |= MODE_CHANOP;
+        fl |= CHFL_CHANOP;
         if (keep_new_modes)
         {
 	  *nhops++ = *s;
@@ -325,7 +325,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       }
       else if (*s == '+')
       {
-        fl |= MODE_VOICE;
+        fl |= CHFL_VOICE;
         if (keep_new_modes)
         {
 	  *nhops++ = *s;
@@ -356,8 +356,8 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
     if (!keep_new_modes)
     {
-      if (fl & MODE_CHANOP)
-        fl = MODE_DEOPPED;
+      if (fl & CHFL_CHANOP)
+        fl = CHFL_DEOPPED;
       else
         fl = 0;
     }
@@ -403,12 +403,12 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
                            target_p->host, parv[2]);
     }
 
-    if (fl & MODE_CHANOP)
+    if (fl & CHFL_CHANOP)
     {
       *mbuf++ = 'o';
       para[pargs++] = s;
       /* a +ov user.. bleh */
-      if (fl & MODE_VOICE)
+      if (fl & CHFL_VOICE)
       {
         /* its possible the +o has filled up MAXMODEPARAMS, if so, start
          * a new buffer
@@ -432,7 +432,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         para[pargs++] = s;
       }
     }
-    else if (fl & MODE_VOICE)
+    else if (fl & CHFL_VOICE)
     {
       *mbuf++ = 'v';
       para[pargs++] = s;

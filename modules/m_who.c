@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.83 2003/06/03 03:24:18 michael Exp $
+ *  $Id: m_who.c,v 1.84 2003/06/07 09:56:48 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&who_msgtab);
 }
 
-const char *_version = "$Revision: 1.83 $";
+const char *_version = "$Revision: 1.84 $";
 #endif
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);
@@ -96,21 +96,22 @@ m_who(struct Client *client_p, struct Client *source_p,
 
     if (*mask == '\0')
     {
-      sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], "*");
+      sendto_one(source_p, form_str(RPL_ENDOFWHO),
+                 me.name, source_p->name, "*");
       return;
     }
   }
   else
   {
     who_global(source_p, mask, server_oper);
-    sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], "*");
+    sendto_one(source_p, form_str(RPL_ENDOFWHO),
+               me.name, source_p->name, "*");
     return;
   }
 
   /* mask isn't NULL at this point. repeat after me... -db */
 
   /* '/who *' */
-
   if ((*(mask + 1) == '\0') && (*mask == '*'))
   {
     if (source_p->user != NULL)
@@ -131,23 +132,21 @@ m_who(struct Client *client_p, struct Client *source_p,
   /* '/who #some_channel' */
   if (IsChannelName(mask))
   {
-    /*
-     * List all users on a given channel
-     */
-    chptr = hash_find_channel(mask);
-    if (chptr != NULL)
+    /* List all users on a given channel */
+    if ((chptr = hash_find_channel(mask)) != NULL)
     {
       if (IsMember(source_p, chptr))
         do_who_on_channel(source_p, chptr, chptr->chname, YES, server_oper);
       else if (!SecretChannel(chptr))
         do_who_on_channel(source_p, chptr, chptr->chname, NO, server_oper);
     }
-    sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
+
+    sendto_one(source_p, form_str(RPL_ENDOFWHO),
+               me.name, source_p->name, mask);
     return;
   }
 
   /* '/who nick' */
-
   if (((target_p = find_client(mask)) != NULL) &&
       IsPerson(target_p) && (!server_oper || IsOper(target_p)))
   {
@@ -188,7 +187,8 @@ m_who(struct Client *client_p, struct Client *source_p,
       do_who(source_p, target_p, NULL, "");
     }
 
-    sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
+    sendto_one(source_p, form_str(RPL_ENDOFWHO),
+               me.name, source_p->name, mask);
     return;
   }
 
@@ -199,7 +199,8 @@ m_who(struct Client *client_p, struct Client *source_p,
     who_global(source_p, mask, server_oper);
 
  /* Wasn't a nick, wasn't a channel, wasn't a '*' so ... */
-  sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
+  sendto_one(source_p, form_str(RPL_ENDOFWHO),
+             me.name, source_p->name, mask);
 }
 
 /* who_common_channel
@@ -246,16 +247,14 @@ who_common_channel(struct Client *source_p, struct Channel *chptr,
 
       if (*maxmatches > 0)
       {
-	--(*maxmatches);
-	if (*maxmatches == 0)
+	if (--(*maxmatches) == 0)
 	  return;
       }
     }
   }
 }
 
-/*
- * who_global
+/* who_global()
  *
  * inputs	- pointer to client requesting who
  *		- char * mask to match
@@ -305,10 +304,10 @@ who_global(struct Client *source_p,char *mask, int server_oper)
 	match(mask, target_p->info))
     {
       do_who(source_p, target_p, NULL, "");
+
       if (maxmatches > 0)
       {
-        --maxmatches;
-        if (maxmatches == 0)
+        if (--maxmatches == 0)
   	  return;
       }
     }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.200 2003/06/06 08:44:15 michael Exp $
+ *  $Id: client.h,v 7.201 2003/06/07 09:56:46 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -479,16 +479,6 @@ struct LocalUser
 /* umode flags */
 #define IsInvisible(x)          ((x)->umodes & UMODE_INVISIBLE)
 #define SendWallops(x)          ((x)->umodes & UMODE_WALLOP)
-#define SendLocops(x)           ((x)->umodes & UMODE_LOCOPS)
-#define SendServNotice(x)       ((x)->umodes & UMODE_SERVNOTICE)
-#define SendOperwall(x)         ((x)->umodes & UMODE_OPERWALL)
-#define SendCConnNotice(x)      ((x)->umodes & UMODE_CCONN)
-#define SendRejNotice(x)        ((x)->umodes & UMODE_REJ)
-#define SendSkillNotice(x)      ((x)->umodes & UMODE_SKILL)
-#define SendFullNotice(x)       ((x)->umodes & UMODE_FULL)
-#define SendSpyNotice(x)        ((x)->umodes & UMODE_SPY)
-#define SendDebugNotice(x)      ((x)->umodes & UMODE_DEBUG)
-#define SendNickChange(x)       ((x)->umodes & UMODE_NCHANGE)
 #define IsSetCallerId(x)	((x)->umodes & UMODE_CALLERID)
 
 #define SetSendQExceeded(x)	((x)->flags |= FLAGS_SENDQEX)

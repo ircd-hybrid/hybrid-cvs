@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.1 2003/05/31 18:54:05 adx Exp $
+ *  $Id: m_join.c,v 1.2 2003/06/07 09:56:49 michael Exp $
  */
 
 #include "stdinc.h"
@@ -43,8 +43,9 @@
 #include "modules.h"
 
 
-static void m_join(struct Client*, struct Client*, int, char**);
-static void ms_join(struct Client*, struct Client*, int, char**);
+static void m_join(struct Client *, struct Client *, int, char **);
+static void ms_join(struct Client *, struct Client *, int, char **);
+static void do_join_0(struct Client *client_p, struct Client *source_p);
 
 struct Message join_msgtab = {
   "JOIN", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -64,11 +65,9 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.1 $";
 
+const char *_version = "$Revision: 1.2 $";
 #endif
-static void do_join_0(struct Client *client_p, struct Client *source_p);
-
 
 /*
  * m_join
@@ -200,7 +199,7 @@ m_join(struct Client *client_p, struct Client *source_p,
       if (chptr->users == 0)
         flags = CHFL_CHANOP;
       else
-        flags = CHFL_PEON;
+        flags = 0;
     }
     else	/* channel does NOT exist, so create it */
     {
@@ -357,8 +356,7 @@ ms_join(struct Client *client_p, struct Client *source_p,
   }
 }
 
-/*
- * do_join_0
+/* do_join_0()
  *
  * inputs	- pointer to client doing join 0
  * output	- NONE
@@ -371,7 +369,6 @@ static void
 do_join_0(struct Client *client_p, struct Client *source_p)
 {
   struct Channel *chptr = NULL;
-  struct Membership *ms;
   dlink_node *ptr, *ptr_next;
 
   sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, NOFLAGS,
@@ -379,12 +376,11 @@ do_join_0(struct Client *client_p, struct Client *source_p)
 
   if (source_p->user->channel.head != NULL &&
       MyConnect(source_p) && !IsOper(source_p))
-   check_spambot_warning(source_p, NULL);
+    check_spambot_warning(source_p, NULL);
 
   DLINK_FOREACH_SAFE(ptr, ptr_next, source_p->user->channel.head)
   {
-    ms = ptr->data;
-    chptr = ms->chptr;
+    chptr = ((struct Membership *)ptr->data)->chptr;
 
     sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s PART %s",
                          source_p->name, source_p->username,

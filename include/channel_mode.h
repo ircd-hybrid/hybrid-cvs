@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.19 2003/06/01 08:48:35 michael Exp $
+ *  $Id: channel_mode.h,v 7.20 2003/06/07 09:56:46 michael Exp $
  */
 
 
@@ -53,33 +53,24 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 
 
 /* Channel related flags */
-
-#define CHFL_PEON	0x0000 /* normal member of channel */
 #define CHFL_CHANOP     0x0001 /* Channel operator */
 #define CHFL_VOICE      0x0002 /* the power to speak */
 #define CHFL_DEOPPED    0x0004 /* deopped by us, modes need to be bounced */
-#define CHFL_BAN        0x0010 /* ban channel flag */
-#define CHFL_EXCEPTION  0x0020 /* exception to ban channel flag */
-#define CHFL_INVEX      0x0080
-
-/* Channel Visibility macros */
-
-#define MODE_PEON	CHFL_PEON
-#define MODE_CHANOP     CHFL_CHANOP
-#define MODE_VOICE      CHFL_VOICE
-#define MODE_DEOPPED	CHFL_DEOPPED
+#define CHFL_BAN        0x0008 /* ban channel flag */
+#define CHFL_EXCEPTION  0x0010 /* exception to ban channel flag */
+#define CHFL_INVEX      0x0020
 
 /* channel modes ONLY */
-#define MODE_PRIVATE    0x0008
-#define MODE_SECRET     0x0010
-#define MODE_MODERATED  0x0020
-#define MODE_TOPICLIMIT 0x0040
-#define MODE_INVITEONLY 0x0080
-#define MODE_NOPRIVMSGS 0x0100
+#define MODE_PRIVATE    0x0001
+#define MODE_SECRET     0x0002
+#define MODE_MODERATED  0x0004
+#define MODE_TOPICLIMIT 0x0008
+#define MODE_INVITEONLY 0x0010
+#define MODE_NOPRIVMSGS 0x0020
 
-#define MODE_QUERY      0
-#define MODE_ADD        1
-#define MODE_DEL       -1
+#define MODE_QUERY  0
+#define MODE_ADD    1
+#define MODE_DEL   -1
 
 /* name invisible */
 #define SecretChannel(x)        ((x) && ((x)->mode.mode & MODE_SECRET))
@@ -90,21 +81,6 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 #define ParanoidChannel(x)	((x) && ((x)->mode.mode &\
 			        (MODE_PRIVATE|MODE_INVITEONLY))==\
 		                (MODE_PRIVATE|MODE_INVITEONLY))
-
-#define IsInviteOnly(x)         ((x) && ((x)->mode.mode & MODE_INVITEONLY))
-#define IsModerated(x)          ((x) && ((x)->mode.mode & MODE_MODERATED))
-#define IsNoPrivMsgs(x)         ((x) && ((x)->mode.mode & MODE_NOPRIVMSGS))
-#define IsTopicLimited(x)       ((x) && ((x)->mode.mode & MODE_TOPICLIMIT))
-
-#define SetInviteOnly(x)        ((x)->mode.mode |= MODE_INVITEONLY)
-#define SetModerated(x)         ((x)->mode.mode |= MODE_MODERATED)
-#define SetNoPrivMsgs(x)        ((x)->mode.mode |= MODE_NOPRIVMSGS)
-#define SetTopicLimited(x)      ((x)->mode.mode |= MODE_TOPICLIMIT)
-
-#define ClearInviteOnly(x)      ((x)->mode.mode &= ~MODE_INVITEONLY)
-#define ClearModerated(x)       ((x)->mode.mode &= ~MODE_MODERATED)
-#define ClearNoPrivMsgs(x)      ((x)->mode.mode &= ~MODE_NOPRIVMSGS)
-#define ClearTopicLimited       ((x)->mode.mode &= ~MODE_TOPICLIMIT)
 
 struct ChModeChange
 {
@@ -125,7 +101,5 @@ struct ChCapCombo
   int cap_no;
 };
 
-#define CHACCESS_CHANOP 2
-#define CHACCESS_VOICED 1
-#define CHACCESS_PEON   0
-#endif  /* INCLUDED_channel_mode_h */
+#define CHACCESS_CHANOP 1
+#endif /* INCLUDED_channel_mode_h */

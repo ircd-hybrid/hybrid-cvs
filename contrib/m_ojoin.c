@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.19 2003/05/28 21:11:50 bill Exp $
+ *   $Id: m_ojoin.c,v 1.20 2003/06/07 09:56:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -25,10 +25,8 @@
 #include "client.h"
 #include "ircd.h"
 #include "numeric.h"
-#include "s_log.h"
 #include "s_serv.h"
 #include "send.h"
-#include "whowas.h"
 #include "irc_string.h"
 #include "hash.h"
 #include "msg.h"
@@ -37,8 +35,7 @@
 #include "list.h"
 #include "channel_mode.h"
 
-static void mo_ojoin(struct Client *client_p, struct Client *source_p,
-                     int parc, char *parv[]);
+static void mo_ojoin(struct Client *, struct Client *, int, char **);
 
 struct Message ojoin_msgtab = {
   "OJOIN", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -57,7 +54,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.19 $";
+const char *_version = "$Revision: 1.20 $";
 
 /*
 ** mo_ojoin
@@ -66,7 +63,7 @@ const char *_version = "$Revision: 1.19 $";
 */
 static void
 mo_ojoin(struct Client *client_p, struct Client *source_p,
-	 int parc, char *parv[])
+         int parc, char *parv[])
 {
   struct Channel *chptr;
   int move_me = 0;
@@ -119,35 +116,35 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
                        chptr->chname);
        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +o %s",
                        me.name, chptr->chname, source_p->name);
-
-    }
+  }
   else if (*parv[1] == '+')
-    {
-       add_user_to_channel(chptr, source_p, CHFL_VOICE);
-       if (chptr->chname[0] == '#')
-         sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
-                 ":%s SJOIN %lu %s + :+%s", me.name, (unsigned long)chptr->channelts,
-                 chptr->chname, source_p->name);
-       sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
-                       source_p->name,
-                       source_p->username,
-                       source_p->host,
-                       chptr->chname);
-       sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +v %s",
-                       me.name, chptr->chname, source_p->name);
-    }
+  {
+    add_user_to_channel(chptr, source_p, CHFL_VOICE);
+
+    if (chptr->chname[0] == '#')
+       sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
+                     ":%s SJOIN %lu %s + :+%s",
+                     me.name, (unsigned long)chptr->channelts,
+                     chptr->chname, source_p->name);
+    sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
+                         source_p->name, source_p->username,
+                         source_p->host, chptr->chname);
+    sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +v %s",
+                         me.name, chptr->chname, source_p->name);
+  }
   else
-    {
-       add_user_to_channel(chptr, source_p, CHFL_PEON);
-       if (chptr->chname[0] == '#')
-         sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
-                       ":%s SJOIN %lu %s + :%s",
-                       me.name, (unsigned long)chptr->channelts,
-		       chptr->chname, source_p->name);
-       sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
-                       source_p->name, source_p->username,
-                       source_p->host, chptr->chname);
-    }
+  {
+    add_user_to_channel(chptr, source_p, 0);
+
+    if (chptr->chname[0] == '#')
+      sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
+                    ":%s SJOIN %lu %s + :%s",
+                    me.name, (unsigned long)chptr->channelts,
+                    chptr->chname, source_p->name);
+    sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
+                         source_p->name, source_p->username,
+                         source_p->host, chptr->chname);
+  }
 
   /* send the topic... */
   if (chptr->topic != NULL)

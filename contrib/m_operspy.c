@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.33 2003/06/07 05:26:18 joshk Exp $
+ *   $Id: m_operspy.c,v 1.34 2003/06/07 09:56:44 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -112,7 +112,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 
 #ifdef LOG_OPERSPY
@@ -126,7 +126,7 @@ static void log_operspy(struct Client *, const char *);
  */
 static void
 m_operspy(struct Client *client_p, struct Client *source_p,
-	  int parc, char *parv[])
+          int parc, char *parv[])
 {
   char *operspy = (parc > 1) ? parv[1] - 1 : NULL;
 
@@ -224,11 +224,13 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 #ifdef OPERSPY_LIST
   if (irccmp(parv[1], "LIST") == 0)
   {
-    sendto_one(client_p, form_str(RPL_LISTSTART), me.name, client_p->name);
+    sendto_one(client_p, form_str(RPL_LISTSTART),
+               me.name, client_p->name);
 
     DLINK_FOREACH(ptr, global_channel_list.head)
     {
       chptr_list = ptr->data;
+
       if (match(parv[2], chptr_list->chname))
       {
         sendto_one(client_p, form_str(RPL_LIST), me.name, client_p->name,
@@ -236,7 +238,8 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
       }
     }
 
-    sendto_one(client_p, form_str(RPL_LISTEND), me.name, client_p->name);
+    sendto_one(client_p, form_str(RPL_LISTEND),
+               me.name, client_p->name);
     return;
   }
 #endif
@@ -247,11 +250,11 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     if (!IsChanPrefix(parv[2][0]) || !check_channel_name(parv[2]))
     {
       sendto_one(client_p, form_str(ERR_BADCHANNAME),
-                 me.name, parv[0], (unsigned char *)parv[2]);
+                 me.name, parv[0], parv[2]);
       return;
     }
 
-    if ((chptr_mode = (struct Channel *)hash_find_channel(parv[2])) == NULL)
+    if ((chptr_mode = hash_find_channel(parv[2])) == NULL)
     {
       /*
        * according to m_mode.c, the channel *could* exist on the uplink still,
@@ -301,8 +304,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
      * is that your nickname shows up in the list.  for now, there is
      * no easy way around it.
      */ 
-
-    add_user_to_channel(chptr_names, client_p, MODE_CHANOP);
+    add_user_to_channel(chptr_names, client_p, CHFL_CHANOP);
     channel_member_names(client_p, chptr_names, 1);
     remove_user_from_channel(chptr_names, client_p);
     return;
@@ -314,14 +316,14 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
   {
     if ((chptr_topic = hash_find_channel(parv[2])) == NULL)
     {
-      sendto_one(client_p, form_str(ERR_NOSUCHCHANNEL), me.name,
-                 parv[0], parv[2]);
+      sendto_one(client_p, form_str(ERR_NOSUCHCHANNEL),
+                 me.name, parv[0], parv[2]);
       return;
     }
 
     if (chptr_topic->topic == NULL)
-      sendto_one(client_p, form_str(RPL_NOTOPIC), me.name, parv[0],
-                 parv[2]);
+      sendto_one(client_p, form_str(RPL_NOTOPIC),
+                 me.name, parv[0], parv[2]);
     else
     {
       sendto_one(client_p, form_str(RPL_TOPIC), me.name, parv[0],
@@ -340,39 +342,41 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     if (mask != NULL)
     {
       collapse(mask);
+
       if (*mask == '\0')
       {
-        sendto_one(client_p, form_str(RPL_ENDOFWHO), me.name, parv[0], "*");
+        sendto_one(client_p, form_str(RPL_ENDOFWHO),
+                   me.name, parv[0], "*");
         return;
       }
     }
     else
     {
       who_global(client_p, NULL, server_oper);
-      sendto_one(client_p, form_str(RPL_ENDOFWHO), me.name, parv[0], "*");
+      sendto_one(client_p, form_str(RPL_ENDOFWHO),
+                 me.name, parv[0], "*");
       return;
     }
 
     /* /who #channel */
-
     if (IsChannelName(mask))
     {
       if ((chptr_who = hash_find_channel(mask)) != NULL)
         do_who_on_channel(client_p, chptr_who, chptr_who->chname);
 
-      sendto_one(client_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
+      sendto_one(client_p, form_str(RPL_ENDOFWHO),
+                 me.name, parv[0], mask);
       return;
     }
 
     /* /who nick */
-
     if (((target_p_who = find_client(mask)) != NULL) && 
         IsPerson(target_p_who))
     {
       if (target_p_who->user->channel.head != NULL)
       {
         chptr_who =
-          ((struct Membership *) target_p_who->user->channel.head->data)->chptr;
+          ((struct Membership *)target_p_who->user->channel.head->data)->chptr;
 
         if (is_chan_op(chptr_who, target_p))
 	  do_who(client_p, target_p_who, chptr_who->chname, "@");
@@ -386,19 +390,20 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
         do_who(client_p, target_p_who, NULL, "");
       }
 
-      sendto_one(client_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
+      sendto_one(client_p, form_str(RPL_ENDOFWHO),
+                 me.name, parv[0], mask);
       return;
     }
 
     /* /who 0 */
-
     if ((*(mask+1) == '\0') && (*mask == '0'))
       who_global(client_p, NULL, server_oper);
     else
       who_global(client_p, mask, server_oper);
 
     /* nothing else? end of /who. */
-    sendto_one(client_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
+    sendto_one(client_p, form_str(RPL_ENDOFWHO),
+               me.name, parv[0], mask);
     return;
   }
 #endif
@@ -408,13 +413,15 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
   {
     if (strchr(parv[2], '?') || strchr(parv[2], '*'))
     {
-      sendto_one(client_p, ":%s NOTICE %s :Do not use wildcards with this.", me.name, parv[0]);
+      sendto_one(client_p, ":%s NOTICE %s :Do not use wildcards with this.",
+                 me.name, parv[0]);
       return;
     }
 
     if ((target_p = find_client(parv[2])) == NULL || !IsClient(target_p))
     {
-      sendto_one(client_p, form_str(ERR_NOSUCHNICK), me.name, parv[0], parv[2]);
+      sendto_one(client_p, form_str(ERR_NOSUCHNICK),
+                 me.name, parv[0], parv[2]);
       return;
     }
 
@@ -434,7 +441,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 
     DLINK_FOREACH(lp, target_p->user->channel.head)
     {
-      chptr_whois = ((struct Membership *) lp->data)->chptr;
+      chptr_whois = ((struct Membership *)lp->data)->chptr;
 
       if ((cur_len + strlen(chptr_whois->chname) + 2) > (BUFSIZE - 4))
       {
@@ -445,7 +452,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 
       ircsprintf(t, "%s%s%s ",
                  ShowChannel(client_p, chptr_whois) ? "" : "%",
-                 get_member_status((struct Membership *) lp->data, YES),
+                 get_member_status((struct Membership *)lp->data, YES),
                  chptr_whois->chname);
       tlen = strlen(t);
       t += tlen;
@@ -461,18 +468,18 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
                a2client_p->info);
 
     if (IsOper(target_p))
-      sendto_one(client_p, form_str(RPL_WHOISOPERATOR), me.name,
-                 client_p->name, target_p->name);
+      sendto_one(client_p, form_str(RPL_WHOISOPERATOR),
+                 me.name, client_p->name, target_p->name);
 
     if (MyConnect(target_p))
       sendto_one(client_p, form_str(RPL_WHOISIDLE), me.name,
                  client_p->name, target_p->name, CurrentTime - target_p->user->last,
                  target_p->firsttime);
-    sendto_one(client_p, form_str(RPL_ENDOFWHOIS), me.name, parv[0], parv[2]);
+    sendto_one(client_p, form_str(RPL_ENDOFWHOIS),
+               me.name, parv[0], parv[2]);
     return;
   }
 #endif
-
   sendto_one(client_p, ":%s NOTICE %s :%s is not a valid option.  Choose from LIST, MODE, NAMES, WHO, WHOIS",
              me.name, parv[0], parv[1]);
 }
@@ -519,10 +526,10 @@ who_global(struct Client *source_p, char *mask, int server_oper)
         (MyClient(target_p) && match(mask, target_p->localClient->sockhost)))
     {
       do_who(source_p, target_p, NULL, "");
+
       if (maxmatches > 0)
       {
-        --maxmatches;
-        if (maxmatches == 0)
+        if (--maxmatches == 0)
           return;
       }
     }
