@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.87 2000/12/01 22:18:04 db Exp $
+ * $Id: channel.c,v 7.88 2000/12/01 22:36:45 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2523,6 +2523,14 @@ extern int list_length(dlink_list *list)
   return count;
 }
 
+/*
+ * channel_chanop_or_voice
+ * inputs	- pointer to channel
+ * 		- pointer to client
+ * output	- string either @,+% or"" depending on whether
+ *		  chanop, voiced, halfop or user
+ * side effects	-
+ */
 char *channel_chanop_or_voice(struct Channel *chptr, struct Client *acptr)
 {
   dlink_node *ptr;

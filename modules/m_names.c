@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.7 2000/12/01 22:18:00 db Exp $
+ *   $Id: m_names.c,v 1.8 2000/12/01 22:36:42 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -270,6 +270,7 @@ void names_list( struct Client *sptr, struct Channel *chptr, char *chname,
 
       strcat(buf,buf2);
       cur_len += strlen(buf2);
+      reply_to_send = YES;
 
       if ((cur_len + NICKLEN) > (BUFSIZE - 3))
 	{
@@ -341,14 +342,11 @@ void names_non_public_non_secret(struct Client *sptr)
       if(lp == NULL)	/* Nothing to do. yay */
 	continue;
 
-      /* XXX */
-#if 0
       if(GlobalSetOptions.hide_chanops)
 	ircsprintf(buf2," %s ", c2ptr->name);
       else
-	ircsprintf(buf2,"%s%s ", channel_chanop_or_voice(lp->flags),
+	ircsprintf(buf2,"%s%s ", channel_chanop_or_voice(ch3ptr, c2ptr),
 		   c2ptr->name);
-#endif
 
       strcat(buf,buf2);
       cur_len += strlen(buf2);
