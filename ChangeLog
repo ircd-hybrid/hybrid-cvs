@@ -1,3 +1,16 @@
+leeh        2002/01/23 12:59:27 EST	(20020123_0)
+
+  Modified files:
+    src                  s_serv.c 
+  Log:
+  - added an !IsRegistered check to hunt_server, else we would forward trace
+    requests to a client that had sent NICK but not USER
+  
+  Revision  Changes    Path
+  7.235     +8 -0      ircd-hybrid-7/src/s_serv.c
+
+
+
 davidt      2002/01/22 12:21:15 EST	(20020122_2)
 
   Modified files:
@@ -21759,4 +21772,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3351 2002/01/22 17:21:21 davidt Exp $
+$Id: ChangeLog,v 7.3352 2002/01/23 17:59:33 leeh Exp $
