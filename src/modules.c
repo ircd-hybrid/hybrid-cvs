@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.83 2002/01/03 12:11:31 leeh Exp $
+ * $Id: modules.c,v 7.84 2002/01/04 05:33:41 db Exp $
  */
 #include "config.h"
 
@@ -326,6 +326,7 @@ load_all_modules (int warn)
   (void)closedir (system_module_dir);
 }
 
+#ifndef STATIC_MODULES
 /* load_core_modules()
  *
  * input        -
