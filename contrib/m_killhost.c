@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.8 2003/10/07 22:37:08 bill Exp $
+ *  $Id: m_killhost.c,v 1.9 2004/05/12 05:30:53 metalrock Exp $
  *
  */
 
@@ -65,48 +65,52 @@ _moddeinit(void)
   mod_del_cmd(&killhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 #endif
 
-/*
-** mo_killhost
-** Created May 5, 2003
-** common (Ilya Shtift) ishtift@tagil.svrw.ru
-**
-**      parv[0] = sender prefix
-**      parv[1] = host
-**      parv[2] = [reason]
-*/
-static void mo_killhost(struct Client *client_p,
-                 struct Client *source_p,
-                 int parc,
-                 char *parv[])
+/* mo_killhost()
+ * Created May 5, 2003
+ * common (Ilya Shtift) ishtift@tagil.svrw.ru
+ *
+ *      parv[0] = sender prefix
+ *      parv[1] = host
+ *      parv[2] = reason
+ */
+static void
+mo_killhost(struct Client *client_p, struct Client *source_p, int parc,
+            char *parv[])
 {
   dlink_node *ptr;
   dlink_node *ptr_next;
   struct Client *target_p;
-  const char* inpath = client_p->name;
+  const char *inpath = client_p->name;
   char *host, *reason;
+  char def_reason[] = "No Reason";
   int count = 0;
 
-  host = parv[1];
-  reason = parv[2];
+  if (!IsOperK(source_p) && !IsOperGlobalKill(source_p))
+  {
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               me.name, source_p->name);
+    return;
+  }
 
-  if (!EmptyString(reason))
+  host = parv[1];
+
+  if (!EmptyString(parv[2]))
   {
     if (strlen(reason) > (size_t) KILLLEN)
       reason[KILLLEN] = '\0';
   }
   else
-    reason = "<No reason given>";
-
-  sendto_wallops_flags(UMODE_OPERWALL, source_p, "OPERWALL - KILLHOST %s %s", host, reason);
+    reason = def_reason;
 
   DLINK_FOREACH_SAFE(ptr, ptr_next, global_client_list.head)
   {
     target_p = ptr->data;
 
-    if (!IsPerson(target_p) || IsServer(target_p) || IsMe(target_p))
+    if (!IsPerson(target_p) || IsServer(target_p) || IsMe(target_p) ||
+	(source_p == target_p))
       continue;
 
     if (!MyConnect(target_p) && (!IsOperGlobalKill(source_p)))
@@ -123,7 +127,7 @@ static void mo_killhost(struct Client *client_p,
 
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "Received KILL message for %s. From %s Path: %s (%s)",
-                           target_p->name, parv[0], me.name, reason);
+                           target_p->name, source_p->name, me.name, reason);
 
       ilog(L_INFO,"KILL From %s For %s Path %s (%s)",
            parv[0], target_p->name, me.name, reason);
@@ -138,18 +142,23 @@ static void mo_killhost(struct Client *client_p,
       exit_client(client_p, target_p, source_p, bufhost);
     }
   }
-  sendto_one(source_p,":%s NOTICE %s :%d clients killed",me.name, parv[0], count);
+
+  if (count > 0)
+    sendto_wallops_flags(UMODE_OPERWALL, source_p, "OPERWALL - KILLHOST %s %s",
+			 host, reason);
+
+  sendto_one(source_p,":%s NOTICE %s :%d clients killed",
+             me.name, source_p->name, count);
 }
 
-static void kh_relay_kill(struct Client *one, struct Client *source_p,
-                       struct Client *target_p,
-                       const char *inpath,
-		       const char *reason)
+static void
+kh_relay_kill(struct Client *one, struct Client *source_p, struct Client *target_p,
+              const char *inpath, const char *reason)
 {
   dlink_node *ptr;
   struct Client *client_p;
   int introduce_killed_client;
-  char* user; 
+  char *user; 
   
   /* LazyLinks:
    * Check if each lazylink knows about target_p.
@@ -177,7 +186,7 @@ static void kh_relay_kill(struct Client *one, struct Client *source_p,
     if(client_p == one)
       continue;
 
-    if( !introduce_killed_client )
+    if(!introduce_killed_client)
     {
       if( ServerInfo.hub && IsCapable(client_p, CAP_LL) )
       {
@@ -204,17 +213,17 @@ static void kh_relay_kill(struct Client *one, struct Client *source_p,
       user = target_p->name;
 
     if(MyClient(source_p))
-      {
-        sendto_one(client_p, ":%s KILL %s :%s!%s!%s!%s (%s)",
-                   source_p->name, user,
-                   me.name, source_p->host, source_p->username,
-                   source_p->name, reason);
-      }
+    {
+      sendto_one(client_p, ":%s KILL %s :%s!%s!%s!%s (%s)",
+                 source_p->name, user,
+                 me.name, source_p->host, source_p->username,
+                 source_p->name, reason);
+    }
     else
-      {
-        sendto_one(client_p, ":%s KILL %s :%s %s",
-                   source_p->name, user,
-                   inpath, reason);
-      }
+    {
+      sendto_one(client_p, ":%s KILL %s :%s %s",
+                 source_p->name, user,
+                 inpath, reason);
+    }
   }
 }
