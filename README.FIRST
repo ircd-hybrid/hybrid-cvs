@@ -3,10 +3,11 @@ If you don't read this first, we won't help you.
 
 ******************************* IMPORTANT *************************************
 
-- *********** Note for those who dont bother reading docs *****************
+  *********** Note for those who dont bother reading docs *****************
   * Reading INSTALL is now a must, as the old DPATH is now specified when *
   * configure is run.                                                     *
   * - You now need to ./configure --prefix="/path/to/install/it"          *
+  * The old config format WILL NOT WORK.  Please see doc/example.conf (!) *
   *************************************************************************
 
 - To report bugs in hybrid, use the `send-pr' script that should
@@ -53,4 +54,4 @@ If you don't read this first, we won't help you.
 - Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: README.FIRST,v 7.9 2001/01/03 17:57:26 madmax Exp $
+$Id: README.FIRST,v 7.10 2001/01/03 17:59:35 madmax Exp $
