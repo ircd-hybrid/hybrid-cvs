@@ -9,14 +9,12 @@
  *  this stuff is worth it, you can buy me a beer in return.  Poul-Henning Kamp
  *  ----------------------------------------------------------------------------
  *  
- *  $Id: crypt.c,v 7.4 2002/05/24 23:34:46 androsyn Exp $
+ *  $Id: crypt.c,v 7.5 2003/06/29 18:09:37 joshk Exp $
  */
 
 #include "stdinc.h"
 
 #define MD5_SIZE 16
-
-typedef unsigned int u_int32_t;
 
 /* MD5 context. */
 typedef struct MD5Context {
@@ -195,10 +193,6 @@ crypt(const char *pw, const char *salt)
  * This code is the same as the code published by RSA Inc.  It has been
  * edited for clarity and style only.
  */
-
-#include <sys/types.h>
-
-#include <string.h>
 
 static void MD5Transform (u_int32_t [4], const unsigned char [64]);
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.h,v 7.45 2003/06/29 02:44:21 joshk Exp $
+ *  $Id: irc_string.h,v 7.46 2003/06/29 18:09:36 joshk Exp $
  */
 
 #ifndef INCLUDED_irc_string_h
@@ -49,22 +49,18 @@ extern char* collapse(char *pattern);
 extern char *collapse_esc(char *pattern);
 
 /*
+ * NOTE: The following functions are NOT the same as strcasecmp
+ * and strncasecmp! These functions use the Finnish (RFC1459)
+ * character set. Do not replace!
+ * 
  * irccmp - case insensitive comparison of s1 and s2
  */
-#ifndef HAVE_STRCASECMP
 extern int irccmp(const char *s1, const char *s2);
-#else
-#define irccmp(x, y) strcasecmp(x, y)
-#endif
 
 /*
  * ircncmp - counted case insensitive comparison of s1 and s2
  */
-#ifndef HAVE_STRNCASECMP
 extern int ircncmp(const char *s1, const char *s2, size_t n);
-#else
-#define ircncmp(x, y, z) strncasecmp(x, y, z)
-#endif
 
 /*
  * inetntoa - optimized inet_ntoa
