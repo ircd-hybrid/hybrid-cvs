@@ -1,3 +1,12 @@
+*** 20001204_11 by db
+- class.c get_client_class returns a string class name now
+  It was trying to use a struct ConfItem as a class pointer. oops.
+  As conf's now have a pointer to the class name anyway, its easier
+  to pull it from the conf anyway. If its NULL, return 'default'
+  string for now.
+
+
+
 *** 20001204_10 by db
 - lost a 433 (nickname in use error) somewhere in the way,
   put it back in.. m_nick.c
@@ -1570,7 +1579,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.691 2000/12/04 18:30:47 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.692 2000/12/04 19:07:11 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
