@@ -1,3 +1,11 @@
+*** 20001129_6 by db
+- renamed misnamed log_user_connect -> log_user_exit
+- move X line check into separate function (LIKE IT SHOULD HAVE BEEN
+  ALL ALONG)
+ 
+
+
+
 *** 20001129_5 by db
 - reworked register_user
   moved all check for conf/kline notification etc. back into s_conf.c
@@ -1037,7 +1045,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.620 2000/11/29 21:00:58 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.621 2000/11/29 21:18:32 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
