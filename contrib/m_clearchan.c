@@ -16,8 +16,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.32 2003/03/31 04:30:15 michael Exp $
+ *   $Id: m_clearchan.c,v 1.33 2003/04/03 23:48:55 michael Exp $
  */
+
 #include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
@@ -77,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 
 /*
 ** mo_clearchan
@@ -92,10 +93,11 @@ static void mo_clearchan(struct Client *client_p, struct Client *source_p,
 
   /* admins only */
   if (!IsOperAdmin(source_p))
-    {
-      sendto_one(source_p, ":%s NOTICE %s :You have no A flag", me.name, parv[0]);
-      return;
-    }
+  {
+    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
+               me.name, parv[0]);
+    return;
+  }
 
   /* XXX - we might not have CBURSTed this channel if we are a lazylink
    * yet. */
@@ -111,19 +113,19 @@ static void mo_clearchan(struct Client *client_p, struct Client *source_p,
     }
 #endif
 
-  if( chptr == NULL )
-    {
-      sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-		 me.name, parv[0], parv[1]);
-      return;
-    }
+  if (chptr == NULL)
+  {
+    sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
+               me.name, parv[0], parv[1]);
+    return;
+  }
 
-  if(IsMember(source_p, chptr))
-    {
-      sendto_one(source_p, ":%s NOTICE %s :*** Please part %s before using CLEARCHAN",
-                 me.name, source_p->name, parv[1]);
-      return;
-    }
+  if (IsMember(source_p, chptr))
+  {
+    sendto_one(source_p, ":%s NOTICE %s :*** Please part %s before using CLEARCHAN",
+               me.name, source_p->name, parv[1]);
+    return;
+  }
 
   if (!on_vchan)
     {
@@ -340,7 +342,6 @@ static void remove_a_mode( int hide_or_not,
 
     }
 }
-
 
 /*
  * free_channel_list

@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.12 2002/12/18 05:33:29 db Exp $
+ *  $Id: m_tb.c,v 1.13 2003/04/03 23:48:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -55,8 +55,8 @@
 static void ms_tburst(struct Client *, struct Client *, int, char **);
 static void set_topic(struct Client *, struct Channel *, 
 		      time_t, char *, char *);
-static void set_tburst_capab();
-static void unset_tburst_capab();
+static void set_tburst_capab(void);
+static void unset_tburst_capab(void);
 int send_tburst(struct hook_burst_channel *);
 
 struct Message tburst_msgtab = {
@@ -81,7 +81,7 @@ _moddeinit(void)
   unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 #endif
 
 /* ms_tburst()
@@ -140,12 +140,12 @@ static void set_topic(struct Client *source_p, struct Channel *chptr,
 #endif
 }
 
-static void set_tburst_capab()
+static void set_tburst_capab(void)
 {
   default_server_capabs |= CAP_TBURST;
 }
 
-static void unset_tburst_capab()
+static void unset_tburst_capab(void)
 {
   default_server_capabs &= ~CAP_TBURST;
 }

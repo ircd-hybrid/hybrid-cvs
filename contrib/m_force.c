@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.17 2002/11/01 13:24:41 db Exp $
+ * $Id: m_force.c,v 1.18 2003/04/03 23:48:55 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-char *_version = "$Revision: 1.17 $";
+const char *_version = "$Revision: 1.18 $";
 #endif
 
 /*
@@ -97,9 +97,10 @@ static void mo_forcejoin(struct Client *client_p, struct Client *source_p,
   char sjmode;
   char *newch;
 
-  if(!IsAdmin(source_p))
+  if (!IsAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no A flag", me.name, parv[0]);
+    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
+               me.name, parv[0]);
     return;
   }
 
@@ -115,7 +116,8 @@ static void mo_forcejoin(struct Client *client_p, struct Client *source_p,
 
   if (!MyConnect(target_p))
   {
-    sendto_one(target_p, ":%s FORCEJOIN %s %s", parv[0], parv[1], parv[2]);
+    sendto_one(target_p, ":%s FORCEJOIN %s %s",
+               parv[0], parv[1], parv[2]);
     return;
   }
 
@@ -265,9 +267,10 @@ static void mo_forcepart(struct Client *client_p, struct Client *source_p,
   struct Client *target_p;
   struct Channel *chptr;
 
-  if(!IsAdmin(source_p))
+  if (!IsAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no A flag", me.name, parv[0]);
+    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
+               me.name, parv[0]);
     return;
   }
 
@@ -281,11 +284,12 @@ static void mo_forcepart(struct Client *client_p, struct Client *source_p,
 
   if (!MyConnect(target_p))
   {
-    sendto_one(target_p, ":%s FORCEPART %s %s", parv[0], parv[1], parv[2]);
+    sendto_one(target_p, ":%s FORCEPART %s %s",
+               parv[0], parv[1], parv[2]);
     return;
   }
 
-  if((chptr = hash_find_channel(parv[2])) == NULL)
+  if ((chptr = hash_find_channel(parv[2])) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
                me.name, parv[0], parv[2]);
@@ -302,8 +306,7 @@ static void mo_forcepart(struct Client *client_p, struct Client *source_p,
   if (chptr->chname[0] != '&')
     sendto_server(target_p, target_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
 		  ":%s PART %s :%s",
-		  target_p->name, chptr->chname,
-		  target_p->name);
+		  target_p->name, chptr->chname, target_p->name);
 
   sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s PART %s :%s",
                        target_p->name, target_p->username,

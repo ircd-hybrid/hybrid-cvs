@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.19 2003/04/03 15:14:49 adx Exp $
+ *   $Id: m_operspy.c,v 1.20 2003/04/03 23:48:56 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -125,7 +125,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.19 $";
+const char *_version = "$Revision: 1.20 $";
 #endif
 
 /*
@@ -175,7 +175,6 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 
 #ifdef OPERSPY_NAMES
   /* as with mode, must preserve channel modes */
-  int                   c_modes = 0;
   struct Channel        *chptr_names = NULL;
 #endif
 

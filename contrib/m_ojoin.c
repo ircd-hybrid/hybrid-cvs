@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.11 2002/06/11 01:49:18 androsyn Exp $
+ *   $Id: m_ojoin.c,v 1.12 2003/04/03 23:48:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 
 /*
 ** mo_ojoin
@@ -66,7 +66,7 @@ char *_version = "$Revision: 1.11 $";
 **      parv[1] = channel
 */
 static void mo_ojoin(struct Client *client_p, struct Client *source_p,
-                        int parc, char *parv[])
+                     int parc, char *parv[])
 {
   struct Channel *chptr, *root_chptr;
   int move_me = 0;
@@ -76,10 +76,11 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
 
   /* admins only */
   if (!IsOperAdmin(source_p))
-    {
-      sendto_one(source_p, ":%s NOTICE %s :You have no A flag", me.name, parv[0]);
-      return;
-    }
+  {
+    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
+               me.name, parv[0]);
+    return;
+  }
 
   /* XXX - we might not have CBURSTed this channel if we are a lazylink
    * yet. */
@@ -101,12 +102,12 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
     }
 #endif
 
-  if( chptr == NULL )
-    {
-      sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-		 me.name, parv[0], parv[1]);
-      return;
-    }
+  if (chptr == NULL)
+  {
+    sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
+               me.name, parv[0], parv[1]);
+    return;
+  }
 
   if(IsMember(source_p, chptr))
     {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.55 2003/03/29 02:45:41 michael Exp $
+ *  $Id: irc_string.c,v 7.56 2003/04/03 23:48:59 michael Exp $
  */
 
 #include "stdinc.h"
@@ -147,7 +147,7 @@ char *strip_tabs(char *dest, const unsigned char *src, size_t len)
  *   argv 9/90
  *
  */
-char* strtoken(char** save, char* str, char* fs)
+char* strtoken(char** save, char* str, const char* fs)
 {
   char* pos = *save;  /* keep last position across calls */
   char* tmp;
@@ -444,9 +444,7 @@ const char *inetntop(int af, const void *src, char *dst, unsigned int size)
  *	Paul Vixie, 1996.
  */
 static int
-inet_pton4(src, dst)
-	const char *src;
-	u_char *dst;
+inet_pton4(const char *src, u_char *dst)
 {
 	int saw_digit, octets, ch;
 	u_char tmp[INADDRSZ], *tp;
@@ -497,9 +495,7 @@ inet_pton4(src, dst)
  */
 
 static int
-inet_pton6(src, dst)
-	const char *src;
-	u_char *dst;
+inet_pton6(const char *src, u_char *dst)
 {
 	static const char xdigits[] = "0123456789abcdef";
 	u_char tmp[IN6ADDRSZ], *tp, *endp, *colonp;
@@ -587,10 +583,7 @@ inet_pton6(src, dst)
 }
 #endif
 int
-inetpton(af, src, dst)
-	int af;
-	const char *src;
-	void *dst;
+inetpton(int af, const char *src, void *dst)
 {
 	switch (af) {
 	case AF_INET:

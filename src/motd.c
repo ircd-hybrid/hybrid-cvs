@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.c,v 7.26 2002/10/10 18:49:30 androsyn Exp $
+ *  $Id: motd.c,v 7.27 2003/04/03 23:48:59 michael Exp $
  */
 
 #include "stdinc.h"
@@ -64,19 +64,19 @@ SendMessageFile(struct Client *source_p, MessageFile *motdToPrint)
 {
   MessageFileLine *linePointer;
   MotdType motdType;
-  char *nick;
+  const char *nick;
 
-  if(motdToPrint != NULL)
-    motdType = motdToPrint->motdType;
-  else
-    return -1;
+  if (motdToPrint == NULL)
+    return(-1);
+
+  motdType = motdToPrint->motdType;
 
   switch(motdType)
     {
     case USER_MOTD:
       nick = BadPtr(source_p->name) ? "*" : source_p->name;
       
-      if (motdToPrint->contentsOfFile == (MessageFileLine *)NULL)
+      if (motdToPrint->contentsOfFile == NULL)
         {
           sendto_one(source_p, form_str(ERR_NOMOTD), me.name, nick);
           return 0;
@@ -97,7 +97,7 @@ SendMessageFile(struct Client *source_p, MessageFile *motdToPrint)
       break;
 
     case USER_LINKS:
-      if (motdToPrint->contentsOfFile == (MessageFileLine *)NULL)
+      if (motdToPrint->contentsOfFile == NULL)
 	return -1;
 
       for(linePointer = motdToPrint->contentsOfFile;linePointer;
@@ -111,7 +111,7 @@ SendMessageFile(struct Client *source_p, MessageFile *motdToPrint)
       break;
 
     case OPER_MOTD:
-      if (motdToPrint->contentsOfFile == (MessageFileLine *)NULL)
+      if (motdToPrint->contentsOfFile == NULL)
         {
 /*          sendto_one(source_p, ":%s NOTICE %s :No OPER MOTD", me.name,
  *          source_p->name); */
@@ -193,12 +193,12 @@ ReadMessageFile(MessageFile *MessageFileptr)
 
   while(fbgets(buffer, MESSAGELINELEN, file))
     {
-      if ((p = strchr(buffer, '\n')))
+      if ((p = strchr(buffer, '\n')) != NULL)
         *p = '\0';
       newMessageLine = (MessageFileLine*) MyMalloc(sizeof(MessageFileLine));
 
       strlcpy(newMessageLine->line, buffer, sizeof(newMessageLine->line));
-      newMessageLine->next = (MessageFileLine *)NULL;
+      newMessageLine->next = NULL;
 
       if(MessageFileptr->contentsOfFile)
         {
