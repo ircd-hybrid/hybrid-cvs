@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.48 2003/06/09 07:38:05 joshk Exp $
+dnl $Id: configure.ac,v 7.49 2003/06/10 05:22:58 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -23,13 +23,10 @@ AC_LANG(C)
 dnl Make sure autoconf doesn't interfere with cflags -jmallett
 CFLAGS="$OLD_CFLAGS"
 
-dnl Set some defaults...
-if test -z "$libdir"; then 
-	echo setting libdir
-	libdir='${prefix}/modules'
-fi
-
 dnl Check for various compilers. -jmallett
+dnl But if $CC turns out to be gcc, sure as hell it's, well, gcc. -joshk
+
+if test "$CC" != gcc; then
 
 SGS=no
 AC_MSG_CHECKING(if we are using TenDRA or MIPSpro)
@@ -70,6 +67,8 @@ case `$CC -V 2>&1` in
 	AC_MSG_RESULT(no)
 ;;
 esac
+
+fi
 
 AC_MSG_CHECKING(if we are using Apple GCC)
 if expr "`$CC -v 2>&1 | tail -1`" : Apple >/dev/null; then
@@ -175,7 +174,7 @@ AC_PATH_PROG(LD, ld)
 AC_PROG_YACC
 AC_PROG_RANLIB
 
-if test "$YACC" = "yacc" -a -z "`which $YACC >/dev/null 2>&1`"; then
+if test "$YACC" = "yacc" -a -z "`which $YACC 2>/dev/null`"; then
 	AC_MSG_ERROR([could not locate a suitable parser generator; install bison, yacc, or byacc])
 fi
 
