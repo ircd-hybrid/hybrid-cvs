@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.91 2000/12/30 06:47:26 lusky Exp $
+ * $Id: ircd.c,v 7.92 2000/12/30 18:19:10 lusky Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -536,8 +536,11 @@ int main(int argc, char *argv[])
    *    Env variable "LANGUAGE"
    *    Default of "" (so don't overwrite LANGUAGE here)
    */
-  
-  setenv("LANGUAGE", "", 0);
+ 
+  if (!getenv("LANGUAGE"))
+    { 
+      putenv("LANGUAGE=");
+    }
 
   textdomain("ircd-hybrid");
   bindtextdomain("ircd-hybrid" , MSGPATH);

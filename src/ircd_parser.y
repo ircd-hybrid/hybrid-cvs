@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.80 2000/12/30 14:42:42 db Exp $
+ * $Id: ircd_parser.y,v 1.81 2000/12/30 18:19:11 lusky Exp $
  */
 
 %{
@@ -1505,7 +1505,9 @@ general_glines: GLINES '=' TYES ';'
 
 general_message_locale: MESSAGE_LOCALE '=' QSTRING ';'
 {
-        setenv("LANGUAGE", yylval.string, 1);
+        char langenv[BUFSIZE];
+        ircsprintf(langenv, "LANGUAGE=%s", yyval.string);
+        putenv(langenv);
 } ;
 
 general_gline_time: GLINE_TIME '=' NUMBER ';'
