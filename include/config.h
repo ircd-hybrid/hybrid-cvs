@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.93 2001/02/20 13:13:17 wcampbel Exp $
+ * $Id: config.h,v 7.94 2001/02/24 05:32:24 a1kmm Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -41,14 +41,14 @@
 /* VMS NOTE - VMS is basically unlimited with FDs, so just set this
    to any suitable value.. */
 
-#define HARD_FDLIMIT_   256
-#define INIT_MAXCLIENTS 200
+#define HARD_FDLIMIT_   1024
+#define INIT_MAXCLIENTS 800
 
 /*
  * This is how many 'buffer connections' we allow... 
  * Remember, MAX_BUFFER + MAX_CLIENTS can't exceed HARD_FDLIMIT :)
  */
-#define MAX_BUFFER      60
+#define MAX_BUFFER      200
 
 /* Don't change this... */
 #define HARD_FDLIMIT    (HARD_FDLIMIT_ - 10)
