@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.10 2000/10/30 22:43:25 adrian Exp $
+ *  $Id: s_bsd_poll.c,v 7.11 2000/10/31 14:27:29 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -348,7 +348,10 @@ int read_message(time_t delay, unsigned char mask)
       if (rw)
         {
           if (IsConnecting(cptr)) {
-            if (!completed_connection(cptr)) {
+            if (completed_connection(cptr)) {
+              comm_setselect(cptr->fd, COMM_SELECT_READ, read_packet, cptr, 0);
+              continue;
+            } else {
               exit_client(cptr, cptr, &me, "Lost C/N Line");
               continue;
             }
