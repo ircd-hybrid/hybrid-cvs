@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.132 2001/03/22 05:51:28 ejb Exp $
+ *   $Id: send.c,v 7.133 2001/03/23 08:38:06 toot Exp $
  */
 
 #include <sys/types.h>
@@ -1138,7 +1138,7 @@ sendto_match_vacap_servs(struct Channel *chptr, struct Client *from, ...)
 	va_start(args, from);
 	
 	/* at this point, we have a list of CAPs followed by a terminating 0 */
-	for (ncaps = 0; cap = va_arg(args, int); ncaps++)
+	for (ncaps = 0; (cap = va_arg(args, int)); ncaps++)
 	{
 		/* for each cap, add it to the caps list */
 		if (ncaps > MAX_CAPS)
