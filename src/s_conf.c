@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.296 2002/03/10 00:08:32 androsyn Exp $
+ *  $Id: s_conf.c,v 7.297 2002/04/17 00:05:10 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1225,7 +1225,7 @@ find_x_conf(char *to_find)
       if (BadPtr(aconf->name))
           continue;
 
-      if(match(aconf->name,to_find))
+      if(match_esc(aconf->name,to_find))
         return(aconf);
 
     }

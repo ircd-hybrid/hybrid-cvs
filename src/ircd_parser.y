@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.241 2002/03/25 17:01:09 androsyn Exp $
+ *  $Id: ircd_parser.y,v 1.242 2002/04/17 00:05:09 leeh Exp $
  */
 
 %{
@@ -1887,6 +1887,7 @@ gecos_name:    NAME '=' QSTRING ';'
   {
     MyFree(yy_aconf->host);
     DupString(yy_aconf->host, yylval.string);
+    (void)collapse(yy_aconf->host);
   };
 
 gecos_reason:    REASON '=' QSTRING ';' 
