@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.360 2003/05/08 09:39:25 michael Exp $
+ *  $Id: client.c,v 7.361 2003/05/08 10:54:14 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1190,13 +1190,13 @@ exit_client(
      * read/write.
      */
     if (IsClosing(source_p))
-      return 0;
+      return(0);
 
     SetClosing(source_p);
 
     if (IsIpHash(source_p))
       remove_one_ip(&source_p->localClient->ip);
-    
+
     delete_adns_queries(source_p->localClient->dns_query);
     delete_identd_queries(source_p);
     
@@ -1250,7 +1250,7 @@ exit_client(
       else
         uplink = NULL;
     }
-    
+
     if (IsPerson(source_p))
       sendto_realops_flags(UMODE_CCONN, L_ALL,
                            "Client exiting: %s (%s@%s) [%s] [%s]",
@@ -1296,7 +1296,7 @@ exit_client(
       /* set netsplit message to "*.net *.split" to still show 
        * that its a split, but hide the servers splitting
        */
-      ircsprintf(comment1, "*.net *.split");
+      strcpy(comment1, "*.net *.split");
     }
     else
     {
@@ -1312,7 +1312,7 @@ exit_client(
     /* XXX Why does this happen */
     if (source_p->serv != NULL)
       remove_dependents(client_p, source_p, from, comment, comment1);
-    
+
     if (source_p->servptr == &me)
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
@@ -1325,7 +1325,7 @@ exit_client(
            source_p->localClient->sendK, source_p->localClient->receiveK);
     }
   }
-  
+
   /* The client *better* be off all of the lists */
   assert(dlinkFind(&unknown_list, source_p) == NULL);
   assert(dlinkFind(&local_client_list, source_p) == NULL);
