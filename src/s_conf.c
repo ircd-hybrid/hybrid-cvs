@@ -19,11 +19,12 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.149 2001/01/18 17:32:24 ejb Exp $
+ *  $Id: s_conf.c,v 7.150 2001/01/18 17:38:02 ejb Exp $
  */
 
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 

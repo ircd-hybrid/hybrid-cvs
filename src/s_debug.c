@@ -17,20 +17,24 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.38 2001/01/18 17:32:24 ejb Exp $
+ *   $Id: s_debug.c,v 7.39 2001/01/18 17:38:02 ejb Exp $
  */
 
+#include <sys/types.h> 
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <sys/file.h>
+
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+
+#include <time.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
 #include <unistd.h>
 #include <errno.h>
-#include <time.h>
-#include <sys/file.h>
-#ifdef HAVE_SYS_PARAM_H
-#include <sys/param.h>
-#endif
-#include <sys/resource.h>
 
 #include "tools.h"
 #include "s_debug.h"
