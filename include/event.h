@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: event.h,v 1.12 2002/05/24 23:34:06 androsyn Exp $
+ *  $Id: event.h,v 1.13 2002/09/20 05:31:54 db Exp $
  */
 
 #ifndef INCLUDED_event_h
@@ -42,7 +42,6 @@ struct ev_entry
   const char *name;
   time_t frequency;
   time_t when;
-  struct ev_entry *next;
   int active;
 };
 
