@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.356 2003/06/27 04:39:34 db Exp $
+ *  $Id: s_serv.c,v 7.357 2003/06/28 03:33:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -1873,7 +1873,7 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
     /* Make sure aconf is useful */
     assert(aconf != NULL);
     if(aconf == NULL)
-      return 0;
+      return (0);
 
     /* log */
     irc_getnameinfo((struct sockaddr*)&aconf->ipnum, aconf->ipnum.ss_len,
@@ -1897,16 +1897,17 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
 	  sendto_one(by, ":%s NOTICE %s :Server %s already present from %s",
 		     me.name, by->name, aconf->name,
 		     get_client_name(client_p, MASK_IP));
-        return 0;
+        return (0);
       }
     
     /* create a socket for the server connection */ 
     if ((fd = comm_open(aconf->ipnum.ss.ss_family, SOCK_STREAM, 0, NULL)) < 0)
-      {
-        /* Eek, failure to create the socket */
-        report_error(L_ALL, "opening stream socket to %s: %s", aconf->name, errno);
-        return 0;
-      }
+    {
+      /* Eek, failure to create the socket */
+      report_error(L_ALL,
+		   "opening stream socket to %s: %s", aconf->name, errno);
+      return (0);
+    }
 
     /* servernames are always guaranteed under HOSTLEN chars */
     fd_note(fd, "Server: %s", aconf->name);
@@ -1935,8 +1936,10 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
 
     if (!set_sock_buffers(client_p->localClient->fd, READBUF_SIZE))
     {
-      report_error(L_ADMIN, SETBUF_ERROR_MSG, get_client_name(client_p, SHOW_IP), errno);
-      report_error(L_OPER, SETBUF_ERROR_MSG, get_client_name(client_p, MASK_IP), errno);
+      report_error(L_ADMIN, SETBUF_ERROR_MSG,
+		   get_client_name(client_p, SHOW_IP), errno);
+      report_error(L_OPER, SETBUF_ERROR_MSG,
+		   get_client_name(client_p, MASK_IP), errno);
     }
 
     /*
@@ -1952,7 +1955,7 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
             sendto_one(by, ":%s NOTICE %s :Connect to host %s failed.",
               me.name, by->name, client_p->name);
         det_confs_butmask(client_p, 0);
-        return 0;
+        return (0);
       }
     /*
      * at this point we have a connection in progress and C/N lines
@@ -2038,7 +2041,7 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
             CONNECTTIMEOUT);
 #endif
     }
-    return 1;
+    return (1);
 }
 
 /*
@@ -2348,7 +2351,7 @@ base64_block(char **output, char *data, int len)
 
   out[count] = '\0';
   *output = (char *)out;
-  return count;
+  return (count);
 }
 
 /*
@@ -2364,8 +2367,8 @@ unbase64_block(char **output, char *data, int len)
   int i;
   int count = 0;
 
-  if ( ( len % 4 ) != 0 )
-    return 0;
+  if ((len % 4) != 0)
+    return (0);
 
   out = MyMalloc(((len / 4) * 3) + 1);
 
@@ -2400,7 +2403,7 @@ unbase64_block(char **output, char *data, int len)
 
   out[count] = '\0';
   *output = (char *)out;
-  return count;
+  return (count);
 }
 
 #endif /* HAVE_LIBCRYPTO */

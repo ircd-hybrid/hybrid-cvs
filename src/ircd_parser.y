@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.328 2003/06/27 04:39:34 db Exp $
+ *  $Id: ircd_parser.y,v 1.329 2003/06/28 03:33:55 db Exp $
  */
 
 %{
@@ -1743,12 +1743,12 @@ connect_entry: CONNECT
     dlink_node *ptr;
     dlink_node *next_ptr;
 #ifdef HAVE_LIBCRYPTO
-      if (yy_aconf->host &&
-	 ((yy_aconf->passwd && yy_aconf->spasswd) ||
-	  (yy_aconf->rsa_public_key && IsConfCryptLink(yy_aconf))))
+    if (yy_aconf->host &&
+	((yy_aconf->passwd && yy_aconf->spasswd) ||
+	 (yy_aconf->rsa_public_key && IsConfCryptLink(yy_aconf))))
 #else /* !HAVE_LIBCRYPTO */
-	if (yy_aconf->host && !IsConfCryptLink(yy_aconf) && 
-	   yy_aconf->passwd && yy_aconf->spasswd)
+      if (yy_aconf->host && !IsConfCryptLink(yy_aconf) && 
+	  yy_aconf->passwd && yy_aconf->spasswd)
 #endif /* !HAVE_LIBCRYPTO */
 	{
 	  if (conf_add_server(yy_aconf, scount) >= 0)

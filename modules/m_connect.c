@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_connect.c,v 1.48 2003/06/27 04:39:32 db Exp $
+ *  $Id: m_connect.c,v 1.49 2003/06/28 03:33:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&connect_msgtab);
 }
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 
 /*
@@ -119,13 +119,13 @@ mo_connect(struct Client* client_p, struct Client* source_p,
   /*
    * try to find the name, then host, if both fail notify ops and bail
    */
-  if ((conf = find_exact_name_conf(SERVER_TYPE,
-				   parv[1], NULL, NULL)) != NULL)
+  if ((conf = find_matching_name_conf(SERVER_TYPE,
+				      parv[1], NULL, NULL, 0)) != NULL)
   {
     aconf = (struct AccessItem *)map_to_conf(conf);
   }
-  else if ((conf = find_exact_name_conf(SERVER_TYPE,
-					NULL, NULL, parv[1])) != NULL)
+  else if ((conf = find_matching_name_conf(SERVER_TYPE,
+					   NULL, NULL, parv[1], 0)) != NULL)
   {
     aconf = (struct AccessItem *)map_to_conf(conf);
   }
@@ -258,13 +258,13 @@ ms_connect(struct Client *client_p, struct Client *source_p,
   /*
    * try to find the name, then host, if both fail notify ops and bail
    */
-  if ((conf = find_exact_name_conf(SERVER_TYPE,
-				   parv[1], NULL, NULL)) != NULL)
+  if ((conf = find_matching_name_conf(SERVER_TYPE,
+				      parv[1], NULL, NULL, 0)) != NULL)
   {
     aconf = (struct AccessItem *)map_to_conf(conf);
   }
-  else if ((conf = find_exact_name_conf(SERVER_TYPE,
-					NULL, NULL, parv[1])) != NULL)
+  else if ((conf = find_matching_name_conf(SERVER_TYPE,
+					   NULL, NULL, parv[1], 0)) != NULL)
   {
     aconf = (struct AccessItem *)map_to_conf(conf);
   }

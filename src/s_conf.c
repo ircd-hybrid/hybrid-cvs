@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.446 2003/06/27 07:35:34 joshk Exp $
+ *  $Id: s_conf.c,v 7.447 2003/06/28 03:33:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -1398,6 +1398,7 @@ attach_connect_block(struct Client *client_p, const char *name,
                      const char *host)
 {
   dlink_node *ptr;
+  struct ConfItem *conf;
   struct AccessItem *aconf;
 
   assert(client_p != NULL);
@@ -1406,14 +1407,11 @@ attach_connect_block(struct Client *client_p, const char *name,
   if (client_p == NULL || host == NULL)
     return(0);
 
-  DLINK_FOREACH(ptr, ConfigItemList.head)
+  DLINK_FOREACH(ptr, server_items.head)
   {
-    aconf = ptr->data;
+    conf = ptr->data;
+    aconf = (struct AccessItem *)map_to_conf(conf);
 
-    if (IsConfIllegal(aconf))
-      continue;
-    if (!IsConfServer(aconf))
-      continue;
     if ((match(aconf->name, name) == 0) ||
         (match(aconf->host, host) == 0))
       continue;
@@ -1567,6 +1565,7 @@ find_matching_name_conf(ConfType type,
   case XLINE_TYPE:
   case ULINE_TYPE:
   case NRESV_TYPE:
+
     DLINK_FOREACH(ptr, (*list_p).head)
     {
       conf = ptr->data;
@@ -1574,7 +1573,7 @@ find_matching_name_conf(ConfType type,
       match_item = (struct MatchItem *)map_to_conf(conf);
       if (EmptyString(match_item->name))
 	continue;
-      if (match_esc(match_item->name, name))
+      if ((name != NULL) && match_esc(match_item->name, name))
       {
 	if ((user == NULL && (host == NULL)))
 	  return (conf);
@@ -1586,17 +1585,15 @@ find_matching_name_conf(ConfType type,
 	if (match(match_item->user, user) && match(match_item->host, host))
 	  return (conf);
       }
-    }
-    break;
+      break;
 
   case OPER_TYPE:
     DLINK_FOREACH(ptr, (*list_p).head)
     {
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
-      if (EmptyString(match_item->name))
-	continue;
-      if (match_esc(match_item->name, name) == 0)
+
+      if ((name != NULL) && (match_esc(aconf->name, name) == 0))
       {
 	if ((user == NULL && (host == NULL)))
 	  return (conf);
@@ -1604,6 +1601,20 @@ find_matching_name_conf(ConfType type,
 	  return (conf);
 	if (match(aconf->user, user) && match(aconf->host, host))
 	  return (conf);
+      }
+    }
+    break;
+
+    case SERVER_TYPE:
+      DLINK_FOREACH(ptr, (*list_p).head)
+      {
+	conf = ptr->data;
+	aconf = (struct AccessItem *)map_to_conf(conf);
+
+	if ((name != NULL) && (match_esc(aconf->name, name) == 0))
+	  return(conf);
+	else if ((host != NULL) && (match_esc(aconf->host, host) == 0))
+	  return(conf);
       }
     }
     break;
