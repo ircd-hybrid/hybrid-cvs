@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.126 2003/08/10 21:24:07 adx Exp $
+ *  $Id: channel_mode.c,v 7.127 2003/08/10 21:30:18 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1088,7 +1088,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
 	 * they weren't halfopped. If it was -h, they were halfopped.
 	 */
 	if (was_hopped == -1)
-	  was_hopped = (mode_changes[i].dir == MODE_ADD ? 1 : 0);
+	  was_hopped = (mode_changes[i].dir == MODE_ADD ? 0 : 1);
 	mode_changes[i].letter = 0;
       }
     DelMemberFlag(member, CHFL_HALFOP);
