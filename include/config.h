@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.73 2001/01/01 00:38:36 spookey Exp $
+ * $Id: config.h,v 7.74 2001/01/02 04:10:17 wcampbel Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -96,7 +96,7 @@
 #define CPATH   ETCPATH "/ircd.conf"
 #define KPATH   ETCPATH "/kline.conf"
 #define DLPATH  ETCPATH "/kline.conf"
-#define GPATH   ETCPATH "/gline.log"
+#define GPATH   LOGPATH "/gline.log"
 #define RPATH   ETCPATH "/ircd.rsa"
 #define MPATH   ETCPATH "/ircd.motd"
 #define LPATH   LOGPATH "/ircd.log"
