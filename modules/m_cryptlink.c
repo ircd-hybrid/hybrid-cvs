@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.41 2003/04/18 02:13:42 db Exp $
+ *  $Id: m_cryptlink.c,v 1.42 2003/04/18 12:16:04 michael Exp $
  */
 
 /*
@@ -36,16 +36,13 @@
 #include "modules.h"
 #include "numeric.h"     /* ERR_xxx */
 #include "send.h"        /* sendto_one */
-
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/rsa.h>
 #include "rsa.h"
 #endif
-
 #include "msg.h"
 #include "parse.h"
 #include "irc_string.h"  /* strncpy_irc */
-
 #include "tools.h"
 #include "memory.h"
 #include "common.h"      /* TRUE bleah */
@@ -54,7 +51,6 @@
 #include "md5.h"
 #include "list.h"        /* make_server */
 #include "s_conf.h"      /* struct ConfItem */
-
 #include "s_log.h"       /* log level defines */
 #include "s_serv.h"      /* server_estab, check_server, my_name_for_link */
 #include "s_stats.h"     /* ServerStats */
@@ -62,13 +58,12 @@
 #include "motd.h"
 
 #ifndef HAVE_LIBCRYPTO
-
 #ifndef STATIC_MODULES
 /* XXX - print error? */
 void _modinit(void) {}
 void _moddeinit(void) {}
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 #else
 
@@ -88,8 +83,8 @@ struct Message cryptlink_msgtab = {
 
 struct CryptLinkStruct
 {
-  char *cmd;		/* CRYPTLINK <command> to match */
-  void (*handler)();	/* Function to call */
+  const char *cmd;   /* CRYPTLINK <command> to match */
+  void (*handler)(); /* Function to call             */
 };
 
 static struct CryptLinkStruct cryptlink_cmd_table[] =
@@ -98,7 +93,7 @@ static struct CryptLinkStruct cryptlink_cmd_table[] =
   { "AUTH",	cryptlink_auth,	},
   { "SERV",	cryptlink_serv,	},
   /* End of table */
-  { (char *) 0,	(void (*)()) 0,	}
+  { (char *)0,	(void (*)())0,	}
 };
 
 #ifndef STATIC_MODULES
@@ -114,7 +109,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 
 
@@ -203,14 +198,13 @@ static void cryptlink_auth(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if ( verify_private_key() == -1 )
+  if (verify_private_key() == -1)
   {
     sendto_realops_flags(UMODE_ALL, L_ADMIN,
       "verify_private_key() returned -1.  Check log for information.");
   }
 
   key = MyMalloc(RSA_size(ServerInfo.rsa_private_key));
-
   len = RSA_private_decrypt( enc_len, (unsigned char *)enc,(unsigned char *)key,
                              ServerInfo.rsa_private_key,
                              RSA_PKCS1_PADDING );
@@ -283,29 +277,29 @@ static void cryptlink_auth(struct Client *client_p, struct Client *source_p,
 static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
                            int parc, char *parv[])
 {
-  char             info[REALLEN + 1];
-  char            *name;
+  char info[REALLEN + 1];
+  char *name;
   struct Client   *target_p;
-  char            *key = client_p->localClient->out_key;
-  char            *b64_key;
+  char *key = client_p->localClient->out_key;
+  char *b64_key;
   struct ConfItem *aconf;
-  char            *encrypted;
-  char            *p;
-  int              enc_len;
+  char *encrypted;
+  const char *p;
+  int enc_len;
 
   /*
   if (client_p->name[0] != 0)
   return;
   */
 
-  if ( (parc < 5) || (*parv[4] == '\0') )
+  if ((parc < 5) || (*parv[4] == '\0'))
   {
     cryptlink_error(client_p, "SERV", "Invalid params",
                     "CRYPTLINK SERV - Invalid params");
     return;
   }
 
-  if ( (name = parse_cryptserv_args(client_p, parv, parc, info, key)) == NULL )
+  if ((name = parse_cryptserv_args(client_p, parv, parc, info, key)) == NULL)
   {
     cryptlink_error(client_p, "SERV", "Invalid params",
                     "CRYPTLINK SERV - Invalid params");
@@ -422,10 +416,10 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
   {
     SetHidden(client_p);
 
-    if((p = strchr(info, ' ')))
+    if ((p = strchr(info, ' ')) != NULL)
     {
       p++;
-      if(*p == '\0')
+      if (*p == '\0')
         p = "(Unknown Location)";
     }
     else
@@ -445,8 +439,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
   }
 
   encrypted = MyMalloc(RSA_size(ServerInfo.rsa_private_key));
-
-  enc_len = RSA_public_encrypt(client_p->localClient->out_cipher->keylen,
+  enc_len   = RSA_public_encrypt(client_p->localClient->out_cipher->keylen,
                                (unsigned char *)key,
                                (unsigned char *)encrypted,
                                aconf->rsa_public_key,
@@ -503,8 +496,8 @@ static char *parse_cryptserv_args(struct Client *client_p,
   name = parv[2];
 
   /* parv[2] contains encrypted auth data */
-  if ( !(decoded_len = unbase64_block((char **)&tmp, parv[3],
-                                      strlen(parv[3]))) )
+  if (!(decoded_len = unbase64_block((char **)&tmp, parv[3],
+                                      strlen(parv[3]))))
   {
     cryptlink_error(client_p, "SERV",
                     "Couldn't base64 decode data",
@@ -559,8 +552,7 @@ static char *parse_cryptserv_args(struct Client *client_p,
   return(name);
 }
 
-/*
- * bogus_host
+/* bogus_host()
  *
  * inputs	- hostname
  * output	- 1 if a bogus hostname input, 0 if its valid
@@ -585,7 +577,7 @@ static int bogus_host(char *host)
     }
   }
 
-  if ( (!dots) || (bogus_server) )
+  if ((!dots) || (bogus_server))
     return 1;
 
   return 0;
