@@ -19,12 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.42 2003/04/13 13:06:51 adx Exp $
+ *  $Id: class.c,v 7.43 2003/04/15 15:13:27 michael Exp $
  */
 
 #include "stdinc.h"
 #include "config.h"
-
 #include "tools.h"
 #include "class.h"
 #include "client.h"
@@ -38,22 +37,20 @@
 #include "s_debug.h"
 #include "memory.h"
 
-
-#define BAD_CONF_CLASS          -1
-#define BAD_PING                -2
-#define BAD_CLIENT_CLASS        -3
+#define BAD_CONF_CLASS   -1
+#define BAD_PING         -2
+#define BAD_CLIENT_CLASS -3
 
 dlink_list ClassList;
 
-/*
- * find_class_ptr
+/* find_class_ptr()
  *
  * inputs	- string name of class
  * output	- corresponding class pointer
  * side effects	- NONE
  */
 static dlink_node *
-find_class_ptr(char* classname)
+find_class_ptr(char *classname)
 {
   dlink_node *ptr;
   struct Class *aclass;
@@ -61,10 +58,12 @@ find_class_ptr(char* classname)
   DLINK_FOREACH(ptr, ClassList.head)
   {
     aclass = ptr->data;
-    if (!strcmp(ClassName(aclass),classname))
-      return (ptr);
+
+    if (!strcmp(ClassName(aclass), classname))
+      return(ptr);
   }
-  return (NULL);
+
+  return(NULL);
 }
 
 static struct Class *
@@ -78,7 +77,7 @@ make_class(void)
   aclass->servname = NULL;
 #endif
   memset((void *)aclass, 0, sizeof(*aclass));
-  return (aclass);
+  return(aclass);
 }
 
 void
@@ -88,11 +87,10 @@ free_class(struct Class *aclass)
   MyFree((char *)aclass);
 }
 
-/*
- * get_conf_ping
+/* get_conf_ping()
  *
- * inputs	- pointer to struct ConfItem
- * output	- ping frequency
+ * inputs       - pointer to struct ConfItem
+ * output       - ping frequency
  * side effects - NONE
  */
 static int
@@ -103,42 +101,41 @@ get_conf_ping(struct ConfItem *aconf)
 
   Debug((DEBUG_DEBUG,"No Ping For %s",
          (aconf) ? aconf->name : "*No Conf*"));
-
-  return (BAD_PING);
+  return(BAD_PING);
 }
 
-/*
- * get_client_class
+/* get_client_class()
  *
  * inputs	- pointer to client struct
  * output	- pointer to name of class
  * side effects - NONE
  */
-const char*
+const char *
 get_client_class(struct Client *target_p)
 {
   dlink_node *ptr;
   struct ConfItem *aconf;
-  const char* retc = "unknown";
+  const char *retc = "unknown";
 
-  if (target_p && !IsMe(target_p)  && (target_p->localClient->confs.head))
+  if (target_p && !IsMe(target_p) && (target_p->localClient->confs.head))
   {
     DLINK_FOREACH(ptr, target_p->localClient->confs.head)
     {
       aconf = ptr->data;
+
       if (aconf->className == NULL)
-	retc = "default";
+        retc = "default";
       else
-	retc= aconf->className;
+        retc= aconf->className;
     }
   }
-  Debug((DEBUG_DEBUG,"Returning Class %s For %s",retc,target_p->name));
 
-  return (retc);
+  Debug((DEBUG_DEBUG,"Returning Class %s For %s",
+        retc, target_p->name));
+  return(retc);
 }
 
-/*
- * get_client_ping
+/* get_client_ping()
  *
  * inputs	- pointer to client struct
  * output	- ping frequency
@@ -147,21 +144,23 @@ get_client_class(struct Client *target_p)
 int
 get_client_ping(struct Client *target_p)
 {
-  int   ping = 0;
-  int   ping2;
-  struct ConfItem       *aconf;
-  dlink_node		*nlink;
+  int ping = 0;
+  int ping2;
+  struct ConfItem *aconf;
+  dlink_node *nlink;
 
   if (target_p->localClient->confs.head != NULL)
   {
     DLINK_FOREACH(nlink, target_p->localClient->confs.head)
     {
       aconf = nlink->data;
+
       if (aconf->status & (CONF_CLIENT|CONF_SERVER))
       {
-	ping2 = get_conf_ping(aconf);
-	if ((ping2 != BAD_PING) && ((ping > ping2) || !ping))
-	  ping = ping2;
+        ping2 = get_conf_ping(aconf);
+
+        if ((ping2 != BAD_PING) && ((ping > ping2) || !ping))
+          ping = ping2;
       }
     }
   }
@@ -173,12 +172,13 @@ get_client_ping(struct Client *target_p)
 
   if (ping <= 0)
     ping = DEFAULT_PINGFREQUENCY;
-  Debug((DEBUG_DEBUG,"Client %s Ping %d", target_p->name, ping));
-  return (ping);
+
+  Debug((DEBUG_DEBUG, "Client %s Ping %d",
+        target_p->name, ping));
+  return(ping);
 }
 
-/*
- * get_con_freq
+/* get_con_freq()
  *
  * inputs	- pointer to class struct
  * output	- connection frequency
@@ -188,12 +188,11 @@ int
 get_con_freq(struct Class *clptr)
 {
   if (clptr != NULL)
-    return (ConFreq(clptr));
-  return (DEFAULT_CONNECTFREQUENCY);
+    return(ConFreq(clptr));
+  return(DEFAULT_CONNECTFREQUENCY);
 }
 
-/*
- * add_class
+/* add_class()
  *
  * inputs	- classname to use
  * 		- ping frequency
@@ -226,13 +225,12 @@ add_class(char *classname, int ping, int confreq, int maxli, long sendq)
   else
     aclass = ptr->data;
 
-  Debug((DEBUG_DEBUG,
-         "Add Class %s: - cf: %d pf: %d ml: %d sq: %l",
+  Debug((DEBUG_DEBUG, "Add Class %s: - cf: %d pf: %d ml: %d sq: %l",
          classname, confreq, ping, maxli, sendq));
 
   MyFree(ClassName(aclass));
-  DupString(ClassName(aclass),classname);
-  ConFreq(aclass) = confreq;
+  DupString(ClassName(aclass), classname);
+  ConFreq(aclass)  = confreq;
   PingFreq(aclass) = ping;
   MaxLinks(aclass) = maxli;
   MaxSendq(aclass) = (sendq > 0) ? sendq : DEFAULT_SENDQ;
@@ -250,7 +248,7 @@ find_class(const char *classname)
   dlink_node *ptr;
   struct Class *aclass;
 
-  if ((ptr = find_class_ptr((char *) classname)) != NULL)
+  if ((ptr = find_class_ptr((char *)classname)) != NULL)
   {
     return(ptr->data);
   }
@@ -264,11 +262,11 @@ find_class(const char *classname)
     {
       aclass = make_class();
       DupString(ClassName(aclass),"default");
-      ConFreq(aclass) = DEFAULT_CONNECTFREQUENCY;
+      ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
       PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
       MaxLinks(aclass) = ConfigFileEntry.maximum_links;
       MaxSendq(aclass) = DEFAULT_SENDQ;
-      Links(aclass) = 0;
+      Links(aclass)    = 0;
       dlinkAdd(aclass, &aclass->class_node, &ClassList);
       return(aclass);
     }
@@ -277,8 +275,8 @@ find_class(const char *classname)
 
 /* check_class()
  *
- * inputs	- NONE
- * output	- NONE
+ * inputs       - NONE
+ * output       - NONE
  * side effects	- 
  */
 void
@@ -295,25 +293,25 @@ check_class(void)
     aclass = ptr->data;
 
     Debug((DEBUG_DEBUG,
-	   "ClassName %s Class %d : CF: %d PF: %d ML: %d LI: %d SQ: %ld",
-	   ClassName(aclass),ClassType(aclass), ConFreq(aclass),
-	   PingFreq(aclass), MaxLinks(aclass), Links(aclass),
-	   MaxSendq(aclass)));
+          "ClassName %s Class %d : CF: %d PF: %d ML: %d LI: %d SQ: %ld",
+          ClassName(aclass),ClassType(aclass), ConFreq(aclass),
+          PingFreq(aclass), MaxLinks(aclass), Links(aclass),
+          MaxSendq(aclass)));
 
     if (MaxLinks(aclass) < 0)
     {
       dlinkDelete(&aclass->class_node, &ClassList);
+
       if (Links(aclass) <= 0)
-	free_class(aclass);
+        free_class(aclass);
     }
   }
 }
 
-/*
- * initclass
+/* initclass()
  *
- * inputs	- NONE
- * output	- NONE
+ * inputs       - NONE
+ * output       - NONE
  * side effects	- 
  */
 void
@@ -321,27 +319,26 @@ initclass(void)
 {
   struct Class *aclass;
 
-  ClassList.head = NULL;
-  ClassList.tail = NULL;
+  ClassList.head   = NULL;
+  ClassList.tail   = NULL;
   ClassList.length = 0;
 
   aclass = make_class();
 
   ClassType(aclass) = 0;
-  DupString(ClassName(aclass),"default");
-  ConFreq(aclass) = DEFAULT_CONNECTFREQUENCY;
+  DupString(ClassName(aclass), "default");
+  ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
   PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
   MaxLinks(aclass) = ConfigFileEntry.maximum_links;
   MaxSendq(aclass) = DEFAULT_SENDQ;
-  Links(aclass) = 0;
+  Links(aclass)    = 0;
   dlinkAdd(aclass, &aclass->class_node, &ClassList);
 }
 
-/*
- * report_classes
+/* report_classes()
  *
- * inputs	- pointer to client to report to
- * output	- NONE
+ * inputs       - pointer to client to report to
+ * output       - NONE
  * side effects	- class report is done to this client
  */
 void
@@ -353,43 +350,46 @@ report_classes(struct Client *source_p)
   DLINK_FOREACH(ptr, ClassList.head)
   {
     aclass = ptr->data;
-    sendto_one(source_p, form_str(RPL_STATSYLINE), me.name, source_p->name,
-               'Y', ClassName(aclass), PingFreq(aclass), ConFreq(aclass),
+    sendto_one(source_p, form_str(RPL_STATSYLINE),
+               me.name, source_p->name, 'Y',
+               ClassName(aclass), PingFreq(aclass),
+               ConFreq(aclass),
                MaxLinks(aclass), MaxSendq(aclass));
   }
 }
 
-/*
- * get_sendq
+/* get_sendq()
  *
- * inputs	- pointer to client
- * output	- sendq for this client as found from its class
+ * inputs       - pointer to client
+ * output       - sendq for this client as found from its class
  * side effects	- NONE
  */
 long
 get_sendq(struct Client *client_p)
 {
-  int   sendq = DEFAULT_SENDQ, retc = BAD_CLIENT_CLASS;
-  dlink_node      *ptr;
-  struct Class    *cl;
+  int sendq = DEFAULT_SENDQ;
+  int retc  = BAD_CLIENT_CLASS;
+  dlink_node *ptr;
+  struct Class *cl;
   struct ConfItem *aconf;
 
-  if (client_p && !IsMe(client_p)  && (client_p->localClient->confs.head))
+  if (client_p && !IsMe(client_p) && (client_p->localClient->confs.head))
   {
     DLINK_FOREACH(ptr, client_p->localClient->confs.head)
     {
       aconf = ptr->data;
+
       if (aconf == NULL)
-	continue;
+        continue;
 
       if ((cl = ClassPtr(aconf)) == NULL)
-	continue;
+        continue;
 
       if (ClassType(cl) > retc)
-	sendq = MaxSendq(cl);
+        sendq = MaxSendq(cl);
     }
   }
-  return (sendq);
-}
 
+  return(sendq);
+}
 

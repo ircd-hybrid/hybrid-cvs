@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.111 2003/04/14 08:41:15 michael Exp $
+ *  $Id: modules.c,v 7.112 2003/04/15 15:13:27 michael Exp $
  */
 
 #include "stdinc.h"
@@ -75,11 +75,11 @@ int max_mods = MODS_INCREMENT;
 
 static dlink_list mod_paths;
 
-static void mo_modload(struct Client*, struct Client*, int, char**);
-static void mo_modlist(struct Client*, struct Client*, int, char**);
-static void mo_modreload(struct Client*, struct Client*, int, char**);
-static void mo_modunload(struct Client*, struct Client*, int, char**);
-static void mo_modrestart(struct Client*, struct Client*, int, char**);
+static void mo_modload(struct Client *, struct Client *, int, char **);
+static void mo_modlist(struct Client *, struct Client *, int, char **);
+static void mo_modreload(struct Client *, struct Client *, int, char **);
+static void mo_modunload(struct Client *, struct Client *, int, char **);
+static void mo_modrestart(struct Client *, struct Client *, int, char **);
 
 struct Message modload_msgtab = {
  "MODLOAD", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -138,7 +138,7 @@ mod_find_path(const char *path)
     if (!strcmp(path, mpath->path))
       return(mpath);
   }
-  
+
   return(NULL);
 }
 
@@ -156,7 +156,7 @@ mod_add_path(const char *path)
   if (mod_find_path(path))
     return;
 
-  pathst = MyMalloc(sizeof (struct module_path));
+  pathst = MyMalloc(sizeof(struct module_path));
 
   strcpy(pathst->path, path);
   dlinkAdd(pathst, make_dlink_node(), &mod_paths);
@@ -172,7 +172,8 @@ void
 mod_clear_paths(void)
 {
   struct module_path *pathst;
-  dlink_node *node, *next;
+  dlink_node *node;
+  dlink_node *next;
 
   DLINK_FOREACH_SAFE(node, next, mod_paths.head)
   {
@@ -192,15 +193,15 @@ mod_clear_paths(void)
 char *
 irc_basename(char *path)
 {
-  char *mod_basename = MyMalloc (strlen (path) + 1);
+  char *mod_basename = MyMalloc(strlen(path) + 1);
   char *s;
 
-  if (!(s = strrchr(path, '/')))
+  if ((s = strrchr(path, '/')) == NULL)
     s = path;
   else
     s++;
 
-  (void)strcpy (mod_basename, s);
+  (void)strcpy(mod_basename, s);
   return(mod_basename);
 }
 
@@ -233,44 +234,42 @@ findmodule_byname(char *name)
 void
 load_all_modules(int warn)
 {
-  DIR            *system_module_dir = NULL;
-  struct dirent  *ldirent = NULL;
-  char            module_fq_name[PATH_MAX + 1];
-  int             len;
+  DIR *system_module_dir = NULL;
+  struct dirent *ldirent = NULL;
+  char module_fq_name[PATH_MAX + 1];
+  int len;
 
   modules_init();
-  
-  modlist = (struct module **)MyMalloc(sizeof (struct module) *
-                                         (MODS_INCREMENT));
 
+  modlist  = (struct module **)MyMalloc(sizeof(struct module) *
+                                        (MODS_INCREMENT));
   max_mods = MODS_INCREMENT;
-
   system_module_dir = opendir (AUTOMODPATH);
 
   if (system_module_dir == NULL)
-    {
-      ilog (L_WARN, "Could not load modules from %s: %s",
-	   AUTOMODPATH, strerror (errno));
-      return;
-    }
+  {
+    ilog(L_WARN, "Could not load modules from %s: %s",
+         AUTOMODPATH, strerror (errno));
+    return;
+  }
 
   while ((ldirent = readdir (system_module_dir)) != NULL)
-    {
-      len = strlen(ldirent->d_name);
+  {
+    len = strlen(ldirent->d_name);
 
-      /* On HPUX, we have *.sl as shared library extension
-       * -TimeMr14C */
-      
-      if ((len > 3) && 
-          (ldirent->d_name[len-3] == '.') &&
-          (ldirent->d_name[len-2] == 's') &&
-          ((ldirent->d_name[len-1] == 'o') || (ldirent->d_name[len-1] == 'l')))
-	{
-	  snprintf(module_fq_name, sizeof(module_fq_name), "%s/%s",
-                   AUTOMODPATH, ldirent->d_name);
-	  (void)load_a_module (module_fq_name, warn, 0);
-	}
+    /* On HPUX, we have *.sl as shared library extension
+     * -TimeMr14C
+     */
+    if ((len > 3) && (ldirent->d_name[len-3] == '.') &&
+        (ldirent->d_name[len-2] == 's') &&
+        ((ldirent->d_name[len-1] == 'o') ||
+        (ldirent->d_name[len-1] == 'l')))
+    {
+      snprintf(module_fq_name, sizeof(module_fq_name), "%s/%s",
+               AUTOMODPATH, ldirent->d_name);
+      (void)load_a_module (module_fq_name, warn, 0);
     }
+  }
 
   (void)closedir(system_module_dir);
 }
@@ -284,7 +283,7 @@ load_all_modules(int warn)
 void
 load_core_modules(int warn)
 {
-  char module_name[MAXPATHLEN+1];
+  char module_name[MAXPATHLEN + 1];
   int i;
   int hpux = 0;
 #ifdef HAVE_SHL_LOAD
@@ -294,8 +293,8 @@ load_core_modules(int warn)
   for (i = 0; core_module_table[i]; i++)
   {
     snprintf(module_name, sizeof(module_name), "%s/%s%c",
-            MODPATH, core_module_table[i], hpux ? 'l' : 'o');
-	    
+             MODPATH, core_module_table[i], hpux ? 'l' : 'o');
+
     if (load_a_module(module_name, warn, 1) == -1)
     {
       ilog(L_CRIT, "Error loading core module %s%c: terminating ircd", 
@@ -312,9 +311,9 @@ load_core_modules(int warn)
  * side effects -
  */
 int
-load_one_module (char *path, int coremodule)
+load_one_module(char *path, int coremodule)
 {
-  char modpath[MAXPATHLEN+1];
+  char modpath[MAXPATHLEN + 1];
   dlink_node *pathst;
   struct module_path *mpath;
   struct stat statbuf;
@@ -322,10 +321,11 @@ load_one_module (char *path, int coremodule)
   DLINK_FOREACH(pathst, mod_paths.head)
   {
     mpath = (struct module_path *)pathst->data;
-      
+
     snprintf(modpath, sizeof(modpath), "%s/%s", mpath->path, path);
 
-    if ((strstr(modpath, "../") == NULL) && (strstr(modpath, "/..") == NULL)) 
+    if ((strstr(modpath, "../") == NULL) &&
+        (strstr(modpath, "/..") == NULL)) 
     {
       if (stat(modpath, &statbuf) == 0)
       {
@@ -473,7 +473,7 @@ mo_modlist(struct Client *client_p, struct Client *source_p, int parc, char *par
   if (!IsOperAdmin(source_p))
   {
     sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
-               me.name, parv[0]);
+               me.name, source_p->name);
     return;
   }
 
@@ -508,12 +508,12 @@ mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *
   if (!IsOperAdmin (source_p))
   {
     sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
-               me.name, parv[0]);
+               me.name, source_p->name);
     return;
   }
 
   sendto_one(source_p, ":%s NOTICE %s :Reloading all modules",
-             me.name, parv[0]);
+             me.name, source_p->name);
 
   modnum = num_mods;
 
@@ -528,7 +528,7 @@ mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *
               "Module Restart: %d modules unloaded, %d modules loaded",
 			modnum, num_mods);
   ilog(L_WARN, "Module Restart: %d modules unloaded, %d modules loaded",
-      modnum, num_mods);
+       modnum, num_mods);
 }
 
 #else /* STATIC_MODULES */
@@ -623,6 +623,4 @@ load_all_modules(int warn)
   mod_add_cmd(&whois_msgtab);
   mod_add_cmd(&whowas_msgtab);
 }
-
 #endif /* STATIC_MODULES */
-
