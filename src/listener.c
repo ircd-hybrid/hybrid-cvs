@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.25 2001/01/24 20:04:41 fl_ Exp $
+ *  $Id: listener.c,v 7.26 2001/01/24 21:40:24 davidt Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -197,7 +197,7 @@ static int inetport(struct Listener* listener)
 
 
 #ifdef IPV6
-  if (!IN6_ARE_ADDR_EQUAL(&listener->addr, &in6addr_any)) {
+  if (!IN6_ARE_ADDR_EQUAL((struct in6_addr *)&listener->addr, &in6addr_any)) {
 #else
   if (INADDR_ANY != listener->addr.s_addr) {
 #endif

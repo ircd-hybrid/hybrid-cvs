@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.160 2001/01/24 20:04:43 fl_ Exp $
+ *  $Id: s_conf.c,v 7.161 2001/01/24 21:40:25 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -712,6 +712,7 @@ void remove_one_ip(struct irc_inaddr *ip_in)
   last_ptr = ptr = ip_hash_table[hash_index = hash_ip(ip_in)];
   while(ptr)
     {
+      /* XXX - XXX - XXX - XXX */
       if(ptr->ip == PIN_ADDR(ip_in))
         {
           if(ptr->count != 0)
@@ -757,15 +758,17 @@ void remove_one_ip(struct irc_inaddr *ip_in)
 
 static int hash_ip(struct irc_inaddr *addr)
 {
+#ifndef IPV6
   int hash;
   unsigned long ip;
-#ifdef IPV6
-  return 0;  
-#else
+
   ip = ntohl(PIN_ADDR(addr));
   hash = ((ip >> 12) + ip) & (IP_HASH_SIZE-1);
-#endif
   return(hash);
+#else
+  /* XXX */
+  return(0);
+#endif
 }
 
 /*

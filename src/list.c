@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.22 2001/01/11 05:31:59 a1kmm Exp $
+ * $Id: list.c,v 7.23 2001/01/24 21:40:24 davidt Exp $
  */
 #include "tools.h"
 #include "blalloc.h"
@@ -37,6 +37,7 @@
 #include "send.h"
 #include "memory.h"
 
+#include <assert.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -176,13 +177,16 @@ void _free_user(struct User* user, struct Client* cptr)
        */
       if (user->joined || user->refcnt < 0 ||
           user->invited.head || user->channel.head)
-      sendto_realops_flags(FLAGS_ALL,
+      {
+        sendto_realops_flags(FLAGS_ALL,
 			   "* %#lx user (%s!%s@%s) %#lx %#lx %#lx %d %d *",
 			   (unsigned long)cptr, cptr ? cptr->name : "<noname>",
 			   cptr->username, cptr->host, (unsigned long)user,
 			   (unsigned long)user->invited.head,
 			   (unsigned long)user->channel.head, user->joined,
 			   user->refcnt);
+        assert(0);
+      }
 
       if(BlockHeapFree(free_anUsers,user))
         {

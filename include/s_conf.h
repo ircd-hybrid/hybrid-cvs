@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.87 2001/01/24 20:04:31 fl_ Exp $
+ * $Id: s_conf.h,v 7.88 2001/01/24 21:40:17 davidt Exp $
  */
 
 #include "setup.h"
@@ -58,8 +58,8 @@ struct ConfItem
   unsigned int     flags;
   int              clients;  /* Number of *LOCAL* clients using this */
   struct irc_inaddr ipnum;
-  unsigned long    ip;       /* only used for I D lines etc. */
-  unsigned long    ip_mask;
+  unsigned int     ip;       /* only used for I D lines etc. */
+  unsigned int     ip_mask;
   char*            name;     /* IRC name, nick, server name, or original u@h */
   char*            host;     /* host part of user@host */
   char*            passwd;

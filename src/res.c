@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.44 2001/01/24 20:04:42 fl_ Exp $
+ * $Id: res.c,v 7.45 2001/01/24 21:40:24 davidt Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -647,7 +647,8 @@ static void do_query_number(const struct DNSQuery* query,
   assert(addr != NULL);
 
 #ifdef IPV6
-  if(!IN6_IS_ADDR_V4MAPPED(PIN_ADDR(addr)) && !IN6_IS_ADDR_V4COMPAT(PIN_ADDR(addr)))
+  if(!IN6_IS_ADDR_V4MAPPED((struct in6_addr *)PIN_ADDR(addr))
+     && !IN6_IS_ADDR_V4COMPAT((struct in6_addr *)PIN_ADDR(addr)))
   {
 	unsigned char *qp;
 	int n, c;

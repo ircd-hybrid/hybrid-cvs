@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: ircd_defs.h,v 7.14 2001/01/24 20:04:30 fl_ Exp $
+ * $Id: ircd_defs.h,v 7.15 2001/01/24 21:40:17 davidt Exp $
  *
  * ircd_defs.h - Global size definitions for record entries used
  * througout ircd. Please think 3 times before adding anything to this
@@ -109,6 +109,12 @@ struct irc_inaddr
 	} sins;
 };
 
+#ifdef IPV6
+#ifndef s6_addr32 /* XXX - FreeBSD. should be in configure? */
+#define s6_addr32 __u6_addr.__u6_addr32
+#endif
+#endif
+
 struct irc_sockaddr
 {
 	union {
@@ -141,7 +147,7 @@ do { \
 
 /* irc_inaddr macros */
 #define IN_ADDR(x) x.sins.sin6.s6_addr
-#define IPV4_MAPPED(x) ((uint32_t *)x.sins.sin6.s6_addr32)[3]
+#define IPV4_MAPPED(x) ((uint32_t *)x.sins.sin6.s6_addr)[3]
 #define PIN_ADDR(x) x->sins.sin6.s6_addr /* For Pointers */
 
 #define DEF_FAM AF_INET6

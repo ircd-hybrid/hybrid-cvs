@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.126 2001/01/24 20:04:44 fl_ Exp $
+ *   $Id: s_serv.c,v 7.127 2001/01/24 21:40:26 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -427,7 +427,8 @@ int check_server(const char *name, struct Client* cptr)
   if(aconf != NULL)
   {
 #ifdef IPV6
-	  if (IN6_IS_ADDR_UNSPECIFIED(&IN_ADDR(aconf->ipnum)))
+	  if (IN6_IS_ADDR_UNSPECIFIED((struct in6_addr *)
+                                      &IN_ADDR(aconf->ipnum)))
 #else
 	  if (IN_ADDR(aconf->ipnum) == INADDR_NONE)
 #endif
@@ -1597,7 +1598,7 @@ serv_connect_callback(int fd, int status, void *data)
     assert(cptr->fd == fd);
 
     /* Next, for backward purposes, record the ip of the server */
-    copy_s_addr(IN_ADDR(cptr->localClient->ip), S_ADDR(&fd_table[fd].connect.hostaddr));
+    copy_s_addr(IN_ADDR(cptr->localClient->ip), S_ADDR(fd_table[fd].connect.hostaddr));
     /* Check the status */
     if (status != COMM_OK)
       {
