@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.56 2001/01/02 20:01:16 fl_ Exp $
+ *   $Id: m_sjoin.c,v 1.57 2001/01/02 21:08:50 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -186,12 +186,6 @@ int     ms_sjoin(struct Client *cptr,
 
   *parabuf = '\0';
 
-  if(mode.mode & MODE_HIDEOPS)
-
-    hide_or_not = ONLY_CHANOPS;
-  else
-    hide_or_not = ALL_MEMBERS;
-
   isnew = ChannelExists(parv[2]) ? 0 : 1;
   chptr = get_channel(sptr, parv[2], CREATE);
 
@@ -295,6 +289,11 @@ int     ms_sjoin(struct Client *cptr,
         strcpy(mode.key, oldmode->key);
     }
 
+  if(mode.mode & MODE_HIDEOPS)
+    hide_or_not = ONLY_CHANOPS;
+  else
+    hide_or_not = ALL_MEMBERS;
+
   set_final_mode(&mode,oldmode);
   chptr->mode = mode;
 
@@ -306,13 +305,15 @@ int     ms_sjoin(struct Client *cptr,
 
   if(*modebuf != '\0')
     {
+      /* This _SHOULD_ be to ALL_MEMBERS
+       * It contains only +aimnstlki, etc */
       if(top_chptr != NULL)
-	sendto_channel_local(hide_or_not,
+	sendto_channel_local(ALL_MEMBERS,
 			     chptr, ":%s MODE %s %s %s",
 			     me.name,
 			     top_chptr->chname, modebuf, parabuf);
       else
-	sendto_channel_local(hide_or_not,
+	sendto_channel_local(ALL_MEMBERS,
 			     chptr, ":%s MODE %s %s %s",
 			     me.name,
 			     chptr->chname, modebuf, parabuf);
