@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_svinfo.c,v 1.19 2001/04/04 15:22:36 androsyn Exp $
+ *   $Id: m_svinfo.c,v 1.20 2001/05/23 19:02:10 jdc Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -108,12 +108,12 @@ static void ms_svinfo(struct Client *client_p, struct Client *source_p,
   if (deltat > ConfigFileEntry.ts_max_delta)
     {
       sendto_realops_flags(FLAGS_ALL,
-       "Link %s dropped, excessive TS delta (my TS=%lu, their TS=%lu, delta=%d)",
+       "Link %s dropped, excessive TS delta (my TS=%u, their TS=%u, delta=%d)",
                  get_client_name(source_p, SHOW_IP),
                  CurrentTime, theirtime, (int)deltat);
 
       log(L_NOTICE,
-       "Link %s dropped, excessive TS delta (my TS=%lu, their TS=%lu, delta=%d)",
+       "Link %s dropped, excessive TS delta (my TS=%u, their TS=%u, delta=%d)",
                  get_client_name(source_p, SHOW_IP),
                  CurrentTime, theirtime, (int)deltat);
       exit_client(source_p, source_p, source_p, "Excessive TS delta");
@@ -123,7 +123,7 @@ static void ms_svinfo(struct Client *client_p, struct Client *source_p,
   if (deltat > ConfigFileEntry.ts_warn_delta)
     { 
       sendto_realops_flags(FLAGS_ALL,
-                 "Link %s notable TS delta (my TS=%lu, their TS=%lu, delta=%d)",
+                 "Link %s notable TS delta (my TS=%u, their TS=%u, delta=%d)",
 			   get_client_name(source_p, MASK_IP),
 			   CurrentTime, theirtime, (int)deltat);
     }

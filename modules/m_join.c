@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.59 2001/05/14 10:08:56 toot Exp $
+ *   $Id: m_join.c,v 1.60 2001/05/23 19:02:09 jdc Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -284,7 +284,7 @@ static void m_join(struct Client *client_p,
             }
                   
 	  sendto_ll_channel_remote(chptr, client_p, source_p,
-				   ":%s SJOIN %lu %s + :@%s",
+				   ":%s SJOIN %u %s + :@%s",
 				   me.name,
 				   chptr->channelts,
 				   chptr->chname,
@@ -316,7 +316,7 @@ static void m_join(struct Client *client_p,
       else
 	{
 	  sendto_ll_channel_remote(chptr, client_p, source_p,
-				   ":%s SJOIN %lu %s + :%s",
+				   ":%s SJOIN %u %s + :%s",
 				   me.name,
 				   chptr->channelts,
 				   chptr->chname,
