@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.47 2001/03/19 01:51:21 madmax Exp $
+ *   $Id: messages.tab,v 7.48 2001/04/10 22:55:25 db Exp $
  */
 
 static  char *  replies[] = {
@@ -223,7 +223,7 @@ static  char *  replies[] = {
 /* 200 RPL_TRACELINK, */        ":%s 200 %s Link %s%s %s %s",
 /* 201 RPL_TRACECONNECTING, */  ":%s 201 %s Try. %s %s",
 /* 202 RPL_TRACEHANDSHAKE, */   ":%s 202 %s H.S. %s %s",
-/* 203 RPL_TRACEUNKNOWN, */     ":%s 203 %s ???? %d %s (%s) %d",
+/* 203 RPL_TRACEUNKNOWN, */     ":%s 203 %s ???? %s %s (%s) %d",
 /* 204 RPL_TRACEOPERATOR, */    ":%s 204 %s Oper %s %s (%s) %lu %lu",
 /* 205 RPL_TRACEUSER, */        ":%s 205 %s User %s %s (%s) %lu %lu",
 /* 206 RPL_TRACESERVER, */      ":%s 206 %s Serv %s %dS %dC %s %s!%s@%s %lu",
