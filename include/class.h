@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-/* $Id: class.h,v 7.2 1999/12/30 20:35:26 db Exp $ */
+/* $Id: class.h,v 7.3 1999/12/30 20:47:56 db Exp $ */
 
 #ifndef INCLUDED_class_h
 #define INCLUDED_class_h
@@ -54,7 +54,7 @@ extern struct Class* ClassList;  /* GLOBAL - class list */
 
 extern  long    get_sendq(struct Client *);
 extern  int     get_con_freq(struct Class* );
-extern  aClass  *find_class(int);
+extern  struct Class  *find_class(int);
 extern  int     get_conf_class (struct ConfItem *);
 extern  int     get_client_class (struct Client *);
 extern  int     get_client_ping (struct Client *);
