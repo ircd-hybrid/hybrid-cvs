@@ -1,3 +1,15 @@
+db          2002/10/04 00:18:39 EDT	(20021004_0)
+
+  Modified files:
+    src                  hash.c 
+  Log:
+  - fixed comment in header. No coding change
+  
+  Revision  Changes    Path
+  7.45      +1 -1      ircd-hybrid-7/src/hash.c
+
+
+
 bill        2002/10/03 11:33:47 EDT	(20021003_0)
 
   Modified files:
@@ -32191,4 +32203,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4044 2002/10/03 15:33:49 bill Exp $
+$Id: ChangeLog,v 7.4045 2002/10/04 04:18:41 db Exp $
