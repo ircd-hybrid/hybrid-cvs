@@ -27,10 +27,11 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_flags.c,v 1.8 2002/03/07 06:21:36 db Exp $
+ *  $Id: m_flags.c,v 1.9 2002/05/24 23:48:34 androsyn Exp $
  */
 
 /* List of ircd includes from ../include/ */
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "common.h"     /* FALSE bleah */
@@ -49,9 +50,6 @@
 
 #include "s_user.h"    /* send_umode_out() */
 
-/* List of system includes */
-#include <string.h>
-#include <ctype.h>
 
 static void m_flags(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[]);
@@ -79,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&test_msgtab);
 }
 
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 #endif
 
 /* FLAGS requires it's own mini parser, since the last parameter in it can

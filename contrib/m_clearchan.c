@@ -16,8 +16,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.28 2002/05/16 19:14:42 leeh Exp $
+ *   $Id: m_clearchan.c,v 1.29 2002/05/24 23:48:33 androsyn Exp $
  */
+#include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
@@ -37,7 +38,6 @@
 #include "vchannel.h"
 #include "list.h"
 
-#include <string.h>
 
 #define MSG_CLEARCHAN "CLEARCHAN"
 
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-char *_version = "$Revision: 1.28 $";
+char *_version = "$Revision: 1.29 $";
 
 /*
 ** mo_clearchan

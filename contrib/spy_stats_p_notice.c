@@ -19,9 +19,9 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_stats_p_notice.c,v 1.3 2002/03/07 06:21:36 db Exp $
+ *  $Id: spy_stats_p_notice.c,v 1.4 2002/05/24 23:48:34 androsyn Exp $
  */
-
+#include "stdinc.h"
 #include "modules.h"
 #include "hook.h"
 #include "client.h"
@@ -43,7 +43,7 @@ _moddeinit(void)
   hook_del_hook("doing_stats_p", (hookfn *)show_stats_p);
 }
 
-const char *_version = "$Revision: 1.3 $";
+const char *_version = "$Revision: 1.4 $";
 
 int show_stats_p(struct hook_stats_data *data)
 {

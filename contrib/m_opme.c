@@ -15,8 +15,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.24 2002/05/16 19:38:00 leeh Exp $
+ *   $Id: m_opme.c,v 1.25 2002/05/24 23:48:34 androsyn Exp $
  */
+#include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
@@ -34,7 +35,6 @@
 #include "modules.h"
 #include "vchannel.h"
 
-#include <string.h>
 
 static void mo_opme(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[]);
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-char *_version = "$Revision: 1.24 $";
+char *_version = "$Revision: 1.25 $";
 
 static int chan_is_opless(struct Channel *chptr)
 {

@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.28 2002/04/27 09:30:46 leeh Exp $
+ *  $Id: m_jupe.c,v 1.29 2002/05/24 23:48:34 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "irc_string.h"
 #include "handlers.h"
@@ -46,7 +47,6 @@
 #include "list.h"
 #include "s_conf.h"
 #include "scache.h"
-#include <string.h>
 
 
 static void mo_jupe(struct Client *client_p, struct Client *source_p,
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 
 /*

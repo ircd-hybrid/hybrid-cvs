@@ -25,10 +25,10 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.7 2002/04/17 02:25:38 leeh Exp $
+ *  $Id: m_tb.c,v 1.8 2002/05/24 23:48:34 androsyn Exp $
  */
 
-#include <string.h>
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "common.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 #endif
 
 /* ms_tburst()

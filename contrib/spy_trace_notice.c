@@ -19,9 +19,9 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_trace_notice.c,v 1.5 2002/04/23 10:34:57 leeh Exp $
+ *  $Id: spy_trace_notice.c,v 1.6 2002/05/24 23:48:34 androsyn Exp $
  */
-
+#include "stdinc.h"
 #include "modules.h"
 #include "hook.h"
 #include "client.h"
@@ -45,7 +45,7 @@ _moddeinit(void)
   hook_del_hook("doing_ltrace", (hookfn *)show_ltrace);
 }
 
-const char *_version = "$Revision: 1.5 $";
+const char *_version = "$Revision: 1.6 $";
 
 int show_trace(struct hook_spy_data *data)
 {

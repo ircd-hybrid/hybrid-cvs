@@ -16,10 +16,11 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: example_module.c,v 1.5 2002/03/07 06:21:36 db Exp $
+ *   $Id: example_module.c,v 1.6 2002/05/24 23:48:33 androsyn Exp $
  */
 
 /* List of ircd includes from ../include/ */
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "common.h"     /* FALSE bleah */
@@ -36,8 +37,6 @@
 #include "parse.h"
 #include "modules.h"
 
-/* List of system includes */
-#include <string.h>
 
 /* Declare the void's initially up here, as modules dont have an
  * include file, we will normally have client_p, source_p, parc
@@ -122,7 +121,7 @@ _moddeinit(void)
 
 /* When we last modified the file (shown in /modlist), this is usually:
  */
-const char *_version = "$Revision: 1.5 $";
+const char *_version = "$Revision: 1.6 $";
 #endif
 
 /*

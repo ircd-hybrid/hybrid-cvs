@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.32 2002/04/23 10:34:57 leeh Exp $
+# $Id: Makefile.in,v 1.33 2002/05/24 23:48:33 androsyn Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -23,7 +23,7 @@ SSL_INCLUDES	= @SSL_INCLUDES@
 
 IRCDLIBS	= @LIBS@ $(SSL_LIBS)
 
-INCLUDES	= -I../include $(SSL_INCLUDES)
+INCLUDES	= -I../include -I../adns $(SSL_INCLUDES)
 CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
 
 SRCS =                          \

@@ -19,12 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_map.c,v 1.11 2002/03/07 06:21:36 db Exp $
+ *  $Id: m_map.c,v 1.12 2002/05/24 23:48:34 androsyn Exp $
  */
 
-#include <assert.h>
-
-#include "config.h"
+#include "stdinc.h"
 #include "client.h"
 #include "modules.h"
 #include "handlers.h"
@@ -56,7 +54,7 @@ void _moddeinit(void)
   mod_del_cmd(&map_msgtab);
 }
 
-const char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 #endif
 
 static char buf[BUFSIZE];

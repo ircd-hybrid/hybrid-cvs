@@ -25,9 +25,10 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.6 2002/05/16 19:14:42 leeh Exp $
+ * $Id: m_force.c,v 1.7 2002/05/24 23:48:34 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "common.h"     /* FALSE bleah */
@@ -47,7 +48,6 @@
 #include "channel.h"
 #include "channel_mode.h"
 
-#include <string.h>
 
 static void mo_forcejoin(struct Client *client_p, struct Client *source_p,
                          int parc, char *parv[]);
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-char *_version = "$Revision: 1.6 $";
+char *_version = "$Revision: 1.7 $";
 #endif
 
 /*
