@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.364 2004/03/03 11:31:16 metalrock Exp $
+ *  $Id: ircd_parser.y,v 1.365 2005/01/02 05:10:06 michael Exp $
  */
 
 %{
@@ -1880,7 +1880,18 @@ connect_entry: CONNECT
 		    (!yy_aconf->passwd || !yy_aconf->spasswd))
               yyerror("Ignoring connect block -- missing password");
 	  }
-	  yy_aconf = NULL;
+
+
+          /* XXX
+           * This fixes a try_connections() core (caused by invalid class_ptr
+           * pointers) reported by metalrock. That's an ugly fix, but there
+           * is currently no better way. The entire config subsystem needs an
+           * rewrite ASAP. make_conf_item() shouldn't really add things onto
+           * a doubly linked list immediately without any sanity checks!  -Michael
+           */
+          delete_conf_item(yy_conf);
+
+          yy_aconf = NULL;
 	  yy_conf = NULL;
 	}
 
