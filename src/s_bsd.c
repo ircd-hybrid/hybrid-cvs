@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.6 1999/09/03 02:17:17 wnder Exp $
+ *  $Id: s_bsd.c,v 7.7 1999/09/03 02:21:18 wnder Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -104,7 +104,7 @@ fd_set*  write_set = &writeSet;
 void close_all_connections(void)
 {
   int i;
-  for (i = 3; i < MAXCONNECTIONS; ++i) {
+  for (i = 0; i < MAXCONNECTIONS; ++i) {
     close(i);
     local[i] = 0;
   }
