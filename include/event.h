@@ -2,7 +2,7 @@
  * event.h - defines for event.c, the event system. This has been ported
  * from squid by adrian to simplify scheduling events.
  *
- * $Id: event.h,v 1.8 2001/09/12 01:01:51 db Exp $
+ * $Id: event.h,v 1.9 2001/09/12 05:39:48 habeeb Exp $
  */
 #ifndef __EVENT_H__
 #define __EVENT_H__
@@ -11,7 +11,8 @@
  * How many event entries we need to allocate at a time in the block
  * allocator. 16 should be plenty at a time.
  */
-#define	EVENT_BLOCK_SIZE	16
+#define	MAX_EVENTS	50
+
 
 typedef void EVH(void *);
 
@@ -24,25 +25,17 @@ struct ev_entry
   time_t frequency;
   time_t when;
   struct ev_entry *next;
-  int weight;
-  int id;
-  int static_event;
-  int mem_free;
+  int active;
 };
 
-extern void createEvent(struct ev_entry *);
-extern void eventAdd(const char *name, EVH * func, void *arg, time_t when, int);
-extern void createEventIsh(struct ev_entry *, time_t);
-extern void eventAddIsh(const char *name, EVH * func, void *arg,
-    time_t delta_ish, int);
+extern void eventAdd(const char *name, EVH *func, void *arg, time_t when);
+extern void eventAddIsh(const char *name, EVH *func, void *arg, time_t delta_ish);
 extern void eventRun(void);
 extern time_t eventNextTime(void);
-extern void eventDelete(EVH * func, void *arg); 
 extern void eventInit(void);
-extern void eventFreeMemory(void);
-extern int eventFind(EVH *, void *);
+extern int eventFind(EVH *func, void *);
 extern void set_back_events(time_t);
 
-extern int show_events( struct Client *source_p );
+extern void show_events( struct Client *source_p);
 
 #endif
