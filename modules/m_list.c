@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.19 2000/12/26 15:07:43 db Exp $ 
+ * $Id: m_list.c,v 1.20 2000/12/31 09:06:54 toot Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -263,7 +263,7 @@ int list_named_channel(struct Client *sptr,char *name)
 void list_one_channel(struct Client *sptr,struct Channel *chptr)
 {
   struct Channel *root_chptr;
-  char  vname[CHANNELLEN+NICKLEN+4];
+  char  vname[CHANNELLEN+NICKLEN+5]; /* <!!>, and null */
 
   if( (IsVchan(chptr) || HasVchans(chptr)) )
     {

@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.28 2000/12/30 14:14:56 db Exp $
+ * $Id: vchannel.c,v 7.29 2000/12/31 09:07:00 toot Exp $
  */
 #include "tools.h"
 #include "vchannel.h"
@@ -258,7 +258,7 @@ char* pick_vchan_id(struct Channel *chptr)
 {
   dlink_node *lp;
   struct Client *acptr;
-  static char vchan_id[NICKLEN+USERLEN+HOSTLEN+10];
+  static char vchan_id[NICKLEN*2];
 
   for (lp = chptr->chanops.head; lp; lp = lp->next)
     if (!lp->next)
