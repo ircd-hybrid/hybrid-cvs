@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.25 2000/12/24 22:39:28 adrian Exp $
+ * $Id: s_serv.h,v 7.26 2000/12/25 16:35:22 db Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -58,6 +58,7 @@ struct Capability
 #define CAP_KLN	        0x00000400      /* Can do KLINE message */
 #define CAP_GLN	        0x00000800      /* Can do GLINE message */
 #define CAP_HOPS        0x00001000      /* can do half ops +h */
+#define CAP_HUB         0x00002000      /* This server is a HUB */
 #define CAP_MASK        CAP_QS|CAP_EX|CAP_CHW|\
                         CAP_DE|CAP_IE|CAP_VCHAN|CAP_EOB|CAP_KLN|CAP_GLN|\
                         CAP_HOPS
