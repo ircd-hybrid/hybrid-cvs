@@ -19,7 +19,7 @@
  *
  * "s_user.h". - Headers file.
  *
- * $Id: s_user.h,v 7.13 2001/05/15 09:37:59 toot Exp $
+ * $Id: s_user.h,v 7.14 2001/08/24 15:31:15 leeh Exp $
  *
  */
 #ifndef INCLUDED_s_user_h
@@ -41,7 +41,6 @@ extern void  send_umode (struct Client* , struct Client* ,
                          int, int, char* );
 extern void  send_umode_out(struct Client* , struct Client* , int);
 extern int   show_lusers(struct Client* source_p);
-extern void  show_opers(struct Client* client);
 extern int   register_local_user(struct Client* ,struct Client* ,
 				 char* ,char* );
 extern int   register_remote_user(struct Client* ,struct Client* ,

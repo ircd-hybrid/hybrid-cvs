@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.162 2001/08/22 21:44:37 leeh Exp $
+ *  $Id: s_user.c,v 7.163 2001/08/24 15:31:16 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -179,54 +179,6 @@ int user_modes_from_c_to_bitmask[] =
   /* 0xE0 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0xEF */
   /* 0xF0 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0  /* 0xFF */
 };
-
-/*
- * show_opers - send the client a list of opers
- * inputs       - pointer to client to show opers to
- * output       - none
- * side effects - show who is opered on this server
- */
-void show_opers(struct Client *client_p)
-{
-  struct Client        *client_p2;
-  int j=0;
-  struct ConfItem *aconf;
-  dlink_node *oper_ptr;
-  dlink_node *ptr;
-
-  for(oper_ptr = oper_list.head; oper_ptr; oper_ptr = oper_ptr->next)
-    {
-      ++j;
-
-      client_p2 = oper_ptr->data;
-
-      if (MyClient(client_p) && IsOper(client_p))
-        {
-	  ptr = client_p2->localClient->confs.head;
-	  aconf = ptr->data;
-
-          sendto_one(client_p, ":%s %d %s :[%c][%s] %s (%s@%s) Idle: %d",
-                     me.name, RPL_STATSDEBUG, client_p->name,
-                     IsOper(client_p2) ? 'O' : 'o',
-		     oper_privs_as_string(client_p2, aconf->port),
-                     client_p2->name,
-                     client_p2->username, client_p2->host,
-                     (int)(CurrentTime - client_p2->user->last));
-        }
-      else
-        {
-          sendto_one(client_p, ":%s %d %s :[%c] %s (%s@%s) Idle: %d",
-                     me.name, RPL_STATSDEBUG, client_p->name,
-                     IsOper(client_p2) ? 'O' : 'o',
-                     client_p2->name,
-                     client_p2->username, client_p2->host,
-                     (int)(CurrentTime - client_p2->user->last));
-        }
-    }
-
-  sendto_one(client_p, ":%s %d %s :%d OPER%s", me.name, RPL_STATSDEBUG,
-             client_p->name, j, (j==1) ? "" : "s");
-}
 
 /*
  * show_lusers -
