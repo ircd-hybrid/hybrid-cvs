@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.97 2000/12/13 16:09:08 db Exp $
+ *  $Id: s_conf.c,v 7.98 2000/12/15 13:55:57 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -274,8 +274,8 @@ void report_configured_links(struct Client* sptr, int mask)
             if(tmp->flags & CONF_FLAGS_LAZY_LINK)
               c = 'n';
 
-            /* Don't allow non opers to see actual ips */
-            if(IsAnyOper(sptr))
+            /* Allow admins to see actual ips */
+            if(IsAdmin(sptr))
               sendto_one(sptr, form_str(p->rpl_stats), me.name,
                          sptr->name, c,
                          host,

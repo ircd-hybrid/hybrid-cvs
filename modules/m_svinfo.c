@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_svinfo.c,v 1.6 2000/12/10 03:52:17 db Exp $
+ *   $Id: m_svinfo.c,v 1.7 2000/12/15 13:55:56 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -106,7 +106,8 @@ int m_svinfo(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     { 
       sendto_realops_flags(FLAGS_ALL,
                  "Link %s notable TS delta (my TS=%d, their TS=%d, delta=%d)",
-                 get_client_name(sptr, TRUE), CurrentTime, theirtime, deltat);
+			   get_client_name(sptr, MASK_IP),
+			   CurrentTime, theirtime, deltat);
     }
 
   return 0;

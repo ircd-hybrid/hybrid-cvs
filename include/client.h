@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.58 2000/12/15 08:04:05 db Exp $
+ * $Id: client.h,v 7.59 2000/12/15 13:55:52 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -51,10 +51,12 @@
 #include "linebuf.h"
 
 #define HOSTIPLEN       16      /* Length of dotted quad form of IP        */
-                                /* - Dianora                               */
 #define PASSWDLEN       20
+
+/* XXX IDLEN is/was for TS4's client ID leave for now... */
 #define IDLEN           12      /* this is the maximum length, not the actual
                                    generated length; DO NOT CHANGE! */
+
 #define CLIENT_BUFSIZE 512      /* must be at least 512 bytes */
 
 /*
