@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_select.c,v 7.15 2001/04/19 22:29:43 a1kmm Exp $
+ *  $Id: s_bsd_select.c,v 7.16 2001/05/03 00:18:55 androsyn Exp $
  */
 #include "config.h"
 #ifdef USE_SELECT
@@ -214,6 +214,7 @@ comm_select(time_t delay)
 
         if (FD_ISSET(fd, &tmpreadfds)) {
             hdl = F->read_handler;
+            F->read_handler = NULL;
             select_update_selectfds(fd, COMM_SELECT_READ, NULL);
             if (!hdl) {
                 /* XXX Eek! This is another bad place! */
@@ -223,6 +224,7 @@ comm_select(time_t delay)
         }
         if (FD_ISSET(fd, &tmpwritefds)) {
             hdl = F->write_handler;
+            F->write_handler = NULL;
             select_update_selectfds(fd, COMM_SELECT_WRITE, NULL);
             if (!hdl) {
                 /* XXX Eek! This is another bad place! */
