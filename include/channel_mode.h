@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.12 2002/10/10 22:17:19 bill Exp $
+ *  $Id: channel_mode.h,v 7.13 2002/10/28 21:09:20 bill Exp $
  */
 
 
@@ -100,9 +100,6 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 #define MODE_EXCEPTION  0x0800
 #define MODE_INVEX	0x2000
 #define MODE_HIDEOPS    0x4000
-
-/* not an actual channel mode */
-#define MODE_EXPIRING	0x8000
 
 /*
  * mode flags which take another parameter (With PARAmeterS)

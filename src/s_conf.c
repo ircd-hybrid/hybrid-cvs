@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.330 2002/10/19 22:35:19 androsyn Exp $
+ *  $Id: s_conf.c,v 7.331 2002/10/28 21:09:24 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1429,9 +1429,6 @@ set_default_conf(void)
   ConfigChannel.knock_delay_channel = 60;
   ConfigChannel.max_chans_per_user = 15;
   ConfigChannel.max_bans = 25;
-
-  /* 60 * 30 = 1800 = 30 minutes */
-  ConfigChannel.persist_time = 1800;
 
   ConfigChannel.default_split_user_count = 0;
   ConfigChannel.default_split_server_count = 0;

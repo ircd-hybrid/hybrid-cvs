@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.144 2002/10/19 22:32:51 androsyn Exp $
+ *  $Id: ircd_lexer.l,v 1.145 2002/10/28 21:09:24 bill Exp $
  */
 
 %option case-insensitive
@@ -229,7 +229,6 @@ oper_pass_resv	{ return OPER_PASS_RESV; }
 operator	{ return OPERATOR; }
 passwd		{ return PASSWORD; }
 password	{ return PASSWORD; }
-persist_time    { return PERSIST_TIME; }
 ping_cookie	{ return PING_COOKIE; }
 ping_time	{ return PING_TIME; }
 port		{ return PORT; }

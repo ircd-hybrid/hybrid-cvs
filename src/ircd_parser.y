@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.259 2002/10/22 18:47:26 androsyn Exp $
+ *  $Id: ircd_parser.y,v 1.260 2002/10/28 21:09:24 bill Exp $
  */
 
 %{
@@ -199,7 +199,6 @@ int   class_redirport_var;
 %token	PACE_WAIT_SIMPLE
 %token  PASSWORD
 %token  PATH
-%token  PERSIST_TIME
 %token  PING_COOKIE
 %token  PING_TIME
 %token  PORT
@@ -2543,7 +2542,6 @@ channel_item:       channel_use_except |
 		    channel_knock_delay_channel |
                     channel_max_chans_per_user |
                     channel_quiet_on_ban |
-		    channel_persist_time |
 		    channel_default_split_user_count | 
 		    channel_default_split_server_count |
 		    channel_no_create_on_split | 
@@ -2687,11 +2685,6 @@ channel_max_bans: MAX_BANS '=' NUMBER ';'
    {
       ConfigChannel.max_bans = $3;
    } ;
-
-channel_persist_time: PERSIST_TIME '=' timespec ';'
-  {
-    ConfigChannel.persist_time = $3;
-  } ;
 
 channel_default_split_user_count: DEFAULT_SPLIT_USER_COUNT '=' NUMBER ';'
   {

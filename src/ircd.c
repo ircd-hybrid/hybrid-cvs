@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.241 2002/10/11 19:57:49 db Exp $
+ *  $Id: ircd.c,v 7.242 2002/10/28 21:09:24 bill Exp $
  */
 
 #include "stdinc.h"
@@ -748,9 +748,6 @@ int main(int argc, char *argv[])
 
   /* Setup the timeout check. I'll shift it later :)  -- adrian */
   eventAddIsh("comm_checktimeouts", comm_checktimeouts, NULL, 1);
-
-  /* Check for expired channels */
-  eventAddIsh("expire_channels", expire_channels, NULL, 10);
 
   eventAddIsh("cleanup_zombies", cleanup_zombies, NULL, 30); 
   

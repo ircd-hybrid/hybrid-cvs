@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.119 2002/10/10 22:17:19 bill Exp $
+ *  $Id: channel.h,v 7.120 2002/10/28 21:09:20 bill Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -60,7 +60,6 @@ struct Channel
   int             users;      /* user count */
   int             locusers;   /* local user count */
   unsigned long   lazyLinkChannelExists;
-  time_t          users_last;		/* when last user was in channel */
   time_t          last_knock;           /* don't allow knock to flood */
 #ifdef VCHANS
   struct Channel  *root_chptr;		/* pointer back to root if vchan */
@@ -105,7 +104,6 @@ struct Channel
 extern  struct  Channel *GlobalChannelList;
 
 void init_channels(void);
-void expire_channels(void *);
 void cleanup_channels(void *);
 
 
@@ -162,10 +160,6 @@ extern void check_splitmode(void *);
                 dlinkFind(&who->user->channel, chan)) ? 1 : 0)
 
 #define IsChannelName(name) ((name) && (*(name) == '#' || *(name) == '&'))
-
-#define IsExpiring(name) (name->mode.mode & MODE_EXPIRING)
-#define SetExpiring(name) (name->mode.mode |= MODE_EXPIRING)
-#define ClearExpiring(name) (name->mode.mode &= ~MODE_EXPIRING)
 
 struct Ban          /* also used for exceptions -orabidoo */
 {

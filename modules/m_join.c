@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.92 2002/10/03 15:33:41 bill Exp $
+ *  $Id: m_join.c,v 1.93 2002/10/28 21:09:22 bill Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.92 $";
+const char *_version = "$Revision: 1.93 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);
@@ -93,7 +93,6 @@ m_join(struct Client *client_p,
   int   i, flags = 0;
   char  *p = NULL, *p2 = NULL, *p3 = NULL;
   int   successful_join_count = 0; /* Number of channels successfully joined */
-  int   burst_modes = NO;
 #ifdef VCHANS
   struct Channel *vchan_chptr = NULL;
   char *pvc = NULL;
@@ -132,7 +131,6 @@ m_join(struct Client *client_p,
       modebuf[0] = '+';
       modebuf[1] = '\0';
       parabuf[0] = '\0';
-      burst_modes = NO;
 
       if(!check_channel_name(name))
       {
@@ -244,10 +242,7 @@ m_join(struct Client *client_p,
 	   * -Dianora
 	   */
 	  if (chptr->users == 0)
-	  {
 	    flags = CHFL_CHANOP;
-	    burst_modes = YES;
-	  }
 	  else
 	    flags = 0;
 	}
@@ -315,23 +310,12 @@ m_join(struct Client *client_p,
       if (flags & CHFL_CHANOP)
 	{
 	  chptr->channelts = CurrentTime;
-
-	  /* detected a persistent channel, so
-	   * have to call channel_modes() here.
-	   */
-	  if (burst_modes)
-	  {
-	    channel_modes(chptr, client_p, modebuf, parabuf);
-	  }
-	  else /* Otherwise, its a stock +nt */
-	  {
-	    chptr->mode.mode |= MODE_TOPICLIMIT;
-	    chptr->mode.mode |= MODE_NOPRIVMSGS;
-	    modebuf[0] = '+';
-	    modebuf[1] = 'n';
-	    modebuf[2] = 't';
-	    modebuf[3] = '\0';
-	  }
+	  chptr->mode.mode |= MODE_TOPICLIMIT;
+	  chptr->mode.mode |= MODE_NOPRIVMSGS;
+	  modebuf[0] = '+';
+	  modebuf[1] = 'n';
+	  modebuf[2] = 't';
+	  modebuf[3] = '\0';
 
           /*
            * XXX - this is a rather ugly hack.

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.340 2002/10/24 20:54:52 bill Exp $
+ *  $Id: channel.c,v 7.341 2002/10/28 21:09:23 bill Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,6 @@ static void send_mode_list(struct Client *client_p, char *chname,
 static int check_banned(struct Channel *chptr, struct Client *who,
                                                 char *s, char *s2);
 
-static dlink_list expiring_channels;
 static char buf[BUFSIZE];
 static char modebuf[MODEBUFLEN], parabuf[MODEBUFLEN];
 
@@ -86,7 +85,6 @@ void init_channels(void)
   channel_heap = BlockHeapCreate(sizeof(struct Channel), CHANNEL_HEAP_SIZE);
   ban_heap = BlockHeapCreate(sizeof(struct Ban), BAN_HEAP_SIZE);
   topic_heap = BlockHeapCreate(TOPICLEN+1 + USERHOST_REPLYLEN, TOPIC_HEAP_SIZE);
-  memset(&expiring_channels, 0, sizeof(expiring_channels));
 
   eventAddIsh("channelheap_garbage_collect", channelheap_garbage_collect,
               NULL, 45);
@@ -477,116 +475,8 @@ sub1_from_channel(struct Channel *chptr)
                                  * It should never happen but...
                                  */
 #endif
-
-    /* if persistent channel time is 0, destroy immediately */
-    if (ConfigChannel.persist_time == 0)
-    {
-      destroy_channel(chptr);
-      return (1);
-    }
-    chptr->users_last = CurrentTime;
-
-    /* if it is already expiring, we do not have to do anything */
-    if (!IsExpiring(chptr))
-    {
-      SetExpiring(chptr);
-      c = make_dlink_node();
-      dlinkAddTail(chptr, c, &expiring_channels);
-      return (0);
-    }
   }
   return (0);
-}
- 
-/*
- * expire_channels
- *
- * inputs	- NONE
- * outputs	- NONE
- * side effects - destroys expired channels
- */
-void
-expire_channels(void *unused)
-{
-  dlink_node *ptr, *next_ptr;
-  struct Channel *chptr;
-
-  /*
-   * slight trick here, we stop walking the list if we reach the
-   * end (obviously), but also if we find a channel that has yet to
-   * expire.  this is because channels will be added in chronological
-   * order of when they are to expire, meaning if the head of the list
-   * is not yet due to expire, we can safely assume that the rest of
-   * the list is the same way.
-   */
-  DLINK_FOREACH_SAFE(ptr, next_ptr, expiring_channels.head)
-  {
-    /*
-     * we cannot assume the channel has not been destroyed
-     * since it's destruction has been scheduled.  if for
-     * example persist_time had been changed to 0, and the
-     * channel had been cycled again.  there are probably
-     * other ways for this to happen, as well.
-     */
-    if ((chptr = (struct Channel *)ptr->data) == NULL)
-    {
-      dlinkDelete(ptr, &expiring_channels);
-      continue;
-    }
-
-    /* not expiring anymore? hmm, ok.  remove and continue. */
-    if (!IsExpiring(chptr))
-    {
-      dlinkDelete(ptr, &expiring_channels);
-      continue;
-    }
-
-#ifdef VCHANS
-    if (IsVchan(chptr) && !IsVchanTop(chptr))
-    {
-      if ((CurrentTime - chptr->users_last >= MAX_VCHAN_TIME))
-      {
-        /* time to expire.  verify emptiness, and destroy. or else
-         * clear expire bit.  continue. */
-	if (chptr->users == 0)
-        {
-	  if (uplink && IsCapable(uplink, CAP_LL))
-	    sendto_one(uplink, ":%s DROP %s", me.name, chptr->chname);
-	  destroy_channel(chptr);
-	}
-	else
-          ClearExpiring(chptr);
-	dlinkDelete(ptr, &expiring_channels);
-        continue;
-      }
-      else
-        break;
-    }
-    else
-    {
-#endif
-      if((chptr->users_last + ConfigChannel.persist_time) <= CurrentTime)
-      {
-        /* time to expire.  verify emptiness, and destroy. or else
-         * clear expire bit.  continue. */
-	if (chptr->users == 0)
-        {
-	  if (uplink && IsCapable(uplink, CAP_LL))
-	    sendto_one(uplink, ":%s DROP %s", me.name, chptr->chname);
-	  destroy_channel(chptr);
-	}
-	else
-          ClearExpiring(chptr);
-	dlinkDelete(ptr, &expiring_channels);
-        continue;
-      }
-      else
-        break;
-        /* not yet time to expire.  abort now, and save cpu. */
-#ifdef VCHANS
-    }
-#endif
-  }
 }
 
 /*
@@ -650,9 +540,8 @@ destroy_channel(struct Channel *chptr)
    * any reference it has to this channel.
    * Finally, free now unused dlink's
    *
-   * This test allows us to use this code both for LazyLinks and
-   * persistent channels. In the case of a LL the channel need not
-   * be empty, it only has to be empty of local users.
+   * For LazyLinks, note that the channel need not be empty, it only
+   * has to be empty of local users.
    */
 
   delete_members(chptr, &chptr->chanops);

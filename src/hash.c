@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.46 2002/10/10 18:49:30 androsyn Exp $
+ *  $Id: hash.c,v 7.47 2002/10/28 21:09:23 bill Exp $
  */
 
 #include "stdinc.h"
@@ -417,11 +417,14 @@ del_from_channel_hash_table(const char* name, struct Channel* chptr)
   struct Channel* found_chptr;
   struct Channel* prev = NULL;
   unsigned int    hashv;
+
+#ifdef INVARIANTS
   assert(name != NULL);
   assert(chptr != NULL);
-
+#else
   if(name == NULL || chptr == NULL)
     return;
+#endif
     
   hashv = hash_channel_name(name);
   found_chptr = (struct Channel*) channelTable[hashv].list;
