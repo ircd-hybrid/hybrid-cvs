@@ -1,3 +1,31 @@
+db          2003/02/15 19:22:24 EST	(20030216_0)
+
+  Modified files:
+    include              s_conf.h 
+    src                  ircd.c s_conf.c 
+  Log:
+  - init_ip_hash_table() was a better name than clear_ip_hash_table()
+  - removed typedef for IPHASH (obsfuscation)
+  - redid memory allocation to use block heap
+  - changed > to >= for comparision to throttle time, it was possible for
+    a compare to fail and leave 0 count ip_entry(s) in the hash.
+  - N.B. subtle bug fixed by this commit.. When the ip hash table was purely
+    used to count number of clients on an IP, there could never be more than
+    MAXCONNECTIONS ip_entry(s), Once ip throttling was added, it is possible
+    to have ip_entry(s) in use that have 0 clients on them, i.e. they are
+    "remembering" an ip was recently used. This means it was possible
+    (though unlikely) for all ip_entry(s) to be used thus panic'ing the server.
+    This could affect a smaller server more easily.
+  
+  Reviewed by lusky, juli
+  
+  Revision  Changes    Path
+  7.190     +1 -1      ircd-hybrid-7/include/s_conf.h
+  7.251     +1 -1      ircd-hybrid-7/src/ircd.c
+  7.340     +130 -130  ircd-hybrid-7/src/s_conf.c
+
+
+
 lusky       2003/02/15 11:32:47 EST	(20030215_0)
 
   Modified files:
@@ -35065,4 +35093,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4232 2003/02/15 16:32:50 lusky Exp $
+$Id: ChangeLog,v 7.4233 2003/02/16 00:22:27 db Exp $
