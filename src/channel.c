@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.257 2001/07/27 11:27:03 leeh Exp $
+ * $Id: channel.c,v 7.258 2001/07/27 12:14:29 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2370,12 +2370,22 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
 
   for(ptr = serv_list.head; ptr; ptr = ptr->next)
   {
-
     target_p = ptr->data;
 
     if(target_p == source_p)
       continue;
+    
+    /* if its a LL, check they have the channel */
+    if(ServerInfo.hub && IsCapable(target_p, CAP_LL))
+    {
+      if((chptr->lazyLinkChannelExists & target_p->localClient->serverMask) == 0)
+        continue;
       
+      if(IsClient(source_p) && 
+        (source_p->lazyLinkClientExists & target_p->localClient->serverMask) == 0)
+	client_burst_if_needed(target_p, source_p);
+    }
+	
     if (mode_count_minus > 0)
     {
       modebuf[mbl++] = '-';
