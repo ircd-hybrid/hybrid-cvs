@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_gline.h,v 7.4 2000/12/25 15:59:35 toot Exp $
+ * $Id: s_gline.h,v 7.5 2000/12/25 17:59:19 toot Exp $
  */
 
 #ifndef INCLUDED_s_gline_h
@@ -68,7 +68,7 @@ typedef struct gline_pending
  */
 
 #define GLINE_PENDING_EXPIRE 600
-#define CLEANUP_GLINES_TIME  1800
+#define CLEANUP_GLINES_TIME  300
 
 dlink_list pending_glines;
 

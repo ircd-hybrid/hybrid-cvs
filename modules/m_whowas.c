@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: m_whowas.c,v 1.10 2000/12/23 01:42:18 db Exp $
+*   $Id: m_whowas.c,v 1.11 2000/12/25 17:59:25 toot Exp $
 */
 #include "whowas.h"
 #include "handlers.h"
@@ -41,7 +41,7 @@
 #include "memdebug.h"
 
 struct Message whowas_msgtab = {
-  MSG_WHOWAS, 0, 1, 0, MFLG_SLOW, 0L,
+  MSG_WHOWAS, 0, 0, 0, MFLG_SLOW, 0L,
   {m_unregistered, m_whowas, mo_whowas, m_whowas}
 };
 
@@ -74,6 +74,13 @@ int     m_whowas(struct Client *cptr,
 {
   static time_t last_used=0L;
 
+  if (parc < 2)
+    {
+      sendto_one(sptr, form_str(ERR_NONICKNAMEGIVEN),
+                 me.name, parv[0]);
+      return 0;
+    }
+
   if((last_used + ConfigFileEntry.whois_wait) > CurrentTime)
     {
       return 0;
@@ -91,6 +98,13 @@ int     mo_whowas(struct Client *cptr,
                  int parc,
                  char *parv[])
 {
+  if (parc < 2)
+    {
+      sendto_one(sptr, form_str(ERR_NONICKNAMEGIVEN),
+                 me.name, parv[0]);
+      return 0;
+    }
+
   return(whowas_do(cptr,sptr,parc,parv));
 }
 
