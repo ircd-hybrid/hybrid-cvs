@@ -1,3 +1,8 @@
+*** 20001209_8 by bill
+
+- changed NONWILDCHARS to 2
+
+
 *** 20001209_7 by db
 - tiny fixes to fix typo's 
 
@@ -2053,7 +2058,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.762 2000/12/09 08:20:20 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.763 2000/12/09 17:31:22 bill Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
