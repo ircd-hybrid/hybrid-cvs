@@ -1,7 +1,7 @@
 /*
  * motd.h
  *
- * $Id: motd.h,v 7.6 2001/06/03 23:44:33 ejb Exp $
+ * $Id: motd.h,v 7.7 2001/07/20 03:51:05 wcampbel Exp $
  */
 #ifndef INCLUDED_motd_h
 #define INCLUDED_motd_h
@@ -22,7 +22,8 @@ typedef enum {
   USER_MOTD,
   USER_LINKS,
   OPER_MOTD,
-  HELP_MOTD
+  HELP_MOTD,
+  UHELP_MOTD
 } MotdType;
 
 struct MessageFileLine

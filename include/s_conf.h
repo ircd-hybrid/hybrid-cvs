@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.148 2001/07/19 07:15:38 a1kmm Exp $
+ * $Id: s_conf.h,v 7.149 2001/07/20 03:51:05 wcampbel Exp $
  */
 
 #include "setup.h"
@@ -191,6 +191,7 @@ struct config_file_entry
   char fname_foperlog[MAXPATHLEN];
 
   MessageFile helpfile;
+  MessageFile uhelpfile;
   MessageFile motd;
   MessageFile opermotd;
   MessageFile linksfile;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_help.c,v 1.17 2001/04/04 15:22:26 androsyn Exp $
+ *   $Id: m_help.c,v 1.18 2001/07/20 03:51:06 wcampbel Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -78,7 +78,7 @@ static void m_help(struct Client *client_p, struct Client *source_p,
       last_used = CurrentTime;
     }
 
-  report_messages(source_p);
+  SendMessageFile(source_p, &ConfigFileEntry.uhelpfile);
 }
 
 /*

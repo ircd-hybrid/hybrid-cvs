@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.119 2001/07/02 02:54:59 db Exp $
+ * $Id: config.h,v 7.120 2001/07/20 03:51:04 wcampbel Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -99,6 +99,7 @@
 #define LPATH   LOGPATH "]IRCD.LOG"              /* logfile */
 #define PPATH   ETCPATH "]IRCD.PID"              /* pid file */
 #define HPATH   ETCPATH "]OPERS.TXT"             /* oper help file */
+#define UHPATH  ETCPATH "]USERS.TXT"             /* user help file */
 #define OPATH   ETCPATH "]OPERS.MOTD"            /* oper MOTD file */
 #define LIPATH  ETCPATH "]LINKS.TXT"             /* cached LINKS file */
 #else /* VMS */
@@ -140,6 +141,7 @@
 #define LPATH   LOGPATH "/ircd.log"             /* ircd logfile */
 #define PPATH   ETCPATH "/ircd.pid"             /* pid file */
 #define HPATH   ETCPATH "/opers.txt"            /* oper help file */
+#define UHPATH  ETCPATH "/users.txt"            /* user help file */
 #define OPATH   ETCPATH "/opers.motd"           /* oper MOTD file */
 #define LIPATH  ETCPATH "/links.txt"            /* cached links file */
 #endif /* !VMS */

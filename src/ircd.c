@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.169 2001/07/19 13:31:58 androsyn Exp $
+ * $Id: ircd.c,v 7.170 2001/07/20 03:51:07 wcampbel Exp $
  */
 
 #include <sys/types.h>
@@ -373,11 +373,13 @@ static void initialize_global_set_options(void)
 static void initialize_message_files(void)
   {
     InitMessageFile( HELP_MOTD, HPATH, &ConfigFileEntry.helpfile );
+    InitMessageFile( UHELP_MOTD, UHPATH, &ConfigFileEntry.uhelpfile );
     InitMessageFile( USER_MOTD, MPATH, &ConfigFileEntry.motd );
     InitMessageFile( OPER_MOTD, OPATH, &ConfigFileEntry.opermotd );
     InitMessageFile( USER_LINKS, LIPATH, &ConfigFileEntry.linksfile );
 
     ReadMessageFile( &ConfigFileEntry.helpfile );
+    ReadMessageFile( &ConfigFileEntry.uhelpfile );
     ReadMessageFile( &ConfigFileEntry.motd );
     ReadMessageFile( &ConfigFileEntry.opermotd );
     ReadMessageFile( &ConfigFileEntry.linksfile );

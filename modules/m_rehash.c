@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_rehash.c,v 1.26 2001/06/13 04:55:06 androsyn Exp $
+ *   $Id: m_rehash.c,v 1.27 2001/07/20 03:51:06 wcampbel Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -115,8 +115,10 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
       else if(irccmp(parv[1],"HELP") == 0)
         {
           sendto_realops_flags(FLAGS_ALL,
-		       "%s is forcing re-reading of oper help file",parv[0]);
+		       "%s is forcing re-reading of oper and user help files",
+                       parv[0]);
           ReadMessageFile( &ConfigFileEntry.helpfile );
+          ReadMessageFile( &ConfigFileEntry.uhelpfile );
           found = YES;
         }
       if(found)
