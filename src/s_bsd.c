@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.183 2003/03/30 16:27:45 adx Exp $
+ *  $Id: s_bsd.c,v 7.184 2003/03/31 01:25:15 db Exp $
  */
 
 #include "stdinc.h"
@@ -359,19 +359,17 @@ add_connection(struct Listener* listener, int fd)
    * get the client socket name from the socket
    * the client has already been checked out in accept_connection
    */
-  new_client = make_client(NULL);
+
   if (getpeername(fd, (struct sockaddr *)&SOCKADDR(irn), (socklen_t *)&len))
     {
-      dlink_node *m;
-
       report_error(L_ALL, "Failed in adding new connection %s :%s", 
 		   get_listener_name(listener), errno);
       ServerStats->is_ref++;
       fd_close(fd);
-      SetDead(new_client);
-      exit_client(new_client, new_client, &me, "Error adding new connection");
       return;
     }
+
+  new_client = make_client(NULL);
 
   /* 
    * copy address to 'sockhost' as a string, copy it to host too
