@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.89 2003/08/04 09:39:31 adx Exp $
+ *  $Id: hostmask.c,v 7.90 2003/08/12 21:22:23 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -525,8 +525,7 @@ find_address_conf(const char *host, const char *user,
   return (iconf);
 }
 
-/*
- * find_kline_conf
+/* find_kline_conf
  *
  * inputs	- pointer to hostname
  *		- pointer to username
@@ -538,14 +537,14 @@ struct AccessItem *
 find_kline_conf(const char *host, const char *user,
 		struct irc_ssaddr *ip, int aftype)
 {
-  struct AccessItem *kconf;
+  struct AccessItem *eline;
 
-  /* Find the best K-line... -A1kmm */
-  kconf = find_conf_by_address(host, ip, CONF_KILL, aftype, user, NULL);
+  eline = find_conf_by_address(host, ip, CONF_EXEMPTKLINE, aftype,
+                               NULL, NULL);
+  if (eline != NULL)
+    return (eline);
 
-  /* If they are K-lined, return the K-line. Otherwise, return the
-   * I-line. -A1kmm */
-  return (kconf);
+  return (find_conf_by_address(host, ip, CONF_KILL, aftype, NULL, NULL));
 }
 
 /* struct AccessItem* find_dline_conf(struct irc_ssaddr*, int)
