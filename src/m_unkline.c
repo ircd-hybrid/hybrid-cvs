@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 7.9 2000/11/07 17:07:08 ejb Exp $
+ *   $Id: m_unkline.c,v 7.10 2000/11/07 18:56:37 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -84,13 +84,6 @@ int mo_unkline (struct Client *cptr,struct Client *sptr,int parc,char *parv[])
   if (check_registered(sptr))
     {
       return -1;
-    }
-
-  if (!IsAnyOper(sptr))  
-    {
-      sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, 
-                 parv[0]);
-      return 0;
     }
 
   if (!IsSetOperUnkline(sptr))
@@ -434,13 +427,6 @@ int mo_undline (struct Client *cptr, struct Client *sptr,int parc,char *parv[])
   mode_t oldumask;
 
   ircsprintf(temppath, "%s.tmp", ConfigFileEntry.dlinefile);
-
-  if (!IsAnyOper(sptr))
-    {
-      sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name,
-                 parv[0]);
-      return 0;
-    }
 
   if (!IsSetOperUnkline(sptr))
     {

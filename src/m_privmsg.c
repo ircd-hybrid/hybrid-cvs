@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_privmsg.c,v 7.23 2000/11/07 08:56:26 db Exp $
+ *   $Id: m_privmsg.c,v 7.24 2000/11/07 18:56:37 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -286,8 +286,8 @@ int build_target_list(struct Client *cptr,
 
 	      if( i >= MAX_MULTI_MESSAGES)
 		return(i);
-	      continue;
 	    }
+	  continue;
 	}
       /* At this point, its likely its another client */
 
