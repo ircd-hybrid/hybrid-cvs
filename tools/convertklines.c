@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertklines.c,v 7.2 2001/06/08 16:18:24 db Exp $
+ * $Id: convertklines.c,v 7.3 2001/10/04 21:22:37 androsyn Exp $
  */
 
 #include <stdio.h>
@@ -64,7 +64,7 @@ int main(int argc,char *argv[])
   ConvertConf(in,outkline,outdline);
 
   fprintf(stderr, "The kline file has been converted and should be renamed to\n");
-  fprintf(stderr, "the config.h options \(normally kline.conf and dline.conf) and\n");
+  fprintf(stderr, "the config.h options (normally kline.conf and dline.conf) and\n");
   fprintf(stderr, "put in your etc/ dir\n");
   return 0;
 }
