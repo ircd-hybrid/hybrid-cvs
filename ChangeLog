@@ -1,3 +1,15 @@
+androsyn    2002/05/30 19:55:50 EDT	(20020531_0)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  Don't send QUIT to remote servers for unregistered clients
+  
+  Revision  Changes    Path
+  7.272     +29 -30    ircd-hybrid-7/src/client.c
+
+
+
 leeh        2002/05/30 16:14:01 EDT	(20020530_0)
 
   Modified files:
@@ -27511,4 +27523,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3713 2002/05/30 20:14:07 leeh Exp $
+$Id: ChangeLog,v 7.3714 2002/05/30 23:55:56 androsyn Exp $
