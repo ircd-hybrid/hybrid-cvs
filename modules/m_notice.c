@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_notice.c,v 1.2 2000/11/09 09:46:59 ejb Exp $
+ *   $Id: m_notice.c,v 1.3 2000/11/09 13:58:25 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -171,11 +171,14 @@ void notice_channel( struct Client *cptr,
   else
     channel_name = chptr->chname;
 
-  if(MyClient(sptr) && sptr->user)
-    sptr->user->last = CurrentTime;
+  if(MyClient(sptr))
+    {
+      if(sptr->user)
+	sptr->user->last = CurrentTime;
 
-  if(check_for_ctcp(text))
-    check_for_flud(sptr, NULL, chptr, 1);
+      if(check_for_ctcp(text))
+	check_for_flud(sptr, NULL, chptr, 1);
+    }
 
   if (can_send(chptr, sptr) == 0)
     sendto_channel_butone(cptr, sptr, chptr,
@@ -216,11 +219,14 @@ void notice_channel_flags( struct Client *cptr,
   else
     channel_name = chptr->chname;
 
-  if(MyClient(sptr) && sptr->user)
-    sptr->user->last = CurrentTime;
+  if(MyClient(sptr))
+    {
+      if(sptr->user)
+	sptr->user->last = CurrentTime;
 
-  if(check_for_ctcp(text))
-    check_for_flud(sptr, NULL, chptr, 1);
+      if(check_for_ctcp(text))
+	check_for_flud(sptr, NULL, chptr, 1);
+    }
 
   if (can_send(chptr, sptr) == 0)
     sendto_channel_type(cptr,
@@ -247,19 +253,15 @@ void notice_channel_flags( struct Client *cptr,
 void notice_client(struct Client *sptr, struct Client *acptr,
 			  char *text)
 {
-  /* reset idle time for message only if its not to self */
-  if (sptr != acptr)
+  /* reset idle time for message only if target exists and not self */
+  if(MyClient(sptr))
     {
-      if(sptr->user)
+      if((sptr != acptr) && sptr->user)
 	sptr->user->last = CurrentTime;
+
+      if(check_for_ctcp(text))
+	check_for_flud(sptr, acptr, NULL, 1);
     }
-
-  /* reset idle time for message only if target exists */
-  if(MyClient(sptr) && sptr->user)
-    sptr->user->last = CurrentTime;
-
-  if(check_for_ctcp(text))
-    check_for_flud(sptr, acptr, NULL, 1);
 
   if (MyConnect(sptr) &&
       acptr->user && acptr->user->away)
