@@ -1,3 +1,11 @@
+*** 20001206_8 by db
+- ummm there is a bug where an struct Confitem aconf will have a NULL
+  c_class (pointer to class) this will core the server in attach_iline
+  this should be fixed, meanwhile... validate the pointer is non NULL
+  before trying to dereference it for now.
+
+
+
 *** 20001206_7 by db
 - transposed user/host in m_kline.c
 
@@ -1745,7 +1753,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.715 2000/12/06 22:40:12 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.716 2000/12/06 23:35:01 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
