@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.28 2003/06/29 22:46:11 michael Exp $
+ * $Id: m_force.c,v 1.29 2003/07/21 10:45:59 michael Exp $
  */
 
 #include "stdinc.h"
@@ -52,12 +52,12 @@ static void mo_forcepart(struct Client *, struct Client *, int parc, char **);
 
 struct Message forcejoin_msgtab = {
   "FORCEJOIN", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_ignore, m_not_oper, mo_forcejoin, mo_forcejoin, m_ignore}
+  { m_ignore, m_not_oper, mo_forcejoin, mo_forcejoin, m_ignore }
 };
 
 struct Message forcepart_msgtab = {
   "FORCEPART", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_ignore, m_not_oper, mo_forcepart, mo_forcepart, m_ignore}
+  { m_ignore, m_not_oper, mo_forcepart, mo_forcepart, m_ignore }
 };
 
 #ifndef STATIC_MODULES
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 
 /* m_forcejoin()
@@ -119,33 +119,32 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
   }
 
   /* select our modes from parv[2] if they exist... (chanop)*/
-  if (*parv[2] == '@')
+  switch (parv[2][0])
   {
-    type = CHFL_CHANOP;
-    mode = 'o';
-    sjmode = '@';
-  }
-  else if (*parv[2] == '+')
-  {
-    type = CHFL_VOICE;
-    mode = 'v';
-    sjmode = '+';
-  }
-  else if (*parv[2] == '%')
-  {
-    type = CHFL_HALFOP;
-    mode = 'h';
-    sjmode = '+';
-  }
-  else
-  {
-    type = 0;
-    mode = sjmode = '\0';
+    case '@':
+      type = CHFL_CHANOP;
+      mode = 'o';
+      sjmode = '@';
+      parv[2]++;
+      break;
+    case '+':
+      type = CHFL_VOICE;
+      mode = 'v';
+      sjmode = '+';
+      parv[2]++;
+      break;
+    case '%':
+      type = CHFL_HALFOP;
+      mode = 'h';
+      sjmode = '%';
+      parv[2]++;
+      break;
+    default:
+      type = 0;
+      mode = sjmode = '\0'; /* make sure sjmode is 0. sjoin depends on it */
+      break;
   }
 
-  if (mode != '\0')
-    parv[2]++;
-    
   if ((chptr = hash_find_channel(parv[2])) != NULL)
   {
     if (IsMember(target_p, chptr))
@@ -162,7 +161,7 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
       sendto_server(target_p, target_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
                     ":%s SJOIN %lu %s + :%c%s",
 	            me.name, (unsigned long)chptr->channelts,
-	            chptr->chname, type ? sjmode : ' ', target_p->name);
+	            chptr->chname, sjmode, target_p->name);
 
     sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
                          target_p->name, target_p->username,
@@ -174,8 +173,9 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
 
     if (chptr->topic != NULL)
     {
-      sendto_one(target_p, form_str(RPL_TOPIC), me.name,
-                 target_p->name, chptr->chname, chptr->topic);
+      sendto_one(target_p, form_str(RPL_TOPIC),
+                 me.name, target_p->name,
+                 chptr->chname, chptr->topic);
       sendto_one(target_p, form_str(RPL_TOPICWHOTIME),
                  me.name, source_p->name, chptr->chname,
                  chptr->topic_info, chptr->topic_time);
@@ -237,8 +237,7 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
                          target_p->name, target_p->username,
                          target_p->host, chptr->chname);
 
-    chptr->mode.mode |= MODE_TOPICLIMIT;
-    chptr->mode.mode |= MODE_NOPRIVMSGS;
+    chptr->mode.mode |= MODE_TOPICLIMIT | MODE_NOPRIVMSGS;
 
     sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +nt",
                          me.name, chptr->chname);
