@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.265 2003/05/22 23:16:07 michael Exp $
+ *  $Id: s_user.c,v 7.266 2003/05/24 00:08:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -40,8 +40,6 @@
 #include "list.h"
 #include "listener.h"
 #include "motd.h"
-#include "ircd_handler.h"
-#include "msg.h"
 #include "numeric.h"
 #include "s_conf.h"
 #include "s_log.h"
@@ -272,7 +270,7 @@ show_isupport(struct Client *source_p)
 */
 int
 register_local_user(struct Client *client_p, struct Client *source_p, 
-                    char *nick, char *username)
+                    const char *nick, char *username)
 {
   struct ConfItem *aconf;
   char tmpstr2[IRCD_BUFSIZE];
@@ -337,8 +335,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   if (!IsGotId(source_p))
   {
-    const char *p;
     int i = 0;
+    const char *p;
 
     if (IsNeedIdentd(aconf))
     {
@@ -425,8 +423,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   }
 
   irc_getnameinfo((struct sockaddr *)&source_p->localClient->ip,
-        source_p->localClient->ip.ss_len, ipaddr, HOSTIPLEN, NULL, 0,
-        NI_NUMERICHOST);
+                  source_p->localClient->ip.ss_len, ipaddr,
+                  HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
   sendto_realops_flags(UMODE_CCONN, L_ALL,
                        "Client connecting: %s (%s@%s) [%s] {%s} [%s]",
                        nick, source_p->username, source_p->host,
@@ -463,10 +461,9 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   /* Increment our total user count here */
   if (++Count.total > Count.max_tot)
     Count.max_tot = Count.total;
+  Count.totalrestartcount++;
 
   source_p->localClient->allow_read = MAX_FLOOD_BURST;
-
-  Count.totalrestartcount++;
 
   if ((m = dlinkFindDelete(&unknown_list, source_p)) != NULL)
   {
@@ -839,8 +836,7 @@ do_local_user(char *nick, struct Client *client_p, struct Client *source_p,
   return(0);
 }
 
-/*
- * user_mode - set get current users mode
+/* set_user_mode()
  *
  * added 15/10/91 By Darren Reed.
  * parv[0] - sender
@@ -848,7 +844,7 @@ do_local_user(char *nick, struct Client *client_p, struct Client *source_p,
  * parv[2] - modes to change
  */
 void
-user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
+set_user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
   unsigned int i;
   unsigned int flag;
@@ -1037,7 +1033,7 @@ send_umode(struct Client *client_p, struct Client *source_p,
   char *m;
 
   /* build a string in umode_buf to represent the change in the user's
-   * mode between the new (source_p->flag) and 'old'.
+   * mode between the new (source_p->umodes) and 'old'.
    */
   m = umode_buf;
   *m = '\0';

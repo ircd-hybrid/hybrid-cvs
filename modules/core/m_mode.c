@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.59 2003/05/09 22:19:21 michael Exp $
+ *  $Id: m_mode.c,v 1.60 2003/05/24 00:08:23 michael Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&mode_msgtab);
 }
 
-const char *_version = "$Revision: 1.59 $";
+const char *_version = "$Revision: 1.60 $";
 #endif
 
 /*
@@ -81,29 +81,29 @@ m_mode(struct Client *client_p, struct Client *source_p,
   if (parv[1][0] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, parv[0], "MODE");
+               me.name, source_p->name, "MODE");
     return;
   }
 
   /* Now, try to find the channel in question */
   if (!IsChanPrefix(parv[1][0]))
-    {
-      /* if here, it has to be a non-channel name */
-      user_mode(client_p, source_p, parc, parv);
-      return;
-    }
+  {
+    /* if here, it has to be a non-channel name */
+    set_user_mode(client_p, source_p, parc, parv);
+    return;
+  }
 
   if (!check_channel_name(parv[1]))
-    { 
-      sendto_one(source_p, form_str(ERR_BADCHANNAME),
-		 me.name, parv[0], (unsigned char *)parv[1]);
-      return;
-    }
-	  
+  { 
+    sendto_one(source_p, form_str(ERR_BADCHANNAME),
+               me.name, source_p->name, parv[1]);
+    return;
+  }
+
   chptr = hash_find_channel(parv[1]);
 
   if (chptr == NULL)
-    {
+  {
       /* if chptr isn't found locally, it =could= exist
        * on the uplink. So ask.
        */
@@ -139,11 +139,9 @@ m_mode(struct Client *client_p, struct Client *source_p,
   {
     channel_modes(chptr, source_p, modebuf, parabuf);
     sendto_one(source_p, form_str(RPL_CHANNELMODEIS),
-               me.name, parv[0], parv[1],
-	       modebuf, parabuf);
+               me.name, parv[0], parv[1], modebuf, parabuf);
     sendto_one(source_p, form_str(RPL_CREATIONTIME),
-               me.name, parv[0], parv[1],
-               chptr->channelts);
+               me.name, parv[0], parv[1], chptr->channelts);
   }
   /* bounce all modes from people we deop on sjoin */
   else if ((ptr = find_user_link(&chptr->deopped, source_p)) == NULL)
