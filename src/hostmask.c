@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.2 2001/02/04 04:55:17 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.3 2001/02/04 05:29:12 a1kmm Exp $ 
  */
 #include <unistd.h>
 #include <string.h>
@@ -211,6 +211,7 @@ void clear_conf(void)
       conf->status |= CONF_ILLEGAL;
     else
       free_conf(conf);
+    MyFree(hme);
    }
  first_mask = NULL;
  first_miscmask = NULL;
