@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ltrace.c,v 1.3 2000/11/09 09:46:58 ejb Exp $
+ *   $Id: m_ltrace.c,v 1.4 2000/11/18 01:02:56 davidt Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -48,7 +48,6 @@ _modinit(void)
   mod_add_cmd(MSG_LTRACE, &ltrace_msgtab);
 }
 
-#ifdef LTRACE
 /*
 ** m_ltrace - LimitedTRACE... like m_trace() but doesn't return TRACEUSER, TRACEUNKNOWN, or TRACECLASS
 **      parv[0] = sender prefix
@@ -256,5 +255,3 @@ int     m_ltrace(struct Client *cptr,
     }
   return 0;
 }
-#endif /* LTRACE */
-
