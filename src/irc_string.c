@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.48 2001/12/16 10:13:50 a1kmm Exp $
+ *  $Id: irc_string.c,v 7.49 2001/12/16 10:15:19 androsyn Exp $
  */
 #include "config.h"
 #include "tools.h"
@@ -45,12 +45,12 @@
 #include <time.h>
 
 #ifndef INADDRSZ 
-#define INADDRSZ sizeof(struct in_addr)
+#define INADDRSZ 4
 #endif
 
 #ifdef IPV6
 #ifndef IN6ADDRSZ
-#define IN6ADDRSZ sizeof(struct in6_addr)
+#define IN6ADDRSZ 16
 #endif
 #endif
 
