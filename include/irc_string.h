@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.17 2001/06/13 04:48:07 androsyn Exp $
+ *   $Id: irc_string.h,v 7.18 2001/06/26 19:09:04 androsyn Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -29,6 +29,18 @@
 #endif
 #include <sys/socket.h>
 #include <netinet/in.h>
+
+
+extern inline 
+char *strcpy(char * s1, const char *s2)
+{
+  register char *x = s1;
+  register const char *y = s2;
+  while(y != 0 && (*x++ = *y++))
+    ;     
+  return s1;
+}       
+              	      	        	          
 
 /*
  * match - compare name with mask, mask may contain * and ? as wildcards
