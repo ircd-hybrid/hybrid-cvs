@@ -1,3 +1,16 @@
+db          2001/12/14 23:24:18 EST	(20011215_4)
+
+  Modified files:
+    modules              m_trace.c 
+  Log:
+  - fixed m_trace bug for unopered clients, we didn't check that parv[1]
+    was valid before blindly using it.
+  
+  Revision  Changes    Path
+  1.38      +9 -6      ircd-hybrid-7/modules/m_trace.c
+
+
+
 a1kmm       2001/12/14 23:04:58 EST	(20011215_3)
 
   Modified files:
@@ -516,7 +529,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3176 2001/12/15 04:05:03 a1kmm Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3177 2001/12/15 04:24:23 db Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18870,4 +18883,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3176 2001/12/15 04:05:03 a1kmm Exp $
+$Id: ChangeLog,v 7.3177 2001/12/15 04:24:23 db Exp $
