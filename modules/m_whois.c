@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.50 2001/01/06 13:37:56 fl_ Exp $
+ *   $Id: m_whois.c,v 1.51 2001/01/06 18:12:04 davidt Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -195,7 +195,7 @@ static int do_whois(struct Client *cptr, struct Client *sptr,
         }
       else
 	{
-	  if (uplink && IsCapable(uplink,CAP_LL))
+	  if (!ConfigFileEntry.hub && uplink && IsCapable(uplink,CAP_LL))
 	    {
 	      if(glob == 1)
    	        sendto_one(uplink,":%s WHOIS %s :%s",
@@ -211,7 +211,7 @@ static int do_whois(struct Client *cptr, struct Client *sptr,
     {
       /* disallow wild card whois on lazylink leafs for now */
 
-      if (uplink && IsCapable(uplink,CAP_LL))
+      if (!ConfigFileEntry.hub && uplink && IsCapable(uplink,CAP_LL))
 	{
 	  return 0;
 	}
