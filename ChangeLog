@@ -1,3 +1,15 @@
+androsyn    2002/08/12 12:09:44 EDT	(20020812_0)
+
+  Modified files:
+    src                  channel_mode.c 
+  Log:
+  The send_oplist prototype was wrapped in the wrong ifdef
+  
+  Revision  Changes    Path
+  7.55      +1 -1      ircd-hybrid-7/src/channel_mode.c
+
+
+
 androsyn    2002/08/11 11:13:13 EDT	(20020811_2)
 
   Modified files:
@@ -31047,4 +31059,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3967 2002/08/11 15:13:19 androsyn Exp $
+$Id: ChangeLog,v 7.3968 2002/08/12 16:09:51 androsyn Exp $
