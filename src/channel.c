@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.403 2003/07/25 23:49:20 michael Exp $
+ *  $Id: channel.c,v 7.404 2003/08/01 12:24:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -103,9 +103,11 @@ add_user_to_channel(struct Channel *chptr, struct Client *who,
   assert(who->user != NULL);
 
   ms = BlockHeapAlloc(member_heap);
+  memset(ms, 0, sizeof(struct Membership));
+
   ms->client_p = who;
-  ms->chptr    = chptr;
-  ms->flags    = flags;
+  ms->chptr = chptr;
+  ms->flags = flags;
 
   dlinkAdd(ms, &ms->channode, &chptr->members);
 
@@ -126,7 +128,7 @@ void
 remove_user_from_channel(struct Membership *member)
 {
   struct Client *client_p = member->client_p;
-  struct Channel *chptr   = member->chptr;
+  struct Channel *chptr = member->chptr;
 
   dlinkDelete(&member->channode, &chptr->members);
 
