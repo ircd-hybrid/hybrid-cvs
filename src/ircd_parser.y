@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.301 2003/06/01 18:45:31 db Exp $
+ *  $Id: ircd_parser.y,v 1.302 2003/06/03 16:57:46 joshk Exp $
  */
 
 %{
@@ -55,8 +55,6 @@
 #include <openssl/bio.h>
 #include <openssl/pem.h>
 #endif
-
-int yyparse();
 
 static struct ConfItem *yy_aconf = NULL;
 static struct cluster *cptr = NULL;
@@ -1449,10 +1447,10 @@ resv_channel: CHANNEL '=' QSTRING ';'
   {
     if (IsChannelName(yylval.string))
     {
-      if (resv_reason)
-	create_channel_resv(yylval.string, resv_reason, 1);
-      else
-	create_channel_resv(yylval.string, "No Reason", 1);
+      if (!resv_reason)
+        resv_reason = no_reason;
+
+      create_channel_resv(yylval.string, resv_reason, 1);
     }
   }
   /* ignore it for now.. but we really should make a warning if
@@ -1465,10 +1463,10 @@ resv_nick: NICK '=' QSTRING ';'
   {
     if (clean_resv_nick(yylval.string))
     {
-      if (resv_reason)
-	create_nick_resv(yylval.string, resv_reason, 1);
-      else
-	create_nick_resv(yylval.string, "No Reason", 1);
+      if (!resv_reason)
+        resv_reason = no_reason;
+
+      create_nick_resv(yylval.string, resv_reason, 1);
     }
   }
 

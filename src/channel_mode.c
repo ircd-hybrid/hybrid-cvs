@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.104 2003/06/01 11:48:41 adx Exp $
+ *  $Id: channel_mode.c,v 7.105 2003/06/03 16:57:45 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -136,21 +136,21 @@ extern BlockHeap *ban_heap;
 static char *
 check_string(char *s)
 {
-  char *str = s;
+  if (EmptyString(s))
+    return star;
 
-  if (!(s && *s))
-    return("*");
-
-  for (; *s; ++s)
-  {
-    if (IsSpace(*s))
+  else {
+    for (; *s; ++s)
     {
-      *s = '\0';
-      break;
+      if (IsSpace(*s))
+      {
+        *s = '\0';
+        break;
+      }
     }
   }
 
-  return(str);
+  return s;
 }
 
 /*
@@ -377,12 +377,13 @@ static char *
 pretty_mask(char *mask)
 {
   int old_mask_pos;
-  char *nick = "*", *user = "*", *host = "*";
+  char *nick = star, *user = star, *host = star;
+
   char *t, *at, *ex;
   char ne = 0, ue = 0, he = 0; /* save values at nick[NICKLEN], et all */
   mask = check_string(mask);
 
-  if (BUFSIZE - mask_pos < strlen(mask) + 5)
+  if ((size_t)(BUFSIZE - mask_pos) < strlen(mask) + 5)
     return(NULL);
 
   old_mask_pos = mask_pos;
@@ -1332,7 +1333,7 @@ chm_key(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].nocaps = 0;
     mode_changes[mode_count].mems = ALL_MEMBERS;
     mode_changes[mode_count].id = NULL;
-    mode_changes[mode_count++].arg = "*";
+    mode_changes[mode_count++].arg = star;
   }
 }
 
@@ -1486,7 +1487,7 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
         || ((nocap & mode_changes[i].nocaps) != mode_changes[i].nocaps))
       continue;
 
-    arg = "";
+    arg = nothing;
     if ((cap & CAP_SID) && mode_changes[i].id)
       arg = mode_changes[i].id;
     if (*arg == '\0')

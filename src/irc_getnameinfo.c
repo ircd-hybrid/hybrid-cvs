@@ -47,12 +47,12 @@
 #include "irc_string.h"
 
 
-/*  $Id: irc_getnameinfo.c,v 7.9 2003/05/19 19:10:53 stu Exp $ */
+/*  $Id: irc_getnameinfo.c,v 7.10 2003/06/03 16:57:46 joshk Exp $ */
 
 static const struct afd {
   int a_af;
   int a_addrlen;
-  int a_socklen;
+  socklen_t a_socklen;
   int a_off;
 } afdl [] = {
 #ifdef IPV6
@@ -181,7 +181,7 @@ irc_getnameinfo(const struct sockaddr *sa, socklen_t salen, char *host,
 		 * hostlen == 0 means that the caller does not want the result.
 		 */
 	} else if (flags & NI_NUMERICHOST) {
-		int numaddrlen;
+		size_t numaddrlen;
 
 		/* NUMERICHOST and NAMEREQD conflicts with each other */
 		if (flags & NI_NAMEREQD)
@@ -218,7 +218,7 @@ static int
 ip6_parsenumeric(const struct sockaddr *sa, const char *addr,
                  char *host, size_t hostlen, int flags)
 {
-  int numaddrlen;
+  size_t numaddrlen;
   char numaddr[512];
 
   if (inet_ntop(AF_INET6, addr, numaddr, sizeof(numaddr)) == NULL)

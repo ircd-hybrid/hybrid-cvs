@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.111 2003/05/27 17:45:53 joshk Exp $
+ *  $Id: packet.c,v 7.112 2003/06/03 16:57:46 joshk Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -53,7 +53,9 @@ static int
 extract_one_line(struct dbuf_queue *qptr, char *buffer)
 {
   struct dbuf_block *block;
-  int idx, line_bytes = 0, empty_bytes = 0, phase = 0;
+  int line_bytes = 0, empty_bytes = 0, phase = 0;
+  unsigned int idx;
+
   char c;
   dlink_node *ptr;
 
@@ -318,7 +320,7 @@ read_ctrl_packet(int fd, void *data)
 
   for(replydef = slinkrpltab; replydef->handler; replydef++)
   {
-    if (replydef->replyid == reply->command)
+    if (replydef->replyid == (unsigned int)reply->command)
       break;
   }
 
@@ -463,7 +465,7 @@ read_packet(int fd, void *data)
   /* Check to make sure we're not flooding */
   if (IsPerson(client_p) &&
       (dbuf_length(&client_p->localClient->buf_recvq) >
-       ConfigFileEntry.client_flood))
+       (unsigned int)ConfigFileEntry.client_flood))
   {
     if (!(ConfigFileEntry.no_oper_flood && IsOper(client_p)))
     {

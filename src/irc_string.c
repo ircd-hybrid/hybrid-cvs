@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.62 2003/05/19 19:10:53 stu Exp $
+ *  $Id: irc_string.c,v 7.63 2003/06/03 16:57:45 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -384,7 +384,9 @@ inet_ntop6(const unsigned char *src, char *dst, unsigned int size)
 	 * Check for overflow, copy, and we're done.
 	 */
 	
-	if ((tp - tmp) > size) {
+	assert (tp - tmp >= 0);
+	
+	if ((unsigned int)(tp - tmp) > size) {
 		return (NULL);
 	}
 	return strcpy(dst, tmp);
