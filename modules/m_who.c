@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.21 2000/12/25 18:52:03 toot Exp $
+ *   $Id: m_who.c,v 1.22 2000/12/26 22:18:39 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -42,7 +42,7 @@
 #include "modules.h"
 
 struct Message who_msgtab = {
-  MSG_WHO, 0, 0, 0, MFLG_SLOW, 0,
+  MSG_WHO, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_who, ms_who, m_who}
 };
 

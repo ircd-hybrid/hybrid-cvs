@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.18 2000/12/24 18:43:23 db Exp $
+ *   $Id: m_mode.c,v 1.19 2000/12/26 22:18:39 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -40,7 +40,7 @@
 #include "modules.h"
 
 struct Message mode_msgtab = {
-  MSG_MODE, 0, 1, 0, MFLG_SLOW, 0,
+  MSG_MODE, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_mode, m_mode, m_mode}
 };
 
