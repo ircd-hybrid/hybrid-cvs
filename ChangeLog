@@ -1,3 +1,17 @@
+db          2001/12/20 23:11:09 EST	(20011221_0)
+
+  Modified files:
+    modules              m_oper.c 
+  Log:
+  - An oper using RSA challenge, does not have a normal password.
+    If they are perverse enough to try to oper using a password, don't
+    let them core the server.
+  
+  Revision  Changes    Path
+  1.41      +4 -1      ircd-hybrid-7/modules/m_oper.c
+
+
+
 leeh        2001/12/20 15:32:04 EST	(20011220_6)
 
   Modified files:
@@ -1241,7 +1255,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3226 2001/12/20 20:32:09 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3227 2001/12/21 04:11:15 db Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19595,4 +19609,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3226 2001/12/20 20:32:09 leeh Exp $
+$Id: ChangeLog,v 7.3227 2001/12/21 04:11:15 db Exp $
