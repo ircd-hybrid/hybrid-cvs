@@ -32,5 +32,11 @@ Please read doc/whats-new.txt for information about what is in this release
 
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
+  *********** Note for those who dont bother reading docs *****************    
+  * Reading INSTALL is now a must, as the old DPATH is now specified when *
+  * configure is run.                                                     *
+  * - You now need to ./configure --prefix="/path/to/install/it"          *
+  *************************************************************************
+
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.4 2001/01/03 15:34:34 madmax Exp $
+$Id: RELNOTES,v 1.5 2001/01/03 17:57:26 madmax Exp $
