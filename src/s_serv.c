@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.198 2001/08/03 13:10:32 leeh blalloc.c $
+ *   $Id: s_serv.c,v 7.199 2001/08/13 18:16:14 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -1178,7 +1178,8 @@ int server_estab(struct Client *client_p)
       fd_note(client_p->localClient->ctrlfd_r, "slink ctrl  (in): %s",
               client_p->name);
 #endif
-    }
+    } else
+        fd_note(client_p->fd, "Server: %s", client_p->name);
   /*
   ** Old sendto_serv_but_one() call removed because we now
   ** need to send different names to different servers
