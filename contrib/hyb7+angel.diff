@@ -1,0 +1,3399 @@
+diff -r -u ircd-hybrid/contrib/spy_whois_notice.c ../../ANGEL/ircd-hybrid/contrib/spy_whois_notice.c
+--- ircd-hybrid/contrib/spy_whois_notice.c	Fri May 24 19:48:34 2002
++++ ../../ANGEL/ircd-hybrid/contrib/spy_whois_notice.c	Tue May 27 20:32:24 2003
+@@ -50,7 +50,7 @@
+ int
+ show_notice(struct hook_mfunc_data *data)
+ {
+-  if (MyConnect(data->source_p) && MyConnect(data->client_p) &&
++  if (MyConnect(data->client_p) &&
+       IsOper(data->client_p) && (data->client_p != data->source_p) 
+       && data->client_p->umodes & FLAGS_SPY) 
+     {
+diff -r -u ircd-hybrid/include/client.h ../../ANGEL/ircd-hybrid/include/client.h
+--- ircd-hybrid/include/client.h	Sun Feb 16 17:54:35 2003
++++ ../../ANGEL/ircd-hybrid/include/client.h	Wed May 28 10:57:58 2003
+@@ -121,6 +121,17 @@
+   struct Channel *vchan;
+ };
+ 
++
++struct ListTask
++{
++  int hash_index;       /* the bucket we are currently in */
++  dlink_list show_mask; /* show these channels..          */
++  dlink_list hide_mask; /* ..and hide these ones          */
++  unsigned int users_min, users_max;
++  unsigned int created_min, created_max;
++  unsigned int topicts_min, topicts_max;
++};
++
+ struct Client
+ {
+   struct Client*    next;
+@@ -227,6 +238,8 @@
+ 
+   dlink_node        lclient_node;
+ 
++  struct ListTask   *list_task;
++
+   /* Send and receive linebuf queues .. */
+   buf_head_t        buf_sendq;
+   buf_head_t        buf_recvq;
+@@ -442,12 +455,15 @@
+ #define FLAGS2_OPER_DIE         0x0800  /* oper can die */
+ #define FLAGS2_OPER_REHASH      0x1000  /* oper can rehash */
+ #define FLAGS2_OPER_ADMIN       0x2000  /* oper can set umode +a */
++#define FLAGS2_OPER_HIDDEN_ADMIN 0x4000 /* admin is hidden */
++#define FLAGS2_OPER_X           0x4000  /* oper can kill/kline */
+ #define FLAGS2_OPER_FLAGS       (FLAGS2_OPER_GLOBAL_KILL | \
+                                  FLAGS2_OPER_REMOTE | \
+                                  FLAGS2_OPER_UNKLINE | \
+                                  FLAGS2_OPER_GLINE | \
+                                  FLAGS2_OPER_N | \
+                                  FLAGS2_OPER_K | \
++				 FLAGS2_OPER_X | \
+                                  FLAGS2_OPER_DIE | \
+                                  FLAGS2_OPER_REHASH| \
+                                  FLAGS2_OPER_ADMIN)
+@@ -588,6 +604,10 @@
+ #define SetOperRehash(x)        ((x)->flags2 |= FLAGS2_OPER_REHASH)
+ #define IsOperAdmin(x)          ((x)->flags2 & FLAGS2_OPER_ADMIN)
+ #define SetOperAdmin(x)         ((x)->flags2 |= FLAGS2_OPER_ADMIN)
++#define IsOperHiddenAdmin(x)	((x)->flags2 & FLAGS2_OPER_HIDDEN_ADMIN)
++#define SetOperHiddenAdmin(x)	((x)->flags2 |= FLAGS2_OPER_HIDDEN_ADMIN)
++#define IsOperX(x)              ((x)->flags2 & FLAGS2_OPER_X)
++#define SetOperX(x)             ((x)->flags2 |= FLAGS2_OPER_X)
+ 
+ #define IsFloodDone(x)          ((x)->flags2 & FLAGS2_FLOODDONE)
+ #define SetFloodDone(x)         ((x)->flags2 |= FLAGS2_FLOODDONE)
+@@ -601,6 +621,7 @@
+ #define MASK_IP 2
+ 
+ extern void           check_klines(void);
++extern void           check_xlines(void);
+ extern const char*    get_client_name(struct Client* client, int show_ip);
+ extern void           init_client(void);
+ extern struct Client* make_client(struct Client* from);
+diff -r -u ircd-hybrid/include/config.h ../../ANGEL/ircd-hybrid/include/config.h
+--- ircd-hybrid/include/config.h	Thu Feb  6 03:46:11 2003
++++ ../../ANGEL/ircd-hybrid/include/config.h	Wed May 28 01:28:45 2003
+@@ -101,6 +101,9 @@
+ #define SLPATH  BINPATH "SERVLINK.EXE"          /* servlink executable */
+ #define CPATH   ETCPATH "IRCD.CONF"             /* config file */
+ #define KPATH   ETCPATH "KLINE.CONF"            /* kline file */
++#define XPATH   ETCPATH "XLINE.CONF"            /* xline file */
++#define CRESVPATH   ETCPATH "CRESV.CONF"        /* cresv file */
++#define NRESVPATH   ETCPATH "NRESV.CONF"        /* nresv file */
+ #define DLPATH  ETCPATH "DLINE.CONF"            /* dline file */
+ #define GPATH   LOGPATH "GLINE.LOG"             /* gline logfile */
+ #define RPATH   ETCPATH "IRCD.RSA"              /* RSA private key file */
+@@ -147,6 +150,9 @@
+ #define SLPATH  BINPATH "/servlink"             /* servlink executable */
+ #define CPATH   ETCPATH "/ircd.conf"            /* ircd.conf file */
+ #define KPATH   ETCPATH "/kline.conf"           /* kline file */
++#define XPATH   ETCPATH "/xline.conf"           /* xline file */
++#define NRESVPATH   ETCPATH "/nresv.conf"       /* nick resv file */
++#define CRESVPATH   ETCPATH "/cresv.conf"       /* channel resv file */
+ #define DLPATH  ETCPATH "/dline.conf"           /* dline file */
+ #define GPATH   LOGPATH "/gline.log"            /* gline logfile */
+ #define RPATH   ETCPATH "/ircd.rsa"             /* ircd rsa private keyfile */
+diff -r -u ircd-hybrid/include/hash.h ../../db/ANGEL/ircd-hybrid/include/hash.h
+--- ircd-hybrid/include/hash.h	Fri May 24 19:34:07 2002
++++ ../../db/ANGEL/ircd-hybrid/include/hash.h	Tue May 27 20:40:33 2003
+@@ -86,6 +86,9 @@
+                                      struct ResvChannel *resv_p);
+ extern struct ResvChannel *hash_find_resv(const char *name);
+ 
++/* +angel */
++extern void free_list_task(struct ListTask *, struct Client *);
++extern void safe_list_channels(struct Client *source_p, struct ListTask *, int, int);
+ #endif  /* INCLUDED_hash_h */
+ 
+ 
+diff -r -u ircd-hybrid/include/ircd.h ../../ANGEL/ircd-hybrid/include/ircd.h
+--- ircd-hybrid/include/ircd.h	Fri May 30 00:25:16 2003
++++ ../../ANGEL/ircd-hybrid/include/ircd.h	Thu Jun  5 23:51:27 2003
+@@ -19,7 +19,7 @@
+  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+  *  USA
+  *
+- *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
++ *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
+  */
+ 
+ #ifndef INCLUDED_ircd_h
+@@ -112,7 +112,9 @@
+ extern dlink_list lazylink_channels;
+ extern int callbacks_called;
+ 
++extern int rehashed_klines;
++extern int rehashed_xlines;
++
+ extern unsigned long get_maxrss(void);
+ extern void set_time(void);
+-
+ #endif
+diff -r -u ircd-hybrid/include/numeric.h ../../ANGEL/ircd-hybrid/include/numeric.h
+--- ircd-hybrid/include/numeric.h	Wed Nov 27 10:46:24 2002
++++ ../../ANGEL/ircd-hybrid/include/numeric.h	Tue May 27 21:53:53 2003
+@@ -438,7 +438,7 @@
+ /*	ERR_MASKTOOWIDE	     520	Undernet extension -Kev */
+ /*	ERR_WHOTRUNC	     520	austnet */
+ /*	ERR_LASTERROR        521	Undernet extension -Kev */
+-/*	ERR_LISTSYNTAX       521	dalnet */
++#define	ERR_LISTSYNTAX       521
+ /*	ERR_WHOSYNTAX	     522        dalnet */
+ /*	ERR_WHOLIMEXCEED     523	dalnet */
+ 
+diff -r -u ircd-hybrid/include/patchlevel.h ../../ANGEL/ircd-hybrid/include/patchlevel.h
+--- ircd-hybrid/include/patchlevel.h	Wed May  7 09:22:08 2003
++++ ../../ANGEL/ircd-hybrid/include/patchlevel.h	Tue May 27 22:37:39 2003
+@@ -23,5 +23,5 @@
+  */
+ 
+ #ifndef PATCHLEVEL
+-#define PATCHLEVEL   "hybrid-7.0"
++#define PATCHLEVEL   "hybrid-7.0+angel"
+ #endif
+diff -r -u ircd-hybrid/include/s_conf.h ../../ANGEL/ircd-hybrid/include/s_conf.h
+--- ircd-hybrid/include/s_conf.h	Sat Feb 15 19:22:21 2003
++++ ../../ANGEL/ircd-hybrid/include/s_conf.h	Thu May 29 11:51:28 2003
+@@ -151,6 +151,8 @@
+ #define IsConfEncrypted(x)      ((x)->flags & CONF_FLAGS_ENCRYPTED)
+ #define IsConfCompressed(x)     ((x)->flags & CONF_FLAGS_COMPRESSED)
+ #define IsConfCryptLink(x)      ((x)->flags & CONF_FLAGS_CRYPTLINK)
++#define IsConfTemporary(x)      ((x)->flags & CONF_FLAGS_TEMPORARY)
++#define SetConfTemporary(x)	((x)->flags |= CONF_FLAGS_TEMPORARY)
+ 
+ /* port definitions for Opers */
+ 
+@@ -163,6 +165,8 @@
+ #define CONF_OPER_REHASH        0x0040
+ #define CONF_OPER_DIE           0x0080
+ #define CONF_OPER_ADMIN         0x0100
++#define CONF_OPER_X             0x0200
++#define CONF_OPER_FLAG_HIDDEN_ADMIN 0x0400
+ 
+ struct config_file_entry
+ {
+@@ -170,6 +174,9 @@
+   char *configfile;
+   char *klinefile;
+   char *dlinefile;
++  char *xlinefile;
++  char *cresvfile;
++  char *nresvfile;
+ 
+   char *glinefile;
+ 
+@@ -324,6 +331,7 @@
+ /* End GLOBAL section */
+ 
+ dlink_list temporary_klines;
++dlink_list temporary_dlines;
+ dlink_list temporary_ip_klines;
+ 
+ extern void init_ip_hash_table(void);
+@@ -376,19 +384,16 @@
+ typedef enum {
+   CONF_TYPE,
+   KLINE_TYPE,
+-  DLINE_TYPE
+-} KlineType;
++  DLINE_TYPE,
++  XLINE_TYPE,
++  CRESV_TYPE,
++  NRESV_TYPE
++} ConfType;
+ 
+-extern void WriteKlineOrDline( KlineType, struct Client *,
+-			       char *user, char *host, const char *reason,
+-			       const char *oper_reason,
+-			       const char *current_date, time_t cur_time );
+ extern  void    add_temp_kline(struct ConfItem *);
+-extern  void    report_temp_klines(struct Client *);
+-extern  void    show_temp_klines(struct Client *, dlink_list *);
+ extern  void    cleanup_tklines(void *notused);
+ 
+-extern  const   char *get_conf_name(KlineType);
++extern  const   char *get_conf_name(ConfType);
+ extern  int     rehash (int);
+ 
+ extern int  conf_add_server(struct ConfItem *,int);
+@@ -401,9 +406,10 @@
+ extern void conf_add_fields(struct ConfItem*, char*, char *, char*, char *,char *);
+ extern void conf_add_conf(struct ConfItem *);
+ 
+-/* XXX consider moving these into kdparse.h */
+-extern void parse_k_file(FBFILE *fb);
+-extern void parse_d_file(FBFILE *fb);
++/* XXX consider moving these into csvlib.h */
++extern void parse_csv_file(FBFILE *file, ConfType conf_type);
++extern int remove_conf_line(ConfType type, struct Client *source_p,
++			    const char *pat1, const char *pat2);
+ extern char *getfield(char *newline);
+ 
+ extern char *get_oper_name(struct Client *client_p);
+diff -r -u ircd-hybrid/modules/Makefile.in ../../ANGEL/ircd-hybrid/modules/Makefile.in
+--- ircd-hybrid/modules/Makefile.in	Sun Jun 16 12:31:25 2002
++++ ../../ANGEL/ircd-hybrid/modules/Makefile.in	Tue May 27 22:26:17 2003
+@@ -103,7 +103,8 @@
+   m_wallops.c \
+   m_who.c \
+   m_whois.c \
+-  m_whowas.c 
++  m_whowas.c \
++  m_xline.c 
+ 
+ ALL_SRCS = $(CORE_SRCS) \
+            $(SRCS)
+diff -r -u ircd-hybrid/modules/core/m_sjoin.c ../../ANGEL/ircd-hybrid/modules/core/m_sjoin.c
+--- ircd-hybrid/modules/core/m_sjoin.c	Thu Jul  4 12:07:23 2002
++++ ../../ANGEL/ircd-hybrid/modules/core/m_sjoin.c	Wed May 28 02:02:01 2003
+@@ -121,6 +121,7 @@
+   char           *p; /* pointer used making sjbuf */
+   int hide_or_not;
+   int i;
++  int hidden = ConfigServerHide.hidden;
+   dlink_node *m;
+ #ifdef HALFOPS
+   static         char sjbuf_hops[BUFSIZE]; /* buffer with halfops as % */
+@@ -283,8 +284,9 @@
+   if(!isnew && !newts && oldts)
+   {
+     sendto_channel_local(ALL_MEMBERS, chptr,
+- 		":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
+-		me.name, chptr->chname, chptr->chname, oldts);
++	 ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
++       hidden?me.name:source_p->name, chptr->chname, chptr->chname, oldts);
++
+     sendto_realops_flags(FLAGS_ALL, L_ALL,
+ 		         "Server %s changing TS on %s from %lu to 0",
+ 			 source_p->name, chptr->chname, oldts);
+@@ -362,7 +364,7 @@
+       remove_our_modes(hide_or_not, chptr, top_chptr, source_p);
+       sendto_channel_local(ALL_MEMBERS, chptr,
+ 	    ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to %lu",
+-	    me.name, chptr->chname, chptr->chname, oldts, newts);
++	    hidden?me.name:source_p->name, chptr->chname, chptr->chname, oldts, newts);
+     }
+      
+   if (*modebuf != '\0')
+@@ -372,12 +374,12 @@
+       if (top_chptr != NULL)
+ 	sendto_channel_local(ALL_MEMBERS,
+ 			     chptr, ":%s MODE %s %s %s",
+-			     me.name,
++			     hidden?me.name:source_p->name,
+ 			     top_chptr->chname, modebuf, parabuf);
+       else
+ 	sendto_channel_local(ALL_MEMBERS,
+ 			     chptr, ":%s MODE %s %s %s",
+-			     me.name,
++			     hidden?me.name:source_p->name,
+ 			     chptr->chname, modebuf, parabuf);
+     }
+ 
+@@ -610,7 +612,8 @@
+ 	        *mbuf = '\0';
+ 		sendto_channel_local(hide_or_not, chptr,
+ 		                     ":%s MODE %s %s %s %s %s %s",
+-				     me.name, RootChan(chptr)->chname,
++				     hidden?me.name:source_p->name,
++				     RootChan(chptr)->chname,
+ 				     modebuf,
+ 				     para[0], para[1], para[2], para[3]);
+                 mbuf = modebuf;
+@@ -642,7 +645,7 @@
+           *mbuf = '\0';
+           sendto_channel_local(hide_or_not, chptr,
+                                ":%s MODE %s %s %s %s %s %s",
+-                               me.name,
++                               hidden?me.name:source_p->name,
+                                RootChan(chptr)->chname,
+                                modebuf,
+                                para[0],para[1],para[2],para[3]);
+@@ -678,7 +681,7 @@
+     {
+       sendto_channel_local(hide_or_not, chptr,
+                            ":%s MODE %s %s %s %s %s %s",
+-                           me.name,
++                           hidden?me.name:source_p->name,
+                            RootChan(chptr)->chname,
+                            modebuf,
+                            para[0], para[1], para[2], para[3]);
+@@ -882,6 +885,7 @@
+   char *lpara[MAXMODEPARAMS];
+   char *chname;
+   int count = 0;
++  int hidden = ConfigServerHide.hidden;
+ 
+   mbuf = lmodebuf;
+   *mbuf++ = '-';
+@@ -909,7 +913,7 @@
+ 	  *mbuf   = '\0';
+ 	  sendto_channel_local(hide_or_not, chptr,
+ 			       ":%s MODE %s %s %s %s %s %s",
+-			       me.name,
++			       hidden?me.name:source_p->name,
+ 			       chname,
+ 			       lmodebuf,
+ 			       lpara[0], lpara[1], lpara[2], lpara[3] );
+@@ -926,7 +930,7 @@
+       *mbuf   = '\0';
+       sendto_channel_local(hide_or_not, chptr,
+ 			   ":%s MODE %s %s %s %s %s %s",
+-			   me.name,
++			   hidden?me.name:source_p->name,
+ 			   chname,
+ 			   lmodebuf,
+ 			   lpara[0], lpara[1], lpara[2], lpara[3] );
+diff -r -u ircd-hybrid/modules/m_kline.c ../../ANGEL/ircd-hybrid/modules/m_kline.c
+--- ircd-hybrid/modules/m_kline.c	Wed Nov 13 08:12:02 2002
++++ ../../ircd-hybrid/modules/m_kline.c	Fri May 30 01:40:14 2003
+@@ -49,6 +49,9 @@
+ static void mo_kline(struct Client *,struct Client *,int,char **);
+ static void ms_kline(struct Client *,struct Client *,int,char **);
+ static void mo_dline(struct Client *,struct Client *,int,char **);
++#ifndef IPV6
++static char *make_cidr(char *dlhost, struct Client *);
++#endif
+ 
+ struct Message kline_msgtab = {
+   "KLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
+@@ -80,7 +83,7 @@
+ 
+ /* Local function prototypes */
+ 
+-static time_t  valid_tkline(struct Client *source_p, char *string);
++static time_t  valid_tkline(char *string);
+ static char *cluster(char *);
+ static int find_user_host(struct Client *source_p,
+                           char *user_host_or_nick, char *user, char *host);
+@@ -91,7 +94,6 @@
+ static int valid_wild_card(char *user, char *host);
+ static int already_placed_kline(struct Client*, char*, char*);
+ static void apply_kline(struct Client *source_p, struct ConfItem *aconf,
+-                        const char *reason, const char *oper_reason,
+ 			const char *current_date, time_t cur_time);
+ 
+ static void apply_tkline(struct Client *source_p, struct ConfItem *aconf,
+@@ -138,7 +140,7 @@
+   parv++;
+   parc--;
+ 
+-  tkline_time = valid_tkline(source_p,*parv);
++  tkline_time = valid_tkline(*parv);
+ 
+   if (tkline_time > 0)
+     {
+@@ -248,7 +250,7 @@
+ 		 reason,
+ 		 current_date);
+       DupString(aconf->passwd, buffer);
+-      apply_kline(source_p, aconf, reason, oper_reason,
++      apply_kline(source_p, aconf,
+ 		  current_date, cur_time);
+     }
+ } /* mo_kline() */
+@@ -312,8 +314,18 @@
+   if(!valid_comment(source_p, kreason))
+     return;
+ 
++  /* We check if the kline already exists after we've announced its 
++   * arrived, to avoid confusing opers - fl
++   */
++  if (already_placed_kline(source_p, kuser, khost))
++    return;
++
+   tkline_time = atoi(parv[2]);
+ 
++  set_time();
++  cur_time = CurrentTime;
++  current_date = smalldate(cur_time);
++
+   if (find_u_conf((char *)source_p->user->server,
+ 		  source_p->username, source_p->host))
+     {
+@@ -323,27 +335,17 @@
+ 			   source_p->name, source_p->username,
+ 			   source_p->host, source_p->user->server);
+ 
+-      /* We check if the kline already exists after we've announced its 
+-       * arrived, to avoid confusing opers - fl
+-       */
+-      if (already_placed_kline(source_p, kuser, khost))
+-        return;
+-
+       aconf = make_conf();
+ 
+       aconf->status = CONF_KILL;
+       DupString(aconf->user, kuser);
+       DupString(aconf->host, khost);
+       DupString(aconf->passwd, kreason);
+-      current_date = smalldate((time_t) 0);
+-      set_time();
+-      cur_time = CurrentTime;
+ 
+-      if (tkline_time)
++      if (tkline_time != 0)
+ 	apply_tkline(source_p, aconf, current_date, tkline_time);
+       else
+-	apply_kline(source_p, aconf, aconf->passwd, NULL,
+-		    current_date, cur_time);
++	apply_kline(source_p, aconf, current_date, cur_time);
+ 
+       }
+ } /* ms_kline() */
+@@ -358,14 +360,12 @@
+  */
+ static void 
+ apply_kline(struct Client *source_p, struct ConfItem *aconf,
+-	    const char *reason, const char *oper_reason,
+ 	    const char *current_date, time_t cur_time)
+ {
+   add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
+-  WriteKlineOrDline(KLINE_TYPE, source_p, aconf->user, aconf->host,
+-		    reason, oper_reason, current_date, cur_time);
++  write_conf_line(KLINE_TYPE, source_p, aconf, current_date, cur_time);
+   /* Now, activate kline against current online clients */
+-  check_klines();
++  rehashed_klines = 1;
+ }
+ 
+ /*
+@@ -392,21 +392,45 @@
+   ilog(L_TRACE, "%s added temporary %d min. K-Line for [%s@%s] [%s]",
+        source_p->name, tkline_time/60,
+        aconf->user, aconf->host, aconf->passwd);
+-  check_klines();
++  rehashed_klines = 1;
++}
++
++/*
++ * apply_tdline
++ *
++ * inputs	-
++ * output	- NONE
++ * side effects	- tkline as given is placed
++ */
++static void
++apply_tdline(struct Client *source_p, struct ConfItem *aconf,
++	     const char *current_date, int tkline_time)
++{
++  aconf->hold = CurrentTime + tkline_time;
++
++  add_temp_dline(aconf);
++  sendto_realops_flags(FLAGS_ALL, L_ALL,
++		       "%s added temporary %d min. D-Line for [%s] [%s]",
++		       get_oper_name(source_p), tkline_time/60,
++		       aconf->host, aconf->passwd);
++
++  sendto_one(source_p, ":%s NOTICE %s :Added temporary %d min. D-Line [%s]",
++	     me.name, source_p->name, tkline_time/60, aconf->host);
++  ilog(L_TRACE, "%s added temporary %d min. D-Line for [%s] [%s]",
++       source_p->name, tkline_time/60, aconf->host, aconf->passwd);
++  rehashed_klines = 1;
+ }
+ 
+ /*
+  * valid_tkline()
+  * 
+- * inputs       - pointer to client requesting kline
+- *              - argument count
+- *              - pointer to ascii string in
++ * inputs       - pointer to ascii string in
+  * output       - -1 not enough parameters
+  *              - 0 if not an integer number, else the number
+  * side effects - none
+  */
+ static time_t
+-valid_tkline(struct Client *source_p, char *p)
++valid_tkline(char *p)
+ {
+   time_t result = 0;
+ 
+@@ -429,8 +453,8 @@
+   if(result == 0)
+     result = 1;
+ 
+-  if(result > (24*60))
+-    result = (24*60); /* Max it at 24 hours */
++  if(result > (24*60*10))
++    result = (24*60*10); /* Max it at 10 days */
+ 
+   result = (time_t)result * (time_t)60;  /* turn it into seconds */
+ 
+@@ -570,9 +594,10 @@
+ #endif
+   struct irc_inaddr daddr;
+   char cidr_form_host[HOSTLEN + 1];
+-  struct ConfItem *aconf;
++  struct ConfItem *aconf=NULL;
++  time_t tkline_time=0;
+   int bits, t;
+-  char dlbuffer[1024];
++  char dlbuffer[512];
+   const char* current_date;
+   time_t cur_time;
+ 
+@@ -583,15 +608,31 @@
+       return;
+     }
+ 
+-  dlhost = parv[1];
+-  strlcpy(cidr_form_host, dlhost, HOSTLEN + 1);
+-  cidr_form_host[HOSTLEN] = '\0';
++  parv++;
++  parc--;
++
++  tkline_time = valid_tkline(*parv);
++
++  if (tkline_time > 0)
++  {
++    parv++;
++    parc--;
++  }
++
++  if (parc == 0)
++  {
++    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
++	       me.name, source_p->name, "DLINE");
++    return;
++  }
++
++  dlhost = *parv;
+ 
+   if ((t=parse_netmask(dlhost, NULL, &bits)) == HM_HOST)
+   {
+ #ifdef IPV6
+    sendto_one(source_p, ":%s NOTICE %s :Sorry, please supply an address.",
+-              me.name, parv[0]);
++              me.name, source_p->name);
+    return;
+ #else
+       if (!(target_p = find_chasing(source_p, parv[1], NULL)))
+@@ -604,7 +645,7 @@
+         {
+           sendto_one(source_p,
+                      ":%s NOTICE %s :Can't DLINE a server silly",
+-                     me.name, parv[0]);
++                     me.name, source_p->name);
+           return;
+         }
+               
+@@ -612,7 +653,7 @@
+         {
+           sendto_one(source_p,
+                      ":%s NOTICE %s :Can't DLINE nick on another server",
+-                     me.name, parv[0]);
++                     me.name, source_p->name);
+           return;
+         }
+ 
+@@ -624,50 +665,24 @@
+           return;
+         }
+ 
+-      /*
+-       * XXX - this is always a fixed length output, we can get away
+-       * with strcpy here
+-       *
+-       * strncpy_irc(cidr_form_host, inetntoa((char *)&target_p->ip), 32);
+-       * cidr_form_host[32] = '\0';
+-       */
+-       strcpy(cidr_form_host, inetntoa((char*) &target_p->localClient->ip));
+-      
+-       if ((p = strchr(cidr_form_host,'.')) == NULL)
+-        return;
+-      /* 192. <- p */
+-
+-      p++;
+-      if ((p = strchr(p,'.')) == NULL)
+-        return;
+-      /* 192.168. <- p */
+-
+-      p++;
+-      if ((p = strchr(p,'.')) == NULL)
+-        return;
+-      /* 192.168.0. <- p */
+-
+-      p++;
+-      *p++ = '0';
+-      *p++ = '/';
+-      *p++ = '2';
+-      *p++ = '4';
+-      *p++ = '\0';
+-      dlhost = cidr_form_host;
++      if ((dlhost = make_cidr(dlhost, target_p)) == NULL)
++	return;
+ 
+       bits = 0xFFFFFF00UL;
+-/* XXX: Fix me for IPV6 */
+ #endif
+     }
+ 
++  parc--;
++  parv++;
++
+ 
+-  if (parc > 2) /* host :reason */
++  if (parc != 0) /* host :reason */
+     {
+-      if (valid_comment(source_p,parv[2]) == 0)
++      if (valid_comment(source_p, *parv) == 0)
+ 	return;
+ 
+-      if(*parv[2])
+-        reason = parv[2];
++      if(*parv[0] != '\0')
++        reason = *parv;
+       else
+         reason = "No reason";
+     }
+@@ -691,7 +706,7 @@
+ 	{
+ 	  sendto_one(source_p,
+ 	     ":%s NOTICE %s :Dline bitmasks less than 24 are for admins only.",
+-		     me.name, parv[0]);
++		     me.name, source_p->name);
+ 	  return;
+ 	}
+     }
+@@ -713,11 +728,11 @@
+ 	  if (IsConfExemptKline(aconf))
+ 	    sendto_one(source_p,
+ 		       ":%s NOTICE %s :[%s] is (E)d-lined by [%s] - %s",
+-		       me.name, parv[0], dlhost, aconf->host, creason);
++		       me.name, source_p->name, dlhost, aconf->host, creason);
+ 	  else
+ 	    sendto_one(source_p,
+ 		       ":%s NOTICE %s :[%s] already D-lined by [%s] - %s",
+-		       me.name, parv[0], dlhost, aconf->host, creason);
++		       me.name, source_p->name, dlhost, aconf->host, creason);
+ 	  return;
+ 	}
+     }
+@@ -725,7 +740,6 @@
+   set_time();
+   cur_time = CurrentTime;
+   current_date = smalldate(cur_time);
+-
+   aconf = make_conf();
+ 
+   /* Look for an oper reason */
+@@ -741,14 +755,21 @@
+   DupString(aconf->host, dlhost);
+   DupString(aconf->passwd, dlbuffer);
+ 
+-  add_conf_by_address(aconf->host, CONF_DLINE, NULL, aconf);
+-  /*
+-   * Write dline to configuration file
+-   */
+-  WriteKlineOrDline(DLINE_TYPE, source_p, NULL, dlhost, reason,
+-		    oper_reason, current_date, cur_time);
+-  check_klines();
+-} /* m_dline() */
++  if (tkline_time)
++  {
++    ircsprintf(buffer, "Temporary D-line %d min. - %s (%s)",
++	       (int)(tkline_time/60), reason, current_date);
++    apply_tdline(source_p, aconf, current_date, tkline_time);
++  }
++  else
++  {
++    ircsprintf(buffer, "%s (%s)", reason, current_date);
++    add_conf_by_address(aconf->host, CONF_DLINE, NULL, aconf);
++    write_conf_line(DLINE_TYPE, source_p, aconf, current_date, cur_time);
++  }
++
++  rehashed_klines = 1;
++} /* mo_dline() */
+ 
+ /*
+  * find_user_host
+@@ -1003,3 +1024,42 @@
+  }
+  return 0;
+ }
++
++#ifndef IPV6 
++static char *
++make_cidr(char *dlhost, struct Client *target_p)
++{
++  static char cidr_form_host[HOSTLEN + 2];
++  char *p;
++
++  /*
++   * XXX - this is always a fixed length output, we can get away
++   * with strcpy here
++   *
++   */
++  strcpy(cidr_form_host, inetntoa((char*) &target_p->localClient->ip));
++      
++  if ((p = strchr(cidr_form_host,'.')) == NULL)
++    return(NULL);
++  /* 192. <- p */
++
++   p++;
++   if ((p = strchr(p,'.')) == NULL)
++     return(NULL);
++   /* 192.168. <- p */
++
++   p++;
++   if ((p = strchr(p,'.')) == NULL)
++     return(NULL);
++   /* 192.168.0. <- p */
++
++   p++;
++   *p++ = '0';
++   *p++ = '/';
++   *p++ = '2';
++   *p++ = '4';
++   *p++ = '\0';
++
++   return(cidr_form_host);
++}
++#endif
+diff -r -u ircd-hybrid/modules/m_list.c ../../ANGEL/ircd-hybrid/modules/m_list.c
+--- ircd-hybrid/modules/m_list.c	Fri Jan 17 00:11:53 2003
++++ ../../ANGEL/ircd-hybrid/modules/m_list.c	Tue May 27 20:35:55 2003
+@@ -71,6 +71,120 @@
+ static int list_named_channel(struct Client *source_p,char *name);
+ 
+ 
++static void
++do_list(struct Client *source_p, int parc, char *parv[])
++{
++  struct ListTask *lt;
++  int no_masked_channels;
++
++  if (MyConnect(source_p))
++  {
++    if (source_p->localClient->list_task != NULL)
++    {
++      free_list_task(source_p->localClient->list_task, source_p);
++      sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
++      return;
++    }
++  }
++
++  lt = (struct ListTask *) MyMalloc(sizeof(struct ListTask));
++  lt->users_max = UINT_MAX;
++  lt->created_max = UINT_MAX;
++  lt->topicts_max = UINT_MAX;
++  if (MyConnect(source_p))
++    source_p->localClient->list_task = lt;
++  no_masked_channels = 1;
++
++  if (parc > 1)
++  {
++    char *opt, *save;
++    dlink_list *list;
++    int i, errors = 0;
++
++    for (opt = strtoken(&save, parv[1], ","); opt != NULL;
++         opt = strtoken(&save, NULL, ","))
++      switch (*opt)
++      {
++        case '<': if ((i = atoi(opt + 1)) > 0)
++		    lt->users_max = (unsigned int) i - 1;
++                  else
++		    errors = 1;
++		  break;
++        case '>': if ((i = atoi(opt + 1)) >= 0)
++		    lt->users_min = (unsigned int) i + 1;
++		  else
++		    errors = 1;
++		  break;
++        case '-': break;
++        case 'C':
++	case 'c': switch (*++opt)
++	          {
++		    case '<': if ((i = atoi(opt + 1)) >= 0)
++		                lt->created_max = (unsigned int) (CurrentTime
++				                  - 60 * i);
++			      else
++			        errors = 1;
++			      break;
++		    case '>': if ((i = atoi(opt + 1)) >= 0)
++		                lt->created_min = (unsigned int) (CurrentTime
++				                  - 60 * i);
++			      else
++			        errors = 1;
++			      break;
++		    default: errors = 1;
++		  }
++		  break;
++	case 'T':
++	case 't': switch (*++opt)
++	          {
++		    case '<': if ((i = atoi(opt + 1)) >= 0)
++		                lt->topicts_min = (unsigned int) (CurrentTime
++				                  - 60 * i);
++			      else
++			        errors = 1;
++			      break;
++		    case '>': if ((i = atoi(opt + 1)) >= 0)
++		                lt->topicts_max = (unsigned int) (CurrentTime
++				                  - 60 * i);
++			      else
++			        errors = 1;
++			      break;
++		    default: errors = 1;
++		  }
++		  break;
++        default: if (*opt == '!')
++	         {
++		   list = &lt->hide_mask;
++		   opt++;
++		 }
++		 else list = &lt->show_mask;
++		 if (strpbrk(opt, "?*") != NULL)
++		 {
++		   if (list == &lt->show_mask)
++		     no_masked_channels = 0;
++		 }
++		 else if (!IsChannelName(opt))
++		   errors = 1;
++		 if (!errors)
++		 {
++                   char *s;
++		   DupString(s, opt);
++		   dlinkAdd(s, make_dlink_node(), list);
++		 }
++      }
++    if (errors)
++    {
++      free_list_task(lt, source_p);
++      sendto_one(source_p, form_str(ERR_LISTSYNTAX), me.name, source_p->name);
++      return;
++    }
++  }
++
++  sendto_one(source_p, form_str(RPL_LISTSTART), me.name, source_p->name);
++  safe_list_channels(source_p, lt, no_masked_channels &&
++                     lt->show_mask.head != NULL, !MyConnect(source_p));
++}
++
+ /*
+ ** m_list
+ **      parv[0] = sender prefix
+@@ -106,14 +220,8 @@
+     }
+ 
+   /* If no arg, do all channels *whee*, else just one channel */
+-  if (parc < 2 || BadPtr(parv[1]))
+-    {
+-      list_all_channels(source_p);
+-    }
+-  else
+-    {
+-      list_named_channel(source_p,parv[1]);
+-    }
++  do_list(source_p, parc, parv);
++
+ }
+ 
+ 
+diff -r -u ircd-hybrid/modules/m_resv.c ../../ANGEL/ircd-hybrid/modules/m_resv.c
+--- ircd-hybrid/modules/m_resv.c	Fri May 24 19:34:22 2002
++++ ../../ANGEL/ircd-hybrid/modules/m_resv.c	Thu May 29 11:52:03 2003
+@@ -102,6 +102,7 @@
+                          "%s has placed a local RESV on channel: %s [%s]",
+              	         get_oper_name(source_p),
+ 		         resv_p->name, resv_p->reason);
++    write_resv_line(CRESV_TYPE, source_p, resv_p);
+   }
+   else if(clean_resv_nick(parv[1]))
+   {
+@@ -134,6 +135,7 @@
+                          "%s has placed a local RESV on nick: %s [%s]",
+ 			 get_oper_name(source_p),
+ 			 resv_p->name, resv_p->reason);
++    write_resv_line(NRESV_TYPE, source_p, resv_p);
+   }			 
+   else
+     sendto_one(source_p, 
+@@ -174,6 +176,7 @@
+     else
+     {
+       delete_channel_resv(resv_p);
++      (void)remove_conf_line(CRESV_TYPE, source_p, parv[1], NULL);
+ 
+       sendto_one(source_p,
+                  ":%s NOTICE %s :The local RESV has been removed on channel: %s",
+@@ -208,6 +211,7 @@
+     else
+     {
+       delete_nick_resv(resv_p);
++      (void)remove_conf_line(NRESV_TYPE, source_p, parv[1], NULL);
+ 
+       sendto_one(source_p,
+                  ":%s NOTICE %s :The local RESV has been removed on nick: %s",
+diff -r -u ircd-hybrid/modules/m_stats.c ../../ANGEL/ircd-hybrid/modules/m_stats.c
+--- ircd-hybrid/modules/m_stats.c	Tue May  6 01:47:39 2003
++++ ../../ANGEL/ircd-hybrid/modules/m_stats.c	Wed May 28 00:15:32 2003
+@@ -106,6 +106,7 @@
+ static void stats_adns_servers(struct Client *);
+ static void stats_connect(struct Client *);
+ static void stats_deny(struct Client *);
++static void stats_tdeny(struct Client *);
+ static void stats_exempt(struct Client *);
+ static void stats_events(struct Client *);
+ static void stats_pending_glines(struct Client *);
+@@ -141,7 +142,7 @@
+   { 'A',	stats_adns_servers,	1,	1,	},
+   { 'c',	stats_connect,		1,	0,	},
+   { 'C',	stats_connect,		1,	0,	},
+-  { 'd',	stats_deny,		1,	0,	},
++  { 'd',	stats_tdeny,		1,	0,	},
+   { 'D',	stats_deny,		1,	0,	},
+   { 'e', 	stats_exempt,		1,	0,	},
+   { 'E',	stats_events,		1,	1,	},
+@@ -330,6 +331,10 @@
+       if (arec->type == CONF_DLINE)
+       {
+         aconf = arec->aconf;
++	/* dont report a tdline as a dline */
++	if(aconf->flags & CONF_FLAGS_TEMPORARY)
++	  continue;
++
+ 	get_printable_conf(aconf, &name, &host, &pass, &user, &port,
+ 	                  &classname);
+ 			  
+@@ -340,6 +345,40 @@
+   }
+ }
+ 
++/* stats_tdeny()
++ *
++ * input	- client to report to
++ * output	- none
++ * side effects - client is given dline list.
++ */
++static void
++stats_tdeny(struct Client *source_p)
++{
++  char *name, *host, *pass, *user, *classname;
++  struct AddressRec *arec;
++  struct ConfItem *aconf;
++  int i, port;
++
++  for (i = 0; i < ATABLE_SIZE; i++)
++  {
++    for (arec = atable[i]; arec; arec=arec->next)
++    {
++      if (arec->type == CONF_DLINE)
++      {
++        aconf = arec->aconf;
++
++	/* dont report a permanent dline as a tdline */
++	if((aconf->flags & CONF_FLAGS_TEMPORARY) == 0)
++	  continue;
++
++	get_printable_conf(aconf, &name, &host, &pass, &user, &port,
++	                  &classname);
++	sendto_one(source_p, form_str(RPL_STATSDLINE), me.name,
++	           source_p->name, 'd', host, pass);
++      }
++    }
++  }
++}
+ 
+ /* stats_exempt()
+  *
+@@ -663,7 +702,8 @@
+ 
+       sendto_one(source_p, ":%s %d %s p :[%c][%s] %s (%s@%s) Idle: %d",
+                  me.name, RPL_STATSDEBUG, source_p->name,
+-                 IsOperAdmin(target_p) ? 'A' : 'O',
++                 IsOperAdmin(target_p) ? 
++		 (IsOperHiddenAdmin(target_p) ? 'A' : 'O') : 'O',
+ 		 oper_privs_as_string(target_p, aconf->port),
+ 		 target_p->name, target_p->username, target_p->host,
+ 		 (int)(CurrentTime - target_p->user->last));
+@@ -672,7 +712,8 @@
+     {
+       sendto_one(source_p, ":%s %d %s p :[%c] %s (%s@%s) Idle: %d",
+                  me.name, RPL_STATSDEBUG, source_p->name,
+-                 IsOperAdmin(target_p) ? 'A' : 'O',
++                 IsOperAdmin(target_p) ?
++		 (IsOperHiddenAdmin(target_p) ? 'A' : 'O') : 'O',
+ 		 target_p->name, target_p->username, target_p->host,
+ 		 (int)(CurrentTime - target_p->user->last));
+     }
+diff -r -u ircd-hybrid/modules/m_unkline.c ../../ANGEL/ircd-hybrid/modules/m_unkline.c
+--- ircd-hybrid/modules/m_unkline.c	Mon Nov 18 14:54:58 2002
++++ ../../ANGEL/ircd-hybrid/modules/m_unkline.c	Thu May 29 11:52:54 2003
+@@ -38,6 +38,7 @@
+ #include "s_log.h"
+ #include "s_misc.h"
+ #include "send.h"
++#include "s_serv.h"
+ #include "msg.h"
+ #include "s_gline.h"
+ #include "parse.h"
+@@ -45,12 +46,13 @@
+ 
+ 
+ static void mo_unkline(struct Client*, struct Client*, int, char**);
++static void ms_unkline(struct Client*, struct Client*, int, char**);
+ static void mo_undline(struct Client*, struct Client*, int, char**);
+ static void mo_ungline(struct Client*, struct Client*, int, char**);
+ 
+ struct Message msgtabs[] = {
+   {"UNKLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
+-   {m_unregistered, m_not_oper, m_error, mo_unkline}},
++   {m_unregistered, m_not_oper, ms_unkline, mo_unkline}},
+   {"UNDLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
+    {m_unregistered, m_not_oper, m_error, mo_undline}}, 
+   {"UNGLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
+@@ -95,14 +97,8 @@
+ mo_unkline (struct Client *client_p,struct Client *source_p,
+ 	    int parc,char *parv[])
+ {
+-  FBFILE *in, *out;
+-  int pairme=0;
+-  char buf[BUFSIZE], buff[BUFSIZE], temppath[BUFSIZE], *user, *host, *p;
+-  const char  *filename;                /* filename to use for unkline */
+-  mode_t oldumask;
++  char *user, *host;
+ 
+-  ircsprintf(temppath, "%s.tmp", ConfigFileEntry.klinefile);
+-  
+   if (!IsOperUnkline(source_p))
+     {
+       sendto_one(source_p,":%s NOTICE %s :You need unkline = yes;",me.name,parv[0]);
+@@ -137,6 +133,17 @@
+       return;
+     }
+ 
++  /* UNKLINE bill@mu.org ON irc.mu.org */
++  if ((parc == 4) && (irccmp(parv[2], "ON") == 0))
++  {
++    sendto_server(NULL, source_p, NULL, CAP_KLN, NOCAPS, LL_ICLIENT,
++		  ":%s UNKLINE %s %s %s", source_p->name, parv[3],
++		  user, host);
++
++    if (!match(parv[3], me.name))
++      return;
++  }
++
+   if (remove_tkline_match(host, user))
+     {
+       sendto_one(source_p,
+@@ -150,130 +157,83 @@
+       return;
+     }
+ 
+-  filename = get_conf_name(KLINE_TYPE);
+-  if ((in = fbopen(filename, "r")) == 0)
+-    {
+-      sendto_one(source_p, ":%s NOTICE %s :Cannot open %s", me.name, parv[0],
+-		 filename);
+-      return;
+-    }
+ 
+-  oldumask = umask(0);
+-  if ((out = fbopen(temppath, "w")) == 0)
+-    {
+-      sendto_one(source_p, ":%s NOTICE %s :Cannot open %s", me.name, parv[0],
+-		 temppath);
+-      fbclose(in);
+-      umask(oldumask);
+-      return;
+-    }
+-  umask(oldumask);
++  if (remove_conf_line(KLINE_TYPE, source_p, user, host) > 0)
++  {
++    sendto_one(source_p, ":%s NOTICE %s :K-Line for [%s@%s] is removed", 
++	       me.name, source_p->name, user,host);
++    sendto_realops_flags(FLAGS_ALL, L_ALL,
++			 "%s has removed the K-Line for: [%s@%s]",
++			 get_oper_name(source_p), user, host);
++
++    ilog(L_NOTICE, "%s removed K-Line for [%s@%s]",
++	 source_p->name, user, host);
++  }
++  else
++    sendto_one(source_p, ":%s NOTICE %s :No K-Line for [%s@%s] found", 
++	       me.name, source_p->name, user,host);
++}
+ 
+-  while (fbgets(buf, sizeof(buf), in)) 
+-    {
+-      char *found_host, *found_user;
++/* ms_unkline()
++ *
++ * inputs	- server
++ *		- client
++ *		- parc
++ *		- parv
++ * outputs	- none
++ * side effects	- if server is authorized, kline is removed
++ */
++static void
++ms_unkline(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
++{
++  const char *kuser, *khost;
+ 
+-      strlcpy(buff, buf, BUFSIZE);
++  if (parc != 4)
++    return;
+ 
+-      if ((p = strchr(buff,'\n')) != NULL)
+-	*p = '\0';
++  sendto_match_servs(source_p, parv[1], CAP_KLN,
++                     "UNKLINE %s %s %s", parv[1], parv[2], parv[3]);
+ 
+-      if ((*buff == '\0') || (*buff == '#'))
+-	{
+-	  if(flush_write(source_p, in, out, buf, temppath) < 0)
+-	    return;
+-	}
+-      
+-      if ((found_user = getfield(buff)) == NULL)
+-	{
+-	  if(flush_write(source_p, in, out, buf, temppath) < 0)
+-	    return;
+-	  continue;
+-	}
++  kuser = parv[2];
++  khost = parv[3];
+ 
+-      if ((found_host = getfield(NULL)) == NULL)
+-	{
+-	  if(flush_write(source_p, in, out, buf, temppath) < 0)
+-	    return;
+-	  continue;
+-	}
++  if (!match(parv[1], me.name))
++    return;
+ 
+-      if ((irccmp(host,found_host) == 0) && (irccmp(user,found_user) == 0))
+-	{
+-	  pairme++;
+-	}
+-      else
+-	{
+-	  if(flush_write(source_p, in, out, buf, temppath) < 0)
+-	    return;
+-	}
+-    }
+-  fbclose(in);
+-  fbclose(out);
+-
+-/* The result of the rename should be checked too... oh well */
+-/* If there was an error on a write above, then its been reported
+- * and I am not going to trash the original kline /conf file
+- */
+-
+-  (void)rename(temppath, filename);
+-  rehash(0);
++  if (!IsPerson(source_p))
++    return;
+ 
+-  if(!pairme)
++  if (find_u_conf(source_p->user->server,
++		  source_p->username, source_p->host))
++  {
++    if (remove_tkline_match(khost, kuser))
+     {
+-      sendto_one(source_p, ":%s NOTICE %s :No K-Line for %s@%s",
+-                 me.name, source_p->name,user,host);
++      sendto_one(source_p,
++                 ":%s NOTICE %s :Un-klined [%s@%s] from temporary k-lines",
++                 me.name, parv[0], kuser, khost);
++      sendto_realops_flags(FLAGS_ALL, L_ALL,  
++                           "%s has removed the temporary K-Line for: [%s@%s]",
++                           get_oper_name(source_p), kuser, khost);
++      ilog(L_NOTICE, "%s removed temporary K-Line for [%s@%s]",
++           parv[0], kuser, khost);
+       return;
+-    }
+-
+-  sendto_one(source_p, ":%s NOTICE %s :K-Line for [%s@%s] is removed", 
+-             me.name, source_p->name, user,host);
+-  sendto_realops_flags(FLAGS_ALL, L_ALL,
+-		       "%s has removed the K-Line for: [%s@%s]",
+-		       get_oper_name(source_p), user, host);
+-
+-  ilog(L_NOTICE, "%s removed K-Line for [%s@%s]",
+-       source_p->name, user, host);
+-  return; 
+-}
+-
+-/*
+- * flush_write()
+- *
+- * inputs       - pointer to client structure of oper requesting unkline
+- *		- in is the input file descriptor
+- *              - out is the output file descriptor
+- *              - buf is the buffer to write
+- *              - ntowrite is the expected number of character to be written
+- *              - temppath is the temporary file name to be written
+- * output       - -1 for error on write
+- *              - 0 for ok
+- * side effects - if successful, the buf is written to output file
+- *                if a write failure happesn, and the file pointed to
+- *                by temppath, if its non NULL, is removed.
+- *
+- * The idea here is, to be as robust as possible when writing to the 
+- * kline file.
+- *
+- * -Dianora
+- */
+-
+-static int
+-flush_write(struct Client *source_p, FBFILE *in, FBFILE* out, 
+-	    char *buf, char *temppath)
+-{
+-  int error_on_write = (fbputs(buf, out) < 0) ? (-1) : (0);
++    } 
+ 
+-  if (error_on_write)
++    if (remove_conf_line(KLINE_TYPE, source_p, kuser, khost) > 0)
+     {
+-      sendto_one(source_p,":%s NOTICE %s :Unable to write to %s aborting",
+-        me.name, source_p->name, temppath );
+-      fbclose(in);
+-      fbclose(out);
+-      if(temppath != (char *)NULL)
+-        (void)unlink(temppath);
++      sendto_one(source_p, ":%s NOTICE %s :K-Line for [%s@%s] is removed",
++                 me.name, source_p->name, kuser, khost);
++      sendto_realops_flags(FLAGS_ALL, L_ALL,
++                           "%s has removed the K-Line for: [%s@%s]",
++			   get_oper_name(source_p), kuser, khost);
++
++      ilog(L_NOTICE, "%s removed K-Line for [%s@%s]",
++           source_p->name, kuser, khost);
+     }
+-  return(error_on_write);
++    else
++      sendto_one(source_p, ":%s NOTICE %s :No K-Line for [%s@%s] found",
++                 me.name, source_p->name, kuser, khost);
++  }
+ }
+ 
+ /* static int remove_tkline_match(char *host, char *user)
+@@ -312,6 +272,43 @@
+   return NO;
+ }
+ 
++/* static int remove_tdline_match(const char *host, const char *user)
++ * Input: An ip to undline.
++ * Output: returns YES on success, NO if no tdline removed.
++ * Side effects: Any matching tdlines are removed.
++ */
++static int remove_tdline_match(const char *cidr)
++{
++  struct ConfItem *td_conf;
++  dlink_node *td_node;
++  struct irc_inaddr addr, caddr;
++  int nm_t, cnm_t, bits, cbits;
++  nm_t = parse_netmask(cidr, &addr, &bits);
++
++  for(td_node = temporary_dlines.head; td_node; td_node = td_node->next)
++  {
++    td_conf = (struct ConfItem *)td_node->data;
++    cnm_t = parse_netmask(td_conf->host, &caddr, &cbits);
++
++    if(cnm_t != nm_t)
++      continue;
++
++    if((nm_t==HM_HOST && !irccmp(td_conf->host, cidr)) ||
++       (nm_t==HM_IPV4 && bits==cbits && match_ipv4(&addr, &caddr, bits))
++#ifdef IPV6
++       || (nm_t==HM_IPV6 && bits==cbits && match_ipv6(&addr, &caddr, bits))
++#endif
++      )
++    {
++      dlinkDelete(td_node, &temporary_dlines);
++      free_dlink_node(td_node);
++      delete_one_address_conf(td_conf->host, td_conf);
++      return YES;
++    }
++  }
++  return NO;
++}
++
+ /*
+ ** m_undline
+ ** added May 28th 2000 by Toby Verrall <toot@melnet.co.uk>
+@@ -325,14 +322,7 @@
+ mo_undline (struct Client *client_p, struct Client *source_p,
+             int parc,char *parv[])
+ {
+-  FBFILE* in;
+-  FBFILE* out;
+-  char  buf[BUFSIZE], buff[BUFSIZE], temppath[BUFSIZE], *p;
+-  const char  *filename,*cidr, *found_cidr;
+-  int pairme = NO;
+-  mode_t oldumask;
+-
+-  ircsprintf(temppath, "%s.tmp", ConfigFileEntry.dlinefile);
++  const char  *cidr;
+ 
+   if (!IsOperUnkline(source_p))
+     {
+@@ -343,86 +333,31 @@
+ 
+   cidr = parv[1];
+ 
+-#if 0
+-  if ((type=parse_netmask(cidr,&ip_host,&ip_mask)) == HM_HOST)
+-    {
+-      sendto_one(source_p, ":%s NOTICE %s :Invalid parameters",
+-		 me.name, parv[0]);
+-      return;
+-    }
+-#endif
+-
+-  filename = get_conf_name(DLINE_TYPE);
+-
+-  if ((in = fbopen(filename, "r")) == 0)
+-    {
+-      sendto_one(source_p, ":%s NOTICE %s :Cannot open %s",
+-		 me.name,parv[0],filename);
+-      return;
+-    }
+-
+-  oldumask = umask(0);                  /* ircd is normally too paranoid */
+-  if ((out = fbopen(temppath, "w")) == NULL)
+-    {
+-      sendto_one(source_p, ":%s NOTICE %s :Cannot open %s",
+-		 me.name,parv[0],temppath);
+-      fbclose(in);
+-      umask(oldumask);                  /* Restore the old umask */
+-      return;
+-    }
+-  umask(oldumask);                    /* Restore the old umask */
+-
+-  while(fbgets(buf, sizeof(buf), in))
+-    {
+-      strlcpy(buff, buf, BUFSIZE);
+-
+-      if ((p = strchr(buff,'\n')) != NULL)
+-	*p = '\0';
+-
+-      if ((*buff == '\0') || (*buff == '#'))
+-	{
+-	  if(flush_write(source_p, in, out, buf, temppath) < 0)
+-	    return;
+-  	   continue;
+-	}
+-
+-      if ((found_cidr = getfield(buff)) == NULL)
+-	{
+-	  if(flush_write(source_p, in, out, buf, temppath) < 0)
+-	    return;
+-	  continue;
+-	}
+-      
+-      if (irccmp(found_cidr,cidr) == 0)
+-	{
+-	  pairme++;
+-	}
+-      else
+-	{
+-	  if(flush_write(source_p, in, out, buf, temppath) < 0)
+-	    return;
+-	}
+-    }
+-
+-  fbclose(in);
+-  fbclose(out);
+-
+-  (void)rename(temppath, filename);
+-  rehash(0);
+-
+-  if (!pairme)
+-    {
+-      sendto_one(source_p, ":%s NOTICE %s :No D-Line for %s", me.name,
+-		 parv[0],cidr);
+-      return;
+-    }
+-
+-  sendto_one(source_p, ":%s NOTICE %s :D-Line for [%s] is removed",
+-	     me.name, parv[0], cidr);
+-  sendto_realops_flags(FLAGS_ALL, L_ALL, "%s has removed the D-Line for: [%s]",
+-		       get_oper_name(source_p), cidr);
+-  ilog(L_NOTICE, "%s removed D-Line for [%s]", get_oper_name(source_p),
+-       cidr);
++  if(remove_tdline_match(cidr))
++  {
++    sendto_one(source_p,
++              ":%s NOTICE %s :Un-Dlined [%s] from temporary D-Lines",
++              me.name, source_p->name, cidr);
++    sendto_realops_flags(FLAGS_ALL, L_ALL,
++                         "%s has removed the temporary D-Line for: [%s]",
++                         get_oper_name(source_p), cidr);
++    ilog(L_NOTICE, "%s removed temporary D-Line for [%s]", source_p->name, cidr);
++    return;
++  }
++
++  if (remove_conf_line(DLINE_TYPE, source_p, cidr, NULL) > 0)
++  {
++    sendto_one(source_p, ":%s NOTICE %s :D-Line for [%s] is removed",
++	       me.name, parv[0], cidr);
++    sendto_realops_flags(FLAGS_ALL, L_ALL,
++			 "%s has removed the D-Line for: [%s]",
++			 get_oper_name(source_p), cidr);
++    ilog(L_NOTICE, "%s removed D-Line for [%s]", get_oper_name(source_p),
++	 cidr);
++  }
++  else
++    sendto_one(source_p, ":%s NOTICE %s :No D-Line for [%s] found",
++	       me.name, parv[0], cidr);
+ }
+ 
+ /*
+diff -r -u ircd-hybrid/modules/m_whois.c ../../ANGEL/ircd-hybrid/modules/m_whois.c
+--- ircd-hybrid/modules/m_whois.c	Sat Feb  8 19:02:28 2003
++++ ../../ANGEL/ircd-hybrid/modules/m_whois.c	Tue May 27 20:31:58 2003
+@@ -480,8 +480,7 @@
+ /* although we should fill in parc and parv, we don't ..
+  *	 be careful of this when writing whois hooks
+  */
+-  if(MyClient(source_p)) 
+-    hook_call_event("doing_whois", &hd);
++  hook_call_event("doing_whois", &hd);
+   
+   return;
+ }
+diff -r -u ircd-hybrid/src/Makefile.in ../../ANGEL/ircd-hybrid/src/Makefile.in
+--- ircd-hybrid/src/Makefile.in	Thu May 29 00:27:17 2003
++++ ../../ANGEL/ircd-hybrid/src/Makefile.in	Fri Jun  6 00:10:07 2003
+@@ -1,7 +1,7 @@
+ #
+ # Makefile.in for ircd/src
+ #
+-# $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
++# $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
+ #
+ CC		= @CC@
+ INSTALL		= @INSTALL@
+@@ -61,6 +61,7 @@
+   vchannel.c                    \
+   class.c                       \
+   client.c                      \
++  csvlib.c			\
+   dynlink.c			\
+   event.c                       \
+   fdlist.c                      \
+@@ -72,7 +73,6 @@
+   irc_string.c                  \
+   ircd.c                        \
+   ircd_signal.c                 \
+-  kdparse.c			\
+   linebuf.c                     \
+   list.c                        \
+   listener.c                    \
+diff -r -u ircd-hybrid/src/channel.c ../../ANGEL/ircd-hybrid/src/channel.c
+--- ircd-hybrid/src/channel.c	Thu May 29 00:27:17 2003
++++ ../../ANGEL/ircd-hybrid/src/channel.c	Fri Jun  6 00:09:30 2003
+@@ -19,7 +19,7 @@
+  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+  *  USA
+  *
+- *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
++ *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
+  */
+ 
+ #include "stdinc.h"
+@@ -1348,10 +1348,9 @@
+     if (!splitmode && ((Count.server < split_servers) || (Count.total < split_users)))
+     {
+       splitmode = 1;
+-
+       sendto_realops_flags(FLAGS_ALL,L_ALL,
+                          "Network split, activating splitmode");
+-      eventAddIsh("check_splitmode", check_splitmode, NULL, 60);
++      eventAddIsh("check_splitmode", check_splitmode, NULL, 10);
+     }
+     else if (splitmode && (Count.server > split_servers) && (Count.total > split_users))
+     {
+diff -r -u ircd-hybrid/src/channel_mode.c ../../ANGEL/ircd-hybrid/src/channel_mode.c
+--- ircd-hybrid/src/channel_mode.c	Sun Apr 20 08:42:51 2003
++++ ../../ANGEL/ircd-hybrid/src/channel_mode.c	Fri Jun  6 01:09:18 2003
+@@ -830,7 +830,7 @@
+   simple_modes_mask |= mode_type;
+ 
+   /* setting + */
+-  if ((dir == MODE_ADD) && !(chptr->mode.mode & mode_type))
++  if (dir == MODE_ADD)
+   {
+     chptr->mode.mode |= mode_type;
+ 
+@@ -842,7 +842,7 @@
+     mode_changes[mode_count].mems = ALL_MEMBERS;
+     mode_changes[mode_count++].arg = NULL;
+   }
+-  else if ((dir == MODE_DEL) && (chptr->mode.mode & mode_type))
++  else if (dir == MODE_DEL)
+   {
+     /* setting - */
+ 
+@@ -1299,6 +1299,7 @@
+ 
+   mode_get_status(chptr, targ_p, &t_op, &t_hop, &t_voice, 1);
+ 
++/*
+   if (((dir == MODE_ADD) && t_op) ||
+       ((dir == MODE_DEL) && !t_op
+ #ifdef HALFOPS
+@@ -1306,12 +1307,13 @@
+ #endif
+     ))
+     return;
++*/
+ 
+   if (MyClient(source_p) && (++mode_limit > MAXMODEPARAMS))
+     return;
+ 
+   /* Cancel mode changes... */
+-
++/*
+   for (i = 0; i < mode_count; i++)
+     if (mode_changes[i].dir == MODE_ADD && 
+         (mode_changes[i].letter == 'o'
+@@ -1337,7 +1339,7 @@
+         wasnt_voiced = 1;
+       mode_changes[i].letter = 0;
+     }
+-
++*/
+   if (dir == MODE_ADD)
+   {
+ 
+@@ -1639,7 +1641,7 @@
+ 
+   if (MyClient(source_p) && (++mode_limit > MAXMODEPARAMS))
+     return;
+-
++/*
+   if (
+ #ifndef REQUIRE_OANDV
+       t_op ||
+@@ -1650,7 +1652,7 @@
+       (dir == MODE_ADD && t_voice) ||
+       (dir == MODE_DEL && !t_voice))
+     return;
+-
++*/
+   if (dir == MODE_ADD)
+   {
+     mode_changes[mode_count].letter = c;
+@@ -1664,6 +1666,7 @@
+   }
+   else
+   {
++/*
+     for (i = 0; i < mode_count; i++)
+     {
+       if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'v'
+@@ -1673,7 +1676,7 @@
+         return;
+       }
+     }
+-
++*/
+     mode_changes[mode_count].letter = 'v';
+     mode_changes[mode_count].dir = MODE_DEL;
+     mode_changes[mode_count].caps = 0;
+@@ -1734,9 +1737,10 @@
+   }
+   else if (dir == MODE_DEL)
+   {
++/*
+     if (!chptr->mode.limit)
+       return;
+-
++*/
+     chptr->mode.limit = 0;
+ 
+     mode_changes[mode_count].letter = c;
+diff -r -u ircd-hybrid/src/client.c ../../ANGEL/ircd-hybrid/src/client.c
+--- ircd-hybrid/src/client.c	Tue Mar 11 20:35:08 2003
++++ ../../ANGEL/ircd-hybrid/src/client.c	Mon Jun  2 00:39:00 2003
+@@ -354,6 +354,10 @@
+       }
+     }
+     /* ping_timeout: */
++    /* Safe list */
++    /* +angel */
++    if (client_p->localClient->list_task != NULL)
++      safe_list_channels(client_p, client_p->localClient->list_task, 0, 0);
+ 
+   }
+ }
+@@ -433,8 +437,6 @@
+ 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
+ 		     me.name, client_p->name,
+ 		     aconf->passwd ? aconf->passwd : "D-lined");
+-	else
+-	  sendto_one(client_p, "NOTICE DLINE :*** You have been D-lined");
+       }
+       else
+       {
+@@ -448,8 +450,6 @@
+ 	if(IsPerson(client_p))
+ 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
+ 		     me.name, client_p->name, reason);
+-	else
+-	  sendto_one(client_p, "NOTICE DLINE :*** You have been D-lined");
+       }
+ 	    
+       (void)exit_client(client_p, client_p, &me, reason);
+@@ -559,11 +559,70 @@
+       if(aconf->status & CONF_EXEMPTDLINE)
+         continue;
+ 
+-      sendto_one(client_p, "NOTICE DLINE :*** You have been D-lined");
+       exit_client(client_p, client_p, &me, "D-lined");
+     }
+   }
+ 
++}
++
++/* check_xlines()
++ *
++ * inputs       - NONE
++ * output       - NONE
++ * side effects - Check all connections for a pending xline against the
++ * 		  client, exit the client if a xline matches.
++ */
++void 
++check_xlines(void)
++{               
++  struct Client *client_p;       /* current local client_p being examined */
++  struct ConfItem *aconf = NULL;
++  const char *reason;            /* pointer to reason string */
++  dlink_node *ptr, *next_ptr;
++ 
++  DLINK_FOREACH_SAFE(ptr, next_ptr, lclient_list.head)
++  {
++    client_p = ptr->data;
++
++    /* If a client is already being exited
++     */
++    if (IsDead(client_p))
++      continue;
++	
++    /* if there is a returned struct ConfItem then kill it */
++    if ((aconf = find_x_conf(client_p->info)) != NULL)
++    {
++      sendto_realops_flags(FLAGS_ALL, L_ALL,"XLINE active for %s",
++			   get_client_name(client_p, HIDE_IP));
++      
++      if (ConfigFileEntry.kline_with_connection_closed &&
++	  ConfigFileEntry.kline_with_reason)
++      {
++	reason = "Connection closed";
++
++	if (IsPerson(client_p))
++	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
++		     me.name, client_p->name,
++		     aconf->passwd ? aconf->passwd : "X-lined");
++      }
++      else
++      {
++	if (ConfigFileEntry.kline_with_connection_closed)
++	  reason = "Connection closed";
++	else if (ConfigFileEntry.kline_with_reason && aconf->passwd)
++	  reason = aconf->passwd;
++	else
++	  reason = "X-lined";
++
++	if(IsPerson(client_p))
++	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
++		     me.name, client_p->name, reason);
++      }
++
++      exit_client(client_p, client_p, &me, reason);
++      continue; /* and go examine next fd/client_p */
++    }
++  }
+ }
+ 
+ /*
+diff -r -u ircd-hybrid/src/hash.c ../../ANGEL/ircd-hybrid/src/hash.c
+--- ircd-hybrid/src/hash.c	Mon Oct 28 16:09:23 2002
++++ ../../ANGEL/ircd-hybrid/src/hash.c	Tue May 27 22:19:26 2003
+@@ -40,6 +40,10 @@
+ #include "fileio.h"
+ #include "memory.h"
+ 
++/* +angel for "safe_list" */
++#include "channel.h"
++#include "channel_mode.h"
++
+ /* New hash code */
+ /*
+  * Contributed by James L. Davis
+@@ -786,6 +790,164 @@
+   
+   return(NULL);
+ }  
++
++/* +angel */
++/*
++ * Safe list code.
++ *
++ * The idea is really quite simple. As the link lists pointed to in
++ * each "bucket" of the channel hash table are traversed atomically
++ * there is no locking needed. Overall, yes, inconsistent reported
++ * state can still happen, but normally this isn't a big deal.
++ * I don't like sticking the code into hash.c but oh well. Moreover,
++ * if a hash isn't used in future, oops.
++ *
++ * - Dianora
++ */
++
++/* exceeding_sendq()
++ *
++ * inputs       - pointer to client to check
++ * ouput	- 1 if client is in danger of blowing its sendq
++ *		  0 if it is not.
++ * side effects -
++ *
++ * Sendq limit is fairly conservative at 1/2 (In original anyway)
++ */
++static int
++exceeding_sendq(struct Client *to)
++{
++  if (linebuf_len(&to->localClient->buf_sendq) > (get_sendq(to) / 2))
++    return(1);
++  else
++    return(0);
++}
++
++void free_list_task(struct ListTask *lt, struct Client *source_p)
++{
++  dlink_node *dl, *dln;
++
++  DLINK_FOREACH_SAFE(dl, dln, lt->show_mask.head)
++  {
++    MyFree(dl->data);
++    free_dlink_node(dl);
++  }
++  DLINK_FOREACH_SAFE(dl, dln, lt->hide_mask.head)
++  {
++    MyFree(dl->data);
++    free_dlink_node(dl);
++  }
++
++  MyFree(lt);
++
++  if (MyConnect(source_p))
++    source_p->localClient->list_task = NULL;
++}
++
++/* list_allow_channel()
++ *
++ * inputs       - channel name
++ *              - pointer to a list task
++ * output       - 1 if the channel is to be displayed
++ *                0 otherwise
++ * side effects -
++ */
++static int list_allow_channel(char *chname, struct ListTask *lt)
++{
++  dlink_node *dl;
++
++  DLINK_FOREACH(dl, lt->show_mask.head)
++    if (!match((char *)dl->data, chname))
++      return(0);
++  DLINK_FOREACH(dl, lt->hide_mask.head)
++    if (match((char *)dl->data, chname))
++      return(0);
++  return(1);
++}
++
++/* list_one_channel()
++ *
++ * inputs       - client pointer to return result to
++ *              - pointer to channel to list
++ *              - pointer to ListTask structure
++ * ouput	- none
++ * side effects -
++ */
++static void
++list_one_channel(struct Client *source_p, struct Channel *chptr,
++                 struct ListTask *list_task, int remote_request)
++{
++  if ((remote_request && chptr->chname[0] == '&') ||
++      (SecretChannel(chptr) && !IsMember(source_p, chptr)))
++    return;
++  if ((unsigned int) chptr->users < list_task->users_min ||
++      (unsigned int) chptr->users > list_task->users_max ||
++      (chptr->channelts != 0 &&
++       ((unsigned int) chptr->channelts < list_task->created_min ||
++        (unsigned int) chptr->channelts > list_task->created_max)) ||
++      (unsigned int) chptr->topic_time < list_task->topicts_min ||
++      (chptr->topic_time ? (unsigned int) chptr->topic_time : UINT_MAX) >
++      list_task->topicts_max)
++    return;
++
++  if (!list_allow_channel(chptr->chname, list_task))
++    return;
++  sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
++             chptr->chname, chptr->users,
++             chptr->topic == NULL ? "" : chptr->topic );
++}
++
++/* safe_list_channels()
++ *
++ * inputs	- pointer to client requesting list
++ * output	- 0/1
++ * side effects	- safely list all channels to source_p
++ *
++ * Walk the channel buckets, ensure all pointers in a bucket are
++ * traversed before blocking on a sendq. This means, no locking is needed.
++ *
++ * N.B. This code is "remote" safe, but is not currently used for
++ * remote clients.
++ *
++ * - Dianora
++ */
++void
++safe_list_channels(struct Client *source_p, struct ListTask *list_task,
++                   int only_unmasked_channels, int remote_request)
++{
++  struct Channel *chptr;
++
++  if (!only_unmasked_channels)
++  {
++    int i;
++
++    for (i = list_task->hash_index; i < CH_MAX; i++)
++    {
++      for (chptr = channelTable[i].list; chptr; chptr = chptr->hnextch)
++        list_one_channel(source_p, chptr, list_task, remote_request);
++
++      if (MyConnect(source_p))
++      {
++        if (exceeding_sendq(source_p))
++        {
++          list_task->hash_index = i;
++          return; /* still more to do */
++        }
++      }
++    }
++  }
++  else
++  {
++    dlink_node *dl;
++
++    DLINK_FOREACH(dl, list_task->show_mask.head)
++      if ((chptr = hash_find_channel((const char *)dl->data)) != NULL)
++        list_one_channel(source_p, chptr, list_task, remote_request);
++  }
++
++  free_list_task(list_task, source_p);
++  sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
++}
+ 
+ 
+ 
+diff -r -u ircd-hybrid/src/ircd.c ../../ANGEL/ircd-hybrid/src/ircd.c
+--- ircd-hybrid/src/ircd.c	Fri May 30 00:25:17 2003
++++ ../../ANGEL/ircd-hybrid/src/ircd.c	Thu Jun  5 23:52:51 2003
+@@ -19,7 +19,7 @@
+  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+  *  USA
+  *
+- *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
++ *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
+  */
+ 
+ #include "stdinc.h"
+@@ -132,6 +132,9 @@
+ int split_users;
+ int split_servers;
+ 
++int rehashed_klines = 0;
++int rehashed_xlines = 0;
++
+ static int irc_sleep(unsigned long useconds)
+ {
+ #ifdef HAVE_NANOSLEEP
+@@ -311,6 +314,17 @@
+   unsigned long empty_cycles=0, st=0, delay;
+   while (ServerRunning)
+     {
++      if (rehashed_klines)
++	{
++	  check_klines();
++	  rehashed_klines = 0;
++	}
++      else if (rehashed_xlines)
++	{
++	  check_xlines();
++	  rehashed_xlines = 0;
++	}
++
+       /* Run pending events, then get the number of seconds to the next
+        * event
+        */
+@@ -586,6 +600,9 @@
+   ConfigFileEntry.klinefile = KPATH;    /* Server kline file */
+   ConfigFileEntry.dlinefile = DLPATH;   /* dline file */
+   ConfigFileEntry.glinefile = GPATH;    /* gline log file */
++  ConfigFileEntry.xlinefile = XPATH;    /* xline file */
++  ConfigFileEntry.cresvfile = CRESVPATH;    /* cresv file */
++  ConfigFileEntry.nresvfile = NRESVPATH;    /* nresv file */
+ 
+   myargv = argv;
+   umask(077);                /* better safe than sorry --SRB */
+diff -r -u ircd-hybrid/src/ircd_lexer.l ../../ANGEL/ircd-hybrid/src/ircd_lexer.l
+--- ircd-hybrid/src/ircd_lexer.l	Wed Oct 30 12:44:56 2002
++++ ../../ANGEL/ircd-hybrid/src/ircd_lexer.l	Wed May 28 12:22:10 2003
+@@ -182,6 +182,7 @@
+ have_ident	{ return HAVE_IDENT; }
+ havent_read_conf { return HAVENT_READ_CONF; }
+ hidden		{ return HIDDEN; }
++hidden_admin	{ return HIDDEN_ADMIN; }
+ hide_servers	{ return HIDE_SERVERS; }
+ host		{ return HOST; }
+ hub		{ return HUB; }
+@@ -270,6 +271,7 @@
+ vhost	{ return VHOST; }
+ vhost6	{ return VHOST6; }
+ warn		{ return WARN; }
++xline		{ return XLINE; }
+ yes		{ return TYES; }
+ 
+ failed_oper_notice      { return FAILED_OPER_NOTICE; }
+diff -r -u ircd-hybrid/src/ircd_parser.y ../../ANGEL/ircd-hybrid/src/ircd_parser.y
+--- ircd-hybrid/src/ircd_parser.y	Sun Mar  2 08:50:48 2003
++++ ../../ANGEL/ircd-hybrid/src/ircd_parser.y	Wed May 28 10:56:25 2003
+@@ -146,6 +146,7 @@
+ %token  HAVE_IDENT
+ %token	HAVENT_READ_CONF
+ %token  HIDDEN
++%token  HIDDEN_ADMIN
+ %token  HIDE_SERVERS
+ %token  HOST
+ %token  HUB
+@@ -281,6 +282,7 @@
+ %token  VCHANS_OPER_ONLY
+ %token  VHOST
+ %token  VHOST6
++%token  XLINE
+ %token  WARN
+ %token  WARN_NO_NLINE
+ 
+@@ -739,8 +741,8 @@
+ oper_items:     oper_items oper_item |
+                 oper_item;
+ 
+-oper_item:      oper_name  | oper_user | oper_password |
+-                oper_class | oper_global_kill | oper_remote |
++oper_item:      oper_name  | oper_user | oper_password | oper_hidden_admin |
++                oper_class | oper_global_kill | oper_remote | oper_xline |
+                 oper_kline | oper_unkline | oper_gline | oper_nick_changes |
+                 oper_die | oper_rehash | oper_admin | oper_rsa_public_key_file | error;
+ 
+@@ -793,6 +795,14 @@
+     DupString(yy_achead->passwd, yylval.string);
+   };
+ 
++oper_hidden_admin: HIDDEN_ADMIN '=' TYES ';'
++{
++  yy_achead->port |= CONF_OPER_FLAG_HIDDEN_ADMIN;
++}   | HIDDEN_ADMIN '=' TNO ';'
++{
++  yy_achead->port &= ~CONF_OPER_FLAG_HIDDEN_ADMIN;
++};
++
+ oper_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
+   {
+ #ifdef HAVE_LIBCRYPTO
+@@ -860,6 +870,10 @@
+ oper_kline: KLINE '=' TYES ';' { yy_achead->port |= CONF_OPER_K;}
+             |
+             KLINE '=' TNO ';' { yy_achead->port &= ~CONF_OPER_K; } ;
++
++oper_xline: XLINE '=' TYES ';' { yy_achead->port |= CONF_OPER_X;}
++            |
++            XLINE '=' TNO ';' { yy_achead->port &= ~CONF_OPER_X; } ;
+ 
+ oper_unkline: UNKLINE '=' TYES ';' { yy_achead->port |= CONF_OPER_UNKLINE;}
+               |
+diff -r -u ircd-hybrid/src/messages.tab ../../ANGEL/ircd-hybrid/src/messages.tab
+--- ircd-hybrid/src/messages.tab	Tue May  6 01:47:40 2003
++++ ../../ANGEL/ircd-hybrid/src/messages.tab	Wed May 28 00:45:09 2003
+@@ -548,7 +548,7 @@
+ /* 518 */	NULL,
+ /* 519 */	NULL,
+ /* 520 */	NULL,
+-/* 521 */	NULL,
++/* 521 */ 	":%s 521 %s :Bad list syntax, type /QUOTE HELP LIST",
+ /* 522 */	NULL,
+ /* 523 */	NULL,
+ /* 524 ERR_HELPNOTFOUND, */	":%s 524 %s %s :Help not found",
+diff -r -u ircd-hybrid/src/s_conf.c ../../ANGEL/ircd-hybrid/src/s_conf.c
+--- ircd-hybrid/src/s_conf.c	Sun Feb 16 17:06:46 2003
++++ ../../ANGEL/ircd-hybrid/src/s_conf.c	Thu May 29 11:59:39 2003
+@@ -112,9 +112,12 @@
+ static int hash_ip(struct irc_inaddr *);
+ static void garbage_collect_ip_entries(void);
+ static struct ip_entry *find_or_add_ip(struct irc_inaddr*);
++static void parse_conf_file(int type, int cold);
+ 
+ /* general conf items link list root */
+ struct ConfItem* ConfigItemList = NULL;
++dlink_list temporary_klines = { NULL, NULL, 0 };
++dlink_list temporary_dlines = { NULL, NULL, 0 };
+ 
+ /* conf xline link list root */
+ struct ConfItem        *x_conf = ((struct ConfItem *)NULL);
+@@ -1680,6 +1683,21 @@
+   add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
+ }
+ 
++/* add_temp_dline()
++ *
++ * inputs        - pointer to struct ConfItem
++ * output        - none
++ * Side effects  - links in given struct ConfItem into 
++ *                 temporary kline link list
++ */
++void
++add_temp_dline(struct ConfItem *aconf)
++{
++  dlinkAdd(aconf, make_dlink_node(), &temporary_dlines);
++  SetConfTemporary(aconf);
++  add_conf_by_address(aconf->host, CONF_DLINE, NULL, aconf);
++}
++
+ /*
+  * cleanup_tklines
+  *
+@@ -1692,6 +1710,7 @@
+ cleanup_tklines(void *notused)
+ {
+   expire_tklines(&temporary_klines);
++  expire_tklines(&temporary_dlines);
+ }
+ 
+ /*
+@@ -1714,18 +1733,30 @@
+       if (kill_ptr->hold <= CurrentTime)
+ 	{
+           /* Alert opers that a TKline expired - Hwy */
+-          sendto_realops_flags(FLAGS_ALL, L_ALL,
+-			       "Temporary K-line for [%s@%s] expired",
+-			       (kill_ptr->user) ? kill_ptr->user : "*",
+-			       (kill_ptr->host) ? kill_ptr->host : "*");
+-
+-	  delete_one_address_conf(kill_ptr->host, kill_ptr);
+-	  dlinkDelete(kill_node, tklist);
+-	  free_dlink_node(kill_node);
++	  if (kill_ptr->status & CONF_KILL)
++	    {
++	      sendto_realops_flags(FLAGS_ALL, L_ALL,
++				   "Temporary K-line for [%s@%s] expired",
++				   (kill_ptr->user) ? kill_ptr->user : "*",
++				   (kill_ptr->host) ? kill_ptr->host : "*");
++
++	      delete_one_address_conf(kill_ptr->host, kill_ptr);
++	      dlinkDelete(kill_node, tklist);
++	      free_dlink_node(kill_node);
++	    }
++	  else
++	    {
++	      sendto_realops_flags(FLAGS_ALL, L_ALL,
++				   "Temporary D-line for [%s] expired",
++				   (kill_ptr->host) ? kill_ptr->host : "*");
++
++	      delete_one_address_conf(kill_ptr->host, kill_ptr);
++	      dlinkDelete(kill_node, tklist);
++	      free_dlink_node(kill_node);
++	    }
+ 	}
+     }
+ }
+-
+ /*
+  * oper_privs_as_string
+  *
+@@ -1763,6 +1794,15 @@
+   else
+     *privs_ptr++ = 'k';
+ 
++  if(port & CONF_OPER_X)
++    {
++      if(client_p)
++        SetOperX(client_p);
++      *privs_ptr++ = 'X';
++    }
++  else
++    *privs_ptr++ = 'x';
++
+   if(port & CONF_OPER_N)
+     {
+       if(client_p)
+@@ -1821,11 +1861,17 @@
+     {
+       if (client_p)
+ 	SetOperAdmin(client_p);
+-      *privs_ptr++ = 'A';
++      if (port & CONF_OPER_FLAG_HIDDEN_ADMIN)	/* "lie" if hidden */
++	  *privs_ptr++ = 'a';
++	else
++	  *privs_ptr++ = 'A';
+     }
+   else
+     *privs_ptr++ = 'a';
+   
++  if ((client_p != NULL)  && (port & CONF_OPER_FLAG_HIDDEN_ADMIN))
++    SetOperHiddenAdmin(client_p);
++
+   *privs_ptr = '\0';
+ 
+   return(privs_out);
+@@ -1965,8 +2011,7 @@
+ void 
+ read_conf_files(int cold)
+ {
+-  FBFILE *file;
+-  const char *filename, *kfilename, *dfilename; /* kline or conf filename */
++  const char *filename;
+ 
+   conf_fbfile_in = NULL;
+ 
+@@ -2010,43 +2055,40 @@
+   read_conf(conf_fbfile_in);
+   fbclose(conf_fbfile_in);
+ 
+-  kfilename = get_conf_name(KLINE_TYPE);
+-  if (irccmp(filename, kfilename))
+-    {
+-      if((file = fbopen(kfilename,"r")) == NULL)
+-        {
+-	  if (cold)
+-	    ilog(L_ERROR, "Failed reading kline file %s", filename);
+-	  else
+-	    sendto_realops_flags(FLAGS_ALL, L_ALL,
+-				 "Can't open %s file klines could be missing!",
+-				 kfilename);
+-	}
+-      else
+-	{
+-	  parse_k_file(file);
+-	  fbclose(file);
+-	}
+-    }
++  parse_conf_file(KLINE_TYPE, cold);
++  parse_conf_file(DLINE_TYPE, cold);
++  parse_conf_file(XLINE_TYPE, cold);
++  parse_conf_file(NRESV_TYPE, cold);
++  parse_conf_file(CRESV_TYPE, cold);
++}
+ 
+-  dfilename = get_conf_name(DLINE_TYPE);
+-  if (irccmp(filename, dfilename) && irccmp(kfilename, dfilename))
+-    {
+-      if ((file = fbopen(dfilename,"r")) == NULL)
+-	{
+-	  if(cold)
+-	    ilog(L_ERROR, "Failed reading dline file %s", dfilename);
+-	  else
+-	    sendto_realops_flags(FLAGS_ALL, L_ALL,
+-				 "Can't open %s file dlines could be missing!",
+-				 dfilename);
+-	}
+-      else
+-	{
+-	  parse_d_file(file);
+-	  fbclose(file);
+-	}
+-    }
++/*
++ * parse_conf_file()
++ *
++ * inputs	- type of conf file to parse 
++ * output	- none
++ * side effects	- conf file for givenconf type is opened and read then parsed
++ */
++static void
++parse_conf_file(int type, int cold)
++{
++  const char *filename;
++  FBFILE *file;
++
++  filename = get_conf_name(type);
++
++  if ((file = fbopen(filename, "r")) == NULL)
++  {
++    if (cold)
++      ilog(L_ERROR, "Failed reading file %s", filename);
++    else
++      sendto_realops_flags(FLAGS_ALL, L_ALL, "Can't open %s file ", filename);
++  }
++  else
++  {
++    parse_csv_file(file, type);
++    fbclose(file);
++  }
+ }
+ 
+ /*
+@@ -2191,104 +2233,6 @@
+     }
+ }
+ 
+-/*
+- * WriteKlineOrDline
+- *
+- * inputs       - kline or dline type flag
+- *              - client pointer to report to
+- *              - user name of target
+- *              - host name of target
+- *              - reason for target
+- *              - time_t cur_time
+- * output       - NONE
+- * side effects - This function takes care of
+- *                finding right kline or dline conf file, writing
+- *                the right lines to this file, 
+- *                notifying the oper that their kline/dline is in place
+- *                notifying the opers on the server about the k/d line
+- *                forwarding the kline onto the next U lined server
+- *                
+- */
+-void 
+-WriteKlineOrDline( KlineType type,
+-		   struct Client *source_p,
+-		   char *user,
+-		   char *host,
+-		   const char *reason,
+-		   const char *oper_reason,
+-		   const char *current_date,
+-		   time_t cur_time)
+-{
+-  char buffer[1024];
+-  FBFILE *out;
+-  const char *filename;         /* filename to use for kline */
+-
+-  filename = get_conf_name(type);
+-
+-  if (type == DLINE_TYPE)
+-    {
+-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+-			   "%s added D-Line for [%s] [%s]",
+-			   get_oper_name(source_p), host, reason);
+-      sendto_one(source_p, ":%s NOTICE %s :Added D-Line [%s] to %s",
+-		 me.name, source_p->name, host, filename);
+-
+-    }
+-  else
+-    {
+-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+-			   "%s added K-Line for [%s@%s] [%s]",
+-			   get_oper_name(source_p), user, host, reason);
+-      sendto_one(source_p, ":%s NOTICE %s :Added K-Line [%s@%s]",
+-		 me.name, source_p->name, user, host);
+-    }
+-
+-  if ((out = fbopen(filename, "a")) == NULL)
+-    {
+-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+-			   "*** Problem opening %s ", filename);
+-      return;
+-    }
+-
+-  if (oper_reason == NULL)
+-    oper_reason = "";
+-
+-  if(type==KLINE_TYPE)
+-    ircsprintf(buffer, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%ld\n",
+-               user,
+-	       host,
+-               reason,
+-	       oper_reason,
+-	       current_date,
+-	       get_oper_name(source_p),
+-               (long) cur_time);
+-  else
+-    ircsprintf(buffer, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%ld\n",
+-               host,
+-               reason,
+-	       oper_reason,
+-	       current_date,
+-	       get_oper_name(source_p),
+-               (long) cur_time);
+-
+-
+-  if (fbputs(buffer,out) == -1)
+-    {
+-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+-			   "*** Problem writing to %s",filename);
+-      fbclose(out);
+-      return;
+-    }
+-      
+-  fbclose(out);
+-
+-  if(type==KLINE_TYPE)
+-    ilog(L_TRACE, "%s added K-Line for [%s@%s] [%s]",
+-        source_p->name, user, host, reason);
+-  else
+-    ilog(L_TRACE, "%s added D-Line for [%s] [%s]",
+-           get_oper_name(source_p), host, reason);
+-}
+ 
+ /* get_conf_name
+  *
+@@ -2297,17 +2241,31 @@
+  * side effects - none
+  */
+ const char *
+-get_conf_name(KlineType type)
++get_conf_name(ConfType type)
+ {
+-  if(type == CONF_TYPE)
++  switch(type)
+     {
++    case CONF_TYPE:
+       return(ConfigFileEntry.configfile);
+-    }
+-  else if(type == KLINE_TYPE)
+-    {
++      break;
++    case KLINE_TYPE:
+       return(ConfigFileEntry.klinefile);
++      break;
++    case DLINE_TYPE:
++      return(ConfigFileEntry.dlinefile);
++      break;
++    case XLINE_TYPE:
++      return(ConfigFileEntry.xlinefile);
++      break;
++    case NRESV_TYPE:
++      return(ConfigFileEntry.nresvfile);
++      break;
++    case CRESV_TYPE:
++      return(ConfigFileEntry.cresvfile);
++      break;
++    default:
++      break;
+     }
+-
+   return(ConfigFileEntry.dlinefile);
+ }
+ 
+diff -r -u ircd-hybrid/src/s_user.c ../../ANGEL/ircd-hybrid/src/s_user.c
+--- ircd-hybrid/src/s_user.c	Fri May 30 00:25:18 2003
++++ ../../ANGEL/ircd-hybrid/src/s_user.c	Fri Jun  6 00:47:51 2003
+@@ -1143,6 +1143,8 @@
+             *m++ = user_modes[i].letter;
+           else
+             {
++	      if (IsOperHiddenAdmin(source_p) && (flag & FLAGS_ADMIN))
++		continue;
+               what = MODE_ADD;
+               *m++ = '+';
+               *m++ = user_modes[i].letter;
+ D
+--- /dev/null	Fri Jun  6 01:11:37 2003
++++ ircd-hybrid/modules/m_xline.c	Fri Jun  6 00:59:58 2003
+@@ -0,0 +1,352 @@
++/*
++ *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
++ *  m_xline.c: xlines an user.
++ *
++ *  Copyright (C) 2002 by the past and present ircd coders, and others.
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
++ *  USA
++ *
++ *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
++ */
++
++#include "stdinc.h"
++#include "tools.h"
++#include "channel.h"
++#include "class.h"
++#include "client.h"
++#include "common.h"
++#include "irc_string.h"
++#include "ircd.h"
++#include "hostmask.h"
++#include "numeric.h"
++#include "fdlist.h"
++#include "s_bsd.h"
++#include "s_conf.h"
++#include "s_log.h"
++#include "s_misc.h"
++#include "send.h"
++#include "hash.h"
++#include "handlers.h"
++#include "s_serv.h"
++#include "msg.h"
++#include "parse.h"
++#include "modules.h"
++#include "resv.h"
++
++static void mo_xline(struct Client *, struct Client *, int, char **);
++static void ms_xline(struct Client *, struct Client *, int, char **);
++
++static void mo_unxline(struct Client *, struct Client *, int, char **);
++static void ms_unxline(struct Client *, struct Client *, int, char **);
++
++static int valid_xline(struct Client *, char *, char *, int);
++static void write_xline(struct Client *, char *, char *, int);
++static void remove_xline(struct Client *, char *, int);
++
++static int valid_wild_card(char *gecos);
++
++struct Message xline_msgtab = {
++  "XLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
++  {m_unregistered, m_not_oper, ms_xline, mo_xline}
++};
++
++struct Message unxline_msgtab = {
++  "UNXLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
++  {m_unregistered, m_not_oper, ms_unxline, mo_unxline}
++};
++
++
++#ifndef STATIC_MODULES
++void
++_modinit(void)
++{
++  mod_add_cmd(&xline_msgtab);
++  mod_add_cmd(&unxline_msgtab);
++}
++
++void
++_moddeinit(void)
++{
++  mod_del_cmd(&xline_msgtab);
++  mod_del_cmd(&unxline_msgtab);
++}
++const char *_version = "$Revision: 1.1.2.1 $";
++#endif
++
++
++/*
++ * mo_xline
++ *
++ * inputs	- pointer to server
++ *		- pointer to client
++ *		- parameter count
++ *		- parameter list
++ * output	-
++ * side effects - x line is added
++ *
++ */
++static void
++mo_xline(struct Client *client_p, struct Client *source_p,
++         int parc, char *parv[])
++{
++  struct ConfItem *aconf;
++  char *type, *reason, *pattern;
++  int type_i = 1;
++
++  type = reason = pattern = NULL;
++
++  if (!IsOperX(source_p))
++  {
++    sendto_one(source_p, ":%s NOTICE %s :You need xline = yes;",
++               me.name, source_p->name);
++    return;
++  }
++
++  if ((aconf = find_x_conf(parv[1])) != NULL)
++  {
++    sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
++               me.name, source_p->name, parv[1], aconf->name, aconf->passwd);
++    return;
++  }
++
++  /* XLINE <gecos> <type> :<reason> */
++  if (parc == 4)
++  {
++    reason = parv[3];
++    type = parv[2];
++  }
++  /* XLINE <gecos> :<reason> */
++  else if (parc == 3)
++  {
++    reason = parv[2];
++    type = "REJECT";
++  }
++  else
++  {
++    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
++               me.name, source_p->name, "XLINE");
++    return;
++  }
++
++  if (irccmp(type,"WARN") == 0)
++    type_i = 0;
++  else if (irccmp(type,"REJECT") == 0)
++    type_i = 1;
++  else if (irccmp(type,"SILENT") == 0)
++    type_i = 2;
++  else
++    type_i = atoi(type);
++
++  if (EmptyString(reason))
++    reason = "No Reason";
++
++  write_xline(source_p, parv[1], reason, type_i);
++  rehashed_xlines = 1;
++} /* mo_xline() */
++
++/*
++ * ms_xline()
++ *
++ * inputs	- oper, target server, xline, type, reason
++ * outputs	- none
++ * side effects	- propogates xline, applies it if we are a target
++ */
++static void
++ms_xline(struct Client *client_p, struct Client *source_p,
++	 int parc, char *parv[])
++{
++}
++
++/*
++ * mo_unxline
++ *
++ * inputs	- pointer to server
++ *		- pointer to client
++ *		- parameter count
++ *		- parameter list
++ * output	-
++ * side effects - x line is added
++ *
++ */
++static void
++mo_unxline(struct Client *client_p, struct Client *source_p,
++           int parc, char *parv[])
++{
++  if (!IsOperX(source_p))
++  {
++    sendto_one(source_p, ":%s NOTICE %s :You need xline = yes;",
++	       me.name, source_p->name);
++    return;
++  }
++
++  if (EmptyString(parv[1]))
++  {
++    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
++               me.name, source_p->name, "UNXLINE");
++    return;
++  }
++
++  if (parc > 1)
++  {
++    remove_xline(source_p, parv[1], 0);
++  }
++  else
++    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
++               me.name, source_p->name, "UNXLINE");
++
++} /* mo_unxline() */
++
++/*
++ * ms_unxline()
++ *
++ * inputs	- oper, target server, gecos
++ * outputs	- none
++ * side effects	- propogates unxline, applies it if we are a target
++ */
++static void
++ms_unxline(struct Client *client_p, struct Client *source_p,
++	   int parc, char *parv[])
++{
++}
++
++/* valid_xline()
++ *
++ * inputs	- client to complain to, gecos, reason, whether to complain
++ * outputs	- 1 for valid, else 0
++ * side effects	- complains to client, when warn != 0
++ */
++static int
++valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
++{
++  if (EmptyString(reason))
++  {
++    if (warn)
++      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
++                 me.name, source_p->name, "XLINE");
++    return 0;
++  }
++
++  if (strchr(reason, ':') != NULL)
++  {
++    if (warn)
++      sendto_one(source_p, ":%s NOTICE %s :Invalid character ':' in comment",
++                 me.name, source_p->name);
++    return 0;
++  }
++
++  if (!valid_wild_card(gecos))
++  {
++    if (warn)
++      sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the xline",
++                 me.name, source_p->name, ConfigFileEntry.min_nonwildcard);
++
++    return 0;
++  }
++
++  return 1;
++}
++
++/* write_xline()
++ *
++ * inputs	- client taking credit for xline, gecos, reason, xline type
++ * outputs	- none
++ * side effects	- when succesful, adds an xline to the conf
++ */
++static void
++write_xline(struct Client *source_p, char *gecos, char *reason, int type)
++{
++  struct ConfItem *aconf;
++  const char *current_date;
++  time_t cur_time;
++
++  aconf = make_conf();
++  aconf->status = CONF_XLINE;
++  aconf->port = type;
++
++  collapse(gecos);
++  DupString(aconf->name, gecos);
++  DupString(aconf->passwd, reason);
++  set_time();
++  cur_time = CurrentTime;
++  current_date = smalldate(cur_time);
++  write_conf_line(XLINE_TYPE, source_p, aconf, current_date, cur_time);
++  conf_add_conf(aconf);
++}
++
++static void
++remove_xline(struct Client *source_p, char *gecos, int cluster)
++{
++  if (remove_conf_line(XLINE_TYPE, source_p, gecos, NULL) > 0)
++  {
++    if (!cluster)
++      sendto_one(source_p, ":%s NOTICE %s :X-Line for [%s] is removed",
++                 me.name, source_p->name, gecos);
++    sendto_realops_flags(FLAGS_ALL, L_ALL,
++                         "%s has removed the X-Line for: [%s]",
++                         get_oper_name(source_p), gecos);
++    ilog(L_NOTICE, "%s removed X-Line for [%s]", get_oper_name(source_p),
++         gecos);
++  }
++  else if (!cluster)
++    sendto_one(source_p, ":%s NOTICE %s :No X-Line for %s",
++               me.name, source_p->name, gecos);
++}
++
++/*
++ * valid_wild_card
++ * input        - pointer to string to check
++ * output       - 0 if not valid, 1 if valid
++ * side effects -
++ */
++static int
++valid_wild_card(char *gecos)
++{
++  char *p;
++  char tmpch;
++  int nonwild;
++
++  /*
++   * Now we must check the user and host to make sure there
++   * are at least NONWILDCHARS non-wildcard characters in
++   * them, otherwise assume they are attempting to kline
++   * *@* or some variant of that. This code will also catch
++   * people attempting to kline *@*.tld, as long as NONWILDCHARS
++   * is greater than 3. In that case, there are only 3 non-wild
++   * characters (tld), so if NONWILDCHARS is 4, the kline will
++   * be disallowed.
++   * -wnder
++   */
++
++  nonwild = 0;
++  p = gecos;
++  while ((tmpch = *p++))
++  {
++    if (!IsKWildChar(tmpch))
++    {
++      /*
++       * If we find enough non-wild characters, we can
++       * break - no point in searching further.
++       */
++      if (++nonwild >= ConfigFileEntry.min_nonwildcard)
++        break;
++    }
++  }
++
++  if (nonwild < ConfigFileEntry.min_nonwildcard)
++    return 1;
++  else
++    return 0;
++}
+--- /dev/null	Fri Jun  6 01:11:37 2003
++++ ircd-hybrid/src/csvlib.c	Thu May 29 11:59:11 2003
+@@ -0,0 +1,639 @@
++/*
++ *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
++ *  csvlib.c - set of functions to deal with csv type of conf files
++ *
++ *  Copyright (C) 2003 by Diane Bruce, Stuart Walsh
++ *  Use it anywhere you like, if you like it buy us a beer.
++ *  If it's broken, don't bother us with the lawyers.
++ *
++ *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
++ */
++
++#include "stdinc.h"
++#include "tools.h"
++#include "s_log.h"
++#include "s_conf.h"
++#include "hostmask.h"
++#include "client.h"
++#include "irc_string.h"
++#include "sprintf_irc.h"
++#include "memory.h"
++#include "send.h"
++#include "resv.h"
++
++static void parse_csv_line(char *line, ...);
++static int write_csv_line(FBFILE *out, const char *format, ...);
++static int flush_write(struct Client *source_p, FBFILE *in, FBFILE* out, 
++                       const char *buf, const char *temppath);
++
++/* parse_csv_file()
++ *
++ * inputs	- FILE pointer
++ * 		- type of conf to parse
++ * output	- none
++ * side effects	-
++ */
++void
++parse_csv_file(FBFILE *file, ConfType conf_type)
++{
++  struct ConfItem *aconf;
++  char  *name_field=NULL;
++  char  *user_field=NULL;
++  char  *reason_field=NULL;
++  char  *oper_reason=NULL;
++  char  *host_field=NULL;
++  char  *port=NULL;
++  char  line[BUFSIZE];
++  char  *p;
++
++  while (fbgets(line, sizeof(line), file) != NULL)
++  {
++    if ((p = strchr(line, '\n')) != NULL)
++      *p = '\0';
++
++    if ((*line == '\0') || (*line == '#'))
++      continue;
++
++    switch(conf_type)
++    {
++    case KLINE_TYPE:
++      parse_csv_line(line, &user_field, &host_field, &reason_field, NULL);
++      aconf = make_conf();
++      aconf->status = CONF_KILL;
++      if (host_field != NULL)
++	DupString(aconf->host, host_field);
++      if (reason_field != NULL)
++	DupString(aconf->passwd, reason_field);
++      if (user_field != NULL)
++	DupString(aconf->user, user_field);
++      if (aconf->host != NULL)
++	add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
++      break;
++
++    case DLINE_TYPE:
++      parse_csv_line(line, &host_field, &reason_field, NULL);
++      aconf = make_conf();
++      aconf->status = CONF_DLINE;
++      if (host_field != NULL)
++	DupString(aconf->host, host_field);
++      if (reason_field != NULL)
++	DupString(aconf->passwd, reason_field);
++      conf_add_d_conf(aconf);
++      break;
++
++    case XLINE_TYPE:
++      parse_csv_line(line, &name_field, &reason_field, &oper_reason, &port,
++		     NULL);
++      aconf = make_conf();
++      aconf->status = CONF_XLINE;
++
++      if (name_field != NULL)
++	DupString(aconf->name, name_field);
++      if (reason_field != NULL)
++	DupString(aconf->passwd, reason_field);
++      if (user_field != NULL)
++	DupString(aconf->user, user_field);
++      if (port != NULL)
++	aconf->port = atoi(port);
++      conf_add_x_conf(aconf);
++      break;
++
++    case CRESV_TYPE:
++      parse_csv_line(line, &name_field, &reason_field, NULL);
++      (void)create_channel_resv(name_field, reason_field, 0);
++      break;
++
++    case NRESV_TYPE:
++      parse_csv_line(line, &name_field, &reason_field, NULL);
++      (void)create_nick_resv(name_field, reason_field, 0);
++      break;
++    }
++  }
++}
++
++/*
++ * parse_csv_line()
++ *
++ * inputs	- pointer to line to parse
++ * output	-
++ * side effects -
++ */
++
++static void
++parse_csv_line(char *line, ...)
++{
++  va_list args;
++  char **dest;
++  char *field;
++
++  va_start(args, line);
++  dest = va_arg(args, char **);
++  if ((dest == NULL) || ((field = getfield(line)) == NULL))
++  {
++    va_end(args);
++    return;
++  }
++
++  *dest = field;
++    
++  for(;;)
++  {
++    dest = va_arg(args, char **);
++    if ((dest == NULL) || ((field = getfield(NULL)) == NULL))
++    {
++      va_end(args);
++      return;
++    }
++    *dest = field;
++  }
++  /* NOT REACHED */
++  va_end(args);
++}
++
++
++/* write_conf_line()
++ *
++ * inputs       - pointer to struct ConfItem
++ *		- string current_date (small date)
++ *              - time_t cur_time
++ * output       - NONE
++ * side effects - This function takes care of
++ *                finding right conf file, writing
++ *                the right lines to this file, 
++ *                notifying the oper that their kline/dline etc. is in place
++ *                notifying the opers on the server about the k/d etc. line
++ *                
++ * - Dianora
++ */
++void 
++write_conf_line(ConfType type,
++		struct Client *source_p, struct ConfItem *aconf,
++		const char *current_date, time_t cur_time)
++{
++  FBFILE *out;
++  const char *filename;
++
++  filename = get_conf_name(aconf->status);
++  if ((out = fbopen(filename, "a")) == NULL)
++  {
++    sendto_realops_flags(FLAGS_ALL, L_ALL,
++                         "*** Problem opening %s ", filename);
++    return;
++  }
++
++  switch(type)
++  {
++  case KLINE_TYPE:
++    sendto_realops_flags(FLAGS_ALL, L_ALL,
++                         "%s added K-Line for [%s@%s] [%s]",
++                         get_oper_name(source_p),
++			 aconf->user, aconf->host, aconf->passwd);
++    sendto_one(source_p, ":%s NOTICE %s :Added K-Line [%s@%s]",
++               me.name, source_p->name, aconf->user, aconf->host);
++    ilog(L_TRACE, "%s added K-Line for [%s@%s] [%s]",
++         source_p->name, aconf->user, aconf->host, aconf->passwd);
++    write_csv_line(out, "%s%s%s%s%s%s%ld",
++		   aconf->user, aconf->host,
++		   aconf->passwd, "", current_date,
++		   get_oper_name(source_p), (long)cur_time);
++    break;
++
++  case DLINE_TYPE:
++    sendto_realops_flags(FLAGS_ALL, L_ALL,
++                         "%s added D-Line for [%s] [%s]",
++                         get_oper_name(source_p), aconf->host, aconf->passwd);
++    sendto_one(source_p, ":%s NOTICE %s :Added D-Line [%s] to %s",
++               me.name, source_p->name, aconf->host, filename);
++    ilog(L_TRACE, "%s added D-Line for [%s] [%s]",
++         get_oper_name(source_p), aconf->host, aconf->passwd);
++    write_csv_line(out, "%s%s%s%s%s%ld",
++		   aconf->host, aconf->passwd, "", 
++		   current_date,
++		   get_oper_name(source_p), (long)cur_time);
++    break;
++
++  case XLINE_TYPE:
++    sendto_realops_flags(FLAGS_ALL, L_ALL,
++                         "%s added X-Line for [%s] [%s]",
++                         get_oper_name(source_p), aconf->name, aconf->passwd);
++    sendto_one(source_p, ":%s NOTICE %s :Added X-Line [%s] to %s",
++               me.name, source_p->name, aconf->name, filename);
++    ilog(L_TRACE, "%s added X-Line for [%s] [%s]",
++         get_oper_name(source_p), aconf->name, aconf->passwd);
++    write_csv_line(out, "%s%s%s%d%s%s%ld",
++		   aconf->name, aconf->passwd, "", aconf->port,
++		   current_date, get_oper_name(source_p), (long)cur_time);
++    break;
++
++  default:
++    fbclose(out);
++    return;
++  }
++
++  fbclose(out);
++}
++
++
++/* write_resv_line()
++ *
++ * blah. special form of write_conf_line() above for resvs only.
++ *
++ * inputs       - pointer to void * resv_p either struct * ResvChannel
++ *		  or struct * ResvNick
++ *              - time_t cur_time
++ * output       - NONE
++ * side effects - This function takes care of
++ *                finding right conf file, writing
++ *                the right lines to this file, 
++ *                notifying the oper that their kline/dline etc. is in place
++ *                notifying the opers on the server about the k/d etc. line
++ *
++ * - Dianora
++ */
++void 
++write_resv_line(ConfType type, struct Client *source_p /*unused*/,
++		void *resv_p)
++{
++  FBFILE *out;
++  const char *filename;
++  struct ResvChannel *cresv_p=NULL;
++  struct ResvNick *nresv_p=NULL;
++  
++  filename = get_conf_name(type);
++  if ((out = fbopen(filename, "a")) == NULL)
++  {
++    sendto_realops_flags(FLAGS_ALL, L_ALL,
++                         "*** Problem opening %s ", filename);
++    return;
++  }
++
++  switch(type)
++  {
++  case CRESV_TYPE:
++    cresv_p = (struct ResvChannel *)resv_p;
++
++    write_csv_line(out, "%s%s",
++		   cresv_p->name, cresv_p->reason);
++    break;
++
++  case NRESV_TYPE:
++    nresv_p = (struct ResvNick *)resv_p;
++
++    write_csv_line(out, "%s%s",
++		   nresv_p->name, nresv_p->reason);
++    break;
++
++  default:
++    fbclose(out);
++    return;
++  }
++  fbclose(out);
++}
++
++/*
++ * write_csv_line()
++ *
++ * inputs	- pointer to FBFILE *
++ *		- formatted string
++ * output	-
++ * side effects - single line is written to csv conf file
++ */
++static int
++write_csv_line(FBFILE *out, const char *format, ...)
++{
++  char c;
++  int bytes=0;
++  va_list args;
++  char tmp[1024];
++  char *str = tmp;
++  const char *null_string = "";
++
++  if (out == NULL)
++    return(0);
++
++  va_start(args, format);
++
++  while ((c = *format++))
++  {
++    if (c == '%')
++    {
++      c = *format++;
++      if (c == 's')
++      {
++	const char *p1 = va_arg(args, const char *);
++	if (p1 == NULL)
++	  p1 = null_string;
++	*str++ = '\"';
++	bytes += 2;
++	while (*p1 != '\0')
++	{
++	  *str++ = *p1++;
++	  ++bytes;
++        }
++	*str++ = '\"';
++	*str++ = ',';
++	  
++	bytes += 2;
++	continue;
++      }
++      if (c == 'c')
++      {
++	*str++ = '\"';
++	++bytes;
++	*str++ = (char) va_arg(args, int);
++	++bytes;
++	*str++ = '\"';
++	*str++ = ',';
++
++	bytes += 2;
++	continue;
++      }
++
++      if (c == 'd')
++      {
++	int v = va_arg(args, int);
++	char t[40];
++	char *p=t;
++
++	while (v > 10)
++        {
++	  *p++ = (v % 10) + '0';
++	  v = v/10;
++	}
++	*p++ = (v % 10) + '0';
++
++	while (p != t)
++	{
++	  *str++ = *--p;
++	  ++bytes;
++	}
++
++	*str++ = ',';
++	bytes++;
++	continue;
++      }
++      if (c != '%')
++      {
++	int ret;
++	
++	format -= 2;
++	ret = vsprintf(str, format, args);
++	str += ret;
++	bytes += ret;
++	*str++ = ',';
++
++	++bytes;
++	break;
++      }
++    }
++    *str++ = c;
++    ++bytes;
++  }
++
++  if(*(str-1) == ',')
++  {
++    *(str-1) = '\n';
++    *str = '\0';
++  }
++  else
++  {
++    *str++ = '\n';
++    *str = '\0';
++  }
++
++  va_end(args);
++  str = tmp;
++  fbputs(str, out);
++  return bytes;
++}
++
++/*
++ * getfield
++ *
++ * inputs	- input buffer
++ * output	- next field
++ * side effects	- field breakup for ircd.conf file.
++ */
++char *
++getfield(char *newline)
++{
++  static char *line = NULL;
++  char  *end, *field;
++        
++  if (newline != NULL)
++    line = newline;
++
++  if (line == NULL)
++    return(NULL);
++
++  field = line;
++
++  while (IsSpace(*field))	/* skip to start */
++    field++;
++
++  /* skip over any beginning " */
++  if(*field == '"') {
++    field++;
++  }
++  end = field;
++  
++  for (;;)
++  {
++    /* At end of string, mark it as end and return */
++    if (*end == '\0')
++    {
++      line = NULL;
++      return(NULL);
++    }
++    else if (*end == '\\')      /* found escape character ? */
++    {
++      end++;
++    }
++    else if(*end == '"')	/* found terminating " */
++    {
++      *end++ = '\0';
++      while (IsSpace(*end))	/* skip to start of next " (or '\0') */
++	end++;
++      while (*end == ',')
++	end++;
++      while (IsSpace(*end))
++	end++;
++      line = end;
++      return(field);
++    }
++    else if(*end == ',')	/* found terminating , */
++    {
++      *end++ = '\0';
++      while (IsSpace(*end))	/* skip to start of next " (or '\0') */
++	end++;
++      while (*end == ',')
++	end++;
++      while (IsSpace(*end))
++	end++;
++      line = end;
++      return(field);
++    }
++    end++;
++  }
++  return (NULL);
++}
++
++/* remove_conf_line()
++ *
++ * inputs	- type of kline to remove
++ *		- pointer to oper removing
++ *		- pat1 pat2 patterns to match
++ * output	- -1 if unsuccessful 0 if no change 1 if change
++ * side effects	-
++ */
++int
++remove_conf_line(ConfType type, struct Client *source_p,
++		 const char *pat1, const char *pat2)
++{
++  const char *filename;
++  FBFILE *in, *out;
++  int pairme=0;
++  char buf[BUFSIZE], buff[BUFSIZE], temppath[BUFSIZE], *p;
++  char *found1;
++  char *found2;
++  mode_t oldumask;
++
++  filename = get_conf_name(type);
++
++  if ((in = fbopen(filename, "r")) == NULL)
++  {
++    sendto_one(source_p, ":%s NOTICE %s :Cannot open %s", me.name,
++	       source_p->name, filename);
++    return(-1);
++  }
++
++  ircsprintf(temppath, "%s.tmp", filename);
++  oldumask = umask(0);
++  if ((out = fbopen(temppath, "w")) == NULL)
++  {
++    sendto_one(source_p, ":%s NOTICE %s :Cannot open %s", me.name,
++	       source_p->name, temppath);
++    fbclose(in);
++    umask(oldumask);
++    return(-1);
++  }
++  umask(oldumask);
++  oldumask = umask(0);
++
++  while (fbgets(buf, sizeof(buf), in) != NULL) 
++  {
++    if ((p = strchr(buff,'\n')) != NULL)
++      *p = '\0';
++
++    if ((*buff == '\0') || (*buff == '#'))
++    {
++      if(flush_write(source_p, in, out, buf, temppath) < 0)
++	return(-1);
++    }
++    
++    /* Keep copy of original line, getfield trashes line as it goes */
++    strlcpy(buff, buf, sizeof(buff));
++    
++    if ((found1 = getfield(buff)) == NULL)
++    {
++      if(flush_write(source_p, in, out, buf, temppath) < 0)
++	return(-1);
++      continue;
++    }
++
++    if (pat2 != NULL)
++    {
++      if ((found2 = getfield(NULL)) == NULL)
++      {
++	if(flush_write(source_p, in, out, buf, temppath) < 0)
++	  return(-1);
++	continue;
++      }
++      
++      if ((irccmp(pat1, found1) == 0) && (irccmp(pat2, found2) == 0))
++      {
++	pairme = 1;
++	continue;
++      }
++      else
++      {
++	if(flush_write(source_p, in, out, buf, temppath) < 0)
++	  return(-1);
++	continue;
++      }
++    }
++    else
++    {
++      if (irccmp(pat1, found1) == 0)
++      {
++	pairme = 1;
++	continue;
++      }
++      else
++      {
++	if(flush_write(source_p, in, out, buf, temppath) < 0)
++	  return(-1);
++	continue;
++      }
++    }
++  }
++
++  fbclose(in);
++  fbclose(out);
++
++/* The result of the rename should be checked too... oh well */
++/* If there was an error on a write above, then its been reported
++ * and I am not going to trash the original kline /conf file
++ */
++
++  if (pairme == 0)
++  {
++    if(temppath != NULL)
++      (void)unlink(temppath);
++    return(0);
++  }
++  else
++  {
++    (void)rename(temppath, filename);
++    rehash(0);
++    return(1);
++  }
++}
++
++/*
++ * flush_write()
++ *
++ * inputs       - pointer to client structure of oper requesting unkline
++ *		- in is the input file descriptor
++ *              - out is the output file descriptor
++ *              - buf is the buffer to write
++ *              - ntowrite is the expected number of character to be written
++ *              - temppath is the temporary file name to be written
++ * output       - -1 for error on write
++ *              - 0 for ok
++ * side effects - if successful, the buf is written to output file
++ *                if a write failure happesn, and the file pointed to
++ *                by temppath, if its non NULL, is removed.
++ *
++ * The idea here is, to be as robust as possible when writing to the 
++ * kline file.
++ *
++ * -Dianora
++ */
++static int
++flush_write(struct Client *source_p, FBFILE *in, FBFILE* out, 
++            const char *buf, const char *temppath)
++{
++  int error_on_write = (fbputs(buf, out) < 0) ? (-1) : (0);
++
++  if (error_on_write)
++  {
++    sendto_one(source_p,":%s NOTICE %s :Unable to write to %s aborting",
++	       me.name, source_p->name, temppath );
++    if(temppath != NULL)
++      (void)unlink(temppath);
++    fbclose(in);
++    fbclose(out);
++  }
++  return(error_on_write);
++}
