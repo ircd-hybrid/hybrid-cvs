@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.13 2000/12/24 00:39:20 wcampbel Exp $
+$Id: Hybrid-team,v 7.14 2000/12/24 01:04:11 ejb Exp $
 
   The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the efnet ircd's
@@ -41,6 +41,7 @@ comstud, Chris Behrens <cbehrens@concentric.net>
 David-T, David Taylor <davidt@yadt.co.uk>
 desrt, Ryan Lortie <desertangel@mindless.com>
 echo, Adam J. Durana <adam@caca.com>
+fl_, LeeHardy <leeh@shagged.org>
 FlashMan, Craig A. Huegen <chuegen@quadrunner.com>
 Hwy101, Walter Campbell <wcampbel@botbay.net>
 jailbird, Dustin Marquess <jailbird@alcatraz.fdf.net>
