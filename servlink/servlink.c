@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.c,v 1.16 2001/05/25 14:57:15 davidt Exp $
+ *   $Id: servlink.c,v 1.17 2001/05/25 15:19:27 davidt Exp $
  */
 
 #include "../include/setup.h"                                                   
@@ -100,7 +100,9 @@ int main(int argc, char *argv[])
     sleep(1);
 #endif
 
+#ifdef HAVE_LIBCRYPTO
   ERR_load_crypto_strings();
+#endif
 
   /* Make sure we are running under hybrid.. */
   if (isatty(0) || argc != 1 || strcmp(argv[0], "-slink"))

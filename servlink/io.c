@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.c,v 1.16 2001/05/25 14:45:27 davidt Exp $
+ *   $Id: io.c,v 1.17 2001/05/25 15:19:27 davidt Exp $
  */
 
 #include "../include/setup.h"
@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/evp.h>
