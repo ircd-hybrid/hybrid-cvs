@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.51 2003/10/30 19:52:57 bill Exp $
+ *   $Id: m_operspy.c,v 1.52 2003/10/31 01:27:59 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -114,7 +114,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -505,7 +505,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     return;
   }
 #endif
-  sendto_one(client_p, ":%s NOTICE %s :%s is not a valid option.  Choose from LIST, MODE, NAMES, WHO, WHOIS",
+  sendto_one(client_p, ":%s NOTICE %s :%s is not a valid option.  Choose from LIST, MODE, NAMES, TOPIC, WHO, WHOIS",
              me.name, client_p->name, parv[1]);
 }
 
@@ -550,7 +550,19 @@ who_global(struct Client *source_p, char *mask, int server_oper)
         match(mask, target_p->info) ||
         (MyClient(target_p) && match(mask, target_p->localClient->sockhost)))
     {
-      do_who(source_p, target_p, NULL, "");
+      if (dlink_list_length(&target_p->user->channel))
+      {
+        struct Channel *chptr;
+        static char fl[5];
+
+        chptr = ((struct Membership *)(target_p->user->channel.head->data))->chptr;
+        snprintf(fl, sizeof(fl), "%s",
+                 get_member_status((struct Membership *)(target_p->user->channel.head->data), NO));
+
+        do_who(source_p, target_p, chptr->chname, fl);
+      }
+      else
+        do_who(source_p, target_p, NULL, "");
 
       if (maxmatches > 0)
       {
