@@ -1,5 +1,5 @@
 /*
- * $Id: adns.c,v 7.9 2001/02/25 22:29:48 androsyn Exp $
+ * $Id: adns.c,v 7.10 2001/02/25 22:30:53 androsyn Exp $
  * adns.c  functions to enter libadns 
  *
  * Written by Aaron Sethman <androsyn@ratbox.org>
@@ -24,7 +24,6 @@ void delete_adns_queries(struct DNSQuery *q)
 	{
 		if(q->query != NULL)
 		{
-			q->query->ads = dns_state;
 			adns_cancel(q->query);
 		}
 	}
