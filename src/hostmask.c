@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.55 2001/10/13 08:08:57 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.56 2001/11/12 21:57:03 kreator Exp $ 
  */
 
 #include <stdlib.h>
@@ -427,9 +427,8 @@ find_conf_by_address(const char *name, struct irc_inaddr *addr, int type,
   if (name != NULL)
   {
     const char *p;
-    for (p = name; p != NULL; p = strchr(p, '.'))
+    for (p = name; ; )
     {
-      p++;
       for (arec = atable[hash_text(p)]; arec; arec = arec->next)
         if ((arec->type == (type & ~0x1)) &&
             (arec->masktype == HM_HOST) &&
@@ -440,6 +439,11 @@ find_conf_by_address(const char *name, struct irc_inaddr *addr, int type,
           hprecv = arec->precedence;
           hprec = arec->aconf;
         }
+        p = strchr(p, '.');
+        if (p != NULL)
+          p++;
+        else
+          break;
     }
     for (arec = atable[0]; arec; arec = arec->next)
       if (arec->type == (type & ~0x1) &&
