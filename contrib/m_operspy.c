@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.13.2.5 2004/03/18 04:14:30 bill Exp $
+ *   $Id: m_operspy.c,v 1.13.2.6 2004/03/18 04:16:03 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -135,7 +135,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.13.2.5 $";
+const char *_version = "$Revision: 1.13.2.6 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -851,8 +851,9 @@ operspy_log(struct Client *source_p, const char *command, const char *target)
   sendto_realops_flags(FLAGS_SPY, L_ALL, "OPERSPY %s %s %s",
                        get_oper_name(source_p), command, target);
 #endif
-  sendto_match_servs(source_p, "*", CAP_ENCAP, "ENCAP * OPERSPY %s :%s",
-                     command, target);
+  if (MyClient(source_p))
+    sendto_match_servs(source_p, "*", CAP_ENCAP, "ENCAP * OPERSPY %s :%s",
+                       command, target);
 }
 #endif /* OPERSPY_LOG */
 
