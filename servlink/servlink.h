@@ -15,8 +15,10 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.5 2001/05/24 20:02:50 davidt Exp $
+ *   $Id: servlink.h,v 1.6 2001/05/24 21:17:07 davidt Exp $
  */
+
+#include <stdio.h>
 
 #define CONTROL_FD_R            0
 #define LOCAL_FD_R              1

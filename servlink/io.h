@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.h,v 1.3 2001/05/24 19:38:37 davidt Exp $
+ *   $Id: io.h,v 1.4 2001/05/24 21:17:07 davidt Exp $
  */
 
 extern void write_data(void);
@@ -24,6 +24,6 @@ extern void write_ctrl(void);
 extern void read_ctrl(void);
 extern void write_net(void);
 extern void read_net(void);
-extern void process_recvq(unsigned char *, int);
-extern void process_sendq(unsigned char *, int);
+extern void process_recvq(unsigned char *, unsigned int);
+extern void process_sendq(unsigned char *, unsigned int);
 extern void send_data_blocking(int fd, unsigned char *data, int datalen);
