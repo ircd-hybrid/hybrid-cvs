@@ -1,3 +1,22 @@
+jmallett    2002/01/09 12:38:38 EST	(20020109_8)
+
+  Modified files:
+    src                  client.c s_bsd.c s_gline.c s_serv.c 
+                         s_user.c whowas.c 
+  Log:
+  Clean up a number of uses of "assert(0 != pointer)" and "assert(0 == pointer)"
+  and use NULL instead, since that will always do the right thing.
+  
+  Revision  Changes    Path
+  7.220     +5 -5      ircd-hybrid-7/src/client.c
+  7.157     +2 -2      ircd-hybrid-7/src/s_bsd.c
+  1.19      +1 -1      ircd-hybrid-7/src/s_gline.c
+  7.234     +2 -2      ircd-hybrid-7/src/s_serv.c
+  7.178     +7 -7      ircd-hybrid-7/src/s_user.c
+  7.15      +1 -1      ircd-hybrid-7/src/whowas.c
+
+
+
 db          2002/01/09 12:30:35 EST	(20020109_7)
 
   Modified files:
@@ -2799,7 +2818,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3309 2002/01/09 17:30:40 db Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3310 2002/01/09 17:38:44 jmallett Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -21153,4 +21172,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3309 2002/01/09 17:30:40 db Exp $
+$Id: ChangeLog,v 7.3310 2002/01/09 17:38:44 jmallett Exp $
