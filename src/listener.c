@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.24 2001/01/23 00:42:46 ejb Exp $
+ *  $Id: listener.c,v 7.25 2001/01/24 20:04:41 fl_ Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -195,19 +195,26 @@ static int inetport(struct Listener* listener)
   lsin.sin_port   = htons(listener->port);
 #endif
 
-#ifndef IPV6
+
+#ifdef IPV6
+  if (!IN6_ARE_ADDR_EQUAL(&listener->addr, &in6addr_any)) {
+#else
   if (INADDR_ANY != listener->addr.s_addr) {
+#endif
     struct hostent* hp;
     /*
      * XXX - blocking call to gethostbyaddr
      */
     if ((hp = gethostbyaddr((char*) &listener->addr, 
+#ifdef IPV6
+			    sizeof(struct sockaddr_in6), AF_INET6))) {
+#else
                             sizeof(struct sockaddr_in), AF_INET))) {
+#endif
       strncpy_irc(listener->vhost, hp->h_name, HOSTLEN);
       listener->name = listener->vhost;
     }
   }
-#endif
 
 #ifdef IPV6
   if (bind(fd, (struct sockaddr*) &lsin6, sizeof(lsin6))) {
@@ -347,12 +354,9 @@ void close_listeners()
 static void accept_connection(int pfd, void *data)
 {
   static time_t      last_oper_notice = 0;
-  struct sockaddr addr;
-#ifdef IPV6
-  unsigned int		addrlen = sizeof(struct sockaddr_in6);
-#else
-  unsigned int          addrlen = sizeof(struct sockaddr_in);
-#endif
+
+  struct irc_inaddr addr;
+  unsigned int		addrlen = sizeof(struct irc_inaddr);
   int                fd;
   struct Listener *  listener = data;
 
@@ -371,7 +375,7 @@ static void accept_connection(int pfd, void *data)
    * be accepted until some old is closed first.
    */
   do {
-    fd = comm_accept(listener->fd, &addr, &addrlen);
+    fd = comm_accept(listener->fd, (struct sockaddr *)&addr, &addrlen);
     if (fd < 0) {
       if (EAGAIN == errno)
          break;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.125 2001/01/24 19:01:29 fl_ Exp $
+ *  $Id: s_user.c,v 7.126 2001/01/24 20:04:44 fl_ Exp $
  */
 
 #include <sys/types.h>
@@ -1024,7 +1024,7 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 		    reattach to "old" iline
 		    - einride
 		  */
-		  remove_one_ip((struct sockaddr *)&sptr->localClient->ip);
+		  remove_one_ip(&sptr->localClient->ip);
 		  check_client(sptr->servptr, sptr, sptr->username);
                 }
             }

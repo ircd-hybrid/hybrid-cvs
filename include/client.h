@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.87 2001/01/24 14:10:02 db Exp $
+ * $Id: client.h,v 7.88 2001/01/24 20:04:29 fl_ Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -43,7 +43,11 @@
 #include "linebuf.h"
 #include "channel.h"
 
+#ifdef IPV6
+#define HOSTIPLEN	53 /* sizeof("ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255.ipv6") */
+#else
 #define HOSTIPLEN       16      /* Length of dotted quad form of IP        */
+#endif
 #define PASSWDLEN       20
 
 #define IDLEN           12      /* this is the maximum length, not the actual
@@ -225,12 +229,8 @@ struct LocalUser
   struct Listener*  listener;   /* listener accepted from */
   dlink_list        confs;      /* Configuration record associated */
 
-#ifdef IPV6
-  struct sockaddr_in6   ip;
-#else
-  struct sockaddr_in	ip;
-#endif
-//  unsigned short    port;       /* and the remote port# too :-) */
+  struct irc_inaddr ip;
+  unsigned short    port;       /* and the remote port# too :-) */
   struct DNSReply*  dns_reply;  /* result returned from resolver query */
   unsigned long     serverMask; /* Only used for Lazy Links */
   time_t            last_nick_change;

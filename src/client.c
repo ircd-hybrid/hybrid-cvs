@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.126 2001/01/23 00:42:43 ejb Exp $
+ *  $Id: client.c,v 7.127 2001/01/24 20:04:39 fl_ Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -445,7 +445,7 @@ check_klines(void)
       if(IsMe(cptr))
 	continue;
 
-      if ((aconf = match_Dline((struct sockaddr *)&cptr->localClient->ip)))
+      if ((aconf = match_Dline(&cptr->localClient->ip)))
 	/* if there is a returned struct ConfItem then kill it */
 	{
 	  if(IsConfElined(aconf))
@@ -1313,7 +1313,7 @@ const char* comment         /* Reason for the exit */
   if (MyConnect(sptr))
     {
       if(sptr->flags & FLAGS_IPHASH)
-      remove_one_ip((struct sockaddr *)&sptr->localClient->ip);
+      remove_one_ip(&sptr->localClient->ip);
 
       delete_resolver_queries(sptr);
       delete_identd_queries(sptr);
