@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.71 2001/08/14 22:58:52 davidt Exp $
+ * $Id: modules.c,v 7.72 2001/08/31 12:59:07 leeh Exp $
  */
 #include "config.h"
 
@@ -89,12 +89,12 @@ struct Message modreload_msgtab = {
 };
 
 struct Message modlist_msgtab = {
- "MODLIST", 0, 1, 0, MFLG_SLOW, 0,
+ "MODLIST", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_modlist}
 };
 
 struct Message modrestart_msgtab = {
- "MODRESTART", 0, 1, 0, MFLG_SLOW, 0,
+ "MODRESTART", 0, 0, 0, MFLG_SLOW, 0,
  {m_unregistered, m_not_oper, m_ignore, mo_modrestart}
 };
 
