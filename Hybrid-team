@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.9 2000/11/08 03:55:24 ryan Exp $
+$Id: Hybrid-team,v 7.10 2000/12/17 21:27:02 bill Exp $
 
   The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the efnet ircd's
@@ -44,6 +44,7 @@ echo, Adam J. Durana <adam@caca.com>
 FlashMan, Craig A. Huegen <chuegen@quadrunner.com>
 jailbird, Dustin Marquess <jailbird@alcatraz.fdf.net>
 johan, Johannes Erdfelt <jerdfelt@eng.mindspring.net>
+_k9_, Jeremy Chadwick <jdc@best.net>
 LarZ, Matthew Ramsey <mjr@blackened.com>
 orabidoo, Roger Espel LLima <espel@unix.bigots.org>
 Seaner, Sean McVeigh <sdlmcvei@uwaterloo.ca>
