@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.147 2003/03/01 01:15:44 db Exp $
+ *  $Id: ircd_lexer.l,v 1.148 2003/03/25 14:38:23 db Exp $
  */
 
 %option case-insensitive
@@ -233,6 +233,7 @@ password	{ return PASSWORD; }
 ping_cookie	{ return PING_COOKIE; }
 ping_time	{ return PING_TIME; }
 port		{ return PORT; }
+quarantine	{ return RESV; }
 quiet_on_ban    { return QUIET_ON_BAN; }
 reason		{ return REASON; }
 redirport       { return REDIRPORT; }

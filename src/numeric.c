@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.c,v 7.21 2003/03/02 06:46:43 db Exp $
+ *  $Id: numeric.c,v 7.22 2003/03/25 14:38:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -33,6 +33,8 @@
 
 #include "s_log.h"
 #include "fileio.h"
+#include "send.h"
+#include "client.h"
 
 #include "messages.tab"
 
@@ -71,38 +73,50 @@ change_reply(const char *locale, int linecnt, int reply, char *new_reply)
   char *new = new_reply, *old = replies[reply].standard;
 
   for (; *new; new++)
-    if (*new == '%' && *(new + 1) != '%')
+    if (*new == '%')
     {
-      /* We've just found a format symbol. Check if it is the next format
-       * symbol in the original reply.
-       */
-      for (++new; *new >= '0' && *new <= '9'; new++); /* skip size prefix */
-      found = 0;
-      for (; *old; old++)
-        if (*old == '%' && *(old + 1) != '%')
-        {
-          for (++old; *old >= '0' && *old <= '9'; old++); /* skip size prefix */
-          if (*new++ != *old++)
-          {
-            ilog(L_ERROR, "Incompatible format symbols (%s.lang, %d)",
-	                  locale, linecnt);
-            return 0;
-          }
-          found = 1;
-          break;
-        }
-      if (!found)
+      if (!*++new) break;
+      if (*new != '%')
       {
-        ilog(L_ERROR, "Too many format symbols (%s.lang, %d)", locale, linecnt);
-        return(0);
+        /* We've just found a format symbol. Check if it is the next format
+         * symbol in the original reply.
+         */
+        for (; *new >= '0' && *new <= '9'; new++); /* skip size prefix */
+        found = 0;
+        for (; *old; old++)
+          if (*old == '%')
+	  {
+	    if (!*++old) break;  /* shouldn't happen */
+	    if (*old != '%')
+            {
+              for (; *old >= '0' && *old <= '9'; old++); /* skip size prefix */
+              if (*new != *old++)
+              {
+                ilog(L_ERROR, "Incompatible format symbols (%s.lang, %d)",
+	                      locale, linecnt);
+                return 0;
+              }
+              found = 1;
+              break;
+            }
+	  }
+        if (!found)
+        {
+          ilog(L_ERROR, "Too many format symbols (%s.lang, %d)", locale, linecnt);
+          return(0);
+        }
       }
     }
 
   for (; *old; old++)
-    if (*old == '%' && *(old + 1) != '%')
+    if (*old == '%')
     {
-      ilog(L_ERROR, "Too few format symbols (%s.lang, %d)", locale, linecnt);
-      return(0);
+      if (!*++old) break;  /* shouldn't happen */
+      if (*old != '%')
+      {
+        ilog(L_ERROR, "Too few format symbols (%s.lang, %d)", locale, linecnt);
+        return(0);
+      }
     }
 
   MyFree(replies[reply].translated);
@@ -162,16 +176,7 @@ set_locale(const char *locale)
     /* skip after the reply identificator */
     for (reply = ident; *reply != ' ' && *reply != '\t' && *reply != ':';
       reply++)
-    {
-      if (*reply == '\0')
-	{
-	  goto error; /* ugh */
-#if 0
-	  report_error(locale, linecnt);
-
-#endif
-	}
-    }
+      if (*reply == '\0') goto error;
 
     if (*reply == ' ' || *reply == '\t')
     {
@@ -204,12 +209,19 @@ set_locale(const char *locale)
           break;
         }
     if (i != -1)
+    {
       ilog(L_ERROR,
 	   "Unknown numeric %s (%s.lang, %d)", ident, locale, linecnt);
+      res = 0;
+    }
   }
   fbclose(f);
 
   strlcpy(used_locale, locale, LOCALE_LENGTH);
+  if (!res)
+    sendto_realops_flags(UMODE_ALL, L_ADMIN, "Language file [%s] contains "
+                         "errors, check server log file for more details",
+			 used_locale);
 }
 
 /* Returns the name of current locale. */
