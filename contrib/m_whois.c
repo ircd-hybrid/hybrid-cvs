@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.2 2002/08/20 01:32:17 db Exp $
+ *  $Id: m_whois.c,v 1.3 2002/09/02 06:06:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -193,7 +193,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.2 $";
+const char *_version = "$Revision: 1.3 $";
 #endif
 /*
 ** m_whois
@@ -328,7 +328,7 @@ static int do_whois(struct Client *client_p, struct Client *source_p,
 	{
 	  if (!ServerInfo.hub && uplink && IsCapable(uplink,CAP_LL))
 	    {
-	      if(glob == 1)
+	      if(glob)
    	        sendto_one(uplink,":%s WHOIS %s :%s",
 		  	   source_p->name, nick, nick);
 	      else
@@ -413,6 +413,7 @@ static int global_whois(struct Client *source_p, char *nick,
  * Inputs	- source_p client to report to
  *		- target_p client to report on
  *		- wilds whether wildchar char or not
+ *		- glob
  * Output	- if found return 1
  * Side Effects	- do a single whois on given client
  * 		  writing results to source_p
@@ -478,7 +479,8 @@ static int single_whois(struct Client *source_p,struct Client *target_p,
  * Output	- NONE
  * Side Effects	- 
  */
-static void whois_person(struct Client *source_p,struct Client *target_p, int glob)
+static void whois_person(struct Client *source_p,struct Client *target_p,
+			 int glob)
 {
   char buf[BUFSIZE];
   char *chname;
@@ -580,10 +582,14 @@ static void whois_person(struct Client *source_p,struct Client *target_p, int gl
     }
 
   /* Don't show remote whois info if server is under
-     serverhide. Lusers can figure out if the client is local or not
-     by that */
-  if ( (glob == 1) || (MyConnect(target_p) && (IsOper(source_p) ||
-       !ConfigServerHide.hide_servers)) || (target_p == source_p) )
+   * serverhide. Lusers can figure out if the client is local or not
+   *   by that 
+   */
+  /* Can't show RPL_WHOISACTUALLY unless target is ours! */
+  if (MyConnect(target_p))
+  {
+    if (IsOper(source_p) ||
+	!ConfigServerHide.hide_servers || (target_p == source_p))
     {
       sendto_one(source_p, form_str(RPL_WHOISACTUALLY), 
 		 me.name, source_p->name, target_p->name,
@@ -597,6 +603,7 @@ static void whois_person(struct Client *source_p,struct Client *target_p, int gl
                  target_p->firsttime);
 
     }
+  }
 
   hd.client_p = target_p;
   hd.source_p = source_p;
