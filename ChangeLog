@@ -1,3 +1,23 @@
+db          2003/01/22 23:24:07 EST	(20030123_0)
+
+  Modified files:
+    modules              m_invite.c 
+  Log:
+  - bah. This is tricky to get right. but you cannot "broadcast" an invite
+    to hybrid-6 (presumbably csircd etc.) servers without them getting upset
+    about ghosted nick. oops. We reviewed and reviewed and tested... but
+    anyway. So, use CAP_PARA to not send the broadcast to non CAP_PARA servers.
+    Note, the only easy clean way of not ending up with a double invite notice
+    to a target, is to paramertise the INVITE notice. INVITE notice now
+    has four parameters if its just a notice of an invite. The normal three
+    parameters is used in all other cases. So, in cases of -p, only the
+    three parameter version is used.
+  
+  Revision  Changes    Path
+  1.53      +101 -50   ircd-hybrid-7/modules/m_invite.c
+
+
+
 bill        2003/01/21 22:29:08 EST	(20030122_0)
 
   Modified files:
@@ -34342,4 +34362,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4190 2003/01/22 03:29:10 bill Exp $
+$Id: ChangeLog,v 7.4191 2003/01/23 04:24:10 db Exp $
