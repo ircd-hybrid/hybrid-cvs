@@ -1,4 +1,4 @@
-$Id: TODO,v 7.76 2003/05/07 06:22:33 joshk Exp $
+$Id: TODO,v 7.77 2003/05/07 07:34:04 metalrock Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
@@ -131,3 +131,8 @@ rt_sigtimedwait([IO RTMIN], 0x81c6660)  = -1 EAGAIN (Resource
 temporarily unavailable)
 
 bleh.
+
+-- MeTaLRoCk's list
+
+* Fixed the darned halfops so the channel doesn't get desynched when
+people start setting a combination of op, voice, halfop modes.
