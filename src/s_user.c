@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.219 2003/02/03 05:25:49 bill Exp $
+ *  $Id: s_user.c,v 7.220 2003/02/04 05:30:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -300,17 +300,20 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   if(ConfigFileEntry.ping_cookie)
   {
-  	if(!(source_p->flags & FLAGS_PINGSENT) && source_p->localClient->random_ping == 0)
-  	{
-           source_p->localClient->random_ping = (unsigned long)rand();
-           sendto_one(source_p, "PING :%lu", (unsigned long)source_p->localClient->random_ping);
-           source_p->flags |= FLAGS_PINGSENT;
-  	   return -1;
-  	} 
-  	if(!(source_p->flags2 & FLAGS2_PING_COOKIE))
-  	{
-  	   return -1;
-  	}
+    if(!(source_p->flags & FLAGS_PINGSENT) && 
+       source_p->localClient->random_ping == 0)
+    {
+      source_p->localClient->random_ping = (unsigned long)rand();
+      sendto_one(source_p,
+		 "PING :%lu",
+		 (unsigned long)source_p->localClient->random_ping);
+      source_p->flags |= FLAGS_PINGSENT;
+      return -1;
+    } 
+    if(!(source_p->flags2 & FLAGS2_PING_COOKIE))
+    {
+      return -1;
+    }
   }
  
  
@@ -481,14 +484,13 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   Count.totalrestartcount++;
 
-  m = dlinkFind(&unknown_list, source_p);
-
-  assert(m != NULL);
-  if(m != NULL)
+  if ((m = dlinkFindDelete(&unknown_list, source_p)) != NULL)
   {
-    dlinkDelete(m, &unknown_list);
-    dlinkAdd(source_p, m, &lclient_list);
-  } else {
+    free_dlink_node(m);
+    dlinkAdd(source_p, &source_p->localClient->lclient_node, &lclient_list);
+  }
+  else
+  {
      sendto_realops_flags(FLAGS_ALL, L_ADMIN, "Tried to register %s (%s@%s) but I couldn't find it?!?", 
      			  nick, source_p->username, source_p->host);
      exit_client(client_p, source_p, &me, "Client exited");

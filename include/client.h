@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.160 2003/01/31 23:00:25 db Exp $
+ *  $Id: client.h,v 7.161 2003/02/04 05:30:48 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -192,6 +192,7 @@ struct Client
 
   dlink_list      vchan_map;
 
+
   /* caller ID allow list */
   /* This has to be here, since a client on an on_allow_list could
    * be a remote client. simpler to keep both here.
@@ -223,6 +224,8 @@ struct LocalUser
   time_t            first_received_message_time;
   int               received_number_of_privmsgs;
   int               flood_noticed;
+
+  dlink_node        lclient_node;
 
   /* Send and receive linebuf queues .. */
   buf_head_t        buf_sendq;

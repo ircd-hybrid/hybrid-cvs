@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.248 2003/01/24 07:02:01 lusky Exp $
+ *  $Id: ircd.c,v 7.249 2003/02/04 05:30:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -96,7 +96,6 @@ struct LocalUser meLocalUser;	/* That's also part of me */
 
 struct Client* GlobalClientList = 0; /* Pointer to beginning of Client list */
 
-struct JupedChannel *JupedChannelList = 0;
 
 /* unknown/client pointer lists */ 
 dlink_list unknown_list;        /* unknown clients ON this server only */
@@ -562,11 +561,6 @@ int main(int argc, char *argv[])
   memset(&global_serv_list, 0, sizeof(global_serv_list));
   memset(&oper_list, 0, sizeof(oper_list));
   memset(&lazylink_channels, 0, sizeof(lazylink_channels));
-
-  lclient_list.head = lclient_list.tail = NULL;
-  oper_list.head = oper_list.tail = NULL;
-  serv_list.head = serv_list.tail = NULL;
-  global_serv_list.head = global_serv_list.tail = NULL;
 
   GlobalClientList = &me;       /* Pointer to beginning of Client list */
 

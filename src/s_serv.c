@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.275 2003/01/25 23:43:20 lusky Exp $
+ *  $Id: s_serv.c,v 7.276 2003/02/04 05:30:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -156,8 +156,9 @@ static void cjoin_all(struct Client *client_p);
 static CNCB serv_connect_callback;
 
 
-void slink_error(unsigned int rpl, unsigned int len, unsigned char *data,
-                 struct Client *server_p)
+void
+slink_error(unsigned int rpl, unsigned int len, unsigned char *data,
+	    struct Client *server_p)
 {
   assert(rpl == SLINKRPL_ERROR);
   
@@ -169,8 +170,9 @@ void slink_error(unsigned int rpl, unsigned int len, unsigned char *data,
   exit_client(server_p, server_p, &me, "servlink error -- terminating link");
 }
 
-void slink_zipstats(unsigned int rpl, unsigned int len, unsigned char *data,
-                    struct Client *server_p)
+void
+slink_zipstats(unsigned int rpl, unsigned int len, unsigned char *data,
+	       struct Client *server_p)
 {
   struct ZipStats zipstats;
   unsigned long in = 0, in_wire = 0, out = 0, out_wire = 0;
@@ -289,12 +291,13 @@ struct EncCapability *check_cipher(struct Client *client_p,
  * according to given config entry --Jto
  * XXX - this is only called with me.name as name
  */
-const char* my_name_for_link(const char* name, struct ConfItem* aconf)
+const char*
+my_name_for_link(const char* name, struct ConfItem* aconf)
 {
   if(aconf->fakename)
     return(aconf->fakename);
   else
-	return(name);
+    return(name);
 }
 
 /*
@@ -303,7 +306,8 @@ const char* my_name_for_link(const char* name, struct ConfItem* aconf)
  * output	- none
  * side effects - server is added to global_serv_list
  */
-void add_server_to_list(struct Client *client_p)
+void
+add_server_to_list(struct Client *client_p)
 {
   dlink_node *ptr;
  
@@ -314,35 +318,10 @@ void add_server_to_list(struct Client *client_p)
 }
 
 /*
- * remove_server_from_list()
- *
- * input	- pointer to client
- * output	- none
- * side effects	- server is removed from GlocalServerList
- */
-void remove_server_from_list(struct Client *client_p)
-{
-  dlink_node *ptr;
-  struct Client *target_p;
-
-  for (ptr = global_serv_list.head; ptr; ptr = ptr->next)
-  {
-    target_p = ptr->data;
-
-    if (client_p == target_p)
-    {
-      dlinkDelete(ptr,&global_serv_list);
-      free_dlink_node(ptr);
-      break;
-    }
-  }    
-  return; 
-}
-
-/*
  * write_links_file
  */
-void write_links_file(void* notused)
+void
+write_links_file(void* notused)
 {
   MessageFileLine *next_mptr = 0;
   MessageFileLine *mptr = 0;
@@ -362,7 +341,7 @@ void write_links_file(void* notused)
   if ((file = fbopen(MessageFileptr->fileName, "w")) == 0)
     return;
 
-  for( mptr = MessageFileptr->contentsOfFile; mptr; mptr = next_mptr)
+  for (mptr = MessageFileptr->contentsOfFile; mptr; mptr = next_mptr)
     {
       next_mptr = mptr->next;
       MyFree(mptr);
@@ -438,8 +417,9 @@ void write_links_file(void* notused)
  *
  *      returns: (see #defines)
  */
-int hunt_server(struct Client *client_p, struct Client *source_p, char *command,
-                int server, int parc, char *parv[])
+int
+hunt_server(struct Client *client_p, struct Client *source_p, char *command,
+	    int server, int parc, char *parv[])
 {
   struct Client *target_p;
   int wilds;
@@ -641,7 +621,8 @@ try_connections(void *unused)
   Debug((DEBUG_NOTICE,"Next connection check : %s", myctime(next)));
 }
 
-int check_server(const char *name, struct Client* client_p, int cryptlink)
+int
+check_server(const char *name, struct Client* client_p, int cryptlink)
 {
   struct ConfItem *aconf=NULL;
   struct ConfItem *server_aconf=NULL;
@@ -754,8 +735,9 @@ int check_server(const char *name, struct Client* client_p, int cryptlink)
  * side effects	- send the CAPAB line to a server  -orabidoo
  *
  */
-void send_capabilities(struct Client *client_p, struct ConfItem *aconf,
-                       int cap_can_send, int enc_can_send )
+void
+send_capabilities(struct Client *client_p, struct ConfItem *aconf,
+		  int cap_can_send, int enc_can_send )
 {
   struct Capability *cap;
   char  msgbuf[BUFSIZE];
@@ -819,7 +801,8 @@ void send_capabilities(struct Client *client_p, struct ConfItem *aconf,
  * output	- NONE
  * side effects	- NICK message is sent towards given client_p
  */
-void sendnick_TS(struct Client *client_p, struct Client *target_p)
+void
+sendnick_TS(struct Client *client_p, struct Client *target_p)
 {
   static char ubuf[12];
 
@@ -859,7 +842,8 @@ void sendnick_TS(struct Client *client_p, struct Client *target_p)
  * output	- NONE
  * side effects - If this client is not known by this lazyleaf, send it
  */
-void client_burst_if_needed(struct Client *client_p, struct Client *target_p)
+void
+client_burst_if_needed(struct Client *client_p, struct Client *target_p)
 {
   if (!ServerInfo.hub) return;
   if (!MyConnect(client_p)) return;
@@ -880,7 +864,8 @@ void client_burst_if_needed(struct Client *client_p, struct Client *target_p)
  * side effects - build up string representing capabilities of server listed
  */
 
-const char* show_capabilities(struct Client* target_p)
+const char*
+show_capabilities(struct Client* target_p)
 {
   static char        msgbuf[BUFSIZE];
   struct Capability* cap;
@@ -931,7 +916,8 @@ const char* show_capabilities(struct Client* target_p)
  * side effects -
  */
 
-int server_estab(struct Client *client_p)
+int
+server_estab(struct Client *client_p)
 {
   struct Client*    target_p;
   struct ConfItem*  aconf;
@@ -1213,7 +1199,8 @@ int server_estab(struct Client *client_p)
   return 0;
 }
 
-static void start_io(struct Client *server)
+static void
+start_io(struct Client *server)
 {
   unsigned char *buf;
   int c = 0;
@@ -1262,7 +1249,7 @@ static void start_io(struct Client *server)
   }
 #endif
 
-  while(1)
+  for(;;)
   {
     linecount++;
 
@@ -1328,7 +1315,8 @@ static void start_io(struct Client *server)
  * output       - success: 0 / failure: -1
  * side effect  - fork, and exec SERVLINK to handle this connection
  */
-static int fork_server(struct Client *server)
+static int
+fork_server(struct Client *server)
 {
   int  ret;
   int  i;
@@ -1527,7 +1515,8 @@ fork_error:
  * side effects - send a server burst
  * bugs		- still too long
  */
-static void server_burst(struct Client *client_p)
+static
+void server_burst(struct Client *client_p)
 {
 
   /*
@@ -1863,7 +1852,8 @@ remove_lazylink_flags(unsigned long mask)
  * output	- NONE
  * side effects	-
  */
-static void burst_members(struct Client *client_p, dlink_list *list)
+static void
+burst_members(struct Client *client_p, dlink_list *list)
 {
   struct Client *target_p;
   dlink_node *ptr;
@@ -1888,7 +1878,8 @@ static void burst_members(struct Client *client_p, dlink_list *list)
  * output	- NONE
  * side effects	- This version also has to check the bitmap for lazylink
  */
-static void burst_ll_members(struct Client *client_p, dlink_list *list)
+static void
+burst_ll_members(struct Client *client_p, dlink_list *list)
 {
   struct Client *target_p;
   dlink_node *ptr;
@@ -1915,7 +1906,8 @@ static void burst_ll_members(struct Client *client_p, dlink_list *list)
  * output       - none
  * side effects -
  */
-void set_autoconn(struct Client *source_p,char *parv0,char *name,int newval)
+void
+set_autoconn(struct Client *source_p,char *parv0,char *name,int newval)
 {
   struct ConfItem *aconf;
 
@@ -1948,7 +1940,8 @@ void set_autoconn(struct Client *source_p,char *parv0,char *name,int newval)
 }
 
 
-void initServerMask(void)
+void
+initServerMask(void)
 {
   freeMask = 0xFFFFFFFFUL;
 }
@@ -1960,7 +1953,8 @@ void initServerMask(void)
  * output	- unsigned long next unused mask for use in LL
  * side effects	-
  */
-unsigned long nextFreeMask()
+unsigned long
+nextFreeMask()
 {
   int i;
   unsigned long mask;
@@ -2297,9 +2291,8 @@ serv_connect_callback(int fd, int status, void *data)
 /*
  * sends a CRYPTLINK SERV command.
  */
-void cryptlink_init(struct Client *client_p,
-                    struct ConfItem *aconf,
-                    int fd)
+void
+cryptlink_init(struct Client *client_p, struct ConfItem *aconf, int fd)
 {
   char *encrypted;
   char *key_to_send;

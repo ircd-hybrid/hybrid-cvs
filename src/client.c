@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.323 2003/02/03 05:25:48 bill Exp $
+ *  $Id: client.c,v 7.324 2003/02/04 05:30:50 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -902,6 +902,7 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
   struct Client* target_p;
   dlink_node *lp;
   dlink_node *next_lp;
+  dlink_node *m;
 
   if (IsServer(source_p))
     {
@@ -912,7 +913,10 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
         ts_warn("server %s without servptr!", source_p->name);
 
       if(!IsMe(source_p))
-        remove_server_from_list(source_p);
+      {
+        if ((m = dlinkFindDelete(&global_serv_list, source_p)) != NULL)
+	  free_dlink_node(m);
+      }
     }
   else if (source_p->servptr && source_p->servptr->serv)
     {
@@ -1320,10 +1324,7 @@ exit_client(
           Count.local--;
 
           if(IsPerson(source_p))        /* a little extra paranoia */
-            {
-	      if((m = dlinkFindDelete(&lclient_list, source_p)) != NULL)
-		free_dlink_node(m);
-            }
+	    dlinkDelete(&source_p->localClient->lclient_node, &lclient_list);
         }
 
       /* As soon as a client is known to be a server of some sort
