@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: handlers.h,v 7.27 2000/12/21 13:39:28 db Exp $
+ * $Id: handlers.h,v 7.28 2000/12/24 05:29:07 ejb Exp $
  */
 #ifndef INCLUDED_handlers_h
 #define INCLUDED_handlers_h
@@ -182,6 +182,8 @@ extern int mo_wallops(struct Client*, struct Client*, int, char**);
 extern int mo_htm(struct Client *,struct Client *,int,char **);
 extern int mo_quit(struct Client*, struct Client*, int, char**);
 extern int mo_part(struct Client*, struct Client*, int, char**);
+extern int mo_version(struct Client*, struct Client*, int, char **);
+
 extern int mo_whois(struct Client*, struct Client*, int, char**);
 extern int mo_whowas(struct Client*, struct Client*, int, char**);
 

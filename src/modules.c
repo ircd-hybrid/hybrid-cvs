@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.24 2000/12/24 01:36:55 ejb Exp $
+ * $Id: modules.c,v 7.25 2000/12/24 05:29:17 ejb Exp $
  */
 
 #include <dlfcn.h>
@@ -136,6 +136,8 @@ int unload_one_module (char *name)
       deinitfunc ();
     }
 
+  dlclose(modlist[index]->address);
+  
   MyFree(modlist[index]->name);
   memcpy( &modlist[index], &modlist[index+1],
 	  sizeof(struct module) * ((num_mods-1) - index) );
