@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.59 2002/08/12 19:06:34 db Exp $
+ *  $Id: m_info.c,v 1.60 2002/10/03 15:33:41 bill Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-const char *_version = "$Revision: 1.59 $";
+const char *_version = "$Revision: 1.60 $";
 #endif
 
 /*
@@ -383,6 +383,12 @@ static struct InfoStruct info_table[] =
     OUTPUT_BOOLEAN_YN,
     &ConfigChannel.no_join_on_split,
     "Disallow joining channels when split",
+  },
+  {
+    "oper_pass_resv",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigChannel.oper_pass_resv,
+    "Opers can over-ride RESVs",
   },
   {
     "persist_time",

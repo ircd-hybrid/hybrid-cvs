@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.184 2002/08/20 16:41:58 db Exp $
+ *  $Id: s_conf.h,v 7.185 2002/10/03 15:33:40 bill Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -251,6 +251,7 @@ struct config_channel_entry
   int   max_chans_per_user;
   int   no_create_on_split;
   int   no_join_on_split;
+  int	oper_pass_resv;
   int	persist_time;
   int   quiet_on_ban;
   int   default_split_server_count;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.255 2002/09/09 13:43:48 db Exp $
+ *  $Id: ircd_parser.y,v 1.256 2002/10/03 15:33:45 bill Exp $
  */
 
 %{
@@ -192,6 +192,7 @@ int   class_redirport_var;
 %token  OPERATOR
 %token  OPER_LOG
 %token  OPER_ONLY_UMODES
+%token	OPER_PASS_RESV
 %token  OPER_UMODES
 %token  PACE_WAIT
 %token	PACE_WAIT_SIMPLE
@@ -2530,6 +2531,7 @@ channel_item:       channel_use_except |
 		    channel_default_split_server_count |
 		    channel_no_create_on_split | 
 		    channel_no_join_on_split |
+		    channel_oper_pass_resv |
                     error;
 
 channel_use_except:   USE_EXCEPT '=' TYES ';'
@@ -2704,6 +2706,15 @@ channel_no_join_on_split: NO_JOIN_ON_SPLIT '=' TYES ';'
     ConfigChannel.no_join_on_split = 0;
   } ;
   
+channel_oper_pass_resv: OPER_PASS_RESV '=' TYES ';'
+  {
+    ConfigChannel.oper_pass_resv = 1;
+  }
+    |
+    OPER_PASS_RESV '=' TNO ';'
+  {
+    ConfigChannel.oper_pass_resv = 0;
+  } ;
 
 /***************************************************************************
  *  section serverhide

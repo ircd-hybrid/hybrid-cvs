@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.325 2002/10/02 23:09:39 bill Exp $
+ *  $Id: s_conf.c,v 7.326 2002/10/03 15:33:45 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1438,6 +1438,7 @@ set_default_conf(void)
   ConfigChannel.default_split_server_count = 0;
   ConfigChannel.no_join_on_split = NO;
   ConfigChannel.no_create_on_split = NO;
+  ConfigChannel.oper_pass_resv = YES;
 
   ConfigServerHide.flatten_links = 0;
   ConfigServerHide.hide_servers = 0;
