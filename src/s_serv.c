@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.208 2001/09/12 05:39:21 habeeb Exp $
+ *   $Id: s_serv.c,v 7.209 2001/09/18 08:15:10 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -2426,8 +2426,8 @@ void cryptlink_init(struct Client *client_p,
          CAP_ENC_MASK);
 
   sendto_one(client_p, "CRYPTLINK SERV %s %s :%s%s",
-             my_name_for_link(me.name, aconf), key_to_send, 
-	     ConfigServerHide.hidden ? "(H) " : "", me.info);
+             my_name_for_link(me.name, aconf), key_to_send,
+             ConfigServerHide.hidden ? "(H) " : "", me.info);
 
   SetHandshake(client_p);
   SetWaitAuth(client_p);

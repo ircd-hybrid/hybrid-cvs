@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cryptlink.c,v 1.22 2001/09/04 18:00:25 leeh Exp $
+ *   $Id: m_cryptlink.c,v 1.23 2001/09/18 08:15:10 jdc Exp $
  */
 
 /*
@@ -295,7 +295,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
   char            *b64_key;
   struct ConfItem *aconf;
   char            *encrypted;
-  char 		  *p;
+  char            *p;
   int              enc_len;
 
   /*
@@ -422,7 +422,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
   strncpy_irc(client_p->name, name, HOSTLEN);
 
   p = info;
-  
+
   if(!strncmp(info, "(H)", 3))
   {
     client_p->hidden_server = 1;
@@ -435,8 +435,8 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
     }
     else
       p = "(Unknown Location)";
-  } 
-  
+  }
+
   strncpy_irc(client_p->info, p, REALLEN);
   client_p->hopcount = 0;
 
