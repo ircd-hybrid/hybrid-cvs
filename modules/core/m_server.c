@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.105 2003/05/20 06:51:50 michael Exp $
+ *  $Id: m_server.c,v 1.106 2003/05/26 04:05:16 db Exp $
  */
 
 #include "stdinc.h"
@@ -46,6 +46,7 @@
 
 static void mr_server(struct Client *, struct Client *, int, char **);
 static void ms_server(struct Client *, struct Client *, int, char **);
+static void ms_sid(struct Client *, struct Client *, int, char **);
 
 static int bogus_host(char *host);
 static int set_server_gecos(struct Client *, char *);
@@ -54,6 +55,11 @@ static struct Client *server_exists(char *);
 struct Message server_msgtab = {
   "SERVER", 0, 0, 4, 0, MFLG_SLOW | MFLG_UNREG, 0,
   {mr_server, m_registered, ms_server, m_registered, m_ignore}
+};
+
+struct Message sid_msgtab = {
+  "SID", 0, 0, 10, 0, MFLG_SLOW, 0,
+  {m_error, m_ignore, ms_sid, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -69,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&server_msgtab);
 }
 
-const char *_version = "$Revision: 1.105 $";
+const char *_version = "$Revision: 1.106 $";
 #endif
 
 
@@ -497,6 +503,260 @@ ms_server(struct Client *client_p, struct Client *source_p,
   }
 
   sendto_realops_flags(UMODE_EXTERNAL, L_ALL, "Server %s being introduced by %s",
+                       target_p->name, source_p->name);
+}
+/* ms_sid()
+ *  parv[0] = sender prefix
+ *  parv[1] = servername
+ *  parv[2] = serverinfo/hopcount
+ *  parv[3] = sid
+ *  parv[4] = serverinfo
+ */
+static void
+ms_sid(struct Client *client_p, struct Client *source_p,
+       int parc, char *parv[])
+{
+  char info[REALLEN + 1];
+  char *name;
+  struct Client *target_p;
+  struct Client *bclient_p;
+  struct ConfItem *aconf;
+  char *sid;
+  int hop;
+  int hlined = 0;
+  int llined = 0;
+  dlink_node *ptr;
+
+  /* Just to be sure -A1kmm. */
+  if (!IsServer(source_p))
+    return;
+
+  name = parv[1];
+  hop  = atoi(parv[2]);
+  sid  = parv[3];
+  strlcpy(info, parv[4], sizeof(info));
+
+  if ((target_p = find_id(sid)) != NULL)
+  {
+    /* This link is trying feed me a server that I already have
+     * access through another path -- multiple paths not accepted
+     * currently, kill this link immediately!!
+     *
+     * Rather than KILL the link which introduced it, KILL the
+     * youngest of the two links. -avalon
+     *
+     * I think that we should exit the link itself, not the introducer,
+     * and we should always exit the most recently received(i.e. the
+     * one we are receiving this SERVER for. -A1kmm
+     *
+     * You *cant* do this, if you link somewhere, it bursts you a server
+     * that already exists, then sends you a client burst, you squit the
+     * server, but you keep getting the burst of clients on a server that
+     * doesnt exist, although ircd can handle it, its not a realistic
+     * solution.. --fl_ 
+     */
+    /* It is behind a host-masked server. Completely ignore the
+     * server message(don't propagate or we will delink from whoever
+     * we propagate to). -A1kmm
+     */
+#if 0
+    if (irccmp(target_p->name, name) && target_p->from == client_p)
+      return;
+#endif
+
+    sendto_one(client_p, "ERROR :Server %s already exists", target_p->name);
+    sendto_realops_flags(UMODE_ALL, L_ADMIN,
+			 "Link %s cancelled, server %s already exists",
+                         get_client_name(client_p, SHOW_IP),
+			 target_p->name);
+    sendto_realops_flags(UMODE_ALL, L_OPER,
+			 "Link %s cancelled, server %s already exists",
+                         client_p->name, target_p->name);
+    exit_client(client_p, client_p, &me, "Server Exists");
+    return;
+  }
+
+  /* User nicks never have '.' in them and server names
+   * must always have '.' in them.
+   */
+  if (strchr(name,'.') == NULL)
+  {
+    /* Server trying to use the same name as a person. Would
+     * cause a fair bit of confusion. Enough to make it hellish
+     * for a while and servers to send stuff to the wrong place.
+     */
+    sendto_one(client_p,"ERROR :Nickname %s already exists!", name);
+    sendto_realops_flags(UMODE_ALL, L_ADMIN,
+			   "Link %s cancelled: Server/nick collision on %s",
+		/* inpath */ get_client_name(client_p, HIDE_IP), name);
+    sendto_realops_flags(UMODE_ALL, L_OPER,
+          "Link %s cancelled: Server/nick collision on %s",
+	  get_client_name(client_p, MASK_IP), name);
+    exit_client(client_p, client_p, client_p, "Nick as Server");
+    return;
+  }
+
+  /* Server is informing about a new server behind
+   * this link. Create REMOTE server structure,
+   * add it to list and propagate word to my other
+   * server links...
+   */
+  if (parc == 1 || info[0] == '\0')
+  {
+    sendto_one(client_p, "ERROR :No server info specified for %s", name);
+    return;
+  }
+
+  /* See if the newly found server is behind a guaranteed
+   * leaf. If so, close the link.
+   */
+  DLINK_FOREACH(ptr, ConfigItemList.head)
+  {
+    aconf = ptr->data;
+
+    if (!IsConfHubOrLeaf(aconf))
+      continue;
+
+    if (match(aconf->name, client_p->name))
+    {
+      if (IsConfHub(aconf))
+      {
+        if (match(aconf->host, name))
+          hlined++;
+      }
+      else if (IsConfLeaf(aconf))
+      {
+        if (match(aconf->host, name))
+          llined++;
+      }
+    }
+  }
+
+  /* Ok, this way this works is
+   *
+   * A server can have a CONF_HUB allowing it to introduce servers
+   * behind it.
+   *
+   * connect {
+   *            name = "irc.bighub.net";
+   *            hub_mask="*";
+   *            ...
+   * 
+   * That would allow "irc.bighub.net" to introduce anything it wanted..
+   *
+   * However
+   *
+   * connect {
+   *            name = "irc.somehub.fi";
+   *		hub_mask="*";
+   *		leaf_mask="*.edu";
+   *...
+   * Would allow this server in finland to hub anything but
+   * .edu's
+   */
+
+  /* Ok, check client_p can hub the new server, and make sure it's not a LL */
+  if (!hlined || (IsCapable(client_p, CAP_LL) && !IsCapable(client_p, CAP_HUB)))
+  {
+    /* OOOPs nope can't HUB */
+    sendto_realops_flags(UMODE_ALL, L_ADMIN, "Non-Hub link %s introduced %s.",
+                         get_client_name(client_p, HIDE_IP), name);
+    sendto_realops_flags(UMODE_ALL, L_OPER,  "Non-Hub link %s introduced %s.",
+                         get_client_name(client_p, MASK_IP), name);
+    exit_client(NULL, source_p, &me, "No matching hub_mask.");
+    return;
+  }
+
+  /* Check for the new server being leafed behind this HUB */
+  if (llined)
+  {
+    /* OOOPs nope can't HUB this leaf */
+    sendto_realops_flags(UMODE_ALL, L_ADMIN,
+			 "Link %s introduced leafed server %s.",
+                         get_client_name(client_p, HIDE_IP), name);
+    sendto_realops_flags(UMODE_ALL, L_OPER,  
+			 "Link %s introduced leafed server %s.",
+                         client_p->name, name);
+      /* If it is new, we are probably misconfigured, so split the
+       * non-hub server introducing this. Otherwise, split the new
+       * server. -A1kmm.
+       */
+      /* wastes too much bandwidth, generates too many errors on
+       * larger networks, dont bother. --fl_
+       */
+      exit_client(NULL, client_p, &me, "Leafed Server.");
+      return;
+  }
+
+  if (strlen(name) > HOSTLEN)
+  {
+    sendto_realops_flags(UMODE_ALL, L_ADMIN,
+                         "Link %s introduced server with invalid servername %s",
+                         get_client_name(client_p, HIDE_IP), name);
+    sendto_realops_flags(UMODE_ALL, L_OPER,
+                         "Link %s introduced server with invalid servername %s",
+                         client_p->name, name);
+    exit_client(NULL, client_p, &me, "Invalid servername introduced.");
+    return;
+  }
+
+  target_p = make_client(client_p);
+  make_server(target_p);
+  target_p->hopcount = hop;
+
+  strlcpy(target_p->name, name, sizeof(target_p->name));
+
+  set_server_gecos(target_p, info);
+
+  strlcpy(target_p->serv->up, source_p->name, sizeof(target_p->serv->up));
+  target_p->servptr  = source_p;
+
+  SetServer(target_p);
+  Count.server++;
+
+  dlinkAdd(target_p, &target_p->node, &global_client_list);
+  dlinkAdd(target_p, make_dlink_node(), &global_serv_list);
+
+  add_to_client_hash_table(target_p->name, target_p);
+  dlinkAdd(target_p, &target_p->lnode, &target_p->servptr->serv->servers);
+
+  /* Old sendto_serv_but_one() call removed because we now
+   * need to send different names to different servers
+   * (domain name matching)
+   */
+  DLINK_FOREACH(ptr, serv_list.head)
+  {
+    bclient_p = ptr->data;
+
+    if (bclient_p == client_p)
+      continue;
+
+    if (!(aconf = bclient_p->serv->sconf))
+    {
+      sendto_realops_flags(UMODE_ALL, L_ADMIN,
+			   "Lost connect{} block for %s on %s. Closing",
+                           get_client_name(client_p, HIDE_IP), name);
+      sendto_realops_flags(UMODE_ALL, L_OPER,
+			   "Lost connect{} block for %s on %s. Closing",
+                           get_client_name(client_p, MASK_IP), name);
+      exit_client(client_p, client_p, client_p, "Lost connect{} block");
+      return;
+    }
+
+    if (match(my_name_for_link(aconf), target_p->name))
+      continue;
+
+#if 0
+    sendto_one(bclient_p, ":%s SERVER %s %d :%s%s",
+               parv[0], target_p->name, hop + 1,
+               IsHidden(target_p) ? "(H) " : "",
+               target_p->info);
+#endif
+
+  }
+
+  sendto_realops_flags(UMODE_EXTERNAL, L_ALL, 
+		       "Server %s being introduced by %s",
                        target_p->name, source_p->name);
 }
 
