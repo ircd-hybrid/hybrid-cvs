@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.9 1999/09/06 23:11:55 db Exp $
+ * $Id: channel.c,v 7.10 1999/09/08 02:22:51 lusky Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -80,6 +80,7 @@ static  void    sub1_from_channel (struct Channel *);
 /* static functions used in set_mode */
 static char* pretty_mask(char *);
 static char *fix_key(char *);
+static char *fix_key_old(char *);
 static void collapse_signs(char *);
 static int errsent(int,int *);
 static void change_chan_flag(struct Channel *, struct Client *, int );
@@ -1022,12 +1023,30 @@ static  char    *fix_key(char *arg)
 {
   u_char        *s, *t, c;
 
-  /* No more stripping the 8th bit or checking
-  ** for the +k bug... it's long dead.  -orab
-  */
+  for (s = t = (u_char *)arg; (c = *s); s++)
+    { 
+      if (c != ':' && c > 0x20)
+      { 
+        c &= 0x7f;
+        *t++ = c;
+      }
+    }
+  *t = '\0';
+  return arg;
+}
+
+/*
+ * Here we attempt to be compatible with older non-hybrid servers.
+ * We can't back down from the ':' issue however.  --Rodder
+ */
+static  char    *fix_key_old(char *arg)
+{
+  u_char        *s, *t, c;
+
   for (s = t = (u_char *)arg; (c = *s); s++)
     {
-      if (c != ':' && c > 0x20 && (c < 0x7f || c > 0xa0))
+      c &= 0x7f;
+      if ((c != 0x0a) && (c != ':'))
         *t++ = c;
     }
   *t = '\0';
@@ -1338,7 +1357,19 @@ void set_channel_mode(struct Client *cptr,
                 break;
             }
           else
-            arg = fix_key(check_string(*parv++));
+            {
+              if (whatt == MODE_DEL)
+                { 
+                  arg = check_string(*parv++);
+                }
+              else
+                { 
+                  if MyClient(sptr)
+                    arg = fix_key(check_string(*parv++));
+                  else
+                    arg = fix_key_old(check_string(*parv++));
+                }
+            }
 
           if (keychange++)
             break;
