@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.40 2001/01/11 19:42:53 a1kmm Exp $
+ * $Id: res.c,v 7.41 2001/01/11 20:36:12 a1kmm Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -1105,7 +1105,7 @@ res_readreply(int fd, void *data)
            * callback was being called with a value of 0x2C != NULL
 	   *
 	   */
-	  /*cp = make_cache(request);*/
+	  cp = make_cache(request);
 	  (*request->query.callback)(request->query.vptr,
 				     (cp) ? &cp->reply : 0);
 	  rem_request(request);
