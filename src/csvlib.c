@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.14 2003/05/25 03:04:59 joshk Exp $
+ *  $Id: csvlib.c,v 7.15 2003/05/25 05:10:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -342,20 +342,27 @@ write_csv_line(FBFILE *out, const char *format, ...)
 	bytes += 2;
 	continue;
       }
-      /* XXX 99% of the time, %d is used for 0-9
-       * lets deal with the other 1% later ;-)
-       */
+
       if (c == 'd')
       {
 	int v = va_arg(args, int);
-	if (v < 10)
+	char t[40];
+	char *p=t;
+
+	while (v > 10)
+        {
+	  *p++ = (v % 10) + '0';
+	  v = v/10;
+	}
+	*p++ = (v % 10) + '0';
+
+	while (p != t)
 	{
-	  *str++ = (v + '0');
+	  *str++ = *--p;
 	  ++bytes;
 	}
 
 	*str++ = ',';
-
 	bytes++;
 	continue;
       }
