@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.71 2000/12/31 16:10:28 toot Exp $
+ *   $Id: parse.c,v 7.72 2001/01/01 16:15:15 toot Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -694,11 +694,11 @@ static int     do_numeric(
           return 0;
         }
       /* Fake it for server hiding, if its our client */
-      if(MyClient(acptr) && !IsOper(acptr))
+      if(GlobalSetOptions.hide_server && MyClient(acptr) && !IsOper(acptr))
 	sendto_one(acptr, ":%s %s %s %s", me.name, numeric, parv[1], buffer);
       else
         sendto_one(acptr, ":%s %s %s %s", sptr->name, numeric, parv[1], buffer);
-        return 0;
+      return 0;
       }
       else if ((chptr = hash_find_channel(parv[1], (struct Channel *)NULL)))
         sendto_channel_butone(cptr,sptr,chptr,":%s %s %s%s",
