@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.70 2003/05/12 08:09:28 michael Exp $
+ *  $Id: m_info.c,v 1.71 2003/05/12 09:22:54 wiz Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-const char *_version = "$Revision: 1.70 $";
+const char *_version = "$Revision: 1.71 $";
 #endif
 
 /*
@@ -116,7 +116,7 @@ static struct InfoStruct info_table[] =
     "client_exit",
     OUTPUT_BOOLEAN,
     &ConfigFileEntry.client_exit,
-    "Prepend 'Client Exit:' to user QUIT messages"
+    "Prepend 'Quit:' to user QUIT messages"
   },
   {
     "client_flood",
@@ -257,7 +257,13 @@ static struct InfoStruct info_table[] =
     "no_oper_flood",
     OUTPUT_BOOLEAN,
     &ConfigFileEntry.no_oper_flood,
-    "Disable flood control for operators",
+    "Reduce flood control for operators",
+  },
+  {
+    "true_no_oper_flood",
+    OUTPUT_BOOLEAN,
+    &ConfigFileEntry.true_no_oper_flood,
+    "Completely disable flood control for operators",
   },
   {
     "non_redundant_klines",
