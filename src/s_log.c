@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.51 2003/05/28 01:41:28 joshk Exp $
+ *  $Id: s_log.c,v 7.52 2003/06/01 18:47:03 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ static const char *logLevelToString[] =
  * open_log - open ircd logging file
  * returns true (1) if successful, false (0) otherwise
  */
-#if defined(USE_LOGFILE) 
+#ifdef USE_LOGFILE 
 
 static int 
 open_log(const char *filename)
@@ -132,7 +132,7 @@ void send_opcom(const char *message)
 }
 #endif
 
-#if defined(USE_LOGFILE) 
+#ifdef USE_LOGFILE
 static void 
 write_log(const char *message)
 {
@@ -169,7 +169,7 @@ ilog(int priority, const char *fmt, ...)
   if (priority <= L_DEBUG)
     syslog(sysLogLevel[priority], "%s", buf);
 #endif
-#if defined(USE_LOGFILE) 
+#ifdef USE_LOGFILE 
   write_log(buf);
 #endif
 
@@ -181,7 +181,7 @@ ilog(int priority, const char *fmt, ...)
 void
 init_log(const char *filename)
 {
-#if defined(USE_LOGFILE) 
+#ifdef USE_LOGFILE 
   open_log(filename);
 #endif
 #ifdef USE_SYSLOG
@@ -195,7 +195,7 @@ init_log(const char *filename)
 void
 reopen_log(const char *filename)
 {
-#if defined(USE_LOGFILE)
+#ifdef USE_LOGFILE
   fbclose(logFile);
   open_log(filename);
 #endif

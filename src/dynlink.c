@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: dynlink.c,v 7.9 2003/05/31 08:40:59 michael Exp $
+ * $Id: dynlink.c,v 7.10 2003/06/01 18:47:03 joshk Exp $
  *
  */
 #include "stdinc.h"
@@ -195,7 +195,7 @@ int unload_one_module(char *name, int warn)
   if ((modindex = findmodule_byname(name)) == -1) 
     return(-1);
 
-#if defined(HAVE_SHL_LOAD)
+#ifdef HAVE_SHL_LOAD
     /* shl_* and friends have a slightly different format than dl*. But it does not
      * require creation of a totally new modules.c, instead proper usage of
      * defines solve this case. -TimeMr14C
@@ -243,7 +243,7 @@ int unload_one_module(char *name, int warn)
 int
 load_a_module(char *path, int warn, int core)
 {
-#if defined(HAVE_SHL_LOAD)
+#ifdef HAVE_SHL_LOAD
   shl_t tmpptr;
 #else
   void *tmpptr = NULL;
@@ -255,7 +255,7 @@ load_a_module(char *path, int warn, int core)
 
   mod_basename = irc_basename(path);
 
-#if defined(HAVE_SHL_LOAD)
+#ifdef HAVE_SHL_LOAD
   tmpptr = shl_load(path, BIND_IMMEDIATE, NULL);
 #else
   tmpptr = dlopen(path, RTLD_NOW);
@@ -263,7 +263,7 @@ load_a_module(char *path, int warn, int core)
 
   if (tmpptr == NULL)
   {
-#if defined(HAVE_SHL_LOAD)
+#ifdef HAVE_SHL_LOAD
     const char *err = strerror(errno);
 #else
     const char *err = dlerror();
@@ -275,7 +275,7 @@ load_a_module(char *path, int warn, int core)
     return(-1);
   }
 
-#if defined(HAVE_SHL_LOAD)
+#ifdef HAVE_SHL_LOAD
   if (shl_findsym(&tmpptr, "_modinit", TYPE_UNDEFINED, (void *)&initfunc) == -1)
   {
     if (shl_findsym(&tmpptr, "__modinit", TYPE_UNDEFINED, (void *)&initfunc) == -1)

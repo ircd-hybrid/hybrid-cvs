@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.87 2003/05/31 18:52:55 adx Exp $
+ *  $Id: s_debug.c,v 7.88 2003/06/01 18:47:03 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -127,7 +127,7 @@ send_usage(struct Client *source_p)
   sendto_one(source_p, ":%s %d %s R :Signals %d Context Vol. %d Invol %d",
              me.name, RPL_STATSDEBUG, source_p->name, (int)rus.ru_nsignals,
              (int)rus.ru_nvcsw, (int)rus.ru_nivcsw);
-#endif /* VMS */
+#endif /* __vms */
 }
 
 void

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.201 2003/05/22 17:09:08 michael Exp $
+ *  $Id: s_bsd.c,v 7.202 2003/06/01 18:47:03 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -225,7 +225,7 @@ defined(IP_OPTIONS) && defined(IPPROTO_IP) && !defined(IPV6)
 int
 set_non_blocking(int fd)
 {
-#ifndef VMS
+#ifndef __vms
   int nonb = 0;
   int res;
 
@@ -818,7 +818,7 @@ comm_open(int family, int sock_type, int proto, const char *note)
       ilog(L_CRIT, "comm_open: Couldn't set FD %d non blocking: %s", fd, strerror(errno));
     /* if VMS, we might be opening a file (ircd.conf, resolv.conf).
        VMS doesn't let us set non-blocking on a file, so it might fail. */
-#ifndef VMS
+#ifndef __vms
       close(fd);
       return -1;
 #endif

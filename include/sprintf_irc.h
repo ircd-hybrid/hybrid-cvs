@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: sprintf_irc.h,v 7.8 2002/05/24 23:34:08 androsyn Exp $
+ *  $Id: sprintf_irc.h,v 7.9 2003/06/01 18:47:01 joshk Exp $
  */
 
 #ifndef SPRINTF_IRC
@@ -42,11 +42,8 @@ extern int vsnprintf_irc(char *, int, const char*, va_list);
 #ifdef __GNUC__
 extern int ircsprintf(char*, const char*, ...)
                __attribute__ ((format(printf, 2, 3)));
-extern int ircsnprintf(char*, int, const char*, ...)
-                __attribute__ ((format(printf, 3, 4)));
 #else
 extern int ircsprintf(char *str, const char *format, ...);
-extern int ircsnprintf(char*, int, const char*);
 #endif
 
 #endif /* SPRINTF_IRC */

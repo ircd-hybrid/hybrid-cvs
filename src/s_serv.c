@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.342 2003/06/01 18:45:31 db Exp $
+ *  $Id: s_serv.c,v 7.343 2003/06/01 18:47:03 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -122,7 +122,7 @@ struct SlinkRplDef slinkrpltab[] = {
 
 static unsigned long freeMask;
 static void server_burst(struct Client *client_p);
-#ifndef VMS
+#ifndef __vms
 static int fork_server(struct Client *client_p);
 #endif
 static void burst_all(struct Client *client_p);
@@ -1026,7 +1026,7 @@ server_estab(struct Client *client_p)
     report_error(L_ALL, SETBUF_ERROR_MSG, get_client_name(client_p, SHOW_IP), errno);
 
   /* Hand the server off to servlink now */
-#ifndef VMS
+#ifndef __vms 
   if (IsCapable(client_p, CAP_ENC) || IsCapable(client_p, CAP_ZIP))
   {
     if (fork_server(client_p) < 0)
@@ -1302,7 +1302,7 @@ start_io(struct Client *server)
   send_queued_slink_write(server);
 }
 
-#ifndef VMS
+#ifndef __vms
 /* fork_server()
  *
  * inputs       - struct Client *server

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.297 2003/05/29 04:06:42 joshk Exp $
+ *  $Id: ircd.c,v 7.298 2003/06/01 18:47:03 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -164,7 +164,7 @@ get_vm_top(void)
    * offset from 0 (NULL), so the result of sbrk is cast to a size_t and 
    * returned. We really shouldn't be using it here but...
    */
-#ifndef VMS
+#ifndef __vms
   void *vptr = sbrk(0);
   return((unsigned long)vptr);
 #else
@@ -202,7 +202,7 @@ print_startup(int pid)
 static void 
 init_sys(void)
 {
-#if defined(RLIMIT_FD_MAX) && !defined(VMS) && defined(HAVE_SYS_RLIMIT_H)
+#if defined(RLIMIT_FD_MAX) && !defined(__vms) && defined(HAVE_SYS_RLIMIT_H)
   struct rlimit limit;
 
   if (!getrlimit(RLIMIT_FD_MAX, &limit))
@@ -231,7 +231,7 @@ init_sys(void)
 static void
 make_daemon(void)
 {
-#ifndef VMS
+#ifndef __vms
   int pid;
 
   if ((pid = fork()) < 0)
@@ -537,7 +537,7 @@ check_pidfile(const char *filename)
 static void
 setup_corefile(void)
 {
-#if !defined(VMS) && defined(HAVE_SYS_RESOURCE_H)
+#if !defined(__vms) && defined(HAVE_SYS_RESOURCE_H)
   struct rlimit rlim; /* resource limits */
 
   /* Set corefilesize to maximum */
