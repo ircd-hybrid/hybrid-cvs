@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.265 2001/08/04 15:35:50 leeh Exp $
+ * $Id: channel.c,v 7.266 2001/08/05 07:22:43 a1kmm blalloc.c $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2360,7 +2360,7 @@ chm_key(struct Client *client_p, struct Client *source_p,
     mode_changes_minus[mode_count_minus].nocaps = 0;
     mode_changes_minus[mode_count_minus].mems = ALL_MEMBERS;
     mode_changes_minus[mode_count_minus].id = NULL;
-    mode_changes_minus[mode_count_minus++].arg = NULL;
+    mode_changes_minus[mode_count_minus++].arg = "*";
   }
 }
 
