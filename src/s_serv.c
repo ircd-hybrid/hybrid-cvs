@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.263 2002/06/22 21:23:06 db Exp $
+ *  $Id: s_serv.c,v 7.264 2002/06/22 22:39:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -1754,11 +1754,8 @@ add_lazylinkchannel(struct Client *client_p, struct Channel *chptr)
 {
   dlink_node *m;
 
-  assert(MyClient(client_p));
+  assert(MyConnect(client_p));
  
-  if(!MyClient(client_p))
-    return;
-
   chptr->lazyLinkChannelExists |= client_p->localClient->serverMask;
 
   m = make_dlink_node();
