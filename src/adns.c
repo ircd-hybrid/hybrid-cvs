@@ -1,13 +1,16 @@
 /*
- * $Id: adns.c,v 7.4 2001/02/15 04:39:13 androsyn Exp $
+ * $Id: adns.c,v 7.5 2001/02/17 04:44:58 androsyn Exp $
  * adns.c  functions to enter libadns 
  *
  * Written by Aaron Sethman <androsyn@ratbox.org>
  */
 #include "fileio.h"
 #include "res.h"
+#include "send.h"
 #include "s_bsd.h"
+#include "s_log.h"
 #include "event.h"
+#include "client.h"
 #include <errno.h>
 #include "../adns/internal.h"
 #define ADNS_MAXFD 2
@@ -17,8 +20,16 @@ adns_state dns_state;
 
 void restart_resolver(void)
 {
-	adns_finish(dns_state);
-	init_resolver();
+	int err;
+	adns_state new_state;
+	if(!(err = adns_init(&new_state, adns_if_noautosys, 0))) {
+		adns_finish(dns_state);	
+		dns_state = new_state;
+	} else {
+		log(L_NOTICE, "Error rehashing DNS %s...using old settings", strerror(err));		
+		sendto_realops_flags(FLAGS_ADMIN, "Error rehashing DNS %s...using old setting", strerror(err));
+	}
+	dns_select();
 }
 void init_resolver(void)
 {
