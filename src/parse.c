@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.2 1999/08/03 01:41:33 tomh Exp $
+ *   $Id: parse.c,v 7.3 1999/09/10 06:34:05 tomh Exp $
  */
 #include "parse.h"
 #include "channel.h"
@@ -68,9 +68,9 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
   struct Client *from = cptr;
   char  *ch;
   char  *s;
-  int   i;
+  size_t  i;
   char* numeric = 0;
-  int   paramcount;
+  size_t paramcount;
   struct Message *mptr;
 
   Debug((DEBUG_DEBUG, "Parsing %s: %s",
