@@ -308,7 +308,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP MAKEDEPEND CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT INET_MISC CRYPT_LIB SNPRINTF_C ENCSPEED ZLIB_LD SELECT_TYPE CLOBBER PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_INCLUDES SSL_LIBS IRC_CFLAGS SEDOBJ LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP MAKEDEPEND STDOUT CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT INET_MISC CRYPT_LIB SNPRINTF_C ENCSPEED ZLIB_LD SELECT_TYPE CLOBBER PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_INCLUDES SSL_LIBS IRC_CFLAGS SEDOBJ LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -2359,9 +2359,12 @@ fi
 echo "$as_me:$LINENO: checking how to generate dependency info" >&5
 echo $ECHO_N "checking how to generate dependency info... $ECHO_C" >&6
 
+STDOUT="> .depend"
+
 if test ! -z "$MKDEP"; then
 	echo "$as_me:$LINENO: result: BSD mkdep" >&5
 echo "${ECHO_T}BSD mkdep" >&6
+	STDOUT=""
 elif test ! -z "$MAKEDEPEND" -a "$HPUX" = yes; then
 	echo "$as_me:$LINENO: result: X11 makedepend for HPUX" >&5
 echo "${ECHO_T}X11 makedepend for HPUX" >&6
@@ -2375,6 +2378,7 @@ else
 echo "${ECHO_T}nothing useful found, assuming $CC -MM" >&6
 	MKDEP="$CC -MM"
 fi
+
 
 
 
@@ -9867,6 +9871,7 @@ s,@EXEEXT@,$EXEEXT,;t t
 s,@OBJEXT@,$OBJEXT,;t t
 s,@MKDEP@,$MKDEP,;t t
 s,@MAKEDEPEND@,$MAKEDEPEND,;t t
+s,@STDOUT@,$STDOUT,;t t
 s,@CPP@,$CPP,;t t
 s,@EGREP@,$EGREP,;t t
 s,@SET_MAKE@,$SET_MAKE,;t t

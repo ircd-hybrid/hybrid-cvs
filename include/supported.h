@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.28 2003/05/12 08:09:26 michael Exp $
+ *  $Id: supported.h,v 1.29 2003/05/18 19:26:27 joshk Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -30,11 +30,7 @@
 #include "ircd_defs.h"
 #include "s_serv.h"
 
-#ifndef USE_ASCII_CASEMAP
-#define CASEMAP "rfc1459"
-#else
 #define CASEMAP "ascii"
-#endif
 
 #define FEATURES "WALLCHOPS"       \
                  "%s%s%s"          \

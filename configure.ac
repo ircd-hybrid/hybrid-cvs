@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.26 2003/05/17 21:57:55 joshk Exp $
+dnl $Id: configure.ac,v 7.27 2003/05/18 19:26:23 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -108,8 +108,11 @@ AC_PATH_PROG(MAKEDEPEND, makedepend)
 
 AC_MSG_CHECKING(how to generate dependency info)
 
+STDOUT="> .depend"
+
 if test ! -z "$MKDEP"; then
 	AC_MSG_RESULT(BSD mkdep)
+	STDOUT=""
 elif test ! -z "$MAKEDEPEND" -a "$HPUX" = yes; then
 	AC_MSG_RESULT(X11 makedepend for HPUX)
 	MKDEP="$MAKEDEPEND -f-"
@@ -118,10 +121,11 @@ elif test "$SunWorkShop" = "yes"; then
 	MKDEP="$CC -xM"
 else
 	AC_MSG_RESULT([nothing useful found, assuming $CC -MM])
-	MKDEP="$CC -MM"	
+	MKDEP="$CC -MM"
 fi
 
 AC_SUBST(MKDEP)
+AC_SUBST(STDOUT)
 
 dnl check for /dev/null so we can use it to hold evil fd's
 AC_MSG_CHECKING([for /dev/null])
