@@ -1,3 +1,15 @@
+androsyn    2002/05/30 22:59:26 EDT	(20020531_11)
+
+  Modified files:
+    modules/core         m_nick.c 
+  Log:
+  Add a non-assert failure check
+  
+  Revision  Changes    Path
+  1.91      +9 -3      ircd-hybrid-7/modules/core/m_nick.c
+
+
+
 androsyn    2002/05/30 22:21:12 EDT	(20020531_10)
 
   Modified files:
@@ -27666,4 +27678,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3724 2002/05/31 02:21:18 androsyn Exp $
+$Id: ChangeLog,v 7.3725 2002/05/31 02:59:32 androsyn Exp $
