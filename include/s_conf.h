@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.190 2003/02/16 00:22:21 db Exp $
+ *  $Id: s_conf.h,v 7.190.2.1 2003/07/05 08:46:03 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -131,8 +131,8 @@ struct ConfItem
 #define CONF_FLAGS_COMPRESSED           0x00020000
 #define CONF_FLAGS_TEMPORARY            0x00040000
 #define CONF_FLAGS_CRYPTLINK            0x00080000
-/* Macros for struct ConfItem */
 
+/* Macros for struct ConfItem */
 #define IsLimitIp(x)            ((x)->flags & CONF_FLAGS_LIMIT_IP)
 #define IsNoTilde(x)            ((x)->flags & CONF_FLAGS_NO_TILDE)
 #define IsConfCanFlood(x)       ((x)->flags & CONF_FLAGS_CAN_FLOOD)
@@ -151,6 +151,7 @@ struct ConfItem
 #define IsConfEncrypted(x)      ((x)->flags & CONF_FLAGS_ENCRYPTED)
 #define IsConfCompressed(x)     ((x)->flags & CONF_FLAGS_COMPRESSED)
 #define IsConfCryptLink(x)      ((x)->flags & CONF_FLAGS_CRYPTLINK)
+#define IsConfOperator(x)       ((x)->flags & CONF_OPERATOR)
 
 /* port definitions for Opers */
 
