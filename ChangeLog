@@ -1,3 +1,18 @@
+jmallett    2002/01/09 07:27:14 EST	(20020109_2)
+
+  Modified files:
+    src                  memory.c 
+  Log:
+  Oops, meant to do cvs ci src/memory.c and did cvs ci -m src/memory.c
+  
+  Anyway, correct usage of mem_frob (instead of memfrob()) and put it inside
+  #ifndef NDEBUG.
+  
+  Revision  Changes    Path
+  7.34      +0 -0      ircd-hybrid-7/src/memory.c
+
+
+
 jmallett    2002/01/08 19:53:50 EST	(20020109_0)
 
   Modified files:
@@ -2698,7 +2713,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3303 2002/01/09 00:53:55 jmallett Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3304 2002/01/09 12:27:20 jmallett Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -21052,4 +21067,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3303 2002/01/09 00:53:55 jmallett Exp $
+$Id: ChangeLog,v 7.3304 2002/01/09 12:27:20 jmallett Exp $
