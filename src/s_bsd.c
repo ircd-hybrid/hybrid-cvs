@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.10 1999/09/08 06:30:54 tomh Exp $
+ *  $Id: s_bsd.c,v 7.11 1999/09/08 19:23:38 wnder Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -964,7 +964,6 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
       if (iAuth.socket != NOSOCK)
         FD_SET(iAuth.socket, read_set);
 
-#ifdef bingo
       for (auth = AuthPollList; auth; auth = auth->next) {
         assert(-1 < auth->fd);
         if (IsAuthConnect(auth))
@@ -972,7 +971,6 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
         else /* if(IsAuthPending(auth)) */
           FD_SET(auth->fd, read_set);
       }
-#endif /* bingo */
 
       for (listener = ListenerPollList; listener; listener = listener->next) {
         assert(-1 < listener->fd);
@@ -1040,7 +1038,6 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
     --nfds;
   }
 
-#ifdef bingo
   /*
    * Check the auth fd's
    */
@@ -1058,7 +1055,6 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
         break;
     }
   }
-#endif /* bingo */
 
   for (listener = ListenerPollList; listener; listener = listener->next) {
     assert(-1 < listener->fd);
@@ -1233,7 +1229,6 @@ int read_message(time_t delay, unsigned char mask)
       res_pfd = pfd;
     }
 
-  #ifdef bingo
     /*
      * set auth descriptors
      */
@@ -1245,7 +1240,6 @@ int read_message(time_t delay, unsigned char mask)
       else
         PFD_SETR(auth->fd);
     }
-  #endif /* bingo */
 
     /*
      * set listener descriptors
@@ -1319,7 +1313,6 @@ int read_message(time_t delay, unsigned char mask)
     --nfds;
   }
 
-#ifdef bingo
   /*
    * check auth descriptors
    */
@@ -1338,7 +1331,6 @@ int read_message(time_t delay, unsigned char mask)
         break;
     }
   }
-#endif /* bingo */
 
   /*
    * check listeners

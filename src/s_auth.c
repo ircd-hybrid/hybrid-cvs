@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.3 1999/09/03 02:17:17 wnder Exp $
+ *   $Id: s_auth.c,v 7.4 1999/09/08 19:23:38 wnder Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -87,6 +87,12 @@ typedef enum {
    send((c)->fd, HeaderMessages[(r)].message, HeaderMessages[(r)].length, 0)
 
 struct AuthRequest* AuthPollList = 0; /* GLOBAL - auth queries pending io */
+
+/*
+ * Global - list of clients who have completed their authentication
+ *          check, but must still complete their authorization checks
+ */
+struct AuthRequest *AuthClientList = NULL;
 
 static struct AuthRequest* AuthIncompleteList = 0;
 
@@ -205,7 +211,8 @@ static void auth_dns_callback(void* vptr, struct DNSReply* reply)
   if (!IsDoingAuth(auth)) {
     release_auth_client(auth->client);
     unlink_auth_request(auth, &AuthIncompleteList);
-    free_auth_request(auth);
+    link_auth_request(auth, &AuthClientList);
+    /*free_auth_request(auth);*/
   }
 }
 
@@ -228,7 +235,8 @@ static void auth_error(struct AuthRequest* auth)
     link_auth_request(auth, &AuthIncompleteList);
   else {
     release_auth_client(auth->client);
-    free_auth_request(auth);
+    link_auth_request(auth, &AuthClientList);
+    /*free_auth_request(auth);*/
   }
 }
 
@@ -384,15 +392,35 @@ void start_auth(struct Client* client)
 
   auth = make_auth_request(client);
 
+#if 0
   link_auth_request(auth, &AuthPollList);
 
 	/*
-	 * Now we send the client's information to the IAuth
-	 * server.
+	 *  Now we send the client's information to the IAuth
+	 * server. The syntax for an authentication request is:
+	 *
+	 *      DoAuth <id> <ip address>
+	 *        <id>         = unique id for this client so we
+	 *                       can re-locate the client when
+	 *                       the authentication completes.
+	 *
+	 *        <ip address> = client's ip address in long form.
+	 *
+	 *  The client's id will be the memory address of the
+	 * client structure. This is acceptable because as long
+	 * as the client exists, no other client can have the
+	 * same memory address, therefore each client will have
+	 * a unique id.
 	 */
-	IAuthQuery(client);
 
-#if 0 /* bingo */
+	SendIAuth("%s %p %u\n",
+		IAS_DOAUTH,
+		client,
+		(unsigned int) client->ip.s_addr);
+
+	/* IAuthQuery(client); */
+#endif /* 0 */
+
   query.vptr     = auth;
   query.callback = auth_dns_callback;
 
@@ -412,10 +440,10 @@ void start_auth(struct Client* client)
   else if (IsDNSPending(auth))
     link_auth_request(auth, &AuthIncompleteList);
   else {
-    free_auth_request(auth);
+  	link_auth_request(auth, &AuthClientList);
+    /*free_auth_request(auth);*/
     release_auth_client(client);
   }
-#endif /* 0 */
 }
 
 /*
@@ -444,7 +472,8 @@ void timeout_auth_queries(time_t now)
       auth->client->since = now;
       release_auth_client(auth->client);
       unlink_auth_request(auth, &AuthPollList);
-      free_auth_request(auth);
+      link_auth_request(auth, &AuthClientList);
+      /*free_auth_request(auth);*/
     }
   }
   for (auth = AuthIncompleteList; auth; auth = auth_next) {
@@ -457,7 +486,8 @@ void timeout_auth_queries(time_t now)
       auth->client->since = now;
       release_auth_client(auth->client);
       unlink_auth_request(auth, &AuthIncompleteList);
-      free_auth_request(auth);
+      link_auth_request(auth, &AuthClientList);
+      /*free_auth_request(auth);*/
     }
   }
 }
@@ -553,20 +583,41 @@ void read_auth_reply(struct AuthRequest* auth)
     link_auth_request(auth, &AuthIncompleteList);
   else {
     release_auth_client(auth->client);
-    free_auth_request(auth);
+    link_auth_request(auth, &AuthClientList);
+    /*free_auth_request(auth);*/
   }
 }
 
 /*
 remove_auth_request()
- Remove request 'auth' from AuthPollList and free it
+ Remove request 'auth' from AuthClientList, and free it.
+There is no need to release auth->client since it has
+already been done
 */
 
 void
 remove_auth_request(struct AuthRequest *auth)
 
 {
-	unlink_auth_request(auth, &AuthPollList);
-	release_auth_client(auth->client);
+	unlink_auth_request(auth, &AuthClientList);
 	free_auth_request(auth);
 } /* remove_auth_request() */
+
+/*
+FindAuthClient()
+ Find the client matching 'id' in the AuthClientList. The
+id will match the memory address of the client structure.
+*/
+
+struct AuthRequest *
+FindAuthClient(long id)
+
+{
+	struct AuthRequest *auth;
+
+	auth = AuthClientList;
+	while (auth && !((void *) auth->client == (void *) id))
+		auth = auth->next;
+
+	return (auth);
+} /* FindAuthClient() */
