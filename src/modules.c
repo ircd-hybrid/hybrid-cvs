@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.146 2003/11/01 06:18:43 joshk Exp $
+ *  $Id: modules.c,v 7.147 2003/11/01 06:57:39 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -670,7 +670,6 @@ load_all_modules(int warn)
   mod_add_cmd(&whowas_msgtab);
   mod_add_cmd(&xline_msgtab);
 #ifdef BUILD_CONTRIB
-  mod_add_cmd(&test_msgtab);
   mod_add_cmd(&classlist_msgtab);
   mod_add_cmd(&clearchan_msgtab);
   mod_add_cmd(&forcejoin_msgtab);
@@ -680,7 +679,7 @@ load_all_modules(int warn)
   mod_add_cmd(&jupe_msgtab);
   mod_add_cmd(&killhost_msgtab);
   mod_add_cmd(&map_msgtab);
-  mod_add_cmd(&test_msgtab);
+  mod_add_cmd(&flags_msgtab);
   mod_add_cmd(&ojoin_msgtab);
   mod_add_cmd(&omotd_msgtab);
   mod_add_cmd(&operspy_msgtab);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.52 2003/11/01 06:18:42 joshk Exp $
+ *  $Id: modules.h,v 7.53 2003/11/01 06:57:38 joshk Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -162,7 +162,7 @@ extern struct Message put_msgtab;
 extern struct Message test_msgtab;
 extern struct Message classlist_msgtab;
 extern struct Message clearchan_msgtab;
-extern struct Message test_msgtab;
+extern struct Message flags_msgtab;
 extern struct Message forcejoin_msgtab;
 extern struct Message forcepart_msgtab;
 extern struct Message help_msgtab;
@@ -170,7 +170,6 @@ extern struct Message uhelp_msgtab;
 extern struct Message jupe_msgtab;
 extern struct Message killhost_msgtab;
 extern struct Message map_msgtab;
-extern struct Message test_msgtab;
 extern struct Message ojoin_msgtab;
 extern struct Message omotd_msgtab;
 extern struct Message operspy_msgtab;

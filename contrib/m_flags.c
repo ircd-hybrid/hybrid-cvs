@@ -27,7 +27,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_flags.c,v 1.15 2003/10/04 19:31:13 metalrock Exp $
+ *  $Id: m_flags.c,v 1.16 2003/11/01 06:57:41 joshk Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -59,7 +59,7 @@ static void mo_flags(struct Client *client_p, struct Client *source_p,
 static char *set_flags_to_string(struct Client *client_p);
 static char *unset_flags_to_string(struct Client *client_p);
 
-struct Message test_msgtab = {
+struct Message flags_msgtab = {
   "FLAGS", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_flags, m_ignore, mo_flags, m_ignore}
 };
@@ -68,16 +68,16 @@ struct Message test_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(&test_msgtab);
+  mod_add_cmd(&flags_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(&test_msgtab);
+  mod_del_cmd(&flags_msgtab);
 }
 
-const char *_version = "$Revision: 1.15 $";
+const char *_version = "$Revision: 1.16 $";
 #endif
 
 /* FLAGS requires it's own mini parser, since the last parameter in it can
