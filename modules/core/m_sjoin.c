@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.176 2004/01/17 17:41:31 db Exp $
+ *  $Id: m_sjoin.c,v 1.177 2004/01/17 20:21:55 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.176 $";
+const char *_version = "$Revision: 1.177 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -471,7 +471,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
       if (pargs >= MAXMODEPARAMS)
       {
-        *mbuf = '\0';
 	sptr = sendbuf;
         *mbuf = '\0';
         for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)

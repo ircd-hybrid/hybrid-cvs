@@ -1,6 +1,6 @@
-diff -ur nohalfops/contrib/m_clearchan.c halfops/contrib/m_clearchan.c
---- nohalfops/contrib/m_clearchan.c	Mon Oct 13 18:47:40 2003
-+++ halfops/contrib/m_clearchan.c	Mon Oct 13 18:47:49 2003
+diff -ur ircd-hybrid/contrib/m_clearchan.c new/contrib/m_clearchan.c
+--- ircd-hybrid/contrib/m_clearchan.c	Sun Oct 12 19:38:18 2003
++++ new/contrib/m_clearchan.c	Sat Jan 17 12:09:03 2004
 @@ -197,6 +197,7 @@
  remove_our_modes(struct Channel *chptr, struct Client *source_p)
  {
@@ -9,9 +9,9 @@ diff -ur nohalfops/contrib/m_clearchan.c halfops/contrib/m_clearchan.c
    remove_a_mode(chptr, CHFL_VOICE, 'v');
  
    /* Clear all +beI modes */
-diff -ur nohalfops/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
---- nohalfops/contrib/m_ojoin.c	Mon Oct 13 18:47:40 2003
-+++ halfops/contrib/m_ojoin.c	Mon Oct 13 18:47:49 2003
+diff -ur ircd-hybrid/contrib/m_ojoin.c new/contrib/m_ojoin.c
+--- ircd-hybrid/contrib/m_ojoin.c	Wed Oct 22 02:08:46 2003
++++ new/contrib/m_ojoin.c	Sat Jan 17 12:09:03 2004
 @@ -103,6 +103,8 @@
                  modeletter = 'o'; name++; break;
        case '+': tmp_flags = CHFL_VOICE;
@@ -21,9 +21,9 @@ diff -ur nohalfops/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
        case '#':
        case '&':
          tmp_flags = 0;
-diff -ur nohalfops/include/supported.h halfops/include/supported.h
---- nohalfops/include/supported.h	Sun Sep 28 04:16:03 2003
-+++ halfops/include/supported.h	Thu Nov 27 19:39:33 2003
+diff -ur ircd-hybrid/include/supported.h new/include/supported.h
+--- ircd-hybrid/include/supported.h	Sat Sep 27 19:16:03 2003
++++ new/include/supported.h	Sat Jan 17 12:09:03 2004
 @@ -56,7 +56,7 @@
  		  " CALLERID%s"
  
@@ -33,9 +33,9 @@ diff -ur nohalfops/include/supported.h halfops/include/supported.h
                          ConfigChannel.use_except ? "e" : "", \
                          ConfigChannel.use_invex ? "I" : "", \
                          "b,k,l,imnpst", \
-diff -ur nohalfops/modules/core/m_join.c halfops/modules/core/m_join.c
---- nohalfops/modules/core/m_join.c	Mon Oct 13 18:47:40 2003
-+++ halfops/modules/core/m_join.c	Mon Oct 13 18:47:49 2003
+diff -ur ircd-hybrid/modules/core/m_join.c new/modules/core/m_join.c
+--- ircd-hybrid/modules/core/m_join.c	Tue Nov  4 14:30:01 2003
++++ new/modules/core/m_join.c	Sat Jan 17 12:09:03 2004
 @@ -713,6 +713,7 @@
  remove_our_modes(struct Channel *chptr, struct Client *source_p)
  {
@@ -44,9 +44,9 @@ diff -ur nohalfops/modules/core/m_join.c halfops/modules/core/m_join.c
    remove_a_mode(chptr, source_p, CHFL_VOICE, 'v');
  }
  
-diff -ur nohalfops/modules/core/m_kick.c halfops/modules/core/m_kick.c
---- nohalfops/modules/core/m_kick.c	Mon Oct 13 18:47:40 2003
-+++ halfops/modules/core/m_kick.c	Mon Oct 13 18:47:49 2003
+diff -ur ircd-hybrid/modules/core/m_kick.c new/modules/core/m_kick.c
+--- ircd-hybrid/modules/core/m_kick.c	Tue Nov  4 14:30:01 2003
++++ new/modules/core/m_kick.c	Sat Jan 17 12:09:03 2004
 @@ -135,7 +135,7 @@
          return;
        }
@@ -74,10 +74,41 @@ diff -ur nohalfops/modules/core/m_kick.c halfops/modules/core/m_kick.c
     /* jdc
      * - In the case of a server kicking a user (i.e. CLEARCHAN),
      *   the kick should show up as coming from the server which did
-diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
---- nohalfops/modules/core/m_sjoin.c	Mon Oct 13 18:47:40 2003
-+++ halfops/modules/core/m_sjoin.c	Mon Oct 13 18:47:49 2003
-@@ -331,7 +331,7 @@
+diff -ur ircd-hybrid/modules/core/m_sjoin.c new/modules/core/m_sjoin.c
+--- ircd-hybrid/modules/core/m_sjoin.c	Sat Jan 17 12:08:41 2004
++++ new/modules/core/m_sjoin.c	Sat Jan 17 12:13:24 2004
+@@ -109,11 +109,10 @@
+   int            isnew;
+   int            buflen = 0;
+   int		 slen;
+-  char           *s, *nhops;
++  char           *s;
+   char		 *sptr;
+   static         char nick_buf[2*BUFSIZE]; /* buffer for modes and prefix */
+   static         char uid_buf[2*BUFSIZE];  /* buffer for modes/prefixes for CAP_TS6 servers */
+-  static         char sjbuf_nhops[BUFSIZE]; /* buffer with halfops as @ */
+   char           *nick_ptr, *uid_ptr;      /* pointers used for making the two mode/prefix buffers */
+   char           *p; /* pointer used making sjbuf */
+   int            i;
+@@ -121,8 +120,6 @@
+   const char *servername = (ConfigServerHide.hide_servers || IsHidden(source_p)) ?
+ 			    me.name : source_p->name;  
+ 
+-  sjbuf_nhops[0] = '\0';
+-
+   if (IsClient(source_p) || parc < 5)
+     return;
+ 
+@@ -316,8 +313,6 @@
+ 
+   *mbuf++ = '+';
+ 
+-  nhops = sjbuf_nhops;
+-
+   s = parv[args + 4];
+ 
+   /* remove any leading spaces */
+@@ -336,7 +331,7 @@
      fl = 0;
      num_prefix = 0;
  
@@ -86,24 +117,19 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
      {
        if (*s == '@')
        {
-@@ -343,6 +343,16 @@
+@@ -348,6 +343,11 @@
          fl |= CHFL_VOICE;
          s++;
        }
 +      else if (*s == '%')
 +      {
 +        fl |= CHFL_HALFOP;
-+        if (keep_new_modes)
-+        {
-+          *nhops++ = *s;
-+          num_prefix++;
-+        }
 +        s++;
 +      }
      }
  
      target_p = find_person(s);
-@@ -367,6 +377,11 @@
+@@ -372,6 +372,11 @@
          *nick_ptr++ = '@';
          *uid_ptr++  = '@';
        }
@@ -115,7 +141,7 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
        if (fl & CHFL_VOICE)
        {
          *nick_ptr++ = '+';
-@@ -380,7 +395,7 @@
+@@ -385,7 +390,7 @@
  
      if (!keep_new_modes)
      {
@@ -124,7 +150,7 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
          fl = CHFL_DEOPPED;
        else
          fl = 0;
-@@ -463,6 +478,24 @@
+@@ -488,6 +493,30 @@
          pargs = 0;
        }
      }
@@ -135,21 +161,27 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
 +
 +      if (pargs >= MAXMODEPARAMS)
 +      {
++        sptr = sendbuf;
 +        *mbuf = '\0';
-+        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
-+                             servername, chptr->chname, modebuf, para[0],
-+                             para[1], para[2], para[3]);
++        for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
++        {
++          slen = ircsprintf(sptr, " %s", para[lcount]);
++          sptr += slen;
++        }
++        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s%s",
++                             servername, chptr->chname, modebuf, sendbuf);
++
 +        mbuf = modebuf;
 +        *mbuf++ = '+';
 +
-+        para[0] = para[1] = para[2] = para[3] = "";
++        sendbuf[0] = '\0';
 +        pargs = 0;
 +      }
 +    }
  
  nextnick:
      /* p points to the next nick */
-@@ -635,6 +668,7 @@
+@@ -674,6 +703,7 @@
  remove_our_modes(struct Channel *chptr, struct Client *source_p)
  {
    remove_a_mode(chptr, source_p, CHFL_CHANOP, 'o');
@@ -157,9 +189,9 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
    remove_a_mode(chptr, source_p, CHFL_VOICE, 'v');
  }
  
-diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
---- nohalfops/src/channel_mode.c	Mon Oct 13 18:47:40 2003
-+++ halfops/src/channel_mode.c	Mon Oct 13 18:47:49 2003
+diff -ur ircd-hybrid/src/channel_mode.c new/src/channel_mode.c
+--- ircd-hybrid/src/channel_mode.c	Thu Oct 16 16:42:09 2003
++++ new/src/channel_mode.c	Sat Jan 17 12:09:03 2004
 @@ -72,6 +72,10 @@
  static void chm_op(struct Client *, struct Client *, struct Channel *, int,
                     int *, char **, int *, int, int, char, void *,
