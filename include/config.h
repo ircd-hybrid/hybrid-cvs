@@ -19,12 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.147 2003/05/04 16:26:05 adx Exp $
+ *  $Id: config.h,v 7.148 2003/05/06 23:02:26 michael Exp $
  */
 
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
-
 #include "setup.h"
 
 
@@ -289,13 +288,6 @@
 #define VCHANS
 #define ANONOPS
 #define HALFOPS
-
-/*
- * The maximum number of local clients that are likely to close at once. If
- * this number is exceeded, it will still work, but it will be slower...
- */
-#define LOCAL_CLOSE_TABLE_SIZE 16
-
 /* END OF CONFIGURABLE OPTIONS */
 
 /* disable them for efnet */

@@ -16,36 +16,25 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.43 2003/05/06 05:40:53 db Exp $
+#*   $Id: Makefile.in,v 7.44 2003/05/06 23:02:17 michael Exp $
 #*/
 
 RM=@RM@
 
 # Default make flags - you may want to uncomment this on a multicpu machine
-#MFLAGS = -j 4
-SUBDIRS = modules adns src tools doc include servlink help
-
-CLEANDIRS = ${SUBDIRS} contrib iauth
-# XXX removed `iauth' from the build since it doesn't compile currently
-# SUBDIRS=src tools iauth
-RSA_FILES=rsa_respond/README rsa_respond/respond.c rsa_respond/Makefile
+#MFLAGS   = -j 4
+SUBDIRS   = modules adns src tools doc include servlink help
+CLEANDIRS = ${SUBDIRS} contrib
 
 # The make used HAS to set $(MAKE). But then, if we don't do it this
 # way, people lose the option to use a 'make' called something other 
 # than `make.' If it doesn't set $(MAKE), fall back to the old behavior
 # by substing SET_MAKE.
-
 @SET_MAKE@
 
 MAKE += ${MFLAGS} 
 
 all:	build
-
-
-autoconf: autoconf/configure.in
-	autoconf autoconf/configure.in >configure
-	autoheader -l autoconf autoconf/configure.in > include/setup.h.in
-	${RM} -f config.cache
 
 build:
 	-@if [ ! -f include/setup.h ] ; then \
@@ -87,13 +76,6 @@ depend:
 		${MAKE} depend; cd ..;\
 	done
 
-lint:
-	@for i in $(SUBDIRS); do \
-		echo "lint ==> $$i";\
-		cd $$i;\
-		${MAKE} lint; cd ..;\
-	done
-
 install: all
 	@for i in $(SUBDIRS); do \
 		echo "install ==> $$i";\
@@ -102,9 +84,3 @@ install: all
 		cd ..; \
 	done
 
-rsa_respond:
-	@cd tools;\
-	echo "Creating rsa_respond.tar.gz";\
-	tar cf ../rsa_respond.tar $(RSA_FILES);\
-	cd ..;\
-	gzip rsa_respond.tar

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.5 2002/04/29 22:30:24 leeh Exp $
+# $Id: Makefile.in,v 1.6 2003/05/06 23:02:26 michael Exp $
 # makefile for include/
 
 INSTALL=	@INSTALL@
@@ -15,7 +15,6 @@ all:
 build:
 clean:
 depend:
-lint:
 
 install:
 	@echo installing header files...

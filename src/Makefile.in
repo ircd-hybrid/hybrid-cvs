@@ -1,14 +1,13 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.119 2003/05/06 08:51:59 michael Exp $
+# $Id: Makefile.in,v 7.120 2003/05/06 23:02:33 michael Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
 INSTALL_BIN	= @INSTALL_PROGRAM@
 INSTALL_DATA	= @INSTALL_DATA@
 INSTALL_SUID	= @INSTALL_PROGRAM@ -o root -m 4755
-RM		= @RM@
 LEX		= @LEX@
 LEXLIB		= @LEXLIB@
 CFLAGS		= @IRC_CFLAGS@ -DIRCD_PREFIX=\"@prefix@\"
@@ -102,10 +101,8 @@ BASE_SRCS =                     \
   @SNPRINTF_C@			\
   tools.c                       \
   whowas.c
-#  ircdauth.c
 
 SRCS = ${BASE_SRCS}
-
 OBJS = ${SRCS:.c=.o}
 
 all: ircd
@@ -162,9 +159,6 @@ depend:
 
 clean:
 	${RM} -f *.o *.exe *~ y.tab.* lex.yy.c ircd.core core ircd 
-
-lint:
-	lint -aacgprxhH $(CPPFLAGS) -DIRCD_PREFIX=\"@prefix@\" $(SRCS) >>../lint.out
 
 distclean: clean
 	${RM} -f Makefile version.c.last

@@ -1,5 +1,5 @@
 # Generated automatically from Makefile.in by configure.
-# $Id: Makefile.in,v 1.15 2002/02/02 16:01:13 leeh Exp $
+# $Id: Makefile.in,v 1.16 2003/05/06 23:02:25 michael Exp $
 # makefile for include/
 
 INSTALL=	@INSTALL@
@@ -20,7 +20,6 @@ all:
 build:
 clean:
 depend:
-lint:
 
 index:
 	@echo building index files

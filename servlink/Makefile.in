@@ -1,7 +1,7 @@
 #
 # Makefile.in for servlink/src
 #
-# $Id: Makefile.in,v 1.13 2002/06/03 12:15:08 leeh Exp $
+# $Id: Makefile.in,v 1.14 2003/05/06 23:02:31 michael Exp $
 #
 
 CC              = @CC@
@@ -9,9 +9,6 @@ INSTALL         = @INSTALL@
 INSTALL_BIN     = @INSTALL_PROGRAM@
 INSTALL_DATA    = @INSTALL_DATA@
 INSTALL_SUID    = @INSTALL_PROGRAM@ -o root -m 4755
-RM              = @RM@
-LEX             = @LEX@
-LEXLIB          = @LEXLIB@
 CFLAGS          = @IRC_CFLAGS@ -DIRCD_PREFIX=\"@prefix@\"
 LDFLAGS         = @LDFLAGS@
 MKDEP           = @MKDEP@ -DIRCD_PREFIX=\"@prefix@\"
@@ -74,9 +71,6 @@ depend:
 
 clean:
 	${RM} -f *.o *~ *.core core servlink
-
-lint:
-	lint -aacgprxhH $(CPPFLAGS) -DIRCD_PREFIX=\"@prefix@\" $(SOURCES) >>../lint.out
 
 distclean: clean
 	${RM} -f Makefile setup.h

@@ -1,4 +1,4 @@
-$Id: TODO,v 7.74 2002/08/21 05:58:03 lusky Exp $
+$Id: TODO,v 7.75 2003/05/06 23:02:17 michael Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
@@ -79,7 +79,6 @@ Little things to be done given enough time and initiative -Hwy
 .  The 3 logging path settings are NOOP in the conf (logpath, oper_log, 
    gline_log)
 .  Fix convertconf more
-.  2 pass conf parser (grab classes before anything that uses them)
 .  Re-add the ability to set usermodes from the conf (oldconf field after the
    O: line class)
 .  <Riedel> walter : have you implemented the motd= thing in the auth block ?

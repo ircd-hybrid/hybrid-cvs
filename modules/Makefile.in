@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.69 2002/06/16 16:31:25 leeh Exp $
+# $Id: Makefile.in,v 1.70 2003/05/06 23:02:30 michael Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -24,7 +24,6 @@ LD		= @LD@
 
 SSL_LIBS	= @SSL_LIBS@
 SSL_INCLUDES	= @SSL_INCLUDES@
-
 IRCDLIBS        = @LIBS@ $(SSL_LIBS)
 
 prefix          = @prefix@
@@ -202,9 +201,6 @@ depend:
 clean:
 	${RM} -f *.so *.sl *~ *.o *.a
 	${RM} -f core/*.so core/*.sl core/*~ core/*.o
-
-lint:
-	lint -aacgprxhH ${CPPFLAGS} -DIRCD_PREFIX=\"@prefix@\" $(ALL_SRCS) >../lint.out
 
 distclean: clean
 	${RM} -f Makefile

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.66 2003/05/06 05:41:03 db Exp $
+ *  $Id: m_info.c,v 1.67 2003/05/06 23:02:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-const char *_version = "$Revision: 1.66 $";
+const char *_version = "$Revision: 1.67 $";
 #endif
 
 /*
@@ -592,7 +592,7 @@ ms_info(struct Client *client_p, struct Client *source_p,
 static void
 send_info_text(struct Client *source_p)
 {
-  char **text = (char**)infotext;
+  const char **text = infotext;
 
   while (*text)
   {

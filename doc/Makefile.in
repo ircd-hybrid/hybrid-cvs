@@ -1,10 +1,9 @@
-# $Id: Makefile.in,v 7.17 2002/07/10 00:05:48 leeh Exp $
+# $Id: Makefile.in,v 7.18 2003/05/06 23:02:23 michael Exp $
 CC		= @CC@
 INSTALL		= @INSTALL@
 INSTALL_BIN	= @INSTALL_PROGRAM@
 INSTALL_DATA	= @INSTALL_DATA@
 INSTALL_SUID	= @INSTALL_PROGRAM@ -o root -m 4755
-RM		= @RM@
 LEX		= @LEX@
 LEXLIB		= @LEXLIB@
 CFLAGS		= @IRC_CFLAGS@ -DIRCD_PREFIX=\"@prefix@\"
@@ -82,8 +81,6 @@ build:
 clean:
 
 depend:
-
-lint:
 
 distclean:
 	${RM} -f Makefile
