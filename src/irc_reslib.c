@@ -92,7 +92,7 @@
 #define DNS_LABELTYPE_BITSTRING		0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.10 2003/05/13 17:46:37 joshk Exp $ */
+/* $Id: irc_reslib.c,v 7.11 2003/05/14 03:51:09 db Exp $ */
 
 static FBFILE *file;
 
@@ -1106,11 +1106,8 @@ mklower(int ch)
  */
 int
 irc_res_mkquery(
-	     int op,			/* opcode of query */
 	     const char *dname,		/* domain name */
 	     int class, int type,	/* class and type of query */
-	     const u_char *data,	/* resource record data */
-	     int datalen,		/* length of data */
 	     u_char *buf,		/* buffer to put query */
 	     int buflen)		/* size of buffer */
 {
@@ -1127,9 +1124,8 @@ irc_res_mkquery(
 	memset(buf, 0, HFIXEDSZ);
 	hp = (HEADER *) buf;
 
-	/* XXX We randomise our own id in irc_res.c */
 	hp->id = 0;
-	hp->opcode = op;
+	hp->opcode = QUERY;
 	hp->rd = 1;		/* recurse */
 	hp->rcode = NO_ERRORS;
 	cp = buf + HFIXEDSZ;
@@ -1138,25 +1134,17 @@ irc_res_mkquery(
 	*dpp++ = buf;
 	*dpp++ = NULL;
 	lastdnptr = dnptrs + sizeof dnptrs / sizeof dnptrs[0];
-	/*
-	 * perform opcode specific processing
-	 */
-	switch (op) {
-	case QUERY:
-		if ((buflen -= QFIXEDSZ) < 0)
-			return (-1);
-		if ((n = irc_dn_comp(dname, cp, buflen, dnptrs, lastdnptr)) < 0)
-			return (-1);
 
-		cp += n;
-		buflen -= n;
-		IRC_NS_PUT16(type, cp);
-		IRC_NS_PUT16(class, cp);
-		hp->qdcount = htons(1);
-		break;
+	if ((buflen -= QFIXEDSZ) < 0)
+	  return (-1);
+	if ((n = irc_dn_comp(dname, cp, buflen, dnptrs, lastdnptr)) < 0)
+	  return (-1);
 
-	default:
-		return (-1);
-	}
+	cp += n;
+	buflen -= n;
+	IRC_NS_PUT16(type, cp);
+	IRC_NS_PUT16(class, cp);
+	hp->qdcount = htons(1);
+
 	return (cp - buf);
 }
