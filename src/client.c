@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.231 2002/02/18 02:32:51 jmallett Exp $
+ *  $Id: client.c,v 7.232 2002/02/19 18:28:17 androsyn Exp $
  */
 
 #include "tools.h"
@@ -181,6 +181,7 @@ void _free_client(struct Client* client_p)
   assert(&me != client_p);
   assert(NULL == client_p->prev);
   assert(NULL == client_p->next);
+  assert(dlinkFind(&lclient_list, client_p) == NULL);
 
   if (MyConnect(client_p))
     {
