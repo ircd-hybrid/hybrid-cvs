@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertconf.c,v 1.19 2000/12/20 08:10:07 db Exp $
+ * $Id: convertconf.c,v 1.20 2000/12/20 18:02:48 db Exp $
  */
 
 #include <stdio.h>
@@ -589,8 +589,8 @@ static void PrintOutServers(FILE* out)
       if(p->name && p->c_passwd && p->n_passwd && p->host)
 	{
 	  fprintf(out,"\tconnect {\n");
-	  fprintf(out,"\t\thost=\"%s\";\n", p->name);
-	  fprintf(out,"\t\tname=\"%s\";\n", p->host);
+	  fprintf(out,"\t\thost=\"%s\";\n", p->host);
+	  fprintf(out,"\t\tname=\"%s\";\n", p->name);
 	  fprintf(out,"\t\tsend_password=\"%s\";\n", p->c_passwd);
 	  fprintf(out,"\t\taccept_password=\"%s\";\n", p->n_passwd);
 	  fprintf(out,"\t\tport=%d;\n", p->port );
