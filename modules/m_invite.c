@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.63 2003/06/14 14:15:36 michael Exp $
+ *  $Id: m_invite.c,v 1.64 2003/07/08 20:54:55 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,14 +63,14 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.63 $";
+const char *_version = "$Revision: 1.64 $";
 #endif
 
 /*
 ** m_invite
 **      parv[0] - sender prefix
 **      parv[1] - user to invite
-**      parv[2] - channel number
+**      parv[2] - channel name
 */
 static void
 m_invite(struct Client *client_p, struct Client *source_p,
@@ -222,11 +222,8 @@ m_invite(struct Client *client_p, struct Client *source_p,
 ** ms_invite
 **      parv[0] - sender prefix
 **      parv[1] - user to invite
-**      parv[2] - channel number
+**      parv[2] - channel name
 */
-/*
- *
- */
 static void
 ms_invite(struct Client *client_p, struct Client *source_p,
           int parc, char *parv[])
