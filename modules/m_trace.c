@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.63 2003/05/24 19:47:22 db Exp $
+ *  $Id: m_trace.c,v 1.64 2003/05/24 20:59:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -46,9 +46,10 @@ static void m_trace(struct Client *, struct Client *, int, char **);
 static void ms_trace(struct Client*, struct Client*, int, char**);
 static void mo_trace(struct Client*, struct Client*, int, char**);
 
+#ifdef IPV6
 static void mo_trace4(struct Client*, struct Client*, int, char**);
-
 static void mo_trace6(struct Client*, struct Client*, int, char**);
+#endif
 
 static void trace_spy(struct Client *);
 static void do_actual_trace(int ttype, const char *tname,
@@ -59,6 +60,7 @@ struct Message trace_msgtab = {
   {m_unregistered, m_trace, ms_trace, mo_trace, m_ignore}
 };
 
+#ifdef IPV6
 struct Message trace_msgtab4 = {
   "TRACE4", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_trace, m_ignore, mo_trace4, m_ignore}
@@ -68,6 +70,7 @@ struct Message trace_msgtab6 = {
   "TRACE6", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_trace, m_ignore, mo_trace6, m_ignore}
 };
+#endif
 
 #ifndef STATIC_MODULES
 void
@@ -91,7 +94,7 @@ _moddeinit(void)
   mod_del_cmd(&trace_msgtab6);
 #endif
 }
-const char *_version = "$Revision: 1.63 $";
+const char *_version = "$Revision: 1.64 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
