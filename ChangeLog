@@ -1,3 +1,24 @@
+jmallett    2002/11/24 03:27:16 EST	(20021124_0)
+
+  Modified files:
+    servlink             servlink.h 
+    src                  md5.c 
+  Log:
+  Repeat after me "char isn't signed"...  "on reasonable UNIX systems".
+  Checking for "<derived-char> > -1" is broken, when you mean "<derived-char> !=
+  (char) -1" [~0, 0xff on most machines].
+  
+  That table is all-but begging to be int8_t or similar.
+  
+  Also, match the constness returned by the _cfp functions, since discarding it
+  is evil, and we don't seem to need to.
+  
+  Revision  Changes    Path
+  1.21      +1 -1      ircd-hybrid-7/servlink/servlink.h
+  1.15      +4 -4      ircd-hybrid-7/src/md5.c
+
+
+
 db          2002/11/23 12:12:56 EST	(20021123_0)
 
   Modified files:
@@ -33255,4 +33276,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4116 2002/11/23 17:12:59 db Exp $
+$Id: ChangeLog,v 7.4117 2002/11/24 08:27:19 jmallett Exp $
