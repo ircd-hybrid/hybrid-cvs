@@ -8,8 +8,9 @@
  * Owner:  Wohali (Joan Touzet)
  *
  *
- * $Id: blalloc.c,v 7.29 2001/08/13 04:48:40 androsyn blalloc.c $
+ * $Id: blalloc.c,v 7.30 2001/08/13 05:06:03 androsyn Exp $
  */
+
 #define WE_ARE_MEMORY_C
 #include <stdio.h>
 #include <unistd.h>
