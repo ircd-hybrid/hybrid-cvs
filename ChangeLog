@@ -1,3 +1,7 @@
+*** 20001202_4 by toot
+fixed some compile errors/typos
+
+
 *** 20001202_3 by db
 - recoded send_members in channel.c so it actually works
   its still a dogs breakfast... but =better=
@@ -1303,7 +1307,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.658 2000/12/02 07:41:47 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.659 2000/12/02 12:45:30 toot Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
