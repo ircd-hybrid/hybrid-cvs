@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.27 2003/07/08 04:01:50 db Exp $
+ *  $Id: csvlib.c,v 7.28 2003/09/18 09:14:38 bill Exp $
  */
 
 #include "stdinc.h"
@@ -175,7 +175,7 @@ parse_csv_line(char *line, ...)
  * - Dianora
  */
 void 
-write_conf_line(struct Client *source_p, struct ConfItem *conf,
+write_conf_line(const struct Client *source_p, struct ConfItem *conf,
 		const char *current_date, time_t cur_time)
 {
   FBFILE *out;
@@ -204,7 +204,7 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
                          "%s added K-Line for [%s@%s] [%s]",
                          get_oper_name(source_p),
 			 aconf->user, aconf->host, aconf->reason);
-    sendto_one(source_p, ":%s NOTICE %s :Added K-Line [%s@%s]",
+    sendto_one((struct Client *)source_p, ":%s NOTICE %s :Added K-Line [%s@%s]",
                me.name, source_p->name, aconf->user, aconf->host);
     ilog(L_TRACE, "%s added K-Line for [%s@%s] [%s]",
          source_p->name, aconf->user, aconf->host, aconf->reason);
@@ -219,7 +219,7 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s added D-Line for [%s] [%s]",
                          get_oper_name(source_p), aconf->host, aconf->reason);
-    sendto_one(source_p, ":%s NOTICE %s :Added D-Line [%s] to %s",
+    sendto_one((struct Client *)source_p, ":%s NOTICE %s :Added D-Line [%s] to %s",
                me.name, source_p->name, aconf->host, filename);
     ilog(L_TRACE, "%s added D-Line for [%s] [%s]",
          get_oper_name(source_p), aconf->host, aconf->reason);
@@ -234,7 +234,7 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s added X-Line for [%s] [%s]",
                          get_oper_name(source_p), conf->name, xconf->reason);
-    sendto_one(source_p, ":%s NOTICE %s :Added X-Line [%s] to %s",
+    sendto_one((struct Client *)source_p, ":%s NOTICE %s :Added X-Line [%s] to %s",
                me.name, source_p->name, conf->name, filename);
     ilog(L_TRACE, "%s added X-Line for [%s] [%s]",
          get_oper_name(source_p), conf->name, xconf->reason);
@@ -247,7 +247,7 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
   case GLINE_TYPE:
     aconf = (struct AccessItem *)map_to_conf(conf);
     sendto_realops_flags(UMODE_ALL, L_ALL,
-			 "%s has triggered gline for [%s@%s] [%s]",
+			 "%s added G-Line for [%s@%s] [%s]",
 			 get_oper_name(source_p),
 			 aconf->user, aconf->host, aconf->reason);
     ilog(L_TRACE, "%s added G-Line for [%s@%s] [%s]",

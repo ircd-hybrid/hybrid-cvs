@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.262 2003/09/11 03:41:42 metalrock Exp $
+ *  $Id: s_conf.h,v 7.263 2003/09/18 09:14:35 bill Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -449,7 +449,7 @@ extern void yyerror(const char *);
 extern int conf_yy_fatal_error(const char *);
 extern int conf_fbgets(char *, int, FBFILE *);
 
-extern void write_conf_line(struct Client *, struct ConfItem *,
+extern void write_conf_line(const struct Client *, struct ConfItem *,
 			    const char *, time_t);
 
 extern int remove_conf_line(ConfType, struct Client *, const char *,
@@ -469,7 +469,7 @@ extern void conf_add_d_conf(struct AccessItem *);
 extern void parse_csv_file(FBFILE *file, ConfType);
 extern char *getfield(char *newline);
 
-extern char *get_oper_name(struct Client *client_p);
+extern char *get_oper_name(const struct Client *client_p);
 /* XXX consider inlining this */
 extern void *map_to_conf(struct ConfItem *conf);
 /* XXX consider inlining this */

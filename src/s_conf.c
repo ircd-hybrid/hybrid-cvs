@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.475 2003/09/15 23:24:48 metalrock Exp $
+ *  $Id: s_conf.c,v 7.476 2003/09/18 09:14:38 bill Exp $
  */
 
 #include "stdinc.h"
@@ -2287,14 +2287,14 @@ oper_privs_as_string(const unsigned int port)
   return(privs_out);
 }
 
-/* const char* get_oper_name(struct Client *client_p)
+/*
  * Input: A client to find the active oper{} name for.
  * Output: The nick!user@host{oper} of the oper.
  *         "oper" is server name for remote opers
  * Side effects: None.
  */
 char *
-get_oper_name(struct Client *client_p)
+get_oper_name(const struct Client *client_p)
 {
   dlink_node *cnode;
   struct ConfItem *conf;

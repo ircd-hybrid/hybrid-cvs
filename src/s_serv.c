@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.373 2003/09/15 23:24:48 metalrock Exp $
+ *  $Id: s_serv.c,v 7.374 2003/09/18 09:14:39 bill Exp $
  */
 
 #include "stdinc.h"
@@ -57,6 +57,10 @@
 #include "hook.h"
 
 #define MIN_CONN_FREQ 300
+
+#ifndef INADDR_NONE
+#define INADDR_NONE ((unsigned int) 0xffffffff)
+#endif
 
 struct Client *uplink  = NULL;
 
