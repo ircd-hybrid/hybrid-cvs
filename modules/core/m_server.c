@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.71 2001/11/13 11:45:48 leeh Exp $
+ *   $Id: m_server.c,v 1.72 2001/11/15 20:04:28 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -627,7 +627,7 @@ char *parse_server_args(char *parv[], int parc, char *info, int *hop)
     }
 
   if (strlen(name) > HOSTLEN)
-    name[HOSTLEN] = '\0';
+    return NULL;
 
   return(name);
 }
