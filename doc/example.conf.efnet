@@ -1,5 +1,5 @@
 /* Hybrid 7 Example configuration file
- * $Id: example.conf.efnet,v 7.2 2001/12/20 20:23:10 leeh Exp $
+ * $Id: example.conf.efnet,v 7.3 2001/12/29 22:52:11 wcampbel Exp $
  * December 2000 - ejb, wcampbel, db and others
  */
 
@@ -856,6 +856,13 @@ general {
 	 * NOTICE telling them they should read the MOTD, and leave it at that.
 	 */
 	short_motd = no;
+
+	/* Enable PING cookies, clients must respond to a random string
+	 * sent to them in a PING command before being accepted by the server.
+	 * This is used to help block certain types of drones and FTP PASV
+	 * mode "spoofing".  The default is 'no'
+	 */
+	ping_cookie = no;
 
 	/* Set to "yes" to disable flood control for opers. */
 	no_oper_flood = yes;
