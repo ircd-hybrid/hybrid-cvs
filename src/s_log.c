@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.52 2003/06/01 18:47:03 joshk Exp $
+ *  $Id: s_log.c,v 7.53 2003/06/12 00:38:33 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -41,9 +41,7 @@
 /* some older syslogs would overflow at 2024 */
 #define LOG_BUFSIZE 2000
 
-#ifdef USE_LOGFILE
 static FBFILE *logFile;
-#endif
 static int logLevel = INIT_LOG_LEVEL;
 
 
@@ -81,8 +79,6 @@ static const char *logLevelToString[] =
  * open_log - open ircd logging file
  * returns true (1) if successful, false (0) otherwise
  */
-#ifdef USE_LOGFILE 
-
 static int 
 open_log(const char *filename)
 {
@@ -102,7 +98,6 @@ open_log(const char *filename)
 
   return(1);
 }
-#endif
 
 #ifdef __vms
 void send_opcom(const char *message)
@@ -132,7 +127,6 @@ void send_opcom(const char *message)
 }
 #endif
 
-#ifdef USE_LOGFILE
 static void 
 write_log(const char *message)
 {
@@ -145,7 +139,6 @@ write_log(const char *message)
            smalldate(CurrentTime), message);
   fbputs(buf, logFile);
 }
-#endif
    
 void
 ilog(int priority, const char *fmt, ...)
@@ -169,9 +162,8 @@ ilog(int priority, const char *fmt, ...)
   if (priority <= L_DEBUG)
     syslog(sysLogLevel[priority], "%s", buf);
 #endif
-#ifdef USE_LOGFILE 
-  write_log(buf);
-#endif
+  if (ConfigFileEntry.use_logging)
+    write_log(buf);
 
 #ifdef __vms
   send_opcom(buf);
@@ -181,9 +173,7 @@ ilog(int priority, const char *fmt, ...)
 void
 init_log(const char *filename)
 {
-#ifdef USE_LOGFILE 
   open_log(filename);
-#endif
 #ifdef USE_SYSLOG
   openlog("ircd", LOG_PID | LOG_NDELAY, LOG_FACILITY);
 #endif
@@ -195,10 +185,8 @@ init_log(const char *filename)
 void
 reopen_log(const char *filename)
 {
-#ifdef USE_LOGFILE
   fbclose(logFile);
   open_log(filename);
-#endif
 }
 
 void

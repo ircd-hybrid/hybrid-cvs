@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.72 2003/05/28 21:11:52 bill Exp $
+ *  $Id: m_info.c,v 1.73 2003/06/12 00:38:31 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-const char *_version = "$Revision: 1.72 $";
+const char *_version = "$Revision: 1.73 $";
 #endif
 
 /*
@@ -426,6 +426,12 @@ static struct InfoStruct info_table[] =
     OUTPUT_BOOLEAN_YN,
     &ConfigChannel.use_knock,
     "Enable /KNOCK",
+  },
+  {
+    "use_logging",
+    OUTPUT_BOOLEAN,
+    &ConfigFileEntry.use_logging,
+    "Enable logging"
   },
   {
     "disable_hidden",

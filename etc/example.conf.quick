@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.8 2003/05/31 07:01:41 lusky Exp $
+ * $Id: example.conf.quick,v 1.9 2003/06/12 00:38:27 metalrock Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -341,6 +341,7 @@ general {
 	maximum_links = 1;
 	/* REMOVE ME.  The following line checks you've been reading. */
 	havent_read_conf = 1;
+        use_logging = yes;
 	fname_userlog = "logs/userlog";
 	fname_operlog = "logs/operlog";
 	fname_foperlog = "logs/foperlog";

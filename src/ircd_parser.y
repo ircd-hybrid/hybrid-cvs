@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.305 2003/06/06 07:17:45 michael Exp $
+ *  $Id: ircd_parser.y,v 1.306 2003/06/12 00:38:32 metalrock Exp $
  */
 
 %{
@@ -288,6 +288,7 @@ init_parser_confs(void)
 %token  USE_EXCEPT
 %token  USE_INVEX
 %token  USE_KNOCK
+%token  USE_LOGGING
 %token  VHOST
 %token  VHOST6
 %token  XLINE
@@ -2209,6 +2210,7 @@ general_item:       general_failed_oper_notice |
                     general_idletime |
                     general_maximum_links |
                     general_message_locale | general_client_exit |
+		    general_use_logging |
                     general_fname_userlog | general_fname_operlog |
                     general_fname_foperlog | general_oper_only_umodes |
                     general_max_targets |
@@ -2451,6 +2453,16 @@ general_iauth_port: IAUTH_PORT '=' NUMBER ';'
   if (ypass == 2)
     iAuth.port = $3;
 #endif
+};
+
+general_use_logging: USE_LOGGING '=' TYES ';'
+{
+  if (ypass == 2)
+    ConfigFileEntry.use_logging = 1;
+} | USE_LOGGING '=' TNO ';'
+{
+  if (ypass == 2)
+    ConfigFileEntry.use_logging = 0;
 };
 
 general_fname_userlog: FNAME_USERLOG '=' QSTRING ';'

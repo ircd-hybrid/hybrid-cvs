@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.302 2003/06/07 17:28:01 michael Exp $
+ *  $Id: ircd.c,v 7.303 2003/06/12 00:38:32 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -641,7 +641,6 @@ main(int argc, char *argv[])
   {
       check_can_use_v6(); /* Done in close_all_connections normally */
   }
-
   init_log(logFileName);
   init_netio();         /* This needs to be setup early ! -- adrian */
   /* Check if there is pidfile and daemon already running */

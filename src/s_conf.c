@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.421 2003/06/07 17:28:02 michael Exp $
+ *  $Id: s_conf.c,v 7.422 2003/06/12 00:38:33 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1322,7 +1322,9 @@ rehash(int sig)
 
   flush_deleted_I_P();
   check_klines();
-  reopen_log(logFileName);
+
+  if (ConfigFileEntry.use_logging)
+    reopen_log(logFileName);
 
   return(0);
 }
@@ -1392,6 +1394,7 @@ set_default_conf(void)
   ConfigFileEntry.short_motd = NO;
   ConfigFileEntry.no_oper_flood = NO;
   ConfigFileEntry.true_no_oper_flood = NO;
+  ConfigFileEntry.use_logging = YES;
   ConfigFileEntry.fname_userlog[0] = '\0';
   ConfigFileEntry.fname_foperlog[0] = '\0';
   ConfigFileEntry.fname_operlog[0] = '\0';

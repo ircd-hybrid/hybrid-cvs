@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.232 2003/06/06 04:31:46 michael Exp $
+ *  $Id: s_conf.h,v 7.233 2003/06/12 00:38:29 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -254,6 +254,7 @@ struct config_file_entry
   /* 0 == don't use throttle... */
   int           throttle_time;
   int           use_egd;
+  int           use_logging;
   int		ping_cookie;
   int		disable_auth;
   int		fallback_to_ip6_int;
