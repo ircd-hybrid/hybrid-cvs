@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.116 2001/01/24 14:10:09 db Exp $
+ * $Id: ircd_parser.y,v 1.117 2001/01/25 01:56:57 wcampbel Exp $
  */
 
 %{
@@ -1034,14 +1034,14 @@ connect_item:   connect_name | connect_host | connect_send_password |
 
 connect_name:   NAME '=' QSTRING ';'
   {
-    if(yy_aconf->user)
+    if(yy_aconf->name)
       {
 	sendto_realops_flags(FLAGS_ALL,"*** Multiple connect accept entry");
       }
     else
       {
-	MyFree(yy_aconf->user);
-	DupString(yy_aconf->user, yylval.string);
+	MyFree(yy_aconf->name);
+	DupString(yy_aconf->name, yylval.string);
       }
   };
 
