@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.147 2003/11/01 06:57:39 joshk Exp $
+ *  $Id: modules.c,v 7.148 2004/02/28 06:12:27 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -191,7 +191,7 @@ mod_set_base(void)
 /* mod_add_path()
  *
  * input	- path
- * ouput	- 
+ * output	- 
  * side effects - adds path to list
  */
 void

@@ -349,8 +349,8 @@ Example topology :
   is not counted.
 
   G-Lines work best when the EU side of EFNet is not fragmented. G-Lines
-  will, however, propogate through a Hybrid 6 hub (but not a CSr hub) even
-  if the hub server has G-Lines disabled. This propogation allows two halves
+  will, however, propagate through a Hybrid 6 hub (but not a CSr hub) even
+  if the hub server has G-Lines disabled. This propagation allows two halves
   of EU-EFnet to have concurrent G-Lines set even when split by US hub servers.
 
 
@@ -365,4 +365,4 @@ Vuurwerk Internet           '|.|'   PGP   - 0xD68A7AAB
 
 And on the seventh day, He exited from append mode.
 
-# $Id: operguide.txt,v 1.8 2002/02/24 04:45:02 wcampbel Exp $
+# $Id: operguide.txt,v 1.9 2004/02/28 06:12:21 metalrock Exp $

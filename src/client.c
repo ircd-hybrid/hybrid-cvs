@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.422 2004/01/31 17:42:40 adx Exp $
+ *  $Id: client.c,v 7.423 2004/02/28 06:12:27 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -796,7 +796,7 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
 
   /* there are clients w/o a servptr: unregistered ones */
 
-  /* For a server or user quitting, propogate the information to
+  /* For a server or user quitting, propagate the information to
   ** other servers (except to the one where is came from (client_p))
   */
   if (IsMe(source_p))
@@ -1558,8 +1558,8 @@ change_local_nick(struct Client *client_p, struct Client *source_p, const char *
 	  
 	  /* Only hubs care about lazy link nicks not being sent on yet
 	   * lazylink leafs/leafs always send their nicks up to hub,
-	   * hence must always propogate nick changes.
-	   * hubs might not propogate a nick change, if the leaf
+	   * hence must always propagate nick changes.
+	   * hubs might not propagate a nick change, if the leaf
 	   * does not know about that client yet.
 	   */
       sendto_server(client_p, source_p, NULL, CAP_TS6, NOCAPS, NOFLAGS,

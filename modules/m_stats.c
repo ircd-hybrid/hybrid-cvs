@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.157 2004/02/27 09:22:50 metalrock Exp $
+ *  $Id: m_stats.c,v 1.158 2004/02/28 06:12:25 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.157 $";
+const char *_version = "$Revision: 1.158 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -1085,7 +1085,7 @@ stats_spy(struct Client *source_p, char statchar)
 /* stats_p_spy()
  *
  * input	- pointer to client doing stats
- * ouput	-
+ * output	-
  * side effects - call hook doing_stats_p
  */
 static void

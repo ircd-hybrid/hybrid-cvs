@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.33 2004/02/13 03:48:15 metalrock Exp $
+ *  $Id: m_xline.c,v 1.34 2004/02/28 06:12:25 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 
 
@@ -199,7 +199,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
  *
  * inputs	- oper, target server, xline, type, reason
  * outputs	- none
- * side effects	- propogates xline, applies it if we are a target
+ * side effects	- propagates xline, applies it if we are a target
  */
 static void
 ms_xline(struct Client *client_p, struct Client *source_p,
@@ -306,7 +306,7 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
  *
  * inputs	- oper, target server, gecos
  * outputs	- none
- * side effects	- propogates unxline, applies it if we are a target
+ * side effects	- propagates unxline, applies it if we are a target
  */
 static void
 ms_unxline(struct Client *client_p, struct Client *source_p,

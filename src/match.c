@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.35 2004/01/31 20:34:22 michael Exp $
+ * $Id: match.c,v 7.36 2004/02/28 06:12:27 metalrock Exp $
  *
  */
 #include "stdinc.h"
@@ -230,7 +230,7 @@ comp_with_mask(void *addr, void *dest, unsigned int mask)
 /* match_cidr()
  *
  * Input - mask, address
- * Ouput - 1 = Matched 0 = Did not match
+ * Output - 1 = Matched 0 = Did not match
  */
 int
 match_cidr(const char *s1, const char *s2)

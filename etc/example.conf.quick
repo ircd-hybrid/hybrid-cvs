@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.25 2003/10/13 02:15:22 metalrock Exp $
+ * $Id: example.conf.quick,v 1.26 2004/02/28 06:12:23 metalrock Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -205,7 +205,7 @@ cluster {
         /* name: the server to share with, this can take wildcards */
         /* NOTE: only local actions will be clustered, meaning if
          *       the server receives a shared kline/unkline/etc, it
-         *       will not be propogated to clustered servers.
+         *       will not be propagated to clustered servers.
          */
         name = "*.arpa";  
         

@@ -1,6 +1,6 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  m_encap.c: encapsulated command propogation and parsing
+ *  m_encap.c: encapsulated command propagation and parsing
  *
  *  Copyright (C) 2003 by the past and present ircd coders, and others.
  *
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_encap.c,v 1.8 2003/08/03 14:22:19 michael Exp $
+ *  $Id: m_encap.c,v 1.9 2004/02/28 06:12:25 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&encap_msgtab);
   delete_capability("ENCAP");
 }
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 #endif
 
 /*
@@ -63,7 +63,7 @@ const char *_version = "$Revision: 1.8 $";
  *
  * inputs	- destination server, subcommand, parameters
  * output	- none
- * side effects	- propogates subcommand to locally connected servers
+ * side effects	- propagates subcommand to locally connected servers
  */
 static void
 ms_encap(struct Client *client_p, struct Client *source_p,

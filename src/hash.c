@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.84 2004/01/31 18:24:32 adx Exp $
+ *  $Id: hash.c,v 7.85 2004/02/28 06:12:27 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1058,7 +1058,7 @@ mo_hash(struct Client *client_p, struct Client *source_p,
 /* exceeding_sendq()
  *
  * inputs       - pointer to client to check
- * ouput	- 1 if client is in danger of blowing its sendq
+ * output	- 1 if client is in danger of blowing its sendq
  *		  0 if it is not.
  * side effects -
  *
@@ -1125,7 +1125,7 @@ list_allow_channel(const char *chname, struct ListTask *lt)
  * inputs       - client pointer to return result to
  *              - pointer to channel to list
  *              - pointer to ListTask structure
- * ouput	- none
+ * output	- none
  * side effects -
  */
 static void
