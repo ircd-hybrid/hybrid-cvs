@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_misc.c,v 7.18 2001/01/18 17:32:25 ejb Exp $
+ *  $Id: s_misc.c,v 7.19 2001/01/22 10:22:56 toot Exp $
  */
 #include "s_misc.h"
 #include "client.h"
@@ -84,7 +84,7 @@ char* date(time_t lclock)
   if (minswest < 0)
     minswest = -minswest;
   
-  ircsprintf(buf, "%s %s %2d %4d -- %2u:%2u:%2u %c%2u:%2u",
+  ircsprintf(buf, "%s %s %02d %4d -- %02u:%02u:%02u %c%02u:%02u",
           weekdays[lt->tm_wday], months[lt->tm_mon],lt->tm_mday,
           lt->tm_year + 1900, lt->tm_hour, lt->tm_min, lt->tm_sec,
           plus, minswest/60, minswest%60);
