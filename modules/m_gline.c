@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.85 2002/12/28 07:02:38 bill Exp $
+ *  $Id: m_gline.c,v 1.85.2.1 2003/04/11 03:41:40 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -109,7 +109,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.85 $";
+const char *_version = "$Revision: 1.85.2.1 $";
 #endif
 /*
  * mo_gline()
@@ -202,6 +202,17 @@ mo_gline(struct Client *client_p, struct Client *source_p,
 			
   reason = parv[2];
 
+  /* call these two functions first so the 'requesting' notice always comes
+   * before the 'has triggered' notice.  -bill
+   */
+  sendto_realops_flags(FLAGS_ALL, L_ALL,
+                       "%s!%s@%s on %s is requesting gline for [%s@%s] [%s]",
+                       source_p->name, source_p->username, source_p->host,
+                       me.name, user, host, reason);
+  log_gline_request(source_p->name,
+                    (const char *)source_p->username,
+                    source_p->host, me.name, user, host, reason);
+
   /* If at least 3 opers agree this user should be G lined then do it */
   if (check_majority_gline(source_p, source_p->name,
 			   (const char *)source_p->username,
@@ -213,15 +224,6 @@ mo_gline(struct Client *client_p, struct Client *source_p,
 	       me.name, parv[0]);
     return;
   }
-
-  sendto_realops_flags(FLAGS_ALL, L_ALL,
-		       "%s!%s@%s on %s is requesting gline for [%s@%s] [%s]",
-		       source_p->name, source_p->username, source_p->host,
-		       me.name, user, host, reason);
-  log_gline_request(source_p->name,
-		    (const char *)source_p->username,
-		    source_p->host,me.name, user, host, reason);
-
 
   /* 4 param version for hyb-7 servers */
   sendto_server(NULL, source_p, NULL, CAP_GLN|CAP_UID, NOCAPS,

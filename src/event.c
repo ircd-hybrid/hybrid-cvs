@@ -38,7 +38,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: event.c,v 7.29 2002/09/20 05:31:55 db Exp $
+ *  $Id: event.c,v 7.29.2.1 2003/04/11 03:41:42 lusky Exp $
  */
 
 /*
@@ -58,6 +58,7 @@
 #include "send.h"
 #include "memory.h"
 #include "s_log.h"
+#include "numeric.h"
 
 static const char *last_event_ran = NULL;
 struct ev_entry event_table[MAX_EVENTS];
@@ -247,25 +248,22 @@ show_events(struct Client *source_p)
   int i;
 
   if (last_event_ran)
-    sendto_one(source_p, ":%s NOTICE %s :*** Last event to run: %s",
-               me.name, source_p->name,
-               last_event_ran);
+    sendto_one(source_p, ":%s %d %s E :Last event to run: %s",
+               me.name, RPL_STATSDEBUG, source_p->name, last_event_ran);
 
   sendto_one(source_p,
-     ":%s NOTICE %s :*** Operation            Next Execution",
-     me.name, source_p->name);
+     ":%s %d %s E :Operation            Next Execution",
+     me.name, RPL_STATSDEBUG, source_p->name);
 
   for (i = 0; i < MAX_EVENTS; i++)
     {
       if (event_table[i].active)
         {
-          sendto_one(source_p,
-                     ":%s NOTICE %s :*** %-20s %-3d seconds",
-                     me.name, source_p->name, event_table[i].name,
-                     (int)(event_table[i].when - CurrentTime));
+          sendto_one(source_p, ":%s %d %s E :%-28s %-4d seconds",
+                     me.name, RPL_STATSDEBUG, source_p->name,
+                     event_table[i].name, (int)(event_table[i].when - CurrentTime));
         }
     }
-  sendto_one(source_p, ":%s NOTICE %s :*** Finished", me.name, source_p->name);
 }
 
 /* 
