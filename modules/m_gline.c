@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.58 2001/06/19 08:25:42 db Exp $
+ *  $Id: m_gline.c,v 1.59 2001/06/19 16:07:47 leeh Exp $
  */
 
 #include <assert.h>
@@ -349,7 +349,7 @@ static void ms_gline(struct Client *client_p,
   /* hyb-6 version to the rest */
   sendto_server(client_p, NULL, NULL, NOCAPS, CAP_GLN, NOFLAGS,
                 ":%s GLINE %s %s %s %s %s %s :%s",
-                source_p->name, oper_nick, oper_user, oper_host,
+                oper_server, oper_nick, oper_user, oper_host,
                 oper_server, user, host, reason);
 
   if (ConfigFileEntry.glines)
