@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.39 2000/01/16 04:35:09 db Exp $
+ *  $Id: s_conf.c,v 7.40 2000/01/16 16:19:29 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -3518,7 +3518,6 @@ void yyerror(char *msg)
 int conf_fbgets(char *buf,int max_size, FBFILE *fb)
 {
   char* buff;
-  int result;
 
   buff = fbgets(buf,max_size,fb);
   if(!buff)
@@ -3530,4 +3529,5 @@ int conf_fbgets(char *buf,int max_size, FBFILE *fb)
 int conf_yy_fatal_error(char *msg)
 {
   sendto_realops("lexer barfed. lets leave it at that for now");
+  return 0;
 }

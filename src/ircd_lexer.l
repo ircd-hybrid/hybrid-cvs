@@ -1,5 +1,8 @@
 /************************************************************************
  *   IRC - Internet Relay Chat, src/ircd_parser.y
+ *   Copyright (C) 2000 Diane Bruce <db@db.net>
+ *   Copyright (C) 1990 Jarkko Oikarinen and
+ *                    University of Oulu, Co Center
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.1 2000/01/16 04:46:05 db Exp $
+ * $Id: ircd_lexer.l,v 1.2 2000/01/16 16:19:28 db Exp $
  */
 
 %{
