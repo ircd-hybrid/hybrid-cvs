@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: adns.c,v 7.46 2002/10/19 22:32:51 androsyn Exp $
+ *  $Id: adns.c,v 7.47 2002/10/19 22:36:24 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -244,7 +244,9 @@ void adns_getaddr(struct irc_inaddr *addr, int aftype,
                   struct DNSQuery *req, int arpa_type)
 {
   struct irc_sockaddr ipn;
+#ifdef IPV6
   char *domain;
+#endif
 
   memset(&ipn, 0, sizeof(struct irc_sockaddr));
   assert(dns_state->nservers > 0);
