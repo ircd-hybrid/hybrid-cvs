@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.50 2000/11/28 07:33:43 db Exp $
+ *   $Id: send.c,v 7.51 2000/11/28 08:42:52 davidt Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -1010,14 +1010,14 @@ ts_warn(const char *pattern, ...)
 
 
 
-extern aConfItem *u_conf;
+extern struct ConfItem *u_conf;
 
 int
 sendto_slaves(struct Client *one, char *message, char *nick, int parc, char *parv[])
 
 {
   struct Client *acptr;
-  aConfItem *aconf;
+  struct ConfItem *aconf;
 
   for(acptr = serv_cptr_list; acptr; acptr = acptr->next_server_client)
     {
