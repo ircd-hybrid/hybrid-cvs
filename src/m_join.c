@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 7.1 1999/08/19 07:08:11 tomh Exp $
+ *   $Id: m_join.c,v 7.2 1999/08/20 03:27:51 khuon Exp $
  */
 #include "m_commands.h"
 #include "channel.h"
@@ -31,6 +31,7 @@
 #include "list.h"
 #include "numeric.h"
 #include "send.h"
+#include "common.h"
 
 #include <stdlib.h>
 #include <string.h>
