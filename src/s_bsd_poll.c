@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.3 2000/10/24 23:42:17 adrian Exp $
+ *  $Id: s_bsd_poll.c,v 7.4 2000/10/25 00:04:19 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -128,7 +128,7 @@ poll_update_pollfds(int fd, short event, PF * handler)
  */
 void init_netio(void)
 {
-  init_resolver();
+	/* Nothing to do here yet .. */
 }
 
 /*
@@ -254,13 +254,6 @@ int read_message(time_t delay, unsigned char mask)
     auth = 0;
 
     /*
-     * set resolver descriptor
-     */
-    if (ResolverFileDescriptor >= 0) {
-      PFD_SETR(ResolverFileDescriptor);
-      res_pfd = pfd;
-    }
-    /*
      * set auth descriptors
      */
     for (auth = AuthPollList; auth; auth = auth->next) {
@@ -335,13 +328,6 @@ int read_message(time_t delay, unsigned char mask)
     if (res > 5)
       restart("too many poll errors");
     sleep(10);
-  }
-  /*
-   * check resolver descriptor
-   */
-  if (res_pfd && (res_pfd->revents & (POLLREADFLAGS | POLLERRORS))) {
-    get_res();
-    --nfds;
   }
   /*
    * check auth descriptors

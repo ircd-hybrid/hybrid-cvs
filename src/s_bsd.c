@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.32 2000/10/24 18:47:22 adrian Exp $
+ *  $Id: s_bsd.c,v 7.33 2000/10/25 00:04:19 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -25,6 +25,7 @@
 #include "client.h"
 #include "common.h"
 #include "config.h"
+#include "event.h"
 #include "irc_string.h"
 #include "ircdauth.h"
 #include "ircd.h"

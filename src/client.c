@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.28 2000/10/24 18:47:14 adrian Exp $
+ *  $Id: client.c,v 7.29 2000/10/25 00:04:17 adrian Exp $
  */
 #include "client.h"
 #include "class.h"
@@ -35,6 +35,7 @@
 #include "list.h"
 #include "m_gline.h"
 #include "numeric.h"
+#include "event.h"
 #include "res.h"
 #include "s_bsd.h"
 #include "s_conf.h"

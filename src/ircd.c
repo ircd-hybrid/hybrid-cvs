@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.31 2000/10/24 23:53:58 adrian Exp $
+ * $Id: ircd.c,v 7.32 2000/10/25 00:04:18 adrian Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -456,7 +456,6 @@ static time_t io_loop(time_t delay)
   /*
    * DNS checks, use smaller of resolver delay or next ping
    */
-  delay = IRCD_MIN(delay, (timeout_resolver(CurrentTime) - CurrentTime));
   delay = IRCD_MIN(delay, (nextping - CurrentTime));
   /*
   ** take the smaller of the two 'timed' event times as
@@ -836,6 +835,7 @@ int main(int argc, char *argv[])
 
   initServerMask();
 
+  init_resolver();
   init_netio();
 
   read_conf_files(YES);         /* cold start init conf files */
