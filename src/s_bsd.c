@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.165 2002/02/28 03:02:16 jmallett Exp $
+ *  $Id: s_bsd.c,v 7.166 2002/04/15 01:14:41 leeh Exp $
  */
 
 #include "config.h"
@@ -332,15 +332,17 @@ void close_connection(struct Client *client_p)
 
   if(HasServlink(client_p))
     {
-      fd_close(client_p->localClient->ctrlfd);
+      if(client_p->localClient->fd > -1)
+      {
+        fd_close(client_p->localClient->ctrlfd);
 #ifndef HAVE_SOCKETPAIR
-      fd_close(client_p->localClient->ctrlfd_r);
-      fd_close(client_p->localClient->fd_r);
-      client_p->localClient->ctrlfd_r = -1;
-      client_p->localClient->fd_r = -1;
+        fd_close(client_p->localClient->ctrlfd_r);
+        fd_close(client_p->localClient->fd_r);
+        client_p->localClient->ctrlfd_r = -1;
+        client_p->localClient->fd_r = -1;
 #endif
-      client_p->localClient->ctrlfd = -1;
-
+        client_p->localClient->ctrlfd = -1;
+      }
     }
   
   linebuf_donebuf(&client_p->localClient->buf_sendq);
