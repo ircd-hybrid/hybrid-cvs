@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.33 2001/04/10 05:21:46 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.34 2001/04/17 22:36:05 fl_ Exp $ 
  */
  
 #include <stdlib.h>
@@ -455,7 +455,7 @@ find_address_conf(const char *host, const char *user,
  if (!(iconf = find_conf_by_address(host, ip, CONF_CLIENT, aftype, user)))
   return NULL;
  /* If they are exempt from K-lines, return the best I-line. -A1kmm */
- if (IsConfElined(iconf))
+ if (IsConfExemptKline(iconf))
   return iconf;
  /* Find the best K-line... -A1kmm */
  kconf = find_conf_by_address(host, ip, CONF_KILL, aftype, user);
@@ -477,7 +477,7 @@ find_dline(struct irc_inaddr *addr, int aftype)
  struct ConfItem *econf, *dconf;
  econf = find_conf_by_address(NULL, addr, CONF_CLIENT|1, aftype, NULL);
  dconf = find_conf_by_address(NULL, addr, CONF_DLINE|1, aftype, NULL);
- if (econf && IsConfElined(econf))
+ if (econf && IsConfExemptKline(econf))
   return econf;
  return dconf;
 }
@@ -659,9 +659,9 @@ show_iline_prefix(struct Client *sptr,struct ConfItem *aconf,char *name)
   *prefix_ptr++ = '%';
  if (IsConfDoSpoofIp(aconf))
   *prefix_ptr++ = '=';
- if (IsOper(sptr) && IsConfElined(aconf))
+ if (IsOper(sptr) && IsConfExemptKline(aconf))
   *prefix_ptr++ = '^';
- if (IsOper(sptr) && IsConfFlined(aconf))
+ if (IsOper(sptr) && IsConfExemptLimits(aconf))
   *prefix_ptr++ = '>';
  if (IsOper(sptr) && IsConfIdlelined(aconf))
   *prefix_ptr++ = '<';

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: oldparse.c,v 1.24 2001/02/26 18:04:29 androsyn Exp $
+ *  $Id: oldparse.c,v 1.25 2001/04/17 22:36:07 fl_ Exp $
  */
 
 #include <sys/types.h>
@@ -102,7 +102,7 @@ void oldParseOneLine(char* line)
     {
     case 'd':
       aconf->status = CONF_DLINE;
-      aconf->flags = CONF_FLAGS_E_LINED;
+      aconf->flags = CONF_FLAGS_EXEMPTKLINE;
       conf_add_fields(aconf,host_field,pass_field,user_field,
 		      port_field,class_field);
       conf_add_d_conf(aconf);

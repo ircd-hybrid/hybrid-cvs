@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.159 2001/04/13 22:39:49 davidt Exp $
+ * $Id: ircd_parser.y,v 1.160 2001/04/17 22:36:06 fl_ Exp $
  */
 
 %{
@@ -1052,12 +1052,12 @@ auth_spoof:   SPOOF '=' QSTRING ';'
 
 auth_exceed_limit:    EXCEED_LIMIT '=' TYES ';'
   {
-    yy_achead->flags |= CONF_FLAGS_F_LINED;
+    yy_achead->flags |= CONF_FLAGS_NOLIMIT;
   }
                       |
                       EXCEED_LIMIT '=' TNO ';'
   {
-    yy_achead->flags &= ~CONF_FLAGS_F_LINED;
+    yy_achead->flags &= ~CONF_FLAGS_NOLIMIT;
   };
 
 auth_is_restricted:    RESTRICTED '=' TYES ';'
@@ -1072,12 +1072,12 @@ auth_is_restricted:    RESTRICTED '=' TYES ';'
 
 auth_kline_exempt:    KLINE_EXEMPT '=' TYES ';'
   {
-    yy_achead->flags |= CONF_FLAGS_E_LINED;
+    yy_achead->flags |= CONF_FLAGS_EXEMPTKLINE;
   }
                       |
                       KLINE_EXEMPT '=' TNO ';'
   {
-    yy_achead->flags &= ~CONF_FLAGS_E_LINED;
+    yy_achead->flags &= ~CONF_FLAGS_EXEMPTKLINE;
   };
 
 auth_have_ident:      HAVE_IDENT '=' TYES ';'

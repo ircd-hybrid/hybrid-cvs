@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_gline.c,v 1.13 2001/04/09 08:29:56 a1kmm Exp $
+ *  $Id: s_gline.c,v 1.14 2001/04/17 22:36:08 fl_ blalloc.c $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -84,7 +84,7 @@ struct ConfItem*
 find_gkill(struct Client* client_p, char* username)
 {
   assert(0 != client_p);
-  return (IsElined(client_p)) ? 0 : find_is_glined(client_p->host, username);
+  return (IsExemptKline(client_p)) ? 0 : find_is_glined(client_p->host, username);
 }
 
 /*

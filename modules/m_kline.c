@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.68 2001/04/09 08:29:48 a1kmm Exp $
+ *   $Id: m_kline.c,v 1.69 2001/04/17 22:36:03 fl_ Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -608,7 +608,7 @@ static void mo_dline(struct Client *client_p, struct Client *source_p,
           return;
         }
 
-      if(IsElined(target_p))
+      if(IsExemptKline(target_p))
         {
           sendto_one(source_p,
                      ":%s NOTICE %s :%s is E-lined",me.name,parv[0],
@@ -682,7 +682,7 @@ static void mo_dline(struct Client *client_p, struct Client *source_p,
      {
        char *creason;
        creason = aconf->passwd ? aconf->passwd : "<No Reason>";
-       if(IsConfElined(aconf))
+       if(IsConfExemptKline(aconf))
          sendto_one(source_p, ":%s NOTICE %s :[%s] is (E)d-lined by [%s] - %s",
                     me.name,
                     parv[0],
@@ -768,7 +768,7 @@ static int find_user_host(struct Client *source_p,
           return 0;
         }
 
-      if(IsElined(target_p))
+      if(IsExemptKline(target_p))
         {
           if(!IsServer(source_p))
             sendto_one(source_p,
