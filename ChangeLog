@@ -1,3 +1,9 @@
+*** 20001130_3 by db
+- committed the chanop hiding code. wheeee
+  still needs testing
+
+
+
 *** 20001130_2 by db
 - server names should not be given in /squit messages if
   server hide is turned on
@@ -1085,7 +1091,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.627 2000/11/30 05:43:37 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.628 2000/11/30 07:38:52 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
