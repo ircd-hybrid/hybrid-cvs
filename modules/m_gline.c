@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.53 2001/05/30 11:06:50 leeh Exp $
+ *  $Id: m_gline.c,v 1.54 2001/05/31 23:25:52 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -321,7 +321,7 @@ static void ms_gline(struct Client *client_p,
 
       /* Its plausible that the server and/or client dont actually exist, and its
        * faked, as the oper isnt sending the gline.. check theyre real --fl_ */
-      if(acptr = find_server(oper_server))
+      if((acptr = find_server(oper_server)))
         {
           if(!(acptr = find_client(oper_user, NULL)))
             return;

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.220 2001/05/31 19:43:02 davidt Exp $
+ *  $Id: s_conf.c,v 7.221 2001/05/31 23:26:00 toot Exp $
  */
 
 #include <sys/types.h>
@@ -62,7 +62,7 @@
 #include "s_debug.h"
 #include "fileio.h"
 #include "memory.h"
-
+#include "modules.h"
 
 extern int yyparse(); /* defined in y.tab.c */
 extern ConfigFileEntryType ConfigFileEntry; /* defined in ircd.c */
@@ -1490,15 +1490,17 @@ static void read_conf(FBFILE* file)
 {
   scount = lineno = 0;
 
+  set_default_conf(); /* set our defaults */
   yyparse(); /* wheee! */
-
   check_conf();  /* make sure config items are valid */
   check_class(); /* make sure classes are valid */
 }
 
 static void check_conf(void)
 {
+#ifdef HAVE_LIBCRYPTO
   int i;
+#endif
 
   if(ConfigFileEntry.ts_warn_delta < TS_WARN_DELTA_MIN)
     ConfigFileEntry.ts_warn_delta = TS_WARN_DELTA_DEFAULT;
