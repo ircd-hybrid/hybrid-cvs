@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, tools/convertconf.c
+ *   IRC - Internet Relay Chat, tools/convertklines.c
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertklines.c,v 7.1 2001/06/08 10:52:19 leeh Exp $
+ * $Id: convertklines.c,v 7.2 2001/06/08 16:18:24 db Exp $
  */
 
 #include <stdio.h>
@@ -71,7 +71,7 @@ int main(int argc,char *argv[])
 
 static void usage()
 {
-  fprintf(stderr, "klines and dlines now go in seperate files:\n");
+  fprintf(stderr, "klines and dlines now go in separate files:\n");
   fprintf(stderr,"convertklines kline.conf.old kline.conf.new dline.conf.new\n");
   exit(-1);
 }
