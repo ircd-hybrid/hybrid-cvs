@@ -1,3 +1,10 @@
+*** 20001205_5 by db
+- cleaned up class.c adding more comment blocks
+- cleaned up s_conf.c to actually use nice defines instead of cryptic #'s
+- fixed typo in linebuf.c
+
+
+
 *** 20001205_4 by toot
 removed zlib from configure, and updated version number
 
@@ -1657,7 +1664,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.702 2000/12/05 11:50:52 toot Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.703 2000/12/05 17:41:25 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
