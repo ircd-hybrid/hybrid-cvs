@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.83 2003/09/18 14:06:54 joshk Exp $
+dnl $Id: configure.ac,v 7.84 2003/09/28 02:15:58 metalrock Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.83 2003/09/18 14:06:54 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.84 2003/09/28 02:15:58 metalrock Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -752,14 +752,6 @@ AC_HELP_STRING([--enable-warnings],[Enable all sorts of warnings for debugging.]
 
 dnl Server Tweaks
 dnl =============
-
-AC_ARG_ENABLE(halfops,
-AC_HELP_STRING([--enable-halfops],[Enable the use of halfops (user mode %)]),
-[halfops=$enableval],[halfops=no])
-
-if test "$halfops" = yes; then
-	AC_DEFINE(USE_HALFOPS, 1, [Define to 1 if you want to be able to use halfops on your ircd.])
-fi
 
 AC_ARG_ENABLE(small-net,
 AC_HELP_STRING([--enable-small-net],[Enable small network support.]),

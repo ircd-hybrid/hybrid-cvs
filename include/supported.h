@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.34 2003/06/21 20:09:19 metalrock Exp $
+ *  $Id: supported.h,v 1.35 2003/09/28 02:16:03 metalrock Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -55,14 +55,8 @@
 		  " CASEMAPPING=%s"   \
 		  " CALLERID%s"
 
-#ifdef USE_HALFOPS
-# define PREFIX "(ohv)@%+"
-#else
-# define PREFIX "(ov)@+"
-#endif
-		  
 #define FEATURES2VALUES ConfigChannel.disable_local_channels ? "#" : "#&", \
-                        PREFIX, \
+                        "(ov)@+", \
                         ConfigChannel.use_except ? "e" : "", \
                         ConfigChannel.use_invex ? "I" : "", \
                         "b,k,l,imnpst", \

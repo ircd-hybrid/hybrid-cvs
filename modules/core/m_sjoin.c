@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.167 2003/09/19 23:20:51 metalrock Exp $
+ *  $Id: m_sjoin.c,v 1.168 2003/09/28 02:16:04 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.167 $";
+const char *_version = "$Revision: 1.168 $";
 #endif
 
 /* ms_sjoin()
@@ -311,11 +311,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     num_prefix = 0;
 
     /* XXXXXXXX THIS IS JUST DUMB */
-#ifdef USE_HALFOPS
-    for (i = 0; i < 3; i++)
-#else
     for (i = 0; i < 2; i++)
-#endif
     {
       if (*s == '@')
       {
@@ -337,18 +333,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         }
         s++;
       }
-#ifdef USE_HALFOPS
-      else if (*s == '%')
-      {
-        fl |= CHFL_HALFOP;
-        if (keep_new_modes)
-        {
-          *nhops++ = *s;
-          num_prefix++;
-        }
-        s++;
-      }
-#endif
     }
     /* if the client doesnt exist, backtrack over the prefix (@%+) that we
      * just added and skip to the next nick
@@ -372,7 +356,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
     if (!keep_new_modes)
     {
-      if (fl & (CHFL_CHANOP|CHFL_HALFOP))
+      if (fl & CHFL_CHANOP)
         fl = CHFL_DEOPPED;
       else
         fl = 0;
@@ -455,26 +439,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         pargs = 0;
       }
     }
-#ifdef USE_HALFOPS
-    if (fl & CHFL_HALFOP)
-    {
-      *mbuf++ = 'h';
-      para[pargs++] = s;
-
-      if (pargs >= MAXMODEPARAMS)
-      {
-        *mbuf = '\0';
-        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
-                             servername, chptr->chname, modebuf, para[0],
-                             para[1], para[2], para[3]);
-        mbuf = modebuf;
-        *mbuf++ = '+';
-
-        para[0] = para[1] = para[2] = para[3] = "";
-        pargs = 0;
-      }
-    }
-#endif
 
 nextnick:
     /* p points to the next nick */
@@ -652,9 +616,6 @@ static void
 remove_our_modes(struct Channel *chptr, struct Client *source_p)
 {
   remove_a_mode(chptr, source_p, CHFL_CHANOP, 'o');
-#ifdef USE_HALFOPS
-  remove_a_mode(chptr, source_p, CHFL_HALFOP, 'h');
-#endif
   remove_a_mode(chptr, source_p, CHFL_VOICE, 'v');
 }
 
