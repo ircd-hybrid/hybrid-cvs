@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.10 2000/10/16 17:02:45 toot Exp $
+ * $Id: vchannel.c,v 7.11 2000/10/16 22:54:10 toot Exp $
  */
 #include "vchannel.h"
 #include "channel.h"
@@ -136,16 +136,29 @@ struct Channel* map_bchan(struct Channel *chptr, struct Client *sptr)
   return NullChn;
 }
 
+/* return the base chan of a vchan */
+struct Channel* find_bchan(struct Channel *chptr)
+{
+  struct Channel *chtmp;
+
+  for(chtmp = chptr; chtmp; chtmp = chtmp->prev_vchan)
+    if (!IsVchan(chtmp))
+      return chtmp;
+
+  return NullChn;
+}
+
 /* show info on vchans, XXXX this needs to be improved! */
 void show_vchans(struct Client *cptr,
                         struct Client *sptr,
                         struct Channel *chptr)
 {
    int no_of_vchans = 0;
-   struct Channel *chtmp1, *chtmp2;
+   struct Channel *chtmp;
 
-   for (chtmp1 = chptr; chtmp1; chtmp1 = chtmp1->next_vchan)
-     no_of_vchans++;
+   for (chtmp = chptr; chtmp; chtmp = chtmp->next_vchan)
+     if (chtmp->members)
+       no_of_vchans++;
 
    sendto_one(sptr,
               ":%s NOTICE %s *** %d channels are available for %s",
@@ -154,10 +167,11 @@ void show_vchans(struct Client *cptr,
               ":%s NOTICE %s *** Type /join %s <key> to join the one you wish to join",
                me.name, sptr->name, chptr->chname);
 
-   for (chtmp2 = chptr; chtmp2; chtmp2 = chtmp2->next_vchan)
-      sendto_one(sptr,
+   for (chtmp = chptr; chtmp; chtmp = chtmp->next_vchan)
+     if (chtmp->members)
+       sendto_one(sptr,
                  ":%s NOTICE %s *** !%s",
-                  me.name, sptr->name, chtmp2->chan_id);
+                  me.name, sptr->name, chtmp->members->value.cptr->name);
 }
 
 /* return matching vchan, from root and !key (nick)
