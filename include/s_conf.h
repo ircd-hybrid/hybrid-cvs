@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.75 2001/01/18 20:06:15 davidt Exp $
+ * $Id: s_conf.h,v 7.76 2001/01/18 20:53:58 db Exp $
  */
 
 #include "setup.h"
@@ -195,13 +195,11 @@ typedef struct
   int         e_lines_oper_only;
   int         f_lines_oper_only;
   int         o_lines_oper_only;
-  int         stats_notice;
   int         pace_wait;
   int         whois_wait;
   int         knock_delay;
   int         short_motd;
   int         no_oper_flood;
-  int         stats_p_notice;
   int         glines;
   int         gline_time;
   int         idletime;
@@ -210,7 +208,6 @@ typedef struct
   int         maximum_links;
   int         oper_only_umodes;
   int         max_targets;
-  int         links_notice;
   int         links_delay;
   int         vchans_oper_only;
   int         quiet_on_ban;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.20 2001/01/09 20:01:45 wcampbel Exp $
+ * $Id: m_info.c,v 1.21 2001/01/18 20:54:03 db Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -419,21 +419,6 @@ static void send_conf_options(struct Client *sptr)
               me.name, RPL_INFO, sptr->name, "o_lines_oper_only",
               ConfigFileEntry.o_lines_oper_only ? "YES" : "NO",
               "Only Allow Operators to see STATS o");
-  sendto_one(sptr,
-              ":%s %d %s :%-30s %-5s [%-30s]",
-              me.name, RPL_INFO, sptr->name, "stats_notice",
-              ConfigFileEntry.stats_notice ? "YES" : "NO",
-              "Show Operators when a Client uses STATS");
-  sendto_one(sptr,
-              ":%s %d %s :%-30s %-5s [%-30s]",
-              me.name, RPL_INFO, sptr->name, "stats_p_notice",
-              ConfigFileEntry.stats_p_notice ? "YES" : "NO",
-              "Show Operators when a Client uses STATS p");
-  sendto_one(sptr,
-              ":%s %d %s :%-30s %-5s [%-30s]",
-              me.name, RPL_INFO, sptr->name, "links_notice",
-              ConfigFileEntry.links_notice ? "YES" : "NO",
-              "Show Operators when a Client uses LINKS");
   sendto_one(sptr,
               ":%s %d %s :%-30s %-5s [%-30s]",
               me.name, RPL_INFO, sptr->name, "glines",
