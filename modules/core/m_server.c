@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.79 2002/03/07 06:22:04 db Exp $
+ *  $Id: m_server.c,v 1.80 2002/03/13 04:16:11 androsyn Exp $
  */
 
 #include "tools.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.79 $";
+const char *_version = "$Revision: 1.80 $";
 #endif
 
 int bogus_host(char *host);
@@ -465,6 +465,14 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
   make_server(target_p);
   target_p->hopcount = hop;
   strlcpy(target_p->name, name, HOSTLEN);
+  if(name > HOSTLEN)
+  {
+  	sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+  	     	                        "Server %s was introducted with a name greater than HOSTLEN: %d > %d", 
+  	     	                        name, strlen(name), HOSTLEN);
+  }
+
+  
   set_server_gecos(target_p, info);
 
   target_p->serv->up = find_or_add(parv[0]);
