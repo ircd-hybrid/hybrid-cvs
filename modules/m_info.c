@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.39 2001/06/06 03:16:13 toot Exp $
+ * $Id: m_info.c,v 1.40 2001/06/06 13:46:28 leeh Exp $
  */
 
 #include <time.h>
@@ -409,6 +409,9 @@ static void ms_info(struct Client *client_p, struct Client *source_p,
                    int parc, char *parv[])
 
 {
+  if(IsServer(source_p))
+      return;
+  
   if (hunt_server(client_p,source_p,":%s INFO :%s",1,parc,parv) == HUNTED_ISME)
     {
       if(IsOper(source_p))
