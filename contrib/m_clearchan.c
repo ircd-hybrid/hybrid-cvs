@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.17 2001/05/28 14:08:14 jdc Exp $
+ *   $Id: m_clearchan.c,v 1.18 2001/05/28 14:09:54 jdc Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-char *_version = "20010104";
+char *_version = "20010528";
 
 /*
 ** mo_clearchan
