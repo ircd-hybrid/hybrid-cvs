@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.83 2001/03/19 09:59:58 toot Exp $
+ * $Id: ircd_lexer.l,v 1.84 2001/03/23 07:30:58 ejb Exp $
  */
 
 %option case-insensitive
@@ -246,6 +246,40 @@ wallop                  { return T_WALLOP; }
 callerid                { return T_CALLERID; }
 drone                   { return T_DRONE; }
 locops                  { return T_LOCOPS; }
+
+years			{ return YEARS; }
+year			{ return YEARS; }
+months			{ return MONTHS; }
+month			{ return MONTHS; }
+weeks			{ return WEEKS; }
+week			{ return WEEKS; }
+days			{ return DAYS; }
+day			{ return DAYS; }
+hours			{ return HOURS; }
+hour			{ return HOURS; }
+minutes			{ return MINUTES; }
+minute			{ return MINUTES; }
+seconds			{ return SECONDS; }
+second			{ return SECONDS; }
+
+bytes			{ return BYTES; }
+byte			{ return BYTES; }
+kilobytes		{ return KBYTES; }
+kilobyte		{ return KBYTES; }
+kbytes			{ return KBYTES; }
+kbyte			{ return KBYTES; }
+kb			{ return KBYTES; }
+megabytes		{ return MBYTES; }
+megabyte		{ return MBYTES; }
+mbytes			{ return MBYTES; }
+mbyte			{ return MBYTES; }
+mb			{ return MBYTES; }
+gigabytes		{ return GBYTES; }
+gigabyte		{ return GBYTES; }
+gbytes			{ return GBYTES; }
+gbyte			{ return GBYTES; }
+gb			{ return GBYTES; }
+
 .		        { return yytext[0]; }
 
 %%
