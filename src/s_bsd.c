@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.121 2001/04/28 23:23:38 a1kmm Exp $
+ *  $Id: s_bsd.c,v 7.122 2001/04/29 08:46:59 androsyn Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -372,7 +372,8 @@ void add_connection(struct Listener* listener, int fd)
   copy_s_addr(IN_ADDR(new_client->localClient->ip),  S_ADDR(irn));
   inetntop(DEF_FAM, &IN_ADDR(new_client->localClient->ip), new_client->localClient->sockhost, HOSTIPLEN);
 #ifdef IPV6
-  if(!IN6_IS_ADDR_V4MAPPED(&IN_ADDR2(new_client->localClient->ip) && !IN6_IS_ADDR_V4COMPAT(&IN_ADDR2(new_client->localClient->ip)))
+  if((!IN6_IS_ADDR_V4MAPPED(&IN_ADDR2(new_client->localClient->ip))) && 
+  	(!IN6_IS_ADDR_V4COMPAT(&IN_ADDR2(new_client->localClient->ip))))
   	new_client->localClient->aftype = AF_INET6;
   else
   {
