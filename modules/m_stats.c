@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.9 2000/11/30 16:01:49 db Exp $
+ *  $Id: m_stats.c,v 1.10 2000/12/04 05:50:10 db Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "class.h"       /* report_classes */
@@ -390,10 +390,7 @@ void do_priv_stats(struct Client *sptr, char *name, char *target,
       break;
 
     case 'K' :
-      if(target != (char *)NULL)
-        report_matching_host_klines(sptr,target);
-      else
-	report_matching_host_klines(sptr,sptr->host);
+      report_mtrie_conf_links(sptr, CONF_KILL);
       stats_spy(sptr,stat);
       break;
 

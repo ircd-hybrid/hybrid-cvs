@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.42 2000/12/02 19:55:04 toot Exp $
+ * $Id: client.h,v 7.43 2000/12/04 05:50:04 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -337,11 +337,10 @@ struct LocalUser
 #define FLAGS_CALLERID     0x20000 /* block unless caller id's */
 
 /* *sigh* overflow flags */
-#define FLAGS2_RESTRICTED   0x0001      /* restricted client */
-#define FLAGS2_PING_TIMEOUT 0x0002
-#define FLAGS2_E_LINED      0x0004      /* client is graced with E line */
-#define FLAGS2_B_LINED      0x0008      /* client is graced with B line */
-#define FLAGS2_F_LINED      0x0010      /* client is graced with F line */
+#define FLAGS2_PING_TIMEOUT 0x0001
+#define FLAGS2_E_LINED      0x0002      /* client is graced with E line */
+#define FLAGS2_B_LINED      0x0004      /* client is graced with B line */
+#define FLAGS2_F_LINED      0x0008      /* client is graced with F line */
 
 /* oper priv flags */
 #define FLAGS2_OPER_GLOBAL_KILL 0x0020  /* oper can global kill */
@@ -457,8 +456,6 @@ struct LocalUser
 /*
  * flags2 macros.
  */
-#define IsRestricted(x)         ((x)->flags2 & FLAGS2_RESTRICTED)
-#define SetRestricted(x)        ((x)->flags2 |= FLAGS2_RESTRICTED)
 #define IsElined(x)             ((x)->flags2 & FLAGS2_E_LINED)
 #define SetElined(x)            ((x)->flags2 |= FLAGS2_E_LINED)
 #define IsBlined(x)             ((x)->flags2 & FLAGS2_B_LINED)

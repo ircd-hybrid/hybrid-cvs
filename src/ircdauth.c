@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.17 2000/12/03 12:18:21 db Exp $
+ *   $Id: ircdauth.c,v 7.18 2000/12/04 05:50:12 db Exp $
  */
 
 #include <stdio.h>
@@ -638,20 +638,6 @@ GreetUser(struct Client *client)
   }
   else
     SendMessageFile(client, &ConfigFileEntry.motd);
-
-  if ( (ptr = client->localClient->confs.head) )
-    {
-      if ( (found_aconf = ptr->data) )
-	if(found_aconf->flags & CONF_FLAGS_LITTLE_I_LINE)
-	  {
-	    SetRestricted(client);
-	    sendto_one(client,"NOTICE %s :*** Notice -- You are in a restricted access mode",
-		       client->name);
-	    
-	    sendto_one(client,"NOTICE %s :*** Notice -- You can not chanop others",
-		       client->name);
-	  }
-    }
 
   send_umode(NULL, client, 0, SEND_UMODES, ubuf);
   if (!*ubuf)

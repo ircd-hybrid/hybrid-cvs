@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.52 2000/12/03 12:18:22 db Exp $
+ *  $Id: s_user.c,v 7.53 2000/12/04 05:50:14 db Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -1020,20 +1020,6 @@ static void user_welcome(struct Client *sptr)
     }
   else  
     SendMessageFile(sptr, &ConfigFileEntry.motd);
-      
-  if( (ptr = sptr->localClient->confs.head) )
-    {
-      aconf = ptr->data;
-      if(aconf && (aconf->flags & CONF_FLAGS_LITTLE_I_LINE))
-	{
-	  SetRestricted(sptr);
-	  sendto_one(sptr,
-	     "NOTICE %s :*** Notice -- You are in a restricted access mode",
-		     sptr->name);
-	  sendto_one(sptr,"NOTICE %s :*** Notice -- You can not chanop others",
-		     sptr->name);
-	}
-    }
 }
 
 /*
