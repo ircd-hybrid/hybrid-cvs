@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.117 2001/01/26 23:07:54 db Exp $
+ *   $Id: send.c,v 7.118 2001/01/27 03:53:31 db Exp $
  */
 
 #include <sys/types.h>
@@ -1617,7 +1617,7 @@ kill_client(struct Client *cptr,
   if(HasID(diedie))
     {
       len_uid = ircsprintf(sendbuf_uid,":%s KILL %s :%s",
-			    me.name, diedie->user->id, reason);
+			    me.name, ID(diedie), reason);
       len_uid = send_trim(sendbuf_uid, len_uid);
       have_uid = 1;
     }		    
@@ -1633,3 +1633,77 @@ kill_client(struct Client *cptr,
   else
     send_message(cptr, (char *)sendbuf_nick, len_nick);
 }
+
+
+/*
+ * kill_client_ll_serv_butone
+ *
+ * inputs	- pointer to client to not send to
+ *		- pointer to client to kill
+ * output	- NONE
+ * side effects	- Send a KILL for the given client
+ *		  message to all connected servers
+ *                except the client 'one'. Also deal with
+ *		  client being unknown to leaf, as in lazylink...
+ */
+void
+kill_client_ll_serv_butone(struct Client *one, struct Client *sptr,
+			   const char *pattern, ...)
+{
+  va_list args;
+  int len;
+  int len_uid=0;
+  int len_nick=0;
+  int have_uid;
+  struct Client *cptr;
+  dlink_node *ptr;
+  char sendbuf_uid[IRCD_BUFSIZE*2];
+  char sendbuf_nick[IRCD_BUFSIZE*2];
+  char reason[IRCD_BUFSIZE*2];
+
+  va_start(args, pattern);
+  len = send_format(reason,"%s",args);
+  va_end(args);
+  
+  have_uid = 0;
+  if(HasID(sptr))
+    {
+      len_uid = ircsprintf(sendbuf_uid,":%s KILL %s :%s",
+			    me.name, ID(sptr), reason);
+      len_uid = send_trim(sendbuf_uid, len_uid);
+      have_uid = 1;
+    }		    
+  else
+    {
+      len_nick  = ircsprintf(sendbuf_nick,":%s KILL %s :%s",
+			    me.name, sptr->name, reason);
+      len_nick  = send_trim(sendbuf_nick, len_nick);
+    }
+  
+  for(ptr = serv_list.head; ptr; ptr = ptr->next)
+    {
+      cptr = ptr->data;
+
+      if (one && (cptr == one->from))
+        continue;
+      
+      if (IsCapable(cptr,CAP_LL) && ServerInfo.hub)
+	{
+	  if( ( sptr->lazyLinkClientExists &
+		cptr->localClient->serverMask) != 0)
+	    {
+	      if (have_uid && IsCapable(cptr, CAP_UID))
+		send_message(cptr, (char *)sendbuf_uid, len_uid);
+	      else
+		send_message(cptr, (char *)sendbuf_nick, len_nick);
+	    }
+	}
+      else
+	{
+	  if (have_uid && IsCapable(cptr, CAP_UID))
+	    send_message(cptr, (char *)sendbuf_uid, len_uid);
+	  else
+	    send_message(cptr, (char *)sendbuf_nick, len_nick);
+	}
+    }
+} 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.25 2001/01/26 23:07:48 db Exp $
+ *   $Id: m_kill.c,v 1.26 2001/01/27 03:53:27 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -187,11 +187,12 @@ int ms_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (!(acptr = find_client(user, NULL)))
     {
       /*
-      ** If the user has recently changed nick, automatically
-      ** rewrite the KILL for this new nickname--this keeps
-      ** servers in synch when nick change and kill collide
-      */
-      if (!(acptr = get_history(user, (long)KILLCHASETIMELIMIT)))
+       * If the user has recently changed nick, but only if its 
+       * not an uid, automatically rewrite the KILL for this new nickname.
+       * --this keeps servers in synch when nick change and kill collide
+       */
+      if( (*user != '.')  &&
+	  (!(acptr = get_history(user, (long)KILLCHASETIMELIMIT))))
         {
           sendto_one(sptr, form_str(ERR_NOSUCHNICK),
                      me.name, parv[0], user);
