@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_version.c,v 1.13 2000/12/28 19:12:19 toot Exp $
+ *   $Id: m_version.c,v 1.14 2000/12/28 23:27:49 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -116,9 +116,9 @@ int ms_version(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
  */
 char* confopts(void)
 {
-  char *result;
+  char result[4];
 
-  *result = '\0';
+  result[0] = '\0';
 
   if (ConfigFileEntry.glines)
     strcat(result, "G");
