@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.92 2001/09/25 12:27:09 jdc Exp $
+ *  $Id: m_stats.c,v 1.93 2001/09/25 14:44:51 db Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -368,15 +368,6 @@ static void stats_events(struct Client *client_p)
 {
   show_events(client_p);
 }
-
-/* jdc -- seems to be unused right now */
-#if 0
-static void stats_fd(struct Client *client_p)
-{
-  fd_dump(client_p);
-}
-#endif
-
 
 /* stats_glines()
  *
