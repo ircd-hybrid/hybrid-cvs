@@ -19,11 +19,11 @@
  *
  *
  *
- * $Id: rsa.h,v 7.4 2001/06/18 09:20:33 jdc Exp $
+ * $Id: rsa.h,v 7.5 2001/06/25 16:28:52 jdc Exp $
  */
 
 void report_crypto_errors(void);
-void verify_private_key(void);
+int verify_private_key(void);
 int generate_challenge( char ** r_challenge, char ** r_response, char * key );
 int crypt_data(char **out, char *in, int len, char *key);
 int decrypt_data(char **out, char *in, int len, char *key);

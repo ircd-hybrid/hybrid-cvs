@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cryptlink.c,v 1.15 2001/06/23 13:02:05 leeh Exp $
+ *   $Id: m_cryptlink.c,v 1.16 2001/06/25 16:28:58 jdc Exp $
  */
 
 /*
@@ -166,7 +166,12 @@ static void mr_cryptauth(struct Client *client_p, struct Client *source_p,
 
   key = MyMalloc(RSA_size(ServerInfo.rsa_private_key));
 
-  verify_private_key();
+  if ( verify_private_key() == -1 )
+  {
+    sendto_realops_flags(FLAGS_SERVADMIN,
+      "verify_private_key() returned -1.  Check log for information.");
+  }
+
   len = RSA_private_decrypt( enc_len, enc, key,
                              ServerInfo.rsa_private_key,
                              RSA_PKCS1_PADDING );
@@ -466,7 +471,12 @@ static char *parse_cryptserv_args(struct Client *client_p,
 
   out = MyMalloc(RSA_size(ServerInfo.rsa_private_key));
 
-  verify_private_key();
+  if ( verify_private_key() == -1 )
+  {
+    sendto_realops_flags(FLAGS_SERVADMIN,
+      "verify_private_key() returned -1.  Check log for information.");
+  }
+
   len = RSA_private_decrypt( decoded_len, tmp, out,
                              ServerInfo.rsa_private_key,
                              RSA_PKCS1_PADDING );
