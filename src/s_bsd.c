@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.3 1999/08/11 04:59:21 tomh Exp $
+ *  $Id: s_bsd.c,v 7.4 1999/08/14 06:46:02 tomh Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -890,10 +890,8 @@ static int read_packet(struct Client *cptr)
    * worrying about the time of day or anything :)
    */
   if (PARSE_AS_SERVER(cptr)) {
-    if (length > 0) {
-      if ((done = dopacket(cptr, readBuf, length)))
-        return done;
-    }
+    if ((done = dopacket(cptr, readBuf, length)))
+      return done;
   }
   else {
     /*
