@@ -1,6 +1,6 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  m_away.c: Negotiates capabilities with a remote server.
+ *  m_capab.c: Negotiates capabilities with a remote server.
  *
  *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capab.c,v 1.29 2003/02/06 08:46:08 a1kmm Exp $
+ *  $Id: m_capab.c,v 1.30 2003/02/06 10:53:27 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -51,7 +51,7 @@ _moddeinit(void)
   mod_del_cmd(&capab_msgtab);
 }
 
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 
 /*
