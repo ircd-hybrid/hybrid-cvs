@@ -1,3 +1,9 @@
+*** 20001210_9 by db
+- updated docs in send.txt
+- fixed parser as per walter campbells patch
+
+
+
 *** 20001210_8 by db
 - cleaned up m_gline.c, STILL untested.
 - removed unnecessary lines in ircd_parser.y due to removed botcheck
@@ -2200,7 +2206,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.780 2000/12/10 23:58:57 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.781 2000/12/11 01:02:31 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
