@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.53 2001/08/21 20:54:24 davidt Exp $
+ * $Id: linebuf.c,v 7.54 2001/08/21 21:16:58 davidt Exp $
  */
 
 #include <errno.h>
@@ -475,12 +475,14 @@ linebuf_putmsg(buf_head_t *bufhead, const char *format, va_list va_args,
   while ((bufline->buf[len] == '\r') || (bufline->buf[len] == '\n'))
     len--;
 
-  bufline->buf[len++] = '\r';
-  bufline->buf[len++] = '\n';
-  bufline->buf[len++] = '\0'; /* this restores len to correct length */
+  bufline->buf[++len] = '\r';
+  bufline->buf[++len] = '\n';
+  bufline->buf[++len] = '\0'; /* this restores len to correct length */
 
   bufline->len  = len;
   bufhead->len += len;
+
+  bufline->terminated = 1;
 }
 
 /*
