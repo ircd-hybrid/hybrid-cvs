@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.256 2001/07/27 10:26:06 leeh Exp $
+ * $Id: channel.c,v 7.257 2001/07/27 11:27:03 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2385,8 +2385,8 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
     for (i = 0; i < mode_count_minus; i++)
     {
       if (mode_changes_minus[i].letter == 0 ||
-          (mode_changes_minus[i].caps && !IsCapable(source_p, mode_changes_minus[i].caps)) ||
-	  (mode_changes_minus[i].nocaps && IsCapable(source_p, mode_changes_minus[i].nocaps)))
+          (mode_changes_minus[i].caps && !IsCapable(target_p, mode_changes_minus[i].caps)) ||
+	  (mode_changes_minus[i].nocaps && IsCapable(target_p, mode_changes_minus[i].nocaps)))
 	continue;
 
       nc++;
