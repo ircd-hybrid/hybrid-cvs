@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: rsa.c,v 7.3 2000/12/30 06:03:44 lusky Exp $
+ * $Id: rsa.c,v 7.4 2000/12/31 23:22:22 davidt Exp $
  */
 
 #include <string.h>
@@ -32,7 +32,12 @@
 #include <openssl/md5.h>
 #include <openssl/bn.h>
 
-void binary_to_hex( unsigned char * bin, char * hex, int length )
+static void binary_to_hex( unsigned char * bin, char * hex, int length );
+static void get_randomness( unsigned char * buf, int length );
+static int absorb( char ** str, char lowest, char highest );
+static RSA * str_to_RSApublic( char * key );
+
+static void binary_to_hex( unsigned char * bin, char * hex, int length )
 {
   char * trans = "0123456789abcdef";
   int i;
@@ -46,12 +51,12 @@ void binary_to_hex( unsigned char * bin, char * hex, int length )
 }
 
 /* XXX get a better source */
-void get_randomness( unsigned char * buf, int length )
+static void get_randomness( unsigned char * buf, int length )
 {
   RAND_pseudo_bytes( buf, length );
 }
 
-int absorb( char ** str, char lowest, char highest )
+static int absorb( char ** str, char lowest, char highest )
 {
   char * start = *str;
 
@@ -61,7 +66,7 @@ int absorb( char ** str, char lowest, char highest )
   return *str - start;
 }
 
-RSA * str_to_RSApublic( char * key )
+static RSA * str_to_RSApublic( char * key )
 {
   char * e, * n;
   RSA * rsa;
