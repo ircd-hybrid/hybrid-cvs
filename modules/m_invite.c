@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.42 2002/03/07 06:21:45 db Exp $
+ *  $Id: m_invite.c,v 1.43 2002/04/17 02:25:45 leeh Exp $
  */
 
 #include "tools.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 
 /*
@@ -210,10 +210,10 @@ m_invite(struct Client *client_p,
                chptr->chname);
   }
 
-  /* if the channel is +p, broadcast everywhere thats CAP_PARA, send to
+  /* if the channel is +pi, broadcast everywhere thats CAP_PARA, send to
    * target if target isnt CAP_PARA capable, else just send to target
    */
-  if(vchan->mode.mode & MODE_PRIVATE)
+  if(ParanoidChannel(vchan))
   {
     sendto_channel_remote(source_p, client_p,
   		  	  ONLY_CHANOPS_HALFOPS, CAP_PARA, NOCAPS,

@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.6 2002/04/17 01:02:14 leeh Exp $
+ *  $Id: m_tb.c,v 1.7 2002/04/17 02:25:38 leeh Exp $
  */
 
 #include <string.h>
@@ -81,7 +81,7 @@ _moddeinit(void)
   unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.6 $";
+const char *_version = "$Revision: 1.7 $";
 #endif
 
 /* ms_tburst()
@@ -105,10 +105,6 @@ static void ms_tburst(struct Client *client_p, struct Client *source_p,
 
   if((chptr = hash_find_channel(parv[2])))
   {
-
-    sendto_realops_flags(FLAGS_ALL, L_ALL,
-		    "channel: %s ts: %ld topicts: %ld, tburst channelts: %ld topicts: %ld",
-		    chptr->chname, chptr->channelts, chptr->topic_time, newchannelts, newtopicts);
     if(chptr->channelts < newchannelts)
       return;
 

@@ -40,7 +40,8 @@ Channel Modes:
 +n - noexternal - Users must be in the channel to send text to it
 +o - chanop     - Full operator status
 +p - private    - Private is obsolete, this now restricts KNOCK, and can be
-                  set at the same time as +s.
+                  set at the same time as +s.  This will also prevents 
+		  halfops from setting +/-h.
 +s - secret     - The channel does not show up on NAMES or LIST or in the 
                   WHOIS channel list unless you are a member of the channel
 +t - topic      - Only chanops can change the topic
@@ -53,4 +54,4 @@ Currently these are bkloveIh.
 Note that most of the channel modes can be disabled in the conf file for
 networks that do not wish to support them.
 
-# $Id: modes.txt,v 7.7 2001/10/25 05:21:12 wcampbel Exp $
+# $Id: modes.txt,v 7.8 2002/04/17 02:25:41 leeh Exp $

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.5 2002/01/05 09:14:27 a1kmm Exp $
+ *  $Id: channel_mode.h,v 7.6 2002/04/17 02:25:43 leeh Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -120,6 +120,9 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 #define HiddenChannel(x)        ((x) && ((x)->mode.mode & MODE_PRIVATE))
 #define PubChannel(x)           ((!x) || ((x)->mode.mode &\
                                  (MODE_PRIVATE | MODE_SECRET)) == 0)
+#define ParanoidChannel(x)	((x) && ((x)->mode.mode &\
+			        (MODE_PRIVATE|MODE_INVITEONLY))==\
+		                (MODE_PRIVATE|MODE_INVITEONLY))
 
 struct ChModeChange
 {
