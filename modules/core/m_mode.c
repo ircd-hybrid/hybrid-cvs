@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.67 2003/10/07 22:37:17 bill Exp $
+ *  $Id: m_mode.c,v 1.68 2003/10/08 02:59:50 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&mode_msgtab);
 }
 
-const char *_version = "$Revision: 1.67 $";
+const char *_version = "$Revision: 1.68 $";
 #endif
 
 /*
@@ -352,6 +352,6 @@ ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[
 
   sendto_server(client_p, NULL, chptr, CAP_TS6|needcap, NOCAPS, NOFLAGS,
                 ":%s BMASK %lu %s %s :%s",
-                 source_p->id, chptr->channelts, chptr->chname,
+                 source_p->id, (unsigned long)chptr->channelts, chptr->chname,
                  parv[3], parv[4]);
 }

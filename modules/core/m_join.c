@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.10 2003/10/07 22:37:17 bill Exp $
+ *  $Id: m_join.c,v 1.11 2003/10/08 02:59:50 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -87,7 +87,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 #endif
 
 /* m_join()
@@ -381,11 +381,11 @@ ms_join(struct Client *client_p, struct Client *source_p,
 
   sendto_server(client_p, NULL, chptr, CAP_TS6, NOCAPS, NOFLAGS,
                 ":%s JOIN %lu %s %s %s",
-                source_p->id, chptr->channelts, chptr->chname,
+                source_p->id, (unsigned long)chptr->channelts, chptr->chname,
                 modebuf, parabuf);
   sendto_server(client_p, NULL, chptr, NOCAPS, CAP_TS6, NOFLAGS,
                 ":%s SJOIN %lu %s %s %s:%s",
-                source_p->user->server->name, chptr->channelts, chptr->chname,
+                source_p->user->server->name, (unsigned long)chptr->channelts, chptr->chname,
                 modebuf, parabuf, source_p->name);
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.132 2003/10/07 22:37:20 bill Exp $
+ *  $Id: channel_mode.c,v 7.133 2003/10/08 02:59:52 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,6 @@
 #include "balloc.h"
 #include "s_log.h"
 
-int add_id(struct Client *, struct Channel *, char *, int);
 int del_id(struct Channel *, const char *, int);
 
 /* some small utility functions */
