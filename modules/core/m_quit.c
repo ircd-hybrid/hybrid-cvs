@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_quit.c,v 1.20 2001/11/13 11:45:48 leeh Exp $
+ *   $Id: m_quit.c,v 1.21 2001/12/20 18:38:05 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -83,7 +83,7 @@ static void m_quit(struct Client *client_p,
       comment = reason;
     }
   
-  if( !IsServer(source_p) && MyConnect(source_p) && !IsOper(source_p) && 
+  if(!IsOper(source_p) && 
      (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time)
      > CurrentTime)
     {
