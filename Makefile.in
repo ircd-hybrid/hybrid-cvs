@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#* $Id: Makefile.in,v 7.3 1999/09/02 01:10:57 wnder Exp $
+#* $Id: Makefile.in,v 7.4 1999/09/09 13:58:40 wnder Exp $
 #*/
 
 RM=@RM@
@@ -79,7 +79,6 @@ SHELL=/bin/sh
 
 SUBDIRS =          \
  zlib              \
- iauth             \
  src               \
  tools
 
