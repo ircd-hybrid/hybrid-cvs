@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.66 2003/06/07 17:28:01 michael Exp $
+ *  $Id: hash.c,v 7.67 2003/06/16 12:04:43 michael Exp $
  */
 
 #include "stdinc.h"
@@ -396,8 +396,7 @@ count_user_host(const char *user, const char *host,
   }
 }
 
-/*
- * add_user_host
+/* add_user_host()
  *
  * inputs	- user name
  *		- hostname
@@ -441,7 +440,7 @@ add_user_host(char *user, const char *host, int global)
   }
 
   nameh = BlockHeapAlloc(namehost_heap);
-  strlcpy(nameh->name, user, USERLEN);
+  strlcpy(nameh->name, user, sizeof(nameh->name));
   if (global)
     nameh->gcount = 1;
   else
@@ -453,8 +452,7 @@ add_user_host(char *user, const char *host, int global)
   dlinkAdd(nameh, &nameh->node, &found_userhost->list);
 }
 
-/*
- * delete_user_host
+/* delete_user_host()
  *
  * inputs	- user name
  *		- hostname
@@ -573,7 +571,7 @@ find_or_add_userhost(const char *host)
   found_userhost = BlockHeapAlloc(userhost_heap);
   memset(found_userhost, 0, sizeof(struct UserHost));
   found_userhost->next = (struct UserHost *)userhostTable[hashv].list;
-  strlcpy(found_userhost->host, host, HOSTLEN);
+  strlcpy(found_userhost->host, host, sizeof(found_userhost->host));
   userhostTable[hashv].list = (void *)found_userhost;
   ++userhostTable[hashv].links;
   ++userhostTable[hashv].hits;
