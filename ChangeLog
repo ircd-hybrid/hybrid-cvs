@@ -1,3 +1,8 @@
+*** 20001211_12 by db
+- tiny comment fix in check_pings
+
+
+
 *** 20001211_11 by db
 - how did THAT get back in. removed local[] again *sigh*
 
@@ -2350,7 +2355,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.796 2000/12/12 02:40:41 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.797 2000/12/12 03:18:14 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
