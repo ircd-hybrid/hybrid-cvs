@@ -102,7 +102,7 @@
 #define DNS_LABELTYPE_BITSTRING		0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.4 2003/05/13 03:06:29 joshk Exp $ */
+/* $Id: irc_reslib.c,v 7.5 2003/05/13 04:18:46 joshk Exp $ */
 
 static FBFILE *file;
 
@@ -1160,7 +1160,7 @@ irc_res_mkquery(
 	case NS_NOTIFY_OP:
 		if ((buflen -= QFIXEDSZ) < 0)
 			return (-1);
-		if ((n = dn_comp(dname, cp, buflen, dnptrs, lastdnptr)) < 0)
+		if ((n = irc_dn_comp(dname, cp, buflen, dnptrs, lastdnptr)) < 0)
 			return (-1);
 		cp += n;
 		buflen -= n;
@@ -1175,7 +1175,7 @@ irc_res_mkquery(
 		 * Make an additional record for completion domain.
 		 */
 		buflen -= RRFIXEDSZ;
-		n = dn_comp((const char *)data, cp, buflen, dnptrs, lastdnptr);
+		n = irc_dn_comp((const char *)data, cp, buflen, dnptrs, lastdnptr);
 		if (n < 0)
 			return (-1);
 		cp += n;

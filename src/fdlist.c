@@ -19,13 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.34 2003/05/11 22:27:44 joshk Exp $
+ *  $Id: fdlist.c,v 7.35 2003/05/13 04:18:45 joshk Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
 #include "client.h"  /* struct Client */
 #include "event.h"
 #include "ircd.h"    /* GlobalSetOptions */
+#include "irc_string.h"
 #include "s_bsd.h"   /* highest_fd */
 #include "send.h"
 #include "memory.h"
