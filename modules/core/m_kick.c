@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.49 2003/01/31 23:00:29 db Exp $
+ *  $Id: m_kick.c,v 1.50 2003/02/01 20:12:24 db Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 /*
 ** m_kick
@@ -245,7 +245,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
                     ":%s KICK %s %s :%s",
                     parv[0], chptr->chname,
                     who->name, comment);
-      if (!IsDead(who))
+      if (!IsDefunct(who))
 	remove_user_from_channel(chptr, who);
     }
   else
