@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.214 2001/09/24 11:13:46 a1kmm Exp $
+ * $Id: ircd_parser.y,v 1.215 2001/10/02 18:23:12 androsyn Exp $
  */
 
 %{
@@ -216,7 +216,7 @@ int   class_redirport_var;
 %token  SERVERHIDE
 %token  SERVERINFO
 %token  SERVLINK_PATH
-%token  SHARED
+%token  T_SHARED
 %token  SHORT_MOTD
 %token  SILENT
 %token  SPOOF
@@ -1212,7 +1212,7 @@ resv_nick:	NICK '=' QSTRING ';'
  *  section shared, for sharing remote klines etc.
  ***************************************************************************/
 
-shared_entry:		SHARED
+shared_entry:		T_SHARED
   {
     if(yy_aconf != NULL)
       {

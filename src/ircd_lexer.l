@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.121 2001/09/08 15:27:35 androsyn Exp $
+ * $Id: ircd_lexer.l,v 1.122 2001/10/02 18:23:12 androsyn Exp $
  */
 
 %option case-insensitive
@@ -213,7 +213,7 @@ sendq		{ return SENDQ; }
 serverhide	{ return SERVERHIDE; }
 serverinfo	{ return SERVERINFO; }
 servlink_path   { return SERVLINK_PATH; }
-shared          { return SHARED; }
+shared          { return T_SHARED; }
 short_motd      { return SHORT_MOTD; }
 silent          { return SILENT; }
 spoof		{ return SPOOF; }
