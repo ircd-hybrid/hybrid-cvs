@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.174 2003/10/16 22:06:55 bill Exp $
+ *  $Id: m_sjoin.c,v 1.175 2004/01/15 22:27:55 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -63,11 +63,12 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.174 $";
+const char *_version = "$Revision: 1.175 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
 static char parabuf[MODEBUFLEN];
+static char sendbuf[MODEBUFLEN];
 static char *para[MAXMODEPARAMS];
 static char *mbuf;
 static int pargs;
@@ -102,7 +103,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   int            args = 0;
   int            keep_our_modes = 1;
   int            keep_new_modes = 1;
-  int            fl;
+  int            fl, lcount;
   int            people = 0;
   int            num_prefix = 0;
   int            isnew;
@@ -306,7 +307,9 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   }
 
   mbuf = modebuf;
-  para[0] = para[1] = para[2] = para[3] = "";
+  for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+    para[lcount] = "";
+  sendbuf[0] = '\0';
   pargs = 0;
 
   *mbuf++ = '+';
@@ -435,13 +438,21 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       if (pargs >= MAXMODEPARAMS)
       {
         *mbuf = '\0';
-        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
-                             servername, chptr->chname, modebuf, para[0],
-                             para[1], para[2], para[3]);
+        for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+        {
+          if (*para[lcount] == '\0')
+            break;
+
+          strlcat(sendbuf, " ", sizeof(sendbuf));
+          strlcat(sendbuf, para[lcount], sizeof(sendbuf));
+          para[lcount] = "";
+        }
+        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s%s",
+                            servername, chptr->chname, modebuf, sendbuf);
         mbuf = modebuf;
         *mbuf++ = '+';
 
-        para[0] = para[1] = para[2] = para[3] = "";
+        sendbuf[0] = '\0';
         pargs = 0;
       }
     }
@@ -453,13 +464,22 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       if (pargs >= MAXMODEPARAMS)
       {
         *mbuf = '\0';
-        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
-                             servername, chptr->chname, modebuf, para[0],
-                             para[1], para[2], para[3]);
+        for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+        {
+          if (*para[lcount] == '\0')
+            break;
+
+          strlcat(sendbuf, " ", sizeof(sendbuf));
+          strlcat(sendbuf, para[lcount], sizeof(sendbuf));
+          para[lcount] = "";
+        }
+        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s%s",
+                             servername, chptr->chname, modebuf, sendbuf);
+
         mbuf = modebuf;
         *mbuf++ = '+';
 
-        para[0] = para[1] = para[2] = para[3] = "";
+        sendbuf[0] = '\0';
         pargs = 0;
       }
     }
@@ -489,9 +509,17 @@ nextnick:
 
   if (pargs != 0)
   {
-    sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
-                         servername, chptr->chname, modebuf, para[0],
-                         para[1], para[2], para[3]);
+    for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+    {
+      if (*para[lcount] == '\0')
+        break;
+
+      strlcat(sendbuf, " ", sizeof(sendbuf));
+      strlcat(sendbuf, para[lcount], sizeof(sendbuf));
+    }
+    sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s%s",
+                        servername, chptr->chname, modebuf, sendbuf);
+
   }
 
   if (people == 0)
@@ -653,11 +681,14 @@ void remove_a_mode(struct Channel *chptr, struct Client *source_p,
   char lmodebuf[MODEBUFLEN];
   char *lpara[4];
   int count = 0;
+  int lcount;
 
   mbuf = lmodebuf;
   *mbuf++ = '-';
 
-  lpara[0] = lpara[1] = lpara[2] = lpara[3] = "";
+  for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+    lpara[lcount] = "";
+  sendbuf[0] = '\0';
 
   DLINK_FOREACH(ptr, chptr->members.head)
   {
@@ -672,32 +703,48 @@ void remove_a_mode(struct Channel *chptr, struct Client *source_p,
 
     *mbuf++ = flag;
 
-    if (count >= 4)
+    if (count >= MAXMODEPARAMS)
     {
+      for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+      {
+        if (*lpara[lcount] == '\0')
+          break;
+
+        strlcat(sendbuf, " ", sizeof(sendbuf));
+        strlcat(sendbuf, lpara[lcount], sizeof(sendbuf));
+        lpara[lcount] = "";
+      }
+
       *mbuf = '\0';
       sendto_channel_local(ALL_MEMBERS, chptr,
-		           ":%s MODE %s %s %s %s %s %s",
+                           ":%s MODE %s %s%s",
 			   (IsHidden(source_p) ||
 			   ConfigServerHide.hide_servers) ?
 			   me.name : source_p->name,
-			   chptr->chname, lmodebuf,
-			   lpara[0], lpara[1], lpara[2], lpara[3]);
+			   chptr->chname, lmodebuf, sendbuf);
       mbuf = lmodebuf;
       *mbuf++ = '-';
       count = 0;
-      lpara[0] = lpara[1] = lpara[2] = lpara[3] = "";
+      sendbuf[0] = '\0';
     }
   }
 
   if (count != 0)
   {
     *mbuf = '\0';
+    for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+    {
+      if (*lpara[lcount] == '\0')
+        break;
+
+      strlcat(sendbuf, " ", sizeof(sendbuf));
+      strlcat(sendbuf, lpara[lcount], sizeof(sendbuf));
+    }
     sendto_channel_local(ALL_MEMBERS, chptr,
-			 ":%s MODE %s %s %s %s %s %s",
+			 ":%s MODE %s %s%s",
 			 (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
 			 me.name : source_p->name,
-			 chptr->chname, lmodebuf,
-			 lpara[0], lpara[1], lpara[2], lpara[3]);
+			 chptr->chname, lmodebuf, sendbuf);
   }
 }
 
