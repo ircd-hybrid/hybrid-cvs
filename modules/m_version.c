@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_version.c,v 1.15 2000/12/28 23:29:19 db Exp $
+ *   $Id: m_version.c,v 1.16 2000/12/29 09:54:55 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,7 +33,7 @@
 #include "parse.h"
 #include "modules.h"
 
-char* confopts(void);
+char* confopts(struct Client *sptr);
 
 struct Message version_msgtab = {
   MSG_VERSION, 0, 0, 0, MFLG_SLOW, 0,
@@ -62,7 +62,8 @@ char *_version = "20001223";
 int m_version(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
 {
   sendto_one(sptr, form_str(RPL_VERSION), me.name,
-                parv[0], version, serno, debugmode, me.name, confopts(), serveropts);
+                parv[0], version, serno, debugmode,
+                me.name, confopts(sptr), serveropts);
                 
   show_isupport(sptr);
   
@@ -81,7 +82,7 @@ int mo_version(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
     return 0;
     
   sendto_one(sptr, form_str(RPL_VERSION), me.name, parv[0], version, 
-  	     serno, debugmode, me.name, confopts(), serveropts);
+  	     serno, debugmode, me.name, confopts(sptr), serveropts);
 	       
   show_isupport(sptr);
   
@@ -100,21 +101,23 @@ int ms_version(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
        if (hunt_server(cptr, sptr, ":%s VERSION :%s", 
                        1, parc, parv) == HUNTED_ISME)
          sendto_one(sptr, form_str(RPL_VERSION), me.name,
-                    parv[0], version, serno, debugmode, me.name, confopts(), serveropts);
+                    parv[0], version, serno, debugmode,
+                    me.name, confopts(sptr), serveropts);
      }
    else
      sendto_one(sptr, form_str(RPL_VERSION), me.name,
-                parv[0], version, serno, debugmode, me.name, confopts(), serveropts);
+                parv[0], version, serno, debugmode,
+                me.name, confopts(sptr), serveropts);
 
   return 0;
 }
 
 /* confopts()
- * input  - NONE
+ * input  - client pointer
  * output - ircd.conf option string
  * side effects - none
  */
-char* confopts(void)
+char* confopts(struct Client *sptr)
 {
   static char result[4];
 
@@ -122,8 +125,13 @@ char* confopts(void)
 
   if (ConfigFileEntry.glines)
     strcat(result, "G");
-  if (ConfigFileEntry.hub)
-    strcat(result, "H");
+
+  /* might wanna hide this :P */
+  if (ConfigFileEntry.hub && 
+      (!GlobalSetOptions.hide_server || IsOper(sptr)) )
+    {
+      strcat(result, "H");
+    }
 
   return result;
 }
