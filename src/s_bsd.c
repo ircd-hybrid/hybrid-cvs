@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.148 2001/09/08 15:27:36 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.149 2001/09/12 05:39:21 habeeb Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -595,8 +595,6 @@ comm_checktimeouts(void *notused)
             hdl(fd, fd_table[fd].timeout_data);           
 	  }
       }
-    /* .. next .. */
-    eventAdd("comm_checktimeouts", comm_checktimeouts, NULL, 1, 0);
 }
 
 /*

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.33 2001/07/18 04:28:31 androsyn blalloc.c $
+ *   $Id: s_log.c,v 7.34 2001/09/12 05:39:21 habeeb Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -52,6 +52,13 @@
 static FBFILE* logFile;
 #endif
 static int logLevel = INIT_LOG_LEVEL;
+
+static FBFILE *user_log_fb=NULL;
+
+#ifndef SYSLOG_USERS
+static EVH user_log_resync;
+#endif
+
 
 #ifdef USE_SYSLOG
 static int sysLogLevel[] = {
@@ -156,6 +163,7 @@ void init_log(const char* filename)
 #ifdef USE_SYSLOG
   openlog("ircd", LOG_PID | LOG_NDELAY, LOG_FACILITY);
 #endif
+  eventAdd("user_log_resync", user_log_resync, NULL, 60);
 }
 
 void set_log_level(int level)
@@ -179,11 +187,6 @@ const char *get_log_level_as_string(int level)
   return(logLevelToString[level]);
 }
 
-static FBFILE *user_log_fb=NULL;
-
-#ifndef SYSLOG_USERS
-static EVH user_log_resync;
-#endif
 
 /*
  * log_user_exit
@@ -255,12 +258,6 @@ void log_user_exit(struct Client *source_p)
 		       source_p->localClient->receiveK);
 
 	    fbputs(linebuf, user_log_fb);
-
-	    /* Now, schedule file resync every 60 seconds */
-
-	    eventAdd("user_log_resync", user_log_resync, NULL,
-		     60, 0 );
-
 	  }
       }
   }

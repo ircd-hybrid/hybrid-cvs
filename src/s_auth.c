@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.74 2001/09/09 01:41:42 androsyn Exp $
+ *   $Id: s_auth.c,v 7.75 2001/09/12 05:39:21 habeeb Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -115,8 +115,7 @@ init_auth(void)
 {
   memset(&auth_client_list, 0, sizeof(auth_client_list));
   memset(&auth_poll_list, 0, sizeof(auth_poll_list));
-  eventAdd("timeout_auth_queries_event", timeout_auth_queries_event, NULL,
-    1, 0);
+  eventAdd("timeout_auth_queries_event", timeout_auth_queries_event, NULL, 1);
 }
 
 /*
@@ -479,14 +478,6 @@ timeout_auth_queries_event(void *notused)
 #endif
 	}
     }
-
-  /* And re-register an event .. */
-  /* 
-   * These *REALLY* should be part of the socket timeout, but we aren't
-   * at that stage yet.   -- adrian
-   */
-  eventAdd("timeout_auth_queries_event", timeout_auth_queries_event, NULL,
-    1, 0);
 }
 
 /*

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_gline.c,v 1.15 2001/08/24 13:58:20 leeh Exp $
+ *  $Id: s_gline.c,v 1.16 2001/09/12 05:39:21 habeeb Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -154,9 +154,6 @@ cleanup_glines(void *notused)
 {
   expire_glines();
   expire_pending_glines();
-
-  eventAdd("cleanup_glines", cleanup_glines, NULL,
-	   CLEANUP_GLINES_TIME, 0);
 }
 
 /*
