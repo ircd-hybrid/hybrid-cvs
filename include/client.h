@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.180 2003/04/19 12:03:54 adx Exp $
+ *  $Id: client.h,v 7.181 2003/04/20 15:14:01 adx Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -34,6 +34,7 @@
 #include "ircd_defs.h"
 #include "ircd_handler.h"
 #include "linebuf.h"
+#include "dbuf.h"
 #include "channel.h"
 #include "res.h"
 #define HOSTIPLEN	53 /* sizeof("ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255.ipv6") */
@@ -229,7 +230,7 @@ struct LocalUser
 
   struct ListTask   *list_task;
   /* Send and receive linebuf queues .. */
-  buf_head_t        buf_sendq;
+  struct dbuf_queue buf_sendq;
   buf_head_t        buf_recvq;
   /*
    * we want to use unsigned int here so the sizes have a better chance of

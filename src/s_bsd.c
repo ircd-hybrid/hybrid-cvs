@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.190 2003/04/19 12:03:56 adx Exp $
+ *  $Id: s_bsd.c,v 7.191 2003/04/20 15:14:05 adx Exp $
  */
 
 #include "stdinc.h"
@@ -29,6 +29,7 @@
 #include "class.h"
 #include "client.h"
 #include "common.h"
+#include "dbuf.h"
 #include "event.h"
 #include "irc_string.h"
 #include "irc_getnameinfo.h"
@@ -353,7 +354,7 @@ close_connection(struct Client *client_p)
       }
     }
   
-  linebuf_donebuf(&client_p->localClient->buf_sendq);
+  dbuf_clear(&client_p->localClient->buf_sendq);
   linebuf_donebuf(&client_p->localClient->buf_recvq);
   memset(client_p->localClient->passwd, 0, sizeof(client_p->localClient->passwd));
   det_confs_butmask(client_p, 0);

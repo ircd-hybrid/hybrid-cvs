@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.104 2003/03/16 04:42:05 db Exp $
+ *  $Id: packet.c,v 7.105 2003/04/20 15:14:05 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -85,13 +85,7 @@ parse_client_queued(struct Client *client_p)
           break;
       }
       else if(MyConnect(client_p))
-      {
-#if 0
-        linebuf_donebuf(&client_p->localClient->buf_recvq);
-        linebuf_donebuf(&client_p->localClient->buf_sendq);
-#endif
         return;
-      }
     }
   }
 
@@ -109,13 +103,7 @@ parse_client_queued(struct Client *client_p)
       if (!IsDefunct(client_p))
         client_dopacket(client_p, readBuf, dolen);
       else if(MyConnect(client_p))
-      {
-#if 0
-        linebuf_donebuf(&client_p->localClient->buf_recvq);
-        linebuf_donebuf(&client_p->localClient->buf_sendq);
-#endif
         return;
-      }
       if (client_p->localClient == NULL)
 	return; 
     }

@@ -2,7 +2,7 @@
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  dbuf.c: Supports dynamic data buffers.
  *
- *  Copyright (C) 2000-2002 Edward Brocklesby, Hybrid Development Team
+ *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: dbuf.c,v 7.16 2003/04/19 17:45:29 adx Exp $
+ *  $Id: dbuf.c,v 7.17 2003/04/20 15:14:05 adx Exp $
  */
 
 #include "stdinc.h"

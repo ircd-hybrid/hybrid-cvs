@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.59 2003/04/19 16:00:11 michael Exp $
+ *  $Id: hash.c,v 7.60 2003/04/20 15:14:05 adx Exp $
  */
 
 #include "stdinc.h"
@@ -39,6 +39,7 @@
 #include "fdlist.h"
 #include "fileio.h"
 #include "memory.h"
+#include "dbuf.h"
 
 /* XXX ZZZ for "safe_list" *ugh* */
 #include "channel.h"
@@ -813,7 +814,7 @@ hash_find_resv(const char *name)
 static int
 exceeding_sendq(struct Client *to)
 {
-  if (linebuf_len(&to->localClient->buf_sendq) > (get_sendq(to) / 2))
+  if (dbuf_length(&to->localClient->buf_sendq) > (get_sendq(to) / 2))
     return(1);
   else
     return(0);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.354 2003/04/19 10:47:34 adx Exp $
+ *  $Id: client.c,v 7.355 2003/04/20 15:14:05 adx Exp $
  */
 
 #include "stdinc.h"
@@ -49,6 +49,7 @@
 #include "s_debug.h"
 #include "s_user.h"
 #include "linebuf.h"
+#include "dbuf.h"
 #include "memory.h"
 #include "hostmask.h"
 #include "balloc.h"
@@ -193,7 +194,7 @@ free_client(struct Client* client_p)
       fd_close(client_p->localClient->fd);
 
     linebuf_donebuf(&client_p->localClient->buf_recvq);
-    linebuf_donebuf(&client_p->localClient->buf_sendq);
+    dbuf_clear(&client_p->localClient->buf_sendq);
 
     BlockHeapFree(lclient_heap, client_p->localClient);
     --local_client_count;
@@ -1022,7 +1023,7 @@ dead_link_on_write(struct Client *client_p, int ierrno)
     return;
 
   linebuf_donebuf(&client_p->localClient->buf_recvq);
-  linebuf_donebuf(&client_p->localClient->buf_sendq);
+  dbuf_clear(&client_p->localClient->buf_sendq);
 
   if (IsSendQExceeded(client_p))
     notice = "Max SendQ exceeded";
@@ -1062,7 +1063,7 @@ dead_link_on_read(struct Client* client_p, int error)
     return;
 
   linebuf_donebuf(&client_p->localClient->buf_recvq);
-  linebuf_donebuf(&client_p->localClient->buf_sendq);
+  dbuf_clear(&client_p->localClient->buf_sendq);
 
   Debug((DEBUG_ERROR, "READ ERROR: fd = %d %d %d",
          client_p->localClient->fd, current_error, error));

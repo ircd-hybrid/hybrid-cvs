@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.119 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_stats.c,v 1.120 2003/04/20 15:14:03 adx Exp $
  */
 
 #include "stdinc.h"
@@ -47,7 +47,7 @@
 #include "s_stats.h"     /* tstats */
 #include "s_user.h"      /* show_opers */
 #include "event.h"	 /* events */
-#include "linebuf.h"
+#include "dbuf.h"
 #include "parse.h"
 #include "modules.h"
 #include "hook.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.119 $";
+const char *_version = "$Revision: 1.120 $";
 #endif
 
 const char* Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -837,7 +837,7 @@ stats_servlinks(struct Client *source_p)
                source_p->name, 
                IsOperAdmin(source_p) ? get_client_name(target_p, SHOW_IP)
 	       : get_client_name(target_p, MASK_IP),
-               (int)linebuf_len(&target_p->localClient->buf_sendq),
+               (int)dbuf_length(&target_p->localClient->buf_sendq),
                (int)target_p->localClient->sendM,
                (int)target_p->localClient->sendK,
                (int)target_p->localClient->receiveM,
@@ -967,7 +967,7 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
                      (IsUpper(statchar)) ?
                      get_client_name(target_p, SHOW_IP) :
                      get_client_name(target_p, HIDE_IP),
-                     (int)linebuf_len(&target_p->localClient->buf_sendq),
+                     (int)dbuf_length(&target_p->localClient->buf_sendq),
                      (int)target_p->localClient->sendM,
 		     (int)target_p->localClient->sendK,
                      (int)target_p->localClient->receiveM,
@@ -984,7 +984,7 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
 	    sendto_one(source_p, Lformat, me.name,
 		       RPL_STATSLINKINFO, source_p->name,
 		       get_client_name(target_p, MASK_IP),
-		       (int)linebuf_len(&target_p->localClient->buf_sendq),
+		       (int)dbuf_length(&target_p->localClient->buf_sendq),
 		       (int)target_p->localClient->sendM,
 		       (int)target_p->localClient->sendK,
 		       (int)target_p->localClient->receiveM,
@@ -998,7 +998,7 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
 		       (IsUpper(statchar)) ?
 		       get_client_name(target_p, SHOW_IP) :
 		       get_client_name(target_p, HIDE_IP),
-		       (int)linebuf_len(&target_p->localClient->buf_sendq),
+		       (int)dbuf_length(&target_p->localClient->buf_sendq),
 		       (int)target_p->localClient->sendM,
 		       (int)target_p->localClient->sendK,
 		       (int)target_p->localClient->receiveM,
