@@ -1,0 +1,309 @@
+diff -ur ircd-hybrid/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
+--- ircd-hybrid/contrib/m_ojoin.c	Sat Sep 27 19:16:01 2003
++++ halfops/contrib/m_ojoin.c	Sat Sep 27 19:34:45 2003
+@@ -103,6 +103,8 @@
+                 modeletter = 'o'; name++; break;
+       case '+': tmp_flags = CHFL_VOICE;
+                 modeletter = 'v'; name++; break;
++      case '%': tmp_flags = CHFL_HALFOP;
++                modeletter = 'h'; name++; break;
+       case '#':
+       case '&':
+         tmp_flags = 0;
+diff -ur ircd-hybrid/modules/core/m_kick.c halfops/modules/core/m_kick.c
+--- ircd-hybrid/modules/core/m_kick.c	Sat Sep 27 19:16:04 2003
++++ halfops/modules/core/m_kick.c	Sat Sep 27 19:35:52 2003
+@@ -122,7 +122,7 @@
+         return;
+       }
+     }
+-    if (!has_member_flags(ms, CHFL_CHANOP))
++    if (!has_member_flags(ms, CHFL_CHANOP|CHFL_HALFOP))
+     {
+       /* was a user, not a server, and user isn't seen as a chanop here */
+       if (MyConnect(source_p))
+@@ -180,6 +180,17 @@
+ 
+   if ((ms_target = find_channel_link(who, chptr)) != NULL)
+   {
++    /* half ops cannot kick other halfops on private channels */
++    if (has_member_flags(ms, CHFL_HALFOP) && !has_member_flags(ms, CHFL_CHANOP))
++    {
++      if (((chptr->mode.mode & MODE_PRIVATE) && has_member_flags(ms_target, CHFL_CHANOP|CHFL_HALFOP)) ||
++            has_member_flags(ms_target, CHFL_CHANOP))
++      {
++        sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
++                   me.name, source_p->name, name);
++        return;
++      }
++    }
+    /* jdc
+     * - In the case of a server kicking a user (i.e. CLEARCHAN),
+     *   the kick should show up as coming from the server which did
+diff -ur ircd-hybrid/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
+--- ircd-hybrid/modules/core/m_sjoin.c	Sat Sep 27 19:16:04 2003
++++ halfops/modules/core/m_sjoin.c	Sat Sep 27 19:35:13 2003
+@@ -311,7 +311,7 @@
+     num_prefix = 0;
+ 
+     /* XXXXXXXX THIS IS JUST DUMB */
+-    for (i = 0; i < 2; i++)
++    for (i = 0; i < 3; i++)
+     {
+       if (*s == '@')
+       {
+@@ -333,6 +333,16 @@
+         }
+         s++;
+       }
++      else if (*s == '%')
++      {
++        fl |= CHFL_HALFOP;
++        if (keep_new_modes)
++        {
++          *nhops++ = *s;
++          num_prefix++;
++        }
++        s++;
++      }
+     }
+     /* if the client doesnt exist, backtrack over the prefix (@%+) that we
+      * just added and skip to the next nick
+@@ -356,7 +366,7 @@
+ 
+     if (!keep_new_modes)
+     {
+-      if (fl & CHFL_CHANOP)
++      if (fl & (CHFL_CHANOP|CHFL_HALFOP))
+         fl = CHFL_DEOPPED;
+       else
+         fl = 0;
+@@ -439,6 +449,24 @@
+         pargs = 0;
+       }
+     }
++    if (fl & CHFL_HALFOP)
++    {
++      *mbuf++ = 'h';
++      para[pargs++] = s;
++
++      if (pargs >= MAXMODEPARAMS)
++      {
++        *mbuf = '\0';
++        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
++                             servername, chptr->chname, modebuf, para[0],
++                             para[1], para[2], para[3]);
++        mbuf = modebuf;
++        *mbuf++ = '+';
++
++        para[0] = para[1] = para[2] = para[3] = "";
++        pargs = 0;
++      }
++    }
+ 
+ nextnick:
+     /* p points to the next nick */
+@@ -616,6 +644,7 @@
+ remove_our_modes(struct Channel *chptr, struct Client *source_p)
+ {
+   remove_a_mode(chptr, source_p, CHFL_CHANOP, 'o');
++  remove_a_mode(chptr, source_p, CHFL_HALFOP, 'h');
+   remove_a_mode(chptr, source_p, CHFL_VOICE, 'v');
+ }
+ 
+diff -ur ircd-hybrid/src/channel_mode.c halfops/src/channel_mode.c
+--- ircd-hybrid/src/channel_mode.c	Sat Sep 27 19:16:06 2003
++++ halfops/src/channel_mode.c	Sat Sep 27 19:37:30 2003
+@@ -73,6 +73,10 @@
+ static void chm_op(struct Client *, struct Client *, struct Channel *, int,
+                    int *, char **, int *, int, int, char, void *,
+                    const char *chname);
++static void chm_hop(struct Client *, struct Client *, struct Channel *, int,
++                   int *, char **, int *, int, int, char, void *,
++                   const char *chname);
++
+ static void chm_voice(struct Client *, struct Client *, struct Channel *,
+                       int, int *, char **, int *, int, int, char, void *,
+                       const char *chname);
+@@ -648,7 +652,11 @@
+ 
+   mode_type = (long)d;
+ 
+-  if (alev < CHACCESS_CHANOP)
++  /* dont allow halfops to set +-p, as this controls whether they can set
++   * +-h or not.. all other simple modes are ok   
++   */ 
++  if ((alev < CHACCESS_HALFOP) ||
++      ((mode_type == MODE_PRIVATE) && (alev < CHACCESS_CHANOP)))
+   {
+     if (!(*errors & SM_ERR_NOOPS))
+       sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+@@ -729,7 +737,7 @@
+     return;
+   }
+ 
+-  if (alev < CHACCESS_CHANOP)
++  if (alev < CHACCESS_HALFOP)
+   {
+     if (!(*errors & SM_ERR_NOOPS))
+       sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+@@ -823,7 +831,7 @@
+     return;
+   }
+ 
+-  if (alev < CHACCESS_CHANOP)
++  if (alev < CHACCESS_HALFOP)
+   {
+     if (!(*errors & SM_ERR_NOOPS))
+       sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+@@ -926,7 +934,7 @@
+     return;
+   }
+ 
+-  if (alev < CHACCESS_CHANOP)
++  if (alev < CHACCESS_HALFOP)
+   {
+     if (!(*errors & SM_ERR_NOOPS))
+       sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+@@ -1087,6 +1095,95 @@
+ }
+ 
+ static void
++chm_hop(struct Client *client_p, struct Client *source_p,
++       struct Channel *chptr, int parc, int *parn,
++       char **parv, int *errors, int alev, int dir, char c, void *d,
++       const char *chname)
++{
++  char *opnick;
++  struct Client *targ_p;
++  struct Membership *member;
++
++  /* *sigh* - dont allow halfops to set +/-h, they could fully control a
++   * channel if there were no ops - it doesnt solve anything.. MODE_PRIVATE
++   * when used with MODE_SECRET is paranoid - cant use +p
++   *
++   * it needs to be optional per channel - but not via +p, that or remove
++   * paranoid.. -- fl_
++   *
++   * +p means paranoid, it is useless for anything else on modern IRC, as
++   * list isn't really usable. If you want to have a private channel these
++   * days, you set it +s. Halfops can no longer remove simple modes when
++   * +p is set (although they can set +p) so it is safe to use this to
++   * control whether they can (de)halfop...
++   */
++  if (alev <
++      ((chptr->mode.mode & MODE_PRIVATE) ? CHACCESS_CHANOP : CHACCESS_HALFOP))
++  {
++    if (!(*errors & SM_ERR_NOOPS))
++      sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
++                                    ERR_NOTONCHANNEL : ERR_CHANOPRIVSNEEDED),
++                 me.name, source_p->name, chname); 
++    *errors |= SM_ERR_NOOPS;
++    return;
++  }
++  if ((dir == MODE_QUERY) || (parc <= *parn))
++    return;
++
++  if (IsRestricted(source_p) && (dir == MODE_ADD))
++  {
++    if (!(*errors & SM_ERR_RESTRICTED))
++      sendto_one(source_p,
++                 ":%s NOTICE %s :*** Notice -- You are restricted and cannot "
++                 "chanop others", me.name, source_p->name);
++
++    *errors |= SM_ERR_RESTRICTED;
++    return;
++  }
++
++  opnick = parv[(*parn)++];
++
++  if ((targ_p = find_chasing(source_p, opnick, NULL)) == NULL)
++    return;
++  if (!IsClient(targ_p))
++    return;
++
++  if ((member = find_channel_link(targ_p, chptr)) == NULL)
++  {
++    if (!(*errors & SM_ERR_NOTONCHANNEL))
++      sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL),
++                 me.name, source_p->name, opnick, chname);
++    *errors |= SM_ERR_NOTONCHANNEL;
++    return;
++  }
++
++  if (MyClient(source_p) && (++mode_limit > MAXMODEPARAMS))
++    return;
++
++  /* no redundant mode changes */
++  if (dir == MODE_ADD &&  has_member_flags(member, CHFL_HALFOP))
++    return;
++  if (dir == MODE_DEL && !has_member_flags(member, CHFL_HALFOP))
++    return;
++
++  mode_changes[mode_count].letter = 'h';
++  mode_changes[mode_count].dir = dir;
++  mode_changes[mode_count].caps = 0;
++  mode_changes[mode_count].nocaps = 0;
++  mode_changes[mode_count].mems = ALL_MEMBERS;
++  mode_changes[mode_count].id = targ_p->id;
++  mode_changes[mode_count].arg = targ_p->name;
++  mode_changes[mode_count++].client = targ_p;
++
++  if (dir == MODE_ADD)
++  {
++    AddMemberFlag(member, CHFL_HALFOP);
++    DelMemberFlag(member, CHFL_DEOPPED);
++  }
++  else DelMemberFlag(member, CHFL_HALFOP);
++}
++
++static void
+ chm_voice(struct Client *client_p, struct Client *source_p,
+           struct Channel *chptr, int parc, int *parn,
+           char **parv, int *errors, int alev, int dir, char c, void *d,
+@@ -1096,7 +1193,7 @@
+   struct Client *targ_p;
+   struct Membership *member;
+ 
+-  if (alev < CHACCESS_CHANOP)
++  if (alev < CHACCESS_HALFOP)
+   {
+     if (!(*errors & SM_ERR_NOOPS))
+       sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+@@ -1158,7 +1255,7 @@
+   int i, limit;
+   char *lstr;
+ 
+-  if (alev < CHACCESS_CHANOP)
++  if (alev < CHACCESS_HALFOP)
+   {
+     if (!(*errors & SM_ERR_NOOPS))
+       sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+@@ -1223,7 +1320,7 @@
+   int i;
+   char *key;
+ 
+-  if (alev < CHACCESS_CHANOP)
++  if (alev < CHACCESS_HALFOP)
+   {
+     if (!(*errors & SM_ERR_NOOPS))
+       sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+@@ -1338,7 +1435,7 @@
+   {chm_except, NULL},                             /* e */
+   {chm_nosuch, NULL},                             /* f */
+   {chm_nosuch, NULL},                             /* g */
+-  {chm_nosuch, NULL},				  /* h */
++  {chm_hop, NULL},                                /* h */
+   {chm_simple, (void *) MODE_INVITEONLY},         /* i */
+   {chm_nosuch, NULL},                             /* j */
+   {chm_key, NULL},                                /* k */
+@@ -1383,6 +1480,9 @@
+ 
+   if (has_member_flags(member, CHFL_CHANOP))
+     return(CHACCESS_CHANOP);
++
++  if (has_member_flags(member, CHFL_HALFOP))
++    return(CHACCESS_HALFOP);
+ 
+   return(CHACCESS_PEON);
+ }
