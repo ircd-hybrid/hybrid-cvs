@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircdauth.c,v 7.45 2002/01/05 09:15:14 a1kmm Exp $
+ *  $Id: ircdauth.c,v 7.46 2002/01/10 20:45:16 jmallett Exp $
  */
 
 #include <stdio.h>
@@ -584,7 +584,7 @@ GreetUser(struct Client *client)
   static char ubuf[12];
   dlink_node *m;
 
-  assert(client != 0);
+  assert(client != NULL);
 
   client->user->last = CurrentTime;
 
@@ -711,7 +711,7 @@ GreetUser(struct Client *client)
 #endif
 
   m = dlinkFind(&unknown_list, client);
-  assert(m != 0);
+  assert(m != NULL);
 
   dlinkDelete(m, &unknown_list);
   dlinkAdd(client, m, &lclient_list);
