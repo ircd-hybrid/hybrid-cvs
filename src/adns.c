@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: adns.c,v 7.49 2003/04/04 21:03:42 db Exp $
+ *  $Id: adns.c,v 7.50 2003/04/05 00:16:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -234,7 +234,7 @@ adns_gethost(const char *name, int aftype, struct DNSQuery *req)
   return(result);
 }
 
-/* void adns_getaddr(struct irc_inaddr *addr, int aftype,
+/* int adns_getaddr(struct irc_inaddr *addr, int aftype,
  *                   struct DNSQuery *req, int arpa_type);
  * Input: An address, an address family, a DNSQuery structure.
  *        arpa_type is used for deciding on using ip6.int or ip6.arpa
