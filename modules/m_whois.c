@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.35 2001/01/01 01:37:55 toot Exp $
+ *   $Id: m_whois.c,v 1.36 2001/01/01 01:41:36 toot Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-char *_version = "$Revision: 1.35 $";
+char *_version = "20010101";
 
 /*
 ** m_whois
