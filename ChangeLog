@@ -1,3 +1,18 @@
+wcampbel    2002/01/13 13:31:47 EST	(20020113_8)
+
+  Modified files:
+    .                    Makefile.in RELNOTES 
+    doc                  ircd.8 
+  Log:
+  Reference beta10 rather than beta8
+  
+  Revision  Changes    Path
+  7.38      +2 -2      ircd-hybrid-7/Makefile.in
+  1.12      +2 -2      ircd-hybrid-7/RELNOTES
+  1.6       +2 -1      ircd-hybrid-7/doc/ircd.8
+
+
+
 db          2002/01/13 11:22:15 EST	(20020113_7)
 
   Modified files:
@@ -21543,4 +21558,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3336 2002/01/13 16:22:20 db Exp $
+$Id: ChangeLog,v 7.3337 2002/01/13 18:31:53 wcampbel Exp $
