@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.362 2003/05/11 16:05:54 michael Exp $
+ *  $Id: client.c,v 7.363 2003/05/11 22:04:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1037,7 +1037,6 @@ dead_link_on_write(struct Client *client_p, int ierrno)
                          get_client_name(client_p, MASK_IP), notice);
   }
 
-  Debug((DEBUG_ERROR, "Closing link to %s: %s", get_client_name(client_p, HIDE_IP), notice));
   assert(dlinkFind(&abort_list, client_p) == NULL);
   ptr = make_dlink_node();
   /* don't let exit_aborted_clients() finish yet */
@@ -1065,9 +1064,6 @@ dead_link_on_read(struct Client* client_p, int error)
   dbuf_clear(&client_p->localClient->buf_sendq);
 
   current_error = get_sockerr(client_p->localClient->fd);
-
-  Debug((DEBUG_ERROR, "READ ERROR: fd = %d %d %d",
-         client_p->localClient->fd, current_error, error));
 
   if (IsServer(client_p) || IsHandshake(client_p))
   {

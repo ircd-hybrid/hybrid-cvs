@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.273 2003/05/10 04:05:06 michael Exp $
+ *  $Id: ircd.c,v 7.274 2003/05/11 22:04:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -103,8 +103,6 @@ const char * pidFileName = PPATH;
 char**  myargv;
 int     dorehash   = 0;
 int     doremotd   = 0;
-int     debuglevel = -1;        /* Server debug level */
-const char *debugmode = "";     /*  -"-    -"-   -"-  */
 time_t  nextconnect = 1;        /* time for next try_connections call */
 
 /* Set to zero because it should be initialized later using

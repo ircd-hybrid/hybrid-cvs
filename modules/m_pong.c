@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pong.c,v 1.37 2003/05/11 16:05:50 michael Exp $
+ *  $Id: m_pong.c,v 1.38 2003/05/11 22:04:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&pong_msgtab);
 }
 
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.38 $";
 #endif
 static void
 ms_pong(struct Client *client_p, struct Client *source_p,
@@ -98,11 +98,6 @@ ms_pong(struct Client *client_p, struct Client *source_p,
           return;
         }
     }
-#ifdef DEBUGMODE
-  else
-    Debug((DEBUG_NOTICE, "PONG: %s %s", origin,
-           destination ? destination : "*"));
-#endif
 }
 
 static void

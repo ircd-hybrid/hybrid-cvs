@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.132 2003/05/09 21:38:13 bill Exp $
+ *  $Id: channel.h,v 7.133 2003/05/11 22:04:44 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -160,10 +160,6 @@ struct Ban          /* also used for exceptions -orabidoo */
 #define NUMLISTS 5
 #else
 #define NUMLISTS 4
-#endif
-
-#ifdef INTENSIVE_DEBUG
-extern void do_channel_integrity_check(void);
 #endif
 
 extern void set_channel_topic(struct Channel *chptr, const char *topic, const char *topic_info, time_t topicts); 

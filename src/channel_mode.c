@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.88 2003/05/10 04:05:05 michael Exp $
+ *  $Id: channel_mode.c,v 7.89 2003/05/11 22:04:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2777,93 +2777,3 @@ update_channel_info(struct Channel *chptr)
   }
 }
 
-#ifdef INTENSIVE_DEBUG
-/* void do_channel_integrity_check(void)
- * Input: None.
- * Output: None.
- * Side-effects: Asserts a number of fundamental assumptions.
- * Note: This is a cpu intensive debug function. Call only when doing
- *       debugging of the channel code, and only on fairly small networks.
- */
-void
-do_channel_integrity_check(void)
-{
-  dlink_node *ch_ptr = NULL;
-  dlink_node *cl_ptr = NULL;
-  dlink_node *ptr = NULL;
-  struct Client *cl;
-  struct Channel *ch;
-  DLINK_FOREACH(cl_ptr, global_client_list.head)
-  {
-    cl = cl_ptr->data;
-
-    if (!IsRegisteredUser(cl) || IsDead(cl))
-      continue;
-    DLINK_FOREACH(ptr, cl->user->channel.head)
-    {
-      dlink_node *ptr2;
-      int matched = 0, matched_local;
-      ch = (struct Channel*)ptr->data;
-      if (!MyConnect(cl))
-        matched_local = -1;
-      else
-        matched_local = 0;
-      /* Make sure that they match once, and only once... */
-#define SEARCH_LIST(listname) \
-      DLINK_FOREACH(ptr2, ch->listname.head) \
-        if (ptr2->data == cl) \
-        { \
-          assert(matched == 0); \
-          matched = -1; \
-        } \
-      for (ptr2=ch->loc ## listname.head; ptr2; ptr2=ptr2->next) \
-        if (ptr2->data == cl) \
-        { \
-          assert(matched_local == 0); \
-          matched_local = -1; \
-        }
-      SEARCH_LIST(chanops)
-#ifdef REQUIRE_OANDV
-      SEARCH_LIST(chanops_voiced)
-#endif
-#ifdef HALFOPS
-      SEARCH_LIST(halfops)
-#endif
-      SEARCH_LIST(voiced)
-      SEARCH_LIST(peons)
-#undef SEARCH_LIST
-      assert(matched);
-      assert(matched_local);
-    }
-  }
-
-  DLINK_FOREACH(ch_ptr, global_client_list.head)
-  {
-    ch = ch_ptr->data;
-
-#define SEARCH_LIST(listname) \
-    for (ptr=ch->listname.head; ptr; ptr=ptr->next) \
-    { \
-      int matched = 0; \
-      dlink_node *ptr2; \
-      cl = (struct Client*)ptr->data; \
-      for (ptr2=cl->user->channel.head; ptr2; ptr2=ptr2->next) \
-        if (ptr2->data == ch) \
-        { \
-          assert(matched == 0); \
-          matched = -1; \
-        } \
-      assert(matched); \
-    }
-    SEARCH_LIST(chanops)
-#ifdef HALFOPS
-    SEARCH_LIST(halfops)
-#endif
-#ifdef REQUIRE_OANDV
-    SEARCH_LIST(chanops_voiced)
-#endif
-    SEARCH_LIST(voiced)
-    SEARCH_LIST(peons)
-  }
-}
-#endif

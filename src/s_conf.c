@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.380 2003/05/11 16:05:54 michael Exp $
+ *  $Id: s_conf.c,v 7.381 2003/05/11 22:04:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1489,15 +1489,6 @@ conf_add_conf(struct ConfItem *aconf)
 {
   collapse(aconf->host);
   collapse(aconf->user);
-  Debug((DEBUG_NOTICE,
-	 "Read Init: (%d) (%s) (%s) (%s) (%d) (%d)",
-	 aconf->status, 
-	 aconf->host ? aconf->host : "<NULL>",
-	 aconf->passwd ? aconf->passwd : "<NULL>",
-	 aconf->user ? aconf->user : "<NULL>",
-	 aconf->port,
-	 aconf->c_class ? ConfClassType(aconf): 0));
-
   dlinkAdd(aconf, &aconf->node, &ConfigItemList);
 }
 

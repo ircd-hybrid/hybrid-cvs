@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.9 2003/04/18 02:13:37 db Exp $
+ *  $Id: m_ltrace.c,v 1.10 2003/05/11 22:04:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&ltrace_msgtab);
 }
 
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.10 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
@@ -144,10 +144,10 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
 
 	if (ac2ptr != NULL)
           sendto_one(source_p, form_str(RPL_TRACELINK), me.name, looking_for,
-                     ircd_version, debugmode, tname, ac2ptr->from->name);
+                     ircd_version, tname, ac2ptr->from->name);
         else
           sendto_one(source_p, form_str(RPL_TRACELINK), me.name, looking_for,
-                     ircd_version, debugmode, tname, "ac2ptr_is_NULL!!");
+                     ircd_version, tname, "ac2ptr_is_NULL!!");
         return;
       }
     case HUNTED_ISME:

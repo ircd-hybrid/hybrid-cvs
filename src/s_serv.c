@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.318 2003/05/11 16:05:55 michael Exp $
+ *  $Id: s_serv.c,v 7.319 2003/05/11 22:04:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -497,10 +497,8 @@ try_connections(void *unused)
   int confrq;
 
   /* TODO: change this to set active flag to 0 when added to event! --Habeeb */
-  if (GlobalSetOptions.autoconn==0)
+  if (GlobalSetOptions.autoconn == 0)
     return;
-
-  Debug((DEBUG_NOTICE,"Connection check at: %s", myctime(CurrentTime)));
 
   DLINK_FOREACH(ptr, ConfigItemList.head)
   {

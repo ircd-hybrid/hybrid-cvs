@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.79 2003/05/11 16:05:54 michael Exp $
+ *  $Id: s_debug.c,v 7.80 2003/05/11 22:04:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -46,9 +46,10 @@
 
 
 /*
- * Option string.  Must be before #ifdef DEBUGMODE.
+ * Option string.
  */
-const char serveropts[] = {
+const char serveropts[] =
+{
   ' ',
   'T',
   'S',
@@ -61,26 +62,6 @@ const char serveropts[] = {
   'w',
   '\0'
 };
-
-void
-debug(int level, const char *format, ...)
-{
-  static char debugbuf[1024];
-  va_list args;
-  int err = errno;
-
-  if ((debuglevel >= 0) && (level <= debuglevel))
-  {
-    va_start(args, format);
-
-    vsprintf(debugbuf, format, args);
-    va_end(args);
-
-    ilog(L_DEBUG, "%s", debugbuf);
-  }
-
-  errno = err;
-}
 
 /*
  * This is part of the STATS replies. There is no offical numeric for this

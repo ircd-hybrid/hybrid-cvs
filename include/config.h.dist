@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h.dist,v 7.65 2003/05/09 21:38:13 bill Exp $
+ *  $Id: config.h.dist,v 7.66 2003/05/11 22:04:44 michael Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -329,15 +329,8 @@
 #define DBUF_HEAP_SIZE          64
 #endif
 
-/* DEBUGMODE is used mostly for internal development, it is likely
- * to make your client server very sluggish.
- * You usually shouldn't need this. -Dianora
-*/
-#undef  DEBUGMODE               /* define DEBUGMODE to enable debugging mode.*/
-
-/*
- * this checks for various things that should never happen, but
- * might do due to bugs.  ircd might be slightly more efficient with 
+/* this checks for various things that should never happen, but
+ * might do due to bugs. ircd might be slightly more efficient with 
  * these disabled, who knows. keep this enabled during development.
  */
 #define INVARIANTS

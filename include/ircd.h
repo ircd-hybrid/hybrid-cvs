@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.63 2003/05/10 04:04:59 michael Exp $
+ *  $Id: ircd.h,v 7.64 2003/05/11 22:04:44 michael Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -65,8 +65,6 @@ struct ServerState_t
 
 extern struct ServerState_t server_state;
 
-extern const char *debugmode;
-extern int debuglevel;
 extern const char *creation;
 extern const char *generation;
 extern const char *platform;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.9 2003/05/04 17:10:23 adx Exp $
+ *  $Id: defaults.h,v 7.10 2003/05/11 22:04:44 michael Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -74,14 +74,6 @@
 #define MAX_JOIN_LEAVE_COUNT  25
 #define OPER_SPAM_COUNTDOWN   5 
 #define JOIN_LEAVE_COUNT_EXPIRE_TIME 120
-
-#if defined(DEBUGMODE) || defined(DNS_DEBUG)
-#  define Debug(x) debug x
-#  define LOGFILE LPATH
-#else
-#  define Debug(x) ;
-#  define LOGFILE "/dev/null"
-#endif
 
 #define MIN_SPAM_NUM 5
 #define MIN_SPAM_TIME 60

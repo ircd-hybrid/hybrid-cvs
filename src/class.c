@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.47 2003/05/08 09:39:25 michael Exp $
+ *  $Id: class.c,v 7.48 2003/05/11 22:04:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -95,11 +95,9 @@ free_class(struct Class *aclass)
 static int
 get_conf_ping(struct ConfItem *aconf)
 {
-  if ((aconf) && ClassPtr(aconf))
+  if (aconf != NULL && ClassPtr(aconf))
     return(ConfPingFreq(aconf));
 
-  Debug((DEBUG_DEBUG,"No Ping For %s",
-         (aconf) ? aconf->name : "*No Conf*"));
   return(BAD_PING);
 }
 
@@ -129,8 +127,6 @@ get_client_class(struct Client *target_p)
     }
   }
 
-  Debug((DEBUG_DEBUG,"Returning Class %s For %s",
-        retc, target_p->name));
   return(retc);
 }
 
@@ -166,14 +162,11 @@ get_client_ping(struct Client *target_p)
   else
   {
     ping = DEFAULT_PINGFREQUENCY;
-    Debug((DEBUG_DEBUG,"No Attached Confs"));
   }
 
   if (ping <= 0)
     ping = DEFAULT_PINGFREQUENCY;
 
-  Debug((DEBUG_DEBUG, "Client %s Ping %d",
-        target_p->name, ping));
   return(ping);
 }
 
@@ -223,9 +216,6 @@ add_class(char *classname, int ping, int confreq, int maxli, long sendq)
   }
   else
     aclass = ptr->data;
-
-  Debug((DEBUG_DEBUG, "Add Class %s: - cf: %d pf: %d ml: %d sq: %l",
-         classname, confreq, ping, maxli, sendq));
 
   MyFree(ClassName(aclass));
   DupString(ClassName(aclass), classname);
@@ -285,17 +275,9 @@ check_class(void)
   dlink_node *next_ptr;
   struct Class *aclass;
 
-  Debug((DEBUG_DEBUG, "Class check:"));
-
   DLINK_FOREACH_SAFE(ptr, next_ptr, ClassList.head)
   {
     aclass = ptr->data;
-
-    Debug((DEBUG_DEBUG,
-          "ClassName %s Class %d : CF: %d PF: %d ML: %d LI: %d SQ: %ld",
-          ClassName(aclass),ClassType(aclass), ConFreq(aclass),
-          PingFreq(aclass), MaxLinks(aclass), Links(aclass),
-          MaxSendq(aclass)));
 
     if (MaxLinks(aclass) < 0)
     {

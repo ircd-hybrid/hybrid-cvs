@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.h,v 7.44 2003/04/30 03:59:49 michael Exp $
+ *  $Id: m_info.h,v 7.45 2003/05/11 22:04:44 michael Exp $
  */
 
 #ifndef INCLUDED_m_info_h
@@ -54,12 +54,6 @@ Info MyInformation[] = {
 #else
   { "CPATH", "NONE", 0, "Path to Main Configuration File" },
 #endif /* CPATH */
-
-#ifdef DEBUGMODE
-  { "DEBUGMODE", "ON", 0, "Support for debugging mode" },
-#else
-  { "DEBUGMODE", "OFF", 0, "Support for debugging mode" },
-#endif /* DEBUGMODE */
 
 #ifdef DPATH
   { "DPATH", DPATH, 0, "Directory Containing Configuration Files" },

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_version.c,v 1.44 2003/05/08 09:39:21 michael Exp $
+ *  $Id: m_version.c,v 1.45 2003/05/11 22:04:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&version_msgtab);
 }
 
-const char *_version = "$Revision: 1.44 $";
+const char *_version = "$Revision: 1.45 $";
 #endif
 
 /*
@@ -75,7 +75,7 @@ m_version(struct Client *client_p, struct Client *source_p,
   if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
   {
     /* safe enough to give this on a local connect only */
-    sendto_one(source_p,form_str(RPL_LOAD2HI),
+    sendto_one(source_p, form_str(RPL_LOAD2HI),
                me.name, source_p->name);
     return;
   }
@@ -91,7 +91,7 @@ m_version(struct Client *client_p, struct Client *source_p,
 
   sendto_one(source_p, form_str(RPL_VERSION),
              me.name, source_p->name, ircd_version,
-             serno, debugmode, me.name,
+             serno, me.name,
              confopts(source_p), serveropts);
   show_isupport(source_p);
 }
@@ -111,7 +111,7 @@ mo_version(struct Client *client_p, struct Client *source_p,
     return;
 
   sendto_one(source_p, form_str(RPL_VERSION), me.name, parv[0], ircd_version, 
-  	     serno, debugmode, me.name, confopts(source_p), serveropts);
+  	     serno, me.name, confopts(source_p), serveropts);
 
   show_isupport(source_p);
 }
@@ -128,7 +128,7 @@ static void ms_version(struct Client* client_p, struct Client* source_p,
                   1, parc, parv) == HUNTED_ISME)
   {
     sendto_one(source_p, form_str(RPL_VERSION), me.name,
-               parv[0], ircd_version, serno, debugmode,
+               parv[0], ircd_version, serno,
                me.name, confopts(source_p), serveropts);
     show_isupport(source_p);
   }
@@ -149,9 +149,6 @@ confopts(struct Client *source_p)
   result[0] = '\0';
   p = result;
 
-#ifdef DEBUGMODE
-  *p++ = 'D';
-#endif
   if (ConfigChannel.use_except)
     *p++ = 'e';
   if (ConfigFileEntry.glines)

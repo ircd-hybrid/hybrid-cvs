@@ -2,14 +2,14 @@
 ; Copyright (C) YEAR Free Software Foundation, Inc.
 ; Xride 
 ; Soren Straarup Andersen <xride@eit.ihk-edu.dk>, 2001.
-; $Id: ircd-danish.lang,v 1.2 2003/05/09 21:38:15 bill Exp $
+; $Id: ircd-danish.lang,v 1.3 2003/05/11 22:04:46 michael Exp $
 
 RPL_WELCOME:             :%s 001 %s :Velkommen til %s Internet Rel‘ Netv‘rket %s
 RPL_YOURHOST:            :%s 002 %s :Din v‘rt er %s, k›rer version %s
 RPL_CREATED:             :%s 003 %s :Denne server var lavet %s
 RPL_ISUPPORT:            :%s 005 %s %s :er supporteret af denne server
 RPL_REDIR:               :%s 010 %s %s %d :Brug venligst denne Server/Port isteddet
-RPL_TRACELINK:           :%s 200 %s Forbindelse %s%s %s %s
+RPL_TRACELINK:           :%s 200 %s Forbindelse %s %s %s
 RPL_TRACECONNECTING:     :%s 201 %s Pr›v. %s %s
 RPL_TRACEUSER:           :%s 205 %s Bruger %s %s (%s) %lu %lu
 RPL_TRACECLASS:          :%s 209 %s Klasse %s %d
