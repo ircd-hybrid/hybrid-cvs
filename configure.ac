@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.67 2003/06/21 20:38:22 joshk Exp $
+dnl $Id: configure.ac,v 7.68 2003/06/23 01:31:46 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.67 2003/06/21 20:38:22 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.68 2003/06/23 01:31:46 joshk Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -302,7 +302,8 @@ AC_COMPILE_IFELSE(
 		)
 	fi
 ],
-[have_v6="no"])
+[AC_MSG_RESULT(no)
+have_v6="no"])
 
 AC_SEARCH_LIBS(crypt, [descrypt crypt],,
 [AC_MSG_ERROR([No crypt implementation found on your system!])])
@@ -350,7 +351,11 @@ AC_C_BIGENDIAN
 dnl Check for stdarg.h - if we can't find it, halt configure
 AC_CHECK_HEADER(stdarg.h, , [AC_MSG_ERROR([** stdarg.h could not be found - ircd-hybrid will not compile without it **])])
 
-dnl Checks for the existance of strlcat, strlcpy, basename...
+dnl Checks for the existence of strlcat, strlcpy, basename...
+dnl This more reliable test only works with gcc though.
+
+if test "$ac_cv_c_compiler_gnu" = yes; then
+
 AC_MSG_CHECKING(for strlcpy)
 save_CFLAGS=$CFLAGS
 CFLAGS="$CFLAGS -Wimplicit -Werror"
@@ -381,6 +386,15 @@ AC_LINK_IFELSE(
 )
 
 CFLAGS=$save_CFLAGS
+
+else
+
+dnl Better than nothing. The more complicated test above probably fixes powerpc,
+dnl so who cares.
+
+AC_CHECK_FUNCS([strlcat strlcpy])
+
+fi
 
 AC_CHECK_TYPE([u_int32_t], [],
 [

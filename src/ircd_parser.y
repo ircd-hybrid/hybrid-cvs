@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.324 2003/06/22 16:30:30 db Exp $
+ *  $Id: ircd_parser.y,v 1.325 2003/06/23 01:31:50 joshk Exp $
  */
 
 %{
@@ -92,7 +92,9 @@ free_collect_item(struct CollectItem *item)
   MyFree(item->host);
   MyFree(item->class_name);
   MyFree(item->passwd);
+#ifdef HAVE_LIBCRYPTO
   MyFree(item->rsa_public_key_file);
+#endif
 }
 
 %}
