@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.385 2003/06/01 10:23:22 michael Exp $
+ *  $Id: channel.c,v 7.386 2003/06/01 11:48:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -769,18 +769,6 @@ is_deopped(struct Channel *chptr, struct Client *who)
   if ((ms = find_channel_link(who, chptr)) != NULL)
     return(ms->flags & CHFL_DEOPPED);
   return(0);
-}
-
-struct Membership *
-find_user_link(struct Channel *chptr, struct Client *client_p)
-{
-  dlink_node *ptr;
-
-  DLINK_FOREACH(ptr, chptr->members.head)
-    if (((struct Membership *) ptr->data)->client_p == client_p)
-      return((struct Membership *) ptr->data);
-
-  return(NULL);
 }
 
 struct Membership *

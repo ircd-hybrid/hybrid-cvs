@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.103 2003/06/01 08:48:37 michael Exp $
+ *  $Id: channel_mode.c,v 7.104 2003/06/01 11:48:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -299,12 +299,10 @@ change_channel_membership(struct Channel *chptr, struct Client *client_p,
 {
   struct Membership *ms;
 
-  if ((ms = find_user_link(chptr, client_p)) != NULL)
+  if ((ms = find_channel_link(client_p, chptr)) != NULL)
   {
-    if (add_flag)
-      ms->flags |=  add_flag;
-    if (del_flag)
-      ms->flags &= ~del_flag;
+    ms->flags |= add_flag;
+    ms->flags &= ~del_flag;
   }
 }
 

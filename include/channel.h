@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.141 2003/06/01 08:48:35 michael Exp $
+ *  $Id: channel.h,v 7.142 2003/06/01 11:48:39 adx Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -126,8 +126,6 @@ struct Membership
   unsigned int flags;
 };
 
-extern struct Membership *find_user_link(struct Channel *chptr,
-                                         struct Client *client_p);
 extern struct Membership *find_channel_link(struct Client *client_p,
                                             struct Channel *chptr);
 
