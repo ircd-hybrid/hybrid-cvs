@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.412 2003/05/28 23:24:57 michael Exp $
+ *  $Id: s_conf.c,v 7.413 2003/05/28 23:40:19 db Exp $
  */
 
 #include "stdinc.h"
@@ -943,8 +943,8 @@ attach_conf(struct Client *client_p, struct ConfItem *aconf)
 
   if (!IsConfOperator(aconf))
   {
-    if (IsConfClient(aconf) && ConfLinks(aconf) >= ConfMaxLinks(aconf) &&
-        ConfMaxLinks(aconf) > 0)
+    if (IsConfClient(aconf) && CurrUserCount(aconf) >= ConfMaxTotal(aconf) &&
+        ConfMaxTotal(aconf) > 0)
     {
       if (!IsConfExemptLimits(aconf))
         return(I_LINE_FULL); 
@@ -1085,7 +1085,7 @@ find_conf_exact(const char *name, const char *user,
 
     if (IsConfOperator(aconf))
     {
-      if (aconf->clients < ConfMaxLinks(aconf))
+      if (aconf->clients < ConfMaxTotal(aconf))
         return(aconf);
       else
         continue;
@@ -2109,7 +2109,7 @@ conf_add_class_to_conf(struct ConfItem *aconf)
     return;
   }
 
-  if (ConfMaxLinks(aconf) < 0)
+  if (ConfMaxTotal(aconf) < 0)
   {
     ClassPtr(aconf) = find_class(0);
     MyFree(aconf->class_name);

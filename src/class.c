@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.52 2003/05/28 21:02:43 db Exp $
+ *  $Id: class.c,v 7.53 2003/05/28 23:40:19 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,13 +65,19 @@ find_class_ptr(const char *classname)
   return(NULL);
 }
 
-static struct Class *
-make_class(void)
+struct Class *
+make_class(const char *name)
 {
   struct Class *aclass;
 
   aclass = (struct Class *)MyMalloc(sizeof(struct Class));
-
+  if (name != NULL)
+    DupString(ClassName(aclass), name);
+  ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
+  PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
+  MaxTotal(aclass) = ConfigFileEntry.maximum_links;
+  MaxSendq(aclass) = DEFAULT_SENDQ;
+  CurrUserCount(aclass)    = 0;
   return(aclass);
 }
 
@@ -182,43 +188,30 @@ get_con_freq(struct Class *clptr)
 
 /* add_class()
  *
- * inputs	- classname to use
- * 		- ping frequency
- *		- connection frequency
- * 		- maximum links
- *		- max sendq
+ * inputs	- pointer to class to add
  * output	- NONE
- * side effects -
- * When adding a class, check to see if it is already present first.
- * if so, then update the information for that class, rather than create
- * a new entry for it and later delete the old entry.
- * if no present entry is found, then create a new one and add it in
- * immediately after the first one (class 0).
+ * side effects - When adding a class, check to see if it is
+ *		  already present first.
  */
 void
-add_class(const char *classname, int ping, int confreq, int maxli, long sendq)
+add_class(struct Class *aclass)
 {
   dlink_node *ptr;
-  struct Class *aclass;
 
-  if (classname == NULL)
+  if (aclass == NULL)
     return;
 
-  if ((ptr = find_class_ptr(classname)) == NULL)
+  if ((ptr = find_class_ptr(aclass->class_name)) == NULL)
   {
-    aclass = make_class();
     dlinkAdd(aclass, &aclass->class_node, &ClassList);
-    Links(aclass) = 0;
+    CurrUserCount(aclass) = 0;
+    if (MaxSendq(aclass) == 0)
+      MaxSendq(aclass) = DEFAULT_SENDQ;
   }
   else
-    aclass = ptr->data;
-
-  MyFree(ClassName(aclass));
-  DupString(ClassName(aclass), classname);
-  ConFreq(aclass)  = confreq;
-  PingFreq(aclass) = ping;
-  MaxLinks(aclass) = maxli;
-  MaxSendq(aclass) = (sendq > 0) ? sendq : DEFAULT_SENDQ;
+  {
+    free_class(aclass);
+  }
 }
 
 /* find_class()
@@ -245,13 +238,7 @@ find_class(const char *classname)
     }
     else
     {
-      aclass = make_class();
-      DupString(ClassName(aclass), "default");
-      ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
-      PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
-      MaxLinks(aclass) = ConfigFileEntry.maximum_links;
-      MaxSendq(aclass) = DEFAULT_SENDQ;
-      Links(aclass)    = 0;
+      aclass = make_class("default");
       dlinkAdd(aclass, &aclass->class_node, &ClassList);
       return(aclass);
     }
@@ -275,11 +262,11 @@ check_class(void)
   {
     aclass = ptr->data;
 
-    if (MaxLinks(aclass) < 0)
+    if (MaxTotal(aclass) < 0)
     {
       dlinkDelete(&aclass->class_node, &ClassList);
 
-      if (Links(aclass) <= 0)
+      if (CurrUserCount(aclass) <= 0)
         free_class(aclass);
     }
   }
@@ -296,14 +283,7 @@ init_class(void)
 {
   struct Class *aclass;
 
-  aclass = make_class();
-
-  DupString(ClassName(aclass), "default");
-  ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
-  PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
-  MaxLinks(aclass) = ConfigFileEntry.maximum_links;
-  MaxSendq(aclass) = DEFAULT_SENDQ;
-  Links(aclass)    = 0;
+  aclass = make_class("default");
   dlinkAdd(aclass, &aclass->class_node, &ClassList);
 }
 
@@ -326,7 +306,7 @@ report_classes(struct Client *source_p)
                me.name, source_p->name, 'Y',
                ClassName(aclass), PingFreq(aclass),
                ConFreq(aclass),
-               MaxLinks(aclass), MaxSendq(aclass));
+               MaxTotal(aclass), MaxSendq(aclass));
   }
 }
 

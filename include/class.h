@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.h,v 7.17 2003/05/28 21:02:41 db Exp $
+ *  $Id: class.h,v 7.18 2003/05/28 23:40:17 db Exp $
  */
 
 #ifndef INCLUDED_class_h
@@ -40,19 +40,25 @@ struct Class
   int max_global;
   int max_ident;
   long max_sendq;
-  int links;
+  int user_count;
 };
 
 #define ClassName(x)	((x)->class_name)
-#define ConFreq(x)      ((x)->con_freq)
-#define PingFreq(x)     ((x)->ping_freq)
-#define MaxLinks(x)     ((x)->max_total)
-#define MaxSendq(x)     ((x)->max_sendq)
-#define Links(x)        ((x)->links)
+#define ConFreq(x)	((x)->con_freq)
+#define PingFreq(x)	((x)->ping_freq)
+#define MaxTotal(x)	((x)->max_total)
+#define MaxGlobal(x)	((x)->max_global)
+#define MaxLocal(x)	((x)->max_local)
+#define MaxIdent(x)	((x)->max_ident)
+#define MaxSendq(x)	((x)->max_sendq)
+#define CurrUserCount(x) ((x)->curr_user_count)
 
 #define ClassPtr(x)      ((x)->c_class)
-#define ConfLinks(x)     (ClassPtr(x)->links)
-#define ConfMaxLinks(x)  (ClassPtr(x)->max_total)
+#define ConfCurrUserCount(x) (ClassPtr(x)->curr_user_count)
+#define ConfMaxTotal(x)  (ClassPtr(x)->max_total)
+#define ConfMaxGlobal(x) (ClassPtr(x)->max_global)
+#define ConfMaxLocal(x)	 (ClassPtr(x)->max_local)
+#define ConfMaxIdent(x)	 (ClassPtr(x)->max_ident)
 #define ConfClassName(x) (ClassPtr(x)->class_name)
 #define ConfConFreq(x)   (ClassPtr(x)->con_freq)
 #define ConfPingFreq(x)  (ClassPtr(x)->ping_freq)
@@ -60,6 +66,8 @@ struct Class
 
 extern dlink_list ClassList;  /* GLOBAL - class list */
 
+extern struct Class *make_class(const char *name);
+extern void add_class(struct Class *aclass);
 extern long get_sendq(struct Client *);
 extern int get_con_freq(struct Class* );
 extern struct Class *find_class(const char* );
@@ -68,7 +76,6 @@ extern int get_client_ping(struct Client *);
 extern void check_class(void);
 extern void init_class(void);
 extern void free_class(struct Class *);
-extern void add_class(const char *, int, int, int, long);
 extern void fix_class(struct ConfItem *, struct ConfItem *);
 extern void report_classes(struct Client *);
 #endif /* INCLUDED_class_h */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.297 2003/05/28 21:02:43 db Exp $
+ *  $Id: ircd_parser.y,v 1.298 2003/05/28 23:40:19 db Exp $
  */
 
 %{
@@ -60,18 +60,14 @@ int yyparse();
 
 static struct ConfItem *yy_aconf = NULL;
 static struct cluster *cptr = NULL;
+static struct Class *yy_class = NULL;
 
 static dlink_list aconf_list = {NULL, NULL, 0};
 static dlink_list hub_confs_list = {NULL, NULL, 0};
 static dlink_list leaf_confs_list = {NULL, NULL, 0};
 
 static char *resv_reason;
-static char *class_name_var;
 static char *listener_address;
-static int class_ping_time_var;
-static int class_number_per_ip_var;
-static int class_max_number_var;
-static int class_sendq_var;
 extern int ypass;
 
 static void
@@ -179,6 +175,9 @@ init_parser_confs(void)
 %token  MAX_ACCEPT
 %token  MAX_BANS
 %token  MAX_CHANS_PER_USER
+%token  MAX_GLOBAL
+%token  MAX_IDENT
+%token  MAX_LOCAL
 %token  MAX_NICK_CHANGES
 %token  MAX_NICK_TIME
 %token  MAX_NUMBER
@@ -199,7 +198,9 @@ init_parser_confs(void)
 %token  NO_OPER_FLOOD
 %token  NO_TILDE
 %token  NUMBER
+%token  NUMBER_PER_IDENT
 %token  NUMBER_PER_IP
+%token  NUMBER_PER_IP_GLOBAL
 %token  OPERATOR
 %token  OPER_LOG
 %token  OPER_ONLY_UMODES
@@ -1042,21 +1043,17 @@ class_entry: CLASS
 {
   if (ypass == 1)
   {
-    MyFree(class_name_var);
-    class_name_var = NULL;
-    class_ping_time_var = 0;
-    class_number_per_ip_var = 0;
-    class_max_number_var = 0;
-    class_sendq_var = 0;
+    yy_class = make_class(NULL);
   }
 } '{' class_items '}' ';'
 {
   if (ypass == 1)
   {
-    add_class(class_name_var, class_ping_time_var, class_number_per_ip_var,
-              class_max_number_var, class_sendq_var);
-    MyFree(class_name_var);
-    class_name_var = NULL;
+    if ((yy_class != NULL) && (yy_class->class_name != NULL))
+    {
+      add_class(yy_class);
+      yy_class = NULL;
+    }
   }
 };
 
@@ -1066,6 +1063,9 @@ class_item:     class_name |
                 class_number_per_ip |
                 class_connectfreq |
                 class_max_number |
+		class_max_global |
+		class_max_local |
+		class_max_ident |
                 class_sendq |
 		error;
 
@@ -1073,39 +1073,56 @@ class_name: NAME '=' QSTRING ';'
 {
   if (ypass == 1)
   {
-    MyFree(class_name_var);
-    DupString(class_name_var, yylval.string);
+    DupString(ClassName(yy_class), yylval.string);
   }
 };
 
 class_ping_time: PING_TIME '=' timespec ';'
 {
   if (ypass == 1)
-    class_ping_time_var = $3;
+    PingFreq(yy_class) = $3;
 };
 
 class_number_per_ip: NUMBER_PER_IP '=' NUMBER ';'
 {
   if (ypass == 1)
-    class_number_per_ip_var = $3;
+    MaxLinks(yy_class) = $3;
 };
 
 class_connectfreq: CONNECTFREQ '=' timespec ';'
 {
   if (ypass == 1)
-    class_number_per_ip_var = $3;
+    ConFreq(yy_class) = $3;
 };
 
 class_max_number: MAX_NUMBER '=' NUMBER ';'
 {
   if (ypass == 1)
-    class_max_number_var = $3;
+    MaxTotal(yy_class) = $3;
+};
+
+class_max_global: MAX_GLOBAL '=' NUMBER ';'
+{
+  if (ypass == 1)
+    MaxGlobal(yy_class) = $3;
+};
+
+class_max_local: MAX_LOCAL '=' NUMBER ';'
+{
+  if (ypass == 1)
+    MaxLocal(yy_class) = $3;
+};
+
+class_max_ident: MAX_IDENT '=' NUMBER ';'
+{
+  if (ypass == 1)
+    MaxIdent(yy_class) = $3;
 };
 
 class_sendq: SENDQ '=' sizespec ';'
 {
   if (ypass == 1)
-    class_sendq_var = $3;
+    MaxSendq(yy_class) = $3;
 };
 
 /***************************************************************************
