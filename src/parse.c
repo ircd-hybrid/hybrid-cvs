@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.128 2002/05/31 02:21:04 androsyn Exp $
+ *  $Id: parse.c,v 7.129 2002/06/19 20:39:05 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -268,7 +268,7 @@ void parse(struct Client *client_p, char *pbuffer, char *bufend)
                            me.name, ERR_UNKNOWNCOMMAND,
                            from->name, ch);
               Debug((DEBUG_ERROR,"Unknown (%s) from %s",
-                     ch, get_client_name(client_p, SHOW_IP)));
+                     ch, get_client_name(client_p, HIDE_IP)));
             }
           ServerStats->is_unco++;
           return;
