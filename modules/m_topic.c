@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.27 2001/01/05 00:14:37 davidt Exp $
+ *   $Id: m_topic.c,v 1.28 2001/01/07 03:25:25 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -159,7 +159,7 @@ static int m_topic(struct Client *cptr,
 				 chptr->topic);
 	      if(chptr->mode.mode & MODE_HIDEOPS)
 		{
-		  sendto_channel_local(ONLY_CHANOPS,
+		  sendto_channel_local(ONLY_CHANOPS_HALFOPS,
 				       chptr, ":%s!%s@%s TOPIC %s :%s",
 				       sptr->name,
 				       sptr->username,
@@ -268,7 +268,7 @@ static int ms_topic(struct Client *cptr,
 
       if(chptr->mode.mode & MODE_HIDEOPS)
 	{
-	  sendto_channel_local(ONLY_CHANOPS,
+	  sendto_channel_local(ONLY_CHANOPS_HALFOPS,
 			       chptr, ":%s!%s@%s TOPIC %s :%s",
 			       me.name,
 			       sptr->username,

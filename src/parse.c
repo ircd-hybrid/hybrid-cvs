@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.80 2001/01/07 01:48:42 fl_ Exp $
+ *   $Id: parse.c,v 7.81 2001/01/07 03:25:27 davidt Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -35,6 +35,7 @@
 #include "ircd_handler.h"
 #include "msg.h"
 #include "s_conf.h"
+#include "vchannel.h"
 
 #include <assert.h>
 #include <string.h>
@@ -715,9 +716,10 @@ static int     do_numeric(
       return 0;
       }
       else if ((chptr = hash_find_channel(parv[1], (struct Channel *)NULL)))
-        sendto_channel_butone(cptr,sptr,chptr,":%s %s %s%s",
+        sendto_channel_local(ALL_MEMBERS, chptr,
+                             ":%s %s %s %s",
                               sptr->name,
-                              numeric, chptr->chname, buffer);
+                              numeric, RootChan(chptr)->chname, buffer);
   return 0;
 }
 

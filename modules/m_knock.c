@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.22 2001/01/05 20:16:05 toot Exp $
+ *   $Id: m_knock.c,v 1.23 2001/01/07 03:25:25 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -276,7 +276,7 @@ static void send_knock(struct Client *cptr, struct Client *sptr,
       ircsprintf(message,"KNOCK: %s (%s [%s@%s] has asked for an invite)",
                  name, sptr->name, sptr->username, sptr->host);
 
-      sendto_channel_local(ONLY_CHANOPS,
+      sendto_channel_local(ONLY_CHANOPS_HALFOPS,
                           chptr,
                           ":%s!%s@%s NOTICE %s :%s",
                           sptr->name,
