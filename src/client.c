@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.202 2001/08/31 12:48:32 leeh Exp $
+ *  $Id: client.c,v 7.203 2001/09/04 16:53:50 leeh Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1393,6 +1393,13 @@ const char* comment         /* Reason for the exit */
 	  strcat(comment1," ");
 	  strcat(comment1, source_p->name);
 	}
+
+      if (!refresh_user_links)
+      {
+        refresh_user_links = 1;
+	eventAdd("write_links_file", write_links_file, NULL,
+	         ConfigServerHide.links_delay, 0);
+      }
 
       remove_dependents(client_p, source_p, from, comment, comment1);
 

@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.127 2001/08/25 16:22:31 db Exp $
+ * $Id: client.h,v 7.128 2001/09/04 16:53:49 leeh Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -158,6 +158,7 @@ struct Client
 
   int               slink_pid;  /* pid of servlink process if any */
   int               hopcount;   /* number of servers to this 0 = local */
+  int		    hidden_server;
   unsigned short    status;     /* Client type */
   unsigned char     handler;    /* Handler index */
   char              eob;	/* server eob has been received */
