@@ -1,3 +1,10 @@
+*** 20001109_1 by ejb
+convert a few more m_functions, only 8 left to do now.  most of them
+will compile, although a couple will not and src/ircd will still not
+link.  as i said, will try to fix that tonight.
+
+
+
 *** 20001108_8 by ejb
 Initial commit of loadable modules support.  right now we can
 load modules, but not unload them.  support for adding commands
@@ -321,7 +328,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.518 2000/11/08 23:57:19 ejb Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.519 2000/11/09 08:26:19 ejb Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
