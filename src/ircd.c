@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.30 2000/10/24 18:47:16 adrian Exp $
+ * $Id: ircd.c,v 7.31 2000/10/24 23:53:58 adrian Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -813,6 +813,9 @@ int main(int argc, char *argv[])
 
   /* We need this to initialise the fd array before anything else */
   fdlist_init();
+
+  /* Init the event subsystem */
+  eventInit();
 
   init_sys(bootDaemon);
   init_log(logFileName);
