@@ -1,3 +1,19 @@
+wcampbel    2002/02/23 23:45:04 EST	(20020224_1)
+
+  Modified files:
+    doc                  operguide.txt 
+  Log:
+  Updates to the Oper Guide:
+  
+  Spelling and Grammar (Hwy)
+  ChanFix information (qurve)
+  Hybrid 6 information (Hwy)
+  
+  Revision  Changes    Path
+  1.8       +40 -41    ircd-hybrid-7/doc/operguide.txt
+
+
+
 a1kmm       2002/02/23 23:44:50 EST	(20020224_0)
 
   Modified files:
@@ -23084,4 +23100,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3444 2002/02/24 04:44:56 a1kmm Exp $
+$Id: ChangeLog,v 7.3445 2002/02/24 04:45:10 wcampbel Exp $
