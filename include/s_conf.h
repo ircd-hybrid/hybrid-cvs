@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.104 2001/03/11 08:10:02 a1kmm Exp $
+ * $Id: s_conf.h,v 7.105 2001/03/11 17:44:14 fl_ Exp $
  */
 
 #include "setup.h"
@@ -121,7 +121,6 @@ struct ConfItem
 #define CONF_FLAGS_LAZY_LINK            0x08000
 #define CONF_FLAGS_ENCRYPTED            0x10000
 #define CONF_FLAGS_COMPRESSED		0x20000
-#define CONF_FLAGS_PERSISTANT		0x40000
 
 /* Macros for struct ConfItem */
 
@@ -210,7 +209,6 @@ typedef struct config_file_entry
   int         vchans_oper_only;
   int         quiet_on_ban;
   int         caller_id_wait;
-  int         persist_expire;
 } ConfigFileEntryType;
 
 struct server_info

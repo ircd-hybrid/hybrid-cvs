@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.111 2001/03/09 10:19:22 a1kmm Exp $
+ *  $Id: s_bsd.c,v 7.112 2001/03/11 17:44:20 fl_ Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -454,10 +454,9 @@ void error_exit_client(struct Client* client_p, int error)
     ircsprintf(errmsg, "Read error: %d (%s)", 
                current_error, strerror(current_error));
   }
-  fd_close(client_p->fd);
-  client_p->fd = -1;
-  
-  detach_client(client_p, errmsg);
+
+  SetDead(client_p); /* mark the socket dead so it doesn't get any error msgs */
+  exit_client(client_p, client_p, &me, errmsg);
 }
 
 /*

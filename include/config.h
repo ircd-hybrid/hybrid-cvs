@@ -16,14 +16,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.99 2001/03/11 16:30:32 fl_ Exp $
+ * $Id: config.h,v 7.100 2001/03/11 17:44:13 fl_ Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
 
 #include "setup.h"
-
-#undef PERSISTANT_CLIENTS
 
 /* PLEASE READ SECTION:
  */
@@ -43,7 +41,7 @@
 /* VMS NOTE - VMS is basically unlimited with FDs, so just set this
    to any suitable value.. */
 
-#define HARD_FDLIMIT_   2048
+#define HARD_FDLIMIT_   1024
 #define INIT_MAXCLIENTS 800
 
 /*
