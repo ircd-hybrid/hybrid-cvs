@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.299 2003/05/29 00:59:05 db Exp $
+ *  $Id: ircd_parser.y,v 1.300 2003/05/30 08:05:40 michael Exp $
  */
 
 %{
@@ -1973,7 +1973,7 @@ connect_cipher_preference: CIPHER_PREFERENCE '=' QSTRING ';'
   if (ypass == 2)
   {
     struct EncCapability *ecap;
-    char *cipher_name;
+    const char *cipher_name;
     int found = 0;
 
     yy_aconf->cipher_preference = NULL;
@@ -1981,7 +1981,7 @@ connect_cipher_preference: CIPHER_PREFERENCE '=' QSTRING ';'
 
     for (ecap = CipherTable; ecap->name; ecap++)
     {
-      if ((!irccmp(ecap->name, cipher_name)) &&
+      if ((irccmp(ecap->name, cipher_name) == 0) &&
           (ecap->cap & CAP_ENC_MASK))
       {
         yy_aconf->cipher_preference = ecap;
@@ -2551,7 +2551,7 @@ general_default_cipher_preference: DEFAULT_CIPHER_PREFERENCE '=' QSTRING ';'
   if (ypass == 2)
   {
     struct EncCapability *ecap;
-    char *cipher_name;
+    const char *cipher_name;
     int found = 0;
 
     ConfigFileEntry.default_cipher_preference = NULL;
@@ -2559,7 +2559,7 @@ general_default_cipher_preference: DEFAULT_CIPHER_PREFERENCE '=' QSTRING ';'
 
     for (ecap = CipherTable; ecap->name; ecap++)
     {
-      if ((!irccmp(ecap->name, cipher_name)) &&
+      if ((irccmp(ecap->name, cipher_name) == 0) &&
           (ecap->cap & CAP_ENC_MASK))
       {
         ConfigFileEntry.default_cipher_preference = ecap;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_close.c,v 1.26 2003/04/18 02:13:42 db Exp $
+ *  $Id: m_close.c,v 1.27 2003/05/30 08:05:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -35,7 +35,7 @@
 #include "parse.h"
 #include "modules.h"
 
-static void mo_close(struct Client*, struct Client*, int, char**);
+static void mo_close(struct Client *, struct Client *, int, char **);
 
 struct Message close_msgtab = {
   "CLOSE", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -54,26 +54,25 @@ _moddeinit(void)
   mod_del_cmd(&close_msgtab);
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
+
 /*
  * mo_close - CLOSE message handler
  *  - added by Darren Reed Jul 13 1992.
  */
 static void
 mo_close(struct Client *client_p, struct Client *source_p,
-	 int parc, char *parv[])
+         int parc, char *parv[])
 {
-  struct Client  *target_p;
-  dlink_node     *ptr;
-  dlink_node     *ptr_next;
-  int            closed = 0;
-
-
+  struct Client *target_p;
+  dlink_node *ptr;
+  dlink_node *ptr_next;
+  unsigned int closed = 0;
 
   DLINK_FOREACH_SAFE(ptr, ptr_next, unknown_list.head)
-    {
-      target_p = ptr->data;
+  {
+    target_p = ptr->data;
 
   /* Which list would connecting servers be found in? serv_list ? */
 #if 0
@@ -81,15 +80,16 @@ mo_close(struct Client *client_p, struct Client *source_p,
           !IsHandshake(target_p) && !IsDoingKauth(target_p))
         continue;
 #endif
-      sendto_one(source_p, form_str(RPL_CLOSING), me.name, parv[0],
-                 get_client_name(target_p, SHOW_IP), target_p->status);
-      /*
-       * exit here is safe, because it is guaranteed not to be source_p
-       * because it is unregistered and source_p is an oper.
-       */
-      exit_client(target_p, target_p, target_p, "Oper Closing");
-      closed++;
-    }
-  sendto_one(source_p, form_str(RPL_CLOSEEND), me.name, parv[0], closed);
+    sendto_one(source_p, form_str(RPL_CLOSING), me.name, parv[0],
+               get_client_name(target_p, SHOW_IP), target_p->status);
+    /* exit here is safe, because it is guaranteed not to be source_p
+     * because it is unregistered and source_p is an oper.
+     */
+    exit_client(target_p, target_p, target_p, "Oper Closing");
+    closed++;
+  }
+
+  sendto_one(source_p, form_str(RPL_CLOSEEND),
+             me.name, source_p->name, closed);
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.52 2003/05/28 21:11:52 bill Exp $
+ *  $Id: m_set.c,v 1.53 2003/05/30 08:05:38 michael Exp $
  */
 
 /* rewritten by jdc */
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 
 /* Structure used for the SET table itself */
@@ -143,7 +143,7 @@ list_quote_commands(struct Client *source_p)
   {
     names[j++] = set_cmd_table[i].name;
 
-    if(j > 3)
+    if (j > 3)
     {
       sendto_one(source_p, ":%s NOTICE %s :%s %s %s %s",
                  me.name, source_p->name,
@@ -322,8 +322,7 @@ quote_max( struct Client *source_p, int newval )
   else
   {
     sendto_one(source_p, ":%s NOTICE %s :Current Maxclients = %d (%d)",
-	me.name, source_p->name,
-	GlobalSetOptions.maxclients, Count.local);
+               me.name, source_p->name, GlobalSetOptions.maxclients, Count.local);
   }
 }
 
@@ -331,7 +330,7 @@ quote_max( struct Client *source_p, int newval )
 static void
 quote_msglocale( struct Client *source_p, char *locale )
 {
-  if(locale != NULL)
+  if (locale != NULL)
   {
     set_locale(locale);
     sendto_one(source_p, ":%s NOTICE %s :Set MSGLOCALE to '%s'",
@@ -424,18 +423,18 @@ static const char *splitmode_status[] =
 static void
 quote_splitmode(struct Client *source_p, char *charval)
 {
-  if(charval)
+  if (charval)
   {
     int newval;
 
-    for(newval = 0; splitmode_values[newval]; newval++)
+    for (newval = 0; splitmode_values[newval]; newval++)
     {
-      if(!irccmp(splitmode_values[newval], charval))
+      if (irccmp(splitmode_values[newval], charval) == 0)
         break;
     }
 
     /* OFF */
-    if(newval == 0)
+    if (newval == 0)
     {
       sendto_realops_flags(UMODE_ALL, L_ALL, 
                            "%s is disabling splitmode",
@@ -447,7 +446,7 @@ quote_splitmode(struct Client *source_p, char *charval)
       eventDelete(check_splitmode, NULL);
     }
     /* ON */
-    else if(newval == 1)
+    else if (newval == 1)
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "%s is enabling and activating splitmode",
@@ -460,7 +459,7 @@ quote_splitmode(struct Client *source_p, char *charval)
       eventDelete(check_splitmode, NULL);
     }
     /* AUTO */
-    else if(newval == 2)
+    else if (newval == 2)
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "%s is enabling automatic splitmode",
@@ -484,14 +483,14 @@ quote_splitmode(struct Client *source_p, char *charval)
 static void
 quote_splitnum(struct Client *source_p, int newval)
 {
-  if(newval >= 0)
+  if (newval >= 0)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s has changed SPLITNUM to %i", 
 			 source_p->name, newval);
     split_servers = newval;
 
-    if(splitchecking)
+    if (splitchecking)
       check_splitmode(NULL);
   }
   else
@@ -503,14 +502,14 @@ quote_splitnum(struct Client *source_p, int newval)
 static void
 quote_splitusers(struct Client *source_p, int newval)
 {
-  if(newval >= 0)
+  if (newval >= 0)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s has changed SPLITUSERS to %i", 
 			 source_p->name, newval);
     split_users = newval;
 
-    if(splitchecking)
+    if (splitchecking)
       check_splitmode(NULL);
   }
   else
@@ -534,34 +533,33 @@ mo_set(struct Client *client_p, struct Client *source_p,
 
   if (parc > 1)
   {
-    /*
-     * Go through all the commands in set_cmd_table, until one is
+    /* Go through all the commands in set_cmd_table, until one is
      * matched.  I realize strcmp() is more intensive than a numeric
      * lookup, but at least it's better than a big-ass switch/case
      * statement.
      */
-    for (i=0; set_cmd_table[i].handler; i++)
+    for (i = 0; set_cmd_table[i].handler; i++)
     {
-      if (!irccmp(set_cmd_table[i].name, parv[1]))
+      if (irccmp(set_cmd_table[i].name, parv[1]) == 0)
       {
         /*
          * Command found; now execute the code
          */
         n = 2;
 
-        if(set_cmd_table[i].wants_char)
+        if (set_cmd_table[i].wants_char)
         {
           arg = parv[n++];
         }
 
-        if(set_cmd_table[i].wants_int)
+        if (set_cmd_table[i].wants_int)
         {
           intarg = parv[n++];
         }
 
-        if( (n - 1) > parc )
+        if ((n - 1) > parc)
         {
-          if(parc > 2)
+          if (parc > 2)
             sendto_one(source_p,
                        ":%s NOTICE %s :SET %s expects (\"%s%s\") args",
                        me.name, source_p->name, set_cmd_table[i].name,
@@ -570,19 +568,19 @@ mo_set(struct Client *client_p, struct Client *source_p,
                       );
         }
 
-        if(parc <= 2)
+        if (parc <= 2)
         {
           arg = NULL;
           intarg = NULL;
         }
 
-        if(set_cmd_table[i].wants_int && (parc > 2))
+        if (set_cmd_table[i].wants_int && (parc > 2))
         {
-          if(intarg)
+          if (intarg)
           {
-            if(!irccmp(intarg, "yes") || !irccmp(intarg, "on"))
+            if (irccmp(intarg, "yes") == 0 || irccmp(intarg, "on") == 0)
               newval = 1;
-            else if (!irccmp(intarg, "no") || !irccmp(intarg, "off"))
+            else if (irccmp(intarg, "no") == 0|| irccmp(intarg, "off") == 0)
               newval = 0;
             else
               newval = atoi(intarg);
@@ -592,7 +590,7 @@ mo_set(struct Client *client_p, struct Client *source_p,
             newval = -1;
           }
 
-          if(newval < 0)
+          if (newval < 0)
           {
             sendto_one(source_p,
                        ":%s NOTICE %s :Value less than 0 illegal for %s",
@@ -605,22 +603,22 @@ mo_set(struct Client *client_p, struct Client *source_p,
         else
           newval = -1;
 
-        if(set_cmd_table[i].wants_char)
+        if (set_cmd_table[i].wants_char)
         {
-          if(set_cmd_table[i].wants_int)
-            set_cmd_table[i].handler( source_p, arg, newval );
+          if (set_cmd_table[i].wants_int)
+            set_cmd_table[i].handler(source_p, arg, newval);
           else
-            set_cmd_table[i].handler( source_p, arg );
+            set_cmd_table[i].handler(source_p, arg);
           return;
         }
         else
         {
-          if(set_cmd_table[i].wants_int)
-            set_cmd_table[i].handler( source_p, newval );
+          if (set_cmd_table[i].wants_int)
+            set_cmd_table[i].handler(source_p, newval);
           else
             /* Just in case someone actually wants a
              * set function that takes no args.. *shrug* */
-            set_cmd_table[i].handler( source_p );
+            set_cmd_table[i].handler(source_p);
           return;
         }
       }
@@ -630,7 +628,8 @@ mo_set(struct Client *client_p, struct Client *source_p,
      * Code here will be executed when a /QUOTE SET command is not
      * found within set_cmd_table.
      */
-    sendto_one(source_p, ":%s NOTICE %s :Variable not found.", me.name, parv[0]);
+    sendto_one(source_p, ":%s NOTICE %s :Variable not found.",
+               me.name, source_p->name);
     return;
   }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capab.c,v 1.34 2003/05/25 04:24:56 db Exp $
+ *  $Id: m_capab.c,v 1.35 2003/05/30 08:05:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -32,7 +32,7 @@
 #include "parse.h"
 #include "modules.h"
 
-static void mr_capab(struct Client*, struct Client*, int, char**);
+static void mr_capab(struct Client *, struct Client *, int, char **);
 
 struct Message capab_msgtab = {
   "CAPAB", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
@@ -52,7 +52,7 @@ _moddeinit(void)
   mod_del_cmd(&capab_msgtab);
 }
 
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 
 /*
@@ -101,7 +101,7 @@ mr_capab(struct Client *client_p, struct Client *source_p,
          */
         for (ecap = CipherTable; ecap->name; ecap++)
         {
-          if ((!irccmp(ecap->name, s)) && (ecap->cap & CAP_ENC_MASK))
+          if ((irccmp(ecap->name, s) == 0) && (ecap->cap & CAP_ENC_MASK))
           {
             cipher = ecap->cap;
             break;

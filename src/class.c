@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.53 2003/05/28 23:40:19 db Exp $
+ *  $Id: class.c,v 7.54 2003/05/30 08:05:40 michael Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ make_class(const char *name)
   PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
   MaxTotal(aclass) = ConfigFileEntry.maximum_links;
   MaxSendq(aclass) = DEFAULT_SENDQ;
-  CurrUserCount(aclass)    = 0;
+  CurrUserCount(aclass) = 0;
   return(aclass);
 }
 
@@ -340,5 +340,6 @@ get_sendq(struct Client *client_p)
       return(sendq);
     }
   }
+
   return(BAD_CLIENT_CLASS);
 }

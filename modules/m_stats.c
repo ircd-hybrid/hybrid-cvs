@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.129 2003/05/29 05:19:22 db Exp $
+ *  $Id: m_stats.c,v 1.130 2003/05/30 08:05:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -79,15 +79,14 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.129 $";
+const char *_version = "$Revision: 1.130 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
 
 static char *parse_stats_args(int, char **, int *, int *);
 static void stats_L(struct Client *, char *, int, int, char);
-static void stats_L_list(struct Client *s, char *, int, int,
-                         dlink_list *, char);
+static void stats_L_list(struct Client *s, char *, int, int, dlink_list *, char);
 static void stats_spy(struct Client *, char);
 static void stats_p_spy(struct Client *);
 static void stats_L_spy(struct Client *, char, char *);
@@ -200,40 +199,36 @@ m_stats(struct Client *client_p, struct Client *source_p,
   static time_t last_used = 0;
 
   /* Check the user is actually allowed to do /stats, and isnt flooding */
-  if((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
-    {
-      /* safe enough to give this on a local connect only */
-      if(MyClient(source_p))
-	sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,parv[0]);
-      return;
-    }
+  if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
+  {
+    sendto_one(source_p,form_str(RPL_LOAD2HI),
+               me.name, source_p->name);
+    return;
+  }
   else
-    {
-      last_used = CurrentTime;
-    }
+    last_used = CurrentTime;
 
   /* Is the stats meant for us? */
   if (!ConfigServerHide.disable_remote)
-    {
-      if (hunt_server(client_p,source_p,":%s STATS %s :%s",2,parc,parv) != HUNTED_ISME)
-        return;
-    }
+    if (hunt_server(client_p,source_p,":%s STATS %s :%s",2,parc,parv) != HUNTED_ISME)
+      return;
 
   statchar = parv[1][0];
 
-  for (i=0; stats_cmd_table[i].handler; i++)
+  for (i = 0; stats_cmd_table[i].handler; i++)
   {
     if (stats_cmd_table[i].letter == statchar)
     {
       /* The stats table says what privs are needed, so check --fl_ */
-      if(stats_cmd_table[i].need_oper || stats_cmd_table[i].need_admin)
+      if (stats_cmd_table[i].need_oper || stats_cmd_table[i].need_admin)
       {
-        sendto_one(source_p, form_str(ERR_NOPRIVILEGES), me.name, source_p->name);
+        sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+                   me.name, source_p->name);
         break;
       }
 
       /* Blah, stats L needs the parameters, none of the others do.. */
-      if(statchar == 'L' || statchar == 'l')
+      if (statchar == 'L' || statchar == 'l')
         stats_cmd_table[i].handler(source_p, parc, parv);
       else
         stats_cmd_table[i].handler(source_p);
@@ -241,9 +236,10 @@ m_stats(struct Client *client_p, struct Client *source_p,
   }
 
   /* Send the end of stats notice, and the stats_spy */
-  sendto_one(source_p, form_str(RPL_ENDOFSTATS), me.name, source_p->name, statchar);
+  sendto_one(source_p, form_str(RPL_ENDOFSTATS),
+             me.name, source_p->name, statchar);
 
-  if((statchar != 'L') && (statchar != 'l'))
+  if ((statchar != 'L') && (statchar != 'l'))
     stats_spy(source_p, statchar);
 }
 
@@ -334,14 +330,13 @@ stats_deny(struct Client *source_p)
       {
         aconf = arec->aconf;
 
-	/* dont report a tdline as a dline */
-	if(aconf->flags & CONF_FLAGS_TEMPORARY)
-	  continue;
+        /* dont report a tdline as a dline */
+        if (aconf->flags & CONF_FLAGS_TEMPORARY)
+          continue;
 
-	get_printable_conf(aconf, &name, &host, &pass, &user, &port,
-	                  &classname);
-	sendto_one(source_p, form_str(RPL_STATSDLINE), me.name,
-	           source_p->name, 'D', host, pass);
+        get_printable_conf(aconf, &name, &host, &pass, &user, &port, &classname);
+        sendto_one(source_p, form_str(RPL_STATSDLINE),
+                   me.name, source_p->name, 'D', host, pass);
       }
     }
   }
@@ -370,7 +365,7 @@ stats_tdeny(struct Client *source_p)
         aconf = arec->aconf;
 
 	/* dont report a permanent dline as a tdline */
-	if((aconf->flags & CONF_FLAGS_TEMPORARY) == 0)
+	if ((aconf->flags & CONF_FLAGS_TEMPORARY) == 0)
 	  continue;
 
 	get_printable_conf(aconf, &name, &host, &pass, &user, &port,
@@ -447,8 +442,7 @@ stats_pending_glines(struct Client *source_p)
   DLINK_FOREACH(pending_node, pending_glines.head)
   {
     glp_ptr = pending_node->data;
-      
-    tmptr = localtime(&glp_ptr->time_request1);
+    tmptr   = localtime(&glp_ptr->time_request1);
     strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
 
     sendto_one(source_p,
@@ -458,7 +452,7 @@ stats_pending_glines(struct Client *source_p)
 	       glp_ptr->oper_server1, timebuffer,
 	       glp_ptr->user, glp_ptr->host, glp_ptr->reason1);
 
-    if(glp_ptr->oper_nick2[0] != '\0')
+    if (glp_ptr->oper_nick2[0] != '\0')
     {
       tmptr = localtime(&glp_ptr->time_request2);
       strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
@@ -895,14 +889,14 @@ stats_servlinks(struct Client *source_p)
 static void
 stats_ltrace(struct Client *source_p, int parc, char *parv[])
 {
-  int             doall = 0;
-  int             wilds = 0;
-  char            *name=NULL;
-  char            statchar;
-  
+  int doall = 0;
+  int wilds = 0;
+  char *name = NULL;
+  char statchar;
+
   if ((name = parse_stats_args(parc,parv,&doall,&wilds)) != NULL)
   {
-    statchar=parv[1][0];
+    statchar = parv[1][0];
 
     stats_L(source_p, name, doall, wilds, statchar);
     stats_L_spy(source_p, statchar, name);
@@ -910,8 +904,6 @@ stats_ltrace(struct Client *source_p, int parc, char *parv[])
   else
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                me.name, source_p->name, "STATS");
-
-  return;
 }
 
 /*
@@ -1105,22 +1097,25 @@ stats_L_spy(struct Client *source_p, char statchar, char *name)
  * 
  */
 static char *
-parse_stats_args(int parc,char *parv[],int *doall,int *wilds)
+parse_stats_args(int parc, char *parv[], int *doall, int *wilds)
 {
-  char *name;
+  const char *name;
 
-  if(parc > 2)
-    {
-      name = parv[2];
-      if (!irccmp(name, me.name))
-        *doall = 2;
-      else if (match(name, me.name))
-        *doall = 1;
-      if (strchr(name, '*') || strchr(name, '?'))
-        *wilds = 1;
+  if (parc > 2)
+  {
+    name = parv[2];
 
-      return(name);
-    }
+    if (irccmp(name, me.name) == 0)
+      *doall = 2;
+    else if (match(name, me.name))
+      *doall = 1;
+
+    if (strchr(name, '*') ||
+        strchr(name, '?'))
+      *wilds = 1;
+
+    return(name);
+  }
   else
     return(NULL);
 }

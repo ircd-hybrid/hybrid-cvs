@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.415 2003/05/29 03:35:57 db Exp $
+ *  $Id: s_conf.c,v 7.416 2003/05/30 08:05:40 michael Exp $
  */
 
 #include "stdinc.h"
@@ -110,11 +110,6 @@ struct ip_entry
 static struct ip_entry *ip_hash_table[IP_HASH_SIZE];
 static BlockHeap *ip_entry_heap = NULL;
 static int ip_entries_count = 0;
-
-/* conf xline link list root */
-struct ConfItem *x_conf = NULL;
-/* conf uline link list root */
-struct ConfItem *u_conf = NULL;
 
 
 /* conf_dns_callback()
@@ -819,7 +814,7 @@ iphash_stats(struct Client *client_p, struct Client *source_p,
   int collision_count;
   char result_buf[256];
 
-  if(out == NULL)
+  if (out == NULL)
     sendto_one(source_p,":%s NOTICE %s :*** hash stats for iphash",
                me.name,client_p->name);
   else
@@ -834,9 +829,9 @@ iphash_stats(struct Client *client_p, struct Client *source_p,
     for (ptr = ip_hash_table[i]; ptr; ptr = ptr->next)
       collision_count++;
 
-    if(collision_count != 0)
+    if (collision_count != 0)
     {
-      if(out == NULL)
+      if (out == NULL)
       {
 	sendto_one(source_p,":%s NOTICE %s :Entry %d (0x%X) Collisions %d",
 		   me.name,client_p->name,i,i,collision_count);
@@ -959,7 +954,7 @@ attach_conf(struct Client *client_p, struct ConfItem *aconf)
   }
 
 #if 0
-  if(IsConfRestricted(aconf))
+  if (IsConfRestricted(aconf))
     SetRestricted(client_p);
 #endif
 
@@ -989,7 +984,7 @@ attach_confs(struct Client *client_p, const char *name, unsigned int statmask)
   dlink_node *ptr;
   struct ConfItem *aconf;
   int conf_counter = 0;
-  
+
   DLINK_FOREACH(ptr, ConfigItemList.head)
   {
     aconf = ptr->data;
@@ -1001,7 +996,7 @@ attach_confs(struct Client *client_p, const char *name, unsigned int statmask)
         ++conf_counter;
     }
     else if ((aconf->status & statmask) && !IsConfIllegal(aconf) &&
-             aconf->name && 0 == irccmp(aconf->name, name))
+             aconf->name && irccmp(aconf->name, name) == 0)
     {
       if (attach_conf(client_p, aconf) > 0)
         ++conf_counter;
@@ -1118,7 +1113,7 @@ find_conf_name(dlink_list *list, const char *name, unsigned int statmask)
     aconf = ptr->data;
 
     if ((aconf->status & statmask) && aconf->name && 
-        (0 == irccmp(aconf->name, name) || match(aconf->name, name)))
+        (irccmp(aconf->name, name) == 0 || match(aconf->name, name)))
       return(aconf);
   }
 
@@ -1727,7 +1722,7 @@ static const struct oper_privs
   { OPER_FLAG_REMOTE,      0,                       'R' },
   { OPER_FLAG_UNKLINE,     0,                       'U' },
   { OPER_FLAG_X,           0,                       'X' },
-  { 0, '0', '\0' }
+  { 0, 0, '\0' }
 };
 
 char *
@@ -2054,33 +2049,33 @@ get_conf_name(ConfType type)
 {
   switch (type)
   {
-  case CONF_TYPE:
-    return(ConfigFileEntry.configfile);
-    break;
-  case KLINE_TYPE:
-    return(ConfigFileEntry.klinefile);
-    break;
-  case DLINE_TYPE:
-    return(ConfigFileEntry.dlinefile);
-    break;
-  case XLINE_TYPE:
-    return(ConfigFileEntry.xlinefile);
-    break;
-  case CRESV_TYPE:
-    return(ConfigFileEntry.cresvfile);
-    break;
-  case NRESV_TYPE:
-    return(ConfigFileEntry.nresvfile);
-    break;
-  case GLINE_TYPE:
-    return(ConfigFileEntry.glinefile);
-    break;
+    case CONF_TYPE:
+      return(ConfigFileEntry.configfile);
+      break;
+    case KLINE_TYPE:
+      return(ConfigFileEntry.klinefile);
+      break;
+    case DLINE_TYPE:
+      return(ConfigFileEntry.dlinefile);
+      break;
+    case XLINE_TYPE:
+      return(ConfigFileEntry.xlinefile);
+      break;
+    case CRESV_TYPE:
+      return(ConfigFileEntry.cresvfile);
+      break;
+    case NRESV_TYPE:
+      return(ConfigFileEntry.nresvfile);
+      break;
+    case GLINE_TYPE:
+      return(ConfigFileEntry.glinefile);
+      break;
 
-  default:
-    return NULL; /* This should NEVER HAPPEN since we call this function
-		    only with the above values, this will cause us to core
-		    at some point if this happens so we know where it was */
-    break;
+    default:
+      return(NULL); /* This should NEVER HAPPEN since we call this function
+                       only with the above values, this will cause us to core
+                       at some point if this happens so we know where it was */
+      break;
   }
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.c,v 7.24 2003/05/11 22:27:45 joshk Exp $
+ *  $Id: numeric.c,v 7.25 2003/05/30 08:05:40 michael Exp $
  */
 
 #include "stdinc.h"
@@ -199,13 +199,17 @@ set_locale(const char *locale)
       goto error;
 
     for (i = 0; i <= ERR_LAST_ERR_MSG; i++)
+    {
       if (replies[i].name != NULL)
-        if (!irccmp(replies[i].name, ident))
+      {
+        if (irccmp(replies[i].name, ident) == 0)
         {
           if (!change_reply(locale, linecnt, i, reply)) res = 0;
           i = -1;
           break;
         }
+      }
+    }
     if (i != -1)
     {
       ilog(L_ERROR,
