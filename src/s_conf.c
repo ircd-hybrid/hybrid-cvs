@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.405 2003/05/25 04:25:36 michael Exp $
+ *  $Id: s_conf.c,v 7.406 2003/05/25 04:41:10 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1709,113 +1709,8 @@ expire_tklines(dlink_list *tklist)
  * output        - pointer to static string showing oper privs
  * side effects  -
  * return as string, the oper privs as derived from port
- * also, set the oper privs if given client_p non NULL
+ * also, set the oper privs if given source_p non NULL
  */
-#if 0
-char *
-oper_privs_as_string(struct Client *client_p, unsigned int port)
-{
-  static char privs_out[16];
-  char *privs_ptr;
-
-  privs_ptr = privs_out;
-  *privs_ptr = '\0';
-
-  if (port & CONF_OPER_GLINE)
-    {
-      if(client_p)
-        SetOperGline(client_p);
-      *privs_ptr++ = 'G';
-    }
-  else
-    *privs_ptr++ = 'g';
-
-  if(port & CONF_OPER_K)
-    {
-      if(client_p)
-        SetOperK(client_p);
-      *privs_ptr++ = 'K';
-    }
-  else
-    *privs_ptr++ = 'k';
-
-  if (port & CONF_OPER_X)
-    {
-      if(client_p)
-        SetOperX(client_p);
-      *privs_ptr++ = 'X';
-    }
-  else
-    *privs_ptr++ = 'x';
-
-  if(port & CONF_OPER_N)
-    {
-      if(client_p)
-        SetOperN(client_p);
-      *privs_ptr++ = 'N';
-    }
-  else
-    *privs_ptr++ = 'n';
-
-  if(port & CONF_OPER_GLOBAL_KILL)
-    {
-      if(client_p)
-        SetOperGlobalKill(client_p);
-      *privs_ptr++ = 'O';
-    }
-  else
-    *privs_ptr++ = 'o';
-
-  if(port & CONF_OPER_REMOTE)
-    {
-      if(client_p)
-        SetOperRemote(client_p);
-      *privs_ptr++ = 'R';
-    }
-  else
-    *privs_ptr++ = 'r';
-  
-  if(port & CONF_OPER_UNKLINE)
-    {
-      if(client_p)
-        SetOperUnkline(client_p);
-      *privs_ptr++ = 'U';
-    }
-  else
-    *privs_ptr++ = 'u';
-
-  if(port & CONF_OPER_REHASH)
-    {
-      if(client_p)
-        SetOperRehash(client_p);
-      *privs_ptr++ = 'H';
-    }
-  else
-    *privs_ptr++ = 'h';
-
-  if(port & CONF_OPER_DIE)
-    {
-      if(client_p)
-        SetOperDie(client_p);
-      *privs_ptr++ = 'D';
-    }
-  else
-    *privs_ptr++ = 'd';
-
-  if (port & CONF_OPER_ADMIN)
-    {
-      if (client_p)
-	SetOperAdmin(client_p);
-      *privs_ptr++ = 'A';
-    }
-  else
-    *privs_ptr++ = 'a';
-  
-  *privs_ptr = '\0';
-
-  return(privs_out);
-}
-#endif
 
 static const struct oper_privs
 {
@@ -1846,7 +1741,7 @@ oper_privs_as_string(struct Client *source_p, unsigned int port)
   *privs_ptr = '\0';
 
   if (source_p != NULL)
-    SetOFlag(sptr, port);
+    SetOFlag(source_p, port);
 
   for (i = 0; flag_list[i].oflag; i++)
   {
