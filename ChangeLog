@@ -1,3 +1,19 @@
+db          2003/01/09 22:47:36 EST	(20030110_0)
+
+  Modified files:
+    .                    RELNOTES 
+    modules/core         m_server.c 
+  Log:
+  - squit the uplink as hybrid-6 does, not the source if
+    a server introduces a leaf or wrong masked server. This seriously
+    breaks things!
+  
+  Revision  Changes    Path
+  1.51      +1 -0      ircd-hybrid-7/RELNOTES
+  1.90      +2 -2      ircd-hybrid-7/modules/core/m_server.c
+
+
+
 db          2003/01/09 03:04:56 EST	(20030109_3)
 
   Modified files:
@@ -33831,4 +33847,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4155 2003/01/09 08:04:58 db Exp $
+$Id: ChangeLog,v 7.4156 2003/01/10 03:47:39 db Exp $
