@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 7.21 2000/10/15 13:42:39 toot Exp $
+ *   $Id: m_join.c,v 7.22 2000/10/15 17:51:27 db Exp $
  */
 
 #include "handlers.h"
@@ -569,16 +569,9 @@ int     m_join(struct Client *cptr,
                          chptr->topic_time);
             }
           if (joining_vchan)
-            {
-              parv[1] = chptr->chname;
-              parv[2] = root_chptr->chname;
-              (void)m_names(cptr, sptr, 3, parv);
-            }
+	    (void)names_on_this_channel(sptr, vchan_chptr,root_chptr->chname);
           else
-            {
-              parv[1] = name;
-              (void)m_names(cptr, sptr, 2, parv);
-            }
+            (void)names_on_this_channel(sptr, chptr, name);
         }
     }
 
