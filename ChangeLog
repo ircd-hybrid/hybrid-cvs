@@ -1,3 +1,17 @@
+androsyn    2002/07/13 02:56:39 EDT	(20020713_1)
+
+  Modified files:
+    modules/core         m_message.c 
+    src                  send.c 
+  Log:
+  Make PRIVMSG and NOTICE send UIDs for prefixes, when possible
+  
+  Revision  Changes    Path
+  1.99      +6 -2      ircd-hybrid-7/modules/core/m_message.c
+  7.201     +23 -10    ircd-hybrid-7/src/send.c
+
+
+
 androsyn    2002/07/12 20:48:24 EDT	(20020713_0)
 
   Modified files:
@@ -29743,4 +29757,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3872 2002/07/13 00:48:31 androsyn Exp $
+$Id: ChangeLog,v 7.3873 2002/07/13 06:56:46 androsyn Exp $
