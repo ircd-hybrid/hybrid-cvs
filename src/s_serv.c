@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.322 2003/05/16 23:36:51 michael Exp $
+ *  $Id: s_serv.c,v 7.323 2003/05/17 18:00:52 bill Exp $
  */
 
 #include "stdinc.h"
@@ -85,20 +85,23 @@ static SlinkRplHnd slink_zipstats;
  */
 struct Capability captab[] = {
 /*  name        cap     */ 
-  { "QS",         CAP_QS },
-  { "EX",         CAP_EX },
-  { "CHW",       CAP_CHW },
-  { "LL",         CAP_LL },
-  { "IE",         CAP_IE },
-  { "EOB",       CAP_EOB },
-  { "KLN",       CAP_KLN },
-  { "GLN",       CAP_GLN },
-  { "KNOCK",   CAP_KNOCK },
-  { "HUB",       CAP_HUB },
-  { "UID",       CAP_UID },
-  { "ZIP",       CAP_ZIP },
-  { "TBURST", CAP_TBURST },
-  { "PARA",     CAP_PARA },
+  { "QS",	CAP_QS },
+  { "EX",	CAP_EX },
+  { "CHW",	CAP_CHW },
+  { "LL",	CAP_LL },
+  { "IE",	CAP_IE },
+  { "EOB",	CAP_EOB },
+  { "KLN",	CAP_KLN },
+  { "GLN",	CAP_GLN },
+  { "KNOCK",	CAP_KNOCK },
+  { "HUB",	CAP_HUB },
+  { "UID",	CAP_UID },
+  { "ZIP",	CAP_ZIP },
+  { "TBURST",	CAP_TBURST },
+  { "PARA",	CAP_PARA },
+  { "UNKLN",	CAP_UNKLN },
+  { "CLUSTER",	CAP_CLUSTER },
+  { "ENCAP",	CAP_ENCAP },
   { 0, 0 }
 };
 

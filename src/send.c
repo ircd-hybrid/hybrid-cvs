@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.254 2003/05/12 08:09:34 michael Exp $
+ *  $Id: send.c,v 7.255 2003/05/17 18:00:53 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1029,6 +1029,62 @@ sendto_match_butone(struct Client *one, struct Client *from, char *mask,
     if (client_p != one && !IsDefunct(client_p))
       send_message_remote(client_p, from, remote_buf, remote_len);
   }
+}
+
+/* sendto_match_servs()
+ *
+ * inputs       - source client
+ *              - mask to send to
+ *              - capab needed
+ *              - data
+ * outputs	- none
+ * side effects	- data sent to servers matching with capab
+ */
+void
+sendto_match_servs(struct Client *source_p, const char *mask, int cap, const char *pattern, ...)
+{
+  va_list *args;
+  struct Client *target_p;
+  dlink_node *ptr;
+  char buffer[BUFSIZE];
+  int found = 0, len = ircsprintf(buffer, ":%s ", source_p->name);
+
+  va_start(args, pattern);
+  len += send_format(&buffer[len], IRCD_BUFSIZE - len, pattern, args);
+  va_end(args);
+
+  current_serial++;
+
+  DLINK_FOREACH(ptr, global_serv_list.head)
+  {
+    target_p = ptr->data;
+
+    /* Do not attempt to send to ourselves, or the source */
+    if (IsMe(target_p) || target_p->from == source_p->from)
+      continue;
+
+    if (target_p->from->serial == current_serial)
+      continue;
+
+    if (match(mask, target_p->name))
+    {
+      /*
+       * if we set the serial here, then we'll never do a
+       * match() again, if !IsCapable()
+       */
+      target_p->from->serial = current_serial;
+      found++;
+
+      if (!IsCapable(target_p->from, cap))
+        continue;
+
+      send_message_remote(target_p, source_p, buffer, len);
+    }
+  }
+
+  if (!found && IsClient(source_p) && !match(mask, me.name))
+    sendto_one(source_p, form_str(ERR_NOSUCHSERVER),
+               me.name, source_p->name, mask);
 }
 
 /* sendto_anywhere()

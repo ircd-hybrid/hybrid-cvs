@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.127 2003/05/15 02:54:14 db Exp $
+ *  $Id: m_kline.c,v 1.128 2003/05/17 18:00:50 bill Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.127 $";
+const char *_version = "$Revision: 1.128 $";
 #endif
 
 /* Local function prototypes */
@@ -930,10 +930,12 @@ valid_comment(struct Client *source_p, const char *comment)
   return(1);
 }
 
-/* static int already_placed_kline(source_p, luser, lhost)
- * Input: user to complain to, username & host to check for.
- * Output: returns 1 on existing K-line, 0 if doesn't exist.
- * Side-effects: Notifies source_p if the K-line already exists.
+/* already_placed_kline()
+ * inputs	- user to complain to, username & host to check for
+ * outputs	- returns 1 on existing K-line, 0 if doesn't exist
+ * side effects	- notifies source_p if the K-line already exists
+ */
+/*
  * Note: This currently works if the new K-line is a special case of an
  *       existing K-line, but not the other way round. To do that we would
  *       have to walk the hash and check every existing K-line. -A1kmm.
@@ -941,46 +943,40 @@ valid_comment(struct Client *source_p, const char *comment)
 static int
 already_placed_kline(struct Client *source_p, const char *luser, const char *lhost)
 {
- const char *reason;
- struct irc_ssaddr iphost, *piphost;
- struct ConfItem *aconf;
- int t;
- if (ConfigFileEntry.non_redundant_klines) 
- {
-  if ((t=parse_netmask(lhost, &iphost, &t)) != HM_HOST)
-  {
-#ifdef IPV6
-   if (t == HM_IPV6)
-     t = AF_INET6;
-   else
-#endif
-     t = AF_INET;
-   piphost = &iphost;
-  }
-  else
-  {
-   t = 0;
-   piphost = NULL;
-  }
-  if ((aconf = find_conf_by_address(lhost, piphost, CONF_KILL, t, luser)))
-  {
-   reason = aconf->reason ? aconf->reason : "<No Reason>";
+  const char *reason;
+  struct irc_ssaddr iphost, *piphost;
+  struct ConfItem *aconf;
+  int t;
 
-   /* Remote servers can set klines, so if its a dupe we warn all 
-    * local opers and leave it at that
-    */
-   /* they can?  here was me thinking it was only remote clients :P */
-   if(!MyClient(source_p))
-    sendto_realops_flags(UMODE_ALL, L_ALL, 
-             "*** Remote K-Line [%s@%s] already K-Lined by [%s@%s] - %s",
-             luser, lhost, aconf->user, aconf->host, reason);
-   else
-    sendto_one(source_p,
-             ":%s NOTICE %s :[%s@%s] already K-Lined by [%s@%s] - %s",
-              me.name, source_p->name, luser, lhost, aconf->user,
-              aconf->host, reason);
-     return 1;
+  if (ConfigFileEntry.non_redundant_klines) 
+  {
+    if ((t=parse_netmask(lhost, &iphost, &t)) != HM_HOST)
+    {
+#ifdef IPV6
+      if (t == HM_IPV6)
+        t = AF_INET6;
+      else
+#endif
+        t = AF_INET;
+      piphost = &iphost;
+    }
+    else
+    {
+      t = 0;
+      piphost = NULL;
+    }
+
+    if ((aconf = find_conf_by_address(lhost, piphost, CONF_KILL, t, luser)))
+    {
+      reason = aconf->reason ? aconf->reason : "<No Reason>";
+
+      sendto_one(source_p,
+                 ":%s NOTICE %s :[%s@%s] already K-Lined by [%s@%s] - %s",
+                 me.name, source_p->name, luser, lhost, aconf->user,
+                 aconf->host, reason);
+      return 1;
+    }
   }
- }
- return 0;
+
+  return 0;
 }
