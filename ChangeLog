@@ -1,3 +1,10 @@
+*** 20001106_6 by adrian
+
+
+Thanks to is- for pointing out the *correct* fix: default: <build target>
+Reverted the previous patch, and set default:    all
+
+
 *** 20001106_5 by adrian
 
 
@@ -64,7 +71,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.488 2000/11/06 14:49:18 adrian Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.489 2000/11/06 14:58:05 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
