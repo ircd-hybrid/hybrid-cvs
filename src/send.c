@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.24 2000/01/23 21:02:40 db Exp $
+ *   $Id: send.c,v 7.25 2000/01/24 22:22:31 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -187,8 +187,6 @@ send_message(struct Client *to, char *msg, int len)
         }
         else
         {
-        #ifdef ZIP_LINKS
-
                 /*
                 ** data is first stored in to->zip->outbuf until
                 ** it's big enough to be compressed and stored in the sendq.
@@ -199,13 +197,6 @@ send_message(struct Client *to, char *msg, int len)
                         msg = zip_buffer(to, msg, &len, 0);
 
                 if (len && !dbuf_put(&to->sendQ, msg, len))
-
-        #else /* ZIP_LINKS */
-
-                if (!dbuf_put(&to->sendQ, msg, len))
-
-        #endif /* ZIP_LINKS */
-
                         return dead_link(to, "Buffer allocation error for %s");
         }
 
@@ -286,7 +277,6 @@ send_message(struct Client *to, char *msg, int len)
                 }
                 else
                 {
-                #ifdef ZIP_LINKS
 
                         /*
                         ** data is first stored in to->zip->outbuf until
@@ -298,13 +288,6 @@ send_message(struct Client *to, char *msg, int len)
                                 msg = zip_buffer(to, msg, &len, 0);
 
                         if (len && !dbuf_put(&to->sendQ, msg + rlen, len - rlen))
-
-                #else /* ZIP_LINKS */
-
-                        if (!dbuf_put(&to->sendQ,msg+rlen,len-rlen))
-
-                #endif /* ZIP_LINKS */
-
                                 return dead_link(to,"Buffer allocation error for %s");
                 }
         } /* else if (rlen < len) */
@@ -332,9 +315,7 @@ int send_queued(struct Client *to)
 {
   const char *msg;
   int len, rlen;
-#ifdef ZIP_LINKS
   int more = NO;
-#endif
 
   /*
   ** Once socket is marked dead, we cannot start writing to it,
@@ -353,7 +334,6 @@ int send_queued(struct Client *to)
 #endif
   } /* if (IsDead(to)) */
 
-#ifdef ZIP_LINKS
   /*
   ** Here, we must make sure than nothing will be left in to->zip->outbuf
   ** This buffer needs to be compressed and sent if all the sendQ is sent
@@ -371,7 +351,6 @@ int send_queued(struct Client *to)
         return dead_link(to, "Buffer allocation error for %s");
     }
   } /* if ((to->flags2 & FLAGS2_ZIP) && to->zip->outcount) */
-#endif /* ZIP_LINKS */
 
   while (DBufLength(&to->sendQ) > 0) {
     msg = dbuf_map(&to->sendQ, &len);
@@ -400,7 +379,6 @@ int send_queued(struct Client *to)
       break;
     }
 
-#ifdef ZIP_LINKS
     if (DBufLength(&to->sendQ) == 0 && more) {
       /*
       ** The sendQ is now empty, compress what's left
@@ -415,7 +393,6 @@ int send_queued(struct Client *to)
       if (!dbuf_put(&to->sendQ, msg, len))
         return dead_link(to, "Buffer allocation error for %s");
     } /* if (DBufLength(&to->sendQ) == 0 && more) */
-#endif /* ZIP_LINKS */      
   } /* while (DBufLength(&to->sendQ) > 0) */
 
   return (IsDead(to)) ? -1 : 0;

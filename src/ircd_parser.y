@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.12 2000/01/24 02:47:31 db Exp $
+ * $Id: ircd_parser.y,v 1.13 2000/01/24 22:22:29 db Exp $
  */
 
 %{
@@ -100,7 +100,6 @@ int   class_sendq_var;
 %token  MAX_NUMBER
 %token  SENDQ
 %token  PASSWORD
-%token  ALLOW_BOTS
 %token  LISTEN
 %token  PORT
 %token  SPOOF

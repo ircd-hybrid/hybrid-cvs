@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.4 2000/01/06 04:35:51 db Exp $
+ * $Id: m_info.h,v 7.5 2000/01/24 22:22:25 db Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -579,17 +579,8 @@ Info MyInformation[] = {
   { "WINTRHAWK", "OFF", 0, "Enable Wintrhawk Styling" },
 #endif /* WINTRHAWK */
 
-#ifdef ZIP_LEVEL
   { "ZIP_LEVEL", "", ZIP_LEVEL, "Compression Value for Zipped Links" },
-#else
-  { "ZIP_LEVEL", "NONE", 0, "Compression Value for Zipped Links" },
-#endif /* ZIP_LEVEL */
-
-#ifdef ZIP_LINKS
   { "ZIP_LINKS", "ON", 0, "Compress Server to Server Links" },
-#else
-  { "ZIP_LINKS", "OFF", 0, "Compress Server to Server Links" },
-#endif /* ZIP_LINKS */
 
   /*
    * since we don't want to include the world here, NULL probably

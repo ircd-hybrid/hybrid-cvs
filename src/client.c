@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.20 2000/01/08 03:17:08 db Exp $
+ *  $Id: client.c,v 7.21 2000/01/24 22:22:28 db Exp $
  */
 #include "client.h"
 #include "class.h"
@@ -130,9 +130,7 @@ struct Client* make_client(struct Client* from)
 #ifdef FLUD
       cptr->fluders   = NULL;
 #endif
-#ifdef ZIP_LINKS
       cptr->zip       = NULL;
-#endif
       cptr->listener  = NULL;
       cptr->confs     = NULL;
 

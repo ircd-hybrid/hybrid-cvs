@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_stats.c,v 7.1 1999/12/30 20:36:10 db Exp $
+ *  $Id: s_stats.c,v 7.2 2000/01/24 22:22:31 db Exp $
  */
 #include "s_stats.h"
 #include "client.h"
@@ -130,10 +130,6 @@ void tstats(struct Client *cptr, const char *name)
   sendto_one(cptr, ":%s %d %s :CTCP Floods Blocked %u",
              me.name, RPL_STATSDEBUG, name, sp->is_flud);
 #endif /* FLUD */
-#ifdef ANTI_IP_SPOOF
-  sendto_one(cptr, ":%s %d %s :IP Spoofers %u",
-             me.name, RPL_STATSDEBUG, name, sp->is_ipspoof);
-#endif /* ANTI_IP_SPOOF */
 }
 
 

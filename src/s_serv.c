@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.21 2000/01/09 04:52:46 db Exp $
+ *   $Id: s_serv.c,v 7.22 2000/01/24 22:22:30 db Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -67,9 +67,7 @@ int MaxClientCount     = 1;
  */
 struct Capability captab[] = {
 /*  name        cap     */ 
-#ifdef ZIP_LINKS
   { "ZIP",      CAP_ZIP },
-#endif
   { "QS",       CAP_QS },
   { "EX",       CAP_EX },
   { "CHW",      CAP_CHW },
@@ -651,7 +649,6 @@ int server_estab(struct Client *cptr)
         }
     }
   
-#ifdef ZIP_LINKS
   if (IsCapable(cptr, CAP_ZIP) && (c_conf->flags & CONF_FLAGS_ZIP_LINK))
     {
       if (zip_init(cptr) == -1)
@@ -665,7 +662,6 @@ int server_estab(struct Client *cptr)
     }
   else
     ClearCap(cptr, CAP_ZIP);
-#endif /* ZIP_LINKS */
 
   sendto_one(cptr,"SVINFO %d %d 0 :%lu", TS_CURRENT, TS_MIN, CurrentTime);
   
@@ -882,7 +878,6 @@ int server_estab(struct Client *cptr)
 
   cptr->flags2 &= ~FLAGS2_CBURST;
 
-#ifdef  ZIP_LINKS
   /*
   ** some stats about the connect burst,
   ** they are slightly incorrect because of cptr->zip->outbuf.
@@ -893,7 +888,6 @@ int server_estab(struct Client *cptr)
                 cptr->zip->out->total_in,cptr->zip->out->total_out,
                 (100.0*(float)cptr->zip->out->total_out) /
                 (float)cptr->zip->out->total_in);
-#endif /* ZIP_LINKS */
 
   /* Always send a PING after connect burst is done */
   sendto_one(cptr, "PING :%s", me.name);

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.20 2000/01/09 04:52:46 db Exp $
+ * $Id: ircd.c,v 7.21 2000/01/24 22:22:29 db Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -328,11 +328,7 @@ static void parse_command_line(int argc, char* argv[])
       break;
     case 'v':
       printf("ircd %s\n\tzlib %s\n\tircd_dir: %s\n", version,
-#ifndef ZIP_LINKS
-             "not used",
-#else
               zlib_version,
-#endif
               ConfigFileEntry.dpath);
       exit(0);
       break;   /* NOT REACHED */
@@ -738,7 +734,6 @@ int main(int argc, char *argv[])
     }
 #endif /*CHROOTDIR*/
 
-#ifdef  ZIP_LINKS
   if (zlib_version[0] == '0')
     {
       fprintf(stderr, "zlib version 1.0 or higher required\n");
@@ -753,7 +748,6 @@ int main(int argc, char *argv[])
     {
       fprintf(stderr, "warning: different zlib version\n");
     }
-#endif
 
   myargv = argv;
   umask(077);                /* better safe than sorry --SRB */

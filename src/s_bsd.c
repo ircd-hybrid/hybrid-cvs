@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.25 2000/01/02 05:35:00 db Exp $
+ *  $Id: s_bsd.c,v 7.26 2000/01/24 22:22:30 db Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -693,14 +693,13 @@ void close_connection(struct Client *cptr)
     cptr->fd = -1;
   }
 
-#ifdef ZIP_LINKS
     /*
      * the connection might have zip data (even if
      * FLAGS2_ZIP is not set)
      */
   if (IsServer(cptr))
     zip_free(cptr);
-#endif
+
   DBufClear(&cptr->sendQ);
   DBufClear(&cptr->recvQ);
   memset(cptr->passwd, 0, sizeof(cptr->passwd));
@@ -1019,9 +1018,7 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
             }
 
           if (DBufLength(&cptr->sendQ) || IsConnecting(cptr)
-#ifdef ZIP_LINKS
               || ((cptr->flags2 & FLAGS2_ZIP) && (cptr->zip->outcount > 0))
-#endif
               )
             {
                FD_SET(i, write_set);
@@ -1319,9 +1316,7 @@ int read_message(time_t delay, unsigned char mask)
         PFD_SETR(i);
       
       if (DBufLength(&cptr->sendQ) || IsConnecting(cptr)
-#ifdef ZIP_LINKS
           || ((cptr->flags2 & FLAGS2_ZIP) && (cptr->zip->outcount > 0))
-#endif
           )
         PFD_SETW(i);
     }
