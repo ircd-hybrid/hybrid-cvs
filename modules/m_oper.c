@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.33 2001/06/01 00:55:58 davidt Exp $
+ *   $Id: m_oper.c,v 1.34 2001/06/05 01:46:49 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -142,8 +142,8 @@ static void m_oper(struct Client *client_p, struct Client *source_p,
 
       oper_up( source_p, aconf );
       
-      log(L_TRACE, "OPER %s by %s!%s@%s",
-          name, source_p->name, source_p->username, source_p->host);
+      ilog(L_TRACE, "OPER %s by %s!%s@%s",
+	   name, source_p->name, source_p->username, source_p->host);
       log_oper(source_p, name);
       return;
     }

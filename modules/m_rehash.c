@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_rehash.c,v 1.23 2001/04/04 15:22:34 androsyn Exp $
+ *   $Id: m_rehash.c,v 1.24 2001/06/05 01:46:50 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -118,8 +118,8 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
         }
       if(found)
         {
-          log(L_NOTICE, "REHASH %s From %s\n", parv[1], 
-              get_client_name(source_p, HIDE_IP));
+          ilog(L_NOTICE, "REHASH %s From %s\n", parv[1], 
+	       get_client_name(source_p, HIDE_IP));
           return;
         }
       else
@@ -134,7 +134,7 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
                  ConfigFileEntry.configfile);
       sendto_realops_flags(FLAGS_ALL,
 			   "%s is rehashing server config file", parv[0]);
-      log(L_NOTICE, "REHASH From %s", get_client_name(source_p, SHOW_IP));
+      ilog(L_NOTICE, "REHASH From %s", get_client_name(source_p, SHOW_IP));
       rehash(client_p, source_p, 0);
       return;
     }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.79 2001/06/01 00:55:57 davidt Exp $
+ *   $Id: m_kline.c,v 1.80 2001/06/05 01:46:49 db Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -379,8 +379,8 @@ static void apply_tkline(struct Client *source_p, struct ConfItem *aconf,
                       aconf->passwd);
  sendto_one(source_p, ":%s NOTICE %s :Added temporary %d min. K-Line for [%s@%s]",
             me.name, source_p->name, tkline_time/60, aconf->user, aconf->host);
- log(L_TRACE, "%s added temporary %d min. K-Line for [%s@%s] [%s]",
-     source_p->name, tkline_time/60, aconf->user, aconf->host, aconf->passwd);
+ ilog(L_TRACE, "%s added temporary %d min. K-Line for [%s@%s] [%s]",
+      source_p->name, tkline_time/60, aconf->user, aconf->host, aconf->passwd);
  check_klines();
 }
 

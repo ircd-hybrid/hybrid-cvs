@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_svinfo.c,v 1.22 2001/05/28 13:45:36 jdc Exp $
+ *   $Id: m_svinfo.c,v 1.23 2001/06/05 01:46:50 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -114,8 +114,8 @@ static void ms_svinfo(struct Client *client_p, struct Client *source_p,
 		 (unsigned long) theirtime,
 		 (int) deltat);
 
-      log(L_NOTICE,
-       "Link %s dropped, excessive TS delta (my TS=%lu, their TS=%lu, delta=%d)",
+      ilog(L_NOTICE,
+   "Link %s dropped, excessive TS delta (my TS=%lu, their TS=%lu, delta=%d)",
                  get_client_name(source_p, SHOW_IP),
 		 (unsigned long) CurrentTime,
 		 (unsigned long) theirtime,

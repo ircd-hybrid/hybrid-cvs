@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.48 2001/05/17 06:16:24 a1kmm Exp $
+ *   $Id: m_kill.c,v 1.49 2001/06/05 01:46:49 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -140,8 +140,8 @@ static void mo_kill(struct Client *client_p, struct Client *source_p,
 		       "Received KILL message for %s. From %s Path: %s (%s)", 
 		       target_p->name, parv[0], me.name, reason);
 
-  log(L_INFO,"KILL From %s For %s Path %s (%s)",
-      parv[0], target_p->name, me.name, reason);
+  ilog(L_INFO,"KILL From %s For %s Path %s (%s)",
+       parv[0], target_p->name, me.name, reason);
 
 
   /*
@@ -266,8 +266,8 @@ static void ms_kill(struct Client *client_p, struct Client *source_p,
 			   target_p->name, parv[0], reason);
     }
 
-  log(L_INFO,"KILL From %s For %s Path %s %s",
-          parv[0], target_p->name, parv[0], reason);
+  ilog(L_INFO,"KILL From %s For %s Path %s %s",
+       parv[0], target_p->name, parv[0], reason);
 
   /*
   ** And pass on the message to other servers. Note, that if KILL

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_die.c,v 1.16 2001/04/04 15:22:24 androsyn Exp $
+ *   $Id: m_die.c,v 1.17 2001/06/05 01:46:48 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -121,7 +121,7 @@ static void mo_die(struct Client *client_p, struct Client *source_p,
    * for an explanation as to what we should do.
    *     -- adrian
    */
-  log(L_NOTICE, "Server terminated by %s", get_client_name(source_p, HIDE_IP));
+  ilog(L_NOTICE, "Server terminated by %s", get_client_name(source_p, HIDE_IP));
   /* 
    * this is a normal exit, tell the os it's ok 
    */
