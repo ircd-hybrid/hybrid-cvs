@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.84 2001/01/23 00:42:35 ejb Exp $
+ * $Id: s_conf.h,v 7.85 2001/01/24 03:10:25 db Exp $
  */
 
 #include "setup.h"
@@ -215,6 +215,7 @@ struct server_info
   struct in_addr ip;
 #endif
   int         max_clients;
+  int         no_hack_ops;
 };
 
 struct admin_info
