@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.133 2001/06/08 03:13:48 db Exp $
+ * $Id: s_conf.h,v 7.134 2001/06/08 03:49:43 db Exp $
  */
 
 #include "setup.h"
@@ -360,7 +360,7 @@ typedef enum {
 
 extern void WriteKlineOrDline( KlineType, struct Client *,
 			       char *user, char *host, const char *reason,
-			       const char *current_date );
+			       const char *current_date, time_t cur_time );
 extern  void    add_temp_kline(struct ConfItem *);
 extern  void    report_temp_klines(struct Client *);
 extern  void    show_temp_klines(struct Client *, dlink_list *);

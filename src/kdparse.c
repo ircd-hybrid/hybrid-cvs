@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: kdparse.c,v 7.1 2001/06/08 03:13:49 db Exp $
+ *  $Id: kdparse.c,v 7.2 2001/06/08 03:49:51 db Exp $
  */
 
 #include <sys/types.h>
@@ -103,7 +103,7 @@ void DParseFile(FBFILE *file)
       if ((host_field = getfield(line)) == NULL)
 	continue;
 
-      if ((reason_field = getfield(host_field)) == NULL)
+      if ((reason_field = getfield(NULL)) == NULL)
 	continue;
 	  
       aconf = make_conf();

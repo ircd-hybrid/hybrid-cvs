@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.230 2001/06/08 03:13:50 db Exp $
+ *  $Id: s_conf.c,v 7.231 2001/06/08 03:49:51 db Exp $
  */
 
 #include <sys/types.h>
@@ -2159,7 +2159,7 @@ static void flush_deleted_I_P(void)
  *              - user name of target
  *              - host name of target
  *              - reason for target
- *              - current tiny date string
+ *              - time_t cur_time
  * output       - NONE
  * side effects - This function takes care of
  *                finding right kline or dline conf file, writing
@@ -2174,7 +2174,8 @@ void WriteKlineOrDline( KlineType type,
 			char *user,
 			char *host,
 			const char *reason,
-			const char *current_date)
+			const char *current_date,
+			time_t cur_time)
 {
   char buffer[1024];
   FBFILE *out;
@@ -2208,16 +2209,20 @@ void WriteKlineOrDline( KlineType type,
     }
 
   if(type==KLINE_TYPE)
-    ircsprintf(buffer, "\"%s\",\"%s\",\"%s\",\"%s\"\n",
+    ircsprintf(buffer, "\"%s\",\"%s\",\"%s %s\",\"%s\",%d\n",
                user,
 	       host,
                reason,
-               current_date);
+	       current_date,
+	       source_p->name,
+               cur_time);
   else
-    ircsprintf(buffer, "\"%s\",\"%s\",\"%s\"\n",
+    ircsprintf(buffer, "\"%s\",\"%s %s\",\"%s\",%d\n",
                host,
                reason,
-               current_date);
+	       current_date,
+	       source_p->name,
+               cur_time);
 
 
   if (fbputs(buffer,out) == -1)
