@@ -19,7 +19,7 @@
  *
  * "s_zip.h". - Headers file.
  *
- * $Id: s_zip.h,v 7.0 1999/08/01 21:19:46 lusky Exp $
+ * $Id: s_zip.h,v 7.1 1999/08/02 04:27:38 tomh Exp $
  *
  */
 #ifndef INCLUDED_s_zip_h
@@ -34,7 +34,6 @@
 
 struct Client;
 
-#ifdef ZIP_LINKS
 /* the minimum amount of data needed to trigger compression */
 #define ZIP_MINIMUM     4096
 
@@ -49,8 +48,6 @@ struct Zdata {
   int         incount;        /* size of inbuf content */
   int         outcount;       /* size of outbuf content */
 };
-
-#endif /* ZIP_LINKS */
 
 
 extern int     zip_init (struct Client *);

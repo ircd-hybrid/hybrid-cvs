@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_zip.c,v 7.0 1999/08/01 21:19:49 lusky Exp $
+ *   $Id: s_zip.c,v 7.1 1999/08/02 04:27:43 tomh Exp $
  */
 #include "s_zip.h"
 #include "client.h"
@@ -30,7 +30,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#ifdef  ZIP_LINKS
 /*
 ** Important note:
 **      The provided buffers for uncompression and compression *MUST* be big
@@ -347,4 +346,3 @@ char *zip_buffer(aClient *cptr, char *buffer, int *length, int flush)
   return((char *)NULL);
 }
 
-#endif  /* ZIP_LINKS */

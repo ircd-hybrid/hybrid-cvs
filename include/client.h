@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.0 1999/08/01 21:19:45 lusky Exp $
+ * $Id: client.h,v 7.1 1999/08/02 04:27:37 tomh Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -207,9 +207,9 @@ struct Client
   int               drone_noticed;
 #endif
   char  buffer[CLIENT_BUFSIZE]; /* Incoming message buffer */
-#ifdef ZIP_LINKS
+
   struct Zdata*     zip;        /* zip data */
-#endif
+
   short             lastsq;     /* # of 2k blocks when sendqueued called last*/
   dbuf              sendQ;      /* Outgoing message queue--if socket full */
   dbuf              recvQ;      /* Hold for data incoming yet to be parsed */

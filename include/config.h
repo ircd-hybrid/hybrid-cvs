@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.0 1999/08/01 21:19:45 lusky Exp $
+ * $Id: config.h,v 7.1 1999/08/02 04:27:38 tomh Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -310,8 +310,6 @@
  * small net it might be an advantage to undefine it.
  */
 #define SHOW_INVISIBLE_LUSERS
-
-#define ZIP_LINKS               /* compress server-to-server links */
 
 /* NO_DEFAULT_INVISIBLE - clients not +i by default
  * When defined, your users will not automatically be attributed with user

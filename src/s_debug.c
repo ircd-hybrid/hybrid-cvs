@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.0 1999/08/01 21:19:49 lusky Exp $
+ *   $Id: s_debug.c,v 7.1 1999/08/02 04:27:42 tomh Exp $
  */
 #include "s_debug.h"
 #include "channel.h"
@@ -116,9 +116,7 @@ const char serveropts[] = {
 #ifdef  USE_SYSLOG
   'Y',
 #endif
-#ifdef ZIP_LINKS
   'Z',
-#endif
   ' ',
   'T',
   'S',
