@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h.dist,v 7.2 1999/09/10 03:40:27 tomh Exp $
+ * $Id: config.h.dist,v 7.3 1999/10/14 04:02:29 lusky Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
