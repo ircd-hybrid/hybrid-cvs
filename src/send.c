@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.22 2000/01/08 04:25:42 db Exp $
+ *   $Id: send.c,v 7.23 2000/01/14 01:16:51 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -277,7 +277,7 @@ send_message(struct Client *to, char *msg, int len)
                 */
                 if (DBufLength(&to->sendQ) > get_sendq(to))
                 {
-                        sendto_ops_butone(to,
+                        sendto_ops_butone(to, &me,
                                 "Max SendQ limit exceeded for %s : %d > %d",
                                 get_client_name(to, FALSE),
                                 DBufLength(&to->sendQ), get_sendq(to));
