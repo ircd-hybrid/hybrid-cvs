@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.84 2001/03/23 07:30:58 ejb Exp $
+ * $Id: ircd_lexer.l,v 1.85 2001/03/23 08:43:33 ejb Exp $
  */
 
 %option case-insensitive
@@ -247,6 +247,12 @@ callerid                { return T_CALLERID; }
 drone                   { return T_DRONE; }
 locops                  { return T_LOCOPS; }
 
+millennia		{ return MILLENNIA; }
+millennium		{ return MILLENNIA; }
+centuries		{ return CENTURIES; }
+century			{ return CENTURIES; }
+decades			{ return DECADES; }
+decade			{ return DECADES; }
 years			{ return YEARS; }
 year			{ return YEARS; }
 months			{ return MONTHS; }
@@ -279,7 +285,11 @@ gigabyte		{ return GBYTES; }
 gbytes			{ return GBYTES; }
 gbyte			{ return GBYTES; }
 gb			{ return GBYTES; }
-
+terabytes		{ return TBYTES; }
+terabyte		{ return TBYTES; }
+tbytes			{ return TBYTES; }
+tbyte			{ return TBYTES; }
+tb			{ return TBYTES; }
 .		        { return yytext[0]; }
 
 %%
