@@ -1,3 +1,16 @@
+bill        2003/02/08 19:02:29 EST	(20030209_0)
+
+  Modified files:
+    modules              m_whois.c 
+  Log:
+  - send RPL_ENDOFWHOIS numeric even if we send ERR_NOSUCHNICK
+    reported by BlackJac
+  
+  Revision  Changes    Path
+  1.87      +4 -4      ircd-hybrid-7/modules/m_whois.c
+
+
+
 db          2003/02/08 17:50:48 EST	(20030208_0)
 
   Modified files:
@@ -34956,4 +34969,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4227 2003/02/08 22:50:51 db Exp $
+$Id: ChangeLog,v 7.4228 2003/02/09 00:02:32 bill Exp $
