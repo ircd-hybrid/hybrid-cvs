@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.51 2003/10/04 19:31:17 metalrock Exp $
+ *  $Id: modules.h,v 7.52 2003/11/01 06:18:42 joshk Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -175,6 +175,7 @@ extern struct Message ojoin_msgtab;
 extern struct Message omotd_msgtab;
 extern struct Message operspy_msgtab;
 extern struct Message opme_msgtab;
+extern struct Message tburst_msgtab;
 #endif
 
 extern void load_all_modules(int check);

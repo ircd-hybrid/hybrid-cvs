@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.145 2003/10/27 04:28:09 metalrock Exp $
+ *  $Id: modules.c,v 7.146 2003/11/01 06:18:43 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -685,6 +685,8 @@ load_all_modules(int warn)
   mod_add_cmd(&omotd_msgtab);
   mod_add_cmd(&operspy_msgtab);
   mod_add_cmd(&opme_msgtab);
+  mod_add_cmd(&tburst_msgtab);
+  add_capability ("TBURST", CAP_TBURST, 1);
 #endif
 }
 #endif /* STATIC_MODULES */

@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.21 2003/10/14 02:25:05 metalrock Exp $
+ *  $Id: m_tb.c,v 1.22 2003/11/01 06:18:40 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -52,8 +52,6 @@
 
 static void ms_tburst(struct Client *, struct Client *, int, char **);
 static void set_topic(struct Client *, struct Channel *, time_t, char *, char *);
-static void set_tburst_capab(void);
-static void unset_tburst_capab(void);
 int send_tburst(struct hook_burst_channel *);
 
 struct Message tburst_msgtab = {
@@ -61,12 +59,13 @@ struct Message tburst_msgtab = {
   {m_ignore, m_ignore, ms_tburst, m_ignore, m_ignore}
 };
 
+#ifndef STATIC_MODULES
+
 void
 _modinit(void)
 {
   mod_add_cmd(&tburst_msgtab);
   hook_add_hook("burst_channel", (hookfn *)send_tburst);
-  set_tburst_capab();
   add_capability("TBURST", CAP_TBURST, 1);
 }
 
@@ -76,11 +75,11 @@ _moddeinit(void)
   mod_del_cmd(&tburst_msgtab);
   hook_del_hook("burst_channel", (hookfn *)send_tburst);
   delete_capability("TBURST");
-  /* XXX */
-  unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.21 $";
+const char *_version = "$Revision: 1.22 $";
+
+#endif /* !STATIC_MODULES */
 
 /* ms_tburst()
  * 
@@ -130,18 +129,6 @@ set_topic(struct Client *source_p, struct Channel *chptr,
                 chptr->topic_info == NULL ? "" : chptr->topic_info,
                 chptr->topic == NULL ? "" : chptr->topic);
 #endif
-}
-
-static void
-set_tburst_capab(void)
-{
-  default_server_capabs |= CAP_TBURST;
-}
-
-static void
-unset_tburst_capab(void)
-{
-  default_server_capabs &= ~CAP_TBURST;
 }
 
 int
