@@ -1,3 +1,11 @@
+*** 20001127_3 by adrian
+
+
+Add initial documenation of the new linebuf code
+(god I love documenting ..)
+
+
+
 *** 20001127_2 by db
 - interim check in, I hate checking in partially debugged code
   but I have to do some real work for a bit,
@@ -863,7 +871,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.595 2000/11/27 18:50:33 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.596 2000/11/27 19:23:06 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
