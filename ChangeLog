@@ -1,3 +1,16 @@
+bill        2002/10/24 16:54:53 EDT	(20021024_3)
+
+  Modified files:
+    src                  channel.c 
+  Log:
+  - better commented expire_channels() (sheesh, these things are more trouble than they're worth)
+  - added some continue statements, make things a bit more robust
+  
+  Revision  Changes    Path
+  7.340     +8 -0      ircd-hybrid-7/src/channel.c
+
+
+
 bill        2002/10/24 14:16:42 EDT	(20021024_2)
 
   Modified files:
@@ -32660,4 +32673,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4076 2002/10/24 18:16:44 bill Exp $
+$Id: ChangeLog,v 7.4077 2002/10/24 20:54:55 bill Exp $
