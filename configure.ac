@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.5 2003/05/08 01:36:40 joshk Exp $
+dnl $Id: configure.ac,v 7.6 2003/05/08 20:20:20 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -58,14 +58,11 @@ case `$CC -V 2>&1` in
 esac
 
 AC_MSG_CHECKING(if we are using Apple GCC)
-case `$CC -v 2>&1 | tail -1` in
-*Apple*)
+if test expr "`$CC -v 2>&1 | tail -1`" : Apple; then
 	AppleGCC=yes
-;;
-*)
+else
 	AppleGCC=no
-;;
-esac
+fi
 
 AC_MSG_RESULT($AppleGCC)
 
@@ -270,10 +267,10 @@ dnl ============================
 dnl OpenSSL support
 AC_MSG_CHECKING(for OpenSSL)
 AC_ARG_ENABLE(openssl,
-[  --enable-openssl[=DIR]       Enable OpenSSL support (DIR optional).
-  --disable-openssl            Disable OpenSSL support. ],
-[ cf_enable_openssl=$enableval ],
-[ cf_enable_openssl="auto" ])
+[AC_HELP_STRING([--enable-openssl[=DIR]],[Enable OpenSSL support (DIR optional).])
+AC_HELP_STRING([--disable-openssl],[Disable OpenSSL support.])],
+[cf_enable_openssl=$enableval],
+[cf_enable_openssl="auto"])
 
 if test "X$cf_enable_openssl" != "Xno" ; then
 	cf_openssl_basedir=""
@@ -388,8 +385,8 @@ dnl End OpenSSL detection
 dnl Specialized functions and libraries
 dnl ===================================
 
-AC_ARG_WITH(zlibpath,
-AC_HELP_STRING([--with-zlib-path],[Path to libz.a for ziplinks support.]),
+AC_ARG_WITH(zlib-path,
+AC_HELP_STRING([--with-zlib-path=DIR],[Path to libz.a for ziplinks support.]),
 [LIBS="$LIBS -L$withval"],)
 
 AC_ARG_ENABLE(zlib,
@@ -410,18 +407,25 @@ AC_HELP_STRING([--disable-zlib],[Disable ziplinks support]),
 		])
 ])
 
-AC_CACHE_CHECK([for IPv6 support], have_v6,
+AC_ARG_ENABLE(ipv6,
+AC_HELP_STRING([--disable-ipv6], [Explicitly disable IPv6 support]),
+[have_v6=no],
 [
-    AC_COMPILE_IFELSE(
+	AC_CACHE_CHECK([for IPv6 support], have_v6,
+	[
+	    AC_COMPILE_IFELSE(
 
-	[AC_LANG_PROGRAM(
-		[[#define IN_AUTOCONF
-		#include "include/stdinc.h"]],
-    [[struct sockaddr_in6 s; s.sin6_family = 0;]]
-	)],
+		[AC_LANG_PROGRAM(
+			[[#define IN_AUTOCONF
+			#include "include/stdinc.h"]],
+			[[struct sockaddr_in6 s; 
+			    s.sin6_family = 0;
+			    struct sockaddr_storage t;]]
+		)],
 
-	[have_v6="yes"],
-	[have_v6="no"])
+		[have_v6="yes"],
+		[have_v6="no"])
+	])
 ])
 
 if test "$have_v6" = "yes"; then

@@ -841,9 +841,10 @@ if test -n "$ac_init_help"; then
 Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
-  --enable-openssl=DIR       Enable OpenSSL support (DIR optional).
-  --disable-openssl            Disable OpenSSL support.
+  --enable-openssl=DIR  Enable OpenSSL support (DIR optional).
+  --disable-openssl       Disable OpenSSL support.
   --disable-zlib          Disable ziplinks support
+  --disable-ipv6          Explicitly disable IPv6 support
   --enable-poll           Force poll() usage.
   --enable-select         Force select() usage.
   --enable-kqueue         Force kqueue() usage.
@@ -864,7 +865,7 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-zlib-path        Path to libz.a for ziplinks support.
+  --with-zlib-path=DIR    Path to libz.a for ziplinks support.
   --with-nicklen=LENGTH   Set the nick length to LENGTH.
   --with-maxclients=NUMBER
                           Set the maximum number of clients to NUMBER.
@@ -2228,14 +2229,11 @@ esac
 
 echo "$as_me:$LINENO: checking if we are using Apple GCC" >&5
 echo $ECHO_N "checking if we are using Apple GCC... $ECHO_C" >&6
-case `$CC -v 2>&1 | tail -1` in
-*Apple*)
+if test expr "`$CC -v 2>&1 | tail -1`" : Apple; then
 	AppleGCC=yes
-;;
-*)
+else
 	AppleGCC=no
-;;
-esac
+fi
 
 echo "$as_me:$LINENO: result: $AppleGCC" >&5
 echo "${ECHO_T}$AppleGCC" >&6
@@ -5063,9 +5061,9 @@ echo $ECHO_N "checking for OpenSSL... $ECHO_C" >&6
 # Check whether --enable-openssl or --disable-openssl was given.
 if test "${enable_openssl+set}" = set; then
   enableval="$enable_openssl"
-   cf_enable_openssl=$enableval
+  cf_enable_openssl=$enableval
 else
-   cf_enable_openssl="auto"
+  cf_enable_openssl="auto"
 fi;
 
 if test "X$cf_enable_openssl" != "Xno" ; then
@@ -5758,9 +5756,9 @@ LIBS="$save_LIBS"
 
 
 
-# Check whether --with-zlibpath or --without-zlibpath was given.
-if test "${with_zlibpath+set}" = set; then
-  withval="$with_zlibpath"
+# Check whether --with-zlib-path or --without-zlib-path was given.
+if test "${with_zlib_path+set}" = set; then
+  withval="$with_zlib_path"
   LIBS="$LIBS -L$withval"
 fi;
 
@@ -5907,13 +5905,19 @@ fi
 
 fi;
 
-echo "$as_me:$LINENO: checking for IPv6 support" >&5
+# Check whether --enable-ipv6 or --disable-ipv6 was given.
+if test "${enable_ipv6+set}" = set; then
+  enableval="$enable_ipv6"
+  have_v6=no
+else
+
+	echo "$as_me:$LINENO: checking for IPv6 support" >&5
 echo $ECHO_N "checking for IPv6 support... $ECHO_C" >&6
 if test "${have_v6+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
 
-    cat >conftest.$ac_ext <<_ACEOF
+	    cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 /* confdefs.h.  */
 _ACEOF
@@ -5921,11 +5925,13 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #define IN_AUTOCONF
-		#include "include/stdinc.h"
+			#include "include/stdinc.h"
 int
 main ()
 {
-struct sockaddr_in6 s; s.sin6_family = 0;
+struct sockaddr_in6 s;
+			    s.sin6_family = 0;
+			    struct sockaddr_storage t;
 
   ;
   return 0;
@@ -5955,6 +5961,8 @@ rm -f conftest.$ac_objext conftest.$ac_ext
 fi
 echo "$as_me:$LINENO: result: $have_v6" >&5
 echo "${ECHO_T}$have_v6" >&6
+
+fi;
 
 if test "$have_v6" = "yes"; then
 

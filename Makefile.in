@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.46 2003/05/08 01:12:08 joshk Exp $
+#*   $Id: Makefile.in,v 7.47 2003/05/08 20:20:20 joshk Exp $
 #*/
 
 RM=@RM@
@@ -33,9 +33,10 @@ CLEANDIRS = ${SUBDIRS} contrib
 # way, people lose the option to use a 'make' called something other 
 # than `make.' If it doesn't set $(MAKE), fall back to the old behavior
 # by substing SET_MAKE.
+
 @SET_MAKE@
 
-MAKE += ${MFLAGS} 
+MAKE := $(MAKE) ${MFLAGS} 
 
 all:	build
 
@@ -59,7 +60,7 @@ clean:
 		${MAKE} clean; cd ..;\
 	done
 	-@if [ -f include/setup.h ] ; then \
-	echo "To really restart installation, ${MAKE} distclean" ; \
+		echo "To really restart installation, ${MAKE} distclean" ; \
 	fi
 
 distclean:
