@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.135 2001/02/07 17:18:21 wcampbel Exp $
+ *  $Id: client.c,v 7.136 2001/02/10 08:20:44 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1315,6 +1315,8 @@ const char* comment         /* Reason for the exit */
   struct Client        *next;
   char comment1[HOSTLEN + HOSTLEN + 2];
   dlink_node *m;
+
+  sptr->flags |= FLAGS_DEADSOCKET;
 
   if (MyConnect(sptr))
     {
