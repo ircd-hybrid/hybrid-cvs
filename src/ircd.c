@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.184 2001/09/18 08:15:10 jdc Exp $
+ * $Id: ircd.c,v 7.185 2001/09/24 11:13:45 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -575,6 +575,7 @@ int main(int argc, char *argv[])
   setup_signals();
   /* We need this to initialise the fd array before anything else */
   fdlist_init();
+  init_netio();         /* This needs to be setup early ! -- adrian */
   /* Check if there is pidfile and daemon already running */
   check_pidfile(pidFileName);
   /* Init the event subsystem */
@@ -587,7 +588,6 @@ int main(int argc, char *argv[])
   init_log(logFileName);
   initBlockHeap();
   init_dlink_nodes();
-  init_netio();         /* This needs to be setup early ! -- adrian */
   init_resolver();      /* Needs to be setup before the io loop */
   initialize_message_files();
   linebuf_init();       /* set up some linebuf stuff to control paging */

@@ -3,7 +3,7 @@
  * fdlist.c   maintain lists of file descriptors
  *
  *
- * $Id: fdlist.c,v 7.24 2001/05/25 14:45:30 davidt blalloc.c $
+ * $Id: fdlist.c,v 7.25 2001/09/24 11:13:45 a1kmm Exp $
  */
 #include "fdlist.h"
 #include "client.h"  /* struct Client */
@@ -60,9 +60,7 @@ void fdlist_init(void)
   if (!initialized) {
     /* Since we're doing this once .. */
     fd_table = MyMalloc((MAXCONNECTIONS + 1) * sizeof(fde_t));
-    /* XXXX I HATE THIS CHECK. Can someone please fix? */
-    if (!fd_table)
-        exit(69);
+    memset(fd_table, 0, sizeof(fde_t) * (MAXCONNECTIONS+1));
     initialized = 1;
   }
 }

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.57 2001/09/18 08:15:10 jdc Exp $
+ *  $Id: listener.c,v 7.58 2001/09/24 11:13:46 a1kmm Exp $
  */
 #include "config.h"
 #include "listener.h"
@@ -58,6 +58,7 @@ struct Listener* make_listener(int port, struct irc_inaddr *addr)
 {
   struct Listener* listener =
     (struct Listener*) MyMalloc(sizeof(struct Listener));
+  memset(listener, 0, sizeof(*listener));
   assert(0 != listener);
 
   listener->name        = me.name;

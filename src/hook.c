@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: hook.c,v 7.8 2001/08/26 15:26:58 davidt Exp $
+ * $Id: hook.c,v 7.9 2001/09/24 11:13:45 a1kmm Exp $
  */
 
 /* hooks are used by modules to hook into events called by other parts of
@@ -51,6 +51,7 @@ new_hook(char *name)
 	hook *h;
 	
 	h = MyMalloc(sizeof(hook));
+	memset(h, 0, sizeof(*h));
     DupString(h->name, name);
 	return h;
 }

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.213 2001/09/23 08:44:39 a1kmm Exp $
+ * $Id: ircd_parser.y,v 1.214 2001/09/24 11:13:46 a1kmm Exp $
  */
 
 %{
@@ -952,8 +952,6 @@ auth_entry:   AUTH
 
     yy_achead = yy_aprev = yy_aconf = make_conf();
     yy_aconf->status = CONF_CLIENT;
-    yy_achead->className = NULL;
-    yy_acount = 0;
   }
  '{' auth_items '}' ';' 
   {

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.37 2001/09/23 21:38:38 davidt Exp $
+ * $Id: list.c,v 7.38 2001/09/24 11:13:46 a1kmm Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -109,6 +109,7 @@ struct Server *make_server(struct Client *client_p)
   if (!serv)
     {
       serv = (struct Server *)MyMalloc(sizeof(struct Server));
+      memset(serv, 0, sizeof(*serv));
 
       /* The commented out lines here are
        * for documentation purposes only

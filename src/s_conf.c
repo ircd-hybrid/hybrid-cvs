@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.269 2001/09/19 03:19:17 db Exp $
+ *  $Id: s_conf.c,v 7.270 2001/09/24 11:13:46 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -194,6 +194,7 @@ make_conf()
   struct ConfItem* aconf;
 
   aconf = (struct ConfItem*) MyMalloc(sizeof(struct ConfItem));
+  memset(aconf, 0, sizeof(*aconf));
   aconf->status       = CONF_ILLEGAL;
   aconf->aftype       = AF_INET;
   return (aconf);
