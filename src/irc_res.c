@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.19 2003/05/19 19:10:53 stu Exp $
+ * $Id: irc_res.c,v 7.20 2003/05/20 02:19:54 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -153,7 +153,7 @@ res_ourserver(const struct irc_ssaddr *inp)
 
     /* 
      * could probably just memcmp(srv, inp, srv.ss_len) here
-     * but we'll air on the de of caution - stu
+     * but we'll air on the side of caution - stu
      *
      */
     switch(srv->ss.ss_family)

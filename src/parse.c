@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.163 2003/05/19 15:14:18 adx Exp $
+ *  $Id: parse.c,v 7.164 2003/05/20 02:19:54 db Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ static void remove_unknown(struct Client *, char *, char *);
 static void do_numeric(char [], struct Client *, struct Client *, int, char **);
 static void handle_command(struct Message *, struct Client *, struct Client *, int, char **);
 static int hash(const char *p);
-static struct Message *hash_parse(char *);
+static struct Message *find_command(char *);
 
 struct MessageHash *msg_hash_table[MAX_MSG_HASH];
 
@@ -230,9 +230,9 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
     if ((s = strchr(ch, ' ')) != NULL)
       *s++ = '\0';
 
-    mptr = hash_parse(ch);
+    mptr = find_command(ch);
 
-    if (!mptr || !mptr->cmd)
+    if ((mptr == NULL) || (mptr->cmd == NULL))
     {
       /* Note: Give error message *only* to recognized
        * persons. It's a nightmare situation to have
@@ -441,14 +441,14 @@ mod_del_cmd(struct Message *msg)
   }
 }
 
-/* hash_parse()
+/* find_command()
  *
  * inputs	- command name
  * output	- pointer to struct Message
  * side effects - 
  */
 static struct Message *
-hash_parse(char *cmd)
+find_command(char *cmd)
 {
   struct MessageHash *ptr;
 
