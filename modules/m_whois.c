@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.39 2001/01/01 23:15:57 madmax Exp $
+ *   $Id: m_whois.c,v 1.40 2001/01/02 01:09:18 a1kmm Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -93,7 +93,6 @@ int     m_whois(struct Client *cptr,
   /* Don't break old clients... -A1kmm. */
   /* Okay, after discussion with other coders we have to always route,
    * and always show idle times... -A1kmm */
-
   /* 
    * The other coders didnt agree :>
    * This as is breaks /whois of clients on non compatable servers
@@ -114,6 +113,7 @@ int     m_whois(struct Client *cptr,
  
  
 
+>>>>>>> 1.39
 }
 
 /*
