@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.58 2002/07/22 00:40:41 leeh Exp $
+ *  $Id: m_info.c,v 1.59 2002/08/12 19:06:34 db Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-const char *_version = "$Revision: 1.58 $";
+const char *_version = "$Revision: 1.59 $";
 #endif
 
 /*
@@ -568,13 +568,8 @@ static void ms_info(struct Client *client_p, struct Client *source_p,
   if (hunt_server(client_p,source_p,":%s INFO :%s",1,parc,parv) == HUNTED_ISME)
   {
     info_spy(source_p);
- 
-    /* I dont see sending Hybrid-team as anything but a waste of bandwidth..
-     * so its disabled for now. --fl_
-     */
-    /* send_info_text(source_p); */
+    send_info_text(source_p); 
 
-    /* I dont see why remote opers need this, but.. */
     if(IsOper(source_p))
       send_conf_options(source_p);
       
