@@ -1,4 +1,4 @@
-$Id: server-version-info,v 7.9 2001/01/24 14:58:45 wcampbel Exp $
+$Id: server-version-info,v 7.10 2001/02/18 05:44:45 wcampbel Exp $
 Updated for Hybrid 7 (2000/12/28)
 
 When you type /version you will often see something like this:
@@ -15,7 +15,6 @@ here they are:
 'I'     NO_DEFAULT_INVISIBLE
 'M'     IDLE_FROM_MSG
 'p'	CRYPT_OPER_PASSWORD
-'P'	CRYPT_LINK_PASSWORD
 'Y'	USE_SYSLOG
 
 'TS'    Supports TS

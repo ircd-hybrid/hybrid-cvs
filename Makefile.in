@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.27 2001/02/05 01:05:20 androsyn Exp $
+#*   $Id: Makefile.in,v 7.28 2001/02/18 05:44:36 wcampbel Exp $
 #*/
 
 RM=@RM@
@@ -42,6 +42,8 @@ SUBDIRS=adns src tools modules doc gnats @SUBDIR_MESSAGES@ include
 CLEANDIRS = ${SUBDIRS} contrib iauth
 # XXX removed `iauth' from the build since it doesn't compile currently
 # SUBDIRS=src tools iauth
+RSA_FILES=rsa_respond/README rsa_respond/genkey.c rsa_respond/respond.c \
+          rsa_respond/Makefile
 
 MAKE = make ${MFLAGS} 
 
@@ -104,6 +106,6 @@ install: all
 rsa_respond:
 	@cd tools;\
 	echo "Creating rsa_respond.tar.gz";\
-	tar cf ../rsa_respond.tar rsa_respond;\
+	tar cf ../rsa_respond.tar $(RSA_FILES);\
 	cd ..;\
 	gzip rsa_respond.tar;\

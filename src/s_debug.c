@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.40 2001/02/05 01:05:41 androsyn Exp $
+ *   $Id: s_debug.c,v 7.41 2001/02/18 05:44:47 wcampbel Exp $
  */
 
 #include <sys/types.h> 
@@ -75,9 +75,6 @@ const char serveropts[] = {
          * always on */
 #ifdef  CRYPT_OPER_PASSWORD
   'p',
-#endif
-#ifdef  CRYPT_LINK_PASSWORD
-  'P',
 #endif
 #ifdef  USE_SYSLOG
   'Y',

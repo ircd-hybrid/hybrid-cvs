@@ -1,11 +1,11 @@
-# $Id: Makefile,v 1.4 2001/02/03 03:46:12 a1kmm Exp $
+# $Id: Makefile,v 1.5 2001/02/18 05:44:49 wcampbel Exp $
 
 all: genkey respond
 genkey: genkey.c
-	gcc -O2 -Wall -pedantic -o genkey genkey.c -lcrypto
+	gcc -g -O2 -Wall -pedantic -o genkey genkey.c -lcrypto -ggdb
 
 respond: respond.c
-	gcc -O3 -Wall -pedantic -o respond respond.c -lcrypto -ggdb
+	gcc -g -O2 -Wall -pedantic -o respond respond.c -lcrypto -ggdb
 
 clean:
 	rm -f genkey respond *.core *~

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.91 2001/02/15 02:01:05 wcampbel Exp $
+ * $Id: config.h,v 7.92 2001/02/18 05:44:46 wcampbel Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -219,14 +219,6 @@
  * ircd.conf file.
  */
 #define CRYPT_OPER_PASSWORD
-
-/* CRYPT_LINK_PASSWORD - use crypted N-line passwords in the ircd.conf
- * If you want to store encrypted passwords in N-lines for server links,
- * define this.  For a C/N pair in your ircd.conf file, the password
- * need not be the same for both, as long as the opposite end has the
- * right password in the opposite line.
- */
-#undef  CRYPT_LINK_PASSWORD
 
 /* MAXSENDQLENGTH - Max amount of internal send buffering
  * Max amount of internal send buffering when socket is stuck (bytes)

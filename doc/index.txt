@@ -1,5 +1,5 @@
 
-# $Id: index.txt,v 1.6 2001/02/03 14:51:12 wcampbel Exp $
+# $Id: index.txt,v 1.7 2001/02/18 05:44:44 wcampbel Exp $
 Here is the overview of the documents in the doc/ directory.
 
 CIDR.txt		- Description of CIDR in IPv4
@@ -19,6 +19,9 @@ fd-management.txt	- Outline of the file descriptor management system
 file-management.txt	- Outline of the disk file management system
 iauth.txt               - Outline of the ircd-authd authorization daemon
 index.txt		- This file
+ircd.8                  - The new revised manpage, read with the following
+                          commands in the prefix directory:
+                          man -M . ircd
 kline.conf              - A blank kline.conf file used by make install
 kline.txt               - Outline of the remote K-line protocol for both
                           opers and servers
