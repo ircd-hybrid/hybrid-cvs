@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.157 2000/12/30 06:03:40 lusky Exp $
+ * $Id: channel.c,v 7.158 2000/12/30 09:32:14 toot Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2404,7 +2404,23 @@ struct Channel* get_channel(struct Client *cptr, char *chname, int flag)
 */
 static  void    sub1_from_channel(struct Channel *chptr)
 {
-  struct Client *lastuser=NULL;
+  struct Client *lastuser = NULL;
+
+  /* last user in the channel.. set a vchan_id incase we need it */
+  if (chptr->users == 1)
+    {
+      if (chptr->chanops.head)
+        lastuser = chptr->chanops.head->data;
+      else if (chptr->halfops.head)
+        lastuser = chptr->halfops.head->data;
+      else if (chptr->voiced.head)
+        lastuser = chptr->voiced.head->data;
+      else if (chptr->peons.head)
+        lastuser = chptr->peons.head->data;
+
+      if (lastuser != NULL) /* just incase.. */
+        ircsprintf(chptr->vchan_id, "!%s", lastuser->name);
+    }
 
   if (--chptr->users <= 0)
     {
@@ -2419,21 +2435,6 @@ static  void    sub1_from_channel(struct Channel *chptr)
        */
       if((chptr->channelts + (30*60)) > CurrentTime)
         destroy_channel(chptr);
-    }
-
-  /* last user in the channel.. set a vchan_id incase we need it */
-  if (chptr->users <= 1)
-    {
-      if (chptr->chanops.head)
-        lastuser = chptr->chanops.head->data;
-      else if (chptr->halfops.head)
-        lastuser = chptr->halfops.head->data;
-      else if (chptr->voiced.head)
-        lastuser = chptr->voiced.head->data;
-      else if (chptr->peons.head)
-        lastuser = chptr->peons.head->data;
-
-      ircsprintf(chptr->vchan_id, "!%s", lastuser->name);
     }
 }
 
