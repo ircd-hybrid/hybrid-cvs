@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.227 2003/03/01 01:15:45 db Exp $
+ *  $Id: send.c,v 7.228 2003/03/02 05:34:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -254,7 +254,7 @@ send_linebuf_remote(struct Client *to, struct Client *from,
 
 /*
  ** send_queued_write
- **      This is called when there is a chance the some output would
+ **      This is called when there is a chance that some output would
  **      be possible. This attempts to empty the send queue as far as
  **      possible, and then if any data is left, a write is rescheduled.
  */
@@ -331,7 +331,7 @@ send_queued_write(int fd, struct Client *to)
   /* Finally, if we have any more data, reschedule a write */
   if (linebuf_len(&to->localClient->buf_sendq))
     comm_setselect(fd, FDLIST_IDLECLIENT, COMM_SELECT_WRITE,
-                   send_queued_slink_write, to, 0);
+                   send_queued_write, to, 0);
 } /* send_queued_write() */
 
 /*
