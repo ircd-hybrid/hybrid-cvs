@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.53 2003/06/29 15:06:00 adx Exp $
+# $Id: Makefile.in,v 1.54 2003/06/30 04:38:04 joshk Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -100,14 +100,14 @@ hpux_shared: $(OBJS) $(SLOBJS)
 
 install: install_@MOD_TARGET@ all install_help
 
-install_shared_modules:
+install_shared_modules: $(OBJS)
 	mkdir -p $(AUTOMODULEDIR)
 	@echo "Installing modules into $(AUTOMODULEDIR) .."
 	@for file in $(OBJS); do \
 		$(INSTALL_DATA) $$file $(AUTOMODULEDIR); \
 	done
 
-install_hpux_shared:
+install_hpux_shared: $(SLOBJS)
 	mkdir -p $(AUTOMODULEDIR)
 	@echo "Installing modules into $(AUTOMODULEDIR) .."
 	@for file in $(SLOBJS); do \

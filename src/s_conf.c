@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.449 2003/06/30 00:23:40 joshk Exp $
+ *  $Id: s_conf.c,v 7.450 2003/06/30 04:38:05 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -1573,7 +1573,7 @@ find_matching_name_conf(ConfType type,
       match_item = (struct MatchItem *)map_to_conf(conf);
       if (EmptyString(match_item->name))
 	continue;
-      if ((name != NULL) && match_esc(match_item->name, name))
+      if ((name != NULL) && match_esc(name, match_item->name))
       {
 	if ((user == NULL && (host == NULL)))
 	  return (conf);
@@ -1593,7 +1593,8 @@ find_matching_name_conf(ConfType type,
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
 
-      if ((name != NULL) && (match_esc(aconf->name, name) == 0))
+      /* XXX wildcard opers?!? -joshk */
+      if ((name != NULL) && match_esc(name, aconf->name))
       {
 	if ((user == NULL && (host == NULL)))
 	  return (conf);
@@ -1611,9 +1612,9 @@ find_matching_name_conf(ConfType type,
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
 
-      if ((name != NULL) && (match_esc(aconf->name, name) == 0))
+      if ((name != NULL) && match_esc(name, aconf->name))
         return(conf);
-      else if ((host != NULL) && (match_esc(aconf->host, host) == 0))
+      else if ((host != NULL) && match_esc(host, aconf->host))
         return(conf);
     }
     break;
