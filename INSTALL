@@ -12,7 +12,8 @@ Config script.  The Makefile has also been updated to include CFLAGS
 defines for popular modern OSes.
 
 0.  Read the ChangeLog file to find out about the exciting new
-features in this version.
+features in this version.  Other good reads are doc/whats-new.txt, BUGS,
+doc/example.conf, and README.FIRST
 
 1.  Run the configure script.  It will create include/setup.h and the
 Makefiles to match your system.  In hybrid-7, the paths are now handled
@@ -110,4 +111,4 @@ recompile all applications that use libcrypto to use the system one.
 This may be kludged in the future.
 
 --------------------------------------------------------------------------------
-$Id: INSTALL,v 7.10 2001/01/07 01:58:41 wcampbel Exp $
+$Id: INSTALL,v 7.11 2001/01/19 00:26:29 wcampbel Exp $

@@ -1,4 +1,4 @@
-$Id: README,v 7.5 2001/01/13 16:33:03 lusky Exp $
+$Id: README,v 7.6 2001/01/19 00:26:37 wcampbel Exp $
 
 A directory of support programs for ircd.
 
@@ -19,3 +19,7 @@ klineParse.c  - cleans out redundant klines
 viconf - edit your conf file without having to chdir su etc. etc.
          also locks the file if file locking is used.
 
+untabify - converts tab characters to a specific number of spaces
+
+rsa_respond - a tool to generate an RSA response to the challenge asked
+              by the server.  This is not completely finished yet.
