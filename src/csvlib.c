@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.16 2003/05/29 03:35:57 db Exp $
+ *  $Id: csvlib.c,v 7.17 2003/05/29 05:16:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -173,7 +173,7 @@ write_conf_line(ConfType type, struct Client *source_p,
   FBFILE *out;
   const char *filename;
 
-  filename = get_conf_name(aconf->status);
+  filename = get_conf_name(type);
   if ((out = fbopen(filename, "a")) == NULL)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
@@ -223,6 +223,18 @@ write_conf_line(ConfType type, struct Client *source_p,
     write_csv_line(out, "%s%s%s%d%s%s%ld",
 		   aconf->name, aconf->reason, aconf->oper_reason, aconf->port,
 		   current_date, get_oper_name(source_p), (long)cur_time);
+    break;
+
+  case GLINE_TYPE:
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+			 "%s has triggered gline for [%s@%s] [%s]",
+			 get_oper_name(source_p),
+			 aconf->name, aconf->host, aconf->reason);
+    ilog(L_TRACE, "%s added G-Line for [%s] [%s]",
+         get_oper_name(source_p), aconf->name, aconf->reason);
+    write_csv_line(out, "%s%s%s%d%s%s%ld",
+		   aconf->name, aconf->host, aconf->reason, "", current_date,
+		   get_oper_name(source_p), (long)aconf->hold);
     break;
 
   default:

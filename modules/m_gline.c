@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.106 2003/05/29 00:59:02 db Exp $
+ *  $Id: m_gline.c,v 1.107 2003/05/29 05:16:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -47,6 +47,7 @@
 #include "parse.h"
 #include "modules.h"
 #include "list.h"
+#include "s_log.h"
 
 #define GLINE_NOT_PLACED     0
 #define GLINE_ALREADY_VOTED -1
@@ -54,26 +55,14 @@
 
 /* internal functions */
 static void set_local_gline(
-                            const char *oper_nick, const char *oper_user,
-                            const char *oper_host, const char *oper_server,
+			    struct Client *source_p,
                             const char *user, const char *host,
                             const char *reason);
 
-static void log_gline_request(const char*,const char*,const char*,
-                              const char* oper_server,
-                              const char *,const char *,const char *);
-
-static void log_gline(struct Client *,struct gline_pending *,
-                      const char *, const char *,const char *,
-                      const char* oper_server,
-                      const char *,const char *,const char *);
-
 
 static int check_majority_gline(struct Client *source_p,
-				const char *oper_nick,
-				const char *oper_user,
-				const char *oper_host,
-				const char *oper_server,
+				const char *oper_nick, const char *oper_user,
+				const char *oper_host, const char *oper_server,
 				const char *user, const char *host,
 				const char *reason);
 
@@ -108,7 +97,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.106 $";
+const char *_version = "$Revision: 1.107 $";
 #endif
 
 /* mo_gline()
@@ -209,9 +198,9 @@ mo_gline(struct Client *client_p, struct Client *source_p,
                        "%s!%s@%s on %s is requesting gline for [%s@%s] [%s]",
                        source_p->name, source_p->username, source_p->host,
                        me.name, user, host, reason);
-  log_gline_request(source_p->name,
-                    (const char *)source_p->username,
-                    source_p->host, me.name, user, host, reason);
+  ilog(L_TRACE, "#gline for %s@%s [%s] requested by %s!%s@%s",
+       user, host, reason, source_p->name, (const char *)source_p->username,
+       source_p->host);
 
   /* If at least 3 opers agree this user should be G lined then do it */
   if (check_majority_gline(source_p, source_p->name,
@@ -345,8 +334,10 @@ ms_gline(struct Client *client_p, struct Client *source_p,
           return;
         }
 
-      log_gline_request(oper_nick,oper_user,oper_host,oper_server,
-			user,host,reason);
+     ilog(L_TRACE, "#gline for %s@%s [%s] requested by %s!%s@%s on %s",
+	  user, host, reason, source_p->name, (const char *)source_p->username,
+	  source_p->host, oper_server);
+
       
       sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "%s!%s@%s on %s is requesting gline for [%s@%s] [%s]",
@@ -438,10 +429,7 @@ invalid_gline(struct Client *source_p, const char *luser, const char *lhost,
 
 /* set_local_gline()
  *
- * inputs	- pointer to oper nick
- * 		- pointer to oper username
- * 		- pointer to oper host
- *		- pointer to oper server
+ * inputs	- pointer to client struct of oper
  *		- pointer to victim user
  *		- pointer to victim host
  *		- pointer reason
@@ -449,15 +437,17 @@ invalid_gline(struct Client *source_p, const char *luser, const char *lhost,
  * side effects	-
  */
 static void
-set_local_gline(const char *oper_nick, const char *oper_user, const char *oper_host,
-                const char *oper_server, const char *user, const char *host,
-                const char *reason)
+set_local_gline(struct Client *source_p,
+		const char *user, const char *host, const char *reason)
 {
   char buffer[IRCD_BUFSIZE];
   struct ConfItem *aconf;
   const char *current_date;
+  time_t cur_time;
 
-  current_date = smalldate(0);
+  set_time();
+  cur_time = CurrentTime;
+  current_date = smalldate(cur_time);
 
   aconf = make_conf(CONF_KILL);
 
@@ -469,167 +459,9 @@ set_local_gline(const char *oper_nick, const char *oper_user, const char *oper_h
   aconf->hold = CurrentTime + ConfigFileEntry.gline_time;
 
   dlinkAdd(aconf, make_dlink_node(), &glines);
-
-  sendto_realops_flags(UMODE_ALL, L_ALL,
-		       "%s!%s@%s on %s has triggered gline for [%s@%s] [%s]",
-		       oper_nick, oper_user, oper_host, oper_server,
-		       user, host, reason);
+  
+  write_conf_line(GLINE_TYPE, source_p, aconf, current_date, cur_time);
   check_klines();
-}
-
-/*
- * log_gline_request()
- *
- */
-static void
-log_gline_request(const char *oper_nick, const char *oper_user,
-                  const char *oper_host, const char* oper_server,
-                  const char *user, const char *host, const char *reason)
-{
-  char buffer[2 * BUFSIZE];
-  char filenamebuf[PATH_MAX + 1];
-  static char timebuffer[MAX_DATE_STRING];
-  struct tm *tmptr;
-  FBFILE *out;
-
-  if (ConfigFileEntry.glinefile == NULL)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem opening glinefile");
-    return;
-  }
-
-  ircsprintf(filenamebuf, "%s.%s",
-             ConfigFileEntry.glinefile, small_file_date(0));
-
-  if ((out = fbopen(filenamebuf, "+a")) == NULL)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem opening %s: %s",
-                         filenamebuf, strerror(errno));
-    return;
-  }
-
-  tmptr = localtime((const time_t *)&CurrentTime);
-  strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
-
-  ircsprintf(buffer, "#Gline for %s@%s [%s] requested by %s!%s@%s on %s at %s\n",
-             user, host, reason, oper_nick, oper_user, oper_host, oper_server,
-             timebuffer);
-
-  if (fbputs(buffer, out) == -1)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem writing to %s (%s)",
-                         filenamebuf, strerror(errno));
-  }
-
-  fbclose(out);
-}
-
-/*
- * log_gline()
- *
- */
-static void
-log_gline(struct Client *source_p,
-	  struct gline_pending *gline_pending_ptr,
-	  const char *oper_nick, const char *oper_user, const char *oper_host,
-	  const char *oper_server, const char *user, const char *host,
-	  const char *reason)
-{
-  char         buffer[2*BUFSIZE];
-  char         filenamebuf[PATH_MAX + 1];
-  static  char timebuffer[MAX_DATE_STRING + 1];
-  struct tm*   tmptr;
-  FBFILE       *out;
-
-  if (ConfigFileEntry.glinefile == NULL)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem opening glinefile.");
-    return;
-  }
-
-  ircsprintf(filenamebuf, "%s.%s", 
-             ConfigFileEntry.glinefile, small_file_date(0));
-
-  if ((out = fbopen(filenamebuf, "a")) == NULL)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-			   "*** Problem opening %s",filenamebuf);
-      return;
-    }
-
-  tmptr = localtime((const time_t*)&CurrentTime);
-  strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
-
-  ircsprintf(buffer,"#Gline for %s@%s %s added by the following\n",
-                   user,host,timebuffer);
-
-  if (fbputs(buffer,out) == -1)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-			   "*** Problem writing to %s",filenamebuf);
-      fbclose(out);
-      return;
-    }
-
-  ircsprintf(buffer, "#%s!%s@%s on %s [%s]\n",
-                   gline_pending_ptr->oper_nick1,
-                   gline_pending_ptr->oper_user1,
-                   gline_pending_ptr->oper_host1,
-                   gline_pending_ptr->oper_server1,
-                   (gline_pending_ptr->reason1)?
-                   (gline_pending_ptr->reason1):"No reason");
-
-  if (fbputs(buffer,out) == -1)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem writing to %s",filenamebuf);
-      return;
-    }
-
-  ircsprintf(buffer, "#%s!%s@%s on %s [%s]\n",
-                   gline_pending_ptr->oper_nick2,
-                   gline_pending_ptr->oper_user2,
-                   gline_pending_ptr->oper_host2,
-                   gline_pending_ptr->oper_server2,
-                   (gline_pending_ptr->reason2)?
-                   (gline_pending_ptr->reason2):"No reason");
-
-  if (fbputs(buffer,out) == -1)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem writing to %s",filenamebuf);
-      fbclose(out);
-      return;
-    }
-
-  ircsprintf(buffer, "#%s!%s@%s on %s [%s]\n",
-                   oper_nick,
-                   oper_user,
-                   oper_host,
-                   oper_server,
-                   (reason)?reason:"No reason");
-
-  if (fbputs(buffer,out) == -1)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem writing to %s",filenamebuf);
-      fbclose(out);
-      return;
-    }
-
-  ircsprintf(buffer, "\"%s\",\"%s\",\"%s %s\",\"%s\",%lu\n",
-	     user,
-	     host,
-	     reason,
-	     timebuffer,
-	     oper_nick,
-	     (unsigned long) CurrentTime);
-
-  if (fbputs(buffer,out) == -1)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem writing to %s",filenamebuf);
-      fbclose(out);
-      return;
-    }
-
-  fbclose(out);
 }
 
 
@@ -741,13 +573,8 @@ check_majority_gline(struct Client *source_p, const char *oper_nick,
 	  return (GLINE_ALREADY_VOTED);
 	}
 
-	log_gline(source_p,gline_pending_ptr,
-		  oper_nick,oper_user,oper_host,oper_server,
-		  user,host,reason);
-
 	/* trigger the gline using the original reason --fl */
-	set_local_gline(oper_nick, oper_user, oper_host, oper_server,
-			user, host, gline_pending_ptr->reason1);
+	set_local_gline(source_p, user, host, gline_pending_ptr->reason1);
 	cleanup_glines(NULL);
 	return (GLINE_PLACED);
       }
