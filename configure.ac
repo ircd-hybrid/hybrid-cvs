@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.73 2003/06/27 07:35:31 joshk Exp $
+dnl $Id: configure.ac,v 7.74 2003/06/28 18:01:51 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.73 2003/06/27 07:35:31 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.74 2003/06/28 18:01:51 joshk Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -396,8 +396,6 @@ AC_LINK_IFELSE(
 
 CFLAGS=$save_CFLAGS
 
-AC_CHECK_FUNCS([lrand48 srand48])
-
 else
 
 dnl Better than nothing. The more complicated test above probably fixes powerpc,
@@ -444,7 +442,7 @@ AC_CHECK_TYPE([sa_family_t], [],
 AC_CHECK_TYPES([uintptr_t])
 
 dnl check for various functions...
-AC_CHECK_FUNCS([socketpair basename mmap snprintf vsnprintf])
+AC_CHECK_FUNCS([socketpair basename mmap snprintf vsnprintf lrand48 srand48 strtok_r])
 
 if test "$ac_cv_func_snprintf" = no -o "$ac_cv_func_vsnprintf" = no; then
 	SNPRINTF_C="snprintf.c"

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.h,v 7.43 2003/06/13 07:40:29 joshk Exp $
+ *  $Id: irc_string.h,v 7.44 2003/06/28 18:01:54 joshk Exp $
  */
 
 #ifndef INCLUDED_irc_string_h
@@ -104,7 +104,9 @@ const char* myctime(time_t);
 
 #define EmptyString(x) (!(x) || (*(x) == '\0'))
 
+#ifndef HAVE_STRTOK_R
 char*       strtoken(char** save, char* str, const char* fs);
+#endif
 
 /*
  * character macros

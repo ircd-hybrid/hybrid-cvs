@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.15 2003/06/22 00:52:54 joshk Exp $
+ * $Id: stdinc.h,v 1.16 2003/06/28 18:01:54 joshk Exp $
  *
  */
 
@@ -48,10 +48,21 @@
 # endif 
 #endif  
 
+#ifdef HAVE_STRTOK_R
+# define strtoken(x, y, z) strtok_r(y, z, x)
+#endif
+
 #include <sys/types.h>
 
 #ifdef HAVE_STDDEF_H
-#include <stddef.h>
+# include <stddef.h>
+#else /* This is basically what stddef.h provides on most systems */
+# ifndef NULL
+#  define NULL ((void*)0)
+# endif
+# ifndef offsetof
+#  define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+# endif
 #endif
 
 #ifdef HAVE_CRYPT_H
@@ -62,9 +73,11 @@
 #include <assert.h>
 #include <time.h>
 #include <fcntl.h>
+
 #ifdef HAVE_LIBGEN_H
 #include <libgen.h>
 #endif
+
 #include <stdarg.h>
 #include <signal.h>
 #include <dirent.h>
