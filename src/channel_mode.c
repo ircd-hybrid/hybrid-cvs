@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.112 2003/06/08 12:33:46 michael Exp $
+ *  $Id: channel_mode.c,v 7.113 2003/06/08 14:38:59 michael Exp $
  */
 
 #include "stdinc.h"
@@ -295,16 +295,17 @@ del_id(struct Channel *chptr, const char *banid, int type)
 }
 
 void
-change_channel_membership(struct Channel *chptr, struct Client *client_p,
-                          unsigned int add_flag, unsigned int del_flag)
+change_channel_membership(struct Membership *member,
+                          unsigned int add_flag,
+                          unsigned int del_flag)
 {
-  struct Membership *ms;
+  assert(member != NULL);
 
-  if ((ms = find_channel_link(client_p, chptr)) != NULL)
-  {
-    ms->flags |=  add_flag;
-    ms->flags &= ~del_flag;
-  }
+  if (member == NULL)
+    return;
+
+  member->flags |=  add_flag;
+  member->flags &= ~del_flag;
 }
 
 static const struct mode_letter
@@ -1031,7 +1032,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
   int i;
   char *opnick;
   struct Client *targ_p;
-  struct Membership *ms;
+  struct Membership *member;
 
   if (alev < CHACCESS_CHANOP)
   {
@@ -1064,7 +1065,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
   if (!IsClient(targ_p))
     return;
 
-  if ((ms = find_channel_link(targ_p, chptr)) == NULL)
+  if ((member = find_channel_link(targ_p, chptr)) == NULL)
   {
     if (!(*errors & SM_ERR_NOTONCHANNEL))
       sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL), me.name,
@@ -1077,9 +1078,9 @@ chm_op(struct Client *client_p, struct Client *source_p,
     return;
 
   /* no redundant mode changes */
-  if (dir == MODE_ADD &&  has_member_flags(ms, CHFL_CHANOP))
+  if (dir == MODE_ADD &&  has_member_flags(member, CHFL_CHANOP))
     return;
-  if (dir == MODE_DEL && !has_member_flags(ms, CHFL_CHANOP))
+  if (dir == MODE_DEL && !has_member_flags(member, CHFL_CHANOP))
     return;
 
   if (dir == MODE_ADD)
@@ -1103,7 +1104,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
 
-    change_channel_membership(chptr, targ_p, CHFL_CHANOP, CHFL_DEOPPED);
+    change_channel_membership(member, CHFL_CHANOP, CHFL_DEOPPED);
   }
   else
   {
@@ -1126,7 +1127,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
 
-    change_channel_membership(chptr, targ_p, 0, CHFL_CHANOP);
+    change_channel_membership(member, 0, CHFL_CHANOP);
   }
 }
 
@@ -1139,7 +1140,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
   int i;
   char *opnick;
   struct Client *targ_p;
-  struct Membership *ms;
+  struct Membership *member;
 
   if (alev < CHACCESS_CHANOP)
   {
@@ -1161,7 +1162,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
   if (!IsClient(targ_p))
     return;
 
-  if ((ms = find_channel_link(targ_p, chptr)) == NULL)
+  if ((member = find_channel_link(targ_p, chptr)) == NULL)
   {
     if (!(*errors & SM_ERR_NOTONCHANNEL))
       sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL), me.name,
@@ -1174,9 +1175,9 @@ chm_voice(struct Client *client_p, struct Client *source_p,
     return;
 
   /* no redundant mode changes */
-  if (dir == MODE_ADD &&  has_member_flags(ms, CHFL_VOICE))
+  if (dir == MODE_ADD &&  has_member_flags(member, CHFL_VOICE))
     return;
-  if (dir == MODE_DEL && !has_member_flags(ms, CHFL_VOICE))
+  if (dir == MODE_DEL && !has_member_flags(member, CHFL_VOICE))
     return;
 
   if (dir == MODE_ADD)
@@ -1200,8 +1201,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
 
-    change_channel_membership(chptr, targ_p, CHFL_VOICE, 0);
-
+    change_channel_membership(member, CHFL_VOICE, 0);
   }
   else
   {
@@ -1224,7 +1224,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
 
-    change_channel_membership(chptr, targ_p, 0, CHFL_VOICE);
+    change_channel_membership(member, 0, CHFL_VOICE);
   }
 }
 
@@ -1373,6 +1373,7 @@ struct ChannelMode
                 const char *chname);
   void *d;
 };
+
 /* *INDENT-OFF* */
 static struct ChannelMode ModeTable[255] =
 {
@@ -1447,16 +1448,16 @@ static struct ChannelMode ModeTable[255] =
 static int
 get_channel_access(struct Client *source_p, struct Channel *chptr)
 {
-  struct Membership *ms;
+  struct Membership *member;
 
   /* Let hacked servers in for now... */
   if (!MyClient(source_p))
     return(CHACCESS_CHANOP);
 
-  if ((ms = find_channel_link(source_p, chptr)) == NULL)
+  if ((member = find_channel_link(source_p, chptr)) == NULL)
     return(CHACCESS_NOTONCHAN);
 
-  if (has_member_flags(ms, CHFL_CHANOP))
+  if (has_member_flags(member, CHFL_CHANOP))
     return(CHACCESS_CHANOP);
 
   return(CHACCESS_PEON);

@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.41 2003/06/01 08:48:33 michael Exp $
+ *   $Id: m_opme.c,v 1.42 2003/06/08 14:38:56 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -56,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 
 static int
 chan_is_opless(struct Channel *chptr)
@@ -80,6 +80,7 @@ mo_opme(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
   struct Channel *chptr;
+  struct Membership *member;
 
   /* admins only */
   if (!IsAdmin(source_p))
@@ -98,21 +99,21 @@ mo_opme(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (!IsMember(source_p, chptr))
+  if ((member = find_channel_link(source_p, chptr)) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOTONCHANNEL),
                me.name, source_p->name, parv[1]);
     return;
   }
 
-  if (!chan_is_opless(chptr))
+  if (chan_is_opless(chptr) == 0)
   {
     sendto_one(source_p, ":%s NOTICE %s :%s Channel is not opless",
                me.name, source_p->name, parv[1]);
     return;
   }
 
-  change_channel_membership(chptr, source_p, CHFL_CHANOP, CHFL_DEOPPED);
+  change_channel_membership(member, CHFL_CHANOP, CHFL_DEOPPED);
 
   if (parv[1][0] == '&')
   {
@@ -132,6 +133,7 @@ mo_opme(struct Client *client_p, struct Client *source_p,
                   me.name, parv[1], source_p->name, source_p->username,
                   source_p->host);
   }
+
   ilog(L_NOTICE, "OPME called for [%s] by %s!%s@%s",
        parv[1], source_p->name, source_p->username,
        source_p->host);

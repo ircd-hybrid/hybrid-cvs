@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.346 2003/06/07 17:28:02 michael Exp $
+ *  $Id: s_serv.c,v 7.347 2003/06/08 14:39:00 michael Exp $
  */
 
 #include "stdinc.h"
@@ -29,6 +29,7 @@
 #endif
 #include "tools.h"
 #include "s_serv.h"
+#include "channel.h"
 #include "channel_mode.h"
 #include "class.h"
 #include "client.h"
