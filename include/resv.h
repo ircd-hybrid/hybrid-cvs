@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: resv.h,v 1.1 2001/06/28 22:57:00 leeh Exp $
+ *   $Id: resv.h,v 1.2 2001/07/03 11:01:09 leeh Exp $
  */
 #ifndef INCLUDED_resv_h
 #define INCLUDED_resv_h
@@ -32,6 +32,7 @@ struct Resv
   struct Resv *hnext;
 
   char	name[CHANNELLEN];
+  char	*reason;
   int	type;
   int	conf;
 };
@@ -41,7 +42,7 @@ struct Resv
 
 extern struct Resv *ResvList;
 
-extern struct Resv *create_resv(char *, int, int);
+extern struct Resv *create_resv(char *, char *, int, int);
 extern int delete_resv(struct Resv *);
 extern int clear_conf_resv();
 extern int find_resv(char *name, int type);
