@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.253 2002/04/27 20:36:20 db Exp $
+ *  $Id: client.c,v 7.254 2002/05/13 04:04:16 androsyn Exp $
  */
 
 #include "tools.h"
@@ -202,7 +202,6 @@ void _free_client(struct Client* client_p)
 
       if (client_p->localClient->fd >= 0)
 	fd_close(client_p->localClient->fd);
-
 #ifndef NDEBUG
       mem_frob(client_p->localClient, sizeof(struct LocalUser));
 #endif
@@ -1095,6 +1094,7 @@ static void exit_one_client(struct Client *client_p,
 #endif
   /* add to dead client dlist */
   lp = make_dlink_node();
+  SetDead(source_p);
   dlinkAdd(source_p, lp, &dead_list);
 }
 
