@@ -1,3 +1,10 @@
+*** 20001213_1 by db
+- msg_tree_root has to be zero'ed in clear_msg_tree() or it causes
+  odd problems esp. on redhat linux for some reason. NO idea why
+  but the stray pointers left in it caused it to core nicely.
+
+
+
 *** 20001212_9 by db
 OH WHAT A BLASTED PITA
 - Ok... a CONNECTING server must put the server its trying to connect to
@@ -2474,7 +2481,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.809 2000/12/13 01:31:43 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.810 2000/12/13 05:37:45 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
