@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.119 2002/01/05 09:15:15 a1kmm Exp $
+ *  $Id: parse.c,v 7.120 2002/02/02 15:25:44 leeh Exp $
  */
 
 #include <assert.h>
@@ -110,7 +110,10 @@ string_to_array(char *string, char *parv[MAXPARA])
     if(*buf == '\0')
       return x;
   } while(x < MAXPARA - 1);
-  
+
+  if(*p == ':')
+    p++;
+
   parv[x++] = p;
   parv[x] = NULL;
   return x;
