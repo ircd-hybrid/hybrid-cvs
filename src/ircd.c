@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.170 2001/07/20 03:51:07 wcampbel Exp $
+ * $Id: ircd.c,v 7.171 2001/07/26 15:24:04 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -117,6 +117,7 @@ struct Client me;               /* That's me */
 struct LocalUser meLocalUser;	/* That's also part of me */
 
 struct Client* GlobalClientList = 0; /* Pointer to beginning of Client list */
+struct Client* GlobalServerList = 0; /* Global list of servers */
 
 struct JupedChannel *JupedChannelList = 0;
 
@@ -523,6 +524,7 @@ int main(int argc, char *argv[])
  serv_list.head = serv_list.tail = NULL;
  
  GlobalClientList = &me;       /* Pointer to beginning of Client list */
+ GlobalServerList = &me;
  memset((void *)&Count, 0, sizeof(Count));
  memset((void *)&server_state, 0, sizeof(server_state));
 

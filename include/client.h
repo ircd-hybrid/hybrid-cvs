@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.120 2001/07/17 21:05:59 leeh Exp $
+ * $Id: client.h,v 7.121 2001/07/26 15:23:53 leeh Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -137,6 +137,9 @@ struct Client
 	
   struct Client*    lnext;      /* Used for Server->servers/users */
   struct Client*    lprev;      /* Used for Server->servers/users */
+
+  struct Client*    servnext;   /* GlobalServerList */
+  struct Client*    servprev;   /* GlobalServerList */
 
   struct User*      user;       /* ...defined, if this is a User */
   struct Server*    serv;       /* ...defined, if this is a server */

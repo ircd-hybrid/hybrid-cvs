@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.60 2001/06/23 13:02:05 leeh Exp $
+ *   $Id: m_server.c,v 1.61 2001/07/26 15:24:02 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -432,6 +432,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
   Count.server++;
 
   add_client_to_list(target_p);
+  add_server_to_list(target_p);
   add_to_client_hash_table(target_p->name, target_p);
   add_client_to_llist(&(target_p->servptr->serv->servers), target_p);
 
