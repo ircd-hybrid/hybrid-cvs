@@ -1,3 +1,20 @@
+androsyn    2001/12/10 02:15:15 EST	(20011210_9)
+
+  Modified files:
+    src                  send.c 
+    include              fdlist.h 
+  Log:
+  So the last commit to fdlist.h was misguided...
+  
+  We now go into send_queued_write() directly rather than trying to go into
+  comm_setselect() to do it first...This seems to make sigio work right..
+  
+  Revision  Changes    Path
+  7.23      +0 -1      ircd-hybrid-7/include/fdlist.h
+  7.165     +0 -16     ircd-hybrid-7/src/send.c
+
+
+
 androsyn    2001/12/10 01:57:45 EST	(20011210_8)
 
   Modified files:
@@ -18237,4 +18254,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3133 2001/12/10 06:57:50 androsyn Exp $
+$Id: ChangeLog,v 7.3134 2001/12/10 07:15:21 androsyn Exp $
