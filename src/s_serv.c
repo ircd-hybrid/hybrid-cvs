@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.374 2003/09/18 09:14:39 bill Exp $
+ *  $Id: s_serv.c,v 7.375 2003/09/19 22:13:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -37,6 +37,7 @@
 #include "fdlist.h"
 #include "hash.h"
 #include "irc_string.h"
+#include "inet_misc.h"
 #include "sprintf_irc.h"
 #include "ircd.h"
 #include "ircd_defs.h"
@@ -57,10 +58,6 @@
 #include "hook.h"
 
 #define MIN_CONN_FREQ 300
-
-#ifndef INADDR_NONE
-#define INADDR_NONE ((unsigned int) 0xffffffff)
-#endif
 
 struct Client *uplink  = NULL;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.211 2003/09/15 23:24:48 metalrock Exp $
+ *  $Id: s_bsd.c,v 7.212 2003/09/19 22:13:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -40,6 +40,7 @@
 #include "numeric.h"
 #include "packet.h"
 #include "irc_res.h"
+#include "inet_misc.h"
 #include "restart.h"
 #include "s_auth.h"
 #include "s_conf.h"
@@ -51,10 +52,6 @@
 
 #ifndef IN_LOOPBACKNET
 #define IN_LOOPBACKNET        0x7f
-#endif
-
-#ifndef INADDR_NONE
-#define INADDR_NONE ((unsigned int) 0xffffffff)
 #endif
 
 const char* const NONB_ERROR_MSG   = "set_non_blocking failed for %s:%s"; 

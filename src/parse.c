@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.180 2003/07/02 17:32:26 michael Exp $
+ *  $Id: parse.c,v 7.181 2003/09/19 22:13:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -184,7 +184,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
   unsigned int i = 0;
   int paramcount;
   int mpara = 0;
-  struct Message *mptr;
+  struct Message *mptr = NULL;
 
   if (IsDefunct(client_p))
     return;

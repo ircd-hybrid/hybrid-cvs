@@ -2,7 +2,7 @@
  *	and definitions required to build ircd on some		*
  *	exotic platforms.					*
  *								*
- *	$Id: inet_misc.h,v 7.5 2003/06/17 20:05:08 joshk Exp $							*
+ *	$Id: inet_misc.h,v 7.6 2003/09/19 22:13:11 bill Exp $							*
  *
  * Copyright (c) 1980, 1983, 1988, 1993
  *      The Regents of the University of California.  All rights reserved.
@@ -105,6 +105,10 @@
 #ifndef NI_DGRAM
 #define NI_DGRAM        0x00000010
 #endif /* NI_DGRAM */
+
+#ifndef INADDR_NONE
+#define INADDR_NONE ((unsigned int) 0xffffffff)
+#endif /* INADDR_NONE */
 
 #ifndef HAVE_STRUCT_SOCKADDR_STORAGE
 #ifdef SOCKADDR_IN_HAS_LEN /* BSD style sockaddr_storage for BSD style
