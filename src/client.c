@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.142 2001/02/26 13:21:11 db Exp $
+ *  $Id: client.c,v 7.143 2001/02/28 05:34:37 androsyn Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1006,6 +1006,9 @@ const char* get_client_name(struct Client* client, int showip)
  */
 const char* get_client_host(struct Client* client)
 {
+  assert(0 != client);
+  return get_client_name(client, HIDE_IP);
+#if 0
   static char nbuf[HOSTLEN * 2 + USERLEN + 5];
   
   assert(0 != client);
@@ -1021,6 +1024,7 @@ const char* get_client_host(struct Client* client)
                  HOSTLEN, client->host);
     }
   return nbuf;
+#endif
 }
 
 void free_exited_clients( void )
