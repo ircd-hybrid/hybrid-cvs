@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.22 2001/01/01 21:50:31 davidt Exp $
+ * $Id: m_cburst.c,v 1.23 2001/01/01 21:52:16 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -117,7 +117,7 @@ int     ms_cburst(struct Client *cptr,
       else if(nick && *nick=='!')
       {
         sendto_one(sptr, form_str(ERR_NOSUCHCHANNEL),
-                   me.name, nick, name);
+                   me.name, nick+1, name);
         return 0;
       }
     }
