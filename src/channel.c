@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.370 2003/05/12 08:09:33 michael Exp $
+ *  $Id: channel.c,v 7.371 2003/05/12 08:34:23 michael Exp $
  */
 
 #include "stdinc.h"
@@ -131,9 +131,6 @@ add_user_to_channel(struct Channel *chptr, struct Client *who, int flags)
 
     chptr->users++;
 
-    if (MyClient(who))
-      chptr->locusers++;
-
     dlinkAdd(chptr, make_dlink_node(), &who->user->channel);
     who->user->joined++;
   }
@@ -205,12 +202,6 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
 	break;
       }
     }
-  }
-
-  if (MyClient(who))
-  {
-    if (chptr->locusers > 0)
-      chptr->locusers--;
   }
 
   return(sub1_from_channel(chptr));
@@ -788,6 +779,7 @@ check_banned(struct Channel *chptr, char *s, char *s2)
   DLINK_FOREACH(ban, chptr->banlist.head)
   {
     actualBan = ban->data;
+
     if (match(actualBan->banstr,  s) || 
     	match(actualBan->banstr, s2) ||
         match_cidr(actualBan->banstr, s2))
@@ -1022,8 +1014,8 @@ check_spambot_warning(struct Client *source_p, const char *name)
 
 /* check_splitmode()
  *
- * input	- NONE
- * output	- NONE
+ * inputs       - NONE
+ * output       - NONE
  * side effects - compares usercount and servercount against their split
  *                values and adjusts splitmode accordingly
  */
@@ -1057,8 +1049,8 @@ check_splitmode(void *unused)
 
 /* allocate_topic()
  *
- * input	- Channel to allocate a new topic for
- * output	- Success or failure
+ * inputs       - Channel to allocate a new topic for
+ * output       - Success or failure
  * side effects - Allocates a new topic
  */
 int

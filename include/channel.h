@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.135 2003/05/12 08:09:26 michael Exp $
+ *  $Id: channel.h,v 7.136 2003/05/12 08:34:22 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -42,7 +42,6 @@ struct Mode
 };
 
 /* channel structure */
-
 struct Channel
 {
   dlink_node node;
@@ -53,7 +52,6 @@ struct Channel
   char            *topic_info;
   time_t          topic_time;
   int             users;      /* user count */
-  int             locusers;   /* local user count */
   unsigned long   lazyLinkChannelExists;
   time_t          last_knock;           /* don't allow knock to flood */
 
@@ -81,47 +79,37 @@ struct Channel
   int             received_number_of_privmsgs;
   int             flood_noticed;
 
-  time_t          channelts;
-  char            chname[CHANNELLEN+1];
+  time_t channelts;
+  char chname[CHANNELLEN + 1];
 };
 
 extern dlink_list global_channel_list;
 
 extern void init_channels(void);
-extern int     can_send (struct Channel *chptr, struct Client *who);
-extern int     is_banned (struct Channel *chptr, struct Client *who);
-
-extern int     can_join(struct Client *source_p, struct Channel *chptr,
-                        char *key);
+extern int can_send (struct Channel *chptr, struct Client *who);
+extern int is_banned (struct Channel *chptr, struct Client *who);
+extern int can_join(struct Client *source_p, struct Channel *chptr, char *key);
 extern int is_chan_op(struct Channel *chptr,struct Client *who);
 extern int is_voiced(struct Channel *chptr,struct Client *who);
 
 #define find_user_link(list,who) who!=NULL?dlinkFind(list,who):NULL
 #define FIND_AND_DELETE(list,who) who!=NULL?dlinkFindDelete(list,who)
 
-extern void    add_user_to_channel(struct Channel *chptr,
-				   struct Client *who, int flags);
-extern int     remove_user_from_channel(struct Channel *chptr,
-					struct Client *who);
+extern void add_user_to_channel(struct Channel *chptr, struct Client *who, int flags);
+extern int remove_user_from_channel(struct Channel *chptr, struct Client *who);
 
-extern int     check_channel_name(const char *name);
-
-extern void    channel_member_names( struct Client *source_p,
+extern int check_channel_name(const char *name);
+extern void channel_member_names(struct Client *source_p,
 				     struct Channel *chptr,
 				     char *name_of_channel,
                                      int show_eon);
 extern const char *channel_chanop_or_voice(struct Channel *, struct Client *);
+extern void add_invite(struct Channel *chptr, struct Client *who);
+extern void del_invite(struct Channel *chptr, struct Client *who);
+extern void send_channel_modes (struct Client *, struct Channel *);
+extern void channel_modes(struct Channel *chptr, struct Client *who, char *, char *);
 
-extern void    add_invite(struct Channel *chptr, struct Client *who);
-extern void    del_invite(struct Channel *chptr, struct Client *who);
-
-extern void    send_channel_modes (struct Client *, struct Channel *);
-extern void    channel_modes(struct Channel *chptr, struct Client *who,
-                             char *, char *);
-
-extern void    check_spambot_warning(struct Client *source_p, const
-                                     char *name);
-
+extern void check_spambot_warning(struct Client *source_p, const char *name);
 extern void check_splitmode(void *);
 
 /*
