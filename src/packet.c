@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.50 2001/05/23 20:59:15 davidt Exp $
+ *   $Id: packet.c,v 7.51 2001/05/24 22:42:08 ejb Exp $
  */ 
 
 #include <stdio.h>
@@ -185,7 +185,7 @@ read_packet(int fd, void *data)
   if(IsDead(client_p))return;
 
   if (length <= 0) {
-    if(errno == EAGAIN) {
+    if(ignoreErrno(errno)) {
       comm_setselect(fd_r, FDLIST_IDLECLIENT, COMM_SELECT_READ,
       		read_packet, client_p, 0);
       return;

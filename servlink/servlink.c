@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.c,v 1.10 2001/05/24 22:25:25 davidt Exp $
+ *   $Id: servlink.c,v 1.11 2001/05/24 22:42:01 ejb Exp $
  */
 
 #include "../include/setup.h"                                                   
@@ -29,7 +29,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
-
+#include <socket.h>
 
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/evp.h>
