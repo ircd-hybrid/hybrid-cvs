@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.102 2001/03/13 20:42:48 fl_ Exp $
+ * $Id: config.h,v 7.103 2001/03/14 18:03:39 fl_ Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -129,13 +129,6 @@
  */
 #define NETWORK_NAME_DEFAULT "EFnet"
 #define NETWORK_DESC_DEFAULT "Eris Free Network"
-
-/*
- * OPER_UMODES - set these to be the initial umodes when OPER'ing
- * These can be over-ridden in the ircd.conf file.
- */
-#define OPER_UMODES   (FLAGS_OPER|FLAGS_WALLOP|FLAGS_SERVNOTICE|\
-                       FLAGS_OPERWALL|FLAGS_LOCOPS)
 
 /* MAXIMUM LINKS - max links for class 0 if no Y: line configured
  *

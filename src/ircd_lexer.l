@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.80 2001/03/13 20:38:24 fl_ Exp $
+ * $Id: ircd_lexer.l,v 1.81 2001/03/14 18:03:41 fl_ Exp $
  */
 
 %option case-insensitive
@@ -226,6 +226,7 @@ path                    { return PATH; }
 max_targets             { return MAX_TARGETS; }
 
 oper_only_umodes        { return OPER_ONLY_UMODES; }
+oper_umodes             { return OPER_UMODES; }
 bots                    { return T_BOTS; }
 cconn                   { return T_CCONN; }
 debug                   { return T_DEBUG; }
