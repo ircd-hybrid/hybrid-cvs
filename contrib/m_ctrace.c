@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ctrace.c,v 1.1.2.1 2003/05/21 23:33:41 db Exp $
+ *  $Id: m_ctrace.c,v 1.1.2.2 2003/05/22 03:15:04 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   hook_del_event("doing_ctrace");
   mod_del_cmd(&ctrace_msgtab);
 }
-const char *_version = "$Revision: 1.1.2.1 $";
+const char *_version = "$Revision: 1.1.2.2 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p);
 
@@ -110,7 +110,7 @@ mo_ctrace(struct Client *client_p, struct Client *source_p,
     target_p = ptr->data;
 
     class_name = get_client_class(target_p);
-    if ((class_name != NULL) && (irccmp(class_name, class_looking_for) == 0))
+    if ((class_name != NULL) && match(class_looking_for, class_name))
       cnt = report_this_status(source_p,target_p);
   }
 
