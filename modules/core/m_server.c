@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.25 2001/01/02 10:06:15 a1kmm Exp $
+ *   $Id: m_server.c,v 1.26 2001/01/03 01:27:28 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -109,6 +109,9 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 			     get_client_name(cptr, TRUE), host);
       return exit_client(cptr, cptr, cptr, "No connect block.");
     }
+
+  /* XXX B0RKED leave until beta-2 */
+#if 0
   /* We have to do this to prevent recently connected servers being
    * dropped by kiddies below by a dormat unregistered connection...
    * Also stops probes to find out which servers are connected.
@@ -124,6 +127,7 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                  get_client_name(cptr, TRUE), host);
     return exit_client(cptr, cptr, cptr, "Invalid host.");
    }
+#endif
   
   if ((acptr = find_server(host)))
     {
