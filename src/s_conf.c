@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.484 2003/10/04 19:31:19 metalrock Exp $
+ *  $Id: s_conf.c,v 7.485 2003/11/23 22:36:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -1367,7 +1367,8 @@ detach_conf(struct Client *client_p, ConfType type)
 
     if (conf->type == type)
     {
-      dlinkDelete(&conf->conf_node, &client_p->localClient->confs);
+      dlinkDelete(ptr, &client_p->localClient->confs);
+      free_dlink_node(ptr);
 
       switch (conf->type)
       {
@@ -1432,7 +1433,8 @@ detach_all_confs(struct Client *client_p)
   {
     conf = ptr->data;
 
-    dlinkDelete(&conf->conf_node, &client_p->localClient->confs);
+    dlinkDelete(ptr, &client_p->localClient->confs);
+    free_dlink_node(ptr);
 
     switch(conf->type)
     {
@@ -1532,7 +1534,7 @@ attach_conf(struct Client *client_p, struct ConfItem *conf)
     match_item->ref_count++;
   }
 
-  dlinkAdd(conf, &conf->conf_node, &client_p->localClient->confs);
+  dlinkAdd(conf, make_dlink_node(), &client_p->localClient->confs);
 
   return(0);
 }

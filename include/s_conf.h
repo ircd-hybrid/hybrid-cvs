@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.268 2003/10/24 11:08:17 michael Exp $
+ *  $Id: s_conf.h,v 7.269 2003/11/23 22:36:53 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -74,7 +74,6 @@ struct ConfItem
 {
   char *name;		/* Primary key */
   dlink_node node;	/* link into known ConfItems of this type */
-  dlink_node conf_node;	/* When linked into a client */
   ConfType type;
 };
 
