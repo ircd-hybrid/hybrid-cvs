@@ -16,12 +16,14 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: numeric.c,v 7.13 2001/01/18 17:32:21 ejb Exp $
+ *   $Id: numeric.c,v 7.14 2001/01/19 07:39:48 ejb Exp $
  */
 
 #include <sys/types.h>
 
 #include <assert.h>
+
+#include "setup.h"
 
 #ifdef USE_GETTEXT
 #include <libintl.h>

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.106 2001/01/18 17:32:20 ejb Exp $
+ * $Id: ircd.c,v 7.107 2001/01/19 07:39:47 ejb Exp $
  */
 
 #include <sys/types.h>
@@ -33,6 +33,8 @@
 #include <pwd.h>
 #include <fcntl.h>
 #include <unistd.h>
+
+#include "setup.h"
 
 #if defined(HAVE_GETOPT_H)
 #include <getopt.h>
@@ -77,7 +79,6 @@
 #include "s_stats.h"
 #include "scache.h"
 #include "send.h"
-#include "setup.h"
 #include "whowas.h"
 #include "modules.h"
 #include "memory.h"
