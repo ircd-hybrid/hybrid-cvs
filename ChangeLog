@@ -1,3 +1,15 @@
+db          2002/09/02 02:34:29 EDT	(20020902_2)
+
+  Modified files:
+    src                  s_conf.c 
+  Log:
+  - ircnet spells it "unauthorized" so I guess we should too.
+  
+  Revision  Changes    Path
+  7.321     +2 -2      ircd-hybrid-7/src/s_conf.c
+
+
+
 db          2002/09/02 02:06:49 EDT	(20020902_1)
 
   Modified files:
@@ -31647,4 +31659,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4008 2002/09/02 06:06:51 db Exp $
+$Id: ChangeLog,v 7.4009 2002/09/02 06:34:31 db Exp $
