@@ -1,3 +1,7 @@
+*** 20001125_3 by toot
+don't need to check if they're an oper in mo_testline
+
+
 *** 20001125_2 by ryan
 
 added RPATH for ircd.rsa (for oper keyfiles)
@@ -735,7 +739,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.580 2000/11/25 17:53:54 ryan Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.581 2000/11/25 18:03:13 toot Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
