@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_restart.c,v 1.25 2003/04/02 11:19:41 michael Exp $
+ *  $Id: m_restart.c,v 1.26 2003/04/16 22:37:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,38 +57,38 @@ _moddeinit(void)
   mod_del_cmd(&restart_msgtab);
 }
 
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
+
 /*
  * mo_restart
  *
  */
-static void mo_restart(struct Client *client_p,
-                      struct Client *source_p,
-                      int parc,
-                      char *parv[])
+static void mo_restart(struct Client *client_p, struct Client *source_p,
+                       int parc, char *parv[])
 {
   char buf[BUFSIZE]; 
   dlink_node *ptr;
   struct Client *target_p;
-  
+#if 0
   if (!MyClient(source_p) || !IsOper(source_p))
-    {
-      sendto_one(source_p, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
-      return;
-    }
-
+  {
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               me.name, parv[0]);
+    return;
+  }
+#endif
   if (!IsOperDie(source_p))
-    {
-      sendto_one(source_p, ":%s NOTICE %s :You need die = yes;",
-                 me.name, parv[0]);
-      return;
-    }
+  {
+    sendto_one(source_p, ":%s NOTICE %s :You need die = yes;",
+               me.name, source_p->name);
+    return;
+  }
 
   if (parc < 2)
   {
     sendto_one(source_p, ":%s NOTICE %s :Need server name /restart %s",
- 	       me.name, source_p->name, me.name);
+               me.name, source_p->name, me.name);
     return;
   }
   else
@@ -96,19 +96,17 @@ static void mo_restart(struct Client *client_p,
     if (irccmp(parv[1], me.name))
     {
       sendto_one(source_p, ":%s NOTICE %s :Mismatch on /restart %s",
-		 me.name, source_p->name, me.name);
+                 me.name, source_p->name, me.name);
       return;
     }
   }
-  
+
   DLINK_FOREACH(ptr, local_client_list.head)
   {
     target_p = ptr->data;
 
-    sendto_one(target_p,
-               ":%s NOTICE %s :Server Restarting. %s",
-	       me.name, target_p->name,
-	       get_client_name(source_p, HIDE_IP));
+    sendto_one(target_p, ":%s NOTICE %s :Server Restarting. %s",
+               me.name, target_p->name, get_client_name(source_p, HIDE_IP));
   }
 
   DLINK_FOREACH(ptr, serv_list.head)
