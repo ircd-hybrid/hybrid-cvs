@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_user.c,v 1.3 2000/11/28 03:54:13 bill Exp $
+ *   $Id: m_user.c,v 1.4 2000/11/29 07:57:57 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -92,31 +92,5 @@ int m_user(struct Client* cptr, struct Client* sptr, int parc, char *parv[])
   server   = (parc < 4 || BadPtr(parv[3])) ? "<noserver>" : parv[3];
   realname = (parc < 5 || BadPtr(parv[4])) ? "<bad-realname>" : parv[4];
   
-  if (ConfigFileEntry.botcheck) {
-  /* Only do bot checks on local connecting clients */
-      if(MyClient(cptr))
-        cptr->isbot = bot_check(host);
-  }
-
   return do_user(parv[0], cptr, sptr, username, host, server, realname);
-}
-
-/**
- ** bot_check(host)
- **   Reject a bot based on a fake hostname...
- **           -Taner
- **/
-static int bot_check(char *host)
-{
-/*
- * Eggdrop Bots:        "USER foo 1 1 :foo"
- * Vlad, Com, joh Bots: "USER foo null null :foo"
- * Annoy/OJNKbots:      "user foo . . :foo"   (disabled)
- * Spambots that are based on OJNK: "user foo x x :foo"
- */
-  if (!strcmp(host,"1")) return 1;
-  if (!strcmp(host,"null")) return 2;
-  if (!strcmp(host, "x")) return 3;
-
-  return 0;
 }

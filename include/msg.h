@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.26 2000/11/27 18:50:29 db Exp $
+ * $Id: msg.h,v 7.27 2000/11/29 07:57:52 db Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -70,6 +70,7 @@ typedef struct MessageTree MESSAGE_TREE;
 #define MSG_DBOP     "DBOP"
 #endif
 
+#define MSG_ACCEPT   "ACCEPT"   /* ACCEPT */
 #define MSG_PRIVMSG  "PRIVMSG"  /* PRIV */
 #define MSG_CBURST   "CBURST"   /* LazyLink channel burst */
 #define MSG_DROP     "DROP"     /* LazyLink channel drop */
