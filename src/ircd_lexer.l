@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.30 2000/12/14 19:59:17 db Exp $
+ * $Id: ircd_lexer.l,v 1.31 2000/12/14 21:55:36 toot Exp $
  */
 
 %option case-insensitive
@@ -154,7 +154,6 @@ vhost		{ return VHOST; }
 warn		{ return WARN; }
 yes		{ return TYES; }
 
-moderate_nickchange     { return MODERATE_NICKCHANGE; }
 failed_oper_notice      { return FAILED_OPER_NOTICE; }
 show_failed_oper_id     { return SHOW_FAILED_OPER_ID; }
 max_nick_changes        { return MAX_NICK_CHANGES; }
