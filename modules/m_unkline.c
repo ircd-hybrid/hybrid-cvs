@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.15 2000/12/22 16:12:47 db Exp $
+ *   $Id: m_unkline.c,v 1.16 2000/12/23 22:12:30 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -418,6 +418,28 @@ static int remove_tkline_match(char *host,char *user)
           kill_list_ptr = kill_list_ptr->next;
         }
     }
+
+  kill_list_ptr = temporary_ip_klines;
+
+  while(kill_list_ptr)
+    {
+      if( !irccmp(kill_list_ptr->host,host)
+          && !irccmp(kill_list_ptr->user,user)) /* match */
+        {
+          if(last_kill_ptr)
+            last_kill_ptr->next = kill_list_ptr->next;
+          else
+            temporary_ip_klines = kill_list_ptr->next;
+          free_conf(kill_list_ptr);
+          return YES;
+        }
+      else
+        {
+          last_kill_ptr = kill_list_ptr;
+          kill_list_ptr = kill_list_ptr->next;
+        }
+    }
+
   return NO;
 }
 
