@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.59 2003/01/27 21:01:05 lusky Exp $
+$Id: Hybrid-team,v 7.60 2003/02/18 02:08:18 lusky Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -60,3 +60,4 @@ previous versions of this ircd and it's ancestors, too many to list
 here.
  
 Send bug fixes/complaints/rotten tomatoes to ircd-hybrid@the-project.org.
+
