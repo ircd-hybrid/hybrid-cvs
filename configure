@@ -2271,6 +2271,8 @@ echo "${ECHO_T}already using newer HPUX" >&6
 		fi
 	;;
 	CYGWIN*)
+		echo "$as_me:$LINENO: result: Cygwin" >&5
+echo "${ECHO_T}Cygwin" >&6
 		CYGWIN=yes
 	;;
 	*)
@@ -4942,13 +4944,10 @@ rm -f conftest.$ac_objext conftest.$ac_ext
 
 fi
 
-echo "$as_me:$LINENO: checking for IPv6 support" >&5
-echo $ECHO_N "checking for IPv6 support... $ECHO_C" >&6
-if test "${have_v6+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
+echo "$as_me:$LINENO: checking for core IPv6 support" >&5
+echo $ECHO_N "checking for core IPv6 support... $ECHO_C" >&6
 
-    cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 /* confdefs.h.  */
 _ACEOF
@@ -4956,14 +4955,13 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #define IN_AUTOCONF
-		#include "include/stdinc.h"
+	#include "include/stdinc.h"
 int
 main ()
 {
 struct sockaddr_in6 s;
-		  struct sockaddr_storage t;
-		  s.sin6_family = 0;
-
+	  struct sockaddr_storage t;
+	  s.sin6_family = 0;
 
   ;
   return 0;
@@ -4982,13 +4980,71 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
 
-		if test "$CYGWIN" = "yes"; then
-			{ echo "$as_me:$LINENO: WARNING: IPv6 support is incomplete in Cygwin - not enabling" >&5
-echo "$as_me: WARNING: IPv6 support is incomplete in Cygwin - not enabling" >&2;}
-			have_v6="no"
-		else
-			have_v6="yes"
-		fi
+	if test "$CYGWIN" = "yes"; then
+		echo "$as_me:$LINENO: result: no, Cygwin's IPv6 is incomplete" >&5
+echo "${ECHO_T}no, Cygwin's IPv6 is incomplete" >&6
+		have_v6=no
+	else
+		have_v6=yes
+
+cat >>confdefs.h <<\_ACEOF
+#define IPV6 1
+_ACEOF
+
+		echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+		echo "$as_me:$LINENO: checking for struct in6addr_any" >&5
+echo $ECHO_N "checking for struct in6addr_any... $ECHO_C" >&6
+		cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#define IN_AUTOCONF
+				#include "include/stdinc.h"
+int
+main ()
+{
+struct in6_addr a = in6addr_any;
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+
+				echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+
+cat >>confdefs.h <<\_ACEOF
+#define NO_IN6ADDR_ANY 1
+_ACEOF
+
+				inet_misc=1
+
+
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+	fi
 
 else
   echo "$as_me: failed program was:" >&5
@@ -4997,18 +5053,6 @@ sed 's/^/| /' conftest.$ac_ext >&5
 have_v6="no"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
-
-fi
-echo "$as_me:$LINENO: result: $have_v6" >&5
-echo "${ECHO_T}$have_v6" >&6
-
-if test "$have_v6" = "yes"; then
-
-cat >>confdefs.h <<\_ACEOF
-#define IPV6 1
-_ACEOF
-
-fi
 
 echo "$as_me:$LINENO: checking for library containing crypt" >&5
 echo $ECHO_N "checking for library containing crypt... $ECHO_C" >&6
@@ -5522,10 +5566,113 @@ fi
 
 
 
+echo "$as_me:$LINENO: checking for strlcpy" >&5
+echo $ECHO_N "checking for strlcpy... $ECHO_C" >&6
+save_CFLAGS=$CFLAGS
+CFLAGS="$CFLAGS -Wimplicit -Werror"
+
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <string.h>
+		#include <stdlib.h>
+int
+main ()
+{
+char *a = malloc(6), *b = strdup("hello");
+		strlcpy(a, b, 6);
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_STRLCPY 1
+_ACEOF
+
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+
+echo "$as_me:$LINENO: checking for strlcat" >&5
+echo $ECHO_N "checking for strlcat... $ECHO_C" >&6
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <string.h>
+		#include <stdlib.h>
+int
+main ()
+{
+char *a = malloc(6), *b = strdup("hello");
+		strlcat(a, b, 6);
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_STRLCAT 1
+_ACEOF
+
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+
+CFLAGS=$save_CFLAGS
 
 
-
-for ac_func in strlcat strlcpy basename
+for ac_func in basename
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 echo "$as_me:$LINENO: checking for $ac_func" >&5
@@ -7773,8 +7920,8 @@ echo "${ECHO_T}$ac_cv_func_select" >&6
 if test $ac_cv_func_select = yes; then
   SELECT_TYPE="select"
 else
-  { { echo "$as_me:$LINENO: error: Couldn't find anything to use for IO loop! Report to hybrid@the-project.org." >&5
-echo "$as_me: error: Couldn't find anything to use for IO loop! Report to hybrid@the-project.org." >&2;}
+  { { echo "$as_me:$LINENO: error: Couldn't find anything to use for IO loop. Is your C environment POSIXly sane?" >&5
+echo "$as_me: error: Couldn't find anything to use for IO loop. Is your C environment POSIXly sane?" >&2;}
    { (exit 1); exit 1; }; }
 
 fi
@@ -7839,10 +7986,11 @@ if test "${enable_profile+set}" = set; then
   enableval="$enable_profile"
 
 	profile="yes"
-	if test "$GCC" = yes; then
+	if test "$ac_cv_c_compiler_gnu" = yes; then
 		IRC_CFLAGS="$IRC_CFLAGS -pg -a -static"
 	else
-		echo "Warning: profile builds only work with gcc, ignoring"
+		{ echo "$as_me:$LINENO: WARNING: profile builds only work with gcc, ignoring" >&5
+echo "$as_me: WARNING: profile builds only work with gcc, ignoring" >&2;}
 	fi
 
 

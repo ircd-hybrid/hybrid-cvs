@@ -183,6 +183,9 @@
 /* Disable the block allocator. */
 #undef NOBALLOC
 
+/* Define to 1 if your system has no in6addr_any. */
+#undef NO_IN6ADDR_ANY
+
 /* Define if you have no native inet_aton() function. */
 #undef NO_INET_ATON
 

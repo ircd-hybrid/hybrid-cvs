@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.59 2003/06/12 22:05:59 db Exp $
+ *  $Id: class.c,v 7.60 2003/06/17 20:05:12 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -35,7 +35,7 @@
 #include "irc_string.h"
 #include "memory.h"
 
-#define BAD_PING -1
+#define BAD_PING (-1)
 
 dlink_list ClassList = { NULL, NULL, 0 };
 

@@ -2,7 +2,7 @@
  *	and definitions required to build ircd on some		*
  *	exotic platforms.					*
  *								*
- *	$Id: inet_misc.h,v 7.4 2003/05/24 21:15:43 joshk Exp $							*
+ *	$Id: inet_misc.h,v 7.5 2003/06/17 20:05:08 joshk Exp $							*
  *
  * Copyright (c) 1980, 1983, 1988, 1993
  *      The Regents of the University of California.  All rights reserved.
@@ -141,6 +141,10 @@ struct addrinfo {
 	struct addrinfo *ai_next;
 };
 #endif /* HAVE_STRUCT_ADDRINFO */
+
+#ifdef NO_IN6ADDR_ANY
+extern const struct in6_addr in6addr_any;
+#endif
 
 #ifdef NO_INET_NTOP
 const char * inet_ntop(int af, const void *src, char *dst, size_t size);

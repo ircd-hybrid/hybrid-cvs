@@ -1,5 +1,5 @@
 /* inet_misc.c - inet_pton and inet_ntop for those who don't have it.
- * $Id: inet_misc.c,v 7.3 2003/05/19 19:10:53 stu Exp $
+ * $Id: inet_misc.c,v 7.4 2003/06/17 20:05:12 joshk Exp $
  *
  * Copyright (c) 1983, 1990, 1993
  *		The Regents of the University of California.  All rights reserved.
@@ -44,6 +44,12 @@
 
 #include "stdinc.h"
 #include "irc_res.h"
+
+#ifdef NO_IN6ADDR_ANY
+/* Stolen from glibc */
+const struct in6_addr in6addr_any =
+{ { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 } } };
+#endif
 
 #ifdef NO_INET_ATON
 /*

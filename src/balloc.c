@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.45 2003/06/01 23:46:55 joshk Exp $
+ *  $Id: balloc.c,v 7.46 2003/06/17 20:05:12 joshk Exp $
  */
 
 /* 
@@ -52,8 +52,6 @@
 
 #define WE_ARE_MEMORY_C
 #include "stdinc.h"
-#ifndef NOBALLOC
-
 #include "ircd_defs.h"          /* DEBUG_BLOCK_ALLOCATOR */
 #include "ircd.h"
 #include "memory.h"
@@ -569,4 +567,3 @@ BlockHeapDestroy(BlockHeap * bh)
     free(bh);
     return(0);
 }
-#endif /* !NOBALLOC */

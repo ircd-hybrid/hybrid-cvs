@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.58 2003/06/17 05:22:37 joshk Exp $
+dnl $Id: configure.ac,v 7.59 2003/06/17 20:05:06 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -91,6 +91,7 @@ case `uname -s` in
 		fi
 	;;
 	CYGWIN*)
+		AC_MSG_RESULT(Cygwin)
 		CYGWIN=yes
 	;;
 	*)
@@ -265,31 +266,41 @@ AC_COMPILE_IFELSE(
 
 fi
 
-AC_CACHE_CHECK([for IPv6 support], have_v6,
-[
-    AC_COMPILE_IFELSE(
-	[AC_LANG_PROGRAM(
-		[[#define IN_AUTOCONF
-		#include "include/stdinc.h"]],
-		[[struct sockaddr_in6 s; 
-		  struct sockaddr_storage t;
-		  s.sin6_family = 0;]]
+AC_MSG_CHECKING([for core IPv6 support])
 
+AC_COMPILE_IFELSE(
+[AC_LANG_PROGRAM(
+	[[#define IN_AUTOCONF
+	#include "include/stdinc.h"]],
+	[[struct sockaddr_in6 s; 
+	  struct sockaddr_storage t;
+	  s.sin6_family = 0;]]
 	)],
-	[
-		if test "$CYGWIN" = "yes"; then
-			AC_MSG_WARN([IPv6 support is incomplete in Cygwin - not enabling])
-			have_v6="no"
-		else
-			have_v6="yes"
-		fi
-	],
-	[have_v6="no"])
-])
-
-if test "$have_v6" = "yes"; then
-	AC_DEFINE(IPV6, 1, [Define if IPv6 support is present and available.])
-fi
+[
+	if test "$CYGWIN" = "yes"; then
+		AC_MSG_RESULT([no, Cygwin's IPv6 is incomplete])
+		have_v6=no
+	else
+		have_v6=yes
+		AC_DEFINE(IPV6, 1, [Define if IPv6 support is present and available.])
+		AC_MSG_RESULT(yes)
+		AC_MSG_CHECKING([for struct in6addr_any])
+		AC_COMPILE_IFELSE(
+			[AC_LANG_PROGRAM(
+				[[#define IN_AUTOCONF
+				#include "include/stdinc.h"]],
+				[[struct in6_addr a = in6addr_any;]]
+			)],
+			[AC_MSG_RESULT(yes)],
+			[
+				AC_MSG_RESULT(no)
+				AC_DEFINE(NO_IN6ADDR_ANY, 1, [Define to 1 if your system has no in6addr_any.])
+				inet_misc=1
+			]
+		)
+	fi
+],
+[have_v6="no"])
 
 AC_SEARCH_LIBS(crypt, [descrypt crypt],,
 [AC_MSG_ERROR([No crypt implementation found on your system!])])
@@ -332,7 +343,38 @@ dnl Check for stdarg.h - if we can't find it, halt configure
 AC_CHECK_HEADER(stdarg.h, , [AC_MSG_ERROR([** stdarg.h could not be found - ircd-hybrid will not compile without it **])])
 
 dnl Checks for the existance of strlcat, strlcpy, basename...
-AC_CHECK_FUNCS([strlcat strlcpy basename])
+AC_MSG_CHECKING(for strlcpy)
+save_CFLAGS=$CFLAGS
+CFLAGS="$CFLAGS -Wimplicit -Werror"
+
+AC_COMPILE_IFELSE(
+	[AC_LANG_PROGRAM(
+		[[#include <string.h>
+		#include <stdlib.h>]],
+		[[char *a = malloc(6), *b = strdup("hello");
+		strlcpy(a, b, 6);]]
+	)],
+	[AC_MSG_RESULT(yes)
+	AC_DEFINE(HAVE_STRLCPY, 1, [Define if strlcpy is available (most BSDs.)])],
+	[AC_MSG_RESULT(no)]
+)
+
+AC_MSG_CHECKING(for strlcat)
+AC_COMPILE_IFELSE(
+	[AC_LANG_PROGRAM(
+		[[#include <string.h>
+		#include <stdlib.h>]],
+		[[char *a = malloc(6), *b = strdup("hello");
+		strlcat(a, b, 6);]]
+	)],
+	[AC_MSG_RESULT(yes)
+	AC_DEFINE(HAVE_STRLCAT, 1, [Define if strlcat is available (most BSDs.)])],
+	[AC_MSG_RESULT(no)]
+)
+
+CFLAGS=$save_CFLAGS
+
+AC_CHECK_FUNCS([basename])
 
 AC_CHECK_TYPE([u_int32_t], [],
 [
@@ -590,7 +632,7 @@ AC_CHECK_FUNC([kevent],
 			AC_CHECK_FUNC(poll, [SELECT_TYPE="poll"],
 			[
 				AC_CHECK_FUNC(select, [SELECT_TYPE="select"],
-				[AC_MSG_ERROR([Couldn't find anything to use for IO loop! Report to hybrid@the-project.org.])
+				[AC_MSG_ERROR([Couldn't find anything to use for IO loop. Is your C environment POSIXly sane?])
 				])
 			])
 		])
@@ -628,10 +670,10 @@ AC_ARG_ENABLE(profile,
 AC_HELP_STRING([--enable-profile],[Enable profiling]),
 [
 	profile="yes"
-	if test "$GCC" = yes; then
+	if test "$ac_cv_c_compiler_gnu" = yes; then
 		IRC_CFLAGS="$IRC_CFLAGS -pg -a -static"
 	else
-		echo "Warning: profile builds only work with gcc, ignoring"
+		AC_MSG_WARN([profile builds only work with gcc, ignoring])
 	fi
 	
 ], profile="no")

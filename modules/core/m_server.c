@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.109 2003/06/12 22:05:57 db Exp $
+ *  $Id: m_server.c,v 1.110 2003/06/17 20:05:10 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.109 $";
+const char *_version = "$Revision: 1.110 $";
 #endif
 
 
@@ -219,7 +219,7 @@ mr_server(struct Client *client_p, struct Client *source_p,
     {
       ClearCap(client_p, CAP_LL);
       sendto_realops_flags(UMODE_ALL, L_ALL,
-               "*** LazyLinks to a hub from a hub, thats a no-no.");
+               "*** LazyLinks to a hub from a hub, that's a no-no.");
     }
     else
     {
@@ -239,7 +239,7 @@ mr_server(struct Client *client_p, struct Client *source_p,
     {
       ClearCap(client_p, CAP_LL);
       sendto_realops_flags(UMODE_ALL, L_ALL,
-               "*** LazyLinks to a leaf from a leaf, thats a no-no.");
+               "*** LazyLinks to a leaf from a leaf, that's a no-no.");
     }
   }
 
