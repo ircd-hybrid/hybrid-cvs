@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.147 2003/06/07 12:00:50 michael Exp $
+ *  $Id: channel.h,v 7.148 2003/06/07 15:20:25 adx Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -86,9 +86,7 @@ extern int can_send (struct Channel *chptr, struct Client *who);
 extern int is_banned (struct Channel *chptr, struct Client *who);
 extern int can_join(struct Client *source_p, struct Channel *chptr,
                     const char *key);
-extern int has_member_flags(struct Channel *chptr, struct Client *who,
-                            unsigned int flags);
-
+extern int has_member_flags(struct Membership *ms, unsigned int flags);
 extern void add_user_to_channel(struct Channel *chptr, struct Client *who,
                                 unsigned int flags);
 extern int remove_user_from_channel(struct Channel *chptr, struct Client *who);

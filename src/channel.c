@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.391 2003/06/07 12:00:56 michael Exp $
+ *  $Id: channel.c,v 7.392 2003/06/07 15:20:31 adx Exp $
  */
 
 #include "stdinc.h"
@@ -703,13 +703,10 @@ can_join(struct Client *source_p, struct Channel *chptr, const char *key)
 }
 
 int
-has_member_flags(struct Channel *chptr, struct Client *who, unsigned int flags)
+has_member_flags(struct Membership *ms, unsigned int flags)
 {
-  struct Membership *ms;
-
-  if ((ms = find_channel_link(who, chptr)) != NULL)
-    if (ms->flags & flags)
-      return(1);
+  if (ms != NULL)
+    return(ms->flags & flags);
 
   return(0);
 }
@@ -719,6 +716,9 @@ struct Membership *
 find_channel_link(struct Client *client_p, struct Channel *chptr)
 {
   dlink_node *ptr;
+
+  if (!IsClient(client_p))
+    return(NULL);
 
   DLINK_FOREACH(ptr, client_p->user->channel.head)
     if (((struct Membership *)ptr->data)->chptr == chptr)

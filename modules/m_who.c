@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.85 2003/06/07 12:00:52 michael Exp $
+ *  $Id: m_who.c,v 1.86 2003/06/07 15:20:27 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&who_msgtab);
 }
 
-const char *_version = "$Revision: 1.85 $";
+const char *_version = "$Revision: 1.86 $";
 #endif
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);
@@ -158,34 +158,19 @@ m_who(struct Client *client_p, struct Client *source_p,
     isinvis = IsInvisible(target_p);
     DLINK_FOREACH(lp, target_p->user->channel.head)
     {
-      chptr = ((struct Membership *)lp->data)->chptr;
+      chptr = ((struct Membership *) lp->data)->chptr;
       member = IsMember(source_p, chptr);
       if (isinvis && !member)
-      {
-        chptr = NULL;
         continue;
-      }
       if (member || (!isinvis && PubChannel(chptr)))
         break;
-      chptr = NULL;
     }
 
-    if (chptr != NULL)
-    {
-      /* XXX globalize this inside m_who.c ? */
-      /* jdc -- Check is_any_op() for +o > +h > +v priorities */
-
-      if (has_member_flags(chptr, target_p, CHFL_CHANOP))
-        do_who(source_p, target_p, chptr->chname, "@");
-      else if (has_member_flags(chptr, target_p, CHFL_VOICE))
-        do_who(source_p, target_p, chptr->chname, "+");
-      else
-        do_who(source_p, target_p, chptr->chname, "");
-    }
+    if (lp != NULL)
+      do_who(source_p, target_p, ((struct Membership *) lp->data)->chptr->chname,
+             get_member_status(lp->data, NO));
     else
-    {
       do_who(source_p, target_p, NULL, "");
-    }
 
     sendto_one(source_p, form_str(RPL_ENDOFWHO),
                me.name, source_p->name, mask);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.61 2003/06/07 12:00:52 michael Exp $
+ *  $Id: m_topic.c,v 1.62 2003/06/07 15:20:27 adx Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.61 $";
+const char *_version = "$Revision: 1.62 $";
 #endif
 
 /* m_topic()
@@ -76,6 +76,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
 {
   struct Channel *chptr = NULL;
   char *p;
+  struct Membership *ms;
 
   if ((p = strchr(parv[1],',')) != NULL)
     *p = '\0';
@@ -92,101 +93,102 @@ m_topic(struct Client *client_p, struct Client *source_p,
 
   if (IsChannelName(parv[1]))
   {
-      if ((chptr = hash_find_channel(parv[1])) == NULL)
+    if ((chptr = hash_find_channel(parv[1])) == NULL)
+    {
+      /* if chptr isn't found locally, it =could= exist
+       * on the uplink. so forward reqeuest
+       */
+      if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
       {
-        /* if chptr isn't found locally, it =could= exist
-         * on the uplink. so forward reqeuest
+        sendto_one(uplink, ":%s TOPIC %s %s",
+                   source_p->name, parv[1],
+                   ((parc > 2) ? parv[2] : ""));
+        return;
+      }
+      else
+      {
+        sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
+                   me.name, source_p->name, parv[1]);
+        return;
+      }
+    }
+
+    /* setting topic */
+    if (parc > 2)
+    {
+      if ((ms = find_channel_link(source_p, chptr)) == NULL)
+      {
+        sendto_one(source_p, form_str(ERR_NOTONCHANNEL), me.name,
+                   source_p->name, parv[1]);
+        return;
+      }
+      if ((chptr->mode.mode & MODE_TOPICLIMIT) == 0 ||
+          has_member_flags(ms, CHFL_CHANOP))
+      {
+        char topic_info[USERHOST_REPLYLEN]; 
+        ircsprintf(topic_info, "%s!%s@%s",
+                   source_p->name, source_p->username, source_p->host);
+        set_channel_topic(chptr, parv[2], topic_info, CurrentTime);
+	      
+        sendto_server(client_p, NULL, chptr, NOCAPS, NOCAPS, NOFLAGS,
+                      ":%s TOPIC %s :%s",
+                      parv[0], chptr->chname,
+                      chptr->topic == NULL ? "" : chptr->topic);
+        sendto_channel_local(ALL_MEMBERS,
+                             chptr, ":%s!%s@%s TOPIC %s :%s",
+                             source_p->name,
+                             source_p->username,
+                             source_p->host,
+                             chptr->chname, chptr->topic == NULL ?
+                             "" : chptr->topic);
+      }
+      else
+        sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
+                   me.name, source_p->name, parv[1]);
+    }
+    else  /* only asking  for topic  */
+    {
+      if (!IsMember(source_p, chptr) && SecretChannel(chptr))
+      {
+        sendto_one(source_p, form_str(ERR_NOTONCHANNEL), me.name, source_p->name,
+                   parv[1]);
+        return;
+      }
+      if (chptr->topic == NULL)
+        sendto_one(source_p, form_str(RPL_NOTOPIC),
+                   me.name, source_p->name, parv[1]);
+      else
+      {
+        sendto_one(source_p, form_str(RPL_TOPIC),
+                   me.name, source_p->name,
+                   chptr->chname, chptr->topic);
+
+        /* client on LL needing the topic - if we have serverhide, say
+         * its the actual LL server that set the topic, not us the
+         * uplink -- fl_
          */
-        if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
+        if (ConfigServerHide.hide_servers && !MyClient(source_p)
+            && IsCapable(client_p, CAP_LL) && ServerInfo.hub)
         {
-          sendto_one(uplink, ":%s TOPIC %s %s",
-                     source_p->name, parv[1],
-                     ((parc > 2) ? parv[2] : ""));
-          return;
+          sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
+  	             me.name, source_p->name, chptr->chname,
+  		     client_p->name, chptr->topic_time);
         }
         else
-        {
-          sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-                     me.name, source_p->name, parv[1]);
-          return;
+ 	{
+          sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
+                     me.name, source_p->name, chptr->chname,
+                     chptr->topic_info,
+                     chptr->topic_time);
         }
       }
-
-      /* setting topic */
-      if (parc > 2)
-	{
-	  if (!IsMember(source_p, chptr))
-	    {
-	      sendto_one(source_p, form_str(ERR_NOTONCHANNEL), me.name, source_p->name,
-			 parv[1]);
-	      return;
-	    }
-	  if ((chptr->mode.mode & MODE_TOPICLIMIT) == 0 ||
-	      has_member_flags(chptr, source_p, CHFL_CHANOP))
-	    {
-	      char topic_info[USERHOST_REPLYLEN]; 
-              ircsprintf(topic_info, "%s!%s@%s",
-			 source_p->name, source_p->username, source_p->host);
-              set_channel_topic(chptr, parv[2], topic_info, CurrentTime);
-	      
-	      sendto_server(client_p, NULL, chptr, NOCAPS, NOCAPS, NOFLAGS,
-                            ":%s TOPIC %s :%s",
-                            parv[0], chptr->chname,
-                            chptr->topic == NULL ? "" : chptr->topic);
-	  sendto_channel_local(ALL_MEMBERS,
-				       chptr, ":%s!%s@%s TOPIC %s :%s",
-				       source_p->name,
-				       source_p->username,
-				       source_p->host,
-				       chptr->chname, chptr->topic == NULL ? "" : chptr->topic);
-	    }
-	  else
-            sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
-                       me.name, source_p->name, parv[1]);
-	}
-      else  /* only asking  for topic  */
-	{
-	  if (!IsMember(source_p, chptr) && SecretChannel(chptr))
-	    {
-	      sendto_one(source_p, form_str(ERR_NOTONCHANNEL), me.name, source_p->name,
-			 parv[1]);
-	      return;
-	    }
-          if (chptr->topic == NULL)
-	    sendto_one(source_p, form_str(RPL_NOTOPIC),
-		       me.name, source_p->name, parv[1]);
-          else
-	    {
-              sendto_one(source_p, form_str(RPL_TOPIC),
-                         me.name, source_p->name,
-                         chptr->chname, chptr->topic);
-
-	        /* client on LL needing the topic - if we have serverhide, say
-	         * its the actual LL server that set the topic, not us the
-	         * uplink -- fl_
-	         */
-	        if (ConfigServerHide.hide_servers && !MyClient(source_p)
-	                 && IsCapable(client_p, CAP_LL) && ServerInfo.hub)
-  	        {
-	          sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
-	  	             me.name, source_p->name, chptr->chname,
-	  		     client_p->name, chptr->topic_time);
-                }
-	        else
-	 	{
-                  sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
-                             me.name, source_p->name, chptr->chname,
-                             chptr->topic_info,
-                             chptr->topic_time);
-                }
-            }
-        }
     }
+  }
   else
-    {
-      sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-                 me.name, source_p->name, parv[1]);
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
+               me.name, source_p->name, parv[1]);
+  }
 }
 
 /*
@@ -215,27 +217,27 @@ ms_topic(struct Client *client_p, struct Client *source_p,
     return;
 
   if (parv[1] && IsChannelName(parv[1]))
+  {
+    if ((chptr = hash_find_channel(parv[1])) == NULL)
+      return;
+
+    set_channel_topic(chptr, parv[4], parv[2], atoi(parv[3]));
+
+    if (ConfigServerHide.hide_servers)
     {
-      if ((chptr = hash_find_channel(parv[1])) == NULL)
-	return;
+      sendto_channel_local(ALL_MEMBERS,
+                           chptr, ":%s TOPIC %s :%s",
+                           me.name,
+                           parv[1],
+                           chptr->topic == NULL ? "" : chptr->topic);
 
-      set_channel_topic(chptr, parv[4], parv[2], atoi(parv[3]));
-
-      if(ConfigServerHide.hide_servers)
-	{
-	  sendto_channel_local(ALL_MEMBERS,
-			       chptr, ":%s TOPIC %s :%s",
-			       me.name,
-			       parv[1],
-			       chptr->topic == NULL ? "" : chptr->topic);
-
-	}
-      else
-	{
-	  sendto_channel_local(ALL_MEMBERS,
-			       chptr, ":%s TOPIC %s :%s",
-			       source_p->name,
-			       parv[1], chptr->topic == NULL ? "" : chptr->topic);
-	}
     }
+    else
+    {
+      sendto_channel_local(ALL_MEMBERS,
+                           chptr, ":%s TOPIC %s :%s",
+                           source_p->name,
+                           parv[1], chptr->topic == NULL ? "" : chptr->topic);
+    }
+  }
 }

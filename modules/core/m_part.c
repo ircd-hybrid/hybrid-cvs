@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.72 2003/06/07 12:00:54 michael Exp $
+ *  $Id: m_part.c,v 1.73 2003/06/07 15:20:29 adx Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.72 $";
+const char *_version = "$Revision: 1.73 $";
 #endif
 
 static void part_one_client(struct Client *client_p,
@@ -78,8 +78,11 @@ static void
 m_part(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
-  char  *p, *name;
-  char reason[TOPICLEN+1];
+  char *p, *name;
+  char reason[TOPICLEN + 1];
+
+  if (IsServer(source_p))
+    return;
 
   if (*parv[1] == '\0')
   {
@@ -99,7 +102,7 @@ m_part(struct Client *client_p, struct Client *source_p,
   if (MyClient(source_p) && !IsFloodDone(source_p))
     flood_endgrace(source_p);
 
-  while(name)
+  while (name)
   {
     part_one_client(client_p, source_p, name, reason);
     name = strtoken(&p, NULL, ",");
@@ -119,6 +122,7 @@ part_one_client(struct Client *client_p, struct Client *source_p,
                 char *name, char *reason)
 {
   struct Channel *chptr;
+  struct Membership *ms;
 
   if ((chptr = hash_find_channel(name)) == NULL)
   {
@@ -127,7 +131,7 @@ part_one_client(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (!IsMember(source_p, chptr))
+  if ((ms = find_channel_link(source_p, chptr)) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOTONCHANNEL),
                me.name, source_p->name, name);
@@ -142,7 +146,7 @@ part_one_client(struct Client *client_p, struct Client *source_p,
    *  only allow /part reasons in -m chans
    */
   if (reason[0] &&
-      (has_member_flags(chptr, source_p, CHFL_CHANOP) || !MyConnect(source_p) ||
+      (has_member_flags(ms, CHFL_CHANOP) || !MyConnect(source_p) ||
        ((can_send(chptr, source_p) > 0 && 
          (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time)
          < CurrentTime))))

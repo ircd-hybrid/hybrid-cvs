@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.123 2003/06/07 12:00:54 michael Exp $
+ *  $Id: m_message.c,v 1.124 2003/06/07 15:20:29 adx Exp $
  */
 
 #include "stdinc.h"
@@ -119,7 +119,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.123 $";
+const char *_version = "$Revision: 1.124 $";
 #endif
 
 /*
@@ -290,11 +290,11 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
         if (!duplicate_ptr(chptr))
         {
           if (ntargets >= ConfigFileEntry.max_targets)
-	    {
-	      sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
-			 me.name, source_p->name, nick);
-	      return (1);
-	    }
+          {
+            sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
+                       me.name, source_p->name, nick);
+            return (1);
+          }
           targets[ntargets].ptr = (void *)chptr;
           targets[ntargets++].type = ENTITY_CHANNEL;
         }
@@ -348,50 +348,51 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
     {
       /* suggested by Mortiis */
       if (*nick == '\0')      /* if its a '\0' dump it, there is no recipient */
-	{
-	  sendto_one(source_p, form_str(ERR_NORECIPIENT),
-		     me.name, source_p->name, command);
-	  continue;
-	}
+      {
+        sendto_one(source_p, form_str(ERR_NORECIPIENT),
+                   me.name, source_p->name, command);
+        continue;
+      }
 
       /* At this point, nick+1 should be a channel name i.e. #foo or &foo
        * if the channel is found, fine, if not report an error
        */
 
       if ((chptr = hash_find_channel(nick)) != NULL)
-	{
-	  if(!has_member_flags(chptr, source_p, CHFL_CHANOP|CHFL_VOICE))
-	    {
-	      sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
-                         me.name, source_p->name, with_prefix);
-	      return(-1);
-	    }
+      {
+        if (!has_member_flags(find_channel_link(source_p, chptr),
+                              CHFL_CHANOP | CHFL_VOICE))
+        {
+          sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
+                     me.name, source_p->name, with_prefix);
+          return(-1);
+        }
 
-	  if (!duplicate_ptr(chptr))
-	    {
-	      if (ntargets >= ConfigFileEntry.max_targets)
-		{
-		  sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
-			     me.name, source_p->name, nick);
-		  return(1);
-		}
-	      targets[ntargets].ptr = (void *)chptr;
-	      targets[ntargets].type = ENTITY_CHANOPS_ON_CHANNEL;
-	      targets[ntargets++].flags = type;
-	    }
-	}
+        if (!duplicate_ptr(chptr))
+        {
+          if (ntargets >= ConfigFileEntry.max_targets)
+          {
+	    sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
+	               me.name, source_p->name, nick);
+            return(1);
+          }
+          targets[ntargets].ptr = (void *)chptr;
+          targets[ntargets].type = ENTITY_CHANOPS_ON_CHANNEL;
+          targets[ntargets++].flags = type;
+        }
+      }
       else
-	{
-	  if (!ServerInfo.hub && (uplink != NULL) && IsCapable(uplink, CAP_LL))
-	    return -1;
-	  else if (p_or_n != NOTICE)
-	    sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
-		       source_p->name, nick);
-	}
+      {
+        if (!ServerInfo.hub && (uplink != NULL) && IsCapable(uplink, CAP_LL))
+          return -1;
+        else if (p_or_n != NOTICE)
+          sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
+                     source_p->name, nick);
+      }
       continue;
     }
 
-    if(((*nick == '$') || strchr(nick, '@')))
+    if ((*nick == '$') || strchr(nick, '@') != NULL)
     {
       handle_special(p_or_n, command, client_p, source_p, nick, text);
     }
@@ -399,7 +400,7 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
     {
       if (!ServerInfo.hub && (uplink != NULL) && IsCapable(uplink, CAP_LL))
         return -1;
-      else if(p_or_n != NOTICE)
+      else if (p_or_n != NOTICE)
         sendto_one(source_p, form_str(ERR_NOSUCHNICK),
 	           me.name, source_p->name, nick);
     }

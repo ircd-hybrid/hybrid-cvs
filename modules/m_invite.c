@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.58 2003/06/07 12:00:52 michael Exp $
+ *  $Id: m_invite.c,v 1.59 2003/06/07 15:20:27 adx Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.58 $";
+const char *_version = "$Revision: 1.59 $";
 #endif
 
 /*
@@ -79,6 +79,7 @@ m_invite(struct Client *client_p,
   struct Client *target_p;
   struct Channel *chptr;
   int chop;                     /* Is channel op */
+  struct Membership *ms;
 
   if (*parv[2] == '\0')
   {
@@ -87,10 +88,10 @@ m_invite(struct Client *client_p,
     return;
   }
 
-  if(!IsClient(source_p))
+  if (!IsClient(source_p))
     return;
 
-  if(MyClient(source_p) && !IsFloodDone(source_p))
+  if (MyClient(source_p) && !IsFloodDone(source_p))
     flood_endgrace(source_p);
 
   if ((target_p = find_person(parv[1])) == NULL)
@@ -99,7 +100,7 @@ m_invite(struct Client *client_p,
     return;
   }
 
-  if(check_channel_name(parv[2]) == 0)
+  if (check_channel_name(parv[2]) == 0)
   {
     sendto_one(source_p, form_str(ERR_BADCHANNAME),
                me.name, parv[0], (unsigned char *)parv[2]);
@@ -140,12 +141,17 @@ m_invite(struct Client *client_p,
 
   /* By this point, chptr is non NULL */
 
-  if (MyClient(source_p) && !IsMember(source_p, chptr))
+  if (MyClient(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOTONCHANNEL), me.name, parv[0],
-               parv[2]);
-    return;
+    if ((ms = find_channel_link(source_p, chptr)) == NULL)
+    {
+      sendto_one(source_p, form_str(ERR_NOTONCHANNEL), me.name, parv[0],
+                 parv[2]);
+      return;
+    }
+    chop = has_member_flags(ms, CHFL_CHANOP);
   }
+  else chop = 1;
 
   if (IsMember(target_p, chptr))
   {
@@ -155,9 +161,7 @@ m_invite(struct Client *client_p,
     return;
   }
 
-  chop = has_member_flags(chptr, source_p, CHFL_CHANOP);
-
-  if (chptr && (chptr->mode.mode & MODE_INVITEONLY))
+  if (chptr != NULL && (chptr->mode.mode & MODE_INVITEONLY))
   {
     if (!chop)
     {
@@ -171,7 +175,7 @@ m_invite(struct Client *client_p,
     /* Don't save invite even if from an op otherwise... */
     chop = 0;
 
-  if (MyConnect(source_p))
+  if (MyClient(source_p))
   {
     sendto_one(source_p, form_str(RPL_INVITING), me.name, parv[0],
                target_p->name, parv[2]);
@@ -193,7 +197,7 @@ m_invite(struct Client *client_p,
   }
 
   if (MyConnect(target_p) && chop)
-      add_invite(chptr, target_p);
+    add_invite(chptr, target_p);
 
   sendto_anywhere(target_p, source_p, "INVITE %s :%s",
 		  target_p->name, chptr->chname);
@@ -205,7 +209,7 @@ m_invite(struct Client *client_p,
    */
   if (ParanoidChannel(chptr))
   {
-    sendto_server(source_p->from, source_p, NULL, CAP_PARA, NOCAPS, NOFLAGS,
+    sendto_server(client_p, source_p, NULL, CAP_PARA, NOCAPS, NOFLAGS,
                   ":%s INVITE %s %s :%s",
                   me.name, source_p->name, target_p->name, chptr->chname);
 

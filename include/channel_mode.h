@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.20 2003/06/07 09:56:46 michael Exp $
+ *  $Id: channel_mode.h,v 7.21 2003/06/07 15:20:25 adx Exp $
  */
 
 
@@ -101,5 +101,8 @@ struct ChCapCombo
   int cap_no;
 };
 
-#define CHACCESS_CHANOP 1
+#define CHACCESS_NOTONCHAN  -1
+#define CHACCESS_PEON       0
+#define CHACCESS_CHANOP     1
+
 #endif /* INCLUDED_channel_mode_h */

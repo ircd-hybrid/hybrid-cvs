@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.110 2003/06/07 12:00:56 michael Exp $
+ *  $Id: channel_mode.c,v 7.111 2003/06/07 15:20:31 adx Exp $
  */
 
 #include "stdinc.h"
@@ -651,8 +651,9 @@ chm_simple(struct Client *client_p, struct Client *source_p,
   if (alev < CHACCESS_CHANOP)
   {
     if (!(*errors & SM_ERR_NOOPS))
-      sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED), me.name,
-                 source_p->name, chname);
+      sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+                                    ERR_NOTONCHANNEL : ERR_CHANOPRIVSNEEDED),
+                 me.name, source_p->name, chname);
     *errors |= SM_ERR_NOOPS;
     return;
   }
@@ -730,8 +731,9 @@ chm_ban(struct Client *client_p, struct Client *source_p,
   if (alev < CHACCESS_CHANOP)
   {
     if (!(*errors & SM_ERR_NOOPS))
-      sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED), me.name,
-                 source_p->name, chname);
+      sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+                                    ERR_NOTONCHANNEL : ERR_CHANOPRIVSNEEDED),
+                 me.name, source_p->name, chname);
     *errors |= SM_ERR_NOOPS;
     return;
   }
@@ -823,8 +825,9 @@ chm_except(struct Client *client_p, struct Client *source_p,
   if (alev < CHACCESS_CHANOP)
   {
     if (!(*errors & SM_ERR_NOOPS))
-      sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED), me.name,
-                 source_p->name, chname);
+      sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+                                    ERR_NOTONCHANNEL : ERR_CHANOPRIVSNEEDED),
+                 me.name, source_p->name, chname);
     *errors |= SM_ERR_NOOPS;
     return;
   }
@@ -925,8 +928,9 @@ chm_invex(struct Client *client_p, struct Client *source_p,
   if (alev < CHACCESS_CHANOP)
   {
     if (!(*errors & SM_ERR_NOOPS))
-      sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED), me.name,
-                 source_p->name, chname);
+      sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+                                    ERR_NOTONCHANNEL : ERR_CHANOPRIVSNEEDED),
+                 me.name, source_p->name, chname);
     *errors |= SM_ERR_NOOPS;
     return;
   }
@@ -1013,12 +1017,14 @@ chm_op(struct Client *client_p, struct Client *source_p,
   int i;
   char *opnick;
   struct Client *targ_p;
+  struct Membership *ms;
 
   if (alev < CHACCESS_CHANOP)
   {
     if (!(*errors & SM_ERR_NOOPS))
-      sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED), me.name,
-                 source_p->name, chname);
+      sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+                                    ERR_NOTONCHANNEL : ERR_CHANOPRIVSNEEDED),
+                 me.name, source_p->name, chname);
     *errors |= SM_ERR_NOOPS;
     return;
   }
@@ -1040,11 +1046,11 @@ chm_op(struct Client *client_p, struct Client *source_p,
   opnick = parv[(*parn)++];
 
   if ((targ_p = find_chasing(source_p, opnick, NULL)) == NULL)
-  {
     return;
-  }
+  if (!IsClient(targ_p))
+    return;
 
-  if (!IsMember(targ_p, chptr))
+  if ((ms = find_channel_link(targ_p, chptr)) == NULL)
   {
     if (!(*errors & SM_ERR_NOTONCHANNEL))
       sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL), me.name,
@@ -1057,9 +1063,9 @@ chm_op(struct Client *client_p, struct Client *source_p,
     return;
 
   /* no redundant mode changes */
-  if (dir == MODE_ADD &&  has_member_flags(chptr, targ_p, CHFL_CHANOP))
+  if (dir == MODE_ADD &&  has_member_flags(ms, CHFL_CHANOP))
     return;
-  if (dir == MODE_DEL && !has_member_flags(chptr, targ_p, CHFL_CHANOP))
+  if (dir == MODE_DEL && !has_member_flags(ms, CHFL_CHANOP))
     return;
 
   if (dir == MODE_ADD)
@@ -1119,12 +1125,14 @@ chm_voice(struct Client *client_p, struct Client *source_p,
   int i;
   char *opnick;
   struct Client *targ_p;
+  struct Membership *ms;
 
   if (alev < CHACCESS_CHANOP)
   {
     if (!(*errors & SM_ERR_NOOPS))
-      sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED), me.name,
-                 source_p->name, chname);
+      sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+                                    ERR_NOTONCHANNEL : ERR_CHANOPRIVSNEEDED),
+                 me.name, source_p->name, chname);
     *errors |= SM_ERR_NOOPS;
     return;
   }
@@ -1135,11 +1143,11 @@ chm_voice(struct Client *client_p, struct Client *source_p,
   opnick = parv[(*parn)++];
 
   if ((targ_p = find_chasing(source_p, opnick, NULL)) == NULL)
-  {
     return;
-  }
+  if (!IsClient(targ_p))
+    return;
 
-  if (!IsMember(targ_p, chptr))
+  if ((ms = find_channel_link(targ_p, chptr)) == NULL)
   {
     if (!(*errors & SM_ERR_NOTONCHANNEL))
       sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL), me.name,
@@ -1152,9 +1160,9 @@ chm_voice(struct Client *client_p, struct Client *source_p,
     return;
 
   /* no redundant mode changes */
-  if (dir == MODE_ADD &&  has_member_flags(chptr, targ_p, CHFL_VOICE))
+  if (dir == MODE_ADD &&  has_member_flags(ms, CHFL_VOICE))
     return;
-  if (dir == MODE_DEL && !has_member_flags(chptr, targ_p, CHFL_VOICE))
+  if (dir == MODE_DEL && !has_member_flags(ms, CHFL_VOICE))
     return;
 
   if (dir == MODE_ADD)
@@ -1218,8 +1226,9 @@ chm_limit(struct Client *client_p, struct Client *source_p,
   if (alev < CHACCESS_CHANOP)
   {
     if (!(*errors & SM_ERR_NOOPS))
-      sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED), me.name,
-                 source_p->name, chname);
+      sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+                                    ERR_NOTONCHANNEL : ERR_CHANOPRIVSNEEDED),
+                 me.name, source_p->name, chname);
     *errors |= SM_ERR_NOOPS;
     return;
   }
@@ -1282,8 +1291,9 @@ chm_key(struct Client *client_p, struct Client *source_p,
   if (alev < CHACCESS_CHANOP)
   {
     if (!(*errors & SM_ERR_NOOPS))
-      sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED), me.name,
-                 source_p->name, chname);
+      sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+                                    ERR_NOTONCHANNEL : ERR_CHANOPRIVSNEEDED),
+                 me.name, source_p->name, chname);
     *errors |= SM_ERR_NOOPS;
     return;
   }
@@ -1423,14 +1433,19 @@ static struct ChannelMode ModeTable[255] =
 static int
 get_channel_access(struct Client *source_p, struct Channel *chptr)
 {
+  struct Membership *ms;
+
   /* Let hacked servers in for now... */
   if (!MyClient(source_p))
     return(CHACCESS_CHANOP);
 
-  if (has_member_flags(chptr, source_p, CHFL_CHANOP))
+  if ((ms = find_channel_link(source_p, chptr)) == NULL)
+    return(CHACCESS_NOTONCHAN);
+
+  if (has_member_flags(ms, CHFL_CHANOP))
     return(CHACCESS_CHANOP);
 
-  return(0);
+  return(CHACCESS_PEON);
 }
 
 /* void send_cap_mode_changes(struct Client *client_p,

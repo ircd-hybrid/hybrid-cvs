@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.60 2003/06/07 12:00:54 michael Exp $
+ *  $Id: m_kick.c,v 1.61 2003/06/07 15:20:29 adx Exp $
  */
 
 #include "stdinc.h"
@@ -40,11 +40,10 @@
 
 
 static void m_kick(struct Client *, struct Client *, int, char **);
-static void ms_kick(struct Client *, struct Client *, int, char **);
 
 struct Message kick_msgtab = {
   "KICK", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_kick, ms_kick, m_kick, m_ignore}
+  {m_unregistered, m_kick, m_kick, m_kick, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -60,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.60 $";
+const char *_version = "$Revision: 1.61 $";
 #endif
 
 /* m_kick()
@@ -80,6 +79,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
   char *name;
   char *p = NULL;
   char *user;
+  struct Membership *ms;
 
   if (*parv[2] == '\0')
   {
@@ -110,45 +110,55 @@ m_kick(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (!IsServer(source_p) && !has_member_flags(chptr, source_p, CHFL_CHANOP)) 
+  if (!IsServer(source_p))
   {
-    /* was a user, not a server, and user isn't seen as a chanop here */
-    if (MyConnect(source_p))
+    if ((ms = find_channel_link(source_p, chptr)) == NULL)
+      if (MyConnect(source_p))
+      {
+        sendto_one(source_p, form_str(ERR_NOTONCHANNEL),
+                   me.name, source_p->name, name);
+        return;
+      }
+    if (!has_member_flags(ms, CHFL_CHANOP))
     {
-      /* user on _my_ server, with no chanops.. so go away */
-      sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
-                 me.name, source_p->name, name);
-      return;
-    }
+      /* was a user, not a server, and user isn't seen as a chanop here */
+      if (MyConnect(source_p))
+      {
+        /* user on _my_ server, with no chanops.. so go away */
+        sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
+                   me.name, source_p->name, name);
+        return;
+      }
 
-    if (chptr->channelts == 0)
-    {
-      /* If its a TS 0 channel, do it the old way */         
-      sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
-                 me.name, source_p->name, name);
-      return;
-    }
+      if (chptr->channelts == 0)
+      {
+        /* If its a TS 0 channel, do it the old way */         
+        sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
+                   me.name, source_p->name, name);
+        return;
+      }
 
-    /* Its a user doing a kick, but is not showing as chanop locally
-     * its also not a user ON -my- server, and the channel has a TS.
-     * There are two cases we can get to this point then...
-     *
-     *     1) connect burst is happening, and for some reason a legit
-     *        op has sent a KICK, but the SJOIN hasn't happened yet or 
-     *        been seen. (who knows.. due to lag...)
-     *
-     *     2) The channel is desynced. That can STILL happen with TS
-     *        
-     *     Now, the old code roger wrote, would allow the KICK to 
-     *     go through. Thats quite legit, but lets weird things like
-     *     KICKS by users who appear not to be chanopped happen,
-     *     or even neater, they appear not to be on the channel.
-     *     This fits every definition of a desync, doesn't it? ;-)
-     *     So I will allow the KICK, otherwise, things are MUCH worse.
-     *     But I will warn it as a possible desync.
-     *
-     *     -Dianora
-     */
+      /* Its a user doing a kick, but is not showing as chanop locally
+       * its also not a user ON -my- server, and the channel has a TS.
+       * There are two cases we can get to this point then...
+       *
+       *     1) connect burst is happening, and for some reason a legit
+       *        op has sent a KICK, but the SJOIN hasn't happened yet or 
+       *        been seen. (who knows.. due to lag...)
+       *
+       *     2) The channel is desynced. That can STILL happen with TS
+       *        
+       *     Now, the old code roger wrote, would allow the KICK to 
+       *     go through. Thats quite legit, but lets weird things like
+       *     KICKS by users who appear not to be chanopped happen,
+       *     or even neater, they appear not to be on the channel.
+       *     This fits every definition of a desync, doesn't it? ;-)
+       *     So I will allow the KICK, otherwise, things are MUCH worse.
+       *     But I will warn it as a possible desync.
+       *
+       *     -Dianora
+       */
+    }
   }
 
   user = parv[2];
@@ -189,18 +199,4 @@ m_kick(struct Client *client_p, struct Client *source_p,
   else
     sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL),
                me.name, source_p->name, user, name);
-}
-
-static void
-ms_kick(struct Client *client_p, struct Client *source_p,
-        int parc, char *parv[])
-{
-  if (*parv[2] == '\0')
-  {
-    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, source_p->name, "KICK");
-    return;
-  }
-
-  m_kick(client_p, source_p, parc, parv);
 }
