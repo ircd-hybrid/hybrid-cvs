@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.77 2000/11/29 23:35:41 db Exp $
+ *  $Id: s_conf.c,v 7.78 2000/11/30 00:04:57 db Exp $
  */
 #include "s_conf.h"
 #include "s_stats.h"
@@ -79,8 +79,6 @@ static FBFILE*  openconf(const char* filename);
 static void     initconf(FBFILE*);
 static void     clear_out_old_conf(void);
 static void     flush_deleted_I_P(void);
-
-/* ick.. yacc/lex likes globals don't it? */
 
 FBFILE* conf_fbfile_in;
 char    conf_line_in[256];

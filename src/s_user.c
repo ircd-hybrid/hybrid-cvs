@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.47 2000/11/29 23:35:41 db Exp $
+ *  $Id: s_user.c,v 7.48 2000/11/30 00:04:58 db Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -650,14 +650,6 @@ int do_user(char* nick, struct Client* cptr, struct Client* sptr,
         }
 #ifndef NO_DEFAULT_INVISIBLE
       sptr->flags |= FLAGS_INVISIBLE;
-#endif
-
-#if 0
-      /* Undocumented lame extension to the protocol
-       * if user provides a number, the bits set are
-       * used to set the umode flags. arghhhhh -db
-       */
-      sptr->flags |= (UFLAGS & atoi(host));
 #endif
 
       if (!(oflags & FLAGS_INVISIBLE) && IsInvisible(sptr))

@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.36 2000/11/29 07:57:51 db Exp $
+ * $Id: client.h,v 7.37 2000/11/30 00:04:54 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -459,7 +459,7 @@ struct Client
 #define SendNickChange(x)       ((x)->umodes & FLAGS_NCHANGE)
 #define SetWallops(x)           ((x)->umodes |= FLAGS_WALLOP)
 #define SetCallerId(x)		((x)->umodes |= FLAGS_CALLERID)
-#define IsSetCallerId(x)	((x)->umodes |= FLAGS_CALLERID)
+#define IsSetCallerId(x)	((x)->umodes & FLAGS_CALLERID)
 
 #define IsRejectHeld(x)         ((x)->flags & FLAGS_REJECT_HOLD)
 #define SetRejectHold(x)        ((x)->flags |= FLAGS_REJECT_HOLD)
