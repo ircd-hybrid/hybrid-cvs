@@ -19,26 +19,30 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.36 2003/07/25 23:16:06 michael Exp $
+ *  $Id: s_user.h,v 7.37 2003/07/31 23:13:23 michael Exp $
  */
 
 #ifndef INCLUDED_s_user_h
 #define INCLUDED_s_user_h
 
-#define IRC_MAXSID  3
-#define IRC_MAXUID  6
+#define IRC_MAXSID 3
+#define IRC_MAXUID 6
 #define TOTALSIDUID (IRC_MAXSID + IRC_MAXUID)
 
+struct User;
 struct Client;
 struct AccessItem;
 
 extern int MaxClientCount;     /* GLOBAL - highest number of clients     */
 extern int MaxConnectionCount; /* GLOBAL - highest number of connections */
 
+extern void init_user(void);
+extern void free_user(struct User *, struct Client *);
+extern void count_user_memory(int *, unsigned long *);
 extern void set_user_mode(struct Client *, struct Client *, int, char **);
 extern void send_umode(struct Client *, struct Client *,
                        unsigned int, unsigned int, char *);
-extern void send_umode_out(struct Client* , struct Client* , unsigned int);
+extern void send_umode_out(struct Client *, struct Client *, unsigned int);
 extern void show_lusers(struct Client *source_p);
 extern void show_isupport(struct Client *);
 extern void oper_up(struct Client *source_p);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.298 2003/07/25 23:16:10 michael Exp $
+ *  $Id: s_user.c,v 7.299 2003/07/31 23:13:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -54,6 +54,9 @@
 
 int MaxClientCount     = 1;
 int MaxConnectionCount = 1;
+
+static BlockHeap *user_heap;
+static int32_t user_count = 0;
 
 static int valid_hostname(const char *hostname);
 static int valid_username(const char *username);
@@ -155,7 +158,7 @@ const unsigned int user_modes_from_c_to_bitmask[] =
   UMODE_OPERWALL,   /* z      0x7A */
   0,0,0,0,0,        /* 0x7B - 0x7F */
 
-  /* 0x80 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x9F */
+  /* 0x80 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x8F */
   /* 0x90 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x9F */
   /* 0xA0 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0xAF */
   /* 0xB0 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0xBF */
@@ -165,10 +168,95 @@ const unsigned int user_modes_from_c_to_bitmask[] =
   /* 0xF0 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0  /* 0xFF */
 };
 
+/* init_user()
+ *
+ * inputs       - NONE
+ * output       - NONE
+ * side effects - Creates a block heap for struct Users
+ */
+void
+init_user(void)
+{
+  user_heap = BlockHeapCreate(sizeof(struct User), USER_HEAP_SIZE);
+}
+
+/* make_user()
+ *
+ * inputs       - pointer to client struct
+ * output       - pointer to struct User
+ * side effects - add's an User information block to a client
+ *                if it was not previously allocated.
+ */
+static struct User *
+make_user(struct Client *client_p)
+{
+  if (client_p->user == NULL)
+  {
+    client_p->user = BlockHeapAlloc(user_heap);
+    memset(client_p->user, 0, sizeof(struct User));
+    client_p->user->refcnt = 1;
+    ++user_count;
+  }
+
+  return(client_p->user);
+}
+
+/* free_user()
+ *
+ * inputs       - pointer to user struct
+ *              - pointer to client struct
+ * output       - NONE
+ * side effects - Decrease user reference count by one and release block,
+ *                if count reaches 0
+ */
+void
+free_user(struct User *user, struct Client *client_p)
+{
+  if (--user->refcnt <= 0)
+  {
+    if (user->away)
+      MyFree(user->away);
+
+    /* sanity check */
+    if (dlink_list_length(&user->channel) || user->refcnt < 0 ||
+        user->invited.head || user->channel.head)
+    {
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+                           "* %#lx user (%s!%s@%s) %#lx %#lx %#lx %lu %d *",
+                           (unsigned long)client_p, client_p ? client_p->name : "<noname>",
+                           client_p->username, client_p->host, (unsigned long)user,
+                           (unsigned long)user->invited.head,
+                           (unsigned long)user->channel.head, dlink_list_length(&user->channel),
+                           user->refcnt);
+      assert(!user->refcnt);
+      assert(!user->invited.head);
+      assert(!user->channel.head);
+      assert(dlink_list_length(&user->channel) == 0);
+    }
+
+    BlockHeapFree(user_heap, user);
+    --user_count;
+    assert(user_count >= 0);
+  }
+}
+
+/* count_user_memory()
+ *
+ * inputs       - pointer to user memory actually used
+ *              - pointer to user memory allocated total in block allocator
+ * output       - NONE
+ * side effects - NONE
+ */
+void
+count_user_memory(int *count, unsigned long *user_memory_used)
+{
+  *count = user_count;
+  *user_memory_used = user_count * sizeof(struct User);
+}
+
 /* show_lusers()
  *
  * inputs       - pointer to client
- *		- pointer to mask of domain to show
  * output       - NONE
  * side effects - display to client user counts etc.
  */
@@ -279,7 +367,6 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   int status;
   dlink_node *ptr;
   dlink_node *m;
-  char *id;
 
   assert(source_p != NULL);
   assert(MyConnect(source_p));
@@ -415,8 +502,10 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   if (source_p->id[0] == '\0') 
   {
+    char *id;
+
     for (id = uid_get(); hash_find_id(id); id = uid_get())
-      ;
+      ; /* nothing */
 
     strlcpy(source_p->id, id, sizeof(source_p->id));
     hash_add_id(source_p);

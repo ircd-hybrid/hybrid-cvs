@@ -19,30 +19,22 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.h,v 7.18 2003/05/22 17:53:23 joshk Exp $
+ *  $Id: list.h,v 7.19 2003/07/31 23:13:23 michael Exp $
  */
 
 #ifndef INCLUDED_list_h
 #define INCLUDED_list_h
-#include "memory.h"
 
 struct _dlink_node;
 struct _slink_node;
 struct Client;
-struct Class;
-struct User;
 
-extern void initUser(void);
-extern void count_user_memory(int *count, unsigned long *user_memory_used);
 extern void count_links_memory(int *count, unsigned long *links_memory_used);
-extern void free_user(struct User *, struct Client *);
-extern dlink_node *make_dlink_node(void);
-extern void free_dlink_node(dlink_node *lp);
 extern void init_dlink_nodes(void);
 extern void init_slink_nodes(void);
-extern void free_slink_node(slink_node *ptr);
+extern void free_dlink_node(dlink_node *);
+extern void free_slink_node(slink_node *);
+extern dlink_node *make_dlink_node(void);
 extern slink_node *make_slink_node(void);
-
-extern struct User *make_user(struct Client *);
 extern struct Server *make_server(struct Client *);
 #endif

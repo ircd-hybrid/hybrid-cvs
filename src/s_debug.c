@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.96 2003/07/19 09:57:23 michael Exp $
+ *  $Id: s_debug.c,v 7.97 2003/07/31 23:13:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -38,6 +38,7 @@
 #include "resv.h"
 #include "s_conf.h"
 #include "s_log.h"
+#include "s_user.h"
 #include "send.h"
 #include "whowas.h"
 #include "memory.h"
@@ -85,7 +86,7 @@ send_usage(struct Client *source_p)
 
   if (getrusage(RUSAGE_SELF, &rus) == -1)
   {
-    sendto_one(source_p,":%s NOTICE %s :Getruseage error: %s.",
+    sendto_one(source_p, ":%s NOTICE %s :Getruseage error: %s.",
                me.name, source_p->name, strerror(errno));
     return;
   }

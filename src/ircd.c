@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.313 2003/07/21 01:58:24 michael Exp $
+ *  $Id: ircd.c,v 7.314 2003/07/31 23:13:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -581,7 +581,7 @@ main(int argc, char *argv[])
   }
   else
   {
-      check_can_use_v6(); /* Done in close_all_connections normally */
+    check_can_use_v6(); /* Done in close_all_connections normally */
   }
 
   init_log(logFileName);
@@ -605,7 +605,7 @@ main(int argc, char *argv[])
   init_host_hash();          /* Host-hashtable. */
   clear_hash_parse();
   init_client();
-  initUser();
+  init_user();
   init_channels();
   init_class();
   init_whowas();
@@ -673,11 +673,10 @@ main(int argc, char *argv[])
 
   check_class();
   write_pidfile(pidFileName);
-  
-  ilog(L_NOTICE, "Server Ready");
-  
-  eventAddIsh("cleanup_glines", cleanup_glines, NULL, CLEANUP_GLINES_TIME);
 
+  ilog(L_NOTICE, "Server Ready");
+
+  eventAddIsh("cleanup_glines", cleanup_glines, NULL, CLEANUP_GLINES_TIME);
   eventAddIsh("cleanup_tklines", cleanup_tklines, NULL, CLEANUP_TKLINES_TIME);
 
   /* We want try_connections to be called as soon as possible now! -- adrian */
