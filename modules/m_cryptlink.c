@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.51 2003/06/12 22:05:54 db Exp $
+ *  $Id: m_cryptlink.c,v 1.52 2003/06/18 01:28:06 joshk Exp $
  */
 
 /*
@@ -95,7 +95,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 
 
@@ -355,7 +355,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
       {
           ClearCap(client_p,CAP_LL);
           sendto_realops_flags(UMODE_ALL, L_ALL,
-               "*** LazyLinks to a hub from a hub, thats a no-no.");
+               "*** LazyLinks to a hub from a hub, that's a no-no.");
       }
       else
       {
@@ -376,7 +376,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
       {
         ClearCap(client_p,CAP_LL);
         sendto_realops_flags(UMODE_ALL, L_ALL,
-          "*** LazyLinks to a leaf from a leaf, thats a no-no.");
+          "*** LazyLinks to a leaf from a leaf, that's a no-no.");
       }
   }
 
