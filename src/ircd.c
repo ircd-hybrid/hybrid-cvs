@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.223 2002/03/09 21:48:40 androsyn Exp $
+ *  $Id: ircd.c,v 7.224 2002/03/09 23:37:57 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -96,7 +96,6 @@
 #include "modules.h"
 #include "memory.h"
 #include "hook.h"
-#include "debug.h"
 #include "ircd_getopt.h"
 #include "balloc.h"
 /*

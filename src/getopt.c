@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: getopt.c,v 7.11 2002/01/05 09:15:12 a1kmm Exp $
+ *  $Id: getopt.c,v 7.12 2002/03/09 23:37:57 androsyn Exp $
  */
 
 #include <stdio.h>
@@ -27,7 +27,6 @@
 #include <string.h>
 
 #include "ircd_getopt.h"
-#include "debug.h"
 #include "config.h"
 
 #ifndef VMS
