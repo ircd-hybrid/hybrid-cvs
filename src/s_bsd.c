@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.72 2000/12/12 02:10:30 db Exp $
+ *  $Id: s_bsd.c,v 7.73 2000/12/12 02:40:37 db Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -74,8 +74,6 @@ extern struct sockaddr_in vserv;               /* defined in s_conf.c */
 const char* const NONB_ERROR_MSG   = "set_non_blocking failed for %s:%s"; 
 const char* const OPT_ERROR_MSG    = "disable_sock_options failed for %s:%s";
 const char* const SETBUF_ERROR_MSG = "set_sock_buffers failed for server %s:%s";
-
-struct Client* local[MAXCONNECTIONS];
 
 static const char *comm_err_str[] = { "Comm OK", "Error during bind()",
   "Error during DNS lookup", "connect timeout", "Error during connect()",
