@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.11 2000/11/28 06:21:12 db Exp $
+ * $Id: modules.c,v 7.12 2000/11/30 10:02:14 db Exp $
  */
 
 #include <dlfcn.h>
@@ -245,7 +245,7 @@ static void increase_modlist(void)
 {
   struct module **new_modlist = NULL;
 
-  if(num_mods < max_mods)
+  if((num_mods + 1) < max_mods)
     return;
 
   new_modlist = (struct module **)MyMalloc ( sizeof (struct module) *
