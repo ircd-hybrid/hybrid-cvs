@@ -1,3 +1,18 @@
+bill        2003/02/16 17:06:48 EST	(20030216_3)
+
+  Modified files:
+    contrib              m_whois.c 
+    src                  s_conf.c 
+  Log:
+  - ERR_NOSUCHNICK and RPL_ENDOFWHOIS were reversed in contrib/m_whois.c
+  - fixed slight logic error in remove_one_ip()
+  
+  Revision  Changes    Path
+  1.10      +3 -2      ircd-hybrid-7/contrib/m_whois.c
+  7.341     +1 -1      ircd-hybrid-7/src/s_conf.c
+
+
+
 lusky       2003/02/16 16:22:26 EST	(20030216_2)
 
   Modified files:
@@ -35118,4 +35133,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4235 2003/02/16 21:22:28 lusky Exp $
+$Id: ChangeLog,v 7.4236 2003/02/16 22:06:50 bill Exp $
