@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.35 2001/07/02 02:55:00 db Exp $
+ * $Id: m_info.h,v 7.36 2001/07/15 20:52:30 leeh Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -90,6 +90,12 @@ Info MyInformation[] = {
   { "HYBRID_SOMAXCONN", "", HYBRID_SOMAXCONN, "Maximum Queue Length of Pending Connections" },
 #endif /* SOMAXCONN */
 
+#ifdef IPV6
+  { "IPV6", "ON", 0, "IPv6 Support" },
+#else
+  { "IPV6", "OFF", 0, "IPv6 Support" },
+#endif
+
   { "MAX_CLIENTS", "", MAX_CLIENTS, "Default maximum Clients" },
 
   { "JOIN_LEAVE_COUNT_EXPIRE_TIME", "", JOIN_LEAVE_COUNT_EXPIRE_TIME, "Anti SpamBot Parameter" },
@@ -132,6 +138,12 @@ Info MyInformation[] = {
 
   { "OPER_SPAM_COUNTDOWN", "", OPER_SPAM_COUNTDOWN, "Anti SpamBot Parameter" },
 
+#ifdef PACE_CONNECT
+  { "PACE_CONNECT", "ON", 0, "Pace connections to the ircd" },
+#else
+  { "PACE_CONNECT", "OFF", 0, "Pace connections to the ircd" },
+#endif
+
 #ifdef HAVE_LIBCRYPTO
   { "HAVE_LIBCRYPTO", "ON", 0, "Enable OpenSSL CHALLENGE Support" },
 #else
@@ -162,9 +174,9 @@ Info MyInformation[] = {
   { "TS_WARN_DELTA_DEFAULT", "", TS_WARN_DELTA_DEFAULT, "Maximum TS Delta before Sending Warning" },
 
 #ifdef USE_GETTEXT
-  { "USE_GETTEXT", "ON", 0, "Use gettext() for message customisation at runtime" },
+  { "USE_GETTEXT", "ON", 0, "Use gettext() for message customisation" },
 #else
-  { "USE_GETTEXT", "OFF", 0, "Use gettext() for message customisation at runtime" },
+  { "USE_GETTEXT", "OFF", 0, "Use gettext() for message customisation" },
 #endif /* USE_GETTEXT */
 
 #ifdef USE_SYSLOG
