@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.386 2003/10/13 01:10:15 bill Exp $
+ *  $Id: s_serv.c,v 7.387 2003/10/14 01:32:22 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1191,7 +1191,7 @@ server_estab(struct Client *client_p)
                  client_p->info);
     else
       sendto_one(target_p,":%s SERVER %s 2 :%s%s", 
-                 me.name, client_p->name,
+                 ID_or_name(&me, target_p), client_p->name,
                  IsHidden(client_p) ? "(H) " : "",
                  client_p->info);
   }
@@ -1238,7 +1238,7 @@ server_estab(struct Client *client_p)
                      ID(up), target_p->name, target_p->hopcount+1,
                      target_p->id, IsHidden(target_p) ? "(H) " : "",
                      target_p->info);
-        else /* ts6 introducing non-ts6 server */
+        else /* introducing non-ts6 server linked through non-ts6 server */
           sendto_one(client_p, ":%s SERVER %s %d :%s%s",
                      target_p->serv->up, target_p->name,
                      target_p->hopcount+1, IsHidden(target_p) ? "(H) " : "",
