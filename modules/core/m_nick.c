@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.49 2001/01/05 23:53:33 davidt Exp $
+ *   $Id: m_nick.c,v 1.50 2001/01/18 02:35:01 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -785,6 +785,11 @@ nick_from_server(struct Client *cptr, struct Client *sptr, int parc,
   strcpy(sptr->name, nick);
   add_to_client_hash_table(nick, sptr);
 
+  /* Make sure everyone that has this client on its accept list
+   * loses that reference. 
+   */
+
+  del_all_accepts(sptr);
   return 0;
 }
 
