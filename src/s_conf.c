@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.49 2000/01/24 02:47:31 db Exp $
+ *  $Id: s_conf.c,v 7.50 2000/02/02 01:41:57 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -1766,6 +1766,9 @@ static void initconf(FBFILE* file)
       if(!p)
         p = strchr(line, '\0');
 
+      if (!*line || line[0] == '#')
+        continue;
+
       if(line[1] != ':')
 	{
 	  while (p != line)
@@ -1783,9 +1786,6 @@ static void initconf(FBFILE* file)
 	}
 
       ReplaceQuotes(quotedLine,line);
-
-      if (!*quotedLine || quotedLine[0] == '#')
-        continue;
 
       if(quotedLine[0] == '.')
         {
