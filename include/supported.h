@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: supported.h,v 1.6 2001/05/02 23:00:05 toot Exp $
+ * $Id: supported.h,v 1.7 2001/05/02 23:07:43 toot Exp $
  * 
  */
 #ifndef INCLUDED_supported_h
@@ -27,6 +27,7 @@
 
 #define FEATURES "KNOCK"\
                 " VCHANS" \
+                " WALLCHOPS" \
                 " MODES=%i" \
                 " MAXCHANNELS=%i" \
                 " MAXBANS=%i" \
