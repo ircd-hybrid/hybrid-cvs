@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.52 2001/03/31 23:01:42 db Exp $
+ *   $Id: s_debug.c,v 7.53 2001/04/21 18:23:42 fl_ Exp $
  */
 
 #include <sys/types.h> 
@@ -450,7 +450,11 @@ void count_memory(struct Client *source_p)
 
   count_user_memory( &user_count, (int *)&user_memory_used );
 
-  assert (users_counted == user_count);
+/*  assert (users_counted == user_count); */
+  if(users_counted != user_count)
+    sendto_realops_flags(FLAGS_ALL, "*** WARNING: Users counted: %d != User count: %d",
+                           users_counted, user_count);
+  
 
 #if 0
   total_memory += user_memory_used;
