@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.7 2000/12/01 22:17:57 db Exp $
+ *   $Id: m_kick.c,v 1.8 2000/12/04 06:35:09 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -88,10 +88,10 @@ int     m_kick(struct Client *cptr,
     comment[TOPICLEN] = '\0';
 
   *buf = '\0';
-  p = strchr(parv[1],',');
-  if(p)
+  if( (p = strchr(parv[1],',')) )
     *p = '\0';
-  name = parv[1]; /* strtoken(&p, parv[1], ","); */
+
+  name = parv[1];
 
   chptr = get_channel(sptr, name, !CREATE);
   if (!chptr)
@@ -110,7 +110,7 @@ int     m_kick(struct Client *cptr,
 	}
     }
 
-  if (!IsServer(sptr) && !is_chan_op(chptr, sptr) ) 
+  if (!IsServer(sptr) && !is_any_op(chptr, sptr) ) 
     { 
       /* was a user, not a server, and user isn't seen as a chanop here */
       
@@ -166,6 +166,14 @@ int     m_kick(struct Client *cptr,
 
   if (IsMember(who, chptr))
     {
+      /* half ops cannot kick full chanops */
+      if (is_half_op(chptr,sptr) && is_chan_op(chptr,who))
+	{
+          sendto_one(sptr, form_str(ERR_CHANOPRIVSNEEDED),
+                     me.name, parv[0], name);
+	  return 0;
+	}
+
       if(GlobalSetOptions.hide_chanops)
 	{
 	  sendto_channel_butserv(NON_CHANOPS, chptr, sptr,

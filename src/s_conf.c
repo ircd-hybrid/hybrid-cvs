@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.85 2000/12/04 05:50:13 db Exp $
+ *  $Id: s_conf.c,v 7.86 2000/12/04 06:35:12 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -2549,7 +2549,7 @@ void read_conf_files(int cold)
     }
 
   dfilename = get_conf_name(DLINE_TYPE);
-  if (irccmp(filename, dfilename) && irccmp(kfilename, dfilename)
+  if (irccmp(filename, dfilename) && irccmp(kfilename, dfilename))
     {
       if ((file = openconf(dfilename)) == 0)
 	{

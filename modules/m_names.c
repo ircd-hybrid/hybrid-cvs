@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.10 2000/12/04 03:52:45 db Exp $
+ *   $Id: m_names.c,v 1.11 2000/12/04 06:35:09 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -166,7 +166,7 @@ void names_all_visible_channels(struct Client *sptr)
 	  else
 	    chname = chptr->chname;
 
-	  if(GlobalSetOptions.hide_chanops && !is_chan_op(chptr,sptr))
+	  if(GlobalSetOptions.hide_chanops && !is_any_op(chptr,sptr))
 	    {
 	      show_ops_flag = "";
 	      show_voiced_flag = "";

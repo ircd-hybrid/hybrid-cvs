@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.8 2000/12/03 12:18:18 db Exp $
+ *   $Id: m_mode.c,v 1.9 2000/12/04 06:35:09 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -155,7 +155,8 @@ int m_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   else
     if (!chptr)
       {
-	sendto_one(sptr, form_str(ERR_NOSUCHCHANNEL), me.name, parv[0], parv[1]);
+	sendto_one(sptr, form_str(ERR_NOSUCHCHANNEL),
+		   me.name, parv[0], parv[1]);
 	return 0;
       }
 

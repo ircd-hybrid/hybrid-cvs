@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.12 2000/12/01 22:45:54 db Exp $
+ *   $Id: m_whois.c,v 1.13 2000/12/04 06:35:10 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -302,7 +302,7 @@ void whois_person(struct Client *sptr,struct Client *acptr)
 
       if (ShowChannel(sptr, chptr))
 	{
-	  if (GlobalSetOptions.hide_chanops && !is_chan_op(chptr,sptr))
+	  if (GlobalSetOptions.hide_chanops && !is_any_op(chptr,sptr))
 	    {
 	      ircsprintf(buf2,"%s ",chname);
 	    }

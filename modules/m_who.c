@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.10 2000/12/02 20:25:43 toot Exp $
+ *   $Id: m_who.c,v 1.11 2000/12/04 06:35:09 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -383,7 +383,7 @@ void    do_who(struct Client *sptr,
 {
   char  status[5];
 
-  if(GlobalSetOptions.hide_chanops && !is_chan_op(chptr,sptr))
+  if(GlobalSetOptions.hide_chanops && !is_any_op(chptr,sptr))
     {
       ircsprintf(status,"%c%s", 
 		 acptr->user->away ? 'G' : 'H',

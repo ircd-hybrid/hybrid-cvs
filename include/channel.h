@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.40 2000/12/04 03:52:41 db Exp $
+ * $Id: channel.h,v 7.41 2000/12/04 06:35:05 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -105,6 +105,8 @@ extern int     can_send (struct Channel *chptr, struct Client *who);
 extern int     is_banned (struct Channel *chptr, struct Client *who);
 
 extern int     is_chan_op (struct Channel *chptr,struct Client *who);
+extern int     is_any_op (struct Channel *chptr,struct Client *who);
+extern int     is_half_op (struct Channel *chptr,struct Client *who);
 
 extern void    send_channel_modes (struct Client *, struct Channel *);
 extern int     check_channel_name(const char* name);
