@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: sprintf_irc.h,v 7.9 2003/06/01 18:47:01 joshk Exp $
+ *  $Id: sprintf_irc.h,v 7.10 2003/07/08 16:59:25 joshk Exp $
  */
 
 #ifndef SPRINTF_IRC
@@ -31,7 +31,10 @@
  */
 
 extern int vsprintf_irc(char *str, const char *format, va_list);
+
+/* XXX NOT USED AND NOT DEFINED */
 extern int vsnprintf_irc(char *, int, const char*, va_list);
+
 /* old */
 /* extern int ircsprintf(char *str, char *format, ...); */
 /* */
