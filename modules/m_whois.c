@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.108 2003/06/21 20:09:21 metalrock Exp $
+ *  $Id: m_whois.c,v 1.109 2003/07/18 18:10:09 bill Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.108 $";
+const char *_version = "$Revision: 1.109 $";
 #endif
 
 /*
@@ -225,7 +225,8 @@ do_whois(struct Client *client_p, struct Client *source_p,
       return;
     }
     /* Oh-oh wilds is true so have to do it the hard expensive way */
-    found = global_whois(source_p,nick,wilds,glob);
+    if (MyClient(source_p))
+      found = global_whois(source_p,nick,wilds,glob);
   }
 
   if (!found)
@@ -455,8 +456,6 @@ static void
 ms_whois(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  char *wild_ptr;
-
   if (!IsClient(source_p))
     return;
 
@@ -568,20 +567,6 @@ ms_whois(struct Client *client_p, struct Client *source_p,
    * to whois, so make parv[1] = parv[2] so do_whois is ok -- fl_
    */
     parv[1] = parv[2];
-
-    /*
-     * do not allow remote users to generate requests with wildcards,
-     * too much potential for abuse.  -bill 05/03
-     */
-    for (wild_ptr = parv[2]; *wild_ptr; ++wild_ptr)
-    {
-      if (*wild_ptr == '?' || *wild_ptr == '*')
-      {
-        sendto_one(source_p, form_str(ERR_NOSUCHNICK),
-                   me.name, source_p->name, parv[2]);
-        return;
-      }
-    }
 
     do_whois(client_p, source_p, parc, parv);
     return;
