@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.21 2000/12/07 08:18:59 db Exp $
+ *   $Id: m_message.c,v 1.22 2000/12/07 08:40:24 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -233,9 +233,9 @@ int     m_message(int p_or_n,
  *		  pointers to channels or clients
  *		  if source client is an oper
  *		  all the classic old bizzare oper privmsg tricks
- *		  are parsed and sent as is...
+ *		  are parsed and sent as is, if prefixed with $
+ *		  to disambiguate.
  *
- * This function will be also used in m_notice.c
  */
 
 int build_target_list(int p_or_n,
