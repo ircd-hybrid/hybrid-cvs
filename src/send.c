@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.88 2000/12/27 19:08:14 davidt Exp $
+ *   $Id: send.c,v 7.89 2000/12/28 22:17:41 davidt Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -561,7 +561,7 @@ sendto_ll_serv_butone(struct Client *one, struct Client *sptr, int add,
       if (one && (cptr == one->from))
         continue;
       
-      if (IsCapable(cptr,CAP_LL))
+      if (IsCapable(cptr,CAP_LL) && ConfigFileEntry.hub)
 	{
 	  if( ( sptr->lazyLinkClientExists &
 		cptr->localClient->serverMask) == 0)
