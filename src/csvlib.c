@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.8 2003/05/15 03:37:58 db Exp $
+ *  $Id: csvlib.c,v 7.9 2003/05/16 13:29:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -235,7 +235,6 @@ write_conf_line(struct Client *source_p, struct ConfItem *aconf,
  * output	-
  * side effects - single line is written to csv conf file
  */
-
 static int
 write_csv_line(FBFILE *out, const char *format, ...)
 {
@@ -244,7 +243,7 @@ write_csv_line(FBFILE *out, const char *format, ...)
   va_list args;
   char tmp[1024];
   char *str = tmp;
-  char *null_string = "";
+  const char *null_string = "";
 
   if (out == NULL)
     return(0);

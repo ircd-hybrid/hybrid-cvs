@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: rsa.c,v 7.28 2003/05/02 08:11:35 michael Exp $
+ *  $Id: rsa.c,v 7.29 2003/05/16 13:29:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,7 @@ static void binary_to_hex(unsigned char *bin, char *hex, int length);
 void
 report_crypto_errors(void)
 {
-  unsigned long e = 0;
+  unsigned long e   = 0;
   unsigned long cnt = 0;
 
   ERR_load_crypto_strings();
@@ -70,9 +70,9 @@ report_crypto_errors(void)
 int
 verify_private_key(void)
 {
-  BIO * file;
-  RSA * key;
-  RSA * mkey;
+  BIO *file;
+  RSA *key;
+  RSA *mkey;
 
   /* If the rsa_private_key directive isn't found, error out. */
   if (ServerInfo.rsa_private_key == NULL)
@@ -163,12 +163,12 @@ verify_private_key(void)
 static void
 binary_to_hex(unsigned char *bin, char *hex, int length)
 {
-  char *trans = "0123456789ABCDEF";
+  static char trans[] = "0123456789ABCDEF";
   int i;
 
   for(i = 0; i < length; i++)
   {
-    hex[i << 1]       = trans[bin[i] >> 4];
+    hex[i  << 1]      = trans[bin[i] >> 4];
     hex[(i << 1) + 1] = trans[bin[i] & 0xf];
   }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.4 2003/05/16 06:17:28 db Exp $
+ *  $Id: m_xline.c,v 1.5 2003/05/16 13:29:26 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&xline_msgtab);
   mod_add_cmd(&unxline_msgtab);
 }
-const char *_version = "$Revision: 1.4 $";
+const char *_version = "$Revision: 1.5 $";
 #endif
 
 
@@ -95,7 +95,7 @@ const char *_version = "$Revision: 1.4 $";
  */
 static void
 mo_xline(struct Client *client_p, struct Client *source_p,
-	 int parc, char *parv[])
+         int parc, char *parv[])
 {
   struct ConfItem *aconf;
   const char *x_type, *x_reason;
@@ -105,8 +105,8 @@ mo_xline(struct Client *client_p, struct Client *source_p,
 
   if (!IsOperX(source_p))
   {
-    sendto_one(source_p,":%s NOTICE %s :You need to have XLINE privs;",
-	       me.name,source_p->name);
+    sendto_one(source_p, ":%s NOTICE %s :You need xline = yes;",
+               me.name, source_p->name);
     return;
   }
 
@@ -170,21 +170,21 @@ ms_xline(struct Client *client_p, struct Client *source_p,
  */
 static void
 mo_unxline(struct Client *client_p, struct Client *source_p,
-	   int parc, char *parv[])
+           int parc, char *parv[])
 {
   char *x_pattern;
 
   if (!IsOperX(source_p))
   {
-    sendto_one(source_p,":%s NOTICE %s :You need to have XLINE privs;",
-	       me.name,source_p->name);
+    sendto_one(source_p, ":%s NOTICE %s :You need xline = yes;",
+	       me.name, source_p->name);
     return;
   }
 
   if (parc < 2)
   {
-    sendto_one(source_p,":%s NOTICE %s :UNXLINE pattern",
-	       me.name,source_p->name);
+    sendto_one(source_p, ":%s NOTICE %s :UNXLINE pattern",
+	       me.name, source_p->name);
     return;
   }
 

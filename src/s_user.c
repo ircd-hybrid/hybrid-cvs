@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.255 2003/05/13 02:32:19 joshk Exp $
+ *  $Id: s_user.c,v 7.256 2003/05/16 13:29:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -321,7 +321,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   if ((status = check_client(client_p, source_p, username)) < 0)
     return(CLIENT_EXITED);
 
-  if (!valid_hostname(source_p->host))
+  if (valid_hostname(source_p->host) == 0)
   {
     sendto_one(source_p, ":%s NOTICE %s :*** Notice -- You have an illegal character "
                "in your hostname", me.name, source_p->name);
@@ -527,10 +527,15 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
 
   source_p->servptr = find_server(user->server);
 
+  /* Super GhostDetect:
+   * If we can't find the server the user is supposed to be on,
+   * then simply blow the user away.        -Taner
+   */
   if (source_p->servptr == NULL)
   {
-    sendto_realops_flags(UMODE_ALL, L_ALL,"Ghost killed: %s on invalid server %s",
-                         source_p->name, source_p->user->server);
+    sendto_realops_flags(UMODE_ALL, L_ALL, "No server %s for user %s[%s@%s] from %s",
+                         source_p->user->server, source_p->name, source_p->username,
+                         source_p->host, source_p->from->name);
     kill_client(client_p, source_p, "%s (Server doesn't exist)", me.name);
 
     /* XXX */
@@ -540,7 +545,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
 
   dlinkAdd(source_p, &source_p->lnode, &source_p->servptr->serv->users);
 
-  if ((target_p = find_server(user->server)) && target_p->from != source_p->from)
+  if ((target_p = source_p->servptr) && target_p->from != source_p->from)
   {
     sendto_realops_flags(UMODE_DEBUG, L_ALL,
                          "Bad User [%s] :%s USER %s@%s %s, != %s[%s]",
@@ -552,20 +557,6 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
                 me.name, user->server, target_p->from->name);
     SetKilled(source_p);
     return(exit_client(source_p, source_p, &me, "USER server wrong direction"));
-  }
-
-  /* Super GhostDetect:
-   * If we can't find the server the user is supposed to be on,
-   * then simply blow the user away.        -Taner
-   */
-  if (target_p == NULL)
-  {
-    kill_client(client_p, source_p, "%s GHOST (no server found)", me.name);
-    sendto_realops_flags(UMODE_ALL, L_ALL, "No server %s for user %s[%s@%s] from %s",
-                         user->server, source_p->name, source_p->username,
-                         source_p->host, source_p->from->name);
-    SetKilled(source_p);
-    return(exit_client(source_p, source_p, &me, "Ghosted Client"));
   }
 
   return(introduce_client(client_p, source_p, user, nick));

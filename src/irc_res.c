@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.15 2003/05/16 06:17:30 db Exp $
+ * $Id: irc_res.c,v 7.16 2003/05/16 13:29:28 michael Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -49,7 +49,7 @@
 #error this code needs to be able to address individual octets 
 #endif
 
-/* $Id: irc_res.c,v 7.15 2003/05/16 06:17:30 db Exp $ */
+/* $Id: irc_res.c,v 7.16 2003/05/16 13:29:28 michael Exp $ */
 
 static PF res_readreply;
 
@@ -503,16 +503,16 @@ do_query_name(const struct DNSQuery* query, const char* name,
  * do_query_number - Use this to do reverse IP# lookups.
  */
 static void
-do_query_number(const struct DNSQuery* query, const struct irc_ssaddr* addr,
-		struct reslist *request)
+do_query_number(const struct DNSQuery *query, const struct irc_ssaddr *addr,
+                struct reslist *request)
 {
-  char  ipbuf[128];
-  const unsigned char* cp;
+  char ipbuf[128];
+  const unsigned char *cp;
 #ifdef IPV6
-  char *intarpa;
+  const char *intarpa;
 #endif
 
-  if(addr->ss.ss_family == AF_INET)
+  if (addr->ss.ss_family == AF_INET)
   {
     struct sockaddr_in *v4 = (struct sockaddr_in *)addr;
     cp = (const unsigned char*) &v4->sin_addr.s_addr;
@@ -522,11 +522,11 @@ do_query_number(const struct DNSQuery* query, const struct irc_ssaddr* addr,
         (unsigned int)(cp[1]), (unsigned int)(cp[0]));
   }
 #ifdef IPV6
-  else if(addr->ss.ss_family == AF_INET6)
+  else if (addr->ss.ss_family == AF_INET6)
   {
     struct sockaddr_in6 *v6 = (struct sockaddr_in6 *)addr;
-    cp = (const unsigned char*)&v6->sin6_addr.s6_addr;
-    if(request != NULL && request->state == REQ_INT)
+    cp = (const unsigned char *)&v6->sin6_addr.s6_addr;
+    if (request != NULL && request->state == REQ_INT)
       intarpa = "int";
     else
       intarpa = "arpa";
