@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.39 2001/12/14 08:49:20 a1kmm Exp $
+ *   $Id: m_oper.c,v 1.40 2001/12/14 14:31:29 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -86,7 +86,8 @@ char *_version = "20010507";
 static void m_oper(struct Client *client_p, struct Client *source_p,
                   int parc, char *parv[])
 {
-  struct ConfItem *aconf, *oconf;
+  struct ConfItem *aconf;
+  struct ConfItem *oconf = NULL;
   char  *name;
   char  *password;
   dlink_node *ptr;
@@ -123,6 +124,7 @@ static void m_oper(struct Client *client_p, struct Client *source_p,
       ptr = source_p->localClient->confs.head;
       if (ptr)
       {
+       
         oconf = ptr->data;
         detach_conf(source_p,oconf);
       }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.80 2001/12/10 23:21:32 leeh Exp $
+ *   $Id: m_message.c,v 1.81 2001/12/14 14:31:29 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -803,6 +803,13 @@ handle_opers(int p_or_n,
   {
     if((*(nick+1) == '$' || *(nick+1) == '#'))
       nick++;
+    else if(MyOper(source_p))
+    {
+      sendto_one(source_p, 
+                 ":%s NOTICE %s :The command %s %s is no longer supported, please use $%s",
+		 me.name, source_p->name, command, nick, nick);
+      return;
+    }
       
     if (!(s = (char *)strrchr(nick, '.')))
     {
