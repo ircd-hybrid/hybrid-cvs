@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.45 2003/07/01 01:18:56 joshk Exp $
+ *   $Id: m_opme.c,v 1.46 2003/07/01 01:19:48 joshk Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 
 #endif
 
@@ -182,6 +182,7 @@ mo_opme(struct Client *client_p, struct Client *source_p,
   if (devoice || dehalfop)
 #else
   if (devoice)
+#endif
   {
     snprintf(buf, sizeof(buf), "%s %s", source_p->name, source_p->name);
     parabuf = buf;
