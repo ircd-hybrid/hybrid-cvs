@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.124 2001/05/02 16:31:50 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.125 2001/05/02 18:35:07 androsyn Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -645,7 +645,9 @@ static void
 comm_connect_callback(int fd, int status)
 {
  CNCB *hdl;
-  
+ /* This check is gross..but probably necessary */
+ if(fd_table[fd].connect.callback == NULL)
+ 	return;
  /* Clear the connect flag + handler */
  hdl = fd_table[fd].connect.callback;
  fd_table[fd].connect.callback = NULL;
