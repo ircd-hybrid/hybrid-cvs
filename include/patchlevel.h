@@ -19,11 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: patchlevel.h,v 7.24 2002/03/09 23:41:31 androsyn Exp $
+ *  $Id: patchlevel.h,v 7.25 2002/04/01 04:52:43 db Exp $
  */
 
 #ifndef PATCHLEVEL
 #define VERSION      "hybrid-7beta12"
-#define RELNAME      "-LARNES-DEAD-CHICKEN-RELEASE"
+#define RELNAME      "-next-one-is-the-rc"
 #define PATCHLEVEL   VERSION RELNAME
 #endif
