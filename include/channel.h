@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.72 2001/05/26 00:25:12 davidt Exp $
+ * $Id: channel.h,v 7.73 2001/06/10 05:12:40 a1kmm Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -31,6 +31,8 @@
 #ifndef INCLUDED_ircd_defs_h
 #include "ircd_defs.h"        /* buffer sizes */
 #endif
+
+#define USE_TABLE_MODE
 
 struct Client;
 
@@ -248,5 +250,19 @@ typedef struct Ban      /* also used for exceptions -orabidoo */
 #define MAX_VCHAN_TIME (60*60)
 /* Number of chanops, peon, voiced, halfops sublists */
 #define MAX_SUBLISTS 4
-#endif  /* INCLUDED_channel_h */
 
+#ifdef USE_TABLE_MODE
+struct ChModeChange
+{
+ char letter;
+ char *arg;
+ int caps, nocaps, mems;
+};
+
+#define CHACCESS_CHANOP 3
+#define CHACCESS_HALFOP 2
+#define CHACCESS_VOICED 1
+#define CHACCESS_PEON   0
+
+#endif
+#endif  /* INCLUDED_channel_h */
