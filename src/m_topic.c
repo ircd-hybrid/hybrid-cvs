@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 7.3 2000/01/02 05:34:59 db Exp $
+ *   $Id: m_topic.c,v 7.4 2000/02/09 12:03:19 db Exp $
  */
 #include "m_commands.h"
 #include "channel.h"
@@ -177,12 +177,10 @@ int     m_topic(struct Client *cptr,
               sendto_one(sptr, form_str(RPL_TOPIC),
                          me.name, parv[0],
                          chptr->chname, chptr->topic);
-#ifdef TOPIC_INFO
               sendto_one(sptr, form_str(RPL_TOPICWHOTIME),
                          me.name, parv[0], chptr->chname,
                          chptr->topic_nick,
                          chptr->topic_time);
-#endif
             }
         }
     }

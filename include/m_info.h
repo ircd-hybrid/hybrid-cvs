@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.5 2000/01/24 22:22:25 db Exp $
+ * $Id: m_info.h,v 7.6 2000/02/09 12:03:16 db Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -528,11 +528,7 @@ Info MyInformation[] = {
 
   { "TIMESEC", "", TIMESEC, "Time Interval to Wait Before Checking Pings" },
 
-#ifdef TOPIC_INFO
   { "TOPIC_INFO", "ON", 0, "Show Who Set a Topic and When" },
-#else
-  { "TOPIC_INFO", "OFF", 0, "Show Who Set a Topic and When" },
-#endif /* TOPIC_INFO */
 
   { "TS_MAX_DELTA", "", TS_MAX_DELTA, "Maximum Allowed TS Delta from another Server" },
   { "TS_WARN_DELTA", "", TS_WARN_DELTA, "Maximum TS Delta before Sending Warning" },

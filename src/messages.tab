@@ -19,7 +19,7 @@
  *
  *      I kind of modernized this code a bit. -Dianora
  *
- *   $Id: messages.tab,v 7.8 2000/01/17 03:21:30 db Exp $
+ *   $Id: messages.tab,v 7.9 2000/02/09 12:03:20 db Exp $
  */
 
 static  char *  replies[] = {
@@ -360,11 +360,7 @@ static  char *  replies[] = {
 /* 330 */       (char *)NULL,
 /* 331 RPL_NOTOPIC, */          ":%s 331 %s %s :No topic is set.",
 /* 332 RPL_TOPIC, */            ":%s 332 %s %s :%s",
-#ifdef TOPIC_INFO
 /* 333 RPL_TOPICWHOTIME, */     ":%s 333 %s %s %s %lu",
-#else
-/* 333 */       (char *)NULL,
-#endif
 /* 334 */       (char *)NULL,
 /* 335 */       (char *)NULL,
 /* 336 */       (char *)NULL,
