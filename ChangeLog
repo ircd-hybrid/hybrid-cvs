@@ -1,3 +1,15 @@
+db          2003/01/16 20:10:00 EST	(20030117_1)
+
+  Modified files:
+    modules              m_lljoin.c 
+  Log:
+  - removed double include of hash.h
+  
+  Revision  Changes    Path
+  1.58      +1 -2      ircd-hybrid-7/modules/m_lljoin.c
+
+
+
 db          2003/01/16 19:01:03 EST	(20030117_0)
 
   Modified files:
@@ -34043,4 +34055,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4169 2003/01/17 00:01:10 db Exp $
+$Id: ChangeLog,v 7.4170 2003/01/17 01:10:02 db Exp $
