@@ -2,7 +2,7 @@
  * modules/m_resv.c
  * Copyright (C) 2001 Hybrid Development Team
  *
- * $Id: m_resv.c,v 1.7 2001/07/03 21:14:58 leeh Exp $
+ * $Id: m_resv.c,v 1.8 2001/07/04 14:09:53 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -48,9 +48,6 @@ _moddeinit(void)
 
 char *_version = "20010626";
 #endif
-
-#define RESV_CHANNEL 0
-#define RESV_NICK 1
 
 /*
  * mo_resv()
