@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.82 2002/08/15 14:15:32 db Exp $
+ *  $Id: m_gline.c,v 1.83 2002/09/02 05:34:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -113,7 +113,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.82 $";
+const char *_version = "$Revision: 1.83 $";
 #endif
 /*
  * mo_gline()
@@ -149,7 +149,7 @@ mo_gline(struct Client *client_p, struct Client *source_p,
 	  return;
 	}
 			
-      if ( (host = strchr(parv[1], '@')) || *parv[1] == '*' )
+      if ((host = strchr(parv[1], '@')) || *parv[1] == '*')
 	{
 	  /* Explicit user@host mask given */
 	      

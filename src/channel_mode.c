@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.59 2002/08/28 18:13:34 db Exp $
+ *  $Id: channel_mode.c,v 7.60 2002/09/02 05:34:22 db Exp $
  */
 
 #include "stdinc.h"
@@ -818,6 +818,9 @@ chm_simple(struct Client *client_p, struct Client *source_p,
     *errors |= SM_ERR_NOOPS;
     return;
   }
+
+  if (MyClient(source_p) && (++mode_limit > MAXMODEPARAMS))
+    return;
 
   /* setting + */
   if ((dir == MODE_ADD) && !(chptr->mode.mode & mode_type))

@@ -1,10 +1,14 @@
-$Id: README,v 1.22 2002/08/19 05:23:14 db Exp $
+$Id: README,v 1.23 2002/09/02 05:34:18 db Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
 hybrid tree.  The coding team do not officially support the contrib/ 
 modules, or guarantee any of them will actually work.
 
+Once again. WITH feeling. Not all of these modules have been thoroughly
+tested! Thats why some of them are in contrib not in the main tree yet!
+At least one module in contrib has been known to core servers when used.
+You have been warned.
 
 Modules
 -------

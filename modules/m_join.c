@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.90 2002/08/08 15:43:24 bill Exp $
+ *  $Id: m_join.c,v 1.91 2002/09/02 05:34:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.90 $";
+const char *_version = "$Revision: 1.91 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);
@@ -93,12 +93,15 @@ m_join(struct Client *client_p,
   int   i, flags = 0;
   char  *p = NULL, *p2 = NULL, *p3 = NULL;
   int   successful_join_count = 0; /* Number of channels successfully joined */
+  int   burst_modes = NO;
 #ifdef VCHANS
   struct Channel *vchan_chptr = NULL;
   char *pvc = NULL;
   int   vc_ts;
 #endif
-  
+  char modebuf[MODEBUFLEN];
+  char parabuf[MODEBUFLEN];
+
   if (*parv[1] == '\0')
     {
       sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
@@ -120,11 +123,16 @@ m_join(struct Client *client_p,
       vkey = key;
     }
 
+
   for (name = strtoken(&p, parv[1], ","); name;
          key = (key) ? strtoken(&p2, NULL, ",") : NULL,
          vkey = (parc>3) ? ((vkey) ? strtoken(&p3, NULL, ",") : NULL) : key,
          name = strtoken(&p, NULL, ","))
     {
+      modebuf[0] = '+';
+      modebuf[1] = '\0';
+      parabuf[0] = '\0';
+      burst_modes = NO;
 
       if(!check_channel_name(name))
       {
@@ -158,8 +166,7 @@ m_join(struct Client *client_p,
 	continue;
       }
 
-      if(ConfigServerHide.disable_local_channels &&
-        (*name == '&'))
+      if(ConfigServerHide.disable_local_channels && (*name == '&'))
       {
         sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
 	           me.name, source_p->name, name);
@@ -185,6 +192,17 @@ m_join(struct Client *client_p,
 	  continue;
 	}
 
+      if ((source_p->user->joined >= ConfigChannel.max_chans_per_user) &&
+         (!IsOper(source_p) || (source_p->user->joined >=
+	                        ConfigChannel.max_chans_per_user*3)))
+	{
+	  sendto_one(source_p, form_str(ERR_TOOMANYCHANNELS),
+		     me.name, parv[0], name);
+	  if(successful_join_count != 0)
+	    source_p->localClient->last_join_time = CurrentTime;
+	  return;
+	}
+
       /* look for the channel */
       if((chptr = hash_find_channel(name)) != NULL)
 	{
@@ -200,12 +218,10 @@ m_join(struct Client *client_p,
 
 #ifdef VCHANS
           /* Check if they want to join a subchan or something */
-	  vchan_chptr = select_vchan(chptr, source_p, vkey, name);
-          
-          if (!vchan_chptr)
+	  if((vchan_chptr = select_vchan(chptr, source_p, vkey, name)) == NULL)
             continue;
 
-          if (vchan_chptr != chptr)
+          if(vchan_chptr != chptr)
           {
             joining_vchan = 1;
             root_chptr = chptr;
@@ -218,12 +234,23 @@ m_join(struct Client *client_p,
             root_chptr = chptr;
           }
           
+	  /* save the expense of calling channel_modes()
+	   * if zero users on channel, then I have to call channel_modes().
+	   * (N.B. if channel_modes() was rewritten to be sane and fast
+	   * this check wouldn't be worth the bother.)
+	   * Just because client ends up a chanop, doesn't mean
+	   * channel_modes() has to be called. 
+	   * -Dianora
+	   */
 	  if (chptr->users == 0)
+	  {
 	    flags = CHFL_CHANOP;
+	    burst_modes = YES;
+	  }
 	  else
 	    flags = 0;
 	}
-      else
+      else	/* channel does NOT exist, so create it */
 	{
 	  if(splitmode && !IsOper(source_p) && (*name != '&') && 
             (ConfigChannel.no_create_on_split || ConfigChannel.no_join_on_split))
@@ -237,8 +264,7 @@ m_join(struct Client *client_p,
 	  if(!ServerInfo.hub)
 	    {
 	      /* LazyLinks */
-	      if( (*name != '&') && uplink
-		  && IsCapable(uplink, CAP_LL) )
+	      if((*name != '&') && uplink && IsCapable(uplink, CAP_LL))
 		{
 		  sendto_one(uplink,":%s CBURST %s %s %s",
 			     me.name,name,source_p->name, key ? key: "" );
@@ -246,35 +272,16 @@ m_join(struct Client *client_p,
 		  return;
 		}
 	    }
-	}
 
-      if ((source_p->user->joined >= ConfigChannel.max_chans_per_user) &&
-         (!IsOper(source_p) || (source_p->user->joined >=
-	                        ConfigChannel.max_chans_per_user*3)))
-	{
-	  sendto_one(source_p, form_str(ERR_TOOMANYCHANNELS),
-		     me.name, parv[0], name);
-	  if(successful_join_count)
-	    source_p->localClient->last_join_time = CurrentTime;
-	  return;
-	}
-
-      if(flags == 0)        /* if channel doesn't exist, don't penalize */
-	successful_join_count++;
-
-      if(chptr == NULL)     /* If I already have a chptr, no point doing this */
-	{
-	  chptr = get_or_create_channel(source_p, name, NULL);
-	  root_chptr = chptr;
-	}
-      
-      if(chptr == NULL)
-	{
-	  sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
-		     me.name, parv[0], name);
-	  if(successful_join_count > 0)
-	    successful_join_count--;
-	  continue;
+	  /* So create it */
+	  if ((chptr = get_or_create_channel(source_p, name, NULL)) == NULL)
+	  {
+	    sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
+		       me.name, parv[0], name);
+	    continue;
+	  }
+	  else
+	    root_chptr = chptr;
 	}
 
     if (!IsOper(source_p))
@@ -284,26 +291,20 @@ m_join(struct Client *client_p,
        * can_join checks for +i key, bans.
        */
 
-      if ( (i = can_join(source_p, chptr, key)) )
+      if ((i = can_join(source_p, chptr, key)))
 	{
-	  sendto_one(source_p,
-		     form_str(i), me.name, parv[0], name);
-	  if(successful_join_count > 0)
-	    successful_join_count--;
+	  sendto_one(source_p, form_str(i), me.name, parv[0], name);
+	  successful_join_count++;
 	  continue;
 	}
 
-      /*
-      **  Complete user entry to the new channel (if any)
-      */
+      /* add the user to the channel */
       
       add_user_to_channel(chptr, source_p, flags);
 
 #ifdef VCHANS
       if (joining_vchan)
-	{
-	  add_vchan_to_client_cache(source_p,root_chptr,chptr);
-	}
+	add_vchan_to_client_cache(source_p,root_chptr,chptr);
 #endif
 
       /*
@@ -313,6 +314,23 @@ m_join(struct Client *client_p,
       if (flags & CHFL_CHANOP)
 	{
 	  chptr->channelts = CurrentTime;
+
+	  /* detected a persistent channel, so
+	   * have to call channel_modes() here.
+	   */
+	  if (burst_modes)
+	  {
+	    channel_modes(chptr, client_p, modebuf, parabuf);
+	  }
+	  else /* Otherwise, its a stock +nt */
+	  {
+	    chptr->mode.mode |= MODE_TOPICLIMIT;
+	    chptr->mode.mode |= MODE_NOPRIVMSGS;
+	    modebuf[0] = '+';
+	    modebuf[1] = 'n';
+	    modebuf[2] = 't';
+	    modebuf[3] = '\0';
+	  }
 
           /*
            * XXX - this is a rather ugly hack.
@@ -343,51 +361,40 @@ m_join(struct Client *client_p,
                 }
             }
 #endif
-                  
+
 	  sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS,
                         LL_ICLIENT,
-                        ":%s SJOIN %lu %s + :@%s",
-                        me.name,
-                        (unsigned long) chptr->channelts,
-                        chptr->chname,
-                        parv[0]);
+                        ":%s SJOIN %lu %s %s %s:@%s",
+                        me.name, (unsigned long) chptr->channelts,
+                        chptr->chname, modebuf, parabuf, parv[0]);
+	  /*
+	   * notify all other users on the new channel
+	   */
+	  /* XXX just exactly who is going to be =on= this new channel
+	   * other than just the creator at this time? ? ?
+	   */
+	  sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
+			       source_p->name, source_p->username,
+			       source_p->host, root_chptr->chname);
+      
+	  sendto_channel_local(ONLY_CHANOPS_HALFOPS,chptr,
+			       ":%s MODE %s %s %s",
+			       me.name, root_chptr->chname,
+			       modebuf, parabuf);
 	}
       else
 	{
 	  sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS,
                         LL_ICLIENT,
-                        ":%s SJOIN %lu %s + :%s",
-                        me.name,
-                        (unsigned long) chptr->channelts,
-                        chptr->chname,
-                        parv[0]);
+                        ":%s SJOIN %lu %s %s %s:%s",
+                        me.name, (unsigned long) chptr->channelts,
+                        chptr->chname, modebuf, parabuf, parv[0]);
+
+	  sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
+			       source_p->name, source_p->username,
+			       source_p->host, root_chptr->chname);
         }
 
-      /*
-      ** notify all other users on the new channel
-      */
-      sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
-			   source_p->name,
-			   source_p->username,
-			   source_p->host,
-			   root_chptr->chname);
-      
-      if( flags & CHFL_CHANOP )
-	{
-	  chptr->mode.mode |= MODE_TOPICLIMIT;
-	  chptr->mode.mode |= MODE_NOPRIVMSGS;
-
-	  sendto_channel_local(ONLY_CHANOPS_HALFOPS,chptr,
-			       ":%s MODE %s +nt",
-			       me.name,
-			       root_chptr->chname);
-	  
-	  sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS,
-                        LL_ICLIENT,
-                        ":%s MODE %s +nt",
-                        me.name,
-                        chptr->chname);
-	}
 
       del_invite(chptr, source_p);
       
@@ -401,21 +408,19 @@ m_join(struct Client *client_p,
             {
               sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
                          me.name, parv[0], root_chptr->chname,
-                         chptr->topic_info,
-                         chptr->topic_time);
+                         chptr->topic_info, chptr->topic_time);
             }
           else /* Hide from nonops */
             {
                sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
                          me.name, parv[0], root_chptr->chname,
-                         me.name,
-                         chptr->topic_time);
+                         me.name, chptr->topic_time);
             }
 	}
 
       channel_member_names(source_p, chptr, root_chptr->chname, 1);
 
-      if(successful_join_count)
+      if(successful_join_count != 0)
 	source_p->localClient->last_join_time = CurrentTime;
     }
 }
@@ -433,19 +438,23 @@ m_join(struct Client *client_p,
  */
 
 static void 
-ms_join(struct Client *client_p,
-	struct Client *source_p,
-	int parc,
-	char *parv[])
+ms_join(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   char *name;
   int new_ts;
 
-  if (!(source_p->user))
+  if ((source_p->user) == NULL)
     return;
   
   name = parv[1];
 
+  /*
+   * stupid legacy here. If remote server joins someone to "0"
+   * thats a signal to remove this client from all channels.
+   * note, the string "0" is simply '0' '\0' this following "if"
+   * is faster then a strcmp.
+   */
   if ((name[0] == '0') && (name[1] == '\0'))
     {
       do_join_0(client_p, source_p);
@@ -475,7 +484,8 @@ ms_join(struct Client *client_p,
  * 		  anti spambot code.
  */
 
-static void do_join_0(struct Client *client_p, struct Client *source_p)
+static void
+do_join_0(struct Client *client_p, struct Client *source_p)
 {
   struct Channel *chptr=NULL;
   dlink_node   *lp;
@@ -491,10 +501,8 @@ static void do_join_0(struct Client *client_p, struct Client *source_p)
     {
       chptr = lp->data;
       sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s PART %s",
-			   source_p->name,
-			   source_p->username,
-			   source_p->host,
-			   RootChan(chptr)->chname);
+			   source_p->name, source_p->username,
+			   source_p->host, RootChan(chptr)->chname);
       remove_user_from_channel(chptr, source_p);
     }
 }
