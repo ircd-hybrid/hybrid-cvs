@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.94 2002/06/28 18:48:05 db Exp $
+ *  $Id: m_message.c,v 1.95 2002/06/29 04:34:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -61,6 +61,7 @@ static int flood_attack_client(int p_or_n, struct Client *source_p,
                                struct Client *target_p);
 static int flood_attack_channel(int p_or_n, struct Client *source_p,
                                 struct Channel *chptr, char *chname);
+static struct Client* find_userhost (char *, char *, int *);
 
 #define ENTITY_NONE    0
 #define ENTITY_CHANNEL 1
@@ -122,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.94 $";
+const char *_version = "$Revision: 1.95 $";
 #endif
 
 /*
@@ -778,9 +779,7 @@ flood_attack_channel(int p_or_n, struct Client *source_p,
  *		  This disambiguates the syntax.
  */
 static void
-handle_opers(int p_or_n,
-             char *command,
-             struct Client *client_p,
+handle_opers(int p_or_n, char *command, struct Client *client_p,
              struct Client *source_p, char *nick, char *text)
 {
   struct Client *target_p;
@@ -833,8 +832,7 @@ handle_opers(int p_or_n,
   /*
    * user[%host]@server addressed?
    */
-  if ((server = strchr(nick, '@')) &&
-      (target_p = find_server(server + 1)))
+  if ((server = strchr(nick, '@')) && (target_p = find_server(server + 1)))
   {
     count = 0;
 
@@ -867,21 +865,55 @@ handle_opers(int p_or_n,
      * (no host == wildcard) and if one and one only is
      * found connected to me, deliver message!
      */
-    target_p = find_userhost(nick, host, NULL, &count);
+    target_p = find_userhost(nick, host, &count);
 
-    if (server != NULL)
-      *server = '@';
-    if (host != NULL)
-      *--host = '%';
     if (target_p != NULL)
     {
+      if (server != NULL)
+	*server = '@';
+      if (host != NULL)
+	*--host = '%';
+
       if (count == 1)
-        sendto_anywhere(target_p, source_p,
-                        "%s %s :%s", "PRIVMSG", nick, text);
+        sendto_anywhere(target_p, source_p, "%s %s :%s", "PRIVMSG",
+			nick, text);
       else
-        sendto_one(source_p,
-                   form_str(ERR_TOOMANYTARGETS),
+        sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
                    me.name, source_p->name, nick);
     }
   }
+}
+
+/*
+ * find_userhost - find a user@host (server or user).
+ * inputs       - user name to look for
+ *              - host name to look for
+ *		- pointer to count of number of matches found
+ * outputs	- pointer to client if found
+ *		- count is updated
+ * side effects	- none
+ *
+ */
+static struct Client *
+find_userhost(char *user, char *host, int *count)
+{
+  struct Client *c2ptr;
+  struct Client *res = NULL;
+
+  *count = 0;
+  if (collapse(user) != NULL)
+    {
+      for (c2ptr = GlobalClientList; c2ptr; c2ptr = c2ptr->next) 
+	{
+	  if (!MyClient(c2ptr)) /* implies mine and an user */
+	    continue;
+	  if ((!host || match(host, c2ptr->host)) &&
+	      irccmp(user, c2ptr->username) == 0)
+	    {
+	      (*count)++;
+	      res = c2ptr;
+	    }
+	}
+    }
+  return (res);
 }
