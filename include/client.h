@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.170 2003/03/29 00:23:37 michael Exp $
+ *  $Id: client.h,v 7.171 2003/03/31 00:21:57 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -79,8 +79,6 @@ struct User
 	/* client ID, unique ID per client */
   char id[IDLEN + 1];
   char id_key[IDLEN + 1];
-  /* When did we detach from them, if they are detached... */
-  time_t            last_detach_time;
 };
 
 struct Server
