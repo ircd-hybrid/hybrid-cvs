@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.108 2003/02/17 16:09:33 db Exp $
+ *  $Id: m_message.c,v 1.109 2003/02/21 21:15:48 wiz Exp $
  */
 
 #include "stdinc.h"
@@ -123,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.108 $";
+const char *_version = "$Revision: 1.109 $";
 #endif
 
 /*
@@ -200,7 +200,11 @@ m_message(int p_or_n,
   }
 
   /* Finish the flood grace period... */
-  if(MyClient(source_p) && !IsFloodDone(source_p))
+  if(MyClient(source_p) && !IsFloodDone(source_p) &&
+        irccmp(source_p->name, parv[1]) != 0) /* some dumb clients msg/notice themself
+                                                 to determine lag to the server BEFORE
+                                                 sending JOIN commands, and then flood
+                                                 off because they left gracemode. -wiz */
     flood_endgrace(source_p);
 
   if (build_target_list(p_or_n, command, client_p, source_p, parv[1],
