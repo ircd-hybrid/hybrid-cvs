@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.60 2001/05/22 19:11:52 davidt Exp $
+ * $Id: modules.c,v 7.61 2001/05/24 23:15:33 davidt Exp $
  */
 #include "config.h"
 
@@ -562,7 +562,11 @@ load_all_modules(int check)
 	mod_add_cmd(&client_msgtab);
 	mod_add_cmd(&close_msgtab);
 	mod_add_cmd(&connect_msgtab);
-	mod_add_cmd(&die_msgtab);
+#ifdef HAVE_LIBCRYPTO
+        mod_add_cmd(&cryptserv_msgtab);
+        mod_add_cmd(&cryptauth_msgtab);
+#endif
+        mod_add_cmd(&die_msgtab);
 	mod_add_cmd(&dmem_msgtab);
 	mod_add_cmd(&drop_msgtab);
 	mod_add_cmd(&eob_msgtab);
