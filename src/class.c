@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.6 2000/01/01 14:34:00 db Exp $
+ *   $Id: class.c,v 7.7 2000/01/16 22:49:45 db Exp $
  */
 #include "class.h"
 #include "client.h"
@@ -26,13 +26,32 @@
 #include "numeric.h"
 #include "s_conf.h"
 #include "send.h"
+#include "irc_string.h"
 #include "s_debug.h"
+
+#include <string.h>
+#include <stdlib.h>
 
 #define BAD_CONF_CLASS          -1
 #define BAD_PING                -2
 #define BAD_CLIENT_CLASS        -3
 
 struct Class* ClassList;
+
+struct Class *make_class()
+{
+  struct Class        *tmp;
+
+  tmp = (struct Class *)MyMalloc(sizeof(struct Class));
+  memset((void*)tmp, 0, sizeof(struct Class));
+  return tmp;
+}
+
+void free_class(struct Class *tmp)
+{
+  MyFree(tmp->class_name);
+  MyFree((char *)tmp);
+}
 
 int     get_conf_class(struct ConfItem *aconf)
 {

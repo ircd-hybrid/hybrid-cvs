@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-/* $Id: class.h,v 7.4 2000/01/16 22:27:16 db Exp $ */
+/* $Id: class.h,v 7.5 2000/01/16 22:49:42 db Exp $ */
 
 #ifndef INCLUDED_class_h
 #define INCLUDED_class_h
@@ -62,6 +62,7 @@ extern  int     get_client_ping (struct Client *);
 extern  void    add_class(int, int, int, int, long);
 extern  void    check_class(void);
 extern  void    initclass(void);
+extern  struct  Class* make_class(void);
 extern  void    free_class(struct Class* );
 extern  void    add_class (int, int, int, int, long);
 extern  void    fix_class (struct ConfItem *, struct ConfItem *);

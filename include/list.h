@@ -20,7 +20,7 @@
  * "list.h". - Headers file.
  *
  *
- * $Id: list.h,v 7.4 2000/01/04 15:56:10 db Exp $
+ * $Id: list.h,v 7.5 2000/01/16 22:49:42 db Exp $
  *
  */
 
@@ -59,7 +59,6 @@ extern  void    _free_link (struct SLink *);
 extern  void    _free_user (struct User *, struct Client *);
 extern  struct SLink    *make_link (void);
 extern  struct User     *make_user (struct Client *);
-extern  struct Class* make_class(void);
 extern  struct Server   *make_server (struct Client *);
 extern  struct SLink    *find_user_link (struct SLink *, struct Client *);
 extern  void    initlists (void);
