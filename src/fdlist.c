@@ -3,7 +3,7 @@
  * fdlist.c   maintain lists of file descriptors
  *
  *
- * $Id: fdlist.c,v 7.14 2000/11/15 21:24:42 adrian Exp $
+ * $Id: fdlist.c,v 7.15 2000/11/19 14:45:14 davidt Exp $
  */
 #include "fdlist.h"
 #include "client.h"  /* struct Client */
@@ -90,6 +90,7 @@ fd_open(int fd, unsigned int type, const char *desc)
     F->defer.handler = NULL;
 #endif
     fdlist_update_biggest(fd, 1);
+    F->comm_index = -1;
     F->list = FDLIST_NONE;
     if (desc)
         strncpy(F->desc, desc, FD_DESC_SZ);

@@ -1,7 +1,7 @@
 /*
  * fdlist.h
  *
- * $Id: fdlist.h,v 7.10 2000/11/08 09:34:15 adrian Exp $
+ * $Id: fdlist.h,v 7.11 2000/11/19 14:45:10 davidt Exp $
  */
 #ifndef INCLUDED_fdlist_h
 #define INCLUDED_fdlist_h
@@ -79,6 +79,7 @@ struct _fde {
     int fd;		/* So we can use the fde_t as a callback ptr */
     int type;
     fdlist_t list;	/* Which list this FD should sit on */
+    int comm_index;	/* where in the poll list we live */
     char desc[FD_DESC_SZ];
     PF *read_handler;
     void *read_data;
