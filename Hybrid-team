@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.50 2002/05/23 22:20:07 leeh Exp $
+$Id: Hybrid-team,v 7.51 2002/07/08 12:23:31 leeh Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -20,7 +20,7 @@ cosine, Patrick Alken <wnder@uwns.underworld.net>
 David-T, David Taylor <davidt@yadt.co.uk>
 Dianora, Diane Bruce <db@db.net>
 einride, Erik S. Johansen, <einride@einride.org>
-fl_, Lee Hardy <lee@leeh.co.uk>
+fl, Lee Hardy <lee@leeh.co.uk>
 Hwy101, W. Campbell <wcampbel@botbay.net>
 larne, Edward Brocklesby <ejb@sdf.lonestar.org>
 isomer, Perry Lorier <perry@coders.net>

@@ -1,4 +1,4 @@
-$Id: README,v 1.20 2002/06/15 12:33:25 leeh Exp $
+$Id: README,v 1.21 2002/07/08 12:23:33 leeh Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
@@ -95,3 +95,6 @@ lmh.diff 	- This patch adds remote unkline support, temp dline support,
 		  Please read README.LMH for more information as this patch
 		  requires different methods to be applied and adds multiple
 		  config options.
+
+disable_identd.diff - This patch adds support for disabling identd queries.
+                      See README.disable_identd for more information.
