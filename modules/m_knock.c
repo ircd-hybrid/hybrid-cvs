@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.62 2003/06/12 15:17:20 michael Exp $
+ *  $Id: m_knock.c,v 1.63 2003/06/25 08:46:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -83,7 +83,7 @@ _moddeinit(void)
   delete_capability("KNOCK");
 }
 
-const char *_version = "$Revision: 1.62 $";
+const char *_version = "$Revision: 1.63 $";
 #endif
 
 /* m_knock
@@ -220,16 +220,16 @@ parse_knock_local(struct Client *client_p, struct Client *source_p,
   if (IsMember(source_p, chptr))
   {
     sendto_one(source_p, form_str(ERR_KNOCKONCHAN),
-    me.name, source_p->name, name);
+               me.name, source_p->name, name);
     return;
   }
 
-  if (!((chptr->mode.mode & MODE_INVITEONLY) ||
-        (*chptr->mode.key) ||
-        (chptr->mode.limit && chptr->users >= chptr->mode.limit)))
+  if (!((chptr->mode.mode & MODE_INVITEONLY) || (*chptr->mode.key) ||
+        (chptr->mode.limit && dlink_list_length(&chptr->members) >=
+         chptr->mode.limit)))
   {
     sendto_one(source_p, form_str(ERR_CHANOPEN),
-	       me.name, source_p->name, name);
+               me.name, source_p->name, name);
     return;
   }
 
@@ -299,9 +299,9 @@ parse_knock_remote(struct Client *client_p, struct Client *source_p,
   if (IsMember(source_p, chptr))
     return;
   
-  if (!((chptr->mode.mode & MODE_INVITEONLY) ||
-      (*chptr->mode.key) ||
-      (chptr->mode.limit && chptr->users >= chptr->mode.limit)))
+  if (!((chptr->mode.mode & MODE_INVITEONLY) || (*chptr->mode.key) ||
+        (chptr->mode.limit && dlink_list_length(&chptr->members) >=
+         chptr->mode.limit)))
     return;
 
   if (chptr)

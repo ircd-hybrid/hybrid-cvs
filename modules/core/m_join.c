@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.3 2003/06/21 20:09:24 metalrock Exp $
+ *  $Id: m_join.c,v 1.4 2003/06/25 08:46:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.3 $";
+const char *_version = "$Revision: 1.4 $";
 #endif
 
 /*
@@ -96,8 +96,8 @@ m_join(struct Client *client_p, struct Client *source_p,
     key = strtoken(&p2, parv[2], ",");
 
   for (name = strtoken(&p, parv[1], ","); name;
-         key = (key) ? strtoken(&p2, NULL, ",") : NULL,
-         name = strtoken(&p, NULL, ","))
+       key = (key) ? strtoken(&p2, NULL, ",") : NULL,
+       name = strtoken(&p, NULL, ","))
   {
     if (!check_channel_name(name))
     {
@@ -160,8 +160,8 @@ m_join(struct Client *client_p, struct Client *source_p,
       continue;
     }
 
-    if ((source_p->user->joined >= ConfigChannel.max_chans_per_user) &&
-        (!IsOper(source_p) || (source_p->user->joined >=
+    if ((dlink_list_length(&source_p->user->channel) >= ConfigChannel.max_chans_per_user) &&
+        (!IsOper(source_p) || (dlink_list_length(&source_p->user->channel) >=
                                ConfigChannel.max_chans_per_user * 3)))
     {
       if (!error_reported)
@@ -196,7 +196,7 @@ m_join(struct Client *client_p, struct Client *source_p,
        * channel_modes() has to be called. 
        * -Dianora
        */
-      if (chptr->users == 0)
+      if (dlink_list_length(&chptr->members) == 0)
         flags = CHFL_CHANOP;
       else
         flags = 0;
@@ -239,7 +239,6 @@ m_join(struct Client *client_p, struct Client *source_p,
     /*
      * can_join checks for +i key, bans.
      */
-
     if ((i = can_join(source_p, chptr, key)))
     {
       sendto_one(source_p, form_str(i), me.name, parv[0], name);
@@ -263,7 +262,7 @@ m_join(struct Client *client_p, struct Client *source_p,
 
       sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
                     ":%s SJOIN %lu %s +nt :@%s",
-                    me.name, (unsigned long) chptr->channelts,
+                    me.name, (unsigned long)chptr->channelts,
                     chptr->chname, parv[0]);
       /*
        * notify all other users on the new channel
@@ -283,7 +282,7 @@ m_join(struct Client *client_p, struct Client *source_p,
     {
       sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
                     ":%s SJOIN %lu %s + :%s",
-                    me.name, (unsigned long) chptr->channelts,
+                    me.name, (unsigned long)chptr->channelts,
                     chptr->chname, parv[0]);
 
       sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
@@ -344,7 +343,7 @@ ms_join(struct Client *client_p, struct Client *source_p,
   }
   else
   {
-    if(parc > 2)
+    if (parc > 2)
     {
       new_ts = atoi(parv[2]);
     }
@@ -387,4 +386,6 @@ do_join_0(struct Client *client_p, struct Client *source_p)
                          source_p->host, chptr->chname);
     remove_user_from_channel(chptr, source_p);
   }
+
+  assert(dlink_list_length(&source_p->user->channel) == 0);
 }

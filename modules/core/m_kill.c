@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.79 2003/06/04 06:25:52 michael Exp $
+ *  $Id: m_kill.c,v 1.80 2003/06/25 08:46:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.79 $";
+const char *_version = "$Revision: 1.80 $";
 #endif
 
 /* mo_kill()
@@ -114,7 +114,7 @@ mo_kill(struct Client *client_p, struct Client *source_p,
      * rewrite the KILL for this new nickname--this keeps
      * servers in synch when nick change and kill collide
      */
-    if ((target_p = get_history(user, (long)KILLCHASETIMELIMIT)) == NULL)
+    if ((target_p = get_history(user, (time_t)KILLCHASETIMELIMIT)) == NULL)
     {
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                  me.name, source_p->name, user);
@@ -360,18 +360,18 @@ relay_kill(struct Client *one, struct Client *source_p,
       user = target_p->name;
 
     if (MyClient(source_p))
-      {
+    {
         sendto_one(client_p, ":%s KILL %s :%s!%s!%s!%s (%s)",
                    source_p->name, user,
                    me.name, source_p->host, source_p->username,
                    source_p->name, reason);
-      }
+    }
     else
-      {
+    {
         sendto_one(client_p, ":%s KILL %s :%s %s",
                    source_p->name, user,
                    inpath, reason);
-      }
+    }
   }
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.388 2003/06/18 01:10:05 db Exp $
+ *  $Id: client.c,v 7.389 2003/06/25 08:47:00 michael Exp $
  */
 
 #include "stdinc.h"
@@ -326,7 +326,6 @@ check_pings_list(dlink_list *list)
 	client_p->lasttime = CurrentTime - ping;
 	sendto_one(client_p, "PING :%s", me.name);
       }
-
     }
     /* ping_timeout: */
     /* Safe list */
@@ -373,7 +372,7 @@ check_klines(void)
   struct AccessItem *aconf = NULL;
   const char *reason;            /* pointer to reason string */
   dlink_node *ptr, *next_ptr;
- 
+
   DLINK_FOREACH_SAFE(ptr, next_ptr, local_client_list.head)
   {
     client_p = ptr->data;
@@ -548,7 +547,7 @@ check_xlines(void)
   struct MatchItem *xconf = NULL;
   const char *reason;            /* pointer to reason string */
   dlink_node *ptr, *next_ptr;
- 
+
   DLINK_FOREACH_SAFE(ptr, next_ptr, local_client_list.head)
   {
     client_p = ptr->data;
@@ -874,6 +873,7 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
 
     /* Should not be in any channels now */
     assert(source_p->user->channel.head == NULL);
+    assert(dlink_list_length(&source_p->user->channel) == 0);
 
     /* Clean up invitefield */
     DLINK_FOREACH_SAFE(lp, next_lp, source_p->user->invited.head)
@@ -1361,7 +1361,7 @@ exit_client(
         strcpy(comment1, source_p->serv->up);
       else
         strcpy(comment1, "<Unknown>");
-      
+
       strcat(comment1, " ");
       strcat(comment1, source_p->name);
     }
@@ -1415,7 +1415,6 @@ count_remote_client_memory(int *count, unsigned long *remote_client_memory_used)
   *count = remote_client_count;
   *remote_client_memory_used = remote_client_count * sizeof(struct Client);
 }
-
 
 /*
  * accept processing, this adds a form of "caller ID" to ircd

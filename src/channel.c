@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.397 2003/06/21 20:09:26 metalrock Exp $
+ *  $Id: channel.c,v 7.398 2003/06/25 08:46:59 michael Exp $
  */
 
 #include "stdinc.h"
@@ -106,9 +106,6 @@ add_user_to_channel(struct Channel *chptr, struct Client *who,
   ms->chptr    = chptr;
   ms->flags    = flags;
 
-  chptr->users++;
-  who->user->joined++;
-
   dlinkAdd(ms, &ms->channode, &chptr->members);
 
   if (MyConnect(who))
@@ -144,10 +141,10 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
   dlinkDelete(&ms->usernode, &who->user->channel);
 
   BlockHeapFree(member_heap, ms);
-  who->user->joined--;
 
-  if (--chptr->users == 0)
+  if (dlink_list_length(&chptr->members) == 0)
   {
+    assert(dlink_list_length(&chptr->locmembers) == 0);
     destroy_channel(chptr);
     return(1);
   }
@@ -705,7 +702,8 @@ can_join(struct Client *source_p, struct Channel *chptr, const char *key)
   if (*chptr->mode.key && (EmptyString(key) || irccmp(chptr->mode.key, key)))
     return(ERR_BADCHANNELKEY);
 
-  if (chptr->mode.limit && chptr->users >= chptr->mode.limit)
+  if (chptr->mode.limit && dlink_list_length(&chptr->members) >=
+      chptr->mode.limit)
     return(ERR_CHANNELISFULL);
 
   return(0);
@@ -719,7 +717,6 @@ has_member_flags(struct Membership *ms, unsigned int flags)
 
   return(0);
 }
-
 
 struct Membership *
 find_channel_link(struct Client *client_p, struct Channel *chptr)

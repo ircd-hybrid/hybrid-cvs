@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.203 2003/06/12 22:05:52 db Exp $
+ *  $Id: client.h,v 7.204 2003/06/25 08:46:54 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -61,7 +61,6 @@ struct User
   time_t         last_away; /* Away since... */
   time_t         last;
   int            refcnt;    /* Number of times this block is referenced */
-  int            joined;    /* number of channels joined */
   struct Client *server;    /* pointer to server */
   char*          response;  /* expected response from client */
   char*          auth_oper; /* Operator to become if they supply the response.*/

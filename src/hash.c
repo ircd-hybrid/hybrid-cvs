@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.67 2003/06/16 12:04:43 michael Exp $
+ *  $Id: hash.c,v 7.68 2003/06/25 08:47:00 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1023,21 +1023,21 @@ list_one_channel(struct Client *source_p, struct Channel *chptr,
   if ((remote_request && chptr->chname[0] == '&') ||
       (SecretChannel(chptr) && !IsMember(source_p, chptr)))
     return;
-  if ((unsigned int) chptr->users < list_task->users_min ||
-      (unsigned int) chptr->users > list_task->users_max ||
+  if ((unsigned int)dlink_list_length(&chptr->members) < list_task->users_min ||
+      (unsigned int)dlink_list_length(&chptr->members) > list_task->users_max ||
       (chptr->channelts != 0 &&
-       ((unsigned int) chptr->channelts < list_task->created_min ||
-        (unsigned int) chptr->channelts > list_task->created_max)) ||
-      (unsigned int) chptr->topic_time < list_task->topicts_min ||
-      (chptr->topic_time ? (unsigned int) chptr->topic_time : UINT_MAX) >
+       ((unsigned int)chptr->channelts < list_task->created_min ||
+        (unsigned int)chptr->channelts > list_task->created_max)) ||
+      (unsigned int)chptr->topic_time < list_task->topicts_min ||
+      (chptr->topic_time ? (unsigned int)chptr->topic_time : UINT_MAX) >
       list_task->topicts_max)
     return;
 
   if (!list_allow_channel(chptr->chname, list_task))
     return;
   sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
-             chptr->chname, chptr->users,
-             chptr->topic == NULL ? "" : chptr->topic );
+             chptr->chname, dlink_list_length(&chptr->members),
+             chptr->topic == NULL ? "" : chptr->topic);
 }
 
 /* safe_list_channels()

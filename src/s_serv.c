@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.352 2003/06/22 00:53:01 joshk Exp $
+ *  $Id: s_serv.c,v 7.353 2003/06/25 08:47:00 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1527,7 +1527,7 @@ burst_all(struct Client *client_p)
   {
     chptr = gptr->data;
 
-    if (chptr->users != 0)
+    if (dlink_list_length(&chptr->members) != 0)
     {
       burst_members(client_p, chptr);
 

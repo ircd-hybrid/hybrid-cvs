@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lljoin.c,v 1.63 2003/05/24 08:02:56 michael Exp $
+ *  $Id: m_lljoin.c,v 1.64 2003/06/25 08:46:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&lljoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.63 $";
+const char *_version = "$Revision: 1.64 $";
 #endif
 /*
  * m_lljoin
@@ -84,7 +84,7 @@ const char *_version = "$Revision: 1.63 $";
  */
 static void
 ms_lljoin(struct Client *client_p, struct Client *source_p,
-	  int parc, char *parv[])
+          int parc, char *parv[])
 {
   char *chname = NULL;
   char *nick = NULL;
@@ -94,13 +94,13 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
   struct Client *target_p;
   struct Channel *chptr;
 
-  if(uplink && !IsCapable(uplink,CAP_LL))
-    {
+  if (uplink && !IsCapable(uplink,CAP_LL))
+  {
       sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "*** LLJOIN requested from non LL server %s",
 			   client_p->name);
       return;
-    }
+  }
 
   chname = parv[1];
   if(chname == NULL)
@@ -131,7 +131,7 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
   if(!chptr)
     return;
 
-  if (chptr->users == 0)
+  if (dlink_list_length(&chptr->members) == 0)
     flags = CHFL_CHANOP;
   else
     flags = 0;
@@ -159,17 +159,17 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if ((target_p->user->joined >= ConfigChannel.max_chans_per_user) &&
-      (!IsOper(target_p) || (target_p->user->joined >= 
+  if ((dlink_list_length(&target_p->user->channel) >= ConfigChannel.max_chans_per_user) &&
+      (!IsOper(target_p) || (dlink_list_length(&target_p->user->channel) >=
                              ConfigChannel.max_chans_per_user*3)))
-    {
+  {
       sendto_one(target_p, form_str(ERR_TOOMANYCHANNELS),
 		 me.name, nick, chptr->chname );
       return; 
-    }
+  }
   
-  if(flags == CHFL_CHANOP)
-    {
+  if (flags == CHFL_CHANOP)
+  {
       chptr->channelts = CurrentTime;
 
       sendto_one(uplink,
@@ -178,7 +178,7 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
 		 (unsigned long) chptr->channelts,
 		 chptr->chname,
 		 nick);
-    }
+  }
 
   sendto_one(uplink,
              ":%s SJOIN %lu %s + :%s",
@@ -196,7 +196,7 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
 		       target_p->host,
 		       chptr->chname);
   
-  if( flags & CHFL_CHANOP )
+  if (flags & CHFL_CHANOP)
   {
     chptr->mode.mode |= MODE_TOPICLIMIT;
     chptr->mode.mode |= MODE_NOPRIVMSGS;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.59 2003/06/16 04:01:29 joshk Exp $
+ *  $Id: list.c,v 7.60 2003/06/25 08:47:00 michael Exp $
  */
 
 #include "stdinc.h"
@@ -119,20 +119,20 @@ free_user(struct User *user, struct Client *client_p)
 
     /* sanity check
      */
-    if (user->joined || user->refcnt < 0 ||
+    if (dlink_list_length(&user->channel) || user->refcnt < 0 ||
         user->invited.head || user->channel.head)
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
-			   "* %#lx user (%s!%s@%s) %#lx %#lx %#lx %d %d *",
+			   "* %#lx user (%s!%s@%s) %#lx %#lx %#lx %d %lu *",
 			   (unsigned long)client_p, client_p ? client_p->name : "<noname>",
 			   client_p->username, client_p->host, (unsigned long)user,
 			   (unsigned long)user->invited.head,
-			   (unsigned long)user->channel.head, user->joined,
+			   (unsigned long)user->channel.head, dlink_list_length(&user->channel),
 			   user->refcnt);
-      assert(!user->joined);
       assert(!user->refcnt);
       assert(!user->invited.head);
       assert(!user->channel.head);
+      assert(dlink_list_length(&user->channel) == 0);
     }
 
     BlockHeapFree(user_heap, user);
@@ -251,4 +251,3 @@ count_links_memory(int *count, unsigned long *links_memory_used)
   *count = links_count;
   *links_memory_used = links_count * sizeof(dlink_node);
 }
-

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.151 2003/06/21 12:26:26 michael Exp $
+ *  $Id: channel.h,v 7.152 2003/06/25 08:46:54 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -50,7 +50,6 @@ struct Channel
   char *topic;
   char *topic_info;
   time_t topic_time;
-  int users; /* user count */
   unsigned long lazyLinkChannelExists;
   time_t last_knock; /* don't allow knock to flood */
 
