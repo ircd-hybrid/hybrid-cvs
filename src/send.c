@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.271 2003/07/05 06:21:04 db Exp $
+ *  $Id: send.c,v 7.272 2003/09/14 22:14:36 bill Exp $
  */
 
 #include "stdinc.h"
@@ -958,7 +958,7 @@ sendto_match_servs(struct Client *source_p, const char *mask, int cap,
   int found = 0;
 
   va_start(args, pattern);
-  send_format(&buffer[0], IRCD_BUFSIZE, pattern, args);
+  vsnprintf(&buffer, sizeof(buffer), pattern, args);
   va_end(args);
 
   current_serial++;
