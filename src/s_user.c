@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.56 2000/12/05 07:27:10 db Exp $
+ *  $Id: s_user.c,v 7.57 2000/12/07 09:22:07 db Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -55,8 +55,6 @@
 #include <time.h>
 #include <sys/stat.h>
 
-
-time_t LastUsedWallops = 0;
 
 static int valid_hostname(const char* hostname);
 static int valid_username(const char* username);

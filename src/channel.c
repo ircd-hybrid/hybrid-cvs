@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.110 2000/12/07 05:46:17 db Exp $
+ * $Id: channel.c,v 7.111 2000/12/07 09:22:07 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -726,7 +726,7 @@ static  void    send_mode_list(struct Client *cptr,
 
       *mp++ = flag;
       *mp = '\0';
-      ircsprintf(pp,"%s ",banptr);
+      ircsprintf(pp,"%s ",banptr->banstr);
       pp += tlen;
       cur_len += tlen;
       count++;
