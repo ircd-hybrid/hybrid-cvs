@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.7 2000/11/16 18:14:40 davidt Exp $
+# $Id: Makefile.in,v 1.8 2000/11/19 15:43:46 davidt Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -45,6 +45,7 @@ SRCS =                          \
   m_ltrace.c \
   m_lusers.c \
   m_mode.c \
+  m_motd.c \
   m_names.c \
   m_message.c \
   m_nick.c \
