@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.34 2000/12/25 18:22:48 toot Exp $
+ *  $Id: m_stats.c,v 1.35 2000/12/28 00:18:25 db Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -97,9 +97,9 @@ const char* Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
 
 char *parse_stats_args(int parc,char *parv[],int *doall,int *wilds);
 
-void stats_L(struct Client *sptr,char *name,int doall, int wilds);
+void stats_L(struct Client *sptr,char *name,int doall, int wilds,char stat);
 void stats_L_list(struct Client *sptr,char *name, int doall, int wilds,
-		  dlink_list *list);
+		  dlink_list *list, char stat);
 void stats_spy(struct Client *sptr,char stat);
 void stats_L_spy(struct Client *sptr, char stat, char *name);
 void stats_p_spy(struct Client *sptr);
@@ -247,7 +247,7 @@ void do_normal_stats(struct Client *sptr,
   switch (stat)
     {
     case 'L' : case 'l' :
-      stats_L(sptr,name,doall,wilds);
+      stats_L(sptr,name,doall,wilds,stat);
       stats_L_spy(sptr,stat,name);
       break;
 
@@ -491,15 +491,15 @@ void do_priv_stats(struct Client *sptr, char *name, char *target,
  * output	- NONE
  * side effects	-
  */
-void stats_L(struct Client *sptr,char *name,int doall, int wilds)
+void stats_L(struct Client *sptr,char *name,int doall, int wilds,char stat)
 {
-  stats_L_list(sptr, name, doall, wilds, &unknown_list);
-  stats_L_list(sptr, name, doall, wilds, &lclient_list);
-  stats_L_list(sptr, name, doall, wilds, &serv_list);
+  stats_L_list(sptr, name, doall, wilds, &unknown_list, stat);
+  stats_L_list(sptr, name, doall, wilds, &lclient_list, stat);
+  stats_L_list(sptr, name, doall, wilds, &serv_list, stat);
 }
 
 void stats_L_list(struct Client *sptr,char *name, int doall, int wilds,
-		  dlink_list *list)
+		  dlink_list *list,char stat)
 {
   dlink_node *ptr;
   struct Client *acptr;
