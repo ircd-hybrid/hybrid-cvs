@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.92 2002/04/27 17:59:34 leeh Exp $
+ *  $Id: s_auth.c,v 7.93 2002/05/18 21:50:57 androsyn Exp $
  */
 
 /*
@@ -150,21 +150,11 @@ static void free_auth_request(struct AuthRequest* request)
 static void unlink_auth_request(struct AuthRequest* request, dlink_list *list)
 {
   dlink_node *ptr;
-  dlink_node *next_ptr;
-  struct AuthRequest *auth;
-
-  for (ptr = list->head; ptr; ptr = next_ptr )
-    {
-      next_ptr = ptr->next;
-      auth = ptr->data;
-
-      if (auth == request)
-	{
-	  dlinkDelete(ptr, list);
-	  free_dlink_node(ptr);
-	  return;
-	}
-    }
+  if((ptr = dlinkFind(list, request)) != NULL)
+  {
+    dlinkDelete(ptr, list);
+    free_dlink_node(ptr);
+  }
 }
 
 /*
