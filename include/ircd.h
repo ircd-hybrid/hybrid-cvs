@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.35 2001/07/18 15:39:08 androsyn Exp $
+ * $Id: ircd.h,v 7.36 2001/07/19 13:31:51 androsyn Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -102,7 +102,7 @@ extern dlink_list lazylink_nicks;
 extern int callbacks_called;
 
 extern int make_daemon(void);
-extern size_t get_maxrss(void);
+extern unsigned long get_maxrss(void);
 extern void set_time(void);
 
 #endif
