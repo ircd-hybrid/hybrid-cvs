@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.13 2003/05/14 03:52:03 db Exp $
+ * $Id: irc_res.c,v 7.14 2003/05/14 22:56:26 stu Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -49,7 +49,7 @@
 #error this code needs to be able to address individual octets 
 #endif
 
-/* $Id: irc_res.c,v 7.13 2003/05/14 03:52:03 db Exp $ */
+/* $Id: irc_res.c,v 7.14 2003/05/14 22:56:26 stu Exp $ */
 
 static PF res_readreply;
 
@@ -718,6 +718,8 @@ proc_answer(struct reslist *request, HEADER* header, char* buf, char* eob)
         if (rd_length != sizeof(struct in_addr))
           return (0);
         v4 = (struct sockaddr_in *)&request->addr;
+        request->addr.ss_len = sizeof(struct sockaddr_in);
+        v4->sin_family = AF_INET;
         memcpy(&v4->sin_addr, current, sizeof(struct in_addr));
         return(1);
         break;
@@ -727,7 +729,9 @@ proc_answer(struct reslist *request, HEADER* header, char* buf, char* eob)
           return(0);
         if(rd_length != sizeof(struct in6_addr))
           return (0);
+        request->addr.ss_len = sizeof(struct sockaddr_in6);
         v6 = (struct sockaddr_in6 *)&request->addr;
+        v6->sin6_family = AF_INET6;
         memcpy(&v6->sin6_addr, current, sizeof(struct in6_addr));
         return (1);
         break;
