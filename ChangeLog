@@ -1,3 +1,15 @@
+bill        2002/10/13 21:26:09 EDT	(20021014_0)
+
+  Modified files:
+    src                  channel.c 
+  Log:
+  - typo in expire_channels() comment, pointed out by metalrock
+  
+  Revision  Changes    Path
+  7.336     +1 -1      ircd-hybrid-7/src/channel.c
+
+
+
 db          2002/10/12 06:39:07 EDT	(20021012_3)
 
   Modified files:
@@ -32444,4 +32456,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4061 2002/10/12 10:39:09 db Exp $
+$Id: ChangeLog,v 7.4062 2002/10/14 01:26:11 bill Exp $
