@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.68 2001/02/28 06:01:19 androsyn Exp $
+# $Id: Makefile.in,v 7.69 2001/03/13 16:41:42 adrian Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -91,6 +91,7 @@ BASE_SRCS =                     \
   s_bsd_kqueue.c		\
   s_bsd_poll.c			\
   s_bsd_select.c		\
+  s_bsd_devpoll.c		\
   s_conf.c                      \
   s_debug.c                     \
   s_gline.c                     \
