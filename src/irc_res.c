@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.31 2003/08/10 03:48:16 stu Exp $
+ * $Id: irc_res.c,v 7.32 2003/08/10 03:52:31 stu Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -347,7 +347,7 @@ delete_resolver_queries(const void *vptr)
   {
     if ((request = ptr->data) != NULL)
     {
-      if (vptr == &request->query)
+      if (vptr == request->query.ptr)
         rem_request(request);
     }
   }
