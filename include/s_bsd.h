@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.41 2003/05/06 05:41:01 db Exp $
+ *  $Id: s_bsd.h,v 7.42 2003/05/07 20:19:02 stu Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -77,6 +77,9 @@ extern int   read_message (time_t, unsigned char);
 extern int   comm_select(unsigned long);
 extern int   disable_sock_options(int);
 extern void  check_can_use_v6(void);
+#ifdef IPV6
+extern void remove_ipv6_mapping(struct irc_ssaddr *addr);
+#endif
 
 #ifdef USE_SIGIO
 void do_sigio(int);

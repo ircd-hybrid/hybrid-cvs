@@ -89,7 +89,7 @@
 #define EAI_MAX     14
 #define AI_MASK (AI_PASSIVE | AI_NUMERICHOST)
 
-/*  $Id: irc_getaddrinfo.c,v 7.4 2003/04/13 21:34:39 stu Exp $ */
+/*  $Id: irc_getaddrinfo.c,v 7.5 2003/05/07 20:19:03 stu Exp $ */
 
 static const char in_addrany[]  = { 0, 0, 0, 0 };
 static const char in_loopback[] = { 127, 0, 0, 1 };
@@ -546,9 +546,6 @@ get_ai(const struct addrinfo *pai, const struct afd *afd, const char *addr)
 	memcpy(ai, pai, sizeof(struct addrinfo));
 	ai->ai_addr = (struct sockaddr *)(void *)(ai + 1);
 	memset(ai->ai_addr, 0, (size_t)afd->a_socklen);
-    /* This breaks linux, but it might break BSD to not have it *sigh* - stu 
-    ai->ai_addr->sa_len = afd->a_socklen;
-    */
 	ai->ai_addrlen = afd->a_socklen;
 	ai->ai_addr->sa_family = ai->ai_family = afd->a_af;
 	p = (char *)(void *)(ai->ai_addr);

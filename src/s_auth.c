@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.118 2003/04/23 17:40:09 adx Exp $
+ *  $Id: s_auth.c,v 7.119 2003/05/07 20:19:04 stu Exp $
  */
 
 /*
@@ -275,37 +275,41 @@ auth_error(struct AuthRequest* auth)
 static int
 start_auth_query(struct AuthRequest* auth)
 {
-/*  struct sockaddr_in sock; */
   struct irc_ssaddr localaddr;
   socklen_t locallen = sizeof(struct irc_ssaddr);
   int                fd;
+#ifdef IPV6
+  struct sockaddr_in6 *v6;
+#else
+  struct sockaddr_in *v4;
+#endif
 
   /* open a socket of the same type as the client socket */
   if ((fd = comm_open(auth->client->localClient->ip.ss.ss_family, SOCK_STREAM,
-        0, "ident")) == -1)
-    {
-      report_error(L_ALL, "creating auth stream socket %s:%s", 
-		   get_client_name(auth->client, SHOW_IP), errno);
-      ilog(L_ERROR, "Unable to create auth socket for %s:%m",
-	  get_client_name(auth->client, SHOW_IP));
-      ++ServerStats->is_abad;
-      return 0;
-    }
+          0, "ident")) == -1)
+  {
+    report_error(L_ALL, "creating auth stream socket %s:%s", 
+        get_client_name(auth->client, SHOW_IP), errno);
+    ilog(L_ERROR, "Unable to create auth socket for %s:%m",
+        get_client_name(auth->client, SHOW_IP));
+    ++ServerStats->is_abad;
+    return 0;
+  }
   if ((MAXCONNECTIONS - 10) < fd)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,"Can't allocate fd for auth on %s",
-			   get_client_name(auth->client, SHOW_IP));
-      fd_close(fd);
-      return 0;
-    }
+  {
+    sendto_realops_flags(UMODE_ALL, L_ALL,"Can't allocate fd for auth on %s",
+        get_client_name(auth->client, SHOW_IP));
+    fd_close(fd);
+    return 0;
+  }
 
   sendheader(auth->client, REPORT_DO_ID);
   if (!set_non_blocking(fd))
-    {
-      report_error(L_ALL, NONB_ERROR_MSG, get_client_name(auth->client, SHOW_IP), errno);
-      fd_close(fd);
-      return 0;
-    }
+  {
+    report_error(L_ALL, NONB_ERROR_MSG, get_client_name(auth->client, SHOW_IP), errno);
+    fd_close(fd);
+    return 0;
+  }
 
   /* 
    * get the local address of the client and bind to that to
@@ -316,17 +320,26 @@ start_auth_query(struct AuthRequest* auth)
    */
   memset(&localaddr, 0, locallen);
   getsockname(auth->client->localClient->fd, (struct sockaddr*)&localaddr,
-        &locallen);
-  localaddr.ss_port = htons(0);
+      &locallen);
+
+#ifdef IPV6
+  remove_ipv6_mapping(&localaddr);
+  v6 = (struct sockaddr_in6 *)&localaddr;
+  v6->sin6_port = htons(0);
+#else
   localaddr.ss_len = locallen;
+  v4 = (struct sockaddr_in *)&localaddr;
+  v4->sin_port = htons(0);
+#endif
+  localaddr.ss_port = htons(0);
 
   auth->fd = fd;
   SetAuthConnect(auth);
-  
+
   comm_connect_tcp(fd, auth->client->localClient->sockhost, 113, 
-        (struct sockaddr *)&localaddr, locallen, auth_connect_callback, auth,
-        auth->client->localClient->ip.ss.ss_family, 
-        GlobalSetOptions.ident_timeout);
+      (struct sockaddr *)&localaddr, localaddr.ss_len, auth_connect_callback, 
+      auth, auth->client->localClient->ip.ss.ss_family, 
+      GlobalSetOptions.ident_timeout);
   return 1; /* We suceed here for now */
 }
 
@@ -489,37 +502,56 @@ static void
 auth_connect_callback(int fd, int error, void *data)
 {
   struct AuthRequest *auth = data;
-  struct sockaddr_in us;
-  struct sockaddr_in them;
+  struct irc_ssaddr us;
+  struct irc_ssaddr them;
   char authbuf[32];
-  socklen_t ulen = sizeof(struct sockaddr_in);
-  socklen_t tlen = sizeof(struct sockaddr_in);
+  socklen_t ulen = sizeof(struct irc_ssaddr);
+  socklen_t tlen = sizeof(struct irc_ssaddr);
+  uint16_t uport, tport;
+#ifdef IPV6
+  struct sockaddr_in6 *v6;
+#else
+  struct sockaddr_in *v4;
+#endif
 
-  /* Check the error */
   if (error != COMM_OK)
-    {
-      /* We had an error during connection :( */
-      auth_error(auth);
-      return;
-    }
+  {
+    auth_error(auth);
+    return;
+  }
 
   if (getsockname(auth->client->localClient->fd, (struct sockaddr *)&us,   (socklen_t*)&ulen) ||
       getpeername(auth->client->localClient->fd, (struct sockaddr *)&them, (socklen_t*)&tlen))
-    {
-      ilog(L_INFO, "auth get{sock,peer}name error for %s:%m",
+  {
+    ilog(L_INFO, "auth get{sock,peer}name error for %s:%m",
         get_client_name(auth->client, SHOW_IP));
-      auth_error(auth);
-      return;
-    }
-  ircsprintf(authbuf, "%u , %u\r\n",
-             (unsigned int) ntohs(them.sin_port),
-             (unsigned int) ntohs(us.sin_port));
+    auth_error(auth);
+    return;
+  }
+
+#ifdef IPV6
+  v6 = (struct sockaddr_in6 *)&us;
+  uport = ntohs(v6->sin6_port);
+  v6 = (struct sockaddr_in6 *)&them;
+  tport = ntohs(v6->sin6_port);
+  remove_ipv6_mapping(&us);
+  remove_ipv6_mapping(&them);
+#else
+  v4 = (struct sockaddr_in *)&us;
+  uport = ntohs(v4->sin_port);
+  v4 = (struct sockaddr_in *)&them;
+  tport = ntohs(v4->sin_port);
+  us.ss_len = ulen;
+  them.ss_len = tlen;
+#endif
+  
+  ircsprintf(authbuf, "%u , %u\r\n", tport, uport); 
 
   if (send(auth->fd, authbuf, strlen(authbuf), 0) == -1)
-    {
-      auth_error(auth);
-      return;
-    }
+  {
+    auth_error(auth);
+    return;
+  }
   ClearAuthConnect(auth);
   SetAuthPending(auth);
   read_auth_reply(auth->fd, auth);

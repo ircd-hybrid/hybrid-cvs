@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.194 2003/05/04 16:26:08 adx Exp $
+ *  $Id: s_bsd.c,v 7.195 2003/05/07 20:19:04 stu Exp $
  */
 
 #include "stdinc.h"
@@ -420,30 +420,11 @@ add_connection(struct Listener* listener, int fd)
     return;
   }
 
-  /* XXX If we get a v4 mapped address back we need to convert it to plain v4.
-   * This is a bit of a hack so if someone has a better way feel free to use
-   * it.  Only applies to older BSD installtions where v4 mapping is enabled
-   * by default. - stu
-   */
-  
 #ifdef IPV6
-  if(irn.ss.ss_family == AF_INET6)
-  {
-    v6 = (struct sockaddr_in6*)&irn;
-    if(IN6_IS_ADDR_V4MAPPED(&v6->sin6_addr))
-    {
-      char v4ip[HOSTIPLEN];
-      struct sockaddr_in *v4 = (struct sockaddr_in*)&irn;
-      inetntop(AF_INET6, &v6->sin6_addr, v4ip, HOSTIPLEN);
-      inet_pton(AF_INET, v4ip, &v4->sin_addr);
-      irn.ss.ss_family = AF_INET;
-      irn.ss_len = sizeof(struct sockaddr_in);
-    }
-    else irn.ss_len = len;
-  }
-  else
+  remove_ipv6_mapping(&irn);
+#else
+  irn.ss_len = len;
 #endif
-    irn.ss_len = len;
   new_client = make_client(NULL);
   memset(&new_client->localClient->ip, 0, sizeof(struct irc_ssaddr));
 
@@ -887,33 +868,11 @@ comm_accept(int fd, struct irc_ssaddr *pn)
   if (newfd < 0)
     return -1;
 
-  /* XXX If we get a v4 mapped address back we need to convert it to plain v4.
-   * This is a bit of a hack so if someone has a better way feel free to use
-   * it.  Only applies to older BSD installtions where v4 mapping is enabled
-   * by default. Maybe make this a function too :) - stu
-   */
-
 #ifdef IPV6
-  if(pn->ss.ss_family == AF_INET6)
-  {
-    struct sockaddr_in6 *v6;
-
-    v6 = (struct sockaddr_in6*)pn;
-    if(IN6_IS_ADDR_V4MAPPED(&v6->sin6_addr))
-    {
-      char v4ip[HOSTIPLEN];
-      struct sockaddr_in *v4 = (struct sockaddr_in*)pn;
-      inetntop(AF_INET6, &v6->sin6_addr, v4ip, HOSTIPLEN);
-      inet_pton(AF_INET, v4ip, &v4->sin_addr);
-      pn->ss.ss_family = AF_INET;
-      pn->ss_len = sizeof(struct sockaddr_in);
-    }
-    else pn->ss_len = addrlen;
-  }
-  else
+  remove_ipv6_mapping(pn);
+#else
+  pn->ss_len = addrlen;
 #endif
-    pn->ss_len = addrlen;
- 
  
   /* Set the socket non-blocking, and other wonderful bits */
   if (!set_non_blocking(newfd))
@@ -929,3 +888,36 @@ comm_accept(int fd, struct irc_ssaddr *pn)
   /* .. and return */
   return newfd;
 }
+
+/* 
+ * remove_ipv6_mapping() - Removes IPv4-In-IPv6 mapping from an address
+ * This function should really inspect the struct itself rather than relying
+ * on inet_pton and inet_ntop.  OSes with IPv6 mapping listening on both
+ * AF_INET and AF_INET6 map AF_INET connections inside AF_INET6 structures
+ * 
+ */
+#ifdef IPV6
+void
+remove_ipv6_mapping(struct irc_ssaddr *addr)
+{
+  if(addr->ss.ss_family == AF_INET6)
+  {
+    struct sockaddr_in6 *v6;
+
+    v6 = (struct sockaddr_in6*)addr;
+    if(IN6_IS_ADDR_V4MAPPED(&v6->sin6_addr))
+    {
+      char v4ip[HOSTIPLEN];
+      struct sockaddr_in *v4 = (struct sockaddr_in*)addr;
+      inetntop(AF_INET6, &v6->sin6_addr, v4ip, HOSTIPLEN);
+      inet_pton(AF_INET, v4ip, &v4->sin_addr);
+      addr->ss.ss_family = AF_INET;
+      addr->ss_len = sizeof(struct sockaddr_in);
+    }
+    else 
+      addr->ss_len = sizeof(struct sockaddr_in6);
+  }
+  else
+    addr->ss_len = sizeof(struct sockaddr_in);
+} 
+#endif
