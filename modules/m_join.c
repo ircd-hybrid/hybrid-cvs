@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.39 2001/01/02 01:22:46 fl_ Exp $
+ *   $Id: m_join.c,v 1.40 2001/01/02 03:29:02 bysin Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -96,6 +96,8 @@ int     m_join(struct Client *cptr,
       /* something is *fucked* - bail */
       return 0;
     }
+
+  if (parv[1] > CHANNELLEN) return 0;
 
   if (*parv[1] == '\0')
     {
