@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.210 2001/04/20 08:35:41 a1kmm Exp $
+ *  $Id: s_conf.c,v 7.211 2001/04/24 09:47:57 habeeb Exp $
  */
 
 #include <sys/types.h>
@@ -63,7 +63,7 @@
 #include "memory.h"
 
 
-extern int yyparse(); /* defined in yy.tab.c */
+extern int yyparse(); /* defined in y.tab.c */
 extern ConfigFileEntryType ConfigFileEntry; /* defined in ircd.c */
 extern int lineno;
 extern char linebuf[];
