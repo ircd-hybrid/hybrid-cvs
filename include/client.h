@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.112 2001/05/23 20:59:06 davidt Exp $
+ * $Id: client.h,v 7.113 2001/05/24 15:45:18 davidt Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -299,7 +299,7 @@ struct LocalUser
 #define STAT_SERVER             0x10
 #define STAT_CLIENT             0x20
 
-#define HasID(x) (!IsServer(x) && (x)->user->id[0] != '\0')
+#define HasID(x) (!IsServer(x) && (x)->user && (x)->user->id[0] != '\0')
 #define ID(source_p) (HasID(source_p) ? source_p->user->id : source_p->name)
 
 #define ID_or_name(x,client_p) (IsCapable(client_p,CAP_UID)?(x)->user->id:(x)->name)
