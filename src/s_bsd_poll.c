@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.22 2000/12/21 13:39:50 db Exp $
+ *  $Id: s_bsd_poll.c,v 7.23 2000/12/24 23:02:42 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -375,6 +375,15 @@ comm_select_fdlist(fdlist_t fdlist, time_t delay)
     return 0;
 }
 
+/*
+ * Note that I haven't really implemented the multiple FD list code in
+ * hyb-7 yet, because I haven't got a server doing some decent traffic
+ * to profile. I'll get around to it.
+ *
+ * If you run a big server, you should be running freebsd-stable + kqueue!
+ *
+ *   -- adrian
+ */
 int
 comm_select(time_t delay)
 {
