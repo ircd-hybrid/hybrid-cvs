@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.148 2002/06/11 00:00:04 androsyn Exp $
+ *  $Id: client.h,v 7.149 2002/06/14 19:38:11 leeh Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -66,7 +66,6 @@ struct LocalUser;
  */
 struct User
 {
-  struct User*   next;          /* chain of anUser structures */
   dlink_list     channel;       /* chain of channel pointer blocks */
   dlink_list     invited;       /* chain of invite pointer blocks */
   char*          away;          /* pointer to away message */
