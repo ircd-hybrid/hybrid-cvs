@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: vchannel.c,v 7.48 2001/05/13 01:32:01 db Exp $
+ * $Id: vchannel.c,v 7.49 2001/05/13 02:55:14 db Exp $
  */
 
 #include "tools.h"
@@ -326,7 +326,7 @@ vchan_show_ids(struct Client *source_p, struct Channel *chptr)
   int tlen;
   dlink_node *ptr;
   struct Channel *chtmp;
-  done_secret = 0;
+  int done_secret = 0;
 
   ircsprintf(buf, form_str(RPL_VCHANLIST), me.name, source_p->name,
 	     chptr->chname);
