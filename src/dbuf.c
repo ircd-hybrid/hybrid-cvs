@@ -21,7 +21,7 @@
  * see the header file (dbuf.h).
  *
  *
- * $Id: dbuf.c,v 7.12 2000/01/04 20:00:04 db Exp $
+ * $Id: dbuf.c,v 7.13 2000/01/05 22:57:03 db Exp $
  */
 #include "dbuf.h"
 #include "common.h"
@@ -91,7 +91,8 @@ void count_dbuf_memory(size_t* allocated, size_t* used)
  * XXX - Unfortunately this makes cleanup impossible because the block 
  * pointer isn't saved and dbufs are not allocated in chunks anywhere else.
  * --Bleep
- */
+ * fixed --Dianora
+*/
 void dbuf_init()
 {
   int      i;
@@ -111,7 +112,7 @@ void dbuf_init()
   for (i = 0; i < INITIAL_DBUFS; i++ )
   {
     new_bp = (struct DBufBuffer*) MyMalloc(sizeof(struct DBufBuffer));
-    memset((void *)new_bp,0,sizeof(struct DBufBuffer));
+     memset(new_bp,0,sizeof(struct DBufBuffer));
 
     current_bp->next = new_bp;
     current_bp = new_bp;
@@ -162,7 +163,7 @@ static struct DBufBuffer* dbuf_malloc()
 }
 
 /*
- * dbuf_free - return a struct DBufBuffer structure to the dbufFreeList
+ * dbuf_free - return a struct DBufBuffer structure 
  */
 static void dbuf_free(struct DBufBuffer* ptr)
 {
