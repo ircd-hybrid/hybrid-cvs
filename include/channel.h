@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.75 2001/06/19 07:54:37 a1kmm Exp $
+ * $Id: channel.h,v 7.76 2001/06/25 09:23:45 a1kmm Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -259,6 +259,13 @@ struct ChModeChange
  char letter;
  char *arg;
  int caps, nocaps, mems;
+};
+
+struct ChResyncOp
+{
+ struct Client *client_p;
+ int dir, sync;
+ char c;
 };
 
 #define CHACCESS_CHANOP 3
