@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.307 2002/12/13 05:38:47 bill Exp $
+ *  $Id: client.c,v 7.308 2002/12/18 04:44:35 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -882,9 +882,9 @@ free_exited_clients(void *unused)
 ** Exit one client, local or remote. Assuming all dependents have
 ** been already removed, and socket closed for local client.
 */
-static void exit_one_client(struct Client *client_p,
-                            struct Client *source_p,
-                            struct Client *from, const char *comment)
+static void
+exit_one_client(struct Client *client_p, struct Client *source_p,
+		struct Client *from, const char *comment)
 {
   struct Client* target_p;
   dlink_node *lp;
@@ -975,9 +975,9 @@ static void exit_one_client(struct Client *client_p,
 				   comment);
 
       DLINK_FOREACH_SAFE(lp, next_lp, source_p->user->channel.head)
-	{
-	  remove_user_from_channel(lp->data, source_p);
-	}
+      {
+	remove_user_from_channel(lp->data, source_p);
+      }
         
       /* Should not be in any channels now */
       assert(source_p->user->channel.head == NULL);
@@ -1379,14 +1379,13 @@ exit_client(
   if(MyConnect(source_p))
   {
      close_connection(source_p);
-     free_local_client(source_p);
   }
+
   /* The client *better* be off all of the lists */
   assert(dlinkFind(&unknown_list, source_p) == NULL);
   assert(dlinkFind(&lclient_list, source_p) == NULL);
   assert(dlinkFind(&serv_list, source_p) == NULL);
   assert(dlinkFind(&oper_list, source_p) == NULL);
-  
     
   exit_one_client(client_p, source_p, from, comment);
   return client_p == source_p ? CLIENT_EXITED : 0;
