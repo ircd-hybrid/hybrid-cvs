@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.31 2003/10/24 11:08:21 michael Exp $
+ *  $Id: csvlib.c,v 7.32 2004/01/01 02:09:35 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -526,10 +526,10 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
 
   while (fbgets(buf, sizeof(buf), in) != NULL) 
   {
-    if ((p = strchr(buff,'\n')) != NULL)
+    if ((p = strchr(buf,'\n')) != NULL)
       *p = '\0';
 
-    if ((*buff == '\0') || (*buff == '#'))
+    if ((*buf == '\0') || (*buf == '#'))
     {
       if(flush_write(source_p, in, out, buf, temppath) < 0)
 	return(-1);
