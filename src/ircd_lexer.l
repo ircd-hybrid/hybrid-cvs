@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.138 2002/05/24 23:34:47 androsyn Exp $
+ *  $Id: ircd_lexer.l,v 1.139 2002/05/25 01:55:20 androsyn Exp $
  */
 
 %option case-insensitive
@@ -364,10 +364,10 @@ void ccomment(void)
 void cinclude(void)
 {
   char *c;
-  if ((c = index(yytext, '<')) == NULL)
-    *index(c = index(yytext, '"') + 1, '"') = 0;
+  if ((c = strchr(yytext, '<')) == NULL)
+    *strchr(c = strchr(yytext, '"') + 1, '"') = 0;
   else
-    *index(++c, '>') = 0;
+    *strchr(++c, '>') = 0;
 
   /* log(L_NOTICE, "got include %s!", c); */
 
