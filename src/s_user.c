@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.2 1999/08/05 04:07:13 tomh Exp $
+ *  $Id: s_user.c,v 7.3 1999/08/06 02:43:21 db Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -200,8 +200,6 @@ int show_lusers(struct Client *cptr, struct Client *sptr,
 
 /*  forced = (parc >= 2); */
   forced = (IsAnOper(sptr) && (parc > 3));
-
-/* (void)collapse(parv[1]); */
 
   Count.unknown = 0;
   m_server = Count.myserver;
