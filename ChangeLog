@@ -1,3 +1,15 @@
+leeh        2002/01/13 18:47:22 EST	(20020113_12)
+
+  Modified files:
+    src                  s_user.c 
+  Log:
+  - fixed the double mode crap
+  
+  Revision  Changes    Path
+  7.180     +2 -1      ircd-hybrid-7/src/s_user.c
+
+
+
 androsyn    2002/01/13 18:34:01 EST	(20020113_11)
 
   Modified files:
@@ -21608,4 +21620,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3340 2002/01/13 23:34:07 androsyn Exp $
+$Id: ChangeLog,v 7.3341 2002/01/13 23:47:28 leeh Exp $
