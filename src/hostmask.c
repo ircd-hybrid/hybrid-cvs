@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.88 2003/08/03 13:01:36 adx Exp $
+ *  $Id: hostmask.c,v 7.89 2003/08/04 09:39:31 adx Exp $
  */
 
 #include "stdinc.h"
@@ -736,7 +736,7 @@ clear_out_address_conf(void)
 char *
 show_iline_prefix(struct Client *sptr, struct AccessItem *aconf, char *name)
 {
-  static char prefix_of_host[USERLEN + 15];
+  static char prefix_of_host[USERLEN + 14];
   char *prefix_ptr;
 
   prefix_ptr = prefix_of_host;
@@ -746,6 +746,8 @@ show_iline_prefix(struct Client *sptr, struct AccessItem *aconf, char *name)
     *prefix_ptr++ = '!';
   if (IsNeedIdentd(aconf))
     *prefix_ptr++ = '+';
+  if (!IsNeedPassword(aconf))
+    *prefix_ptr++ = '&';
   if (IsPassIdentd(aconf))
     *prefix_ptr++ = '$';
   if (IsNoMatchIp(aconf))
@@ -754,12 +756,17 @@ show_iline_prefix(struct Client *sptr, struct AccessItem *aconf, char *name)
     *prefix_ptr++ = '=';
   if (MyOper(sptr) && IsConfExemptKline(aconf))
     *prefix_ptr++ = '^';
+  if (MyOper(sptr) && IsConfExemptGline(aconf))
+    *prefix_ptr++ = '_';
   if (MyOper(sptr) && IsConfExemptLimits(aconf))
     *prefix_ptr++ = '>';
   if (MyOper(sptr) && IsConfIdlelined(aconf))
     *prefix_ptr++ = '<';
-  *prefix_ptr = '\0';
-  strncpy(prefix_ptr, name, USERLEN);
+  if (IsConfRestricted(aconf))
+    *prefix_ptr++ = '#';
+  if (IsConfCanFlood(aconf))
+    *prefix_ptr++ = '|';
+  strlcpy(prefix_ptr, name, USERLEN);
   return (prefix_of_host);
 }
 
