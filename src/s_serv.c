@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.379 2003/10/07 22:37:20 bill Exp $
+ *  $Id: s_serv.c,v 7.380 2003/10/11 12:29:27 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1017,11 +1017,8 @@ server_estab(struct Client *client_p)
      */
     if (!EmptyString(aconf->spasswd))
     {
-      if (IsCapable(client_p, CAP_TS6))
-        sendto_one(client_p, "PASS %s TS 6 %s",
-                   aconf->spasswd, me.id);
-      else
-        sendto_one(client_p,"PASS %s :TS", aconf->spasswd);
+      sendto_one(client_p, "PASS %s TS %d %s",
+                 aconf->spasswd, TS_CURRENT, me.id);
     }
 
     /* Pass my info to the new server
@@ -1187,10 +1184,16 @@ server_estab(struct Client *client_p)
          match(my_name_for_link(conf), client_p->name))
       continue;
 
-    sendto_one(target_p,":%s SERVER %s 2 :%s%s", 
-               me.name, client_p->name,
-               IsHidden(client_p) ? "(H) " : "",
-               client_p->info);
+    if (IsCapable(target_p, CAP_TS6))
+      sendto_one(target_p, ":%s SID %s 2 :%s%s",
+                 me.id, client_p->name,
+                 IsHidden(client_p) ? "(H) " : "",
+                 client_p->info);
+    else
+      sendto_one(target_p,":%s SERVER %s 2 :%s%s", 
+                 me.name, client_p->name,
+                 IsHidden(client_p) ? "(H) " : "",
+                 client_p->info);
   }
 
   /* Pass on my client information to the new server
@@ -1226,10 +1229,23 @@ server_estab(struct Client *client_p)
       if (match(my_name_for_link(conf), target_p->name))
         continue;
 
-      sendto_one(client_p, ":%s SERVER %s %d :%s%s", 
-                 target_p->serv->up, target_p->name,
-                 target_p->hopcount+1, IsHidden(target_p) ? "(H) " : "",
-                 target_p->info);
+      if (IsCapable(client_p, CAP_TS6))
+      {
+        struct Client *up;
+
+        if ((up = find_client(target_p->serv->up)) != NULL)
+          sendto_one(client_p, ":%s SID %s %d :%s%s",
+                     ID(up), target_p->name,
+                     target_p->hopcount+1, IsHidden(target_p) ? "(H) " : "",
+                     target_p->info);
+        else /* shouldn't happen */
+          ;
+      }
+      else
+        sendto_one(client_p, ":%s SERVER %s %d :%s%s", 
+                   target_p->serv->up, target_p->name,
+                   target_p->hopcount+1, IsHidden(target_p) ? "(H) " : "",
+                   target_p->info);
     }
   }
 
@@ -2163,7 +2179,8 @@ serv_connect_callback(int fd, int status, void *data)
     
   /* jdc -- Check and send spasswd, not passwd. */
   if (!EmptyString(aconf->spasswd))
-    sendto_one(client_p, "PASS %s :TS", aconf->spasswd);
+    sendto_one(client_p, "PASS %s TS %d %s",
+               aconf->spasswd, TS_CURRENT, me.id);
     
   /* Pass my info to the new server
    *

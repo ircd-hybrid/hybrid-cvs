@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.14 2003/10/10 23:29:27 bill Exp $
+ *  $Id: m_join.c,v 1.15 2003/10/11 12:29:25 bill Exp $
  */
 
 #include "stdinc.h"
@@ -87,7 +87,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.14 $";
+const char *_version = "$Revision: 1.15 $";
 #endif
 
 /* m_join()
@@ -210,7 +210,10 @@ m_join(struct Client *client_p, struct Client *source_p,
 
 /* ms_join()
  *
- * inputs	-
+ * inputs	- parv[0] = uid
+ *		  parv[1] = ts
+ *		  parv[2] = channel name
+ *		  parv[3] = modes
  * output	- none
  * side effects	- handles remote JOIN's sent by servers. In TSora
  *		  remote clients are joined using SJOIN, hence a 
@@ -232,9 +235,6 @@ ms_join(struct Client *client_p, struct Client *source_p,
   int            isnew;
   char           *s;
   const char *servername;
-
-  if (IsClient(source_p))
-    return;
 
   if ((parv[1][0] == '0') && (parv[1][1] == '\0') && parc == 2)
   {
