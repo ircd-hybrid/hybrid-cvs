@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.235 2002/02/23 12:58:30 leeh Exp $
+ *  $Id: client.c,v 7.236 2002/02/23 15:30:53 leeh Exp $
  */
 
 #include "tools.h"
@@ -943,6 +943,10 @@ get_client_name(struct Client* client, int showip)
     {
       if (!irccmp(client->name, client->host))
         return client->name;
+
+#ifdef HIDE_SERVERS_IPS
+      showip = MASK_IP;
+#endif
 
       /* And finally, let's get the host information, ip or name */
       switch (showip)
