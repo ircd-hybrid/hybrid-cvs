@@ -1,3 +1,16 @@
+wcampbel    2001/12/18 10:38:13 EST	(20011218_4)
+
+  Modified files:
+    contrib              m_jupe.c 
+  Log:
+  Repo moved the backup from developers into here and applied Lee's fix.
+  Repo moves are better as they do not lose history.
+  
+  Revision  Changes    Path
+  1.21      +1 -1      ircd-hybrid-7/contrib/m_jupe.c
+
+
+
 androsyn    2001/12/18 10:36:52 EST	(20011218_3)
 
   Modified files:
@@ -1036,7 +1049,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3212 2001/12/18 15:36:57 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3213 2001/12/18 15:38:18 wcampbel Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19390,4 +19403,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3212 2001/12/18 15:36:57 androsyn Exp $
+$Id: ChangeLog,v 7.3213 2001/12/18 15:38:18 wcampbel Exp $
