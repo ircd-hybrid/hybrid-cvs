@@ -1,3 +1,18 @@
+leeh        2002/05/12 17:37:10 EDT	(20020512_4)
+
+  Modified files:
+    doc                  example.conf.efnet 
+    modules/core         m_sjoin.c 
+  Log:
+  - yes! align bits of code where I cant see them!
+  - removed the crap from efnets example config that they wont use
+  
+  Revision  Changes    Path
+  7.14      +0 -27     ircd-hybrid-7/doc/example.conf.efnet
+  1.137     +2 -2      ircd-hybrid-7/modules/core/m_sjoin.c
+
+
+
 leeh        2002/05/12 12:43:52 EDT	(20020512_3)
 
   Modified files:
@@ -26289,4 +26304,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3644 2002/05/12 16:43:59 leeh Exp $
+$Id: ChangeLog,v 7.3645 2002/05/12 21:37:17 leeh Exp $
