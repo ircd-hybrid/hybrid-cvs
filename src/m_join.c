@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 7.30 2000/10/25 06:07:03 db Exp $
+ *   $Id: m_join.c,v 7.31 2000/10/28 02:29:09 toot Exp $
  */
 
 #include "handlers.h"
@@ -275,7 +275,7 @@ int     m_join(struct Client *cptr,
                           (this prevents join-invited-chan voodoo) */
                        if (!key[1])
                          {
-                           show_vchans(cptr, sptr, chptr);
+                           show_vchans(cptr, sptr, chptr, "join");
                            return 0;
                          }
 
@@ -316,7 +316,7 @@ int     m_join(struct Client *cptr,
                           /* otherwise, they get a list of channels */
                           else
                             {
-                              show_vchans(cptr, sptr, chptr);
+                              show_vchans(cptr, sptr, chptr, "join");
                               return 0;
                             }
                         }

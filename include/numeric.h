@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: numeric.h,v 7.8 2000/10/14 20:54:30 toot Exp $
+ * $Id: numeric.h,v 7.9 2000/10/28 02:29:05 toot Exp $
  */
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
@@ -201,6 +201,10 @@ extern const char* form_str(int);
 
 #define RPL_LOCALUSERS       265
 #define RPL_GLOBALUSERS      266
+
+#define RPL_VCHANEXIST       276
+#define RPL_VCHANLIST        277
+#define RPL_VCHANHELP        278
 
 /* numeric_replies */
 

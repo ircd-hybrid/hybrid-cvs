@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.6 2000/10/25 10:00:04 adrian Exp $
+ *  $Id: s_bsd_poll.c,v 7.7 2000/10/28 02:29:10 toot Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -70,6 +70,7 @@
 /*
  * Stuff for poll()
  */
+#define __USE_XOPEN    /* XXXX had to add this define to make it compile -toby */
 #include <sys/poll.h>
 #define CONNECTFAST
 

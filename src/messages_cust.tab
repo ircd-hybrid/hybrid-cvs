@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: messages_cust.tab,v 7.13 2000/10/14 20:54:32 toot Exp $
+ * $Id: messages_cust.tab,v 7.14 2000/10/28 02:29:10 toot Exp $
  *
  */
 /* 
@@ -304,9 +304,9 @@ static  char *  replies[] = {
 /* 273 */       (char *)NULL,
 /* 274 */       (char *)NULL,
 /* 275 */       (char *)NULL,
-/* 276 */       (char *)NULL,
-/* 277 */       (char *)NULL,
-/* 278 */       (char *)NULL,
+/* 276 RPL_VCHANEXIST, */       ":%s 276 %s %s :has %d possible channels available",
+/* 277 RPL_VCHANLIST, */        ":%s 277 %s %s %s",
+/* 278 RPL_VCHANHELP, */        ":%s 278 %s :Type /%s %s <key> to specify the channel you want",
 /* 279 */       (char *)NULL,
 /* 280 */       (char *)NULL,
 /* 281 */       (char *)NULL,
