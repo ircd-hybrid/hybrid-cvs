@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.151 2003/05/12 08:09:31 michael Exp $
+ *  $Id: m_sjoin.c,v 1.152 2003/05/13 02:32:16 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -30,6 +30,7 @@
 #include "client.h"
 #include "hash.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "ircd.h"
 #include "list.h"
 #include "numeric.h"
@@ -62,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.151 $";
+const char *_version = "$Revision: 1.152 $";
 #endif
 /*
  * ms_sjoin

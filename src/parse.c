@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.158 2003/05/11 22:04:51 michael Exp $
+ *  $Id: parse.c,v 7.159 2003/05/13 02:32:19 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -30,6 +30,7 @@
 #include "common.h"
 #include "hash.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "ircd.h"
 #include "numeric.h"
 #include "s_log.h"

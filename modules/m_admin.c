@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_admin.c,v 1.39 2003/05/08 09:39:21 michael Exp $
+ *  $Id: m_admin.c,v 1.40 2003/05/13 02:32:13 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -34,6 +34,7 @@
 #include "parse.h"
 #include "hook.h"
 #include "modules.h"
+#include "irc_string.h"
 
 static void m_admin(struct Client *, struct Client *, int, char **);
 static void mr_admin(struct Client *, struct Client *, int, char **);
@@ -60,7 +61,7 @@ _moddeinit(void)
   hook_del_event("doing_admin");
   mod_del_cmd(&admin_msgtab);
 }
-const char *_version = "$Revision: 1.39 $";
+const char *_version = "$Revision: 1.40 $";
 #endif
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.97 2003/05/08 03:42:52 michael Exp $
+ *  $Id: m_gline.c,v 1.98 2003/05/13 02:32:13 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -31,6 +31,7 @@
 #include "common.h"
 #include "config.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "ircd.h"
 #include "hostmask.h"
 #include "numeric.h"
@@ -109,7 +110,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.97 $";
+const char *_version = "$Revision: 1.98 $";
 #endif
 /*
  * mo_gline()

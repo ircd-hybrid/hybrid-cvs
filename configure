@@ -2240,9 +2240,9 @@ echo "$as_me:$LINENO: result: $AppleGCC" >&5
 echo "${ECHO_T}$AppleGCC" >&6
 
 if test "x$GCC" = "xyes"; then
-	IRC_CFLAGS="-O2 -g"
+	IRC_CFLAGS="-O2 -g -Wall"
 elif test "x$ac_cv_prog_cc_g" = "xyes"; then
-	IRC_CFLAGS="-g"
+	IRC_CFLAGS="-g -Wall"
 fi
 
 echo "$as_me:$LINENO: checking if your compiler supports the SVR4 Software Generation System interfaces" >&5
@@ -6151,8 +6151,9 @@ int
 main ()
 {
 struct sockaddr_in6 s;
-		    s.sin6_family = 0;
-		    struct sockaddr_storage t;
+		  struct sockaddr_storage t;
+		  s.sin6_family = 0;
+
 
   ;
   return 0;
@@ -6590,7 +6591,7 @@ fi;
 # Check whether --enable-warnings or --disable-warnings was given.
 if test "${enable_warnings+set}" = set; then
   enableval="$enable_warnings"
-  IRC_CFLAGS="$IRC_CFLAGS -Wall -Wcast-qual -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wredundant-decls -Wshadow -Wundef -Wunused -Wwrite-strings -W"
+  IRC_CFLAGS="$IRC_CFLAGS -Wcast-qual -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wredundant-decls -Wshadow -Wundef -Wunused -Wwrite-strings -W"
 fi;
 
 
@@ -8126,6 +8127,7 @@ _ACEOF
 
 	fi
 fi
+
 
 
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_restart.c,v 1.28 2003/05/08 09:39:21 michael Exp $
+ *  $Id: m_restart.c,v 1.29 2003/05/13 02:32:13 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -27,6 +27,7 @@
 #include "client.h"
 #include "common.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "ircd.h"
 #include "numeric.h"
 #include "s_conf.h"
@@ -57,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&restart_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 
 /*

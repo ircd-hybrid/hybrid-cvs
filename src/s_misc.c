@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_misc.c,v 7.30 2003/04/13 09:46:58 michael Exp $
+ *  $Id: s_misc.c,v 7.31 2003/05/13 02:32:19 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -27,6 +27,7 @@
 #include "client.h"
 #include "common.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "ircd.h"
 #include "numeric.h"
 #include "res.h"

@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.5 2003/05/13 01:53:36 db Exp $
+ * $Id: irc_res.c,v 7.6 2003/05/13 02:32:18 joshk Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -19,6 +19,7 @@
  * Apr 28, 2003 --cryogen and Dianora
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "client.h"
 #include "list.h"
@@ -26,6 +27,7 @@
 #include "event.h"
 #include "res.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "ircd.h"
 #include "numeric.h"
 #include "restart.h"
@@ -36,27 +38,18 @@
 #include "send.h"
 #include "s_debug.h"
 #include "handlers.h"
-
-#include <assert.h>
-#include <errno.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/time.h>
-#include <sys/socket.h>
-#include <fcntl.h>
-#include <unistd.h>
 #include "memory.h"
 
+#include <resolv.h>
 #include <arpa/nameser.h>
-#include <netdb.h>
-#include <arpa/inet.h>
+#include "irc_reslib.h"
 
 #include <limits.h>
 #if (CHAR_BIT != 8)
 #error this code needs to be able to address individual octets 
 #endif
 
-/* $Id: irc_res.c,v 7.5 2003/05/13 01:53:36 db Exp $ */
+/* $Id: irc_res.c,v 7.6 2003/05/13 02:32:18 joshk Exp $ */
 
 static PF res_readreply;
 
@@ -696,16 +689,16 @@ proc_answer(struct reslist *request, HEADER* header, char* buf, char* eob)
     if (!(((char *)current + ANSWER_FIXED_SIZE) < eob))
       break;
 
-    type = _getshort(current);
+    type = getshort(current);
     current += TYPE_SIZE;
 
-    query_class = _getshort(current);
+    query_class = getshort(current);
     current += CLASS_SIZE;
 
-    request->ttl = _getlong(current);
+    request->ttl = getlong(current);
     current += TTL_SIZE;
 
-    rd_length = _getshort(current);
+    rd_length = getshort(current);
     current += RDLENGTH_SIZE;
 
     /* 
@@ -790,9 +783,7 @@ res_readreply(int fd, void *data)
 {
   char               buf[sizeof(HEADER) + MAXPACKET];
   HEADER*            header;
-  dlink_node	     *m_tail;
   struct reslist     *request = NULL;
-  struct reslist     *request_tail = NULL;
   struct DNSReply    *reply = NULL;
   int                rc;
   int                answer_count;

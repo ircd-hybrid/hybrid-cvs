@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.48 2003/05/03 11:10:05 michael Exp $
+ *  $Id: s_log.c,v 7.49 2003/05/13 02:32:19 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -31,6 +31,7 @@
 #include "s_log.h"
 #include "fileio.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "ircd.h"
 #include "s_misc.h"
 #include "event.h"	/* Needed for EVH etc. */

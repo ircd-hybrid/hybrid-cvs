@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.122 2003/05/12 23:43:38 joshk Exp $
+ *  $Id: s_auth.c,v 7.123 2003/05/13 02:32:19 joshk Exp $
  */
 
 /*
@@ -42,6 +42,7 @@
 #include "event.h"
 #include "fdlist.h"              /* fdlist_add */
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "ircd.h"
 #include "ircdauth.h"
 #include "numeric.h"

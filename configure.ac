@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.15 2003/05/12 23:43:31 joshk Exp $
+dnl $Id: configure.ac,v 7.16 2003/05/13 02:32:09 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -69,9 +69,9 @@ fi
 AC_MSG_RESULT($AppleGCC)
 
 if test "x$GCC" = "xyes"; then
-	IRC_CFLAGS="-O2 -g"
+	IRC_CFLAGS="-O2 -g -Wall"
 elif test "x$ac_cv_prog_cc_g" = "xyes"; then
-	IRC_CFLAGS="-g"
+	IRC_CFLAGS="-g -Wall"
 fi
 
 dnl SVR4 SGS based on what we know about the compiler -jmallett
@@ -425,8 +425,9 @@ AC_CACHE_CHECK([for IPv6 support], have_v6,
 		[[#define IN_AUTOCONF
 		#include "include/stdinc.h"]],
 		[[struct sockaddr_in6 s; 
-		    s.sin6_family = 0;
-		    struct sockaddr_storage t;]]
+		  struct sockaddr_storage t;
+		  s.sin6_family = 0;]]
+
 	)],
 	[have_v6="yes"],
 	[have_v6="no"])
@@ -560,7 +561,7 @@ AC_HELP_STRING([--disable-block-alloc],[Disable the block allocator (Only useful
 
 AC_ARG_ENABLE(warnings,
 AC_HELP_STRING([--enable-warnings],[Enable all sorts of warnings for debugging.]),
-[IRC_CFLAGS="$IRC_CFLAGS -Wall -Wcast-qual -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wredundant-decls -Wshadow -Wundef -Wunused -Wwrite-strings -W"],[])
+[IRC_CFLAGS="$IRC_CFLAGS -Wcast-qual -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wredundant-decls -Wshadow -Wundef -Wunused -Wwrite-strings -W"],[])
 
 
 dnl Server Tweaks
@@ -792,6 +793,7 @@ AC_SUBST(SSL_INCLUDES)
 AC_SUBST(SSL_LIBS)
 
 AC_SUBST(LDFLAGS)
+
 AC_SUBST(IRC_CFLAGS)
 AC_SUBST(SEDOBJ)
 

@@ -96,12 +96,13 @@
 #include "ircd_defs.h"
 #include "fileio.h"
 #include "irc_string.h"
+#include "irc_getaddrinfo.h"
 
 #define NS_TYPE_ELT			0x40 /* EDNS0 extended label type */
 #define DNS_LABELTYPE_BITSTRING		0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.1 2003/05/12 21:56:59 stu Exp $ */
+/* $Id: irc_reslib.c,v 7.2 2003/05/13 02:32:18 joshk Exp $ */
 
 static FBFILE *file;
 

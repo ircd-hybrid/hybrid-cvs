@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.c,v 7.30 2003/05/10 04:05:06 michael Exp $
+ *  $Id: motd.c,v 7.31 2003/05/13 02:32:19 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -36,6 +36,7 @@
 #include "numeric.h"
 #include "client.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "memory.h"
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.92 2003/05/12 08:09:33 michael Exp $
+ *  $Id: channel_mode.c,v 7.93 2003/05/13 02:32:18 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -30,6 +30,7 @@
 #include "common.h"
 #include "hash.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "ircd.h"
 #include "list.h"
 #include "numeric.h"

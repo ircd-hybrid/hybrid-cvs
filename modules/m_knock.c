@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.57 2003/05/12 08:09:28 michael Exp $
+ *  $Id: m_knock.c,v 1.58 2003/05/13 02:32:13 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -30,6 +30,7 @@
 #include "client.h"
 #include "hash.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "ircd.h"
 #include "numeric.h"
 #include "send.h"
@@ -80,7 +81,7 @@ _moddeinit(void)
   mod_del_cmd(&knockll_msgtab);
 }
 
-const char *_version = "$Revision: 1.57 $";
+const char *_version = "$Revision: 1.58 $";
 #endif
 
 /* m_knock

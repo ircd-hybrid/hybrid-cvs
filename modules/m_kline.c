@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.123 2003/05/10 04:05:03 michael Exp $
+ *  $Id: m_kline.c,v 1.124 2003/05/13 02:32:13 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -30,6 +30,7 @@
 #include "client.h"
 #include "common.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "ircd.h"
 #include "hostmask.h"
 #include "numeric.h"
@@ -75,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.123 $";
+const char *_version = "$Revision: 1.124 $";
 #endif
 
 /* Local function prototypes */

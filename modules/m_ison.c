@@ -19,13 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ison.c,v 1.31 2003/05/11 16:05:50 michael Exp $
+ *  $Id: m_ison.c,v 1.32 2003/05/13 02:32:13 joshk Exp $
  */
 
 #include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "ircd.h"
 #include "numeric.h"
 #include "send.h"
@@ -58,7 +59,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&ison_msgtab);
 }
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.32 $";
 #endif
 
 static char buf[BUFSIZE];

@@ -19,13 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_accept.c,v 1.38 2003/05/12 23:43:36 joshk Exp $
+ *  $Id: m_accept.c,v 1.39 2003/05/13 02:32:13 joshk Exp $
  */
 
 #include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "hash.h"       /* for find_client() */
 #include "ircd.h"
 #include "list.h"
@@ -60,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&accept_msgtab);
 }
 
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 
 /*

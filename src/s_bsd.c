@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.197 2003/05/12 21:56:59 stu Exp $
+ *  $Id: s_bsd.c,v 7.198 2003/05/13 02:32:19 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -387,9 +387,6 @@ add_connection(struct Listener* listener, int fd)
   struct Client*     new_client;
   socklen_t len = sizeof(struct irc_ssaddr);
   struct irc_ssaddr   irn;
-#ifdef IPV6
-  struct sockaddr_in6 *v6;
-#endif
   assert(NULL != listener);
 
 #ifdef USE_IAUTH

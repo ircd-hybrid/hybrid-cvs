@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.6 2003/05/12 02:22:52 joshk Exp $
+ * $Id: stdinc.h,v 1.7 2003/05/13 02:32:11 joshk Exp $
  *
  */
 
@@ -46,11 +46,14 @@
 # endif 
 #endif  
 
+#include <sys/types.h>
+
 #ifdef CYGWIN
 /* Cygwin sucks rocks */
 #define EAI_SYSTEM -11
 #include <w32api/winsock2.h>
 #include <w32api/ws2tcpip.h>
+typedef uint16_t in_port_t;
 #endif
 
 #ifdef HAVE_STDDEF_H
@@ -63,7 +66,6 @@
 
 #include <stdio.h>
 #include <assert.h>
-#include <stdio.h>
 #include <time.h>
 #include <fcntl.h>
 #include <stdarg.h>
@@ -88,11 +90,8 @@
 #endif
 
 #include <sys/time.h>
-#include <sys/types.h>
 
-#ifdef CYGWIN
-typedef uint16_t in_port_t;
-#endif
+
 
 #include <sys/file.h>
 #ifdef HAVE_SYS_RESOURCE_H

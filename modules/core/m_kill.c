@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.73 2003/05/08 07:07:11 michael Exp $
+ *  $Id: m_kill.c,v 1.74 2003/05/13 02:32:16 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -34,6 +34,7 @@
 #include "send.h"
 #include "whowas.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
@@ -64,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.73 $";
+const char *_version = "$Revision: 1.74 $";
 #endif
 
 /* mo_kill()

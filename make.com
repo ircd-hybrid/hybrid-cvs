@@ -1,7 +1,7 @@
 $ WRITE SYS$OUTPUT "Commencing build of ircd-hybrid-7 for VMS..."
 $ WRITE SYS$OUTPUT "Examining source directory..."
 $
-$! $Id: make.com,v 1.7 2001/12/06 23:34:04 davidt Exp $
+$! $Id: make.com,v 1.8 2003/05/13 02:32:09 joshk Exp $
 $! Don't have to do this any more - we now depend on
 $! bison/flex to build.
 $! FILE_SIZE = "NOSUCHFILE"
@@ -32,12 +32,6 @@ $ MMK
 $ WRITE SYS$OUTPUT "Leaving directory modules..."
 $ SET DEF [-]
 $
-$ WRITE SYS$OUTPUT "Building in adns..."
-$ SET DEF [.ADNS]
-$ MMK
-$ WRITE SYS$OUTPUT "Leaving directory adns..."
-$ SET DEF [-]
-
 $ WRITE SYS$OUTPUT "Building in src..."
 $ SET DEF [.SRC]
 $ MMK

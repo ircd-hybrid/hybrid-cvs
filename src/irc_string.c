@@ -19,12 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.60 2003/05/11 22:27:44 joshk Exp $
+ *  $Id: irc_string.c,v 7.61 2003/05/13 02:32:19 joshk Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "client.h"
 #include "list.h"
 #include "memory.h"

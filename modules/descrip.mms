@@ -1,9 +1,9 @@
 # MMS/MMK Makefile for OpenVMS
 # Copyright (c) 2001 Edward Brocklesby
-# $Id: descrip.mms,v 1.7 2003/05/10 20:42:13 michael Exp $
+# $Id: descrip.mms,v 1.8 2003/05/13 02:32:13 joshk Exp $
 
 CC=	CC
-CFLAGS=	/INCLUDE_DIRECTORY=([-.INCLUDE],[-.ADNS])/STANDARD=ISOC94
+CFLAGS=	/INCLUDE_DIRECTORY=([-.INCLUDE])/STANDARD=ISOC94
 LDFLAGS=
 
 OBJECTS=	M_ACCEPT,M_ADMIN,M_AWAY,M_CAPAB,M_CBURST,-

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.19 2003/05/02 17:20:32 michael Exp $
+ *  $Id: m_resv.c,v 1.20 2003/05/13 02:32:13 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -27,6 +27,7 @@
 #include "client.h"
 #include "channel.h"
 #include "ircd.h"
+#include "irc_string.h"
 #include "numeric.h"
 #include "s_serv.h"
 #include "send.h"
@@ -65,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.19 $";
+const char *_version = "$Revision: 1.20 $";
 #endif
 
 /* mo_resv()
