@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_privmsg.c,v 7.3 2000/01/09 22:18:07 db Exp $
+ *   $Id: m_privmsg.c,v 7.4 2000/01/09 22:39:38 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"
@@ -114,10 +114,9 @@ int     m_privmsg(struct Client *cptr,
                           int parc,
                           char *parv[])
 {
-  struct Client       *acptr;
-  char  *s;
+  struct Client *acptr;
+  char *s, *nick, *server, *host;
   struct Channel *chptr;
-  char  *nick, *server, *p, *host;
   int type=0;
 
   if (parc < 2 || *parv[1] == '\0')
@@ -151,7 +150,7 @@ int     m_privmsg(struct Client *cptr,
    */
 
   nick = parv[1];
-  if((p = strchr(nick,',')))
+  if((strchr(nick,',')))
     {
       sendto_one(sptr, form_str(ERR_TOOMANYTARGETS),
                      me.name, parv[0], MSG_PRIVMSG);
