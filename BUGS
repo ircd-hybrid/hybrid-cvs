@@ -30,30 +30,10 @@
       of upgrading at runtime, but reducing the chances of accidentally
       coring your server.
 
-3.  Problem with msgfmt command building custom msgs using gettext
-    - Please ensure you are using GNU gettext version 0.10.35.
-      Other versions are untested, and some are known to be
-      incompatible.  Solaris 8 gettext definately does not work.
-
-4.  Problems with quote set msglocale not working on linux.
-    This seems to be a linux problem, /quote set msglocale will sometimes
-    get "undone" when a new client connects.  The server will also sometimes
-    not correctly set the locale from ircd.conf on startup.
-
-    The solution is if a locale is needed, to have the message_locale="x"
-    in ircd.conf, and then rehash to make it take effect.  A rehash after
-    startup will also need to be performed to set the locale.
-
-5.  When updating a message file, in certain unknown situations it will core
-    if the file in use is being accessed.  To prevent this from happening,
-    use '/quote SET MSGLOCALE standard' BEFORE issuing make install.  When
-    the file is installed, you can SET MSGLOCALE back to the language that
-    was just updated.
-
-6.  IAuthd is broken beyond belief.  It does not work at this time.  If this
+3.  IAuthd is broken beyond belief.  It does not work at this time.  If this
     bothers you, fix it for us.
 
-7.  Solaris stock 32bit stdio is limited to 256 fds. This breaks when using
+4.  Solaris stock 32bit stdio is limited to 256 fds. This breaks when using
     cryptlinks.
 
 BUG REPORTS: If you run this code and encounter problems, you must report
@@ -63,4 +43,4 @@ BUG REPORTS: If you run this code and encounter problems, you must report
  with any report  (with passwords and other sensitive information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.52 2003/01/25 01:52:28 lusky Exp $
+$Id: BUGS,v 7.53 2003/03/29 15:41:28 adx Exp $
