@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.108 2001/05/22 19:11:37 davidt Exp $
+ * $Id: config.h,v 7.109 2001/05/24 15:26:31 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -206,7 +206,6 @@
 #undef  SYSLOG_CONNECT  /* log remote connect messages for other all servs */
 #undef  SYSLOG_USERS    /* send userlog stuff to syslog */
 #undef  SYSLOG_OPER     /* log all users who successfully become an Op */
-#undef  SYSLOG_BLOCK_ALLOCATOR /* debug block allocator */
 
 /* LOG_FACILITY - facility to use for syslog()
  * Define the facility you want to use for syslog().  Ask your
