@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.320 2002/06/11 01:41:26 androsyn Exp $
+ *  $Id: channel.c,v 7.321 2002/06/11 01:42:34 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -1460,6 +1460,8 @@ static void free_topic(struct Channel *chptr)
   void *ptr;
   
   if(chptr == NULL)
+    return;
+  if(chptr->topic == NULL)
     return;
   /* This is safe for now - If you change allocate_topic you
    * MUST change this as well
