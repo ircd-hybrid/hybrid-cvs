@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.72 2000/12/13 22:26:13 db Exp $
+ * $Id: ircd.c,v 7.73 2000/12/14 17:38:44 toot Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -504,19 +504,10 @@ int main(int argc, char *argv[])
   euid = geteuid();
 
   ConfigFileEntry.dpath = DPATH;
-
   ConfigFileEntry.configfile = CPATH;   /* Server configuration file */
+  ConfigFileEntry.klinefile = KPATH;    /* Server kline file */
+  ConfigFileEntry.dlinefile = DLPATH;   /* dline file */
 
-#ifdef KPATH
-  ConfigFileEntry.klinefile = KPATH;         /* Server kline file */
-#else
-  ConfigFileEntry.klinefile = CPATH;
-#endif /* KPATH */
-
-#ifdef DLPATH
-  ConfigFileEntry.dlinefile = DLPATH;
-#else
-  ConfigFileEntry.dlinefile = CPATH;
 #endif /* DLPATH */
 
 #ifdef  CHROOTDIR
