@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.37 2003/06/12 03:40:29 joshk Exp $
+ *  $Id: ircd_defs.h,v 7.38 2003/06/16 18:21:57 michael Exp $
  */
 
 /*
@@ -33,7 +33,6 @@
  */
 #ifndef INCLUDED_ircd_defs_h
 #define INCLUDED_ircd_defs_h
-
 #include "inet_misc.h"
 
 #define HOSTLEN         63      /* Length of hostname.  Updated to         */
@@ -42,22 +41,17 @@
 
 #define USERLEN         10
 #define REALLEN         50
-#define KILLLEN         90      
+#define KILLLEN         90
 #define CHANNELLEN      200
-
-#define REASONLEN	120
+#define REASONLEN       120
 
 /* 23+1 for \0 */
 #define KEYLEN          24
 #define BUFSIZE         512     /* WARNING: *DONT* CHANGE THIS!!!! */
-#define MAXRECIPIENTS   20
-#define MAXBANLENGTH    1024
 #define OPERNICKLEN     NICKLEN*2 /* Length of OPERNICKs. */
 
 #define USERHOST_REPLYLEN       (NICKLEN+HOSTLEN+USERLEN+5)
 #define MAX_DATE_STRING 32      /* maximum string length for a date string */
-
-#define HELPLEN         400
 #define IRCD_MAXNS      2       /* Maximum number of nameservers in 
                                    /etc/resolv.conf we care about */
 
@@ -66,9 +60,7 @@
 /* 
  * message return values 
  */
-#define CLIENT_EXITED    -2
-#define CLIENT_PARSE_ERROR -1
-#define CLIENT_OK	1
+#define CLIENT_EXITED -2
 
 /* This is to get around the fact that some implementations have ss_len and
  * others do not
@@ -79,5 +71,4 @@ struct irc_ssaddr
   unsigned char   ss_len;   
   in_port_t       ss_port;
 };
-
 #endif /* INCLUDED_ircd_defs_h */

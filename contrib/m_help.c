@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.6 2003/06/07 05:26:18 joshk Exp $
+ *  $Id: m_help.c,v 1.7 2003/06/16 18:21:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -43,6 +43,7 @@
 #define HPATH  IRCD_PREFIX "/help/opers"
 #define UHPATH IRCD_PREFIX "/help/users"
 #endif
+#define HELPLEN 400
 
 static void m_help(struct Client*, struct Client*, int, char**);
 static void mo_help(struct Client*, struct Client*, int, char**);
@@ -59,8 +60,8 @@ struct Message uhelp_msgtab = {
   "UHELP", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_help, m_ignore, mo_uhelp, m_ignore}
 };
-#ifndef STATIC_MODULES
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -75,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-const char *_version = "$Revision: 1.6 $";
+const char *_version = "$Revision: 1.7 $";
 #endif
 
 /*
