@@ -1,3 +1,9 @@
+*** 20001207_5 by db
+- missed committing new conf file because I forgot to rename it from
+  ircd.conf to example.conf grrr
+
+
+
 *** 20001207_4 by db
 - Like a surgeon who leaves a scalpel inside a patient, I left some
   debugging code inside m_names.c ... some extra sendto_realops...
@@ -1806,7 +1812,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.725 2000/12/07 07:21:48 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.726 2000/12/07 07:33:29 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
