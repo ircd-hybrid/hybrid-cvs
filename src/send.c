@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.268 2003/06/07 17:28:02 michael Exp $
+ *  $Id: send.c,v 7.269 2003/06/09 20:48:32 bill Exp $
  */
 
 #include "stdinc.h"
@@ -956,10 +956,10 @@ sendto_match_servs(struct Client *source_p, const char *mask, int cap,
   struct Client *target_p;
   dlink_node *ptr;
   char buffer[BUFSIZE];
-  int found = 0, len = ircsprintf(buffer, ":%s ", source_p->name);
+  int found = 0;
 
   va_start(args, pattern);
-  len += send_format(&buffer[len], IRCD_BUFSIZE - len, pattern, args);
+  send_format(&buffer[0], IRCD_BUFSIZE, pattern, args);
   va_end(args);
 
   current_serial++;
@@ -987,7 +987,7 @@ sendto_match_servs(struct Client *source_p, const char *mask, int cap,
       if (!IsCapable(target_p->from, cap))
         continue;
 
-      send_message(target_p, buffer, len);
+      sendto_anywhere(target_p, source_p, buffer);
     }
   }
 

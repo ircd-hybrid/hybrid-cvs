@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_encap.c,v 1.5 2003/06/04 00:49:20 joshk Exp $
+ *  $Id: m_encap.c,v 1.6 2003/06/09 20:48:30 bill Exp $
  */
 
 #include "stdinc.h"
@@ -31,6 +31,7 @@
 #include "s_serv.h"
 #include "send.h"
 #include "modules.h"
+#include "irc_string.h"
 
 static void ms_encap(struct Client *client_p, struct Client *source_p,
                      int parc, char *parv[]);
@@ -54,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&encap_msgtab);
   delete_capability("ENCAP");
 }
-const char *_version = "$Revision: 1.5 $";
+const char *_version = "$Revision: 1.6 $";
 #endif
 
 /*
@@ -69,6 +70,8 @@ ms_encap(struct Client *client_p, struct Client *source_p, int parc, char *parv[
 {
   char buffer[BUFSIZE], *ptr = buffer;
   unsigned int cur_len = 0, len, i;
+  struct Message *mptr = NULL;
+  MessageHandler handler = 0;
 
   for (i = 1; i < (unsigned int)parc - 1; i++)
   {
@@ -100,4 +103,19 @@ ms_encap(struct Client *client_p, struct Client *source_p, int parc, char *parv[
 
   sendto_match_servs(source_p, parv[1], CAP_ENCAP,
                      "ENCAP %s", buffer);
+
+  if (!match(parv[1], me.name))
+    return;
+
+  mptr = find_encap(parv[2]);
+  if ((mptr == NULL) || (mptr->cmd == NULL))
+    return;
+
+  parv+=2;
+  parc-=2;
+
+  if ((handler = mptr->handlers[2]) == NULL)
+    return;
+
+  (*handler)(client_p, source_p, parc, parv);
 }

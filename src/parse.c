@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.176 2003/06/07 17:28:01 michael Exp $
+ *  $Id: parse.c,v 7.177 2003/06/09 20:48:32 bill Exp $
  */
 
 #include "stdinc.h"
@@ -99,6 +99,7 @@ struct MessageTree
 };
 
 static struct MessageTree msg_tree;
+static struct MessageTree encap_tree;
 
 /*
  * NOTE: parse() should not be called recursively by other functions!
@@ -407,6 +408,7 @@ void
 clear_hash_parse(void)
 {
   memset(&msg_tree, 0, sizeof(msg_tree));
+  memset(&encap_tree, 0, sizeof(encap_tree));
 }
 
 /* add_msg_element()
@@ -462,7 +464,8 @@ del_msg_element(struct MessageTree *mtree_p, const char *cmd)
     del_msg_element(ntree_p, cmd+1);
     ntree_p->links--;
 
-    if (ntree_p != &msg_tree) /* this would be bad if it happened */
+    /* this would be bad if it happened */
+    if (ntree_p != &msg_tree && ntree_p != &encap_tree)
     {
       if (ntree_p->links == 0)
       {
@@ -511,13 +514,24 @@ mod_add_cmd(struct Message *msg)
   if (msg == NULL)
     return;
 
-  if ((found_msg = msg_tree_parse(msg->cmd, &msg_tree)) != NULL)
-    return; /* Its already added */
+  if (msg->flags & MFLG_ENCAP)
+  {
+    /* ENCAP already added? */
+    if ((found_msg = msg_tree_parse(msg->cmd, &encap_tree)) != NULL)
+      return;
 
-  add_msg_element(&msg_tree, msg, msg->cmd);
-  msg->count  = 0;
-  msg->rcount = 0;
-  msg->bytes  = 0;
+    add_msg_element(&encap_tree, msg, msg->cmd);
+  }
+  else
+  {
+    /* regular command, already added? */
+    if ((found_msg = msg_tree_parse(msg->cmd, &msg_tree)) != NULL)
+      return;
+
+    add_msg_element(&msg_tree, msg, msg->cmd);
+  }
+
+  msg->count = msg->rcount = msg->bytes = 0;
 }
 
 /* mod_del_cmd()
@@ -534,19 +548,34 @@ mod_del_cmd(struct Message *msg)
   if (msg == NULL)
     return;
 
-  del_msg_element(&msg_tree, msg->cmd);
+  if (msg->flags & MFLG_ENCAP)
+    del_msg_element(&encap_tree, msg->cmd);
+  else
+    del_msg_element(&msg_tree, msg->cmd);
 }
 
 /* find_command()
  *
  * inputs	- command name
  * output	- pointer to struct Message
- * side effects - 
+ * side effects - none
  */
 static struct Message *
 find_command(const char *cmd)
 {
   return(msg_tree_parse(cmd, &msg_tree));
+}
+
+/* find_encap()
+ *
+ * inputs	- command name
+ * outputs	- pointer to struct Message
+ * side effects	- none
+ */
+struct Message *
+find_encap(const char *cmd)
+{
+  return(msg_tree_parse(cmd, &encap_tree));
 }
 
 /* report_messages()
