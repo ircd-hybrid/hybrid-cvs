@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.77 2001/01/06 03:33:37 ejb Exp $
+ * $Id: client.h,v 7.78 2001/01/08 15:24:53 madmax Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -414,7 +414,7 @@ struct LocalUser
 #ifndef OPER_UMODES
 #define OPER_UMODES  (FLAGS_OPER | FLAGS_WALLOP | FLAGS_SERVNOTICE | \
                       FLAGS_SPY | FLAGS_OPERWALL | FLAGS_DEBUG | FLAGS_BOTS | \
-	                  FLAGS_ADMIN)
+	                  FLAGS_ADMIN | FLAGS_DRONE)
 #endif /* OPER_UMODES */
 
 #define FLAGS_ID     (FLAGS_NEEDID | FLAGS_GOTID)
