@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.48 2002/03/07 06:21:47 db Exp $
+ *  $Id: m_topic.c,v 1.49 2002/04/13 11:46:06 leeh Exp $
  */
 
 #include "tools.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 /*
  * m_topic
@@ -267,17 +267,9 @@ static void ms_topic(struct Client *client_p,
 
       chptr->topic_time = atoi(parv[3]);
 
-      if(chptr->mode.mode & MODE_HIDEOPS)
+      if(ConfigServerHide.hide_servers)
 	{
-	  sendto_channel_local(ONLY_CHANOPS_HALFOPS,
-			       chptr, ":%s!%s@%s TOPIC %s :%s",
-			       me.name,
-			       source_p->username,
-			       source_p->host,
-			       parv[1],
-			       chptr->topic);
-
-	  sendto_channel_local(NON_CHANOPS,
+	  sendto_channel_local(ALL_MEMBERS,
 			       chptr, ":%s TOPIC %s :%s",
 			       me.name,
 			       parv[1],
@@ -287,10 +279,8 @@ static void ms_topic(struct Client *client_p,
       else
 	{
 	  sendto_channel_local(ALL_MEMBERS,
-			       chptr, ":%s!%s@%s TOPIC %s :%s",
-			       me.name,
-			       source_p->username,
-			       source_p->host,
+			       chptr, ":%s TOPIC %s :%s",
+			       source_p->name,
 			       parv[1], chptr->topic);
 	}
     }
