@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.96 2001/01/29 18:52:45 jdc Exp $
+ *  $Id: s_bsd.c,v 7.97 2001/01/29 19:04:11 jdc Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -393,7 +393,7 @@ void error_exit_client(struct Client* cptr, int error)
       if (error == 0)
         {
 	  /* Admins get the real IP */
-	  sendto_realops_flags(FLAGS_ADMINS,
+	  sendto_realops_flags(FLAGS_ADMIN,
 				"Server %s closed the connection",
 				get_client_name(cptr, SHOW_IP));
 
