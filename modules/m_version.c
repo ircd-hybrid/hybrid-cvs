@@ -19,10 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_version.c,v 1.42 2003/04/30 03:59:51 michael Exp $
+ *  $Id: m_version.c,v 1.43 2003/05/01 14:31:49 michael Exp $
  */
 
-#include <stdinc.h>
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "ircd.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&version_msgtab);
 }
 
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 /*
  * m_version - VERSION command handler
