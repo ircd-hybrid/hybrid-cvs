@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.404 2003/05/25 01:05:25 michael Exp $
+ *  $Id: s_conf.c,v 7.405 2003/05/25 04:25:36 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1711,6 +1711,7 @@ expire_tklines(dlink_list *tklist)
  * return as string, the oper privs as derived from port
  * also, set the oper privs if given client_p non NULL
  */
+#if 0
 char *
 oper_privs_as_string(struct Client *client_p, unsigned int port)
 {
@@ -1810,6 +1811,51 @@ oper_privs_as_string(struct Client *client_p, unsigned int port)
   else
     *privs_ptr++ = 'a';
   
+  *privs_ptr = '\0';
+
+  return(privs_out);
+}
+#endif
+
+static const struct oper_privs
+{
+  unsigned int oflag;
+  unsigned char pos;
+  unsigned char neg;
+} flag_list[] = {
+  { OPER_FLAG_GLOBAL_KILL, 'O', 'o' },
+  { OPER_FLAG_REMOTE,      'R', 'r' },
+  { OPER_FLAG_UNKLINE,     'U', 'u' },
+  { OPER_FLAG_GLINE,       'G', 'g' },
+  { OPER_FLAG_N,           'N', 'n' },
+  { OPER_FLAG_K,           'K', 'k' },
+  { OPER_FLAG_X,           'X', 'x' },
+  { OPER_FLAG_DIE,         'D', 'd' },
+  { OPER_FLAG_REHASH,      'H', 'h' },
+  { OPER_FLAG_ADMIN,       'A', 'a' }
+};
+
+char *
+oper_privs_as_string(struct Client *source_p, unsigned int port)
+{
+  static char privs_out[20];
+  char *privs_ptr;
+  unsigned int i;
+
+  privs_ptr = privs_out;
+  *privs_ptr = '\0';
+
+  if (source_p != NULL)
+    SetOFlag(sptr, port);
+
+  for (i = 0; flag_list[i].oflag; i++)
+  {
+    if (port & flag_list[i].oflag)
+      *privs_ptr++ = flag_list[i].pos;
+    else
+      *privs_ptr++ = flag_list[i].neg;
+  }
+
   *privs_ptr = '\0';
 
   return(privs_out);

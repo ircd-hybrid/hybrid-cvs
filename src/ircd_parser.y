@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.290 2003/05/24 16:15:15 bill Exp $
+ *  $Id: ircd_parser.y,v 1.291 2003/05/25 04:25:36 michael Exp $
  */
 
 %{
@@ -914,101 +914,101 @@ oper_class: CLASS '=' QSTRING ';'
 oper_global_kill: GLOBAL_KILL '=' TYES ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= CONF_OPER_GLOBAL_KILL;
+    yy_aconf->port |= OPER_FLAG_GLOBAL_KILL;
 } | GLOBAL_KILL '=' TNO ';'
 {
   if (ypass == 2)
-    yy_aconf->port &= ~CONF_OPER_GLOBAL_KILL;
+    yy_aconf->port &= ~OPER_FLAG_GLOBAL_KILL;
 };
 
 oper_remote: REMOTE '=' TYES ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= CONF_OPER_REMOTE;
+    yy_aconf->port |= OPER_FLAG_REMOTE;
 } | REMOTE '=' TNO ';'
 {
   if (ypass == 2)
-    yy_aconf->port &= ~CONF_OPER_REMOTE; 
+    yy_aconf->port &= ~OPER_FLAG_REMOTE; 
 };
 
 oper_kline: KLINE '=' TYES ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= CONF_OPER_K;
+    yy_aconf->port |= OPER_FLAG_K;
 } | KLINE '=' TNO ';'
 {
   if (ypass == 2)
-    yy_aconf->port &= ~CONF_OPER_K;
+    yy_aconf->port &= ~OPER_FLAG_K;
 };
 
 oper_xline: XLINE '=' TYES ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= CONF_OPER_X;
+    yy_aconf->port |= OPER_FLAG_X;
 } | XLINE '=' TNO ';'
 {
   if (ypass == 2)
-    yy_aconf->port &= ~CONF_OPER_X;
+    yy_aconf->port &= ~OPER_FLAG_X;
 };
 
 oper_unkline: UNKLINE '=' TYES ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= CONF_OPER_UNKLINE;
+    yy_aconf->port |= OPER_FLAG_UNKLINE;
 } | UNKLINE '=' TNO ';'
 {
   if (ypass == 2)
-    yy_aconf->port &= ~CONF_OPER_UNKLINE; 
+    yy_aconf->port &= ~OPER_FLAG_UNKLINE; 
 };
 
 oper_gline: GLINE '=' TYES ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= CONF_OPER_GLINE;
+    yy_aconf->port |= OPER_FLAG_GLINE;
 } | GLINE '=' TNO ';'
 {
   if (ypass == 2)
-    yy_aconf->port &= ~CONF_OPER_GLINE;
+    yy_aconf->port &= ~OPER_FLAG_GLINE;
 };
 
 oper_nick_changes: NICK_CHANGES '=' TYES ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= CONF_OPER_N;
+    yy_aconf->port |= OPER_FLAG_N;
 } | NICK_CHANGES '=' TNO ';'
 {
   if (ypass == 2)
-    yy_aconf->port &= ~CONF_OPER_N;
+    yy_aconf->port &= ~OPER_FLAG_N;
 };
 
 oper_die: DIE '=' TYES ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= CONF_OPER_DIE;
+    yy_aconf->port |= OPER_FLAG_DIE;
 } | DIE '=' TNO ';'
 {
   if (ypass == 2)
-    yy_aconf->port &= ~CONF_OPER_DIE;
+    yy_aconf->port &= ~OPER_FLAG_DIE;
 };
 
 oper_rehash: REHASH '=' TYES ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= CONF_OPER_REHASH;
+    yy_aconf->port |= OPER_FLAG_REHASH;
 } | REHASH '=' TNO ';'
 {
   if (ypass == 2)
-    yy_aconf->port &= ~CONF_OPER_REHASH;
+    yy_aconf->port &= ~OPER_FLAG_REHASH;
 };
 
 oper_admin: ADMIN '=' TYES ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= CONF_OPER_ADMIN;
+    yy_aconf->port |= OPER_FLAG_ADMIN;
 } | ADMIN '=' TNO ';'
 {
   if (ypass == 2)
-    yy_aconf->port &= ~CONF_OPER_ADMIN;
+    yy_aconf->port &= ~OPER_FLAG_ADMIN;
 };
 
 /***************************************************************************
