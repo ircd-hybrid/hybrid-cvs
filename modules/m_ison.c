@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ison.c,v 1.28 2002/05/24 23:34:20 androsyn Exp $
+ *  $Id: m_ison.c,v 1.29 2003/03/29 04:41:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&ison_msgtab);
 }
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 
 static char buf[BUFSIZE];
@@ -77,8 +77,9 @@ static char buf2[BUFSIZE];
  * format:
  * ISON :nicklist
  */
-static void m_ison(struct Client *client_p, struct Client *source_p,
-                  int parc, char *parv[])
+static void
+m_ison(struct Client *client_p, struct Client *source_p,
+       int parc, char *parv[])
 {
   struct Client *up = NULL;
 
@@ -96,15 +97,17 @@ static void m_ison(struct Client *client_p, struct Client *source_p,
  * exists...
  * ISON :nicklist
  */
-static void ms_ison(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+static void
+ms_ison(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   if (ServerInfo.hub && IsCapable(client_p, CAP_LL))
     do_ison(NULL, source_p, parc, parv);
 }
 
-static int do_ison(struct Client *up, struct Client *source_p,
-                   int parc, char *parv[])
+static int
+do_ison(struct Client *up, struct Client *source_p,
+	int parc, char *parv[])
 {
   struct Client *target_p;
   char *nick;
