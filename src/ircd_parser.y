@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.225 2001/12/13 10:29:25 leeh Exp $
+ * $Id: ircd_parser.y,v 1.226 2001/12/20 19:31:50 androsyn Exp $
  */
 
 %{
@@ -704,7 +704,7 @@ oper_entry:     OPERATOR
         yy_next = yy_tmp->next;
         yy_tmp->next = NULL;
 
-        if(yy_tmp->name && yy_tmp->passwd && yy_tmp->host)
+        if(yy_tmp->name && (yy_tmp->passwd || yy_aconf->rsa_public_key) && yy_tmp->host)
           {
             conf_add_class_to_conf(yy_tmp);
             conf_add_conf(yy_tmp);
