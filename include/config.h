@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.116 2001/05/31 19:42:59 davidt Exp $
+ * $Id: config.h,v 7.117 2001/06/02 05:46:06 ejb Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -149,13 +149,6 @@
  */
 #define WANT_GETTEXT    1
  
-/* CMDLINE_CONFIG - allow conf-file to be specified on command line
- * NOTE: defining CMDLINE_CONFIG and installing ircd SUID or SGID is a MAJOR
- * security problem - they can use the "-f" option to read any files
- * that the 'new' access lets them.
- */
-#define CMDLINE_CONFIG
-
 /* USE_LOGFILE - log errors and such to LPATH
  * If you wish to have the server send 'vital' messages about server
  * to a logfile, define USE_LOGFILE.

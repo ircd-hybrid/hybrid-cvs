@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.54 2001/04/21 21:59:10 toot Exp $
+ *   $Id: s_debug.c,v 7.55 2001/06/02 05:46:07 ejb Exp $
  */
 
 #include <sys/types.h> 
@@ -63,9 +63,6 @@
  * Option string.  Must be before #ifdef DEBUGMODE.
  */
 const char serveropts[] = {
-#ifdef  CMDLINE_CONFIG
-  'C',
-#endif
 #ifdef  DEBUGMODE
   'D',
 #endif
