@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.117 2003/05/26 04:05:16 db Exp $
+ *  $Id: m_nick.c,v 1.118 2003/05/26 04:14:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -98,7 +98,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.117 $";
+const char *_version = "$Revision: 1.118 $";
 #endif
 
 /*
@@ -279,7 +279,6 @@ m_nick(struct Client *client_p, struct Client *source_p,
                  parv[0], nick);
       return;
     }
-
   }
   else
   {
@@ -344,40 +343,40 @@ ms_nick(struct Client *client_p, struct Client *source_p,
   strlcpy(nick, NICK_NICK, sizeof(nick));
 
   if (parc == 9)
+  {
+    struct Client *server_p;
+    server_p = find_server(NICK_SERVER);
+    /* XXX Test for NULL i.e. unfound server ? */
+
+    if(check_clean_nick(client_p, source_p, nick, NICK_NICK, server_p))
+      return;
+
+    if (check_clean_user(client_p, nick, NICK_USERNAME, server_p) ||
+	check_clean_host(client_p, nick, NICK_HOSTNAME, server_p))
+      return;
+
+    /* check the length of the clients gecos */
+    if(strlen(NICK_GECOS) > REALLEN)
     {
-      struct Client *server_p;
-      server_p = find_server(NICK_SERVER);
-      /* XXX Test for NULL i.e. unfound server ? */
-
-      if(check_clean_nick(client_p, source_p, nick, NICK_NICK, server_p))
-	 return;
-
-      if (check_clean_user(client_p, nick, NICK_USERNAME, server_p) ||
-          check_clean_host(client_p, nick, NICK_HOSTNAME, server_p))
-        return;
-
-      /* check the length of the clients gecos */
-      if(strlen(NICK_GECOS) > REALLEN)
-        {
-          sendto_realops_flags(UMODE_ALL, L_ALL,
-			       "Long realname from server %s for %s",
-			       NICK_SERVER, NICK_NICK);
-          NICK_GECOS[REALLEN] = '\0';
-        }
-
-      if (IsServer(source_p))
-        newts = atol(NICK_TS);
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+			   "Long realname from server %s for %s",
+			   NICK_SERVER, NICK_NICK);
+      NICK_GECOS[REALLEN] = '\0';
     }
+
+    if (IsServer(source_p))
+      newts = atol(NICK_TS);
+  }
   else
-    {
-      if(check_clean_nick(client_p, source_p, nick, NICK_NICK,
-			  source_p->user->server))
-	return;
-      if (!IsServer(source_p))
-	newts = atol(NICK_HOP);	/* Yes, this is right. HOP field is the TS
+  {
+    if(check_clean_nick(client_p, source_p, nick, NICK_NICK,
+			source_p->user->server))
+      return;
+    if (!IsServer(source_p))
+      newts = atol(NICK_HOP);	/* Yes, this is right. HOP field is the TS
 				 * field for parc = 3
 				 */
-    }
+  }
 
   /* if the nick doesnt exist, allow it and process like normal */
   if (!(target_p = find_client(nick)))
