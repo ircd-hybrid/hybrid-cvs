@@ -1,3 +1,15 @@
+androsyn    2002/05/17 12:08:11 EDT	(20020517_1)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  Removed a few of now redudant mem_frob()'s
+  
+  Revision  Changes    Path
+  7.258     +0 -6      ircd-hybrid-7/src/client.c
+
+
+
 androsyn    2002/05/17 12:07:14 EDT	(20020517_0)
 
   Modified files:
@@ -26506,4 +26518,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3658 2002/05/17 16:07:20 androsyn Exp $
+$Id: ChangeLog,v 7.3659 2002/05/17 16:08:17 androsyn Exp $
