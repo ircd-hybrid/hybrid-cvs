@@ -1,3 +1,23 @@
+-- ircd-hybrid-7rc5 RELNOTES
+o) Fixed null hostname bug in ipv6 
+o) Fixed hook code so it won't re-hook
+o) gdb 3.x compile fix
+o) removed persistent channels (for now)
+o) Fixed potential event core
+o) oper_pass_resv added to ircd.conf
+o) true no oper flood
+o) removed RPL_WHOISADMIN
+o) memory leak fix
+o) server hiding fix
+o) bug fix in mode changes
+o) fixed compile time error in m_who.c
+o) removed /rehash channels
+o) fixed user@server.name notices
+o) fixed ping bug
+o) fixed challenge command to not core
+o) ipv6 hostname can fallback to ip6.int
+o) fixed USER bug whch ignored ident response
+
 -- ircd-hybrid-7rc4 RELNOTES
 
 o) Fixed core in gozems m_whois.c patch in contrib
@@ -88,4 +108,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.43 2002/09/11 15:27:05 db Exp $
+$Id: RELNOTES,v 1.44 2002/10/31 05:30:36 db Exp $
