@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_wallops.c,v 1.9 2000/12/18 03:59:58 db Exp $
+ *   $Id: m_wallops.c,v 1.10 2000/12/20 22:19:43 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -95,11 +95,8 @@ int ms_wallops(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       return 0;
     }
 
-  if(IsServer(sptr))
-    {
-      sendto_all_local_opers(sptr, "WALLOPS", "%s", message);
-      sendto_serv_butone(cptr, ":%s WALLOPS :%s", parv[0], message);
-    }
+  sendto_all_local_opers(sptr, "WALLOPS", "%s", message);
+  sendto_serv_butone(cptr, ":%s WALLOPS :%s", parv[0], message);
 
   return 0;
 }
