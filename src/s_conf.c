@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.332 2002/10/30 17:44:57 wiz Exp $
+ *  $Id: s_conf.c,v 7.333 2003/01/09 07:48:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -740,28 +740,28 @@ remove_one_ip(struct irc_inaddr *ip_in)
 {
   IP_ENTRY *ptr, **lptr;
   int hash_index = hash_ip(ip_in);
-  for (lptr = ip_hash_table+hash_index, ptr = *lptr;
-       ptr;
+  for (lptr = ip_hash_table+hash_index, ptr = *lptr; ptr;
        lptr=&ptr->next, ptr=*lptr)
   {
 #ifndef IPV6
-   if (ptr->ip != PIN_ADDR(ip_in))
-    continue;
+    if (ptr->ip != PIN_ADDR(ip_in))
+      continue;
 #else
-   if (memcmp(&IN_ADDR(ptr->ip), &PIN_ADDR(ip_in),
-              sizeof(struct irc_inaddr)))
-    continue;
+    if (memcmp(&IN_ADDR(ptr->ip), &PIN_ADDR(ip_in),
+	       sizeof(struct irc_inaddr)))
+      continue;
 #endif
-  if (ptr->count != 0)
-   ptr->count--;
-  if (ptr->count != 0 ||
-      (CurrentTime-ptr->last_attempt)<=ConfigFileEntry.throttle_time)
-   continue;
-  *lptr = ptr->next;
-  ptr->next = free_ip_entries;
-  free_ip_entries = ptr;
-  return;
- }
+    if (ptr->count > 0)
+      ptr->count--;
+    if (ptr->count == 0 &&
+	(CurrentTime-ptr->last_attempt)>ConfigFileEntry.throttle_time)
+    {
+      *lptr = ptr->next;
+      ptr->next = free_ip_entries;
+      free_ip_entries = ptr;
+      return;
+    }
+  }
 }
 
 /*
@@ -1628,7 +1628,6 @@ conf_connect_allowed(struct irc_inaddr *addr, int aftype)
       ConfigFileEntry.throttle_time)
     {
       ip_found->last_attempt = CurrentTime;
-      ip_found->count--;
       return(TOO_FAST);
     }
   ip_found->last_attempt = CurrentTime;
