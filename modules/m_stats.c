@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.52 2001/01/29 18:59:54 jdc Exp $
+ *  $Id: m_stats.c,v 1.53 2001/02/04 04:33:29 a1kmm Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -33,7 +33,7 @@
 #include "listener.h"    /* show_ports */
 #include "ircd_handler.h"
 #include "msg.h"         /* Message */
-#include "mtrie_conf.h"  /* report_mtrie_conf_links */
+#include "hostmask.h"  /* report_mtrie_conf_links */
 #include "s_gline.h"     /* report_glines */
 #include "numeric.h"     /* ERR_xxx */
 #include "scache.h"      /* list_scache */
@@ -388,12 +388,12 @@ static void do_priv_stats(struct Client *sptr, char *name, char *target,
       break;
 
     case 'I' : case 'i' :
-      report_mtrie_conf_links(sptr, CONF_CLIENT);
+      report_hostmask_conf_links(sptr, CONF_CLIENT);
       stats_spy(sptr,statchar);
       break;
 
     case 'K' :
-      report_mtrie_conf_links(sptr, CONF_KILL);
+      report_hostmask_conf_links(sptr, CONF_KILL);
       stats_spy(sptr,statchar);
       break;
 

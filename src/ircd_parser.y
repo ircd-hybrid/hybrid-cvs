@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.124 2001/02/03 03:19:01 davidt Exp $
+ * $Id: ircd_parser.y,v 1.125 2001/02/04 04:33:32 a1kmm Exp $
  */
 
 %{
@@ -708,7 +708,7 @@ auth_entry:   AUTH
       }
     else
       {
-        add_mtrie_conf_entry(yy_aconf,CONF_CLIENT);
+        add_conf(yy_aconf);
       }
     yy_aconf = (struct ConfItem *)NULL;
   }; 

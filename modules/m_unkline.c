@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.23 2001/01/05 00:14:37 davidt Exp $
+ *   $Id: m_unkline.c,v 1.24 2001/02/04 04:33:29 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -33,7 +33,7 @@
 #include "irc_string.h"
 #include "ircd.h"
 #include "list.h"
-#include "mtrie_conf.h"
+#include "hostmask.h"
 #include "numeric.h"
 #include "s_conf.h"
 #include "s_log.h"

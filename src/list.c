@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.23 2001/01/24 21:40:24 davidt Exp $
+ * $Id: list.c,v 7.24 2001/02/04 04:33:32 a1kmm Exp $
  */
 #include "tools.h"
 #include "blalloc.h"
@@ -29,7 +29,7 @@
 #include "common.h"
 #include "irc_string.h"
 #include "list.h"
-#include "mtrie_conf.h"
+#include "hostmask.h"
 #include "numeric.h"
 #include "res.h"
 #include "restart.h"
@@ -87,7 +87,7 @@ void outofmemory()
     abort();
 
   was_here = YES;
-  clear_mtrie_conf_links();
+  /* clear_mtrie_conf_links(); */
 
   log(L_CRIT, "Out of memory: restarting server...");
   restart("Out of Memory");

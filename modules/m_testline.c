@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_testline.c,v 1.11 2001/01/24 20:04:38 fl_ Exp $
+ *   $Id: m_testline.c,v 1.12 2001/02/04 04:33:29 a1kmm Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,7 +33,7 @@
 #include "s_conf.h"
 #include "send.h"
 #include "msg.h"
-#include "mtrie_conf.h"
+#include "hostmask.h"
 #include "numeric.h"
 #include "parse.h"
 #include "modules.h"
@@ -125,7 +125,7 @@ static int mo_testline(struct Client *cptr, struct Client *sptr,
 #endif
       (void)is_address(given_host,(unsigned long *)&IN_ADDR(ip),&host_mask);
       
-      aconf = find_matching_mtrie_conf(given_host,
+      aconf = find_matching_conf(given_host,
                                        given_name,
                                        &ip);
           

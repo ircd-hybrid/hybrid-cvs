@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.56 2001/01/31 04:58:35 jdc Exp $
+ *   $Id: m_kline.c,v 1.57 2001/02/04 04:33:28 a1kmm Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -31,7 +31,7 @@
 #include "dline_conf.h"
 #include "irc_string.h"
 #include "ircd.h"
-#include "mtrie_conf.h"
+#include "hostmask.h"
 #include "numeric.h"
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -369,7 +369,7 @@ static void apply_kline(struct Client *sptr, struct ConfItem *aconf,
       add_ip_Kline(aconf);
     }
   else
-    add_mtrie_conf_entry(aconf,CONF_KILL);
+    add_conf(aconf);
 
   WriteKlineOrDline( KLINE_TYPE,
 		     sptr,
@@ -987,7 +987,7 @@ static int already_placed_kline(struct Client *sptr, char *luser, char *lhost,
   struct ConfItem *aconf;
   if(ConfigFileEntry.non_redundant_klines) 
     {
-      if ((aconf = find_matching_mtrie_conf(lhost,luser,ip)) && 
+      if ((aconf = find_matching_conf(lhost,luser,ip)) && 
          (aconf->status & CONF_KILL))
         {
           reason = aconf->passwd ? aconf->passwd : "<No Reason>";

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_gline.c,v 1.9 2001/01/11 05:32:08 a1kmm Exp $
+ *  $Id: s_gline.c,v 1.10 2001/02/04 04:33:34 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -32,7 +32,7 @@
 #include "irc_string.h"
 #include "ircd.h"
 #include "m_kline.h"
-#include "mtrie_conf.h"
+#include "hostmask.h"
 #include "numeric.h"
 #include "fdlist.h"
 #include "s_bsd.h"
