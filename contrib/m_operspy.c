@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.13.2.3 2004/02/10 04:28:33 ievil Exp $
+ *   $Id: m_operspy.c,v 1.13.2.4 2004/03/18 02:56:18 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -54,12 +54,6 @@
 
 /* enable this to log all local/remote operspy usage to a logfile */
 #define OPERSPY_LOGFILE
-
-/* enable this to send incoming operspy usage to active +y (FLAGS_SPY) opers */
-#define OPERSPY_NOTICE
-
-/* enable per-oper logging of OPERSPY functions */
-#define OPERSPY_LOG
 
 /* enable this to send incoming operspy usage to active +y (FLAGS_SPY) opers */
 #define OPERSPY_NOTICE
@@ -141,7 +135,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.13.2.3 $";
+const char *_version = "$Revision: 1.13.2.4 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -172,30 +166,10 @@ static void
 ms_operspy(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
-#ifdef OPERSPY_LOGFILE
-  FBFILE *log_fb;
-  char logfile[BUFSIZE], linebuf[BUFSIZE];
+  assert(parc > 2);
 
-  ircsprintf(logfile, "%s/operspy.remote.log", LOGPATH);
-  if ((log_fb = fbopen(logfile, "a")) == NULL)
-  {
-#ifdef OPERSPY_NOTICE
-    sendto_realops_flags(FLAGS_ADMIN, L_ALL, "Failed to open remote operspy logfile");
-#endif
-    return;
-  }
-
-  ircsprintf(linebuf, "[%s] %s -- OPERSPY %s :%s\n",
-             smalldate(CurrentTime),
-             get_oper_name(source_p),
-             parv[1], parv[2]);
-  fbputs(linebuf, log_fb);
-  fbclose(log_fb);
-#endif
-
-#ifdef OPERSPY_NOTICE
-  sendto_realops_flags(FLAGS_SPY, L_ALL, "Received OPERSPY message from %s -- %s :%s",
-                       get_oper_name(source_p), parv[1], parv[2]);
+#ifdef OPERSPY_LOG
+  operspy_log(source_p, parv[1], parv[2]);
 #endif
 }
 
@@ -869,6 +843,10 @@ operspy_log(struct Client *source_p, const char *command, const char *target)
   fbputs(linebuf, operspy_fb);
   fbclose(operspy_fb);
 
+#ifdef OPERSPY_NOTICE
+  sendto_realops_flags(UMODE_SPY, L_ALL, "OPERSPY %s %s %s",
+                       get_oper_name(source_p), command, target);
+#endif
   sendto_match_servs(source_p, "*", CAP_ENCAP, "ENCAP * OPERSPY %s :%s",
                      command, target);
 }
