@@ -1,4 +1,4 @@
-$Id: README,v 7.3 2000/12/22 21:04:21 wcampbel Exp $
+$Id: README,v 7.4 2001/01/08 21:26:20 wcampbel Exp $
 
 A directory of support programs for ircd.
 
@@ -6,9 +6,6 @@ convertconf - converts a Hybrid 5 or 6 conf file to the new
               style
 
 mkpasswd - makes password for O lines
-md5mkpasswd - makes MD5 passwords for O lines
-              NOTE:  Works fine on FreeBSD 3.x/4.x and Linux glibc
-                     Known NOT to work on Cygwin or Solaris 2.6
 
 start_ircd.c - start program for fbsd and bsd/os systems
 ircd_start.c - start program for solaris
@@ -24,4 +21,4 @@ viconf - edit your conf file without having to chdir su etc. etc.
 
 
 --
-$Id: README,v 7.3 2000/12/22 21:04:21 wcampbel Exp $
+$Id: README,v 7.4 2001/01/08 21:26:20 wcampbel Exp $
