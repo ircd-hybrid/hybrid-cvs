@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.120 2001/01/26 17:47:38 jdc Exp $
+ * $Id: ircd_parser.y,v 1.121 2001/01/26 18:30:30 jdc Exp $
  */
 
 %{
@@ -762,12 +762,13 @@ auth_passwd:  PASSWORD '=' QSTRING ';'
     DupString(yy_aconf->passwd,yylval.string);
   };
 
-auth_spoof_notice:   SPOOF_NOTICE '=' TYES ';'
+/* TYES/TNO are flipped to change the default value to YES */
+auth_spoof_notice:   SPOOF_NOTICE '=' TNO ';'
   {
     yy_aconf->flags |= CONF_FLAGS_SPOOF_NOTICE;
   }
     |
-    SPOOF_NOTICE '=' TNO ';'
+    SPOOF_NOTICE '=' TYES ';'
   {
     yy_aconf->flags &= ~CONF_FLAGS_SPOOF_NOTICE;
   };
