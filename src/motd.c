@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: motd.c,v 7.16 2001/06/05 21:33:35 db Exp $
+ *   $Id: motd.c,v 7.17 2001/07/20 11:28:53 leeh blalloc.c $
  */
 
 #include <sys/types.h>
@@ -121,6 +121,9 @@ int SendMessageFile(struct Client *source_p, MessageFile *motdToPrint)
       break;
 
     case HELP_MOTD:
+      break;
+
+    case UHELP_MOTD:
       break;
 
     default:

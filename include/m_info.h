@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.36 2001/07/15 20:52:30 leeh Exp $
+ * $Id: m_info.h,v 7.37 2001/07/20 11:28:45 leeh Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -83,6 +83,12 @@ Info MyInformation[] = {
 #else
   { "HPATH", "NONE", 0, "Path to Operator Help File" },
 #endif /* HPATH */
+
+#ifdef UHPATH
+  { "UHPATH", UHPATH, 0, "Path to User Help File" },
+#else
+  { "UHPATH", "NONE", 0, "Path to User Help File" },
+#endif /* UH PATH */
 
 #ifdef SOMAXCONN
   { "HYBRID_SOMAXCONN", "", SOMAXCONN, "Maximum Queue Length of Pending Connections" },
