@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.53 2001/01/05 14:51:09 wcampbel Exp $
+ * $Id: ircd_lexer.l,v 1.54 2001/01/05 20:37:32 toot Exp $
  */
 
 %option case-insensitive
@@ -151,6 +151,7 @@ password	{ return PASSWORD; }
 ping_time	{ return PING_TIME; }
 port		{ return PORT; }
 quarantine	{ return QUARANTINE; }
+quiet_on_ban    { return QUIET_ON_BAN; }
 reason		{ return REASON; }
 rehash		{ return REHASH; }
 redirserv       { return REDIRSERV; }

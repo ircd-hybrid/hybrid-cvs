@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.98 2001/01/05 17:00:38 ejb Exp $
+ * $Id: ircd.c,v 7.99 2001/01/05 20:37:32 toot Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -36,6 +36,7 @@
 #include "s_gline.h"
 #include "motd.h"
 #include "ircd_handler.h"
+#include "md5.h"
 #include "msg.h"         /* msgtab */
 #include "mtrie_conf.h"
 #include "numeric.h"

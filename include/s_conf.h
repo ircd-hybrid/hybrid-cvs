@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.70 2001/01/05 16:16:51 db Exp $
+ * $Id: s_conf.h,v 7.71 2001/01/05 20:37:25 toot Exp $
  */
 
 #include <sys/param.h>
@@ -220,6 +220,7 @@ typedef struct
   int         links_notice;
   int         links_delay;
   int         vchans_oper_only;
+  int         quiet_on_ban;
 } ConfigFileEntryType;
 
 /* bleh. have to become global. */

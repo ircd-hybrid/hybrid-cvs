@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.95 2001/01/05 15:42:14 db Exp $
+ * $Id: ircd_parser.y,v 1.96 2001/01/05 20:37:33 toot Exp $
  */
 
 %{
@@ -125,6 +125,7 @@ int   class_redirport_var;
 %token  PORT
 %token  QSTRING
 %token  QUARANTINE
+%token  QUIET_ON_BAN
 %token  REASON
 %token  REDIRSERV
 %token  REDIRPORT
@@ -1282,7 +1283,7 @@ general_item:       general_failed_oper_notice | general_show_failed_oper_id |
                     general_o_lines_oper_only |
                     general_stats_notice | general_pace_wait |
                     general_whois_wait | 
-                    general_knock_delay |
+                    general_knock_delay | general_quiet_on_ban |
                     general_short_motd | general_no_oper_flood |
                     general_iauth_server |
                     general_iauth_port | general_stats_p_notice |
@@ -1379,6 +1380,16 @@ general_kline_with_connection_closed: KLINE_WITH_CONNECTION_CLOSED '=' TYES ';'
     KLINE_WITH_CONNECTION_CLOSED '=' TNO ';'
   {
     ConfigFileEntry.kline_with_connection_closed = 0;
+  } ;
+
+general_quiet_on_ban : QUIET_ON_BAN '=' TYES ';'
+  {
+    ConfigFileEntry.quiet_on_ban = 1;
+  }
+    |
+    QUIET_ON_BAN '=' TNO ';'
+  {
+    ConfigFileEntry.quiet_on_ban = 0;
   } ;
 
 general_warn_no_nline: WARN_NO_NLINE '=' TYES ';'
