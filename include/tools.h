@@ -19,12 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.h,v 1.20 2003/02/03 04:33:42 db Exp $
+ *  $Id: tools.h,v 1.21 2003/04/08 09:39:13 adx Exp $
  */
 
 #ifndef __TOOLS_H__
 #define __TOOLS_H__
 
+#include "stdinc.h"
 
 /*
  * double-linked-list stuff
@@ -168,12 +169,16 @@ dlinkDelete(dlink_node *m, dlink_list *list)
   */
  if (m->next)
    m->next->prev = m->prev;
- else
+ else {
+   assert(list->tail == m);
    list->tail = m->prev;
+ }
  if (m->prev)
    m->prev->next = m->next;
- else
+ else {
+   assert(list->head == m);
    list->head = m->next;
+ }
  /* Set this to NULL does matter */
  m->next = m->prev = NULL;
   list->length--;
