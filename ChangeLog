@@ -1,3 +1,15 @@
+leeh        2002/07/22 18:23:04 EDT	(20020722_3)
+
+  Modified files:
+    help/opers           kline 
+  Log:
+  - documented oper reason.
+  
+  Revision  Changes    Path
+  1.2       +8 -3      ircd-hybrid-7/help/opers/kline
+
+
+
 leeh        2002/07/22 17:37:25 EDT	(20020722_2)
 
   Modified files:
@@ -30445,4 +30457,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3923 2002/07/22 21:37:32 leeh Exp $
+$Id: ChangeLog,v 7.3924 2002/07/22 22:23:11 leeh Exp $
