@@ -1,7 +1,7 @@
 /*  contrib/m_tburst.c
  *  Copyright (C) 2002 Hybrid Develompent Team
  *
- *  $Id: m_tb.c,v 1.2 2002/04/13 13:55:36 leeh Exp $
+ *  $Id: m_tb.c,v 1.3 2002/04/13 15:37:09 androsyn Exp $
  */
 
 #include <string.h>
@@ -57,7 +57,7 @@ _moddeinit(void)
   unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.2 $";
+const char *_version = "$Revision: 1.3 $";
 #endif
 
 /* ms_tburst()
@@ -107,13 +107,13 @@ static void set_topic(struct Client *source_p, struct Channel *chptr,
 
   sendto_channel_local(ALL_MEMBERS, chptr, ":%s TOPIC %s :%s",
 		       ConfigServerHide.hide_servers ? me.name : source_p->name,
-		       chptr->chname, topic);
+		       chptr->chname, chptr->topic);
 
 #ifdef TBURST_PROPAGATE
   sendto_server(source_p, NULL, chptr, CAP_TBURST, NOCAPS, NOFLAGS,
 		":%s TBURST %ld %s %ld %s :%s",
 		source_p->name, chptr->channelts, chptr->chname,
-		newtopicts, topicwho, topic);
+		chptr->topic_time, chptr->topic_info, chptr->topic);
 #endif
 }
 
