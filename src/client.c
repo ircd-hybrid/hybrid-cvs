@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.171 2001/05/23 20:59:15 davidt Exp $
+ *  $Id: client.c,v 7.172 2001/05/24 09:29:10 leeh Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1797,7 +1797,7 @@ int change_local_nick(struct Client *client_p, struct Client *source_p,
 	   * hubs might not propogate a nick change, if the leaf
 	   * does not know about that client yet.
 	   */
-          sendto_ll_serv_butone(client_p, source_p, 0, ":%s NICK %s :%u",
+          sendto_ll_serv_butone(client_p, source_p, 0, ":%s NICK %s :%lu",
                                 source_p->name, nick, source_p->tsinfo);
 	}
     }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.76 2001/05/23 19:02:09 jdc Exp $
+ *   $Id: m_kline.c,v 1.77 2001/05/24 09:29:00 leeh Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -213,7 +213,7 @@ static void mo_kline(struct Client *client_p,
   if(target_server != NULL)
     {
       sendto_cap_serv_butone(CAP_KLN, &me,
-			   ":%s KLINE %s %u %s %s :%s",
+			   ":%s KLINE %s %lu %s %s :%s",
 			   source_p->name,
 			   target_server,
 			   tkline_time, user, host, reason);

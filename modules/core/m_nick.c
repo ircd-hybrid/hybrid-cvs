@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.61 2001/05/23 19:02:10 jdc Exp $
+ *   $Id: m_nick.c,v 1.62 2001/05/24 09:29:01 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -877,7 +877,7 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
           if (source_p->user)
             {
               add_history(source_p,1);
-              sendto_ll_serv_butone(client_p, source_p, 0, ":%s NICK %s :%u",
+              sendto_ll_serv_butone(client_p, source_p, 0, ":%s NICK %s :%lu",
                                     parv[0], nick, source_p->tsinfo);
             }
     }
