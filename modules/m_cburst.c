@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.19 2000/12/19 06:27:02 db Exp $
+ * $Id: m_cburst.c,v 1.20 2000/12/21 04:48:17 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -108,8 +108,8 @@ int     ms_cburst(struct Client *cptr,
     {
       chptr = get_channel(sptr, name, CREATE);
       chptr->channelts = (time_t)(-1); /* ! highest possible TS so its always
-					* over-ruled
-					*/
+                                        * over-ruled
+                                        */
       chptr->users_last = CurrentTime;
 
       chptr->lazyLinkChannelExists |= cptr->localClient->serverMask;

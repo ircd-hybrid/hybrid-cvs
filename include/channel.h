@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.49 2000/12/21 04:44:53 ejb Exp $
+ * $Id: channel.h,v 7.50 2000/12/21 04:48:12 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -185,7 +185,7 @@ extern void    channel_member_list(struct Client *sptr,
 #define MODE_BAN        0x0400
 #define MODE_EXCEPTION  0x0800
 #define MODE_DENY       0x1000
-#define MODE_INVEX	    0x2000
+#define MODE_INVEX	0x2000
 #define MODE_HIDEOPS    0x4000
 #define MODE_LIMIT      0x8000  /* was 0x8000 */
 

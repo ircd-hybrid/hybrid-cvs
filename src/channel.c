@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.134 2000/12/21 03:46:27 db Exp $
+ * $Id: channel.c,v 7.135 2000/12/21 04:48:18 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -724,7 +724,7 @@ void channel_modes(struct Channel *chptr, struct Client *cptr,
   if (chptr->mode.mode & MODE_NOPRIVMSGS)
     *mbuf++ = 'n';
   if (chptr->mode.mode & MODE_HIDEOPS)
-	  *mbuf++ = 'z';
+    *mbuf++ = 'z';
   
   if (chptr->mode.limit)
     {
