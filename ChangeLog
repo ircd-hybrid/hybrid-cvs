@@ -1,3 +1,11 @@
+*** 20001130_9 by adrian
+
+
+We don't need to bzero, now that the memory routines return the memory
+zero'ed for us ..
+
+
+
 *** 20001130_8 by db
 - removed memset() 0 after MyMalloc its done already 
 
@@ -1122,7 +1130,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.633 2000/11/30 08:59:33 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.634 2000/11/30 09:05:01 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
