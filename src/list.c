@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.33 2001/08/13 17:45:16 androsyn Exp $
+ * $Id: list.c,v 7.34 2001/08/13 20:56:51 androsyn Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -163,6 +163,19 @@ void _free_user(struct User* user, struct Client* client_p)
     }
 }
 
+
+/*
+ * init_dlink_nodes
+ *
+ */
+static BlockHeap *dnode_heap;
+void init_dlink_nodes(void)
+{
+  dnode_heap = BlockHeapCreate(sizeof(dlink_node), 1024);
+  if(dnode_heap == NULL)
+     outofmemory();
+}
+ 
 /*
  * make_dlink_node
  *
@@ -176,7 +189,7 @@ _make_dlink_node(void)
 {
   dlink_node *lp;
 
-  lp = (dlink_node *)MyMalloc(sizeof(dlink_node));
+  lp = (dlink_node *)BlockHeapAlloc(dnode_heap);;
   ++links_count;
 
   lp->next = NULL;
@@ -211,7 +224,7 @@ _make_dlink_node(const char *file, int line)
  */
 void _free_dlink_node(dlink_node *ptr)
 {
-  MyFree(ptr);
+  BlockHeapFree(dnode_heap, ptr);
   --links_count;
   assert(links_count >= 0);
 }

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.176 2001/08/13 17:45:15 androsyn Exp $
+ * $Id: ircd.c,v 7.177 2001/08/13 20:56:51 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -576,6 +576,7 @@ int main(int argc, char *argv[])
    close_all_connections();
  init_log(logFileName);
  initBlockHeap();
+ init_dlink_nodes();
  init_netio();		/* This needs to be setup early ! -- adrian */
  init_resolver();	/* Needs to be setup before the io loop */
  initialize_message_files();
