@@ -1,3 +1,24 @@
+db          2002/10/07 20:23:46 EDT	(20021008_0)
+
+  Modified files:
+    modules              m_motd.c 
+  Log:
+      With hide_servers=yes and disable_remote=no, the servername is removed
+  from the 312 numeric when you /whois nick, but you can just do /motd nick
+  and see the server they are on. This patch fixes that vulnerability...
+  ...
+  wiz
+  --
+  Jason Dambrosio       |
+  Software Engineer     |    "It's a good thing."
+  ITS Solutions, Inc.   |
+  808.372.6823          |         -- Martha Stewart
+  
+  Revision  Changes    Path
+  1.31      +2 -2      ircd-hybrid-7/modules/m_motd.c
+
+
+
 bill        2002/10/07 13:03:13 EDT	(20021007_0)
 
   Modified files:
@@ -32240,4 +32261,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4048 2002/10/07 17:03:15 bill Exp $
+$Id: ChangeLog,v 7.4049 2002/10/08 00:23:49 db Exp $
