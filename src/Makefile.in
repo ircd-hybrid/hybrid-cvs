@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.126 2003/05/12 23:43:38 joshk Exp $
+# $Id: Makefile.in,v 7.127 2003/05/13 15:03:54 joshk Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -24,6 +24,7 @@ sysconfdir	= @sysconfdir@
 localstatedir	= @localstatedir@
 
 NETIO_SRC	= s_bsd_@SELECT_TYPE@.c
+INET_MISC	= @INET_MISC@
 IRCD_EXE	= ircd
 PROGS		= $(IRCD_EXE)
 SSL_LIBS	= @SSL_LIBS@
@@ -98,6 +99,7 @@ BASE_SRCS =                     \
   send.c                        \
   sprintf_irc.c                 \
   @SNPRINTF_C@			\
+  @INET_MISC@			\
   tools.c                       \
   whowas.c
 

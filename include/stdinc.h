@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.7 2003/05/13 02:32:11 joshk Exp $
+ * $Id: stdinc.h,v 1.8 2003/05/13 15:03:52 joshk Exp $
  *
  */
 
@@ -46,13 +46,17 @@
 # endif 
 #endif  
 
-#include <sys/types.h>
-
 #ifdef CYGWIN
 /* Cygwin sucks rocks */
 #define EAI_SYSTEM -11
 #include <w32api/winsock2.h>
 #include <w32api/ws2tcpip.h>
+#endif
+
+/* The placement of this #include >MATTERS< */
+#include <sys/types.h>
+
+#ifdef CYGWIN
 typedef uint16_t in_port_t;
 #endif
 
@@ -114,6 +118,10 @@ extern int errno;
 
 #ifdef VMS
 #include <sys/ioctl.h>
+#endif
+
+#ifdef USE_INET_MISC
+#include "inet_misc.h"
 #endif
 
 #endif

@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.17 2003/05/13 05:16:22 joshk Exp $
+dnl $Id: configure.ac,v 7.18 2003/05/13 15:03:50 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -171,7 +171,11 @@ AC_CHECK_LIB(socket, socket)
 dnl Solaris libraries. We don't want a AC_DEFINE though. Too much clutter.
 dnl But don't use them if they're available natively.
 AC_SEARCH_LIBS(inet_aton, resolv)
-AC_SEARCH_LIBS(inet_pton, nsl)
+AC_SEARCH_LIBS(inet_pton, nsl, ,
+[
+	AC_DEFINE(USE_INET_MISC, 1, [Define to 1 if you don't have inet_pton and inet_ntop natively or in a system header.])
+	AC_SUBST(INET_MISC, inet_misc.c)
+])
 
 AC_SEARCH_LIBS(crypt, [descrypt crypt],,
 [AC_MSG_ERROR([No crypt implementation found on your system!])])
@@ -184,7 +188,7 @@ AC_SUBST(CRYPT_LIB)
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([crypt.h inttypes.h sys/resource.h sys/param.h unistd.h errno.h string.h strings.h sys/syslog.h stdlib.h stddef.h getopt.h arpa/nameser.h])
+AC_CHECK_HEADERS([crypt.h inttypes.h sys/resource.h sys/param.h unistd.h errno.h string.h strings.h sys/syslog.h stdlib.h stddef.h getopt.h])
 
 dnl See whether we can include both string.h and strings.h.
 AC_CACHE_CHECK([whether string.h and strings.h may both be included],
@@ -431,12 +435,19 @@ AC_CACHE_CHECK([for IPv6 support], have_v6,
 		  s.sin6_family = 0;]]
 
 	)],
-	[have_v6="yes"],
+	[
+		if test "$CYGWIN" = "yes"; then
+			AC_MSG_WARN([IPv6 support is incomplete in Cygwin - not enabling])
+			have_v6="no"
+		else
+			have_v6="yes"
+		fi
+	],
 	[have_v6="no"])
 ])
 
 if test "$have_v6" = "yes"; then
-	AC_DEFINE(IPV6, 1, [Define if IPv6 support is present and available.])
+		AC_DEFINE(IPV6, 1, [Define if IPv6 support is present and available.])
 fi
 
 dnl IO Loop Selection

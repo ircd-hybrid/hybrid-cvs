@@ -92,7 +92,7 @@
 #define DNS_LABELTYPE_BITSTRING		0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.8 2003/05/13 14:27:00 db Exp $ */
+/* $Id: irc_reslib.c,v 7.9 2003/05/13 15:03:54 joshk Exp $ */
 
 static FBFILE *file;
 
@@ -483,7 +483,7 @@ int
 irc_dn_skipname(const u_char *ptr, const u_char *eom) {
 	const u_char *saveptr = ptr;
 
-	if (ns_name_skip(&ptr, eom) == -1)
+	if (irc_ns_name_skip(&ptr, eom) == -1)
 		return (-1);
 	return (ptr - saveptr);
 }
@@ -495,7 +495,7 @@ irc_dn_skipname(const u_char *ptr, const u_char *eom) {
  *	0 on success, -1 (with errno set) on failure.
  */
 int
-ns_name_skip(const u_char **ptrptr, const u_char *eom)
+irc_ns_name_skip(const u_char **ptrptr, const u_char *eom)
 {
 	const u_char *cp;
 	u_int n;
@@ -533,7 +533,7 @@ ns_name_skip(const u_char **ptrptr, const u_char *eom)
 }
 
 u_int
-ns_get16(const u_char *src) {
+irc_ns_get16(const u_char *src) {
 	u_int dst;
 
 	IRC_NS_GET16(dst, src);
@@ -541,7 +541,7 @@ ns_get16(const u_char *src) {
 }
 
 u_long
-ns_get32(const u_char *src) {
+irc_ns_get32(const u_char *src) {
 	u_long dst;
 
 	IRC_NS_GET32(dst, src);
@@ -549,12 +549,12 @@ ns_get32(const u_char *src) {
 }
 
 void
-ns_put16(u_int src, u_char *dst) {
+irc_ns_put16(u_int src, u_char *dst) {
 	IRC_NS_PUT16(src, dst);
 }
 
 void
-ns_put32(u_long src, u_char *dst) {
+irc_ns_put32(u_long src, u_char *dst) {
 	IRC_NS_PUT32(src, dst);
 }
 
@@ -1131,7 +1131,7 @@ irc_res_mkquery(
 	hp->id = 0;
 	hp->opcode = op;
 	hp->rd = 1;		/* recurse */
-	hp->rcode = NOERROR;
+	hp->rcode = NO_ERROR;
 	cp = buf + HFIXEDSZ;
 	buflen -= HFIXEDSZ;
 	dpp = dnptrs;
@@ -1145,7 +1145,7 @@ irc_res_mkquery(
 	case QUERY:
 		if ((buflen -= QFIXEDSZ) < 0)
 			return (-1);
-		if ((n = dn_comp(dname, cp, buflen, dnptrs, lastdnptr)) < 0)
+		if ((n = irc_dn_comp(dname, cp, buflen, dnptrs, lastdnptr)) < 0)
 			return (-1);
 
 		cp += n;

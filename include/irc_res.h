@@ -1,7 +1,7 @@
 /*
  * include/irc_res.h for referencing functions in src/irc_res.c
  *
- * $Id: irc_res.h,v 7.2 2003/05/13 05:16:24 joshk Exp $
+ * $Id: irc_res.h,v 7.3 2003/05/13 15:03:52 joshk Exp $
  */
 
 #ifndef INCLUDED_irc_res_h
@@ -10,20 +10,17 @@
 #include "listener.h"
 #include "setup.h"
 
-#ifdef HAVE_ARPA_NAMESER_H
-#include <arpa/nameser.h>
-#else
-
 /* Here we define some values lifted from nameser.h */
-
 #define NS_NOTIFY_OP 4
 #define NS_INT16SZ 2
+#define NS_IN6ADDRSZ    16
+#define NS_INADDRSZ	 4
 #define NS_INT32SZ 4
 #define NS_CMPRSFLGS    0xc
 #define NS_MAXCDNAME 255
 #define QUERY 0
 #define IQUERY 1
-#define NOERROR 0
+#define NO_ERROR 0
 #define SERVFAIL 2
 #define T_A 1
 #define T_AAAA 28
@@ -70,8 +67,6 @@ typedef struct {
 	unsigned	nscount :16;	/* number of authority entries */
 	unsigned	arcount :16;	/* number of resource entries */
 } HEADER;
-
-#endif
 
 int init_resolver(void);
 void restart_resolver(void);
