@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.51 2000/10/16 23:17:44 toot Exp $
+ * $Id: channel.c,v 7.52 2000/10/21 16:55:32 bill Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -2236,8 +2236,8 @@ int     can_join(struct Client *sptr, struct Channel *chptr, char *key, int *fla
   if( chptr->mode.mode & MODE_JUPED )
     {
       sendto_ops_flags(FLAGS_SPY,
-             "User %s (%s@%s) is attempting to join locally juped channel %s",
-                     sptr->name,
+             "%s %s (%s@%s) is attempting to join locally juped channel %s",
+                     IsOper(sptr) ? "Oper" : "User", sptr->name,
                      sptr->username, sptr->host,chptr->chname);
       return (ERR_BADCHANNAME);
     }
