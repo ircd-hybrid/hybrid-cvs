@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.310 2002/07/12 00:51:08 androsyn Exp $
+ *  $Id: s_conf.c,v 7.311 2002/07/17 13:50:22 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -311,7 +311,9 @@ report_configured_links(struct Client* source_p, int mask)
               *s++ = '*';
 	      
 	    *s++ = '\0';
+
             /* Allow admins to see actual ips */
+#ifndef HIDE_SERVERS_IPS
             if(IsOperAdmin(source_p))
               sendto_one(source_p, form_str(p->rpl_stats), me.name,
                          source_p->name, c,
@@ -322,6 +324,7 @@ report_configured_links(struct Client* source_p, int mask)
                          classname,
                          oper_flags_as_string((int)tmp->hold));
             else
+#endif
               sendto_one(source_p, form_str(p->rpl_stats), me.name,
                          source_p->name, c,
                          "*@127.0.0.1",
