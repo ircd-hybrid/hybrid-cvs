@@ -1,3 +1,16 @@
+leeh        2002/06/26 19:38:59 EDT	(20020627_0)
+
+  Modified files:
+    modules              m_kline.c m_unkline.c 
+  Log:
+  - synced these up to show the same
+  
+  Revision  Changes    Path
+  1.103     +2 -2      ircd-hybrid-7/modules/m_kline.c
+  1.47      +3 -3      ircd-hybrid-7/modules/m_unkline.c
+
+
+
 androsyn    2002/06/26 18:01:36 EDT	(20020626_7)
 
   Modified files:
@@ -28810,4 +28823,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3813 2002/06/26 22:01:42 androsyn Exp $
+$Id: ChangeLog,v 7.3814 2002/06/26 23:39:06 leeh Exp $
