@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.335 2003/07/09 04:17:31 db Exp $
+ *  $Id: ircd_parser.y,v 1.336 2003/07/11 04:48:43 metalrock Exp $
  */
 
 %{
@@ -1899,6 +1899,8 @@ connect_entry: CONNECT
 	free_collect_item(yy_lconf);
 	dlinkDelete(&yy_lconf->node, &leaf_conf_list);
       }
+      MyFree(class_name);
+      class_name = NULL;
       yy_conf = NULL;
       yy_aconf = NULL;
   }
