@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-/* $Id: class.h,v 7.6 2000/01/17 03:21:22 db Exp $ */
+/* $Id: class.h,v 7.7 2000/12/04 19:07:09 db Exp $ */
 
 #ifndef INCLUDED_class_h
 #define INCLUDED_class_h
@@ -26,7 +26,7 @@ struct Client;
 
 struct Class {
   struct Class* next;     /* list node pointer */
-  char*		className;	/* *sigh* */
+  char*		className;
   int           type;
   int           conFreq;
   int           pingFreq;
