@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.70 2003/10/11 23:20:50 bill Exp $
+ *  $Id: m_mode.c,v 1.71 2003/10/11 23:47:21 bill Exp $
  */
 
 #include "stdinc.h"
@@ -52,11 +52,11 @@ struct Message mode_msgtab = {
 };
 struct Message tmode_msgtab = { 
   "TMODE", 0, 0, 4, 0, MFLG_SLOW, 0,
-  {m_ignore, m_ignore, m_ignore, ms_tmode, m_ignore}
+  {m_ignore, m_ignore, ms_tmode, m_ignore, m_ignore}
 };
 struct Message bmask_msgtab = {
   "BMASK", 0, 0, 5, 0, MFLG_SLOW, 0,
-  {m_ignore, m_ignore, m_ignore, ms_bmask, m_ignore}
+  {m_ignore, m_ignore, ms_bmask, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&bmask_msgtab);
 }
 
-const char *_version = "$Revision: 1.70 $";
+const char *_version = "$Revision: 1.71 $";
 #endif
 
 /*
@@ -221,7 +221,7 @@ ms_tmode(struct Client *client_p, struct Client *source_p, int parc, char *parv[
     return;
 
   if (IsServer(source_p))
-    set_channel_mode(client_p, source_p, chptr, NULL, parc - 2, parv + 2, chptr->chname);
+    set_channel_mode(client_p, source_p, chptr, NULL, parc - 3, parv + 3, chptr->chname);
   else
   {
     member = find_channel_link(source_p, chptr);
@@ -230,7 +230,7 @@ ms_tmode(struct Client *client_p, struct Client *source_p, int parc, char *parv[
     if (has_member_flags(member, CHFL_DEOPPED))
       return;
 
-    set_channel_mode(client_p, source_p, chptr, member, parc - 2, parv + 2, chptr->chname);
+    set_channel_mode(client_p, source_p, chptr, member, parc - 3, parv + 3, chptr->chname);
   }
 }
 
