@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 1.21 2001/01/15 21:20:07 fl_ Exp $
+ *   $Id: m_links.c,v 1.22 2001/01/15 21:36:21 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -142,22 +142,12 @@ static int mo_links(struct Client *cptr, struct Client *sptr,
       else
         p = "(Unknown Location)";
 
-
-      if(!GlobalSetOptions.hide_server || IsOper(sptr))
-	   sendto_one(sptr, form_str(RPL_LINKS),
+     /* We just send the reply, as if theyre here theres either no SHIDE,
+      * or theyre an oper..  
+      */
+      sendto_one(sptr, form_str(RPL_LINKS),
 		      me.name, parv[0], acptr->name, acptr->serv->up,
                       acptr->hopcount, p);
-      else
-        {
-          if(&me == acptr)
-            sendto_one(sptr, form_str(RPL_LINKS),
-                       me.name, parv[0], acptr->name, me.name, 0, p);
-          else
-            sendto_one(sptr, form_str(RPL_LINKS),
-                       me.name, parv[0], acptr->name, me.name, 1, p);
-
-	}
-
     }
   
   sendto_one(sptr, form_str(RPL_ENDOFLINKS), me.name, parv[0],
