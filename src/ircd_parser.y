@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.130 2001/02/13 08:34:39 db Exp $
+ * $Id: ircd_parser.y,v 1.131 2001/02/17 00:37:37 a1kmm Exp $
  */
 
 %{
@@ -697,7 +697,6 @@ auth_entry:   AUTH
       DupString(yy_aconf->name,"NOMATCH");
 
     conf_add_class_to_conf(yy_aconf);
-    conf_delist_old_conf(yy_aconf);
 
     if(yy_aconf->user == NULL)
       DupString(yy_aconf->user,"*");
