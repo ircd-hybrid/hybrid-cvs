@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.46 2003/06/03 16:57:48 joshk Exp $
+dnl $Id: configure.ac,v 7.47 2003/06/04 02:10:56 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -652,7 +652,7 @@ AC_MSG_RESULT($balloc)
 
 AC_ARG_ENABLE(warnings,
 AC_HELP_STRING([--enable-warnings],[Enable all sorts of warnings for debugging.]),
-[IRC_CFLAGS="$IRC_CFLAGS -Wcast-qual -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wredundant-decls -Wshadow -Wundef -Wwrite-strings -W -Wno-unused"],[])
+[IRC_CFLAGS="$IRC_CFLAGS -Wcast-qual -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wredundant-decls -Wshadow -Wwrite-strings -W -Wno-unused"],[])
 
 
 dnl Server Tweaks

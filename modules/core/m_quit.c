@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_quit.c,v 1.32 2003/06/04 00:49:22 joshk Exp $
+ *  $Id: m_quit.c,v 1.33 2003/06/04 02:11:00 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&quit_msgtab);
 }
 
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 /*
 ** m_quit
@@ -81,18 +81,19 @@ m_quit(struct Client *client_p, struct Client *source_p,
 		(IsOper(source_p) ||
 			 
 		/* Normal clients need to be past anti-spam time */
-		(source_p->firsttime +
-		 ConfigFileEntry.anti_spam_exit_message_time) < CurrentTime)
-		
-		/* Do we actually have a quit message? */
-		&& (parc > 1 && parv[1]))
+		((source_p->firsttime +
+		 ConfigFileEntry.anti_spam_exit_message_time) <= CurrentTime)))
 	{
-		comment = parv[1];
+		if (parv[1]) {
+			comment = parv[1];
 		
-		/* Fix a lousy overflow */
-		if (strlen(comment) > (size_t)TOPICLEN)
-			comment[TOPICLEN] = '\0';
-		
+			/* Fix a lousy overflow */
+			if (strlen(comment) > (size_t)TOPICLEN)
+				comment[TOPICLEN] = '\0';
+		}
+		else
+			comment = nothing;
+				
 		snprintf(reason, TOPICLEN, "Quit: %s", comment);
 		exit_client (client_p, source_p, source_p, reason);
 	}
