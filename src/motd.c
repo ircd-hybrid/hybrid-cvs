@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.c,v 7.20 2002/01/05 09:15:15 a1kmm Exp $
+ *  $Id: motd.c,v 7.21 2002/02/10 03:35:09 wcampbel Exp $
  */
 
 #include <sys/types.h>
@@ -120,12 +120,6 @@ int SendMessageFile(struct Client *source_p, MessageFile *motdToPrint)
           return -1;
         }
       sendto_one(source_p,":%s NOTICE %s :Start of OPER MOTD",me.name,source_p->name);
-      break;
-
-    case HELP_MOTD:
-      break;
-
-    case UHELP_MOTD:
       break;
 
     default:

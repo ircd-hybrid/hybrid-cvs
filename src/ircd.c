@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.216 2002/01/30 06:48:15 androsyn Exp $
+ *  $Id: ircd.c,v 7.217 2002/02/10 03:35:08 wcampbel Exp $
  */
 
 #include <sys/types.h>
@@ -405,14 +405,10 @@ static void initialize_global_set_options(void)
  */
 static void initialize_message_files(void)
 {
-  InitMessageFile( HELP_MOTD, HPATH, &ConfigFileEntry.helpfile );
-  InitMessageFile( UHELP_MOTD, UHPATH, &ConfigFileEntry.uhelpfile );
   InitMessageFile( USER_MOTD, MPATH, &ConfigFileEntry.motd );
   InitMessageFile( OPER_MOTD, OPATH, &ConfigFileEntry.opermotd );
   InitMessageFile( USER_LINKS, LIPATH, &ConfigFileEntry.linksfile );
 
-  ReadMessageFile( &ConfigFileEntry.helpfile );
-  ReadMessageFile( &ConfigFileEntry.uhelpfile );
   ReadMessageFile( &ConfigFileEntry.motd );
   ReadMessageFile( &ConfigFileEntry.opermotd );
   ReadMessageFile( &ConfigFileEntry.linksfile );

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rehash.c,v 1.37 2002/02/04 04:52:47 androsyn Exp $
+ *  $Id: m_rehash.c,v 1.38 2002/02/10 03:35:06 wcampbel Exp $
  */
 
 #include "handlers.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&rehash_msgtab);
 }
 
-char *_version = "$Revision: 1.37 $";
+char *_version = "$Revision: 1.38 $";
 #endif
 /*
  * mo_rehash - REHASH message handler
@@ -110,15 +110,6 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
           ReadMessageFile( &ConfigFileEntry.opermotd );
           found = YES;
         }
-      else if(irccmp(parv[1],"HELP") == 0)
-        {
-          sendto_realops_flags(FLAGS_ALL, L_ALL,
-		       "%s is forcing re-reading of oper and user help files",
-                       parv[0]);
-          ReadMessageFile( &ConfigFileEntry.helpfile );
-          ReadMessageFile( &ConfigFileEntry.uhelpfile );
-          found = YES;
-        }
       if(found)
         {
           ilog(L_NOTICE, "REHASH %s From %s\n", parv[1], 
@@ -127,7 +118,7 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
         }
       else
         {
-          sendto_one(source_p,":%s NOTICE %s :rehash one of :CHANNELS DNS HELP MOTD OMOTD" ,me.name,source_p->name);
+          sendto_one(source_p,":%s NOTICE %s :rehash one of :CHANNELS DNS MOTD OMOTD" ,me.name,source_p->name);
           return;
         }
     }

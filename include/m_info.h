@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.h,v 7.38 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: m_info.h,v 7.39 2002/02/10 03:35:03 wcampbel Exp $
  */
 
 #ifndef INCLUDED_m_info_h
@@ -83,15 +83,15 @@ Info MyInformation[] = {
   { "HARD_FDLIMIT_", "", HARD_FDLIMIT_, "Maximum Number of File Descriptors Available" },
 
 #ifdef HPATH
-  { "HPATH", HPATH, 0, "Path to Operator Help File" },
+  { "HPATH", HPATH, 0, "Path to Operator Help Files" },
 #else
-  { "HPATH", "NONE", 0, "Path to Operator Help File" },
+  { "HPATH", "NONE", 0, "Path to Operator Help Files" },
 #endif /* HPATH */
 
 #ifdef UHPATH
-  { "UHPATH", UHPATH, 0, "Path to User Help File" },
+  { "UHPATH", UHPATH, 0, "Path to User Help Files" },
 #else
-  { "UHPATH", "NONE", 0, "Path to User Help File" },
+  { "UHPATH", "NONE", 0, "Path to User Help Files" },
 #endif /* UH PATH */
 
 #ifdef SOMAXCONN

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.175 2002/01/09 17:16:48 leeh Exp $
+ *  $Id: s_conf.h,v 7.176 2002/02/10 03:35:03 wcampbel Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -190,8 +190,6 @@ struct config_file_entry
   char fname_userlog[MAXPATHLEN];
   char fname_foperlog[MAXPATHLEN];
 
-  MessageFile helpfile;
-  MessageFile uhelpfile;
   MessageFile motd;
   MessageFile opermotd;
   MessageFile linksfile;
