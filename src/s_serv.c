@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.157 2001/05/19 05:03:52 a1kmm Exp $
+ *   $Id: s_serv.c,v 7.158 2001/05/19 05:09:16 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -670,7 +670,6 @@ void client_burst_if_needed(struct Client *client_p, struct Client *target_p)
   if (!ServerInfo.hub) return;
   if (!MyConnect(client_p)) return;
   if (!IsCapable(client_p,CAP_LL)) return;
-  if (!IsClient(target_p))
  
   if((target_p->lazyLinkClientExists & client_p->localClient->serverMask) == 0)
     {
