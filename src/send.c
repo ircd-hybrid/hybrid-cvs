@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.275 2003/10/11 02:15:10 bill Exp $
+ *  $Id: send.c,v 7.276 2003/10/29 22:59:46 bill Exp $
  */
 
 #include "stdinc.h"
@@ -146,7 +146,7 @@ send_message(struct Client *to, char *buf, int len)
   me.localClient->sendM += 1;
 
   if (dbuf_length(&to->localClient->buf_sendq) >
-      (IsServer(to) ? 1024 : 4096))
+      (IsServer(to) ? (unsigned int) 1024 : (unsigned int) 4096))
     send_queued_write(to);
 }
 
