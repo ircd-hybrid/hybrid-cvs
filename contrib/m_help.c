@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.8 2003/06/22 00:52:52 joshk Exp $
+ *  $Id: m_help.c,v 1.9 2003/08/16 23:32:51 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -48,7 +48,7 @@ static void sendhelpfile(struct Client *, char *, char *);
 
 struct Message help_msgtab = {
   "HELP", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_help, m_ignore, mo_help}
+  {m_unregistered, m_help, m_ignore, mo_help, m_ignore}
 };
 
 struct Message uhelp_msgtab = {
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 #endif
 
 /*
