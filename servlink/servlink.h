@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.7 2001/05/24 21:30:48 davidt Exp $
+ *   $Id: servlink.h,v 1.8 2001/05/24 22:25:25 davidt Exp $
  */
 
 #include <stdio.h>
@@ -48,8 +48,10 @@
 #define PEL 1
 #define BDL 2
 #define PDL 3
+#define NIL 4
+#define NOL 5
 
-extern FILE *logs[4];
+extern FILE *logs[6];
 #define LOG_IO(log, data, len)  assert(fwrite(data, 1, len, logs[log]) == len);
 #else
 #define LOG_IO(log, data, len)
