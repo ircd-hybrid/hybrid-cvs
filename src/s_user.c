@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.79 2000/12/24 00:04:48 ejb Exp $
+ *  $Id: s_user.c,v 7.80 2000/12/24 02:15:36 isomer Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -45,6 +45,7 @@
 #include "s_stats.h"
 #include "scache.h"
 #include "send.h"
+#include "supported.h"
 #include "whowas.h"
 
 #include <string.h>
@@ -1030,6 +1031,8 @@ static void user_welcome(struct Client *sptr)
   sendto_one(sptr, form_str(RPL_CREATED),me.name,sptr->name,creation);
   sendto_one(sptr, form_str(RPL_MYINFO), me.name, sptr->name,
 	     me.name, version);
+  sendto_one(sptr, form_str(RPL_ISUPPORT), me.name, sptr->name, 
+  	     isupportbuffer);
   show_lusers(sptr);
 
   if (ConfigFileEntry.short_motd)

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.81 2000/12/23 22:12:31 toot Exp $
+ * $Id: ircd.c,v 7.82 2000/12/24 02:15:35 isomer Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -53,6 +53,7 @@
 #include "scache.h"
 #include "send.h"
 #include "setup.h"
+#include "supported.h"
 #include "whowas.h"
 #include "modules.h"
 
@@ -122,6 +123,9 @@ struct SetOptions GlobalSetOptions;
 
 /* config.h config file paths etc */
 ConfigFileEntryType ConfigFileEntry; 
+
+/* ISUPPORT buffer */
+char isupportbuffer[512];
 
 struct  Counter Count;
 
@@ -431,6 +435,8 @@ static void initialize_message_files(void)
     ReadMessageFile( &ConfigFileEntry.helpfile );
     ReadMessageFile( &ConfigFileEntry.motd );
     ReadMessageFile( &ConfigFileEntry.opermotd );
+    
+    ircsprintf(isupportbuffer,FEATURES,FEATURESVALUES);
   }
 
 /*
