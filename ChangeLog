@@ -1,3 +1,15 @@
+db          2002/07/14 18:00:46 EDT	(20020714_4)
+
+  Modified files:
+    src                  linebuf.c 
+  Log:
+  - Don't try to work with a -1 index!
+  
+  Revision  Changes    Path
+  7.84      +26 -15    ircd-hybrid-7/src/linebuf.c
+
+
+
 androsyn    2002/07/14 16:19:45 EDT	(20020714_3)
 
   Modified files:
@@ -29853,4 +29865,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3880 2002/07/14 20:19:52 androsyn Exp $
+$Id: ChangeLog,v 7.3881 2002/07/14 22:00:54 db Exp $
