@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.331 2003/02/16 22:54:37 db Exp $
+ *  $Id: client.c,v 7.331.2.1 2003/03/02 07:30:54 lusky Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -826,42 +826,37 @@ get_client_name(struct Client* client, int showip)
   if(client == NULL)
     return NULL;
     
-  if (MyConnect(client))
-    {
-      if (!irccmp(client->name, client->host))
-        return client->name;
+  if (!irccmp(client->name, client->host))
+    return client->name;
 
 #ifdef HIDE_SERVERS_IPS
-      if(IsServer(client) || IsConnecting(client) || IsHandshake(client))
-        showip = MASK_IP;
+  if(IsServer(client) || IsConnecting(client) || IsHandshake(client))
+    showip = MASK_IP;
 #endif
 #ifdef HIDE_SPOOF_IPS
-      if(showip == SHOW_IP && IsIPSpoof(client))
-        showip = MASK_IP;
+  if(showip == SHOW_IP && IsIPSpoof(client))
+    showip = MASK_IP;
 #endif
 
-      /* And finally, let's get the host information, ip or name */
-      switch (showip)
+  /* And finally, let's get the host information, ip or name */
+  switch (showip)
+    {
+      case SHOW_IP:
+        if (MyConnect(client))
         {
-          case SHOW_IP:
-            ircsprintf(nbuf, "%s[%s@%s]", client->name, client->username,
-              client->localClient->sockhost);
-            break;
-          case MASK_IP:
-            ircsprintf(nbuf, "%s[%s@255.255.255.255]", client->name,
-              client->username);
-            break;
-          default:
-            ircsprintf(nbuf, "%s[%s@%s]", client->name, client->username,
-              client->host);
+          ircsprintf(nbuf, "%s[%s@%s]", client->name, client->username,
+                     client->localClient->sockhost);
+          break;
         }
-      return nbuf;
+      case MASK_IP:
+        ircsprintf(nbuf, "%s[%s@255.255.255.255]", client->name,
+                   client->username);
+        break;
+      default:
+        ircsprintf(nbuf, "%s[%s@%s]", client->name, client->username,
+                   client->host);
     }
-
-  /* As pointed out by Adel Mezibra 
-   * Neph|l|m@EFnet. Was missing a return here.
-   */
-  return client->name;
+  return nbuf;
 }
 
 void
