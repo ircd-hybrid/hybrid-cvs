@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.58 2002/08/20 19:25:30 db Exp $
+ *  $Id: channel_mode.c,v 7.59 2002/08/28 18:13:34 db Exp $
  */
 
 #include "stdinc.h"
@@ -274,6 +274,12 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
  * from orabidoo
  * modified 8/9/00 by is: now we handle add ban types here
  * (invex/excemp/etc)
+ *
+ * inputs	- pointer to channel
+ *		- pointer to ban id
+ *		- type of ban, i.e. ban, exception, invex
+ * output	- 0 for failure, 1 for success
+ * side effects	-
  */
 static int
 del_id(struct Channel *chptr, char *banid, int type)
@@ -282,8 +288,8 @@ del_id(struct Channel *chptr, char *banid, int type)
   dlink_node *ban;
   struct Ban *banptr;
 
-  if (!banid)
-    return 0;
+  if (banid == NULL)
+    return (0);
 
   switch (type)
   {
@@ -299,7 +305,7 @@ del_id(struct Channel *chptr, char *banid, int type)
     default:
       sendto_realops_flags(FLAGS_ALL, L_ALL,
                            "del_id() called with unknown ban type %d!", type);
-      return 0;
+      return (0);
   }
 
   DLINK_FOREACH(ban, list->head)
@@ -321,10 +327,10 @@ del_id(struct Channel *chptr, char *banid, int type)
       dlinkDelete(ban, list);
       free_dlink_node(ban);
 
-      return 1;
+      return (1);
     }
   }
-  return 0;
+  return (0);
 }
 
 /*
@@ -971,10 +977,10 @@ chm_ban(struct Client *client_p, struct Client *source_p,
   }
   else if (dir == MODE_DEL)
   {
-    if (del_id(chptr, mask, CHFL_BAN) != 0)
+    if (del_id(chptr, mask, CHFL_BAN) == 0)
     {
       /* mask isn't a valid ban, check raw_mask */
-      if((del_id(chptr, raw_mask, CHFL_BAN) != 0) && MyClient(source_p))
+      if((del_id(chptr, raw_mask, CHFL_BAN) == 0) && MyClient(source_p))
       {
         /* nope */
         return;
@@ -1077,10 +1083,10 @@ chm_except(struct Client *client_p, struct Client *source_p,
   }
   else if (dir == MODE_DEL)
   {
-    if (del_id(chptr, mask, CHFL_EXCEPTION) != 0)
+    if (del_id(chptr, mask, CHFL_EXCEPTION) == 0)
     {
       /* mask isn't a valid ban, check raw_mask */
-      if((del_id(chptr, raw_mask, CHFL_EXCEPTION) != 0) && MyClient(source_p))
+      if((del_id(chptr, raw_mask, CHFL_EXCEPTION) == 0) && MyClient(source_p))
       {
         /* nope */
         return;
@@ -1182,10 +1188,10 @@ chm_invex(struct Client *client_p, struct Client *source_p,
   }
   else if (dir == MODE_DEL)
   {
-    if (del_id(chptr, mask, CHFL_INVEX) != 0)
+    if (del_id(chptr, mask, CHFL_INVEX) == 0)
     {
       /* mask isn't a valid ban, check raw_mask */
-      if((del_id(chptr, raw_mask, CHFL_INVEX) != 0) && MyClient(source_p))
+      if((del_id(chptr, raw_mask, CHFL_INVEX) == 0) && MyClient(source_p))
       {
         /* nope */
         return;
