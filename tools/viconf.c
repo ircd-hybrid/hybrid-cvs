@@ -1,7 +1,7 @@
 /*
  * viconf.c
  *
- * $Id: viconf.c,v 7.8 2003/05/23 19:06:57 joshk Exp $
+ * $Id: viconf.c,v 7.9 2003/05/24 00:44:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -12,7 +12,7 @@
  * -Dianora
  */
 
-#ifdef HAVE_SYS_WAIT_H
+#ifndef HAVE_SYS_WAIT_H
 #include <wait.h>
 #else
 # ifdef HAVE_WAIT_H
