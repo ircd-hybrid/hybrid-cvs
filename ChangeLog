@@ -1,3 +1,17 @@
+lusky       2002/07/16 11:36:11 EDT	(20020716_1)
+
+  Modified files:
+    .                    RELNOTES 
+    include              patchlevel.h 
+  Log:
+  - revved patchlevel to rc1
+  
+  Revision  Changes    Path
+  1.37      +1 -1      ircd-hybrid-7/RELNOTES
+  7.34      +1 -1      ircd-hybrid-7/include/patchlevel.h
+
+
+
 leeh        2002/07/16 06:35:23 EDT	(20020716_0)
 
   Modified files:
@@ -29939,4 +29953,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3887 2002/07/16 10:35:30 leeh Exp $
+$Id: ChangeLog,v 7.3888 2002/07/16 15:36:19 lusky Exp $
