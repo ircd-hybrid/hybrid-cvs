@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.53 2000/12/14 21:55:34 toot Exp $
+ * $Id: config.h,v 7.54 2000/12/14 21:56:40 toot Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -254,7 +254,7 @@
  * define this if you want to use crypted passwords for operators in your
  * ircd.conf file.
  */
-#undef CRYPT_OPER_PASSWORD
+#define CRYPT_OPER_PASSWORD
 
 /* CRYPT_LINK_PASSWORD - use crypted N-line passwords in the ircd.conf
  * If you want to store encrypted passwords in N-lines for server links,
