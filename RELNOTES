@@ -1,5 +1,18 @@
 -- ircd-hybrid-7.1beta1 RELNOTES
-o) <fill this in before release>
+o) TS6 support has been introduced, although it is still not to be
+   used on produce networks.
+o) Halfops are no longer a configure option - if you prefer to use
+   them, you have to patch the source against contrib/halfops.diff;
+   anonops (+a) have been ripped out completely.
+o) A new, more effective hash algorithm (from ircu).
+o) Linebufs have been replaced with the new rewritten dbuf code;
+   noticeable performance improvements to the network I/O system.
+o) Major changes to the configure script.
+o) LIST extensions borrowed from undernet (SAFELIST, channel filtering -
+   see contrib/help/opers/list for more details).
+o) A native i18n support is provided instead of the former gettext,
+   which is no longer needed. Old message files have been updated
+   according to the new format, plus some new translations are available.
 
 --------------------------------------------------------------------------------
 
@@ -47,4 +60,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.75 2004/07/17 00:12:05 lusky Exp $
+$Id: RELNOTES,v 1.76 2004/07/17 03:03:36 adx Exp $
