@@ -1,3 +1,15 @@
+db          2002/10/11 21:33:00 EDT	(20021012_0)
+
+  Modified files:
+    modules              m_rehash.c 
+  Log:
+  - I won't ask why rehash CHANNELS was there
+  
+  Revision  Changes    Path
+  1.41      +2 -9      ircd-hybrid-7/modules/m_rehash.c
+
+
+
 db          2002/10/11 15:57:50 EDT	(20021011_0)
 
   Modified files:
@@ -32387,4 +32399,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4057 2002/10/11 19:57:53 db Exp $
+$Id: ChangeLog,v 7.4058 2002/10/12 01:33:02 db Exp $
