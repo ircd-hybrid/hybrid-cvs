@@ -77,7 +77,7 @@ Feature Specific Requirements:
   to permission problems on these files.
 
 - There is now a mailing list for general discussion of Hybrid.  To subscribe
-  to the Hybrid List, use this line:
+  to the Hybrid List, use this link:
   https://lists.ircd-hybrid.org/mailman/listinfo/hybrid
 
 - If you run in to a problem you think may be specific to your platform,
@@ -112,4 +112,4 @@ Feature Specific Requirements:
 - Other files recommended for reading: BUGS, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: README.FIRST,v 7.33.4.1 2004/06/19 14:30:34 lusky Exp $
+$Id: README.FIRST,v 7.33.4.2 2004/07/17 00:02:27 lusky Exp $
