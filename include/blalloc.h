@@ -4,7 +4,7 @@
  * Owner:   Wohali (Joan Touzet)
  *
  *
- * $Id: blalloc.h,v 7.4 2000/12/30 04:36:53 lusky Exp $
+ * $Id: blalloc.h,v 7.5 2001/01/11 19:42:47 a1kmm Exp $
  */
 #ifndef INCLUDED_blalloc_h
 #define INCLUDED_blalloc_h
@@ -59,8 +59,15 @@ extern int         BH_CurrentLine;  /* GLOBAL - current line */
 
 extern BlockHeap* BlockHeapCreate(size_t elemsize, int elemsperblock);
 extern int        BlockHeapDestroy(BlockHeap *bh);
-extern void*      BlockHeapAlloc(BlockHeap *bh);
 extern int        BlockHeapFree(BlockHeap *bh, void *ptr);
+#ifdef MEMDEBUG
+extern void*      _BlockHeapAlloc(BlockHeap*, char*, int);
+#define BlockHeapAlloc(x) _BlockHeapAlloc(x, __FILE__, __LINE__)
+#else
+extern void*      _BlockHeapAlloc(BlockHeap *);
+#define BlockHeapAlloc(x) _BlockHeapAlloc(x)
+#endif
+
 extern int        BlockHeapGarbageCollect(BlockHeap *);
 
 extern void       BlockHeapCountMemory(BlockHeap *bh,int *, int *);
@@ -68,16 +75,8 @@ extern void       BlockHeapDump(BlockHeap *bh,int fd);
 
 #define BlockHeapALLOC(bh, type)  ((type*) BlockHeapAlloc(bh))
 
-#ifdef DEBUGMEM
-extern void * _BlockHeapAlloc(BlockHeap *, char *, int);
-#else
-extern void * _BlockHeapAlloc(BlockHeap *);
-#endif
-#ifdef DEBUGMEM
-extern int _BlockHeapFree(BlockHeap *, void *, char *, int);
-#else
 extern int _BlockHeapFree(BlockHeap *, void *);
-#endif
+#define BlockHeapFree(x,y) _BlockHeapFree(x,y)
 
 #endif /* INCLUDED_blalloc_h */
 

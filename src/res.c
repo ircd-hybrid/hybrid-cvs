@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.39 2001/01/11 09:30:28 a1kmm Exp $
+ * $Id: res.c,v 7.40 2001/01/11 19:42:53 a1kmm Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -1129,7 +1129,6 @@ res_readreply(int fd, void *data)
 }
 
 
-#if 0
 /*
  * dup_hostent - Duplicate a hostent struct, allocate only enough memory for
  * the data we're putting in it.
@@ -1198,10 +1197,7 @@ static void dup_hostent(aHostent* new_hp, struct hostent* hp)
     }
   *ap = 0;
 }
-#endif
 
-#if 0
-/* We don't actually keep a cache atm, this was just leaking... -A1kmm.*/
 static struct cache* make_cache(ResRQ* request)
 {
   struct cache* cp;
@@ -1223,7 +1219,6 @@ static struct cache* make_cache(ResRQ* request)
 
   return(cp);
 }
-#endif
 
 unsigned long cres_mem(struct Client *sptr)
 {
