@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.396 2003/05/22 02:28:30 metalrock Exp $
+ *  $Id: s_conf.c,v 7.397 2003/05/23 02:32:21 db Exp $
  */
 
 #include "stdinc.h"
@@ -84,6 +84,7 @@ static int is_attached(struct Client *client_p, struct ConfItem *aconf);
 static int verify_access(struct Client *client_p, const char *username);
 static int attach_iline(struct Client *, struct ConfItem *);
 static struct ip_entry *find_or_add_ip(struct irc_ssaddr *);
+static void parse_conf_file(int type, int cold);
 
 FBFILE *conf_fbfile_in;
 extern char yytext[];
@@ -1863,9 +1864,6 @@ read_conf_files(int cold)
 {
   FBFILE *file;
   const char *filename;
-  const char *kfilename;
-  const char *xfilename;
-  const char *dfilename;
 
   conf_fbfile_in = NULL;
 
@@ -1910,48 +1908,36 @@ read_conf_files(int cold)
   read_conf(conf_fbfile_in);
   fbclose(conf_fbfile_in);
 
-  kfilename = get_conf_name(CONF_KILL);
+  parse_conf_file(CONF_KILL, cold);
+  parse_conf_file(CONF_DLINE, cold);
+  parse_conf_file(CONF_XLINE, cold);
+}
 
-  if ((file = fbopen(kfilename, "r")) == NULL)
+/*
+ * parse_conf_file()
+ *
+ * inputs	- type of conf file to parse 
+ * output	- none
+ * side effects	- conf file for givenconf type is opened and read then parsed
+ */
+static void
+parse_conf_file(int type, int cold)
+{
+  const char *filename;
+  FBFILE *file;
+
+  filename = get_conf_name(type);
+
+  if ((file = fbopen(filename, "r")) == NULL)
   {
     if (cold)
-      ilog(L_ERROR, "Failed reading kline file %s", filename);
+      ilog(L_ERROR, "Failed reading file %s", filename);
     else
-      sendto_realops_flags(UMODE_ALL, L_ALL, "Can't open %s file "
-			   "klines could be missing!", kfilename);
+      sendto_realops_flags(UMODE_ALL, L_ALL, "Can't open %s file ", filename);
   }
   else
   {
-    parse_csv_file(file, CONF_KILL);
-    fbclose(file);
-  }
-
-  dfilename = get_conf_name(CONF_DLINE);
-
-  if ((file = fbopen(dfilename, "r")) == NULL)
-  {
-    if (cold)
-      ilog(L_ERROR, "Failed reading dline file %s", dfilename);
-    else
-      sendto_realops_flags(UMODE_ALL, L_ALL, "Can't open %s file "
-			   "dlines could be missing!", dfilename);
-  }
-  else
-  {
-    parse_csv_file(file, CONF_DLINE);
-    fbclose(file);
-  }
-
-  xfilename = get_conf_name(CONF_XLINE);
-
-  if ((file = fbopen(xfilename, "r")) == NULL)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL, "Can't open %s file "
-			 "xlines could be missing!", xfilename);
-  }
-  else
-  {
-    parse_csv_file(file, CONF_XLINE);
+    parse_csv_file(file, type);
     fbclose(file);
   }
 }
