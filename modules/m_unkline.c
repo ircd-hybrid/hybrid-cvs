@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.60 2003/05/14 18:26:52 db Exp $
+ *  $Id: m_unkline.c,v 1.61 2003/05/24 16:15:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -43,15 +43,17 @@
 #include "s_gline.h"
 #include "parse.h"
 #include "modules.h"
+#include "cluster.h"
+#include "s_serv.h"
 
-
-static void mo_unkline(struct Client*, struct Client*, int, char**);
-static void mo_undline(struct Client*, struct Client*, int, char**);
-static void mo_ungline(struct Client*, struct Client*, int, char**);
+static void mo_unkline(struct Client *, struct Client *, int, char **);
+static void ms_unkline(struct Client *, struct Client *, int, char **);
+static void mo_undline(struct Client *, struct Client *, int, char **);
+static void mo_ungline(struct Client *, struct Client *, int, char **);
 
 struct Message msgtabs[] = {
   {"UNKLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, m_error, mo_unkline, m_ignore}},
+   {m_unregistered, m_not_oper, ms_unkline, mo_unkline, m_ignore}},
   {"UNDLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
    {m_unregistered, m_not_oper, m_error, mo_undline, m_ignore}}, 
   {"UNGLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -74,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.60 $";
+const char *_version = "$Revision: 1.61 $";
 #endif
 
 static int remove_tkline_match(char *,char *);
@@ -130,6 +132,18 @@ mo_unkline (struct Client *client_p,struct Client *source_p,
       return;
     }
 
+  /* UNKLINE bill@mu.org ON irc.mu.org */
+  if ((parc == 4) && (irccmp(parv[2], "ON") == 0))
+  {
+    sendto_match_servs(source_p, parv[3], CAP_UNKLN,
+                       "UNKLINE %s %s %s", parv[3], user, host);
+
+    if (!match(parv[3], me.name))
+      return;
+  }
+  else if (cluster_servers())
+    cluster_unkline(source_p, user, host);
+
   if (remove_tkline_match(host, user))
     {
       sendto_one(source_p,
@@ -158,6 +172,91 @@ mo_unkline (struct Client *client_p,struct Client *source_p,
     sendto_one(source_p, ":%s NOTICE %s :No K-Line for [%s@%s] found", 
 	       me.name, source_p->name, user,host);
   return; 
+}
+
+/* ms_unkline()
+ *
+ * inputs	- server
+ *		- client
+ *		- parc
+ *		- parv
+ * outputs	- none
+ * side effects	- if server is authorized, kline is removed
+ */
+static void
+ms_unkline(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
+{
+  char *kuser, *khost;
+
+  if (parc != 4)
+    return;
+
+  sendto_match_servs(source_p, parv[1], CAP_UNKLN,
+                     "UNKLINE %s %s %s", parv[1], parv[2], parv[3]);
+
+  kuser = parv[2];
+  khost = parv[3];
+
+  if (!match(parv[1], me.name))
+    return;
+
+  if (!IsPerson(source_p))
+    return;
+
+  if (find_cluster((char *)source_p->user->server, CLUSTER_UNKLINE))
+  {
+    if (remove_tkline_match(khost, kuser))
+    {
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+                           "%s has removed the temporary K-Line for: [%s@%s]",
+                           get_oper_name(source_p), kuser, khost);
+      ilog(L_NOTICE, "%s removed temporary K-Line for [%s@%s]",
+           source_p->name, kuser, khost);
+      return;
+    }
+
+    if (remove_conf_line(CONF_KILL, source_p, kuser, khost))
+    {
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+                           "%s has removed the K-Line for: [%s@%s]",
+                           get_oper_name(source_p), kuser, khost);
+
+      ilog(L_NOTICE, "%s removed K-Line for [%s@%s]",
+           source_p->name, kuser, khost);
+    }
+  }
+  else if (find_u_conf(source_p->user->server,
+                       source_p->username, source_p->host,
+                       SHARED_UNKLINE))
+  {
+    if (remove_tkline_match(khost, kuser))
+    {
+      sendto_one(source_p,
+                 ":%s NOTICE %s :Un-klined [%s@%s] from temporary k-lines",
+                 me.name, parv[0], kuser, khost);
+      sendto_realops_flags(UMODE_ALL, L_ALL,  
+                           "%s has removed the temporary K-Line for: [%s@%s]",
+                           get_oper_name(source_p), kuser, khost);
+      ilog(L_NOTICE, "%s removed temporary K-Line for [%s@%s]",
+           parv[0], kuser, khost);
+      return;
+    } 
+
+    if (remove_conf_line(CONF_KILL, source_p, kuser, khost) > 0)
+    {
+      sendto_one(source_p, ":%s NOTICE %s :K-Line for [%s@%s] is removed",
+                 me.name, source_p->name, kuser, khost);
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+                           "%s has removed the K-Line for: [%s@%s]",
+                         get_oper_name(source_p), kuser, khost);
+
+      ilog(L_NOTICE, "%s removed K-Line for [%s@%s]",
+           source_p->name, kuser, khost);
+    }
+    else
+      sendto_one(source_p, ":%s NOTICE %s :No K-Line for [%s@%s] found",
+                 me.name, source_p->name, kuser, khost);
+  }
 }
 
 /* static int remove_tkline_match(char *host, char *user)

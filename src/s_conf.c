@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.400 2003/05/24 03:25:32 db Exp $
+ *  $Id: s_conf.c,v 7.401 2003/05/24 16:15:16 bill Exp $
  */
 
 #include "stdinc.h"
@@ -337,7 +337,7 @@ report_configured_links(struct Client *source_p, unsigned int mask)
                      me.name, source_p->name, name, reason);
         else
           sendto_one(source_p, form_str(RPL_STATSXLINE),
-                     me.name, source_p->name, name, reason);
+                     me.name, source_p->name, port, name, reason);
       }
       else
         sendto_one(source_p, form_str(p->rpl_stats),
@@ -1221,11 +1221,12 @@ find_x_conf(const char *to_find)
  * inputs       - pointer to servername
  *		- pointer to user of oper
  *		- pointer to host of oper
+ *		- type of sharing
  * output       - NULL or pointer to found struct ConfItem
  * side effects - looks for a matches on all fields
  */
 int 
-find_u_conf(const char *server, const char *user, const char *host)
+find_u_conf(const char *server, const char *user, const char *host, int type)
 {
   dlink_node *ptr;
   struct ConfItem *aconf;
@@ -1240,7 +1241,8 @@ find_u_conf(const char *server, const char *user, const char *host)
     if (EmptyString(aconf->name))
       continue;
 
-    if (match(aconf->name,server))
+    if ((type & aconf->port) && 
+        match(aconf->name,server))
     {
       if (EmptyString(aconf->user) ||
           EmptyString(aconf->host))
@@ -1405,6 +1407,7 @@ set_default_conf(void)
   ConfigServerHide.disable_hidden = 0;
 
   ConfigFileEntry.min_nonwildcard = 4;
+  ConfigFileEntry.min_nonwildcard_simple = 3;
   ConfigFileEntry.default_floodcount = 8;
   ConfigFileEntry.client_flood = CLIENT_FLOOD_DEFAULT;
 

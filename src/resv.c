@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.22 2003/05/24 03:25:32 db Exp $
+ *  $Id: resv.c,v 7.23 2003/05/24 16:15:15 bill Exp $
  */
 
 #include "stdinc.h"
@@ -36,6 +36,7 @@
 #include "hash.h"
 #include "irc_string.h"
 #include "ircd_defs.h"
+#include "s_conf.h"
 
 dlink_list resv_channel_list = { NULL, NULL, 0 };
 dlink_list resv_nick_list    = { NULL, NULL, 0 };
@@ -284,3 +285,29 @@ clean_resv_nick(char *nick)
   return(1);
 }
 
+/* valid_wild_card_simple()
+ *
+ * inputs	- data to check for sufficient non-wildcard characters
+ * outputs	- 1 if valid, else 0
+ * side effects	- none
+ */
+int
+valid_wild_card_simple(char *data)
+{
+  char *p = data, tmpch;
+  int nonwild = 0;
+
+  while ((tmpch = *p++))
+  {
+    if (!IsMWildChar(tmpch))
+    {
+      if (++nonwild >= ConfigFileEntry.min_nonwildcard_simple)
+        break;
+    }
+  }
+
+  if (nonwild < ConfigFileEntry.min_nonwildcard_simple)
+    return 0;
+  else
+    return 1;
+}

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.157 2003/05/23 19:06:55 joshk Exp $
+ *  $Id: ircd_lexer.l,v 1.158 2003/05/24 16:15:15 bill Exp $
  */
 
 %option case-insensitive
@@ -135,6 +135,7 @@ action		{ return ACTION; }
 admin		{ return ADMIN; }
 administrator	{ return ADMIN; }
 aftype		{ return AFTYPE; }
+all		{ return T_ALL; }
 auth		{ return AUTH; }
 autoconn	{ return AUTOCONN; }
 can_flood	{ return CAN_FLOOD; }
@@ -213,6 +214,7 @@ max_number	{ return MAX_NUMBER; }
 maximum_links   { return MAXIMUM_LINKS; }
 message_locale	{ return MESSAGE_LOCALE; }
 min_nonwildcard { return MIN_NONWILDCARD; }
+min_nonwildcard_simple	{ return MIN_NONWILDCARD_SIMPLE; }
 name		{ return NAME; }
 network_desc    { return NETWORK_DESC; }
 network_name    { return NETWORK_NAME; }
@@ -251,10 +253,12 @@ serverhide	{ return SERVERHIDE; }
 serverinfo	{ return SERVERINFO; }
 servlink_path   { return SERVLINK_PATH; }
 shared          { return T_SHARED; }
+cluster		{ return T_CLUSTER; }
 short_motd      { return SHORT_MOTD; }
 silent          { return SILENT; }
 spoof		{ return SPOOF; }
 spoof_notice	{ return SPOOF_NOTICE; }
+type		{ return TYPE; }
 true_no_oper_flood { return TRUE_NO_OPER_FLOOD; }
 unkline		{ return UNKLINE; }
 use_egd 	{ return USE_EGD; }
@@ -300,6 +304,9 @@ modules                 { return MODULES; }
 module                  { return MODULE; }
 path                    { return PATH; }
 max_targets             { return MAX_TARGETS; }
+
+unxline			{ return T_UNXLINE; }
+unresv			{ return T_UNRESV; }
 
 oper_only_umodes        { return OPER_ONLY_UMODES; }
 oper_umodes             { return OPER_UMODES; }

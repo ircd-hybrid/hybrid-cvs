@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.75 2003/05/17 18:00:46 bill Exp $
+ *  $Id: s_serv.h,v 7.76 2003/05/24 16:15:11 bill Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -69,7 +69,7 @@ struct Capability
 #define CAP_ENCAP	0x00100000 /* supports ENCAP message		  */
 
 #define CAP_MASK   (CAP_QS | CAP_EX | CAP_CHW | CAP_IE | CAP_EOB |\
-                    CAP_KLN | CAP_GLN |\
+                    CAP_KLN | CAP_GLN | CAP_UNKLN | CAP_CLUSTER | \
                     CAP_UID | CAP_ZIP | CAP_ENC | CAP_KNOCK | CAP_PARA)
 
 #ifdef HAVE_LIBZ

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.27 2003/05/22 17:09:08 michael Exp $
+ * $Id: match.c,v 7.28 2003/05/24 16:15:15 bill Exp $
  *
  */
 #include "stdinc.h"
@@ -531,7 +531,7 @@ const unsigned int CharAttrs[] = {
 /* ' */      PRINT_C|CHAN_C|NONEOS_C,
 /* ( */      PRINT_C|CHAN_C|NONEOS_C,
 /* ) */      PRINT_C|CHAN_C|NONEOS_C,
-/* * */      PRINT_C|KWILD_C|CHAN_C|NONEOS_C|SERV_C,
+/* * */      PRINT_C|KWILD_C|MWILD_C|CHAN_C|NONEOS_C|SERV_C,
 /* + */      PRINT_C|CHAN_C|NONEOS_C,
 /* , */      PRINT_C|NONEOS_C,
 /* - */      PRINT_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,
@@ -552,7 +552,7 @@ const unsigned int CharAttrs[] = {
 /* < */      PRINT_C|CHAN_C|NONEOS_C,
 /* = */      PRINT_C|CHAN_C|NONEOS_C,
 /* > */      PRINT_C|CHAN_C|NONEOS_C,
-/* ? */      PRINT_C|KWILD_C|CHAN_C|NONEOS_C,
+/* ? */      PRINT_C|KWILD_C|MWILD_C|CHAN_C|NONEOS_C,
 /* @ */      PRINT_C|KWILD_C|CHAN_C|NONEOS_C,
 /* A */      PRINT_C|ALPHA_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,
 /* B */      PRINT_C|ALPHA_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.h,v 1.14 2003/05/24 03:25:28 db Exp $
+ *  $Id: resv.h,v 1.15 2003/05/24 16:15:11 bill Exp $
  */
 
 #ifndef INCLUDED_resv_h
@@ -60,4 +60,6 @@ extern int delete_nick_resv(struct ResvNick *);
 
 extern void clear_conf_resv(void);
 extern void report_resv(struct Client *);
+
+extern int valid_wild_card_simple(char *);
 #endif  /* INCLUDED_resv_h */

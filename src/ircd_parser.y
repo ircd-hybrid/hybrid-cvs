@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.289 2003/05/15 02:54:16 db Exp $
+ *  $Id: ircd_parser.y,v 1.290 2003/05/24 16:15:15 bill Exp $
  */
 
 %{
@@ -47,6 +47,7 @@
 #include "listener.h"
 #include "resv.h"
 #include "numeric.h"
+#include "cluster.h"
 
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/rsa.h>
@@ -57,6 +58,7 @@
 int yyparse();
 
 static struct ConfItem *yy_aconf = NULL;
+static struct cluster *cptr = NULL;
 
 static dlink_list aconf_list = {NULL, NULL, 0};
 static dlink_list hub_confs_list = {NULL, NULL, 0};
@@ -180,6 +182,7 @@ init_parser_confs(void)
 %token  MAX_TARGETS
 %token  MESSAGE_LOCALE
 %token  MIN_NONWILDCARD
+%token	MIN_NONWILDCARD_SIMPLE
 %token  MODULE
 %token  MODULES
 %token  NAME
@@ -225,6 +228,8 @@ init_parser_confs(void)
 %token  SERVERINFO
 %token  SERVLINK_PATH
 %token  T_SHARED
+%token	T_CLUSTER
+%token	TYPE
 %token  SHORT_MOTD
 %token  SILENT
 %token  SPOOF
@@ -240,6 +245,7 @@ init_parser_confs(void)
 %token  TS_WARN_DELTA
 %token  TWODOTS
 %token  TYES
+%token	T_ALL
 %token  T_BOTS
 %token  T_CALLERID
 %token  T_CCONN
@@ -269,6 +275,8 @@ init_parser_confs(void)
 %token  T_SKILL
 %token  T_SPY
 %token  T_UNAUTH
+%token	T_UNRESV
+%token	T_UNXLINE
 %token  T_WALLOP
 %token  THROTTLE_TIME
 %token  TRUE_NO_OPER_FLOOD
@@ -307,6 +315,7 @@ conf_item:        admin_entry
 		| serverhide_entry
                 | resv_entry
                 | shared_entry
+		| cluster_entry
                 | connect_entry
                 | kill_entry
                 | deny_entry
@@ -1429,6 +1438,7 @@ shared_entry: T_SHARED
   {
     free_conf(yy_aconf);
     yy_aconf = make_conf(CONF_ULINE);
+    yy_aconf->port = SHARED_ALL;
   }
 } '{' shared_items '}' ';'
 {
@@ -1440,7 +1450,7 @@ shared_entry: T_SHARED
 };
 
 shared_items: shared_items shared_item | shared_item;
-shared_item:  shared_name | shared_user | error;
+shared_item:  shared_name | shared_user | shared_type | error;
 
 shared_name: NAME '=' QSTRING ';'
 {
@@ -1457,6 +1467,120 @@ shared_user: USER '=' QSTRING ';'
   {
     DupString(yy_aconf->host, yylval.string);
     split_user_host(yy_aconf);
+  }
+};
+
+shared_type: TYPE
+{
+  if (ypass == 2)
+    yy_aconf->port = 0;
+} '=' shared_types ';' ;
+
+shared_types:	shared_types ',' shared_type_item | shared_type_item;
+shared_type_item:	KLINE
+{
+  if (ypass == 2)
+    yy_aconf->port |= SHARED_KLINE;
+} | UNKLINE
+{
+  if (ypass == 2)
+    yy_aconf->port |= SHARED_UNKLINE;
+} | XLINE
+{
+  if (ypass == 2)
+    yy_aconf->port |= SHARED_XLINE;
+} | T_UNXLINE
+{
+  if (ypass == 2)
+    yy_aconf->port |= SHARED_UNXLINE;
+} | RESV
+{
+  if (ypass == 2)
+    yy_aconf->port |= SHARED_RESV;
+} | T_UNRESV
+{
+  if (ypass == 2)
+    yy_aconf->port |= SHARED_UNRESV;
+} | T_ALL
+{
+  if (ypass == 2)
+  {
+    yy_aconf->port = 0;
+    yy_aconf->port |= SHARED_ALL;
+  }
+};
+
+/***************************************************************************
+ *  section cluster
+ ***************************************************************************/
+cluster_entry: T_CLUSTER
+{
+  if (ypass == 2)
+  {
+    cptr = make_cluster();
+    /* defaults */
+    cptr->type = CLUSTER_ALL;
+    cptr->name[0] = '\0';
+  }
+} '{' cluster_items '}' ';'
+{
+  if (ypass == 2)
+  {
+    add_cluster(cptr);
+    cptr = NULL;
+  }
+};
+
+cluster_items:	cluster_items cluster_item | cluster_item;
+cluster_item:	cluster_name | cluster_type | error;
+
+cluster_name: NAME '=' QSTRING ';'
+{
+  if (ypass == 2)
+    strlcpy((char *)&cptr->name, yylval.string, sizeof(cptr->name));
+};
+
+cluster_type: TYPE
+{
+  if (ypass == 2)
+    cptr->type = 0;
+} '=' cluster_types ';' ;
+
+cluster_types:	cluster_types ',' cluster_type_item | cluster_type_item;
+cluster_type_item:	KLINE
+{
+  if (ypass == 2)
+    cptr->type |= CLUSTER_KLINE;
+} | UNKLINE
+{
+  if (ypass == 2)
+    cptr->type |= CLUSTER_UNKLINE;
+} | XLINE
+{
+  if (ypass == 2)
+    cptr->type |= CLUSTER_XLINE;
+} | T_UNXLINE
+{
+  if (ypass == 2)
+    cptr->type |= CLUSTER_UNXLINE;
+} | RESV
+{
+  if (ypass == 2)
+    cptr->type |= CLUSTER_RESV;
+} | T_UNRESV
+{
+  if (ypass == 2)
+    cptr->type |= CLUSTER_UNRESV;
+} | T_LOCOPS
+{
+  if (ypass == 2)
+    cptr->type |= CLUSTER_LOCOPS;
+} | T_ALL
+{
+  if (ypass == 2)
+  {
+    cptr->type = 0;
+    cptr->type |= CLUSTER_ALL;
   }
 };
 
@@ -2056,7 +2180,7 @@ general_item:       general_failed_oper_notice |
                     general_use_egd | general_egdpool_path |
                     general_oper_umodes | general_crypt_oper_password |
                     general_caller_id_wait | general_default_floodcount |
-                    general_min_nonwildcard |
+                    general_min_nonwildcard | general_min_nonwildcard_simple |
                     general_servlink_path |
                     general_default_cipher_preference |
                     general_compression_level | general_client_flood |
@@ -2642,6 +2766,12 @@ general_min_nonwildcard: MIN_NONWILDCARD '=' NUMBER ';'
 {
   if (ypass == 2)
     ConfigFileEntry.min_nonwildcard = $3;
+};
+
+general_min_nonwildcard_simple: MIN_NONWILDCARD_SIMPLE '=' NUMBER ';'
+{
+  if (ypass == 2)
+    ConfigFileEntry.min_nonwildcard_simple = $3;
 };
 
 general_default_floodcount: DEFAULT_FLOODCOUNT '=' NUMBER ';'

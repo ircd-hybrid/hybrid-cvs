@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.221 2003/05/24 03:25:28 db Exp $
+ *  $Id: s_conf.h,v 7.222 2003/05/24 16:15:11 bill Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -97,6 +97,7 @@ struct ConfItem
 #define CONF_XLINE              0x00001000
 #define CONF_ULINE              0x00002000
 #define CONF_EXEMPTDLINE        0x00004000
+#define CONF_CLUSTER		0x00008000
 
 #define CONF_SERVER_MASK       CONF_SERVER
 #define CONF_CLIENT_MASK       (CONF_CLIENT | CONF_OPERATOR | CONF_SERVER_MASK)
@@ -121,6 +122,7 @@ struct ConfItem
 #define IsConfTypeOfClient(x)	((x)->status & CONF_CLIENT_MASK)
 #define IsConfUline(x)		((x)->status & CONF_ULINE)
 #define IsConfXline(x)		((x)->status & CONF_XLINE)
+#define IsConfCluster(x)	((x)->status & CONF_CLUSTER)
 
 /* aConfItem->flags */
 
@@ -188,6 +190,16 @@ struct ConfItem
 #define CONF_OPER_DIE           0x0100
 #define CONF_OPER_ADMIN         0x0200
 
+/* shared server entry types */
+#define SHARED_KLINE		0x0001
+#define SHARED_UNKLINE		0x0002
+#define SHARED_XLINE		0x0004
+#define SHARED_UNXLINE		0x0008
+#define SHARED_RESV		0x0010
+#define SHARED_UNRESV		0x0020
+#define SHARED_ALL		( SHARED_KLINE | SHARED_UNKLINE | SHARED_XLINE |\
+				  SHARED_UNXLINE | SHARED_RESV | SHARED_UNRESV)
+
 struct config_file_entry
 {
   const char *dpath;          /* DPATH if set from command line */
@@ -248,6 +260,7 @@ struct config_file_entry
   int           max_targets;
   int           caller_id_wait;
   int           min_nonwildcard;
+  int		min_nonwildcard_simple;
   int           default_floodcount;
   int           client_flood;
   /* 0 == don't use throttle... */
@@ -357,7 +370,7 @@ extern int conf_connect_allowed(struct irc_ssaddr *addr, int aftype);
 extern char *oper_privs_as_string(struct Client *, int);
 extern void split_user_host(struct ConfItem *aconf);
 
-extern int find_u_conf(const char *, const char *, const char *);
+extern int find_u_conf(const char *, const char *, const char *, int);
 extern struct ConfItem *find_x_conf(const char *);
 
 extern struct ConfItem *find_tkline(const char *, const char *, struct irc_ssaddr *);

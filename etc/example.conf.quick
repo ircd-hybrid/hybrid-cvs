@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.4 2003/05/21 11:08:26 metalrock Exp $
+ * $Id: example.conf.quick,v 1.5 2003/05/24 16:15:09 bill Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -110,8 +110,8 @@ auth {
 	user = "*@172.16.0.0/12";
 	user = "*test@123D:B567:*";
 	password = "letmein";
-    spoof = "I.still.hate.packets";
-    spoof_notice = yes;
+	spoof = "I.still.hate.packets";
+	spoof_notice = yes;
 	exceed_limit = yes;
 	kline_exempt = yes;
 	gline_exempt = yes;
@@ -194,10 +194,35 @@ connect {
         class = "server";
 };
 
+/* cluster{}: servers that share klines/unkline/xline/unxline/resv/unresv/locops
+ * automatically (OLD hyb6 SLAVE_SERVERS)
+ */
+cluster {
+        /* name: the server to share with, this can take wildcards */
+        /* NOTE: only local actions will be clustered, meaning if
+         *       the server receives a shared kline/unkline/etc, it
+         *       will not be propogated to clustered servers.
+         */
+        name = "*.arpa";  
+        
+        /* type: list of what to share, options are as follows:
+         *      kline   - share klines
+         *      unkline - share unklines
+         *      xline   - share xlines
+         *      unxline - share unxlines
+         *      resv    - share resvs
+         *      unresv  - share unresvs
+         *      locops  - share locops
+         *      all     - share all of the above
+         */
+        type = kline, unkline, locops, xline, resv;
+};
+
 /* shared {}: users that are allowed to remote kline (OLD U:) */
 shared {
 	name = "irc2.some.server";
 	user = "oper@my.host.is.spoofed";
+	type = all;
 };
 
 /* kill {}: users that are not allowed to connect (OLD K:)
@@ -255,8 +280,8 @@ channel {
 	knock_delay = 5 minutes;
 	knock_delay_channel = 1 minute;
 	max_chans_per_user = 15;
-    quiet_on_ban = yes;
-    max_bans = 25;
+	quiet_on_ban = yes;
+	max_bans = 25;
 	default_split_user_count = 0;
 	default_split_server_count = 0;
 	no_create_on_split = no;
@@ -267,7 +292,7 @@ channel {
 serverhide {
 	flatten_links = no;
 	links_delay = 5 minutes;
-    hidden = no;
+	hidden = no;
 	disable_hidden = no;
 	hide_servers = no;
 	disable_remote_commands = no;
@@ -280,6 +305,7 @@ general {
 	dots_in_ident=2;
 	dot_in_ip6_addr = yes;
 	min_nonwildcard = 4;
+	min_nonwildcard_simple = 3;
 	max_accept = 20;
 	anti_nick_flood = yes;
 

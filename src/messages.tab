@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.86 2003/05/18 14:16:00 adx Exp $
+ *   $Id: messages.tab,v 7.87 2003/05/24 16:15:15 bill Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -267,7 +267,7 @@ static struct NumericInfo replies[] = {
 /* 244 */  {"RPL_STATSHLINE", ":%s 244 %s %c %s * %s %d %s",  NULL},
 /* 245 */  {"RPL_STATSSLINE", NULL, NULL},
 /* 246 */  {NULL, NULL, NULL},
-/* 247 */  {"RPL_STATSXLINE", ":%s 247 %s X %s %s * * 0 0", NULL},
+/* 247 */  {"RPL_STATSXLINE", ":%s 247 %s X %d %s :%s", NULL},
 /* 248 */  {"RPL_STATSULINE", ":%s 248 %s U %s %s", NULL},
 /* 249 */  {NULL, NULL, NULL},
 /* 250 */  {"RPL_STATSCONN", ":%s 250 %s :Highest connection count: %d (%d clients) (%d connections received)", NULL},

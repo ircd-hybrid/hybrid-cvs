@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.133 2003/05/24 09:25:42 michael Exp $
+ *  $Id: m_kline.c,v 1.134 2003/05/24 16:15:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -45,6 +45,7 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "cluster.h"
 
 static void mo_kline(struct Client *, struct Client *, int, char **);
 static void ms_kline(struct Client *, struct Client *, int, char **);
@@ -76,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&dline_msgtab);
 }
 
-const char *_version = "$Revision: 1.133 $";
+const char *_version = "$Revision: 1.134 $";
 #endif
 
 /* Local function prototypes */
@@ -116,7 +117,7 @@ static void
 mo_kline(struct Client *client_p, struct Client *source_p,
 	 int parc, char **parv)
 {
-  const char *reason = "No Reason";
+  char *reason = "No Reason";
   char *oper_reason;
   const char* current_date;
   const char* target_server=NULL;
@@ -156,43 +157,65 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   parv++;
 
   if (parc != 0)
+  {
+    if (irccmp(*parv,"ON") == 0)
     {
-      if (irccmp(*parv,"ON") == 0)
-	{
-	  parc--;
-	  parv++;
-	  if(parc == 0)
-	    {
-	      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-			 me.name, source_p->name, "KLINE");
-	      return;
-	    }
-	  target_server = *parv;
-	  parc--;
-	  parv++;
-	}
+      parc--;
+      parv++;
+      if(parc == 0)
+      {
+        sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+                   me.name, source_p->name, "KLINE");
+	return;
+      }
+      target_server = *parv;
+      parc--;
+      parv++;
     }
+  }
 
-  if(parc != 0)
+  if (parc != 0)
     reason = *parv;
 
   if (!valid_user_host(source_p, user,host))
-     return;
+    return;
 
   if (!valid_wild_card(user,host))
-    {
-       sendto_one(source_p, 
-          ":%s NOTICE %s :Please include at least %d non-wildcard characters with the user@host",
-           me.name,
-           source_p->name,
-           ConfigFileEntry.min_nonwildcard);
-       return;
-    }
+  {
+    sendto_one(source_p, 
+               ":%s NOTICE %s :Please include at least %d non-wildcard characters with the user@host",
+               me.name,
+               source_p->name,
+               ConfigFileEntry.min_nonwildcard);
+    return;
+  }
 
   if (!valid_comment(source_p, reason))
     return;
 
-  set_time();  
+  if (target_server != NULL)
+  {
+    sendto_server(NULL, source_p, NULL, CAP_KLN, NOCAPS, LL_ICLIENT,
+                  ":%s KLINE %s %lu %s %s :%s",
+                  source_p->name,
+                  target_server,
+                  (unsigned long)tkline_time,
+                  user, host, reason);
+
+    /* If we are sending it somewhere that doesnt include us, we stop
+     * else we apply it locally too
+     */
+    if (!match(target_server, me.name))
+      return;
+  }
+  /* only send the kline to cluster servers if the target was not specified */
+  else if (cluster_servers())
+    cluster_kline(source_p, tkline_time, user, host, reason);
+
+  if (already_placed_kline(source_p, user, host))
+    return;
+
+  set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
   aconf = make_conf(CONF_KILL);
@@ -200,49 +223,29 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   DupString(aconf->user, user);
   aconf->port = 0;
 
-  if (target_server != NULL)
-    {
-      sendto_server(NULL, source_p, NULL, CAP_KLN, NOCAPS, LL_ICLIENT,
-                    ":%s KLINE %s %lu %s %s :%s",
-                    source_p->name,
-                    target_server,
-                    (unsigned long)tkline_time,
-                    user, host, reason);
-
-      /* If we are sending it somewhere that doesnt include us, we stop
-       * else we apply it locally too
-       */
-      if (!match(target_server, me.name))
-	   return;
-    }
-
-  if (already_placed_kline(source_p, user, host))
-   return;
-
-
   /* Look for an oper reason */
   if ((oper_reason = strchr(reason, '|')) != NULL)
-    {
-      *oper_reason = '\0';
-      oper_reason++;
-    }
+  {
+    *oper_reason = '\0';
+    oper_reason++;
+  }
 
   if (tkline_time)
-    {
-      ircsprintf(buffer,
-		 "Temporary K-line %d min. - %s (%s)",
-		 (int)(tkline_time/60),
-		 reason,
-		 current_date);
-      DupString(aconf->reason, buffer);
-      apply_tkline(source_p, aconf, tkline_time);
-    }
+  {
+    ircsprintf(buffer,
+               "Temporary K-line %d min. - %s (%s)",
+	       (int)(tkline_time/60),
+	       reason,
+	       current_date);
+    DupString(aconf->reason, buffer);
+    apply_tkline(source_p, aconf, tkline_time);
+  }
   else
-    {
-      ircsprintf(buffer, "%s (%s)", reason, current_date);
-      DupString(aconf->reason, buffer);
-      apply_kline(source_p, aconf, current_date, cur_time);
-    }
+  {
+    ircsprintf(buffer, "%s (%s)", reason, current_date);
+    DupString(aconf->reason, buffer);
+    apply_kline(source_p, aconf, current_date, cur_time);
+  }
 } /* mo_kline() */
 
 /*
@@ -282,53 +285,67 @@ ms_kline(struct Client *client_p, struct Client *source_p,
   if (!IsPerson(source_p))
     return;
 
-  if (!valid_user_host(source_p, kuser, khost))
+  if (find_cluster((char *)source_p->user->server, CLUSTER_KLINE))
+  {
+    if (!valid_user_host(source_p, kuser, khost) || !valid_wild_card(kuser, khost) ||
+        !valid_comment(source_p, kreason))
+      return;
+
+    tkline_time = atoi(parv[2]);
+
+    set_time();
+    cur_time = CurrentTime;
+    current_date = smalldate(cur_time);
+
+    aconf = make_conf(CONF_KILL);
+    DupString(aconf->user, kuser);
+    DupString(aconf->host, khost);
+    DupString(aconf->reason, kreason);
+
+    if (tkline_time)
+      apply_tkline(source_p, aconf, tkline_time);
+    else
+      apply_kline(source_p, aconf, current_date, cur_time);
+  }
+  else if (find_u_conf(source_p->user->server,
+                       source_p->username, source_p->host,
+                       SHARED_KLINE))
+  {
+    if (!valid_user_host(source_p, kuser, khost))
+      return;
+
+    if (!valid_wild_card(kuser, khost))
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-             "*** %s!%s@%s on %s is requesting an Invalid K-Line for [%s@%s] [%s]",
-             source_p->name, source_p->username, source_p->host, source_p->user->server->name,
-             kuser, khost, kreason);
+      sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the user@host",
+                 me.name, source_p->name, ConfigFileEntry.min_nonwildcard);
       return;
     }
 
-  if (!valid_wild_card(kuser, khost))
-    {
-       sendto_realops_flags(UMODE_ALL, L_ALL, 
-             "*** %s!%s@%s on %s is requesting a K-Line without %d wildcard chars for [%s@%s] [%s]",
-             source_p->name, source_p->username, source_p->host, source_p->user->server->name,
-             ConfigFileEntry.min_nonwildcard, kuser, khost, kreason);
-       return;
-     }
+    if (!valid_comment(source_p, kreason))
+      return;
 
-  if(!valid_comment(source_p, kreason))
-    return;
+    /* We check if the kline already exists after we've announced its
+     * arrived, to avoid confusing opers - fl
+     */
+    if (already_placed_kline(source_p, kuser, khost))
+      return;
 
-  tkline_time = atoi(parv[2]);
+    tkline_time = atoi(parv[2]);
 
-  set_time();
-  cur_time = CurrentTime;
-  current_date = smalldate(cur_time);
+    set_time();
+    cur_time = CurrentTime;
+    current_date = smalldate(cur_time);
 
-  if (find_u_conf(source_p->user->server->name,
-		  source_p->username, source_p->host))
-    {
-      /* We check if the kline already exists after we've announced its 
-       * arrived, to avoid confusing opers - fl
-       */
-      if (already_placed_kline(source_p, kuser, khost))
-        return;
+    aconf = make_conf(CONF_KILL);
+    DupString(aconf->host, khost);
+    DupString(aconf->reason, kreason);
+    DupString(aconf->user, kuser);
 
-      aconf = make_conf(CONF_KILL);
-      DupString(aconf->host, khost);
-      DupString(aconf->reason, kreason);
-      DupString(aconf->user, kuser);
-
-      if (tkline_time)
-	apply_tkline(source_p, aconf, tkline_time);
-      else
-	apply_kline(source_p, aconf, current_date, cur_time);
-
-      }
+    if (tkline_time)
+      apply_tkline(source_p, aconf, tkline_time);
+    else
+      apply_kline(source_p, aconf, current_date, cur_time);
+  }
 } /* ms_kline() */
 
 /* apply_kline()
