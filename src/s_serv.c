@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.154 2001/05/04 22:24:04 fl_ Exp $
+ *   $Id: s_serv.c,v 7.155 2001/05/05 21:50:42 fl_ Exp $
  */
 
 #include <sys/types.h>
@@ -100,7 +100,6 @@ struct Capability captab[] = {
   { "CHW",      CAP_CHW },
   { "LL",       CAP_LL },
   { "IE",       CAP_IE },
-  { "VCHAN",    CAP_VCHAN },
   { "EOB",      CAP_EOB },
   { "KLN",      CAP_KLN },
   { "GLN",      CAP_GLN },
