@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.43 2001/06/15 10:26:22 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.44 2001/06/16 22:56:58 a1kmm Exp $ 
  */
  
 #include <stdlib.h>
@@ -77,7 +77,7 @@ try_parse_v6_netmask(const char *text, struct irc_inaddr *addr, int *b)
    {
     if (finsert>=0)
      return HM_HOST;
-    finsert = --dp;
+    finsert = dp;
    }
    else
    {
@@ -134,7 +134,7 @@ try_parse_v6_netmask(const char *text, struct irc_inaddr *addr, int *b)
  }
  /* Set unused bits to 0... -A1kmm*/
  if (bits < 128 && (bits%16!=0) )
-  dc[bits/16] &= ~((1<<(16-bits%16))-1);
+  dc[bits/16] &= ~((1<<(15-bits%16))-1);
  for (dp=bits/16+(bits%16?1:0); dp<8; dp++)
   dc[dp] = 0;
  /* And assign... -A1kmm */
