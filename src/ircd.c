@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.151 2001/05/28 13:45:45 jdc Exp $
+ * $Id: ircd.c,v 7.152 2001/05/30 02:59:18 ejb Exp $
  */
 
 #include <sys/types.h>
@@ -46,6 +46,11 @@
 
 #ifdef USE_GETTEXT
 #include <libintl.h>
+#endif
+
+#ifdef VMS
+# include descrip
+# include starlet
 #endif
 
 #include "tools.h"
@@ -237,6 +242,11 @@ make_daemon(void)
   /*  fclose(stdin);
   fclose(stdout);
   fclose(stderr); */
+#else
+  /* if we get here, assume we've been detached.
+     better set a process name. */
+  $DESCRIPTOR(myname, "IRCD-HYBRID-7");
+  SYS$SETPRN(&myname);
 #endif
   return 0;
 }
