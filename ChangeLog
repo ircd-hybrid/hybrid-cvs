@@ -1,3 +1,10 @@
+*** 20001106_7 by db
+- reworked even more code
+  I removed remote m_away entirely for now
+- fixed serious botch in channel.s with channel_mode
+
+
+
 *** 20001106_6 by adrian
 
 
@@ -71,7 +78,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.489 2000/11/06 14:58:05 adrian Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.490 2000/11/06 15:40:51 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
