@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.191 2003/04/20 15:14:05 adx Exp $
+ *  $Id: s_bsd.c,v 7.192 2003/04/22 13:52:54 stu Exp $
  */
 
 #include "stdinc.h"
@@ -872,8 +872,34 @@ comm_accept(int fd, struct irc_ssaddr *pn)
   if (newfd < 0)
     return -1;
 
-  pn->ss_len = addrlen;
+  /* XXX If we get a v4 mapped address back we need to convert it to plain v4.
+   * This is a bit of a hack so if someone has a better way feel free to use
+   * it.  Only applies to older BSD installtions where v4 mapping is enabled
+   * by default. Maybe make this a function too :) - stu
+   */
 
+#ifdef IPV6
+  if(pn->ss.ss_family == AF_INET6)
+  {
+    struct sockaddr_in6 *v6;
+
+    v6 = (struct sockaddr_in6*)pn;
+    if(IN6_IS_ADDR_V4MAPPED(&v6->sin6_addr))
+    {
+      char v4ip[HOSTIPLEN];
+      struct sockaddr_in *v4 = (struct sockaddr_in*)pn;
+      inetntop(AF_INET6, &v6->sin6_addr, v4ip, HOSTIPLEN);
+      inet_pton(AF_INET, v4ip, &v4->sin_addr);
+      pn->ss.ss_family = AF_INET;
+      pn->ss_len = sizeof(struct sockaddr_in);
+    }
+    else pn->ss_len = addrlen;
+  }
+  else
+#endif
+    pn->ss_len = addrlen;
+ 
+ 
   /* Set the socket non-blocking, and other wonderful bits */
   if (!set_non_blocking(newfd))
     {

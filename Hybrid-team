@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.65 2003/04/19 17:51:43 adx Exp $
+$Id: Hybrid-team,v 7.66 2003/04/22 13:52:53 stu Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -18,6 +18,7 @@ adx, Piotr Nizynski <adx@crashnet.pl>
 AndroSyn, Aaron Sethman <androsyn@ratbox.org>
 billy-jon, Bill Jonus <bill@mu.org>
 cosine, Patrick Alken <wnder@uwns.underworld.net>
+cryogen, Stuart Walsh <stu@ipng.org.uk>
 David-T, David Taylor <davidt@yadt.co.uk>
 Dianora, Diane Bruce <db@db.net>
 einride, Erik S. Johansen, <einride@einride.org>
@@ -38,7 +39,6 @@ The following people have contributed blood, sweat, and/or code to
 this release of hybrid, in nick alphabetical order:
  
 bysin, Ben Kittridge <bkittridge@cfl.rr.com>
-cryogen, Stuart Walsh <stu@ipng.org.uk>
 desrt, Ryan Lortie <desertangel@mindless.com>
 Habeeb, David Supuran <habeeb@cfl.rr.com>
 jv, Jakub Vlasek <jv@pilsedu.cz>

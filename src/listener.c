@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.79 2003/04/18 19:28:14 michael Exp $
+ *  $Id: listener.c,v 7.80 2003/04/22 13:52:54 stu Exp $
  */
 
 #include "stdinc.h"
@@ -379,6 +379,9 @@ accept_connection(int pfd, void *data)
   int                fd;
   int pe;
   struct Listener *  listener = data;
+
+  memset(&sai, 0, sizeof(sai));
+  memset(&addr, 0, sizeof(addr));
 
   assert(listener != NULL);
   if (listener == NULL)
