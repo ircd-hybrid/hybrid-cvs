@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.75 2003/08/03 14:22:20 michael Exp $
+ *  $Id: m_oper.c,v 1.76 2003/09/10 11:37:03 michael Exp $
  */
 
 #include "stdinc.h"
@@ -70,7 +70,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.75 $";
+const char *_version = "$Revision: 1.76 $";
 #endif
 
 /*
@@ -123,17 +123,17 @@ m_oper(struct Client *client_p, struct Client *source_p,
     }
 
     oper_up(source_p);
-      
+
     ilog(L_TRACE, "OPER %s by %s!%s@%s",
-	 name, source_p->name, source_p->username, source_p->host);
+         name, source_p->name, source_p->username, source_p->host);
     log_oper(source_p, name);
   }
   else
   {
     sendto_one(source_p, form_str(ERR_PASSWDMISMATCH), me.name, parv[0]);
     failed_oper_notice(source_p, name, "password mismatch");
+    log_failed_oper(source_p, name);
   }
-  log_failed_oper(source_p, name);
 }
 
 /*

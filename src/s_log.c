@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.58 2003/06/24 09:39:33 michael Exp $
+ *  $Id: s_log.c,v 7.59 2003/09/10 11:37:05 michael Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ static FBFILE *user_log_fb = NULL;
 
 
 #ifdef USE_SYSLOG
-static int sysLogLevel[] =
+static const int sysLogLevel[] =
 {
   LOG_CRIT,
   LOG_ERR,
@@ -281,6 +281,7 @@ user_log_resync(void *notused)
 /* log_oper()
  *
  * inputs	- pointer to client being opered up
+ *              - oper name
  * output	- none
  * side effects - foperlog is written to, if its present
  */
@@ -289,7 +290,7 @@ log_oper(struct Client *source_p, const char *name)
 {
   if (foperlog[0] == '\0')
     return;
-  
+
   if (IsPerson(source_p))
   {
     FBFILE *oper_fb;
@@ -316,7 +317,8 @@ log_oper(struct Client *source_p, const char *name)
 
 /* log_failed_oper()
  *
- * inputs	- pointer to client that failed top oper up
+ * inputs	- pointer to client that failed to oper up
+ *              - oper name
  * output	- none
  * side effects - ffailed_operlog is written to, if its present
  */
@@ -325,7 +327,7 @@ log_failed_oper(struct Client *source_p, const char *name)
 {
   if (ffailed_operlog[0] == '\0')
     return;
-  
+
   if (IsPerson(source_p))
   {
     FBFILE *oper_fb;
