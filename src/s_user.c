@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.215 2002/11/12 13:09:50 db Exp $
+ *  $Id: s_user.c,v 7.216 2002/12/13 05:38:47 bill Exp $
  */
 
 #include "stdinc.h"
@@ -573,7 +573,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
     {
       kill_client(client_p, source_p, "%s GHOST (no server found)",
                   me.name);
-      sendto_realops_flags(FLAGS_ALL, L_ALL, "No server %s for user %s[%s@%s] from %s",
+      sendto_realops_flags(FLAGS_ALL, L_ALL, "No server %s for user %s [%s@%s] from %s",
 			   user->server, source_p->name, source_p->username,
 			   source_p->host, source_p->from->name);
       source_p->flags |= FLAGS_KILLED;

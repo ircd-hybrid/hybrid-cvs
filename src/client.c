@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.306 2002/12/12 06:33:00 db Exp $
+ *  $Id: client.c,v 7.307 2002/12/13 05:38:47 bill Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -833,15 +833,15 @@ get_client_name(struct Client* client, int showip)
       switch (showip)
         {
           case SHOW_IP:
-            ircsprintf(nbuf, "%s[%s@%s]", client->name, client->username,
+            ircsprintf(nbuf, "%s [%s@%s]", client->name, client->username,
               client->localClient->sockhost);
             break;
           case MASK_IP:
-            ircsprintf(nbuf, "%s[%s@255.255.255.255]", client->name,
+            ircsprintf(nbuf, "%s [%s@255.255.255.255]", client->name,
               client->username);
             break;
           default:
-            ircsprintf(nbuf, "%s[%s@%s]", client->name, client->username,
+            ircsprintf(nbuf, "%s [%s@%s]", client->name, client->username,
               client->host);
         }
       return nbuf;
