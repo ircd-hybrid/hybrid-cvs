@@ -22,7 +22,7 @@
  * Cleanup of collapse and match
  * Moved static calls variable to match
  * Added asserts for null pointers
- * $Id: match.c,v 7.16 2002/01/09 17:09:41 db Exp $
+ * $Id: match.c,v 7.17 2002/01/09 17:30:33 db Exp $
  *
  */
 #include "irc_string.h"
@@ -76,8 +76,8 @@ int match(const char *mask, const char *name)
   int   calls = 0;
   int   quote = 0;
 
-  assert(0 != mask);
-  assert(0 != name);
+  assert(mask != NULL);
+  assert(name != NULL);
 
   if (!mask || !name)
     return 0;
@@ -208,8 +208,9 @@ int irccmp(const char *s1, const char *s2)
   const unsigned char* str1 = (const unsigned char*) s1;
   const unsigned char* str2 = (const unsigned char*) s2;
   int   res;
-  assert(0 != s1);
-  assert(0 != s2);
+
+  assert(s1 != NULL);
+  assert(s2 != NULL);
 
   while ((res = ToUpper(*str1) - ToUpper(*str2)) == 0)
   {
@@ -226,8 +227,8 @@ int ircncmp(const char* s1, const char *s2, int n)
   const unsigned char* str1 = (const unsigned char*) s1;
   const unsigned char* str2 = (const unsigned char*) s2;
   int res;
-  assert(0 != s1);
-  assert(0 != s2);
+  assert(s1 != NULL);
+  assert(s2 != NULL);
 
   while ((res = ToUpper(*str1) - ToUpper(*str2)) == 0)
   {
