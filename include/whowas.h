@@ -19,11 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.h,v 7.8 2002/05/24 23:34:08 androsyn Exp $
- */
-
-/*
- * $Id: whowas.h,v 7.8 2002/05/24 23:34:08 androsyn Exp $
+ *  $Id: whowas.h,v 7.9 2002/06/06 19:28:50 leeh Exp $
  */
 #ifndef INCLUDED_whowas_h
 #define INCLUDED_whowas_h
@@ -40,7 +36,7 @@
 #define WW_MAX 65536
 
 struct User;
-struct CLient;
+struct Client;
 
 /*
   lets speed this up...
