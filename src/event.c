@@ -38,7 +38,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: event.c,v 7.27 2002/05/24 23:34:46 androsyn Exp $
+ *  $Id: event.c,v 7.28 2002/05/25 01:22:43 androsyn Exp $
  */
 
 /*
@@ -138,7 +138,7 @@ eventAddIsh(const char *name, EVH *func, void *arg, time_t delta_ish)
   if (delta_ish >= 3.0)
     {
       const time_t two_third = (2 * delta_ish) / 3;
-      delta_ish = two_third + ((random() % 1000) * two_third) / 1000;
+      delta_ish = two_third + ((rand() % 1000) * two_third) / 1000;
       /*
        * XXX I hate the above magic, I don't even know if its right.
        * Grr. -- adrian

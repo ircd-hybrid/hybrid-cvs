@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.234 2002/05/24 23:34:47 androsyn Exp $
+ *  $Id: ircd.c,v 7.235 2002/05/25 01:22:43 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -555,7 +555,7 @@ int main(int argc, char *argv[])
 
   ServerRunning = 0;
   /* It ain't random, but it ought to be a little harder to guess */
-  srandom(SystemTime.tv_sec ^ (SystemTime.tv_usec | (getpid() << 20)));
+  srand(SystemTime.tv_sec ^ (SystemTime.tv_usec | (getpid() << 20)));
   memset(&me, 0, sizeof(me));
   memset(&meLocalUser, 0, sizeof(meLocalUser));
   me.localClient = &meLocalUser;
