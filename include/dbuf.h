@@ -19,14 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: dbuf.h,v 7.11 2003/05/01 15:53:32 michael Exp $
+ *  $Id: dbuf.h,v 7.12 2003/05/04 16:26:05 adx Exp $
  */
 
 #ifndef __DBUF_H_INCLUDED
 #define __DBUF_H_INCLUDED
 #include "tools.h"
 
-#define DBUF_HEAP_SIZE  512   /* preallocate 0,5 MB */
 #define DBUF_BLOCK_SIZE 1024  /* this is also our MTU used for sending */
 
 struct dbuf_block

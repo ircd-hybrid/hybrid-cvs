@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.281 2003/05/04 12:14:57 michael Exp $
+ *  $Id: ircd_parser.y,v 1.282 2003/05/04 16:26:08 adx Exp $
  */
 
 %{
@@ -2653,7 +2653,7 @@ general_default_floodcount: DEFAULT_FLOODCOUNT '=' NUMBER ';'
     ConfigFileEntry.default_floodcount = $3;
 };
 
-general_client_flood: T_CLIENT_FLOOD '=' NUMBER ';'
+general_client_flood: T_CLIENT_FLOOD '=' sizespec ';'
 {
   if (ypass == 2)
     ConfigFileEntry.client_flood = $3;

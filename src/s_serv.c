@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.313 2003/05/02 09:27:44 michael Exp $
+ *  $Id: s_serv.c,v 7.314 2003/05/04 16:26:08 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1191,50 +1191,41 @@ start_io(struct Client *server)
   {
     linecount++;
 
-    buf = MyRealloc(buf, (c + READBUF_SIZE + 64));
+    buf = MyRealloc(buf, (c + DBUF_BLOCK_SIZE + 64));
 
     /* store data in c+3 to allow for SLINKCMD_INJECT_RECVQ and len u16 */
-    linelen = linebuf_get(&server->localClient->buf_recvq,
-                          (char *)(buf + c + 3),
-                          READBUF_SIZE, LINEBUF_PARTIAL,
-                          LINEBUF_RAW); /* include partial lines & don't
-                                           parse data */
-
-    if (linelen)
-    {
-      buf[c++] = SLINKCMD_INJECT_RECVQ;
-      buf[c++] = (linelen >> 8);
-      buf[c++] = (linelen & 0xff);
-      c += linelen;
-    }
+    if (dbuf_length(&server->localClient->buf_recvq))
+      linelen = ((struct dbuf_block *)
+                 server->localClient->buf_recvq.blocks.head->data)->size;
     else
       break;
+    buf[c++] = SLINKCMD_INJECT_RECVQ;
+    buf[c++] = (linelen >> 8);
+    buf[c++] = (linelen & 0xff);
+    memcpy((void *) &buf[c], (void *) &((struct dbuf_block *)
+           server->localClient->buf_recvq.blocks.head->data)->data, linelen);
+    c += linelen;
   }
 
   for(;;)
   {
     linecount++;
 
-    buf = MyRealloc(buf, (c + BUF_DATA_SIZE + 64));
+    buf = MyRealloc(buf, (c + DBUF_BLOCK_SIZE + 64));
 
-    /* store data in c+3 to allow for SLINKCMD_INJECT_RECVQ and len u16 */
+    /* store data in c+3 to allow for SLINKCMD_INJECT_SENDQ and len u16 */
     if (dbuf_length(&server->localClient->buf_sendq))
       linelen = ((struct dbuf_block *)
                  server->localClient->buf_sendq.blocks.head->data)->size;
     else
-      linelen = 0;
-    if (linelen)
-    {
-      buf[c++] = SLINKCMD_INJECT_SENDQ;
-      buf[c++] = (linelen >> 8);
-      buf[c++] = (linelen & 0xff);
-      memcpy((void *) &buf[c], (void *) &((struct dbuf_block *)
-             server->localClient->buf_sendq.blocks.head->data)->data, linelen);
-      dbuf_delete(&server->localClient->buf_sendq, linelen);
-      c += linelen;
-    }
-    else
       break;
+    buf[c++] = SLINKCMD_INJECT_SENDQ;
+    buf[c++] = (linelen >> 8);
+    buf[c++] = (linelen & 0xff);
+    memcpy((void *) &buf[c], (void *) &((struct dbuf_block *)
+           server->localClient->buf_sendq.blocks.head->data)->data, linelen);
+    dbuf_delete(&server->localClient->buf_sendq, linelen);
+    c += linelen;
   }
 
   /* start io */
@@ -1243,7 +1234,7 @@ start_io(struct Client *server)
   server->localClient->slinkq = buf;
   server->localClient->slinkq_ofs = 0;
   server->localClient->slinkq_len = c;
- 
+
   /* schedule a write */ 
   send_queued_slink_write(server);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.193 2003/04/23 17:40:09 adx Exp $
+ *  $Id: s_bsd.c,v 7.194 2003/05/04 16:26:08 adx Exp $
  */
 
 #include "stdinc.h"
@@ -37,7 +37,6 @@
 #include "irc_getaddrinfo.h"
 #include "ircdauth.h"
 #include "ircd.h"
-#include "linebuf.h"
 #include "list.h"
 #include "listener.h"
 #include "numeric.h"
@@ -371,7 +370,7 @@ close_connection(struct Client *client_p)
     }
   
   dbuf_clear(&client_p->localClient->buf_sendq);
-  linebuf_donebuf(&client_p->localClient->buf_recvq);
+  dbuf_clear(&client_p->localClient->buf_recvq);
   memset(client_p->localClient->passwd, 0, sizeof(client_p->localClient->passwd));
   det_confs_butmask(client_p, 0);
   client_p->from = NULL; /* ...this should catch them! >:) --msa */

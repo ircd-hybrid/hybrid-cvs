@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.77 2003/05/03 12:14:03 michael Exp $
+ *  $Id: s_debug.c,v 7.78 2003/05/04 16:26:08 adx Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,6 @@
 #include "scache.h"
 #include "send.h"
 #include "whowas.h"
-#include "linebuf.h"
 #include "memory.h"
 
 
@@ -189,9 +188,6 @@ count_memory(struct Client *source_p)
   u_long mem_servers_cached;    /* memory used by scache */
   u_long mem_ips_stored;        /* memory used by ip address hash */
 
-  int linebuf_count =0;
-  u_long linebuf_memory_used = 0;
-
   u_long client_hash_table_size = 0;
   u_long channel_hash_table_size = 0;
   u_long resv_hash_table_size = 0;
@@ -310,8 +306,6 @@ count_memory(struct Client *source_p)
   /* count up all classes */
   class_count = dlink_list_length(&ClassList);
 
-  count_linebuf_memory(&linebuf_count, &linebuf_memory_used);
-
   sendto_one(source_p, ":%s %d %s z :Users %u(%lu) Invites %u(%lu)",
              me.name, RPL_STATSDEBUG, source_p->name,
 	     users_counted, (unsigned long)users_counted * sizeof(struct User),
@@ -387,10 +381,6 @@ count_memory(struct Client *source_p)
              U_MAX, client_hash_table_size,
              CH_MAX, channel_hash_table_size , R_MAX,
              resv_hash_table_size, U_MAX, id_hash_table_size);
-
-  sendto_one(source_p, ":%s %d %s z :linebuf %d(%d)",
-             me.name, RPL_STATSDEBUG, source_p->name,
-	     linebuf_count, (int)linebuf_memory_used);
 
   count_scache(&number_servers_cached,&mem_servers_cached);
 

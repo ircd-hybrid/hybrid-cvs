@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.183 2003/05/03 12:14:01 michael Exp $
+ *  $Id: client.h,v 7.184 2003/05/04 16:26:05 adx Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -33,7 +33,6 @@
 
 #include "ircd_defs.h"
 #include "ircd_handler.h"
-#include "linebuf.h"
 #include "dbuf.h"
 #include "channel.h"
 #include "res.h"
@@ -229,9 +228,9 @@ struct LocalUser
   unsigned int      operflags; /* oper priv flags */
 
   struct ListTask   *list_task;
-  /* Send and receive linebuf queues .. */
+  /* Send and receive dbufs .. */
   struct dbuf_queue buf_sendq;
-  buf_head_t        buf_recvq;
+  struct dbuf_queue buf_recvq;
   /*
    * we want to use unsigned int here so the sizes have a better chance of
    * staying the same on 64 bit machines. The current trend is to use
@@ -308,7 +307,6 @@ struct LocalUser
    *   -- adrian
    */
   int allow_read;	/* how many we're allowed to read in this second */
-  int actually_read;    /* how many we've actually read in this second */
   int sent_parsed;      /* how many messages we've parsed in this second */
   time_t last_knock;    /* time of last knock */
   unsigned long random_ping;

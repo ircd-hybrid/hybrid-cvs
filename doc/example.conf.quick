@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.2 2003/04/30 03:59:47 michael Exp $
+ * $Id: example.conf.quick,v 1.3 2003/05/04 16:26:03 adx Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -321,7 +321,7 @@ general {
 	fname_foperlog = "logs/foperlog";
 
 	max_targets = 4;
-	client_flood = 20;
+	client_flood = 2560;
     use_help = yes;
 	message_locale = "custom";
 	oper_only_umodes = bots, cconn, debug, full, skill, nchange, 

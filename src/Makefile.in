@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.116 2003/04/19 17:45:29 adx Exp $
+# $Id: Makefile.in,v 7.117 2003/05/04 16:26:07 adx Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -76,7 +76,6 @@ BASE_SRCS =                     \
   ircd.c                        \
   ircd_signal.c                 \
   kdparse.c			\
-  linebuf.c                     \
   list.c                        \
   listener.c                    \
   m_error.c                     \

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: dbuf.c,v 7.19 2003/05/01 15:53:39 michael Exp $
+ *  $Id: dbuf.c,v 7.20 2003/05/04 16:26:07 adx Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,10 @@ dbuf_delete(struct dbuf_queue *qptr, size_t count)
 {
   dlink_node *ptr;
   struct dbuf_block *first;
+
   assert(qptr->total_size >= count);
+  if (count == 0)
+    return;
 
   /* free whole blocks first.. */
   while (1)

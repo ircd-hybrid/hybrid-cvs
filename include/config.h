@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.146 2003/04/30 03:59:49 michael Exp $
+ *  $Id: config.h,v 7.147 2003/05/04 16:26:05 adx Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -322,21 +322,21 @@
 #define BAN_HEAP_SIZE		1024
 #define CLIENT_HEAP_SIZE	1024
 #define LCLIENT_HEAP_SIZE	512
-#define LINEBUF_HEAP_SIZE	1024
 #define	USER_HEAP_SIZE		1024
 #define	DNODE_HEAP_SIZE		2048
-#define SNODE_HEAP_SIZE     2048
+#define SNODE_HEAP_SIZE         2048
 #define TOPIC_HEAP_SIZE		1024
+#define DBUF_HEAP_SIZE          512
 #else  /* Small Net */
 #define CHANNEL_HEAP_SIZE	256
 #define BAN_HEAP_SIZE		128
 #define CLIENT_HEAP_SIZE	256
 #define LCLIENT_HEAP_SIZE	128
-#define LINEBUF_HEAP_SIZE	128
 #define	USER_HEAP_SIZE		128
 #define	DNODE_HEAP_SIZE		256
-#define SNODE_HEAP_SIZE     256
+#define SNODE_HEAP_SIZE         256
 #define TOPIC_HEAP_SIZE		256
+#define DBUF_HEAP_SIZE          64
 #endif
 
 /* DEBUGMODE is used mostly for internal development, it is likely

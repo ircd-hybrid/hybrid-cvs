@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.356 2003/04/20 22:05:17 michael Exp $
+ *  $Id: client.c,v 7.357 2003/05/04 16:26:07 adx Exp $
  */
 
 #include "stdinc.h"
@@ -48,7 +48,6 @@
 #include "whowas.h"
 #include "s_debug.h"
 #include "s_user.h"
-#include "linebuf.h"
 #include "dbuf.h"
 #include "memory.h"
 #include "hostmask.h"
@@ -193,7 +192,7 @@ free_client(struct Client* client_p)
     if (client_p->localClient->fd >= 0)
       fd_close(client_p->localClient->fd);
 
-    linebuf_donebuf(&client_p->localClient->buf_recvq);
+    dbuf_clear(&client_p->localClient->buf_recvq);
     dbuf_clear(&client_p->localClient->buf_sendq);
 
     BlockHeapFree(lclient_heap, client_p->localClient);
@@ -1022,7 +1021,7 @@ dead_link_on_write(struct Client *client_p, int ierrno)
   if (IsDefunct(client_p))
     return;
 
-  linebuf_donebuf(&client_p->localClient->buf_recvq);
+  dbuf_clear(&client_p->localClient->buf_recvq);
   dbuf_clear(&client_p->localClient->buf_sendq);
 
   if (IsSendQExceeded(client_p))
@@ -1062,7 +1061,7 @@ dead_link_on_read(struct Client* client_p, int error)
   if (IsDefunct(client_p))
     return;
 
-  linebuf_donebuf(&client_p->localClient->buf_recvq);
+  dbuf_clear(&client_p->localClient->buf_recvq);
   dbuf_clear(&client_p->localClient->buf_sendq);
 
   Debug((DEBUG_ERROR, "READ ERROR: fd = %d %d %d",
@@ -1199,7 +1198,6 @@ exit_client(
     
     delete_adns_queries(source_p->localClient->dns_query);
     delete_identd_queries(source_p);
-    client_flush_input(source_p);
     
     /* This source_p could have status of one of STAT_UNKNOWN, STAT_CONNECTING
      * STAT_HANDSHAKE or STAT_UNKNOWN
