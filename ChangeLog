@@ -1,3 +1,15 @@
+leeh        2001/12/20 15:32:04 EST	(20011220_6)
+
+  Modified files:
+    src                  send.c 
+  Log:
+  - dont check to->from->from!
+  
+  Revision  Changes    Path
+  7.169     +4 -2      ircd-hybrid-7/src/send.c
+
+
+
 leeh        2001/12/20 15:23:14 EST	(20011220_5)
 
   Modified files:
@@ -1229,7 +1241,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3225 2001/12/20 20:23:20 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3226 2001/12/20 20:32:09 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19583,4 +19595,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3225 2001/12/20 20:23:20 leeh Exp $
+$Id: ChangeLog,v 7.3226 2001/12/20 20:32:09 leeh Exp $
