@@ -1,11 +1,11 @@
-$Id: README,v 1.32 2003/09/28 06:07:52 metalrock Exp $
+$Id: README,v 1.33 2004/02/27 08:25:52 metalrock Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
-hybrid tree.  The coding team do not officially support the contrib/ 
+hybrid tree. The coding team do not officially support the contrib/ 
 modules, or guarantee any of them will actually work.
 
-There is also a lone ircII script (challenge.irc) that works alongwith
+There is also a lone ircII script (challenge.irc) that works along with
 rsa_respond so you can authenticate within your client.
 
 Once again. WITH feeling. Not all of these modules have been thoroughly
@@ -16,59 +16,65 @@ You have been warned.
 To repeat, ONE OR MORE OF THESE MAY CRASH YOUR SERVER.  USE AT YOUR
 OWN RISK.
 
-
 Modules
 -------
 
 m_clearchan.c  - CLEARCHAN - clears all users out of a channel and joins person
                              issuing command
                  Syntax: CLEARCHAN <channel>
+		 Example: CLEARCHAN #channel
 
 m_flags.c      - FLAGS - csircd like support of changing usermodes
-                 Syntax:  FLAGS :+OWALLOPS -SWALLOPS
+                 Syntax: FLAGS :+OWALLOPS -SWALLOPS
+			 FLAGS
 
 m_force.c      - FORCE - forces a user to either part or join a channel with
                          an optional status (@%+)
                  Syntax: FORCEJOIN <nick> [status]<channel>
                          FORCEPART <nick> <channel>
+		 Example: FORCEJOIN nick @#channel
+			  FORCEPART nick #channel
 
 m_help.c       - HELP - provide help for IRC commands. See bottom of document.
                  Syntax: HELP :command
 
 m_jupe.c       - JUPE - Server juping command
-                 Syntax:  JUPE juped.server.name :Reason
+                 Syntax: JUPE juped.server.name :Reason
 
 m_ltrace.c     - LTRACE - Limited trace.  Similar to TRACE except only reports
                           current opers and servers.
                  Syntax: LTRACE [nick|mask [server]]
+		 Example: LTRACE nick
+			  LTRACE irc.server.com
 
 m_map.c        - MAP - Display the server routing graph in a visually pleasing
                        format
-                 Syntax:  MAP
+                 Syntax: MAP
 		 
 m_mkpasswd.c   - MKPASSWD - generate a DES or MD5 encryption of a password
-                 Syntax:  MKPASSWD <plaintext> [MD5|DES]
+                 Syntax: MKPASSWD <plaintext> [MD5|DES]
 
 m_ojoin.c      - OJOIN - Join a channel through any modes or limits with 
                          an optional status (@%+)
                  Syntax: OJOIN [status]<channel>
+		 Example: OJOIN @#channel
 
 m_operspy.c    - OPERSPY - Allows operators with access to spy on users
                  Syntax: OPERSPY <LIST/WHO/MODE/WHOIS/NAMES> <paramter>
 
 m_opme.c       - OPME - Allows an admin to op themselves in an opless channel
                  Syntax: OPME <channel>
+		 Example: OPME #channel
 
 m_tburst.c     - TBURST - module that will make servers send channel topics
                           to each other after a netsplit/restart.
 
 m_whois.c      - WHOIS - is a modified form of the standard
-		  	  whois provided. It adds the real IP
-			  to a remote whois if applicable. 
+		  	 whois provided. It adds the real IP
+			 to a remote whois if applicable. 
 			  	  
 example_module.c - An example module to be used for creating your own.
                    Syntax: TEST
-
 
 Spy Modules
 -----------
