@@ -33,7 +33,7 @@
 3.  Problem with msgfmt command building custom msgs using gettext
     - Please ensure you are using GNU gettext version 0.10.35.
       Other versions are untested, and some are known to be
-      incompatible.
+      incompatible.  Solaris 8 gettext definately does not work.
 
 4.  Problems with quote set msglocale not working on linux.
     This seems to be a linux problem, /quote set msglocale will sometimes
@@ -63,4 +63,4 @@ BUG REPORTS: If you run this code and encounter problems, you must report
  with any report  (with passwords and other sensitive information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.51 2003/01/19 23:38:52 db Exp $
+$Id: BUGS,v 7.52 2003/01/25 01:52:28 lusky Exp $

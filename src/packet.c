@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.99 2003/01/19 13:19:51 db Exp $
+ *  $Id: packet.c,v 7.100 2003/01/25 01:52:29 lusky Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -433,17 +433,6 @@ read_packet(int fd, void *data)
 
   lbuf_len = linebuf_parse(&client_p->localClient->buf_recvq,
                            readBuf, length, binary);
-
-  if (lbuf_len < 0)
-  {
-    if (IsClient(client_p))
-      sendto_one(client_p, ":%s NOTICE %s :*** - You sent a NULL character in "
-                 "your message. Ignored.",
-                 me.name, client_p->name);
-    else
-      exit_client(client_p, client_p, client_p, "NULL character found in message");
-    return;
-  }
 
   lclient_p->actually_read += lbuf_len;
   
