@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.286 2001/12/13 20:10:01 leeh Exp $
+ * $Id: channel.c,v 7.287 2001/12/19 03:09:39 androsyn Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -77,10 +77,8 @@ static void channelheap_garbage_collect(void *unused)
 
 void init_channels(void)
 {
-  channel_heap = BlockHeapCreate(sizeof(struct Channel), 2048);
-  /* Dianora and I agree that 4 banids to a channel is a good 
-   * rough guess. Actual stats anyone? -A1kmm. */
-  ban_heap = BlockHeapCreate(sizeof(struct Ban), 16384);
+  channel_heap = BlockHeapCreate(sizeof(struct Channel), 1024);
+  ban_heap = BlockHeapCreate(sizeof(struct Ban), 2048);
   eventAddIsh("channelheap_garbage_collect", channelheap_garbage_collect,
               NULL, 45);
 }
