@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.105 2000/12/04 17:03:23 db Exp $
+ * $Id: channel.c,v 7.106 2000/12/04 19:52:08 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1499,15 +1499,32 @@ void set_channel_mode(struct Client *cptr,
 
               if (errsent(SM_ERR_RPL_B, &errors_sent))
                 break;
-              for (ptr = chptr->banlist.head; ptr; ptr = ptr->next)
+
+	      if(!GlobalSetOptions.hide_chanops || isok_c)
 		{
-		  banptr = ptr->data;
-		  sendto_one(cptr, form_str(RPL_BANLIST),
-			     me.name, cptr->name,
-			     real_name,
-			     banptr->banstr,
-			     banptr->who,
-			     banptr->when);
+		  for (ptr = chptr->banlist.head; ptr; ptr = ptr->next)
+		    {
+		      banptr = ptr->data;
+		      sendto_one(cptr, form_str(RPL_BANLIST),
+				 me.name, cptr->name,
+				 real_name,
+				 banptr->banstr,
+				 banptr->who,
+				 banptr->when);
+		    }
+		}
+	      else
+		{
+		  for (ptr = chptr->banlist.head; ptr; ptr = ptr->next)
+		    {
+		      banptr = ptr->data;
+		      sendto_one(cptr, form_str(RPL_BANLIST),
+				 me.name, cptr->name,
+				 real_name,
+				 banptr->banstr,
+				 "<hidden>",
+				 banptr->when);
+		    }
 		}
 
               sendto_one(sptr, form_str(RPL_ENDOFBANLIST),
