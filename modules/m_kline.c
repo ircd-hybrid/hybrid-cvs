@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.167 2003/08/11 18:43:28 metalrock Exp $
+ *  $Id: m_kline.c,v 1.168 2003/08/15 20:24:09 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -106,7 +106,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.167 $";
+const char *_version = "$Revision: 1.168 $";
 #endif
 
 /* Local function prototypes */
@@ -594,8 +594,7 @@ cluster(char *hostname)
   return(result);
 }
 
-/*
- * mo_dline
+/* mo_dline()
  *
  * inputs	- pointer to server
  *		- pointer to client
@@ -620,7 +619,6 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   struct AccessItem *aconf=NULL;
   time_t tkline_time=0;
   int bits, t;
-  char dlbuffer[IRCD_BUFSIZE];		/* XXX FIX this ! */
   const char* current_date;
   time_t cur_time;
 
@@ -757,21 +755,21 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   if (!valid_comment(source_p, reason))
     return;
 
-  ircsprintf(dlbuffer, "%s (%s)",reason, current_date);
   conf = make_conf_item(DLINE_TYPE);
   aconf = (struct AccessItem *)map_to_conf(conf);
   DupString(aconf->host, dlhost);
-  DupString(aconf->reason, dlbuffer);
 
   if (tkline_time != 0)
   {
     ircsprintf(buffer, "Temporary D-line %d min. - %s (%s)",
 	       (int)(tkline_time/60), reason, current_date);
+    DupString(aconf->reason, buffer);
     apply_tdline(source_p, conf, current_date, tkline_time);
   }
   else
   {
     ircsprintf(buffer, "%s (%s)", reason, current_date);
+    DupString(aconf->reason, buffer);
     add_conf_by_address(CONF_DLINE, aconf);
     write_conf_line(source_p, conf, current_date, cur_time);
   }
