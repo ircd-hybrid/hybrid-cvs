@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.58 2001/06/09 08:36:08 androsyn blalloc.c $
+ *   $Id: packet.c,v 7.59 2001/08/16 13:53:34 androsyn Exp $
  */ 
 
 #include <stdio.h>
@@ -326,7 +326,7 @@ read_packet(int fd, void *data)
    * turn comes around.
    */
   lbuf_len = linebuf_parse(&client_p->localClient->buf_recvq,
-      readBuf, length, (IsRegistered(client_p) ? 0 : 1));
+      readBuf, length);
 
   if (lbuf_len < 0)
   {
