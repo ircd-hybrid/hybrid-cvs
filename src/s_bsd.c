@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.59 2000/11/04 12:17:52 adrian Exp $
+ *  $Id: s_bsd.c,v 7.60 2000/11/06 13:48:19 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -728,7 +728,6 @@ void
 comm_connect_tcp(int fd, const char *host, u_short port, 
     struct sockaddr *local, int socklen, CNCB *callback, void *data)
 {
-    struct DNSReply *reply;
     struct DNSQuery query;
 
     fd_table[fd].flags.called_connect = 1;
@@ -760,8 +759,7 @@ comm_connect_tcp(int fd, const char *host, u_short port,
         /* Send the DNS request, for the next level */
         query.vptr = &fd_table[fd];
         query.callback = comm_connect_dns_callback;
-        reply = gethost_byname(host, &query);
-        assert(reply == NULL);	/* We don't have a DNS cache now -- adrian */
+        gethost_byname(host, &query);
     } else {
         /* We have a valid IP, so we just call tryconnect */
         /* Make sure we actually set the timeout here .. */

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.20 2000/11/05 16:33:05 adrian Exp $
+ *   $Id: s_auth.c,v 7.21 2000/11/06 13:48:19 adrian Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -420,14 +420,9 @@ void start_auth(struct Client* client)
 
   sendheader(client, REPORT_DO_DNS);
 
-  client->dns_reply = gethost_byaddr((const char*) &client->ip, &query);
-  if (client->dns_reply) {
-    ++client->dns_reply->ref_count;
-    strncpy_irc(client->host, client->dns_reply->hp->h_name, HOSTLEN);
-    sendheader(client, REPORT_FIN_DNSC);
-  }
-  else
-    SetDNSPending(auth);
+  /* No DNS cache now, remember? -- adrian */
+  gethost_byaddr((const char*) &client->ip, &query);
+  SetDNSPending(auth);
 
   if (start_auth_query(auth) || IsDNSPending(auth))
   {

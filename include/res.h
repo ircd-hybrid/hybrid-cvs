@@ -1,7 +1,7 @@
 /*
  * include/res.h (C)opyright 1992 Darren Reed.
  *
- * $Id: res.h,v 7.5 2000/10/25 23:20:08 adrian Exp $
+ * $Id: res.h,v 7.6 2000/11/06 13:48:14 adrian Exp $
  */
 #ifndef INCLUDED_res_h
 #define INCLUDED_res_h
@@ -25,10 +25,8 @@ struct DNSQuery {
 };
 
 extern void get_res(void);
-extern struct DNSReply* gethost_byname(const char* name, 
-                                       const struct DNSQuery* req);
-extern struct DNSReply* gethost_byaddr(const char* name, 
-                                       const struct DNSQuery* req);
+extern void gethost_byname(const char* name, const struct DNSQuery* req);
+extern void gethost_byaddr(const char* name, const struct DNSQuery* req);
 extern int             init_resolver(void);
 extern void            restart_resolver(void);
 extern void            timeout_resolver(void *);
