@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_resv.c,v 1.2 2001/06/28 22:49:52 leeh Exp $
+ *   $Id: m_resv.c,v 1.3 2001/06/29 16:03:44 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -157,7 +157,7 @@ static void mo_unresv(struct Client *client_p, struct Client *source_p,
   else
     return;
 							    
-  if(!ResvList || !(resv_p = hash_find_resv(parv[1], (struct Resv *)NULL, type)))
+  if(!ResvList || !(resv_p = (struct Resv *)hash_find_resv(parv[1], (struct Resv *)NULL, type)))
   {
     sendto_one(source_p, 
                ":%s NOTICE %s :A RESV does not exist for %s: %s",

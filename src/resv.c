@@ -1,7 +1,7 @@
 /*
  * resv.c
  *
- * $Id: resv.c,v 7.1 2001/06/28 22:57:07 leeh Exp $
+ * $Id: resv.c,v 7.2 2001/06/29 16:03:51 leeh Exp $
  */
 #include "tools.h"
 #include "restart.h"
@@ -39,7 +39,7 @@ struct Resv *create_resv(char *name, int type, int conf)
     *(name + NICKLEN) = '\0';
   }
 
-  if(resv_p = hash_find_resv((const char *)name, (struct Resv *)NULL, type))
+  if(resv_p = (struct Resv *)hash_find_resv(name, (struct Resv *)NULL, type))
     return NULL;
 
   resv_p = (struct Resv *)MyMalloc(sizeof(struct Resv) + len + 1);
@@ -99,7 +99,7 @@ int find_resv(char *name, int type)
 {
   struct Resv *resv_p;
 
-  if(!(resv_p = hash_find_resv((const char *)name, (struct Resv *)NULL, type)))
+  if(!(resv_p = (struct Resv *)hash_find_resv(name, (struct Resv *)NULL, type)))
     return 0;
 
   return 1;
