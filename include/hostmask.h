@@ -15,14 +15,14 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.h,v 1.11 2001/04/19 02:53:16 a1kmm Exp $ 
+ * $Id: hostmask.h,v 1.12 2001/05/07 21:27:11 fl_ Exp $ 
  */
 
 enum
 {
  HM_HOST,
  HM_IPV4
-#if IPV6
+#ifdef IPV6
  ,HM_IPV6
 #endif
 };

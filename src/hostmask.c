@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.37 2001/04/19 02:53:24 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.38 2001/05/07 21:27:17 fl_ Exp $ 
  */
  
 #include <stdlib.h>
@@ -44,7 +44,7 @@ static unsigned long hash_ipv4(struct irc_inaddr*, int);
  * Side effects: None
  * Comments: Called from parse_netmask
  */
-#if IPV6
+#ifdef IPV6
 static int
 try_parse_v6_netmask(const char *text, struct irc_inaddr *addr, int *b)
 {
