@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_jupe.c,v 1.4 2001/01/05 14:52:35 toot Exp $
+ *   $Id: m_jupe.c,v 1.5 2001/01/06 15:33:11 fl_ Exp $
  */
 
 /*
@@ -28,6 +28,7 @@
  */
 
 #include "tools.h"
+#include "irc_string.h"
 #include "handlers.h"
 #include "channel.h"
 #include "client.h"
@@ -55,6 +56,7 @@
 
 int mo_jupe(struct Client *cptr, struct Client *sptr,
 		 int parc, char *parv[]);
+int bogus_host(char *host);
 
 struct Message jupe_msgtab = {
   "JUPE", 0, 3, 0, MFLG_SLOW, 0,
@@ -86,6 +88,7 @@ int mo_jupe(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   struct Client *acptr;
   struct Client *ajupe;
   dlink_node *m;
+  char reason[REALLEN];
 
   if(!ConfigFileEntry.hub)
     return 0;
@@ -97,11 +100,20 @@ int mo_jupe(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       return 0;
     }
 
-  sendto_all_local_opers(sptr, NULL, "JUPE for %s requested by %s: %s",
-			 parv[1], sptr->name, parv[2]);
+  if (bogus_host(parv[1]))
+    {
+      sendto_one(sptr, ":%s NOTICE %s :Invalid servername: %s",
+                 me.name, parv[0], parv[1]);
+      return 0;
+    }
+    
+  sendto_all_local_opers(sptr, NULL, "JUPE for %s requested by %s!%s@%s: %s",
+			 parv[1], sptr->name, sptr->username,
+                         sptr->host, parv[2]);
   sendto_ll_serv_butone(NULL, sptr, 1,
-			":%s WALLOPS :JUPE for %s requested by %s: %s",
-			parv[0], parv[1], sptr->name, parv[2]);
+			":%s WALLOPS :JUPE for %s requested by %s!%s@%s: %s",
+			parv[0], parv[1], sptr->name, 
+                        sptr->username, sptr->host, parv[2]);
 
   acptr= find_server(parv[1]);
 
@@ -110,11 +122,11 @@ int mo_jupe(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       if(MyConnect(acptr))
 	exit_client(cptr, acptr, &me, parv[2]);
       else
-	sendto_serv_butone(&me, ":%s SQUIT %s :[juped] %s",
+	sendto_serv_butone(&me, ":%s SQUIT %s :Juped: %s",
 			   me.name, parv[1], parv[2]);          
     }
 
-  sendto_serv_butone(&me, ":%s SERVER %s 1 :[Juped server] %s",
+  sendto_serv_butone(&me, ":%s SERVER %s 1 :Juped: %s",
 		     me.name, parv[1], parv[2]);
 
   sendto_realops_flags(FLAGS_ALL,
@@ -134,7 +146,8 @@ int mo_jupe(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   ajupe->hopcount = 1;
   strncpy_irc(ajupe->name,parv[1],HOSTLEN);
-  strncpy_irc(ajupe->info, "(JUPED)", REALLEN);
+  ircsprintf(reason, "%s %s", "Juped:", parv[2]);
+  strncpy_irc(ajupe->info,reason,REALLEN);
   ajupe->serv->up = me.name;
   ajupe->servptr = &me;
   SetServer(ajupe);
@@ -151,3 +164,32 @@ int mo_jupe(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 }
 
 
+/*  
+ * bogus_host
+ *   
+ * inputs       - hostname
+ * output       - 1 if a bogus hostname input, 0 if its valid
+ * side effects - none
+ */
+int bogus_host(char *host)
+{
+  int bogus_server = 0;
+  char *s;
+  int dots = 0;
+ 
+  for( s = host; *s; s++ )
+    {
+      if (!IsServChar(*s))  
+        {
+          bogus_server = 1;
+          break;
+        }
+      if ('.' == *s)
+        ++dots;
+    }
+     
+  if (!dots || bogus_server )
+    return 1;
+     
+  return 0;
+}

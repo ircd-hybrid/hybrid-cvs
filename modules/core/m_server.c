@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.38 2001/01/06 03:42:37 a1kmm Exp $
+ *   $Id: m_server.c,v 1.39 2001/01/06 15:33:16 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -117,20 +117,20 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
            "servername %s.", get_client_name(cptr, TRUE), host);
         }
       return exit_client(cptr, cptr, cptr,
-                "Invalid servername/host/password.");
+                "Invalid servername.");
      case -2:
       sendto_realops_flags(FLAGS_ALL,
         "Unauthorised server connection attempt from %s: Bad password "
         "for server %s.", get_client_name(cptr, TRUE), host);
       return exit_client(cptr, cptr, cptr,
-                 "Invalid servername/host/password.");
+                 "Invalid password.");
       break;
      case -3:
       sendto_realops_flags(FLAGS_ALL,
         "Unauthorised server connection attempt from %s: Invalid host "
         "for server %s.", get_client_name(cptr, TRUE), host);
       return exit_client(cptr, cptr, cptr,
-                 "Invalid servername/host/password.");
+                 "Invalid host.");
     }
     
   if ((acptr = find_server(host)))
