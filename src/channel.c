@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.326 2002/08/20 16:41:59 db Exp $
+ *  $Id: channel.c,v 7.327 2002/08/28 17:00:13 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -1099,7 +1099,9 @@ check_banned(struct Channel *chptr, struct Client *who, char *s, char *s2)
   for (ban = chptr->banlist.head; ban; ban = ban->next)
   {
     actualBan = ban->data;
-    if (match(actualBan->banstr, s) || match(actualBan->banstr, s2))
+    if (match(actualBan->banstr, s) || 
+    	match(actualBan->banstr, s2) ||
+        match_cidr(actualBan->banstr, s2))
       break;
     else
       actualBan = NULL;
@@ -1111,7 +1113,9 @@ check_banned(struct Channel *chptr, struct Client *who, char *s, char *s2)
     {
       actualExcept = except->data;
 
-      if (match(actualExcept->banstr, s) || match(actualExcept->banstr, s2))
+      if (match(actualExcept->banstr, s) || 
+          match(actualExcept->banstr, s2) ||
+          match_cidr(actualExcept->banstr, s2))
       {
         return CHFL_EXCEPTION;
       }
@@ -1161,7 +1165,8 @@ can_join(struct Client *source_p, struct Channel *chptr, char *key)
       for (ptr = chptr->invexlist.head; ptr; ptr = ptr->next)
       {
         invex = ptr->data;
-        if (match(invex->banstr, src_host) || match(invex->banstr, src_iphost))
+        if (match(invex->banstr, src_host) || match(invex->banstr, src_iphost) ||
+            match_cidr(invex->banstr, src_iphost))
           break;
       }
       if (ptr == NULL)
