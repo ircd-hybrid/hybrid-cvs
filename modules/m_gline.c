@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.9 2000/12/08 08:19:56 db Exp $
+ *  $Id: m_gline.c,v 1.10 2000/12/08 14:18:40 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -1021,10 +1021,6 @@ remove_gline_match(const char* user, const char* host)
             {
               if(glines == kill_list_ptr)
                 {
-                  /* Its pointing to first one in link list*/
-                  /* so, bypass this one, remember bad things can happen
-                     if you try to use an already freed pointer.. */
-
                   glines = last_list_ptr = tmp_list_ptr =
                     kill_list_ptr->next;
                 }
