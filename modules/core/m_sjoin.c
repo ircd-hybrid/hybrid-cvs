@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.68 2001/01/20 06:28:15 db Exp $
+ *   $Id: m_sjoin.c,v 1.69 2001/01/20 13:58:14 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -215,14 +215,15 @@ static int ms_sjoin(struct Client *cptr,
 	       * root, don't re-add it.
 	       */
 
-	      if(dlinkFind(&top_chptr->vchan_list,chptr) == NULL)
+	      if(dlinkFind(&top_chptr->vchan_list,chptr) == NULL &&
+                        (!strcmp(parv[1], subp + 1)))
 		{
 		  m = make_dlink_node();
 		  dlinkAdd(chptr, m, &top_chptr->vchan_list);
 		  chptr->root_chptr=top_chptr;
 		}
 	    }
-	  else
+	  else if(!strcmp(parv[1], subp + 1))
 	    {
 	      top_chptr = get_channel(sptr, (parv[2] + 1), CREATE);
 	      m = make_dlink_node();
