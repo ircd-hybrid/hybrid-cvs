@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.184 2001/07/02 02:52:42 db Exp $
+ *  $Id: client.c,v 7.185 2001/07/08 03:01:07 a1kmm Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -67,6 +67,9 @@ static EVH check_pings;
 
 static int remote_client_count=0;
 static int local_client_count=0;
+
+void (*module_connect_close)(struct Client *who);
+// void (*module_
 
 /*
  * init_client
@@ -1292,10 +1295,12 @@ const char* comment         /* Reason for the exit */
             free_dlink_node(m);
            }
         }
+  if (!IsModuleOwned(source_p))
+  {
       delete_adns_queries(source_p->localClient->dns_query);
       delete_identd_queries(source_p);
-
       client_flush_input(source_p);
+  }
 
       /* This source_p could have status of one of STAT_UNKNOWN, STAT_CONNECTING
        * STAT_HANDSHAKE or STAT_UNKNOWN
@@ -1393,8 +1398,10 @@ const char* comment         /* Reason for the exit */
       ** It also makes source_p->from == NULL, thus it's unnecessary
       ** to test whether "source_p != target_p" in the following loops.
       */
-      
-      close_connection(source_p);
+      if (!IsModuleOwned(source_p))
+        close_connection(source_p);
+      else if (module_connect_close)
+        module_connect_close(source_p);
     }
 
   if(IsServer(source_p))

@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.117 2001/07/02 19:03:13 jdc Exp $
+ * $Id: client.h,v 7.118 2001/07/08 03:00:58 a1kmm Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -449,6 +449,7 @@ struct LocalUser
                                  FLAGS2_OPER_ADMIN)
 
 #define FLAGS2_CBURST       0x10000  /* connection burst being sent */
+#define FLAGS2_MODULE       0x20000  /* This client is module owned. */
 
 #define FLAGS2_IDLE_LINED       0x40000
 #define FLAGS2_IP_SPOOFING      0x80000        /* client IP is spoofed */
@@ -575,6 +576,7 @@ struct LocalUser
 #define SetFloodDone(x)         ((x)->flags2 |= FLAGS2_FLOODDONE)
 #define IsFloodDone(x)          ((x)->flags2 & FLAGS2_FLOODDONE)
 #define CBurst(x)               ((x)->flags2 & FLAGS2_CBURST)
+#define IsModuleOwned(x)        ((x)->flags2 & FLAGS2_MODULE)
 
 /*
  * definitions for get_client_name
