@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.5 2003/05/10 02:20:21 joshk Exp $
+ * $Id: stdinc.h,v 1.6 2003/05/12 02:22:52 joshk Exp $
  *
  */
 
@@ -47,6 +47,8 @@
 #endif  
 
 #ifdef CYGWIN
+/* Cygwin sucks rocks */
+#define EAI_SYSTEM -11
 #include <w32api/winsock2.h>
 #include <w32api/ws2tcpip.h>
 #endif
