@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.98 2003/02/06 08:46:06 a1kmm Exp $
+ *  $Id: m_nick.c,v 1.99 2003/02/07 07:09:27 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.98 $";
+const char *_version = "$Revision: 1.99 $";
 #endif
 
 /*
@@ -743,7 +743,8 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
     if(irccmp(parv[0], nick))
       source_p->tsinfo = newts ? newts : CurrentTime;
 
-    sendto_common_channels_local(source_p, ":%s!%s@%s NICK :%s",
+    sendto_common_channels_local(source_p, 1,
+                                 ":%s!%s@%s NICK :%s",
                                  source_p->name,source_p->username,source_p->host,
                                  nick);
 

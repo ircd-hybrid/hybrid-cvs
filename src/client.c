@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.326 2003/02/06 09:57:06 a1kmm Exp $
+ *  $Id: client.c,v 7.327 2003/02/07 07:09:25 a1kmm Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1110,7 +1110,8 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
       ** that the client can show the "**signoff" message).
       ** (Note: The notice is to the local clients *only*)
       */
-      sendto_common_channels_local(source_p, ":%s!%s@%s QUIT :%s",
+      sendto_common_channels_local(source_p, 0,
+                                   ":%s!%s@%s QUIT :%s",
 				   source_p->name, source_p->username,
 				   source_p->host, comment);
 
@@ -1515,7 +1516,7 @@ exit_client(
     
     log_user_exit(source_p);
   
-    if (!IsClosing(source_p))
+    if (!IsDead(source_p))
     {
       if (client_p != NULL && source_p != client_p)
         sendto_one(source_p, "ERROR :Closing Link: %s %s (%s)",
@@ -1813,7 +1814,8 @@ change_local_nick(struct Client *client_p, struct Client *source_p, char *nick)
 			   source_p->name, nick, source_p->username,
 			   source_p->host);
 
-      sendto_common_channels_local(source_p, ":%s!%s@%s NICK :%s",
+      sendto_common_channels_local(source_p, 1,
+                                   ":%s!%s@%s NICK :%s",
 				   source_p->name, source_p->username,
 				   source_p->host, nick);
       if (source_p->user)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.221 2003/02/06 08:45:58 a1kmm Exp $
+ *  $Id: send.c,v 7.222 2003/02/07 07:09:25 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -726,7 +726,8 @@ sendto_server(struct Client *one, struct Client *source_p,
  *		  used by m_nick.c and exit_one_client.
  */
 void
-sendto_common_channels_local(struct Client *user, const char *pattern, ...)
+sendto_common_channels_local(struct Client *user, int touser,
+                             const char *pattern, ...)
 {
   va_list args;
   dlink_node *ptr;
@@ -756,7 +757,8 @@ sendto_common_channels_local(struct Client *user, const char *pattern, ...)
     sendto_list_local(user, &chptr->locpeons, &linebuf);
   }
 
-  if (MyConnect(user) && (user->serial != current_serial))
+  if (touser && MyConnect(user) &&
+      (user->serial != current_serial))
     send_linebuf(user, &linebuf);
 
   linebuf_donebuf(&linebuf);
