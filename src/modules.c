@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.105 2002/11/12 13:45:42 db Exp $
+ *  $Id: modules.c,v 7.106 2003/01/21 14:26:51 db Exp $
  */
 
 #include "stdinc.h"
@@ -375,6 +375,7 @@ mo_modload (struct Client *client_p, struct Client *source_p, int parc, char **p
   {
     sendto_one (source_p, ":%s NOTICE %s :Module %s is already loaded",
                 me.name, source_p->name, m_bn);
+    MyFree(m_bn);
     return;
   }
 
