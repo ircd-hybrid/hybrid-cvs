@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.48 2003/07/25 23:49:20 michael Exp $
+ *  $Id: balloc.c,v 7.49 2003/10/24 11:27:23 michael Exp $
  */
 
 /* 
@@ -63,6 +63,11 @@
 #include "fdlist.h"
 #include "event.h"
 
+static BlockHeap *heap_list = NULL;
+
+static int newblock(BlockHeap *);
+static void heap_garbage_collection(void *);
+
 #ifdef HAVE_MMAP /* We've got mmap() that is good */
 #include <sys/mman.h>
 
@@ -72,12 +77,6 @@
 #  define MAP_ANON MAP_ANONYMOUS
 # endif
 #endif /* MAP_ANONYMOUS */
-
-static BlockHeap *heap_list = NULL;
-
-static int newblock(BlockHeap * bh);
-static void heap_garbage_collection(void *arg);
-
 
 /*
  * static inline void free_block(void *ptr, size_t size)
