@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.137 2001/02/03 01:13:03 jdc Exp $
+ *   $Id: s_serv.c,v 7.138 2001/02/03 01:59:50 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -382,17 +382,15 @@ int check_server(const char *name, struct Client* cptr)
 	   
 	 if (IsConfEncrypted(aconf))
 	   {
-	     /* jdc -- aconf->spasswd is what we need to check against! */
-	     if (strcmp(aconf->spasswd, 
-		   crypt(cptr->localClient->passwd, aconf->spasswd)) == 0)
+	     if (strcmp(aconf->passwd, 
+		   crypt(cptr->localClient->passwd, aconf->passwd)) == 0)
 	       {
 		 server_aconf = aconf;
 	       }
 	   }
 	 else
 	   {
-	     /* jdc -- aconf->spasswd is what we need to check against! */
-	     if (strcmp(aconf->spasswd, cptr->localClient->passwd) == 0)
+	     if (strcmp(aconf->passwd, cptr->localClient->passwd) == 0)
 	       {
 		 server_aconf = aconf;
 	       }
@@ -801,7 +799,9 @@ int server_estab(struct Client *cptr)
        *        2.  Check aconf->spasswd, not aconf->passwd.
        */
       if (!EmptyString(aconf->spasswd))
+      {
         sendto_one(cptr,"PASS %s :TS", aconf->spasswd);
+      }
 
       /*
        * Pass my info to the new server
@@ -1630,9 +1630,13 @@ serv_connect_callback(int fd, int status, void *data)
     /* Next, send the initial handshake */
     SetHandshake(cptr);
 
-    /* jdc -- Shouldn't we be checking and sending spasswd?  :-) */
+    /*
+     * jdc -- Check and sending spasswd, not passwd.
+     */
     if (!EmptyString(aconf->spasswd))
+    {
         sendto_one(cptr, "PASS %s :TS", aconf->spasswd);
+    }
 
     /*
      * Pass my info to the new server
