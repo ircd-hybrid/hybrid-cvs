@@ -1,3 +1,19 @@
+db          2002/07/06 12:58:59 EDT	(20020706_3)
+
+  Modified files:
+    modules              m_kline.c 
+    src                  hostmask.c kdparse.c 
+  Log:
+  - This fixes non-redundant dlines for IPV4 at least. The IPV6 dline code is still
+    incomplete. I also fixed a number of style problems.
+  
+  Revision  Changes    Path
+  1.104     +92 -79    ircd-hybrid-7/modules/m_kline.c
+  7.66      +3 -2      ircd-hybrid-7/src/hostmask.c
+  7.8       +3 -2      ircd-hybrid-7/src/kdparse.c
+
+
+
 leeh        2002/07/06 10:03:56 EDT	(20020706_2)
 
   Modified files:
@@ -29100,4 +29116,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3835 2002/07/06 14:04:03 leeh Exp $
+$Id: ChangeLog,v 7.3836 2002/07/06 16:59:06 db Exp $
