@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.20 2003/08/22 23:34:35 metalrock Exp $
+ *  $Id: m_tb.c,v 1.21 2003/10/14 02:25:05 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.20 $";
+const char *_version = "$Revision: 1.21 $";
 
 /* ms_tburst()
  * 
@@ -119,7 +119,7 @@ set_topic(struct Client *source_p, struct Channel *chptr,
   set_channel_topic(chptr, topic, topicwho, newtopicts);
 
   sendto_channel_local(ALL_MEMBERS, chptr, ":%s TOPIC %s :%s",
-		       ConfigServerHide.hide_servers ? me.name : me.name,
+		       ConfigServerHide.hide_servers ? me.name : source_p->name,
 		       chptr->chname, chptr->topic == NULL ? "" : chptr->topic);
 
 #ifdef TBURST_PROPAGATE
