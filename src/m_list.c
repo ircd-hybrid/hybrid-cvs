@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 7.8 2000/10/19 17:06:35 toot Exp $ 
+ * $Id: m_list.c,v 7.9 2000/10/19 20:09:54 toot Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -205,7 +205,7 @@ int     m_list(struct Client *cptr,
                 (root_chptr->members || root_chptr->next_vchan->next_vchan) )
               {
                 ircsprintf(vname, "%s<!%s>", root_chptr->chname,
-                           chptr->members->value.cptr->name);
+                           tmpchptr->members->value.cptr->name);
               }
             else
               ircsprintf(vname, "%s", root_chptr->chname);
