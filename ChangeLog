@@ -1,3 +1,9 @@
+*** 20001214_5 by db
+- removed a bunch of useless B line stuff
+- put sanity test into m_gline.c so it wont' core on a NULL glinefile
+
+
+
 *** 20001214_4 by db
 - YOU missed an #endif toot! ;)
 
@@ -2612,7 +2618,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.829 2000/12/14 18:11:39 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.830 2000/12/14 19:59:15 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
