@@ -1,3 +1,12 @@
+*** 20001208_14 by db
+- sped up m_sjoin.c somewhat... also fixed a bug where the code
+  would relink the same vchan over and over again to the root. oops.
+  This resulted in 277 #ircd-coders !nympho !shig !shig !shig !shig !shig !shig !shig !shig
+  oops.
+  Still have to deal with empty vchans...
+
+
+
 *** 20001208_13 by toot
 depend updates
 
@@ -1978,7 +1987,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.751 2000/12/08 19:59:30 toot Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.752 2000/12/08 23:03:14 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
