@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.16 2000/12/23 01:11:50 db Exp $
+ *   $Id: m_squit.c,v 1.17 2000/12/23 13:29:45 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -100,6 +100,8 @@ int mo_squit(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 			       "Received SQUIT %s from %s (%s)",
 			       found_squit->acptr->name,
 			       get_client_name(sptr,FALSE), comment);
+          log(L_NOTICE, "Received SQUIT %s from %s (%s)",
+              found_squit->acptr->name, get_client_name(sptr,FALSE), comment);
 	}
       return exit_client(cptr, found_squit->acptr, sptr, comment);
     }

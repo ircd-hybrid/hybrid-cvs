@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.86 2000/12/23 07:51:26 db Exp $
+ *  $Id: client.c,v 7.87 2000/12/23 13:29:46 toot Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -343,6 +343,8 @@ check_pings_list(dlink_list *list)
                   sendto_realops_flags(FLAGS_ALL,
 				       "No response from %s, closing link",
 				       get_client_name(cptr, FALSE));
+                  log(L_NOTICE, "No response from %s, closing link",
+                      get_client_name(cptr, FALSE));
                 }
 
               cptr->flags2 |= FLAGS2_PING_TIMEOUT;
@@ -1327,15 +1329,14 @@ const char* comment         /* Reason for the exit */
 	  else
 	    uplink = NULL;
         }
+
       sptr->flags |= FLAGS_CLOSING;
+
       if (IsPerson(sptr))
-        {
-          sendto_realops_flags(FLAGS_CCONN,
-                               "Client exiting: %s (%s@%s) [%s] [%s]",
-                               sptr->name, sptr->username, sptr->host,
-               (sptr->flags & FLAGS_NORMALEX) ?  "Client Quit" : comment,
-                               sptr->localClient->sockhost);
-        }
+        sendto_realops_flags(FLAGS_CCONN,
+                             "Client exiting: %s (%s@%s) [%s] [%s]",
+                             sptr->name, sptr->username, sptr->host,
+                             comment, sptr->localClient->sockhost);
 
       log_user_exit(sptr);
 

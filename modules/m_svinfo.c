@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_svinfo.c,v 1.9 2000/12/22 16:12:45 db Exp $
+ *   $Id: m_svinfo.c,v 1.10 2000/12/23 13:29:45 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -30,6 +30,7 @@
 #include "numeric.h"
 #include "send.h"
 #include "s_conf.h"
+#include "s_log.h"
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
@@ -99,6 +100,9 @@ int m_svinfo(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (deltat > ConfigFileEntry.ts_max_delta)
     {
       sendto_realops_flags(FLAGS_ALL,
+       "Link %s dropped, excessive TS delta (my TS=%d, their TS=%d, delta=%d)",
+                 get_client_name(sptr, TRUE), CurrentTime, theirtime,deltat);
+      log(L_NOTICE,
        "Link %s dropped, excessive TS delta (my TS=%d, their TS=%d, delta=%d)",
                  get_client_name(sptr, TRUE), CurrentTime, theirtime,deltat);
       return exit_client(sptr, sptr, sptr, "Excessive TS delta");

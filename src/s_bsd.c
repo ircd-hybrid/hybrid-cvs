@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.76 2000/12/22 15:51:34 db Exp $
+ *  $Id: s_bsd.c,v 7.77 2000/12/23 13:29:47 toot Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -392,8 +392,12 @@ void error_exit_client(struct Client* cptr, int error)
       int connected = CurrentTime - cptr->firsttime;
       
       if (0 == error)
-        sendto_realops_flags(FLAGS_ALL,"Server %s closed the connection",
-			     get_client_name(cptr, FALSE));
+        {
+          sendto_realops_flags(FLAGS_ALL,"Server %s closed the connection",
+  			     get_client_name(cptr, FALSE));
+          log(L_NOTICE, "Server %s closed the connection",
+              get_client_name(cptr, FALSE));
+        }
       else
         report_error("Lost connection to %s:%s", 
                      get_client_name(cptr, TRUE), current_error);

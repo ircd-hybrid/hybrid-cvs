@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.88 2000/12/22 22:59:26 db Exp $
+ *   $Id: s_serv.c,v 7.89 2000/12/23 13:29:48 toot Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -690,6 +690,7 @@ int server_estab(struct Client *cptr)
                  inpath);
       sendto_realops_flags(FLAGS_ALL,
 			   "Access denied (passwd mismatch) %s", inpath);
+      log(L_NOTICE, "Access denied (passwd mismatch) %s", inpath_ip);
       return exit_client(cptr, cptr, cptr, "Bad Password");
     }
   memset((void *)cptr->localClient->passwd, 0,sizeof(cptr->localClient->passwd));
@@ -735,6 +736,9 @@ int server_estab(struct Client *cptr)
 			       "Username mismatch [%s]v[%s] : %s",
 			       n_conf->user, cptr->username,
 			       get_client_name(cptr, TRUE));
+          log(L_NOTICE, "Username mismatch [%s]v[%s] : %s",
+              n_conf->user, cptr->username,
+              get_client_name(cptr, TRUE));
           sendto_one(cptr, "ERROR :No Username Match");
           return exit_client(cptr, cptr, cptr, "Bad User");
         }

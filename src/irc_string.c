@@ -16,11 +16,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.12 2000/12/21 13:39:42 db Exp $
+ *  $Id: irc_string.c,v 7.13 2000/12/23 13:29:47 toot Exp $
  */
 #include "tools.h"
 #include "irc_string.h"
 #include "list.h"
+
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
@@ -112,7 +113,8 @@ void _MyFree(void *x, char * file, int line)
 void _MyFree(void *x)
 #endif
 {
-  free(x);
+  if ((x))
+    free((x));
 #ifdef DEBUGMEM
   DbgMemFree(file, line, DBGMEM_MALLOC, x);
 #endif
