@@ -1,5 +1,5 @@
-/* include/setup.h.in.  Generated automatically from autoconf/configure.in by autoheader 2.13.  */
-/* $Id: setup.h.in,v 7.47 2002/03/01 14:30:21 androsyn Exp $ */
+/* include/setup.h.in.  Generated automatically from autoconf/configure.in by autoheader.  */
+/* $Id: setup.h.in,v 7.48 2002/03/01 14:55:58 androsyn Exp $ */
 /* Define as __inline if that's what the C compiler calls it.  */
 #undef inline
 
@@ -83,6 +83,9 @@
 /* Gettext support */
 #undef HAVE_GETTEXT
 
+/* nanosleep */
+#undef HAVE_NANOSLEEP
+
 /* Define if you have the EVP_bf_cfb function.  */
 #undef HAVE_EVP_BF_CFB
 
@@ -112,9 +115,6 @@
 
 /* Define if you have the mmap function.  */
 #undef HAVE_MMAP
-
-/* Define if you have the nanosleep function.  */
-#undef HAVE_NANOSLEEP
 
 /* Define if you have the snprintf function.  */
 #undef HAVE_SNPRINTF
