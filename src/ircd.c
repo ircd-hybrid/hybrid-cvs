@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.65 2000/12/05 07:27:08 db Exp $
+ * $Id: ircd.c,v 7.66 2000/12/06 02:20:29 db Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -399,7 +399,6 @@ static void initialize_global_set_options(void)
   GlobalSetOptions.spam_time = MIN_JOIN_LEAVE_TIME;
   GlobalSetOptions.spam_num = MAX_JOIN_LEAVE_COUNT;
 
-  GlobalSetOptions.floodtime = DEFAULT_FLOOD_TIME;
   GlobalSetOptions.floodcount = DEFAULT_FLOOD_COUNT;
 
  /* End of global set options */

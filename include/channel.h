@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.41 2000/12/04 06:35:05 db Exp $
+ * $Id: channel.h,v 7.42 2000/12/06 02:20:23 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -73,6 +73,10 @@ struct Channel
   dlink_list      exceptlist;
   dlink_list      denylist;
   dlink_list      invexlist;
+
+  time_t          first_received_message_time;
+  int             received_number_of_privmsgs;
+  int             flood_noticed;
 
   int             num_bed;          /* number of bans+exceptions+denies */
   time_t          channelts;

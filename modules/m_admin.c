@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_admin.c,v 1.9 2000/12/05 20:43:20 db Exp $
+ *   $Id: m_admin.c,v 1.10 2000/12/06 02:20:27 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -145,7 +145,7 @@ int ms_admin(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
  * output	- none
  * side effects	- admin info is sent to client given
  */
-static void do_admin( struct Client *sptr )
+void do_admin( struct Client *sptr )
 {
   struct ConfItem *aconf;
 

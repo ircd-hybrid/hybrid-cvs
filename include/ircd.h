@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.14 2000/12/05 07:27:04 db Exp $
+ * $Id: ircd.h,v 7.15 2000/12/06 02:20:23 db Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -46,8 +46,7 @@ struct SetOptions
 
   int idletime;
 
-  int floodtime;
-  int floodcount;
+  int floodcount;	/* Number of messages in 1 second */
 
   int spam_num;
   int spam_time;
