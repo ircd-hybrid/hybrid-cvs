@@ -1,3 +1,15 @@
+androsyn    2002/02/23 12:32:45 EST	(20020223_4)
+
+  Modified files:
+    src                  s_user.c 
+  Log:
+  Fix ping cookies..
+  
+  Revision  Changes    Path
+  7.188     +14 -11    ircd-hybrid-7/src/s_user.c
+
+
+
 leeh        2002/02/23 10:30:55 EST	(20020223_3)
 
   Modified files:
@@ -23035,4 +23047,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3440 2002/02/23 15:31:00 leeh Exp $
+$Id: ChangeLog,v 7.3441 2002/02/23 17:32:51 androsyn Exp $
