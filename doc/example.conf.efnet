@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.efnet,v 7.15 2002/05/27 12:14:49 leeh Exp $
+ * $Id: example.conf.efnet,v 7.16 2002/06/05 13:49:55 leeh Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -339,9 +339,9 @@ connect {
 	autoconn = yes;
 	
 	/* compressed: controls whether traffic is compressed via ziplinks.
-	 * By default this is enabled if supported, disabled if not.
+	 * By default this is disabled
 	 */
-	#compressed = no;
+	#compressed = yes;
 
 	/* lazylink: controls whether this server is a LazyLink.  LazyLink 
 	 * servers may NOT hub.  see doc/LazyLinks.as.implemented.txt
