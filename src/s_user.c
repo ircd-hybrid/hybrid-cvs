@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.271 2003/05/25 05:56:38 db Exp $
+ *  $Id: s_user.c,v 7.272 2003/05/25 22:13:16 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -1305,6 +1305,8 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
   send_message_file(source_p, &ConfigFileEntry.opermotd);
 }
 
+/* XXX INCOMPLETE XXX */
+
 void
 sid_init(void)
 {
@@ -1313,4 +1315,6 @@ sid_init(void)
 char *
 sid_get(void)
 {
+	// Quell build warning until we finish this
+	return NULL;
 }

@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.83 2003/05/24 16:15:13 bill Exp $
+# $Id: Makefile.in,v 1.84 2003/05/25 22:13:15 joshk Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -188,7 +188,7 @@ install_hpux_shared: install-mkdirs
 	${MV} -f .depend.tmp .depend
 
 clean:
-	${RM} -f *.so *.sl *~ *.o *.a
+	${RM} -f *.so *.sl *~ *.o *.a so_locations
 	${RM} -f core/*.so core/*.sl core/*~ core/*.o
 
 distclean: clean
