@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.16 2000/12/30 09:52:17 lusky Exp $
+ * $Id: linebuf.c,v 7.17 2000/12/30 21:46:46 lusky Exp $
  */
 
 #include <errno.h>
@@ -14,12 +14,24 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "tools.h"
 #include "linebuf.h"
 #include "blalloc.h"
 #include "memdebug.h"
+
+#ifdef STRING_WITH_STRINGS
+# include <string.h>
+# include <strings.h>
+#else
+# ifdef HAVE_STRING_H
+#  include <string.h>
+# else
+#  ifdef HAVE_STRINGS_H
+#   include <strings.h>
+#  endif
+# endif
+#endif
 
 static int linebuf_initialised = 0;
 static BlockHeap *linebuf_bl = NULL;
