@@ -1,3 +1,15 @@
+leeh        2002/04/25 20:47:37 EDT	(20020426_0)
+
+  Modified files:
+    .                    RELNOTES 
+  Log:
+  - brought relnotes upto date
+  
+  Revision  Changes    Path
+  1.23      +9 -0      ircd-hybrid-7/RELNOTES
+
+
+
 leeh        2002/04/25 15:37:48 EDT	(20020425_6)
 
   Modified files:
@@ -25514,4 +25526,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3592 2002/04/25 19:37:54 leeh Exp $
+$Id: ChangeLog,v 7.3593 2002/04/26 00:47:43 leeh Exp $
