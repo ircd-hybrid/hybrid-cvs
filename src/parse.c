@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.171 2003/06/04 00:49:24 joshk Exp $
+ *  $Id: parse.c,v 7.172 2003/06/04 02:07:11 db Exp $
  */
 
 #include "stdinc.h"
@@ -568,7 +568,6 @@ recurse_report_messages(struct Client *source_p, struct MessageTree *mtree)
 		 me.name, source_p->name, mtree->msg->cmd,
 		 mtree->msg->count, mtree->msg->bytes,
 		 mtree->msg->rcount);
-    return;
   }
 
   for (i = 0; i < MAXPTRLEN; i++)
