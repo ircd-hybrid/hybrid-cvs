@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.126 2003/09/04 04:24:08 metalrock Exp $
+ *  $Id: m_nick.c,v 1.127 2003/09/04 04:40:12 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -98,7 +98,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.126 $";
+const char *_version = "$Revision: 1.127 $";
 #endif
 
 /*
@@ -334,11 +334,7 @@ ms_nick(struct Client *client_p, struct Client *source_p,
 #define NICK_SERVER	parv[7]
 #define NICK_GECOS	parv[8]
 
-  /* We are either getting a nick from a server or getting a nick
-   * change, nick change = 3 params, nick from server = 9 params.
-   * If we get any other number of params, ignore it -metalrock
-   */
-  if ((parc != 3) || (parc != 9) || EmptyString(NICK_NICK))
+  if (parc < 2 || EmptyString(NICK_NICK))
     return;
 
   /* fix the length of the nick */
@@ -369,10 +365,10 @@ ms_nick(struct Client *client_p, struct Client *source_p,
     if (IsServer(source_p))
       newts = atol(NICK_TS);
   }
-  else if (parc == 3)
+  else
   {
     if (check_clean_nick(client_p, source_p, nick, NICK_NICK,
-			source_p->user->server))
+			 source_p->user->server))
       return;
     if (!IsServer(source_p))
       newts = atol(NICK_HOP);	/* Yes, this is right. HOP field is the TS
