@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.18 2001/11/27 00:48:58 davidt Exp $
+ *   $Id: m_opme.c,v 1.19 2002/01/14 00:01:37 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-char *_version = "20010528";
+char *_version = "$Revision: 1.19 $";
 
 static int chan_is_opless(struct Channel *chptr)
 {
