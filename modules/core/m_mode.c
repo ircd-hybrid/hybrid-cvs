@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.21 2000/12/29 00:37:10 davidt Exp $
+ *   $Id: m_mode.c,v 1.22 2000/12/30 00:21:50 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -98,18 +98,21 @@ int m_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       /* this was segfaulting if we had no servers linked.
        *  -pro
        */
-      if ( !ConfigFileEntry.hub && uplink &&
-	   IsCapable(uplink, CAP_LL) )
+      /* only send a mode upstream if a local client sent this request
+       * -davidt
+       */
+      if ( MyClient(sptr) && !ConfigFileEntry.hub && uplink &&
+	   IsCapable(uplink, CAP_LL))
 	{
 	  /* cache the channel if it exists on uplink
 	   * If the channel as seen by the uplink, has vchans,
 	   * the uplink will have to SJOIN all of those.
 	   */
 	  sendto_one(uplink, ":%s CBURST %s",
-		      me.name, parv[1]);
-	      
-	  sendto_one(uplink, ":%s MODE %s",
-		     sptr->name, parv[1]);
+                     me.name, parv[1]);
+	  
+	  sendto_one(uplink, ":%s MODE %s %s",
+		     sptr->name, parv[1], (parv[2] ? parv[2] : ""));
 	  return 0;
 	}
       else

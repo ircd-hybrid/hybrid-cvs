@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.43 2000/12/29 02:25:28 fl_ Exp $
+ *   $Id: m_kline.c,v 1.44 2000/12/30 00:21:49 davidt Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -411,10 +411,10 @@ time_t valid_tkline(struct Client *sptr, char *p)
   if(result == 0)
     result = 1;
 
-  if(result > 24)
-    result = 24; /* Max it at 24 hours */
+  if(result > (24*60))
+    result = (24*60); /* Max it at 24 hours */
 
-  result = (time_t)result * (time_t)60;  /* turn it into minutes */
+  result = (time_t)result * (time_t)60;  /* turn it into seconds */
 
   return(result);
 }
