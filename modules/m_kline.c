@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.111.2.4 2004/06/16 04:55:52 erik Exp $
+ *  $Id: m_kline.c,v 1.111.2.5 2004/10/31 21:32:45 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.111.2.4 $";
+const char *_version = "$Revision: 1.111.2.5 $";
 #endif
 
 /* Local function prototypes */
@@ -967,6 +967,13 @@ valid_user_host(struct Client *source_p, char *luser, char *lhost)
   {
     sendto_one(source_p, ":%s NOTICE %s :Invalid character '#' in kline",
                me.name, source_p->name);		    
+    return 1;
+  }
+
+  if(strchr(lhost, '"') || strchr(luser, '"'))
+  {
+    sendto_one(source_p, ":%s NOTICE %s :Invalid character '\"' in kline",
+               me.name, source_p->name);
     return 1;
   }
 
