@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 7.7 2000/10/17 02:53:07 db Exp $
+ *   $Id: m_topic.c,v 7.8 2000/10/22 01:47:08 toot Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -154,8 +154,7 @@ int     m_topic(struct Client *cptr,
 	       */
 	      strncpy_irc(chptr->topic, topic, TOPICLEN);
 	      
-	      if (chptr->topic_info)
-		free(chptr->topic_info);
+              MyFree(chptr->topic_info);
 	      
 	      if (ConfigFileEntry.topic_uh)
 		{
@@ -275,8 +274,7 @@ int     ms_topic(struct Client *cptr,
 	       */
 	      strncpy_irc(chptr->topic, topic, TOPICLEN);
 	      
-	      if (chptr->topic_info)
-		free(chptr->topic_info);
+              MyFree(chptr->topic_info);
 	      
 	      if (ConfigFileEntry.topic_uh)
 		{
