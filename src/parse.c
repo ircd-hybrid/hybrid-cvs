@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.93 2001/02/23 23:36:10 a1kmm Exp $
+ *   $Id: parse.c,v 7.94 2001/03/01 22:28:21 fl_ Exp $
  */
 
 #include <assert.h>
@@ -709,10 +709,6 @@ static void do_numeric(char numeric[],
           sendto_realops_flags(FLAGS_ALL,
                                "*** %s(via %s) sent a %s numeric to me?!?",
                                sptr->name, cptr->name, numeric);
-	  /* This is contains the full numeric.. should be removed once bugs found */
-          sendto_realops_flags(FLAGS_ADMIN,
-                               "*** %s(via %s) send a %s numeric to me: %s",
-                               sptr->name, cptr->name, numeric, buffer);
           return;
         }
       else if (acptr->from == cptr) 
