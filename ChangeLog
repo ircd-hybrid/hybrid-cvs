@@ -1,3 +1,44 @@
+db          2003/02/14 18:01:59 EST	(20030214_0)
+
+  Modified files:
+    include              client.h send.h 
+    modules              m_capab.c m_cryptlink.c m_motd.c m_post.c 
+                         m_svinfo.c 
+    modules/core         m_kill.c m_nick.c m_quit.c m_server.c 
+                         m_squit.c 
+    src                  client.c ircd.c m_error.c packet.c 
+                         parse.c s_bsd.c s_conf.c s_serv.c 
+                         s_user.c send.c 
+  Log:
+  - massive revert to rc4 exit_client code. This has been tested
+    extensively.
+  
+  Revision  Changes    Path
+  7.163     +4 -7      ircd-hybrid-7/include/client.h
+  7.61      +1 -1      ircd-hybrid-7/include/send.h
+  1.68      +13 -12    ircd-hybrid-7/modules/core/m_kill.c
+  1.100     +38 -39    ircd-hybrid-7/modules/core/m_nick.c
+  1.28      +9 -11     ircd-hybrid-7/modules/core/m_quit.c
+  1.92      +28 -33    ircd-hybrid-7/modules/core/m_server.c
+  1.47      +34 -37    ircd-hybrid-7/modules/core/m_squit.c
+  1.31      +4 -5      ircd-hybrid-7/modules/m_capab.c
+  1.37      +4 -5      ircd-hybrid-7/modules/m_cryptlink.c
+  1.35      +12 -9     ircd-hybrid-7/modules/m_motd.c
+  1.14      +2 -2      ircd-hybrid-7/modules/m_post.c
+  1.36      +7 -9      ircd-hybrid-7/modules/m_svinfo.c
+  7.329     +136 -259  ircd-hybrid-7/src/client.c
+  7.250     +6 -3      ircd-hybrid-7/src/ircd.c
+  7.28      +34 -6     ircd-hybrid-7/src/m_error.c
+  7.102     +23 -33    ircd-hybrid-7/src/packet.c
+  7.146     +5 -4      ircd-hybrid-7/src/parse.c
+  7.179     +1 -1      ircd-hybrid-7/src/s_bsd.c
+  7.339     +8 -9      ircd-hybrid-7/src/s_conf.c
+  7.279     +8 -11     ircd-hybrid-7/src/s_serv.c
+  7.222     +35 -22    ircd-hybrid-7/src/s_user.c
+  7.224     +8 -14     ircd-hybrid-7/src/send.c
+
+
+
 db          2003/02/11 21:09:29 EST	(20030212_0)
 
   Modified files:
@@ -34995,4 +35036,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4230 2003/02/12 02:09:32 db Exp $
+$Id: ChangeLog,v 7.4231 2003/02/14 23:02:01 db Exp $
