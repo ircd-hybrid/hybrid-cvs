@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.34 2004/02/12 05:28:19 metalrock Exp $
+ *  $Id: m_resv.c,v 1.35 2004/02/12 06:58:27 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 
 /* mo_resv()
@@ -192,7 +192,7 @@ static void
 ms_unresv(struct Client *client_p, struct Client *source_p,
           int parc, char *parv[])
 {
-  if ((parc != 4) || EmptyString(parv[2]))
+  if ((parc != 3) || EmptyString(parv[2]))
     return;
 
   sendto_match_servs(source_p, parv[1], CAP_CLUSTER,
