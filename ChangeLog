@@ -1,3 +1,17 @@
+leeh        2002/01/02 10:25:08 EST	(20020102_0)
+
+  Modified files:
+    modules              m_users.c 
+    src                  s_user.c 
+  Log:
+  - fixes for local client stuff wrt shide
+  
+  Revision  Changes    Path
+  1.22      +15 -11    ircd-hybrid-7/modules/m_users.c
+  7.176     +7 -0      ircd-hybrid-7/src/s_user.c
+
+
+
 leeh        2002/01/01 17:27:27 EST	(20020101_8)
 
   Modified files:
@@ -2004,7 +2018,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3273 2002/01/01 22:27:32 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3274 2002/01/02 15:25:14 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20358,4 +20372,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3273 2002/01/01 22:27:32 leeh Exp $
+$Id: ChangeLog,v 7.3274 2002/01/02 15:25:14 leeh Exp $
