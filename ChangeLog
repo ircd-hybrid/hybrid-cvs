@@ -1,3 +1,9 @@
+*** 20001204_10 by db
+- lost a 433 (nickname in use error) somewhere in the way,
+  put it back in.. m_nick.c
+
+
+
 *** 20001204_9 by db
 - had logic wrong in can_send
 
@@ -1564,7 +1570,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.690 2000/12/04 17:03:26 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.691 2000/12/04 18:30:47 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
