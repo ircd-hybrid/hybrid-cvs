@@ -1,3 +1,9 @@
+*** 20001129_9 by db
+- fixed persistent channels
+- fixed IsSetCallerId typo
+
+
+
 *** 20001129_8 by db
 - pile of cleanups mostly in comments
 - added persistent channels tentatively for now, finesse it later
@@ -1056,7 +1062,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.623 2000/11/29 23:35:33 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.624 2000/11/30 00:04:56 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
