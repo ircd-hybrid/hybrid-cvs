@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.286 2003/05/23 17:53:13 joshk Exp $
+ *  $Id: ircd.c,v 7.287 2003/05/24 00:35:08 db Exp $
  */
 
 #include "stdinc.h"
@@ -68,6 +68,7 @@
 #include "ircd_getopt.h"
 #include "balloc.h"
 
+
 /* Try and find the correct name to use with getrlimit() for setting the max.
  * number of files allowed to be open by this process.
  */
@@ -114,6 +115,19 @@ int splitmode;
 int splitchecking;
 int split_users;
 int split_servers;
+
+/* Do klines the same way hybrid-6 did them, i.e. at the
+ * top of the next io_loop instead of in the same loop as
+ * the klines are being applied.
+ *
+ * This should fix strange CPU starvation as very indirectly reported.
+ * (Why do you people not email bug reports? WHY? WHY?)
+ *
+ * - Dianora
+ */
+
+int rehashed_klines = 0;
+int rehashed_xlines = 0;
 
 static int
 irc_sleep(unsigned long useconds)
@@ -301,6 +315,25 @@ io_loop(void)
 
   while (ServerRunning)
   {
+    /*
+     * Maybe we want a flags word?
+     * ie. if (REHASHED_KLINES(global_flags)) 
+     * SET_REHASHED_KLINES(global_flags)
+     * CLEAR_REHASHED_KLINES(global_flags)
+     *
+     * - Dianora
+     */
+    if (rehashed_klines)
+    {
+      check_klines();
+      rehashed_klines = 0;
+    }
+    else if (rehashed_xlines)
+    {
+      check_xlines();
+      rehashed_xlines = 0;
+    }
+
     /* Run pending events, then get the number of seconds to the next
      * event
      */

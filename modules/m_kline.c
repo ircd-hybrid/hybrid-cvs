@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.131 2003/05/20 06:51:47 michael Exp $
+ *  $Id: m_kline.c,v 1.132 2003/05/24 00:35:10 db Exp $
  */
 
 #include "stdinc.h"
@@ -46,6 +46,8 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+
+extern int rehashed_klines;
 
 static void mo_kline(struct Client *, struct Client *, int, char **);
 static void ms_kline(struct Client *, struct Client *, int, char **);
@@ -76,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.131 $";
+const char *_version = "$Revision: 1.132 $";
 #endif
 
 /* Local function prototypes */
@@ -349,7 +351,7 @@ apply_kline(struct Client *source_p, struct ConfItem *aconf,
   add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
   write_conf_line(source_p, aconf, current_date, cur_time);
   /* Now, activate kline against current online clients */
-  check_klines();
+  rehashed_klines = 1;
 }
 
 /*
@@ -376,7 +378,7 @@ apply_tkline(struct Client *source_p, struct ConfItem *aconf,
   ilog(L_TRACE, "%s added temporary %d min. K-Line for [%s@%s] [%s]",
        source_p->name, tkline_time/60,
        aconf->user, aconf->host, aconf->reason);
-  check_klines();
+  rehashed_klines = 1;
 }
 
 /*
@@ -730,7 +732,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
    * Write dline to configuration file
    */
   write_conf_line(source_p, aconf, current_date, cur_time);
-  check_klines();
+  rehashed_klines = 1;
 } /* m_dline() */
 
 /*
