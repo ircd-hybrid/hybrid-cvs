@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.32 2001/01/01 23:27:30 davidt Exp $
+ * $Id: modules.c,v 7.33 2001/01/02 04:08:09 a1kmm Exp $
  */
 
 #include <dlfcn.h>
@@ -53,7 +53,6 @@ struct module **modlist = NULL;
 int num_mods = 0;
 int max_mods = MODS_INCREMENT;
 static void increase_modlist(void);
-static int findmodule_byname (char *name);
 
 static struct module_path *mod_paths = NULL;
 
@@ -108,7 +107,7 @@ irc_basename(char *path)
 }
 
 
-static int 
+int 
 findmodule_byname (char *name)
 {
   int i;
@@ -202,7 +201,6 @@ load_all_modules (void)
 	   system_module_dir_name, strerror (errno));
       return;
     }
-
   system_module_dir = opendir (".");
   if (system_module_dir == NULL)
     {

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.88 2001/01/01 23:27:29 davidt Exp $
+ * $Id: ircd_parser.y,v 1.89 2001/01/02 04:08:08 a1kmm Exp $
  */
 
 %{
@@ -34,6 +34,7 @@
 #include "irc_string.h"
 #include "ircdauth.h"
 #include "memdebug.h"
+#include "modules.h"
 extern char *ip_string;
 
 int yyparse();
@@ -243,7 +244,10 @@ modules_item:    modules_module | modules_path |
 
 modules_module:  MODULE '=' QSTRING ';'
 {
-  load_one_module (yylval.string);
+  /* I suppose we should just ignore it if it is already loaded(since
+   * otherwise we would flood the opers on rehash) -A1kmm. */
+  if (!findmodule_byname(yylval.string))
+    load_one_module (yylval.string);
 };
 
 modules_path: PATH '=' QSTRING ';'
