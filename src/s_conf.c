@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.122 2000/12/23 22:12:32 toot Exp $
+ *  $Id: s_conf.c,v 7.123 2000/12/24 03:07:00 ejb Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -1641,6 +1641,9 @@ static void read_conf(FBFILE* file)
   if (!ConfigFileEntry.maximum_links)
     ConfigFileEntry.maximum_links = MAXIMUM_LINKS_DEFAULT;
 
+  if (!ConfigFileEntry.max_targets)
+	  ConfigFileEntry.max_targets = MAX_TARGETS_DEFAULT;
+  
   GlobalSetOptions.idletime = (ConfigFileEntry.idletime * 60);
   GlobalSetOptions.hide_server = ConfigFileEntry.hide_server;
 

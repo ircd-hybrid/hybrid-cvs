@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.65 2000/12/24 00:04:45 ejb Exp $
+ * $Id: config.h,v 7.66 2000/12/24 03:06:59 ejb Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -256,6 +256,8 @@
 /*   STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP  */
 
 /* You shouldn't change anything below this line, unless absolutely needed. */
+
+#define MAX_TARGETS_DEFAULT 4
 
 /* INITIAL_DBUFS - how many dbufs to preallocate
  */
