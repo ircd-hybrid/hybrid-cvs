@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.77 2002/02/25 17:39:10 androsyn Exp $
+ *  $Id: m_server.c,v 1.78 2002/02/27 17:51:42 enygma Exp $
  */
 
 #include "tools.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-char *_version = "$Revision: 1.77 $";
+char *_version = "$Revision: 1.78 $";
 #endif
 
 int bogus_host(char *host);
@@ -523,7 +523,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
  * output	- none
  * side effects - servers gecos field is set
  */
-int set_server_gecos(struct Client *client_p, char *info)
+static int set_server_gecos(struct Client *client_p, char *info)
 {
   /* check the info for [IP] */
   if(info[0])

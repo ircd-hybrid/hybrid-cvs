@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.180 2002/02/24 17:23:30 db Exp $
+ *  $Id: send.c,v 7.181 2002/02/27 17:51:46 enygma Exp $
  */
 
 #include <sys/types.h>
@@ -560,7 +560,7 @@ sendto_channel_butone(struct Client *one, struct Client *from,
  *		- pointer to sendbuf to use for remote clients
  *		- length of remote_sendbuf
  */
-void
+static void
 sendto_list_anywhere(struct Client *one, struct Client *from,
                      dlink_list *list, buf_head_t *local_linebuf,
                      buf_head_t *remote_linebuf)

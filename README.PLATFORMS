@@ -20,5 +20,7 @@ x86          Cygwin gcc       Windows       W. Campbell <wcampbel@botbay.net>
 x86          gcc              Linux         Aaron Sethman <androsyn@ratbox.org>
 SPARC        gcc              Linux         Aaron Sethman <androsyn@ratbox.org>
 Alpha        DEC C V6.0       OpenVMS 7.2   Edward Brocklesby <ejb@sdf.lonestar.org>
+PA-RISC 2.0  cc		      HP-UX B.11    Yusuf Iskenderoglu 
+						<uhc0@stud.uni-karlsruhe.de>
 
-$Id: README.PLATFORMS,v 7.7 2002/02/05 21:45:59 ejb Exp $
+$Id: README.PLATFORMS,v 7.8 2002/02/27 17:51:26 enygma Exp $

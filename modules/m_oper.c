@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.43 2002/01/05 09:14:48 a1kmm Exp $
+ *  $Id: m_oper.c,v 1.44 2002/02/27 17:51:39 enygma Exp $
  */
 
 #include "tools.h"
@@ -74,7 +74,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-char *_version = "$Revision: 1.43 $";
+char *_version = "$Revision: 1.44 $";
 #endif
 
 /*
@@ -208,7 +208,7 @@ static void ms_oper(struct Client *client_p, struct Client *source_p,
  * output       -
  */
 
-struct ConfItem *find_password_aconf(char *name, struct Client *source_p)
+static struct ConfItem *find_password_aconf(char *name, struct Client *source_p)
 {
   struct ConfItem *aconf;
 

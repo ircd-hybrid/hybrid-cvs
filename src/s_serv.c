@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.246 2002/02/25 17:39:16 androsyn Exp $
+ *  $Id: s_serv.c,v 7.247 2002/02/27 17:51:45 enygma Exp $
  */
 
 #include <sys/types.h>
@@ -1303,7 +1303,7 @@ static void start_io(struct Client *server)
  * output       - success: 0 / failure: -1
  * side effect  - fork, and exec SERVLINK to handle this connection
  */
-int fork_server(struct Client *server)
+static int fork_server(struct Client *server)
 {
   int  ret;
   int  i;
@@ -1821,7 +1821,7 @@ remove_lazylink_flags(unsigned long mask)
  * output	- NONE
  * side effects	-
  */
-void burst_members(struct Client *client_p, dlink_list *list)
+static void burst_members(struct Client *client_p, dlink_list *list)
 {
   struct Client *target_p;
   dlink_node *ptr;
@@ -1846,7 +1846,7 @@ void burst_members(struct Client *client_p, dlink_list *list)
  * output	- NONE
  * side effects	- This version also has to check the bitmap for lazylink
  */
-void burst_ll_members(struct Client *client_p, dlink_list *list)
+static void burst_ll_members(struct Client *client_p, dlink_list *list)
 {
   struct Client *target_p;
   dlink_node *ptr;

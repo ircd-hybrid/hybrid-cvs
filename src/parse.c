@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.121 2002/02/17 05:39:27 androsyn Exp $
+ *  $Id: parse.c,v 7.122 2002/02/27 17:51:45 enygma Exp $
  */
 
 #include <assert.h>
@@ -446,7 +446,7 @@ void mod_del_cmd(struct Message *msg)
  * output	- pointer to struct Message
  * side effects - 
  */
-struct Message *hash_parse(char *cmd)
+static struct Message *hash_parse(char *cmd)
 {
   struct MessageHash *ptr;
   int    msgindex;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.27 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: modules.h,v 7.28 2002/02/27 17:51:36 enygma Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -29,6 +29,13 @@
 #include "parse.h"
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
+#endif
+
+#if defined(HAVE_SHL_LOAD)
+#include <dl.h>
+#endif
+#if !defined(STATIC_MODULES) && (defined(HAVE_DLOPEN) || defined(HAVE_LIBDL))
+#include <dlfcn.h>
 #endif
 
 #include "ircd_handler.h"
