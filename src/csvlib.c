@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.10 2003/05/23 03:08:11 db Exp $
+ *  $Id: csvlib.c,v 7.11 2003/05/23 05:52:55 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -363,12 +363,11 @@ getfield(char *newline)
     field++;
 
   /* skip over any beginning " */
-  if(*field == '"')
-  {
+  if(*field == '"') {
     field++;
-    end = field;
   }
-
+  end = field;
+  
   for (;;)
   {
     /* At end of string, mark it as end and return */

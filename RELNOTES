@@ -1,3 +1,15 @@
+--ircd-hybrid-7rc10 RELNOTES
+o) fixed 99% CPU bug
+o) fixed rare core bug in s_bsd.c
+o) fixed compile warning in m_nick.c
+o) casts to fix comm_setselect compile warnings
+o) fixed core that can happen in check_clean_nick()
+o) get_client_name() would only return client->name for remote fixed
+o) fixed typo that caused odd /list hesitation.
+o) fixed limit desync bug
+o) fixed possible core in /stats
+o) cleaned up hostmask code that cored server in /rehash
+
 -- ircd-hybrid-7rc9 RELNOTES
 o) massive revert to rc4 exit_client code
 o) fixed handling of file descriptors 0 through 3
@@ -154,4 +166,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.70 2003/05/16 05:07:56 lusky Exp $
+$Id: RELNOTES,v 1.71 2003/05/23 05:52:53 joshk Exp $
