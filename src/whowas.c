@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.c,v 7.25 2003/05/25 01:05:25 michael Exp $
+ *  $Id: whowas.c,v 7.26 2003/05/27 19:55:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -70,6 +70,13 @@ add_history(struct Client *client_p, int online)
   assert(client_p != NULL);
 
   if (client_p == NULL)
+    return;
+
+  /* XXX when is this possible? Looks like it could happen
+   * (with a half registered client.)
+   * and what is the correct action here? - Dianora
+   */
+  if (client_p->user->server == NULL)
     return;
 
   if (who->hashv != -1)
