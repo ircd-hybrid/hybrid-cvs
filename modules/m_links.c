@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 1.14 2000/12/29 05:46:10 db Exp $
+ *   $Id: m_links.c,v 1.15 2000/12/29 14:08:41 madmax Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -69,7 +69,20 @@ char *_version = "20001122";
 
 int m_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
+
+
   SendMessageFile(sptr, &ConfigFileEntry.linksfile);
+
+    
+/*
+ * Print our own info so at least it looks like a normal links
+ * then print out the file (which may or may not be empty)
+ */
+  
+  sendto_one(sptr, form_str(RPL_LINKS),
+                           me.name, parv[0], me.name, me.name,
+                           0, me.info);
+      
   sendto_one(sptr, form_str(RPL_ENDOFLINKS), me.name, parv[0], "*");
   return 0;
 }
