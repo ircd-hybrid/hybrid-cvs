@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_svinfo.c,v 1.11 2001/01/04 16:10:25 davidt Exp $
+ *   $Id: m_svinfo.c,v 1.12 2001/01/04 20:51:58 a1kmm Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -103,10 +103,10 @@ static int ms_svinfo(struct Client *cptr, struct Client *sptr,
   if (deltat > ConfigFileEntry.ts_max_delta)
     {
       sendto_realops_flags(FLAGS_ALL,
-       "Link %s dropped, excessive TS delta (my TS=%d, their TS=%d, delta=%d)",
+       "Link %s dropped, excessive TS delta (my TS=%lu, their TS=%lu, delta=%lu)",
                  get_client_name(sptr, TRUE), CurrentTime, theirtime,deltat);
       log(L_NOTICE,
-       "Link %s dropped, excessive TS delta (my TS=%d, their TS=%d, delta=%d)",
+       "Link %s dropped, excessive TS delta (my TS=%lu, their TS=%lu, delta=%lu)",
                  get_client_name(sptr, TRUE), CurrentTime, theirtime,deltat);
       return exit_client(sptr, sptr, sptr, "Excessive TS delta");
     }
@@ -114,7 +114,7 @@ static int ms_svinfo(struct Client *cptr, struct Client *sptr,
   if (deltat > ConfigFileEntry.ts_warn_delta)
     { 
       sendto_realops_flags(FLAGS_ALL,
-                 "Link %s notable TS delta (my TS=%d, their TS=%d, delta=%d)",
+                 "Link %s notable TS delta (my TS=%lu, their TS=%lu, delta=%lu)",
 			   get_client_name(sptr, MASK_IP),
 			   CurrentTime, theirtime, deltat);
     }

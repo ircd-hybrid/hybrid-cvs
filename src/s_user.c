@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.98 2001/01/04 20:36:54 a1kmm Exp $
+ *  $Id: s_user.c,v 7.99 2001/01/04 20:52:03 a1kmm Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -327,8 +327,9 @@ int register_local_user(struct Client *cptr, struct Client *sptr,
   int  status;
   dlink_node *ptr;
   dlink_node *m;
+#ifdef USE_IDS
   char *id;
-
+#endif
   assert(0 != sptr);
   assert(sptr->username != username);
 

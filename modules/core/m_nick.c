@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.44 2001/01/04 20:02:57 db Exp $
+ *   $Id: m_nick.c,v 1.45 2001/01/04 20:51:57 a1kmm Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -55,8 +55,6 @@ static int nick_from_server(struct Client *, struct Client *, int, char **,
 static int set_initial_nick(struct Client *cptr, struct Client *sptr,
                             char *nick);
 static int change_local_nick(struct Client *cptr, struct Client *sptr,
-                             char *nick);
-static int nick_equal_server(struct Client *cptr, struct Client *sptr,
                              char *nick);
 static int clean_nick_name(char* nick);
 
