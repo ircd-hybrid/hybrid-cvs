@@ -21,7 +21,7 @@
  * see the header file (dbuf.h).
  *
  *
- * $Id: dbuf.c,v 7.4 1999/09/03 05:05:36 tomh Exp $
+ * $Id: dbuf.c,v 7.5 1999/09/04 01:16:41 tomh Exp $
  */
 #include "dbuf.h"
 #include "common.h"
@@ -37,9 +37,6 @@
  * implementation of 'dbuf'--would be "hidden" if C had such
  * keyword...
  * doh!!! ya just gotta know how to do it ;-)
- */
-/*
- * DBUF_SIZE must be a power of 2 so we can mask for the offset
  */
 #define DBUF_SIZE 2048
 
@@ -341,7 +338,7 @@ int dbuf_getmsg(struct DBuf* dyn, char* buf, size_t length)
       *buf++ = *start++;
 
     count = start - db->start;
-    if (IsEol(*start)) {
+    if (start < end && IsEol(*start)) {
       *buf = '\0';
       copied += count;
       dbuf_delete(dyn, copied);
