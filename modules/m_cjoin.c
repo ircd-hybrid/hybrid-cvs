@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.29 2001/04/04 15:22:23 androsyn Exp $
+ *   $Id: m_cjoin.c,v 1.30 2001/05/12 10:27:38 kreator Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -89,13 +89,14 @@ static void m_cjoin(struct Client *client_p,
       return;
     }
 
-  if (ConfigFileEntry.vchans_oper_only && !IsOper(source_p))
+  if ((ConfigFileEntry.vchans_oper_only && !IsOper(source_p)) || 
+       ConfigFileEntry.disable_vchans)
     {
       sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                  me.name, parv[0]);
       return;
     }
-
+      
   if (*parv[1] == '\0')
     {
       sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
