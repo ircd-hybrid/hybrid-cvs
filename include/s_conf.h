@@ -21,9 +21,12 @@
  */
 
 /*
- * $Id: s_conf.h,v 7.12 2000/01/23 04:53:36 db Exp $
+ * $Id: s_conf.h,v 7.13 2000/02/01 04:30:01 db Exp $
  *
  * $Log: s_conf.h,v $
+ * Revision 7.13  2000/02/01 04:30:01  db
+ * - improvements to connect section. allow multiple hub_masks etc.
+ *
  * Revision 7.12  2000/01/23 04:53:36  db
  * - more cleanup on new conf file parser..
  *   using "auth" instead of "client" as per Kev's document..
@@ -388,6 +391,10 @@ typedef struct
 #ifdef GLINES
   char  *glinefile;
 #endif
+
+  char* logpath;
+  char* operlog;
+  char* glinelog;
 
   MessageFile helpfile;
   MessageFile motd;
