@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: numeric.c,v 7.6 2000/12/01 01:00:03 db Exp $
+ *   $Id: numeric.c,v 7.7 2000/12/01 18:16:16 davidt Exp $
  */
 #include "numeric.h"
 #include "irc_string.h"
@@ -24,9 +24,7 @@
 
 #include <assert.h>
 
-#ifndef USE_GETTEXT
 #include "messages.tab"
-#endif
 
 /*
  * form_str
@@ -41,11 +39,8 @@ const char* form_str(int numeric)
   assert(-1 < numeric);
   assert(numeric < ERR_LAST_ERR_MSG);
   assert(0 != replies[numeric]);
-#ifdef USE_GETTEXT  
-  return (const char *) getmsg( replies[numeric] );
-#else
-  return replies[numeric];
-#endif
+  
+  return (const char *) _( replies[numeric] );
 }
 
 

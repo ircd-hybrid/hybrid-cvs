@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.41 2000/12/01 00:59:59 db Exp $
+ * $Id: config.h,v 7.42 2000/12/01 18:16:13 davidt Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -597,9 +597,10 @@ error CLIENT_FLOOD undefined.
 /* This may belong elsewhere... -dt */
 #if defined( HAVE_GETTEXT ) && defined( MSGPATH )
 #define USE_GETTEXT 1
-#define getmsg(a)       (gettext(a))
+#define _(a)       (gettext(a))
 #else
-#define getmsg(a)       (a)
+#undef USE_GETTEXT
+#define _(a)       (a)
 #endif
 
 /* tuck this here for now, it will go away eventually...
