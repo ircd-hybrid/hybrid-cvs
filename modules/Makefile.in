@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.76 2003/05/14 22:29:40 db Exp $
+# $Id: Makefile.in,v 1.77 2003/05/15 07:05:04 joshk Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -108,8 +108,6 @@ HPUX_OBJS = ${SH_OBJS:.so=.sl}
 HPUX_CORE_OBJS = ${SH_CORE_OBJS:.so=.sl}
 
 S_OBJS = ${ALL_SRCS:.c=.o}
-
-DOLLAR = $$
 
 default:	build
 build: all

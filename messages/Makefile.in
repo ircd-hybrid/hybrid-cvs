@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.15 2003/05/11 22:27:39 joshk Exp $
+# $Id: Makefile.in,v 1.16 2003/05/15 07:05:05 joshk Exp $
 #
 RM            = @RM@
 MV            = @MV@
@@ -6,7 +6,8 @@ INSTALL       = @INSTALL@
 INSTALL_DATA  = @INSTALL_DATA@
 prefix        = @prefix@
 messagedir    = @prefix@/messages
-CLOBBER       = @CLOBBER@
+
+CLOBBER=@CLOBBER@
 
 LANGFILES     = ayb.lang            \
                 custom.lang         \
@@ -26,7 +27,7 @@ install:
 	-@echo    "Installing language files to $(messagedir)...";          \
 
 	@for i in $(LANGFILES); do                                          \
-		if test -f $(messagedir)/$$i; then                          \
+		if test -f $(messagedir)/$$i -a -z "$(CLOBBER)"; then         \
 			echo $(MV) $(messagedir)/$$i $(messagedir)/$$i.old; \
 			$(MV) $(messagedir)/$$i $(messagedir)/$$i.old;      \
 		fi;                                                         \
@@ -34,15 +35,7 @@ install:
 		$(INSTALL_DATA) $$i $(messagedir);                          \
 	done
 
-	@if test "$(CLOBBER)" = "yes"; then \
-		${RM} -f $(messagedir)/*.old; \
-	fi
-
 distclean:
 	${RM} -f Makefile
 
-build:
-
-depend:
-
-clean:
+all build clean depend:

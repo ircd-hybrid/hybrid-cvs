@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.128 2003/05/14 18:15:20 db Exp $
+# $Id: Makefile.in,v 7.129 2003/05/15 07:04:58 joshk Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -16,12 +16,16 @@ MKDEP		= @MKDEP@
 MV		= @MV@
 RM		= @RM@
 YACC		= @YACC@
+
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 bindir		= @bindir@
 libexecdir	= @libexecdir@
 sysconfdir	= @sysconfdir@
 localstatedir	= @localstatedir@
+
+# must not have whitespace here
+CLOBBER=@CLOBBER@
 
 NETIO_SRC	= s_bsd_@SELECT_TYPE@.c
 INET_MISC	= @INET_MISC@
@@ -124,7 +128,7 @@ install-mkdirs:
 
 install: install-mkdirs build
 	@for i in $(PROGS); do \
-		if test -f $(bindir)/$$i; then \
+		if test -f $(bindir)/$$i -a -z "$(CLOBBER)"; then \
 			echo $(MV) $(bindir)/$$i $(bindir)/$$i.old; \
 			$(MV) $(bindir)/$$i $(bindir)/$$i.old; \
 		fi; \

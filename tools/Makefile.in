@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.36 2003/05/15 04:38:30 joshk Exp $
+# $Id: Makefile.in,v 7.37 2003/05/15 07:04:59 joshk Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -10,6 +10,8 @@ LDFLAGS   	= @LDFLAGS@
 MV		= @MV@
 RM		= @RM@
 LN              = @LN@
+
+CLOBBER=@CLOBBER@
 
 SSL_LIBS	= @SSL_LIBS@
 SSL_INCLUDES	= @SSL_INCLUDES@
@@ -54,7 +56,7 @@ depend:
 install: build
 	mkdir -p $(bindir)
 	@for i in $(PROGS); do \
-		if test -f $(bindir)/$$i; then \
+		if test -f $(bindir)/$$i -a -z "$(CLOBBER)"; then \
 			echo $(MV) $(bindir)/$$i $(bindir)/$$i.old; \
 			$(MV) $(bindir)/$$i $(bindir)/$$i.old; \
 		fi; \
