@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.28 2001/03/28 05:50:15 db Exp $
+ * $Id: list.c,v 7.29 2001/03/28 19:56:17 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -39,16 +39,6 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-
-/*
- * re-written to use Wohali (joant@cadence.com)
- * block allocator routines. very nicely done Wohali
- */
-
-#define LINK_PREALLOCATE 1024
-#define USERS_PREALLOCATE 1024
-
-void    outofmemory();
 
 void initlists()
 {
@@ -71,14 +61,10 @@ struct User* make_user(struct Client *client_p)
   if (!user)
     {
       user = (struct User *)MyMalloc(sizeof (struct User));
-      if( user == (struct User *)NULL)
-        outofmemory();
-
-      memset((void *)user, 0, sizeof(struct User));
 
       /* The commented out lines here are
        * for documentation purposes only
-       * as they are zeroed by memset above
+       * as they are zeroed by MyMalloc
        */
 
 #if 0
@@ -113,11 +99,9 @@ struct Server *make_server(struct Client *client_p)
     {
       serv = (struct Server *)MyMalloc(sizeof(struct Server));
 
-      memset((void *)serv, 0, sizeof(struct Server));
-
       /* The commented out lines here are
        * for documentation purposes only
-       * as they are zeroed by memset above
+       * as they are zeroed by MyMalloc above
        */
 #if 0
       serv->user = NULL;
@@ -153,12 +137,12 @@ void _free_user(struct User* user, struct Client* client_p)
           user->invited.head || user->channel.head)
       {
         sendto_realops_flags(FLAGS_ALL,
-			   "* %#lx user (%s!%s@%s) %#lx %#lx %#lx %d %d *",
-			   (unsigned long)client_p, client_p ? client_p->name : "<noname>",
-			   client_p->username, client_p->host, (unsigned long)user,
-			   (unsigned long)user->invited.head,
-			   (unsigned long)user->channel.head, user->joined,
-			   user->refcnt);
+			     "* %#lx user (%s!%s@%s) %#lx %#lx %#lx %d %d *",
+			     (unsigned long)client_p, client_p ? client_p->name : "<noname>",
+			     client_p->username, client_p->host, (unsigned long)user,
+			     (unsigned long)user->invited.head,
+			     (unsigned long)user->channel.head, user->joined,
+			     user->refcnt);
         assert(0);
       }
 
@@ -177,9 +161,7 @@ dlink_node *make_dlink_node()
 {
   dlink_node *lp;
 
-  lp = (struct dlink_node *)MyMalloc(sizeof(dlink_node));
-  if (lp == NULL)
-    outofmemory();
+  lp = (dlink_node *)MyMalloc(sizeof(dlink_node));
 
   lp->next = NULL;
   lp->prev = NULL;

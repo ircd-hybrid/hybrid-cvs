@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.155 2001/03/28 05:50:13 db Exp $
+ *  $Id: client.c,v 7.156 2001/03/28 19:56:17 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -82,17 +82,6 @@ void init_client_heap(void)
 }
 
 /*
- * clean_client_heap
- *
- * inputs	- NONE
- * output	- NONE
- * side effects	- 
- */
-void clean_client_heap(void)
-{
-}
-
-/*
  * make_client - create a new Client struct and set it to initial state.
  *
  *      from == NULL,   create local client (a client connected
@@ -109,10 +98,6 @@ struct Client* make_client(struct Client* from)
   dlink_node *m;
 
   client_p = (struct Client *)MyMalloc(sizeof(struct Client));
-  if (client_p == NULL)
-    outofmemory();
-
-  memset(client_p, 0, sizeof(struct Client));
       
   if (from == NULL)
     {
@@ -120,7 +105,6 @@ struct Client* make_client(struct Client* from)
       client_p->since = client_p->lasttime = client_p->firsttime = CurrentTime;
 
       localClient = (struct LocalUser *)MyMalloc(sizeof(struct LocalUser));
-      memset(localClient, 0, sizeof(struct LocalUser));
 
       if (localClient == NULL)
         outofmemory();
