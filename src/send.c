@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.165 2001/12/10 07:15:11 androsyn Exp $
+ *   $Id: send.c,v 7.166 2001/12/10 23:21:34 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1043,9 +1043,13 @@ sendto_anywhere(struct Client *to, struct Client *from,
   va_list args;
   buf_head_t linebuf;
 
+  /* this check stops clients privmsg'ing themselves: BAD. */
+#if 0
   /* This check is worth doing... */
   if (from->from == to->from)
     return;
+#endif
+
   linebuf_newbuf(&linebuf);
   va_start(args, pattern);
 
