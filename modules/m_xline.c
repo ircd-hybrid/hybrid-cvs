@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.12 2003/05/24 18:42:41 joshk Exp $
+ *  $Id: m_xline.c,v 1.13 2003/05/24 19:25:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&xline_msgtab);
   mod_del_cmd(&unxline_msgtab);
 }
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 #endif
 
 
@@ -230,7 +230,7 @@ ms_xline(struct Client *client_p, struct Client *source_p,
   if (!match(parv[1], me.name))
     return;
 
-  if (find_cluster((char *)source_p->user->server, CLUSTER_XLINE))
+  if (find_cluster(source_p->user->server->name, CLUSTER_XLINE))
   {
     if (!valid_xline(source_p, parv[2], parv[4], 0))
       return;
@@ -339,7 +339,7 @@ ms_unxline(struct Client *client_p, struct Client *source_p,
   if (!IsPerson(source_p))
     return;
 
-  if (find_cluster((char *)source_p->user->server, CLUSTER_UNXLINE))
+  if (find_cluster(source_p->user->server->name, CLUSTER_UNXLINE))
     remove_xline(source_p, parv[2], 1);
   else if (find_u_conf(source_p->user->server->name,
                        source_p->username, source_p->host,

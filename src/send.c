@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.259 2003/05/24 17:45:38 db Exp $
+ *  $Id: send.c,v 7.260 2003/05/24 19:25:31 michael Exp $
  */
 
 #include "stdinc.h"
@@ -958,7 +958,7 @@ match_it(const struct Client *one, const char *mask, int what)
   if (what == MATCH_HOST)
     return(match(mask, one->host));
 
-  return(match(mask, (char *)one->user->server));
+  return(match(mask, one->user->server->name));
 }
 
 /* sendto_match_butone()

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.223 2003/05/24 17:45:35 db Exp $
+ *  $Id: s_conf.h,v 7.224 2003/05/24 19:25:27 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -388,7 +388,7 @@ extern void write_conf_line(struct Client *, struct ConfItem *,
 			    const char *, time_t);
 extern void write_resv_line(struct Client *, int type, void *);
 
-extern int remove_conf_line(int, struct Client *, char *, char *);
+extern int remove_conf_line(int, struct Client *, const char *, const char *);
 extern void add_temp_kline(struct ConfItem *);
 extern void add_temp_dline(struct ConfItem *);
 extern void cleanup_tklines(void *notused);
@@ -405,7 +405,7 @@ extern void conf_add_u_conf(struct ConfItem *);
 extern void conf_add_conf(struct ConfItem *);
 
 /* XXX consider moving these into csvlib.h */
-void parse_csv_file(FBFILE *file, int conf_type);
+extern void parse_csv_file(FBFILE *file, int conf_type);
 extern char *getfield(char *newline);
 
 extern char *get_oper_name(struct Client *client_p);

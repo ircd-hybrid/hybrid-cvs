@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: cluster.h,v 7.1 2003/05/24 16:15:11 bill Exp $
+ *  $Id: cluster.h,v 7.2 2003/05/24 19:25:27 michael Exp $
  */
 
 #ifndef __CLUSTER_H_
@@ -30,10 +30,9 @@
 
 struct Client;
 
-dlink_list cluster_list;
-
 struct cluster
 {
+  dlink_node node;
   char name[HOSTLEN + 1];
   int type;
 };
@@ -50,25 +49,25 @@ struct cluster
 			 CLUSTER_UNXLINE | CLUSTER_RESV | CLUSTER_UNRESV |\
 			 CLUSTER_LOCOPS)
 
-#define IsClusterKline(x)	(x->type & CLUSTER_KLINE)
-#define IsClusterUnkline(x)	(x->type & CLUSTER_UNKLINE)
-#define IsClusterXline(x)	(x->type & CLUSTER_XLINE)
-#define IsClusterUnxline(x)	(x->type & CLUSTER_UNXLINE)
-#define IsClusterResv(x)	(x->type & CLUSTER_RESV)
-#define IsClusterUnresv(x)	(x->type & CLUSTER_UNRESV)
-#define IsClusterLocops(x)	(x->type & CLUSTER_LOCOPS)
+#define IsClusterKline(x)	((x)->type & CLUSTER_KLINE)
+#define IsClusterXline(x)	((x)->type & CLUSTER_XLINE)
+#define IsClusterUnkline(x)	((x)->type & CLUSTER_UNKLINE)
+#define IsClusterUnxline(x)	((x)->type & CLUSTER_UNXLINE)
+#define IsClusterResv(x)	((x)->type & CLUSTER_RESV)
+#define IsClusterUnresv(x)	((x)->type & CLUSTER_UNRESV)
+#define IsClusterLocops(x)	((x)->type & CLUSTER_LOCOPS)
 
-struct cluster *make_cluster(void);
-void add_cluster(struct cluster *);
-int find_cluster(char *, int);
-unsigned int cluster_servers(void);
+extern struct cluster *make_cluster(void);
+extern void add_cluster(struct cluster *);
+extern int find_cluster(const char *, int);
+extern unsigned int cluster_servers(void);
 
-void cluster_kline(struct Client *, int, char *, char *, char *);
-void cluster_unkline(struct Client *, char *, char *);
-void cluster_xline(struct Client *, char *, int, char *);
-void cluster_unxline(struct Client *, char *);
-void cluster_resv(struct Client *, char *, char *);
-void cluster_unresv(struct Client *, char *);
-void cluster_locops(struct Client *, char *);
-
+extern void clear_clusters(void);
+extern void cluster_kline(struct Client *, int, const char *, const char *, const char *);
+extern void cluster_unkline(struct Client *, const char *, const char *);
+extern void cluster_xline(struct Client *, const char *, int, const char *);
+extern void cluster_unxline(struct Client *, const char *);
+extern void cluster_resv(struct Client *, const char *, const char *);
+extern void cluster_unresv(struct Client *, const char *);
+extern void cluster_locops(struct Client *, const char *);
 #endif /* __CLUSTER_H_ */

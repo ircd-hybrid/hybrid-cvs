@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: cluster.c,v 7.1 2003/05/24 16:15:15 bill Exp $
+ *  $Id: cluster.c,v 7.2 2003/05/24 19:25:31 michael Exp $
  */
 
 #include "cluster.h"
@@ -30,25 +30,42 @@
 #include "send.h"
 #include "list.h"
 
+
+static dlink_list cluster_list = { NULL, NULL, 0 };
+
 struct cluster *
 make_cluster(void)
 {
   struct cluster *cptr;
 
-  cptr = (struct cluster *) MyMalloc(sizeof(struct cluster));
-  memset(cptr, 0, sizeof(struct cluster));
-
-  return cptr;
+  cptr = (struct cluster *)MyMalloc(sizeof(struct cluster));
+  return(cptr);
 }
 
 void
 add_cluster(struct cluster *cptr)
 {
-  dlinkAdd(cptr, make_dlink_node(), &cluster_list);
+  dlinkAdd(cptr, &cptr->node, &cluster_list);
+}
+
+void
+clear_clusters(void)
+{
+  dlink_node *ptr;
+  dlink_node *next_ptr;
+  struct cluster *cptr;
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, cluster_list.head)
+  {
+    cptr = ptr->data;
+
+    dlinkDelete(&cptr->node, &cluster_list);
+    MyFree(cptr);
+  }
 }
 
 int
-find_cluster(char *name, int type)
+find_cluster(const char *name, int type)
 {
   struct cluster *cptr;
   dlink_node *ptr;
@@ -71,8 +88,8 @@ cluster_servers(void)
 }
 
 void
-cluster_kline(struct Client *source_p, int tkline_time, char *user,
-              char *host, char *reason)
+cluster_kline(struct Client *source_p, int tkline_time, const char *user,
+              const char *host, const char *reason)
 {
   struct cluster *cptr;
   dlink_node *ptr;
@@ -89,7 +106,7 @@ cluster_kline(struct Client *source_p, int tkline_time, char *user,
 }
 
 void
-cluster_unkline(struct Client *source_p, char *user, char *host)
+cluster_unkline(struct Client *source_p, const char *user, const char *host)
 {
   struct cluster *cptr;
   dlink_node *ptr;
@@ -106,8 +123,8 @@ cluster_unkline(struct Client *source_p, char *user, char *host)
 }
 
 void
-cluster_xline(struct Client *source_p, char *gecos,
-              int xtype, char *reason)
+cluster_xline(struct Client *source_p, const char *gecos,
+              int xtype, const char *reason)
 {
   struct cluster *cptr;
   dlink_node *ptr;
@@ -124,7 +141,7 @@ cluster_xline(struct Client *source_p, char *gecos,
 }
 
 void
-cluster_unxline(struct Client *source_p, char *gecos)
+cluster_unxline(struct Client *source_p, const char *gecos)
 {
   struct cluster *cptr;
   dlink_node *ptr;
@@ -141,7 +158,7 @@ cluster_unxline(struct Client *source_p, char *gecos)
 }
 
 void
-cluster_resv(struct Client *source_p, char *name, char *reason)
+cluster_resv(struct Client *source_p, const char *name, const char *reason)
 {
   struct cluster *cptr;
   dlink_node *ptr;
@@ -158,7 +175,7 @@ cluster_resv(struct Client *source_p, char *name, char *reason)
 }
 
 void
-cluster_unresv(struct Client *source_p, char *name)
+cluster_unresv(struct Client *source_p, const char *name)
 {
   struct cluster *cptr;
   dlink_node *ptr;
@@ -175,7 +192,7 @@ cluster_unresv(struct Client *source_p, char *name)
 }
 
 void
-cluster_locops(struct Client *source_p, char *message)
+cluster_locops(struct Client *source_p, const char *message)
 {
   struct cluster *cptr;
   dlink_node *ptr;

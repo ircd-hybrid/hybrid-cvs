@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.12 2003/05/24 03:25:32 db Exp $
+ *  $Id: csvlib.c,v 7.13 2003/05/24 19:25:31 michael Exp $
  */
 
 #include "stdinc.h"
@@ -24,17 +24,15 @@
 static void parse_csv_line(char *line, ...);
 static int write_csv_line(FBFILE *out, const char *format, ...);
 static int flush_write(struct Client *source_p, FBFILE *in, FBFILE* out, 
-		       char *buf, char *temppath);
+                       const char *buf, const char *temppath);
 
-/*
- * parse_csv_file
+/* parse_csv_file()
  *
  * inputs	- FILE pointer
  * 		- type of conf to parse
  * output	- none
  * side effects	-
  */
-
 void
 parse_csv_file(FBFILE *file, int conf_type)
 {
@@ -468,8 +466,7 @@ getfield(char *newline)
   return (NULL);
 }
 
-/*
- * remove_conf_line
+/* remove_conf_line()
  *
  * inputs	- type of kline to remove
  *		- pointer to oper removing
@@ -478,7 +475,7 @@ getfield(char *newline)
  * side effects	-
  */
 int
-remove_conf_line(int type, struct Client *source_p, char *pat1, char *pat2)
+remove_conf_line(int type, struct Client *source_p, const char *pat1, const char *pat2)
 {
   const char *filename;
   FBFILE *in, *out;
@@ -610,10 +607,9 @@ remove_conf_line(int type, struct Client *source_p, char *pat1, char *pat2)
  *
  * -Dianora
  */
-
 static int
 flush_write(struct Client *source_p, FBFILE *in, FBFILE* out, 
-	    char *buf, char *temppath)
+            const char *buf, const char *temppath)
 {
   int error_on_write = (fbputs(buf, out) < 0) ? (-1) : (0);
 

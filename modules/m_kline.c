@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.136 2003/05/24 17:45:36 db Exp $
+ *  $Id: m_kline.c,v 1.137 2003/05/24 19:25:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&dline_msgtab);
 }
 
-const char *_version = "$Revision: 1.136 $";
+const char *_version = "$Revision: 1.137 $";
 #endif
 
 /* Local function prototypes */
@@ -290,8 +290,8 @@ ms_kline(struct Client *client_p, struct Client *source_p,
                 parv[0], parv[1], parv[2], parv[3], parv[4], parv[5]);
 
 
-  kuser = parv[3];
-  khost = parv[4];
+  kuser   = parv[3];
+  khost   = parv[4];
   kreason = parv[5];
 
   if (!match(parv[1],me.name))
@@ -300,7 +300,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
   if (!IsPerson(source_p))
     return;
 
-  if (find_cluster((char *)source_p->user->server, CLUSTER_KLINE))
+  if (find_cluster(source_p->user->server->name, CLUSTER_KLINE))
   {
     if (!valid_user_host(source_p, kuser, khost) || !valid_wild_card(kuser, khost) ||
         !valid_comment(source_p, kreason))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.62 2003/05/24 18:42:41 joshk Exp $
+ *  $Id: m_unkline.c,v 1.63 2003/05/24 19:25:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -76,10 +76,10 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.62 $";
+const char *_version = "$Revision: 1.63 $";
 #endif
 
-static int remove_tkline_match(char *,char *);
+static int remove_tkline_match(const char *, const char *);
 
 
 /*
@@ -93,8 +93,8 @@ static int remove_tkline_match(char *,char *);
 *
 */
 static void
-mo_unkline (struct Client *client_p,struct Client *source_p,
-	    int parc,char *parv[])
+mo_unkline(struct Client *client_p,struct Client *source_p,
+           int parc,char *parv[])
 {
   char *user, *host;
 
@@ -186,7 +186,7 @@ mo_unkline (struct Client *client_p,struct Client *source_p,
 static void
 ms_unkline(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
-  char *kuser, *khost;
+  const char *kuser, *khost;
 
   if (parc != 4)
     return;
@@ -203,7 +203,7 @@ ms_unkline(struct Client *client_p, struct Client *source_p, int parc, char *par
   if (!IsPerson(source_p))
     return;
 
-  if (find_cluster((char *)source_p->user->server, CLUSTER_UNKLINE))
+  if (find_cluster(source_p->user->server->name, CLUSTER_UNKLINE))
   {
     if (remove_tkline_match(khost, kuser))
     {
@@ -265,7 +265,7 @@ ms_unkline(struct Client *client_p, struct Client *source_p, int parc, char *par
  * Side effects: Any matching tklines are removed.
  */
 static int
-remove_tkline_match(char *host, char *user)
+remove_tkline_match(const char *host, const char *user)
 {
   struct ConfItem *tk_c;
   dlink_node *tk_n;
@@ -305,10 +305,10 @@ remove_tkline_match(char *host, char *user)
 **      parv[1] = dline to remove
 */
 static void
-mo_undline (struct Client *client_p, struct Client *source_p,
-            int parc,char *parv[])
+mo_undline(struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
 {
-  char  *cidr;
+  const char  *cidr;
 
   if (!IsOperUnkline(source_p))
   {

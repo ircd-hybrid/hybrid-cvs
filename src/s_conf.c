@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.402 2003/05/24 17:45:38 db Exp $
+ *  $Id: s_conf.c,v 7.403 2003/05/24 19:25:31 michael Exp $
  */
 
 #include "stdinc.h"
@@ -32,6 +32,7 @@
 #include "channel.h"
 #include "class.h"
 #include "client.h"
+#include "cluster.h"
 #include "common.h"
 #include "event.h"
 #include "hash.h"
@@ -2041,6 +2042,7 @@ clear_out_old_conf(void)
   ServerInfo.rsa_private_key_file = NULL;
 #endif
 
+  clear_clusters();
   /* clean out old resvs from the conf */
   clear_conf_resv();
 

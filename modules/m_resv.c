@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.24 2003/05/24 18:12:53 db Exp $
+ *  $Id: m_resv.c,v 1.25 2003/05/24 19:25:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.24 $";
+const char *_version = "$Revision: 1.25 $";
 #endif
 
 /* mo_resv()
@@ -140,20 +140,21 @@ ms_resv(struct Client *client_p, struct Client *source_p,
   if (!IsPerson(source_p))
     return;
 
-  if (find_cluster((char *)source_p->user->server, CLUSTER_RESV))
+  if (find_cluster(source_p->user->server->name, CLUSTER_RESV))
     parse_resv(source_p, parv[2], parv[3], 1);
-  else if (find_u_conf((char *)source_p->user->server,
+  else if (find_u_conf(source_p->user->server->name,
                        source_p->username, source_p->host,
                        SHARED_RESV))
-    parse_resv(source_p, parv[2], parv[3], 0);
+  parse_resv(source_p, parv[2], parv[3], 0);
 }
 
 /* mo_unresv()
  *   parv[0] = sender prefix
  *   parv[1] = channel/nick to unforbid
  */
-static void mo_unresv(struct Client *client_p, struct Client *source_p,
-                      int parc, char *parv[])
+static void
+mo_unresv(struct Client *client_p, struct Client *source_p,
+          int parc, char *parv[])
 {
   if (EmptyString(parv[1]))
   {
@@ -185,7 +186,8 @@ static void mo_unresv(struct Client *client_p, struct Client *source_p,
  *     parv[2] = resv to remove
  */
 static void
-ms_unresv(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
+ms_unresv(struct Client *client_p, struct Client *source_p,
+          int parc, char *parv[])
 {
   if ((parc != 3) || EmptyString(parv[2]))
     return;
@@ -200,9 +202,9 @@ ms_unresv(struct Client *client_p, struct Client *source_p, int parc, char *parv
   if (!IsPerson(source_p))
     return;
 
-  if (find_cluster((char *)source_p->user->server, CLUSTER_UNRESV))
+  if (find_cluster(source_p->user->server->name, CLUSTER_UNRESV))
     remove_resv(source_p, parv[2], 1);
-  else if (find_u_conf((char *)source_p->user->server,
+  else if (find_u_conf(source_p->user->server->name,
                        source_p->username, source_p->host,
                        SHARED_UNRESV))
     remove_resv(source_p, parv[2], 0);
