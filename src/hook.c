@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: hook.c,v 7.2 2001/01/17 04:01:48 ejb Exp $
+ * $Id: hook.c,v 7.3 2001/01/17 04:19:39 ejb Exp $
  */
 
 /* hooks are used by modules to hook into events called by other parts of
@@ -44,6 +44,8 @@ new_hook(char *name)
 	hook *h;
 	
 	h = malloc(sizeof(hook));
+	memset(h, 0, sizeof(hook));
+
 	h->name = malloc(strlen(name) + 1);
 	strcpy(h->name, name);
 	return h;
