@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.12 2002/06/07 14:22:45 leeh Exp $
+ * $Id: m_force.c,v 1.13 2002/06/07 23:13:50 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-char *_version = "$Revision: 1.12 $";
+char *_version = "$Revision: 1.13 $";
 #endif
 
 /*
@@ -166,6 +166,10 @@ static void mo_forcejoin(struct Client *client_p, struct Client *source_p,
 	              ":%s SJOIN %lu %s + :%c%s",
 	              me.name, (unsigned long) chptr->channelts,
 	              chptr->chname, type ? sjmode : ' ', target_p->name);
+
+      sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
+                             target_p->name, target_p->username,
+                             target_p->host, chptr->chname);
 
       if(type)
         sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +%c %s",
