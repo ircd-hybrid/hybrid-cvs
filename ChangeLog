@@ -1,3 +1,15 @@
+lusky       2002/09/17 23:23:01 EDT	(20020918_0)
+
+  Modified files:
+    include              patchlevel.h 
+  Log:
+  - rev patchlevel to 7rc4
+  
+  Revision  Changes    Path
+  7.38      +1 -1      ircd-hybrid-7/include/patchlevel.h
+
+
+
 db          2002/09/16 22:13:50 EDT	(20020917_0)
 
   Modified files:
@@ -32043,4 +32055,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4035 2002/09/17 02:13:52 db Exp $
+$Id: ChangeLog,v 7.4036 2002/09/18 03:23:03 lusky Exp $
