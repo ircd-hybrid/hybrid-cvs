@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.251 2002/04/25 08:54:48 leeh Exp $
+ *  $Id: client.c,v 7.252 2002/04/25 09:38:38 leeh Exp $
  */
 
 #include "tools.h"
@@ -1305,7 +1305,7 @@ int exit_client(
        * read/write.
        */
       if(IsClosing(source_p))
-        return;
+        return 0;
 
       SetClosing(source_p);
       
