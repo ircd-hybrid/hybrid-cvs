@@ -1,3 +1,15 @@
+bill        2002/10/06 11:02:16 EDT	(20021006_1)
+
+  Modified files:
+    modules              m_ping.c 
+  Log:
+  - fixed logic error in ms_ping()
+  
+  Revision  Changes    Path
+  1.30      +2 -2      ircd-hybrid-7/modules/m_ping.c
+
+
+
 androsyn    2002/10/05 20:14:46 EDT	(20021006_0)
 
   Modified files:
@@ -32216,4 +32228,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4046 2002/10/06 00:14:48 androsyn Exp $
+$Id: ChangeLog,v 7.4047 2002/10/06 15:02:18 bill Exp $
