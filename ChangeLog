@@ -1,3 +1,7 @@
+*** 20001208_13 by toot
+depend updates
+
+
 *** 20001208_12 by db
 - removed unnecessary strcat in m_whois
 
@@ -1974,7 +1978,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.750 2000/12/08 19:30:37 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.751 2000/12/08 19:59:30 toot Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
