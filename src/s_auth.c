@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.134 2003/07/03 14:54:10 michael Exp $
+ *  $Id: s_auth.c,v 7.135 2003/08/16 11:18:30 stu Exp $
  */
 
 /*
@@ -201,7 +201,7 @@ auth_dns_callback(void* vptr, struct DNSReply *reply)
 	      sizeof(auth->client->host));
       sendheader(auth->client, REPORT_FIN_DNS);
     }
-    else
+    else if(strlen(reply->h_name) > HOSTLEN)
       sendheader(auth->client, REPORT_HOST_TOOLONG);
   }
   else
