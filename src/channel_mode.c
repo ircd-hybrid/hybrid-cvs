@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel_mode.c,v 7.11 2001/12/16 22:22:47 leeh Exp $
+ * $Id: channel_mode.c,v 7.12 2001/12/29 23:29:30 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2269,10 +2269,7 @@ send_mode_changes(struct Client *client_p, struct Client *source_p,
   
   /* Send any resyncs that we need to send... */
   /* XXX - setting -a removes hideops, yet still needs a resync.. */
-#if 0
-  if (chptr->mode.mode & MODE_HIDEOPS)
-  {
-#endif  
+
     for (i = 0; i < resync_count; i++)
     {
       if (resync_ops[i].client_p == NULL)
@@ -2294,12 +2291,10 @@ send_mode_changes(struct Client *client_p, struct Client *source_p,
         sendto_one(resync_ops[i].client_p, ":%s MODE %s -%c %s", me.name,
                    chname, resync_ops[i].c, resync_ops[i].client_p->name);
     }
-#if 0
-  }
-#endif  
 
   /* Send all mode changes to the chanops/halfops, and even peons if
-   * we are not +a... */
+   * we are not +a...
+   */
   st = (chptr->mode.mode & MODE_HIDEOPS) ? ONLY_CHANOPS_HALFOPS : ALL_MEMBERS;
 
   if (IsServer(source_p))
