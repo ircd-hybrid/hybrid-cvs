@@ -1,4 +1,4 @@
-$Id: README,v 7.4 2001/01/08 21:26:20 wcampbel Exp $
+$Id: README,v 7.5 2001/01/13 16:33:03 lusky Exp $
 
 A directory of support programs for ircd.
 
@@ -19,6 +19,3 @@ klineParse.c  - cleans out redundant klines
 viconf - edit your conf file without having to chdir su etc. etc.
          also locks the file if file locking is used.
 
-
---
-$Id: README,v 7.4 2001/01/08 21:26:20 wcampbel Exp $
