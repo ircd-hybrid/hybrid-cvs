@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.160 2002/02/17 00:46:00 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.161 2002/02/17 01:27:35 androsyn Exp $
  */
 
 #include "config.h"
@@ -337,7 +337,7 @@ void close_connection(struct Client *client_p)
       fd_close(client_p->localClient->ctrlfd_r);
       fd_close(client_p->fd_r);
       client_p->localClient->ctrlfd_r = -1;
-      client_p->localClient->fd_r = -1;
+      client_p->fd_r = -1;
 #endif
       client_p->localClient->ctrlfd = -1;
 
