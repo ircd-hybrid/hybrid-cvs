@@ -1,3 +1,23 @@
+bill        2002/09/18 23:12:02 EDT	(20020919_0)
+
+  Modified files:
+    include              send.h 
+    modules              m_who.c 
+    modules/core         m_message.c 
+    src                  send.c 
+  Log:
+  - fixed compiletime error when ANONOPS was disabled
+  - fixed @# notices to not echo back to sender
+  - removed redundant if()s in sendto_list_local() and sendto_list_local_butone() (thanks to ratbox for this one)
+  
+  Revision  Changes    Path
+  7.58      +3 -0      ircd-hybrid-7/include/send.h
+  1.100     +4 -4      ircd-hybrid-7/modules/core/m_message.c
+  1.63      +4 -1      ircd-hybrid-7/modules/m_who.c
+  7.207     +99 -2     ircd-hybrid-7/src/send.c
+
+
+
 lusky       2002/09/17 23:23:01 EDT	(20020918_0)
 
   Modified files:
@@ -32055,4 +32075,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4036 2002/09/18 03:23:03 lusky Exp $
+$Id: ChangeLog,v 7.4037 2002/09/19 03:12:04 bill Exp $
