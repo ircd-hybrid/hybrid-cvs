@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.36 2001/07/20 15:22:31 androsyn Exp $
+ *  $Id: irc_string.c,v 7.37 2001/08/06 07:03:46 ejb blalloc.c $
  */
 #include "config.h"
 #include "tools.h"
@@ -297,7 +297,7 @@ inet_ntop4(const unsigned char *src, char *dst, unsigned int size)
 {
 	if(size < 16)
 		return NULL;
-	return strcpy(dst, inetntoa(src));
+	return strcpy(dst, inetntoa((const char *)src));
 }
 
 /* const char *
