@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.76 2003/05/24 16:15:11 bill Exp $
+ *  $Id: s_serv.h,v 7.77 2003/05/25 04:24:55 db Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -44,7 +44,8 @@ struct Channel;
 /* Capabilities */
 struct Capability
 {
-  const char *name; /* name of capability */
+  dlink_node node;
+  char *name; 	    /* name of capability */
   unsigned int cap; /* mask value         */
 };
 
@@ -58,7 +59,7 @@ struct Capability
 #define CAP_KLN		0x00000080 /* Can do KLINE message                */
 #define CAP_GLN		0x00000100 /* Can do GLINE message                */
 #define CAP_HUB		0x00000400 /* This server is a HUB                */
-#define CAP_UID		0x00001000 /* Can do UIDs                         */
+#define CAP_SID		0x00001000 /* Can do SIDs                         */
 #define CAP_ZIP		0x00002000 /* Can do ZIPlinks                     */
 #define CAP_ENC		0x00004000 /* Can do ENCrypted links              */
 #define CAP_KNOCK	0x00008000 /* supports KNOCK                      */
@@ -252,7 +253,10 @@ extern int hunt_server(struct Client *client_p,
                                const char *command, int server, 
                                int parc, char **parv);
 extern const char *my_name_for_link(struct ConfItem* conf);
-extern void        send_capabilities(struct Client*, struct ConfItem* conf,
+void add_capability(const char *capab_name, int cap_flag);
+int delete_capability(const char *capab_name);
+int find_capability(const char *capab);
+extern void send_capabilities(struct Client*, struct ConfItem* conf,
                                      int, int);
 extern void	   write_links_file(void *);				     
 extern int         server_estab(struct Client *client_p);

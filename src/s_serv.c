@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.332 2003/05/25 03:40:51 metalrock Exp $
+ *  $Id: s_serv.c,v 7.333 2003/05/25 04:24:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -78,31 +78,7 @@ static void add_lazylinkchannel(struct Client *client_p, struct Channel *chptr);
 static SlinkRplHnd slink_error;
 static SlinkRplHnd slink_zipstats;
 
-/* list of recognized server capabilities.  "TS" is not on the list
- * because all servers that we talk to already do TS, and the kludged
- * extra argument to "PASS" takes care of checking that.  -orabidoo
- */
-struct Capability captab[] = {
-/*  name        cap     */ 
-  { "QS",	CAP_QS },
-  { "EX",	CAP_EX },
-  { "CHW",	CAP_CHW },
-  { "LL",	CAP_LL },
-  { "IE",	CAP_IE },
-  { "EOB",	CAP_EOB },
-  { "KLN",	CAP_KLN },
-  { "GLN",	CAP_GLN },
-  { "KNOCK",	CAP_KNOCK },
-  { "HUB",	CAP_HUB },
-  { "UID",	CAP_UID },
-  { "ZIP",	CAP_ZIP },
-  { "TBURST",	CAP_TBURST },
-  { "PARA",	CAP_PARA },
-  { "UNKLN",	CAP_UNKLN },
-  { "CLUSTER",	CAP_CLUSTER },
-  { "ENCAP",	CAP_ENCAP },
-  { 0, 0 }
-};
+dlink_list cap_list = {NULL, NULL, 0};
 
 #ifdef HAVE_LIBCRYPTO
 struct EncCapability CipherTable[] =
@@ -681,6 +657,83 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
   return(0);
 }
 
+/* add_capability()
+ *
+ * inputs	- string name of CAPAB
+ *		- int flag of capability
+ * output	- NONE
+ * side effects	- 
+ *
+ */
+void
+add_capability(const char *capab_name, int cap_flag)
+{
+  struct Capability *cap;
+
+  cap = (struct Capability *)MyMalloc(sizeof(*cap));
+  DupString(cap->name, capab_name);
+  cap->cap = cap_flag;
+  dlinkAdd(cap, &cap->node, &cap_list);
+}
+
+/* delete_capability()
+ *
+ * inputs	- string name of CAPAB
+ * output	- NONE
+ * side effects	- 
+ *
+ */
+int
+delete_capability(const char *capab_name)
+{
+  dlink_node *ptr;
+  dlink_node *next_ptr;
+  struct Capability *cap;
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, cap_list.head)
+  {
+    cap = ptr->data;
+
+    if (cap->cap != 0)
+    {
+      if (irccmp(cap->name, capab_name) == 0)
+      {
+	MyFree((char *)cap->name);
+	cap->name = NULL;
+	MyFree((char *)cap);
+	dlinkDelete(ptr, &cap_list);
+      }
+    }
+  }
+  return (0);
+}
+
+/*
+ * find_capability()
+ *
+ * inputs	- string name of capab to find
+ * output	- 0 if not found CAPAB otherwise
+ * side effects	- none
+ */
+int
+find_capability(const char *capab)
+{
+  dlink_node *ptr;
+  struct Capability *cap;
+
+  DLINK_FOREACH(ptr, cap_list.head)
+  {
+    cap = ptr->data;
+
+    if (cap->cap != 0)
+    {
+      if (irccmp(cap->name, capab) == 0)
+	return(cap->cap);
+    }
+  }
+  return(0);
+}
+
 /* send_capabilities()
  *
  * inputs	- Client pointer to send to
@@ -697,15 +750,19 @@ send_capabilities(struct Client *client_p, struct ConfItem *aconf,
   char msgbuf[BUFSIZE];
   char *t;
   int tl;
+  dlink_node *ptr;
 #ifdef HAVE_LIBCRYPTO
   struct EncCapability *epref;
   char *capend;
   int sent_cipher = 0;
 #endif
+
   t = msgbuf;
 
-  for (cap = captab; cap->name; ++cap)
+  DLINK_FOREACH(ptr, cap_list.head)
   {
+    cap = ptr->data;
+
     if (cap->cap & cap_can_send)
     {
       tl = ircsprintf(t, "%s ", cap->name);
@@ -817,6 +874,7 @@ show_capabilities(struct Client *target_p)
   struct Capability* cap;
   char *t;
   int tl;
+  dlink_node *ptr;
 
   t  = msgbuf;
   tl = ircsprintf(msgbuf,"TS ");
@@ -828,8 +886,10 @@ show_capabilities(struct Client *target_p)
     return(msgbuf);
   }
 
-  for (cap = captab; cap->cap; ++cap)
+  DLINK_FOREACH(ptr, cap_list.head)
   {
+    cap = ptr->data;
+
     if (cap->cap & target_p->localClient->caps)
     {
       tl = ircsprintf(t, "%s ", cap->name);
@@ -880,7 +940,8 @@ server_estab(struct Client *client_p)
   inpath = get_client_name(client_p, MASK_IP); /* "refresh" inpath with host */
   host   = client_p->name;
 
-  if (!(aconf = find_conf_name(&client_p->localClient->confs, host, CONF_SERVER)))
+  if (!(aconf = 
+	find_conf_name(&client_p->localClient->confs, host, CONF_SERVER)))
   {
     /* This shouldn't happen, better tell the ops... -A1kmm */
     sendto_realops_flags(UMODE_ALL, L_ALL, "Warning: Lost connect{} block "

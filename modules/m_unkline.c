@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.64 2003/05/25 03:03:21 metalrock Exp $
+ *  $Id: m_unkline.c,v 1.65 2003/05/25 04:24:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -67,6 +67,7 @@ _modinit(void)
   mod_add_cmd(&msgtabs[0]);
   mod_add_cmd(&msgtabs[1]);
   mod_add_cmd(&msgtabs[2]);
+  add_capability("UNKLN", CAP_UNKLN);
 }
 
 void
@@ -75,8 +76,9 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[0]);
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
+  delete_capability("UNKLN");
 }
-const char *_version = "$Revision: 1.64 $";
+const char *_version = "$Revision: 1.65 $";
 #endif
 
 static int remove_tkline_match(const char *, const char *);

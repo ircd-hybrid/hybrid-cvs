@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.100 2003/05/24 09:25:42 michael Exp $
+ *  $Id: m_gline.c,v 1.101 2003/05/25 04:24:56 db Exp $
  */
 
 #include "stdinc.h"
@@ -54,12 +54,9 @@
 
 /* internal functions */
 static void set_local_gline(
-                            const char *oper_nick,
-			    const char *oper_user,
-                            const char *oper_host,
-                            const char *oper_server,
-                            const char *user,
-                            const char *host,
+                            const char *oper_nick, const char *oper_user,
+                            const char *oper_host, const char *oper_server,
+                            const char *user, const char *host,
                             const char *reason);
 
 static void log_gline_request(const char*,const char*,const char*,
@@ -101,15 +98,17 @@ void
 _modinit(void)
 {
     mod_add_cmd(&gline_msgtab);
+    add_capability("GLN", CAP_GLN);
 }
 
 void
 _moddeinit(void)
 {
   mod_del_cmd(&gline_msgtab);
+  delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.100 $";
+const char *_version = "$Revision: 1.101 $";
 #endif
 
 /* mo_gline()

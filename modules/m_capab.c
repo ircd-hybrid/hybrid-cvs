@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capab.c,v 1.33 2003/05/08 09:39:21 michael Exp $
+ *  $Id: m_capab.c,v 1.34 2003/05/25 04:24:56 db Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,7 @@ _moddeinit(void)
   mod_del_cmd(&capab_msgtab);
 }
 
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 
 /*
@@ -65,8 +65,8 @@ static void
 mr_capab(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  struct Capability *cap;
   int i;
+  int cap;
   char *p;
   char *s;
 #ifdef HAVE_LIBCRYPTO
@@ -123,14 +123,8 @@ mr_capab(struct Client *client_p, struct Client *source_p,
       }
       else /* normal capab */
 #endif
-        for (cap = captab; cap->name; cap++)
-        {
-          if (!irccmp(cap->name, s))
-          {
-            client_p->localClient->caps |= cap->cap;
-            break;
-          }
-        }
+        if ((cap = find_capability(s)) != 0)
+	  client_p->localClient->caps |= cap;
     }
   }
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.377 2003/05/25 01:05:24 michael Exp $
+ *  $Id: channel.c,v 7.378 2003/05/25 04:24:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -67,11 +67,19 @@ static char parabuf[MODEBUFLEN];
 
 /* init_channels()
  *
- * Initializes the channel blockheap
+ * inputs	- none
+ * output	- none
+ * side effects	- Initializes the channel blockheap,
+ *		  adds known channel CAPAB
  */
 void
 init_channels(void)
 {
+  /* XXX */
+  add_capability("EX", CAP_EX);
+  add_capability("IE", CAP_IE);
+  add_capability("CHW", CAP_CHW);
+
   channel_heap = BlockHeapCreate(sizeof(struct Channel), CHANNEL_HEAP_SIZE);
   ban_heap = BlockHeapCreate(sizeof(struct Ban), BAN_HEAP_SIZE);
   topic_heap = BlockHeapCreate(TOPICLEN+1 + USERHOST_REPLYLEN, TOPIC_HEAP_SIZE);

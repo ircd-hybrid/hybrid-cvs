@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.137 2003/05/24 19:25:29 michael Exp $
+ *  $Id: m_kline.c,v 1.138 2003/05/25 04:24:56 db Exp $
  */
 
 #include "stdinc.h"
@@ -70,6 +70,7 @@ _modinit(void)
 {
   mod_add_cmd(&kline_msgtab);
   mod_add_cmd(&dline_msgtab);
+  add_capability("KLN", CAP_KLN);
 }
 
 void
@@ -77,9 +78,10 @@ _moddeinit(void)
 {
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
+  delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.137 $";
+const char *_version = "$Revision: 1.138 $";
 #endif
 
 /* Local function prototypes */

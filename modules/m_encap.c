@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_encap.c,v 1.2 2003/05/18 01:07:58 michael Exp $
+ *  $Id: m_encap.c,v 1.3 2003/05/25 04:24:56 db Exp $
  */
 
 #include "stdinc.h"
@@ -45,14 +45,16 @@ void
 _modinit(void)
 {
   mod_add_cmd(&encap_msgtab);
+  add_capability("ENCAP", CAP_ENCAP);
 }
 
 void
 _moddeinit(void)
 {
   mod_del_cmd(&encap_msgtab);
+  delete_capability("ENCAP");
 }
-const char *_version = "$Revision: 1.2 $";
+const char *_version = "$Revision: 1.3 $";
 #endif
 
 /*
