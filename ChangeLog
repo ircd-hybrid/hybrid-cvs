@@ -1,3 +1,10 @@
+*** 20001206_13 by db
+- reverted previous m_kline.c change in favour of...
+- letting s_conf.c figure out if the oper placing the kline is remote oper
+  or not, and logging it appropriately.
+
+
+
 *** 20001206_12 by db
 - cleaned up m_server.c some more. ugh. it was horrid
 
@@ -1774,7 +1781,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.720 2000/12/07 03:22:42 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.721 2000/12/07 04:37:14 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
