@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.167 2001/12/14 01:30:04 leeh Exp $
+ *   $Id: send.c,v 7.168 2001/12/16 07:55:25 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -118,12 +118,6 @@ dead_link(struct Client *to, char *notice)
 {
   SetDead(to);
 
-#if 0
-  exit_client(to, to, &me,
-              (to->flags & FLAGS_SENDQEX) ?
-              "SendQ exceeded" : "Dead socket");
-
-#endif
   /*
    * If because of buffer problem then clean linebuf's now so that
    * notices don't hurt operators below.
@@ -1040,13 +1034,6 @@ sendto_anywhere(struct Client *to, struct Client *from,
 {
   va_list args;
   buf_head_t linebuf;
-
-  /* this check stops clients privmsg'ing themselves: BAD. */
-#if 0
-  /* This check is worth doing... */
-  if (from->from == to->from)
-    return;
-#endif
 
   linebuf_newbuf(&linebuf);
   va_start(args, pattern);
