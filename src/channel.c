@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.381 2003/06/01 02:38:27 db Exp $
+ *  $Id: channel.c,v 7.382 2003/06/01 03:08:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -473,8 +473,7 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
         *t++ = '@';
       else if (ms->flags & CHFL_VOICE)
         *t++ = '+';
-      strcpy(t, target_p->name);
-      t += strlen(t);
+      t += ircsprintf(t, "%s ", target_p->name); /* XXX */
     }
 
     if (tlen != 0)
