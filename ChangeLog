@@ -1,3 +1,15 @@
+leeh        2001/12/13 12:57:42 EST	(20011213_3)
+
+  Modified files:
+    .                    configure 
+  Log:
+  - updated from configure.in or something
+  
+  Revision  Changes    Path
+  7.106     +202 -191  ircd-hybrid-7/configure
+
+
+
 leeh        2001/12/13 12:40:47 EST	(20011213_2)
 
   Modified files:
@@ -225,7 +237,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3156 2001/12/13 17:40:52 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3157 2001/12/13 17:57:48 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18579,4 +18591,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3156 2001/12/13 17:40:52 leeh Exp $
+$Id: ChangeLog,v 7.3157 2001/12/13 17:57:48 leeh Exp $
