@@ -1,3 +1,16 @@
+db          2003/01/17 00:21:29 EST	(20030117_8)
+
+  Modified files:
+    include              config.h config.h.dist 
+  Log:
+  - updated config.h/config.h.dist as per jack
+  
+  Revision  Changes    Path
+  7.141     +0 -0      ircd-hybrid-7/include/config.h
+  7.59      +61 -20    ircd-hybrid-7/include/config.h.dist
+
+
+
 db          2003/01/17 00:11:53 EST	(20030117_7)
 
   Modified files:
@@ -34143,4 +34156,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4176 2003/01/17 05:11:56 db Exp $
+$Id: ChangeLog,v 7.4177 2003/01/17 05:21:31 db Exp $
