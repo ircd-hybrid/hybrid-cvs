@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.82 2000/12/24 04:42:16 isomer Exp $
+ *  $Id: s_user.c,v 7.83 2000/12/25 01:16:59 toot Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -254,7 +254,7 @@ int show_lusers(struct Client *sptr)
   sendto_one(sptr, form_str(RPL_GLOBALUSERS), me.name, sptr->name,
              Count.total, Count.max_tot);
   sendto_one(sptr, form_str(RPL_STATSCONN), me.name, sptr->name,
-             MaxConnectionCount, MaxClientCount,Count.totalrestartcount);
+             MaxConnectionCount, MaxClientCount, Count.totalrestartcount);
 
   if (Count.local > MaxClientCount)
     MaxClientCount = Count.local;
