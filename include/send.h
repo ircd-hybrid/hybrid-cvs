@@ -2,7 +2,7 @@
  * send.h
  * Copyright (C) 1999 Patrick Alken
  *
- * $Id: send.h,v 7.21 2000/12/10 02:09:08 db Exp $
+ * $Id: send.h,v 7.22 2000/12/10 08:01:31 db Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -56,8 +56,8 @@ extern  void sendto_wallops_butone(struct Client *, struct Client *,
                                    const char *, ...);
 extern  void ts_warn(const char *, ...);
 
-extern  void sendto_prefix_one(struct Client *, struct Client *, 
-                               const char *, ...);
+extern  void sendto_anywhere(struct Client *, struct Client *, 
+			     const char *, ...);
 
 /* used when sending to #mask or $mask */
 

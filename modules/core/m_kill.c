@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.7 2000/12/10 03:52:14 db Exp $
+ *   $Id: m_kill.c,v 1.8 2000/12/10 08:01:36 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -227,14 +227,8 @@ int mo_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   ** anyway (as this user don't exist there any more either)
   */
   if (MyConnect(acptr))
-    sendto_prefix_one(acptr, sptr,":%s KILL %s :%s",
-                      parv[0], acptr->name, reason);
-
-  /* XXX old code showed too much */
-  /*
-    sendto_prefix_one(acptr, sptr,":%s KILL %s :%s!%s",
-                      parv[0], acptr->name, inpath, path);
-    */
+    sendto_one(acptr, ":%s KILL %s :%s",
+	       sptr->name, acptr->name, reason);
 
   /*
   ** Set FLAGS_KILLED. This prevents exit_one_client from sending
@@ -440,14 +434,10 @@ int ms_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   ** anyway (as this user don't exist there any more either)
   */
   if (MyConnect(acptr))
-    sendto_prefix_one(acptr, sptr,":%s KILL %s :%s",
-                      parv[0], acptr->name, reason);
-
-  /* XXX old code showed too much */
-  /*
-    sendto_prefix_one(acptr, sptr,":%s KILL %s :%s!%s",
-                      parv[0], acptr->name, inpath, path);
-    */
+    {
+      sendto_one(acptr, ":%s KILL %s :%s",
+		 sptr->name, acptr->name, reason);
+    }
 
   /*
   ** Set FLAGS_KILLED. This prevents exit_one_client from sending

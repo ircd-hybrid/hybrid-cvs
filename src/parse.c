@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.38 2000/12/04 16:54:01 db Exp $
+ *   $Id: parse.c,v 7.39 2000/12/10 08:01:37 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -815,21 +815,25 @@ static int     do_numeric(
           ** - Avalon
           */
           if (!IsMe(acptr) && IsPerson(acptr))
-            sendto_prefix_one(acptr, sptr,":%s %s %s%s",
-                              parv[0], numeric, nick, buffer);
+	    {
+	      sendto_anywhere(acptr, sptr,"%s %s :%s",
+			      numeric, nick, buffer);
+	    }
           else if (IsServer(acptr) && acptr->from != cptr)
-            sendto_prefix_one(acptr, sptr,":%s %s %s%s",
-                              parv[0], numeric, nick, buffer);
+	    {
+	      sendto_anywhere(acptr, sptr,"%s %s :%s",
+			      numeric, nick, buffer);
+	    }
         }
       else if ((acptr = find_server(nick)))
         {
           if (!IsMe(acptr) && acptr->from != cptr)
-            sendto_prefix_one(acptr, sptr,":%s %s %s%s",
-                              parv[0], numeric, nick, buffer);
+		sendto_anywhere(acptr, sptr,"%s %s :%s",
+				numeric, nick, buffer);
         }
       else if ((chptr = hash_find_channel(nick, (struct Channel *)NULL)))
-        sendto_channel_butone(cptr,sptr,chptr,":%s %s %s%s",
-                              parv[0],
+        sendto_channel_butone(cptr,sptr,chptr,":%s %s %s :%s",
+                              sptr->name,
                               numeric, chptr->chname, buffer);
     }
   return 0;

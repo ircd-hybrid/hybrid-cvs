@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.6 2000/12/09 05:59:46 db Exp $
+ *   $Id: m_invite.c,v 1.7 2000/12/10 08:01:35 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -223,8 +223,11 @@ int     m_invite(struct Client *cptr,
 
   if (!ConfigFileEntry.invite_plus_i_only || 
 	  (ConfigFileEntry.invite_plus_i_only && need_invite)) 
-	  sendto_prefix_one(acptr, sptr, ":%s INVITE %s :%s",
-						parv[0], acptr->name, parv[2]);
+	  sendto_anywhere(acptr, sptr, ":%s!%s@%s INVITE %s :%s",
+			  sptr->name,
+			  sptr->username,
+			  sptr->host,
+			  acptr->name, parv[2]);
   return 0;
 }
 
