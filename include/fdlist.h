@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.h,v 7.27 2003/04/09 11:19:32 stu Exp $
+ *  $Id: fdlist.h,v 7.28 2003/05/18 23:29:22 michael Exp $
  */
 
 #ifndef INCLUDED_fdlist_h
@@ -27,7 +27,7 @@
 
 #include "config.h"
 #include "ircd_defs.h"
-#include "res.h"
+#include "irc_res.h"
 #define FD_DESC_SZ 128  /* hostlen + comment */
 
 /* FD type values */

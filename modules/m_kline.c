@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.129 2003/05/18 01:07:58 michael Exp $
+ *  $Id: m_kline.c,v 1.130 2003/05/18 23:29:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.129 $";
+const char *_version = "$Revision: 1.130 $";
 #endif
 
 /* Local function prototypes */
@@ -688,9 +688,10 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 #endif
     t = AF_INET;
   if (ConfigFileEntry.non_redundant_klines)
-    {
-      char *creason;
-      (void)parse_netmask(dlhost, &daddr, NULL);
+  {
+      const char *creason;
+
+      parse_netmask(dlhost, &daddr, NULL);
 
       if((aconf = find_dline_conf(&daddr, t)) != NULL)
 	{
@@ -705,16 +706,16 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 		       me.name, parv[0], dlhost, aconf->host, creason);
 	  return;
 	}
-    }
+  }
 
   aconf = make_conf(CONF_DLINE);
 
   /* Look for an oper reason */
   if ((oper_reason = strchr(reason, '|')) != NULL)
-    {
-      *oper_reason = '\0';
-      oper_reason++;
-    }
+  {
+    *oper_reason = '\0';
+    oper_reason++;
+  }
 
   set_time();
   cur_time = CurrentTime;

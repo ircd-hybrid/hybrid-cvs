@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.16 2003/05/16 13:29:28 michael Exp $
+ * $Id: irc_res.c,v 7.17 2003/05/18 23:29:26 michael Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -25,7 +25,6 @@
 #include "list.h"
 #include "common.h"
 #include "event.h"
-#include "res.h"
 #include "irc_string.h"
 #include "sprintf_irc.h"
 #include "ircd.h"
@@ -48,8 +47,6 @@
 #if (CHAR_BIT != 8)
 #error this code needs to be able to address individual octets 
 #endif
-
-/* $Id: irc_res.c,v 7.16 2003/05/16 13:29:28 michael Exp $ */
 
 static PF res_readreply;
 

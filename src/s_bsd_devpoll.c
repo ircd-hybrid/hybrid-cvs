@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_devpoll.c,v 7.18 2003/05/11 22:27:45 joshk Exp $
+ *  $Id: s_bsd_devpoll.c,v 7.19 2003/05/18 23:29:27 michael Exp $
  */
 
 #include "stdinc.h"
@@ -38,7 +38,7 @@
 #include "listener.h"
 #include "numeric.h"
 #include "packet.h"
-#include "res.h"
+#include "irc_res.h"
 #include "restart.h"
 #include "s_auth.h"
 #include "s_conf.h"
@@ -50,7 +50,7 @@
 #include "s_bsd.h"
 #include "memory.h"
 
-#define POLL_LENGTH	HARD_FDLIMIT
+#define POLL_LENGTH HARD_FDLIMIT
 
 
 static void devpoll_update_events(int, short, PF *);

@@ -1,7 +1,7 @@
 /*
  * include/irc_res.h for referencing functions in src/irc_res.c
  *
- * $Id: irc_res.h,v 7.5 2003/05/13 18:59:26 joshk Exp $
+ * $Id: irc_res.h,v 7.6 2003/05/18 23:29:22 michael Exp $
  */
 
 #ifndef INCLUDED_irc_res_h
@@ -32,7 +32,21 @@
 #define RRFIXEDSZ 10
 #define HFIXEDSZ 12
 
-typedef struct {
+struct DNSReply
+{
+  char *h_name;
+  int h_addrtype;
+  struct irc_ssaddr addr;
+};
+
+struct DNSQuery
+{
+  void *ptr; /* pointer used by callback to identify request */
+  void (*callback)(void* vptr, struct DNSReply *reply); /* callback to call */
+};
+
+typedef struct
+{
 	unsigned	id :16;		/* query identification number */
 #ifdef WORDS_BIGENDIAN
 			/* fields in third byte */
@@ -68,13 +82,13 @@ typedef struct {
 	unsigned	arcount :16;	/* number of resource entries */
 } HEADER;
 
-int init_resolver(void);
-void restart_resolver(void);
-void add_local_domain(char *hname, int size);
-void timeout_resolver(void *notused);
-void delete_resolver_queries(const void *vptr);
-void gethost_byname_type(const char *name, const struct DNSQuery *query, int type);
-void gethost_byname(const char *name, const struct DNSQuery *query);
-void gethost_byaddr(const struct irc_ssaddr *addr, const struct DNSQuery *query);
-
+extern int init_resolver(void);
+extern void restart_resolver(void);
+extern void add_local_domain(char *hname, int size);
+extern void timeout_resolver(void *notused);
+extern void delete_resolver_queries(const void *vptr);
+extern void report_dns_servers(struct Client *source_p);
+extern void gethost_byname_type(const char *name, const struct DNSQuery *query, int type);
+extern void gethost_byname(const char *name, const struct DNSQuery *query);
+extern void gethost_byaddr(const struct irc_ssaddr *addr, const struct DNSQuery *query);
 #endif

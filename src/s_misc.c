@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_misc.c,v 7.31 2003/05/13 02:32:19 joshk Exp $
+ *  $Id: s_misc.c,v 7.32 2003/05/18 23:29:27 michael Exp $
  */
 
 #include "stdinc.h"
@@ -30,7 +30,7 @@
 #include "sprintf_irc.h"
 #include "ircd.h"
 #include "numeric.h"
-#include "res.h"
+#include "irc_res.h"
 #include "fdlist.h"
 #include "s_bsd.h"
 #include "s_conf.h"
@@ -39,13 +39,15 @@
 #include "memory.h"
 
 
-static const char *months[] = {
+static const char *months[] =
+{
   "January",   "February", "March",   "April",
   "May",       "June",     "July",    "August",
   "September", "October",  "November","December"
 };
 
-static const char *weekdays[] = {
+static const char *weekdays[] =
+{
   "Sunday",   "Monday", "Tuesday", "Wednesday",
   "Thursday", "Friday", "Saturday"
 };

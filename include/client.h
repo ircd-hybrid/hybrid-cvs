@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.187 2003/05/14 22:29:37 db Exp $
+ *  $Id: client.h,v 7.188 2003/05/18 23:29:22 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -35,7 +35,7 @@
 #include "ircd_handler.h"
 #include "dbuf.h"
 #include "channel.h"
-#include "res.h"
+#include "irc_res.h"
 #define HOSTIPLEN	53 /* sizeof("ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255.ipv6") */
 #define PASSWDLEN       20
 #define CIPHERKEYLEN    64      /* 512bit */

@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_kqueue.c,v 1.31 2003/05/11 22:27:45 joshk Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.32 2003/05/18 23:29:27 michael Exp $
  */
 
 #include "stdinc.h"
@@ -38,7 +38,7 @@
 #include "listener.h"
 #include "numeric.h"
 #include "packet.h"
-#include "res.h"
+#include "irc_res.h"
 #include "restart.h"
 #include "s_auth.h"
 #include "s_conf.h"
@@ -51,7 +51,7 @@
 #include "memory.h"
 
 
-#define KE_LENGTH	128
+#define KE_LENGTH 128
 
 /* jlemon goofed up and didn't add EV_SET until fbsd 4.3 */
 

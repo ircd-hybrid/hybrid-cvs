@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.c,v 7.31 2003/05/13 02:32:19 joshk Exp $
+ *  $Id: motd.c,v 7.32 2003/05/18 23:29:27 michael Exp $
  */
 
 #include "stdinc.h"
@@ -29,7 +29,6 @@
 #include "fdlist.h"
 #include "s_bsd.h"
 #include "fileio.h"
-#include "res.h"
 #include "s_conf.h"
 #include "class.h"
 #include "send.h"

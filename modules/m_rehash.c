@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rehash.c,v 1.45 2003/05/10 04:05:03 michael Exp $
+ *  $Id: m_rehash.c,v 1.46 2003/05/18 23:29:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -32,7 +32,7 @@
 #include "list.h"
 #include "s_gline.h"
 #include "numeric.h"
-#include "res.h"
+#include "irc_res.h"
 #include "s_conf.h"
 #include "s_log.h"
 #include "send.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&rehash_msgtab);
 }
 
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 
 /*
@@ -71,12 +71,12 @@ static void
 mo_rehash(struct Client *client_p, struct Client *source_p,
           int parc, char *parv[])
 {
-  int found = NO;
+  int found = 0;
 
   if (!IsOperRehash(source_p))
   {
-    sendto_one(source_p,":%s NOTICE %s :You need rehash = yes;",
-               me.name, parv[0]);
+    sendto_one(source_p, ":%s NOTICE %s :You need rehash = yes;",
+               me.name, source_p->name);
     return;
   }
 

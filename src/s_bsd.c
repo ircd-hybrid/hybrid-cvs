@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.198 2003/05/13 02:32:19 joshk Exp $
+ *  $Id: s_bsd.c,v 7.199 2003/05/18 23:29:27 michael Exp $
  */
 
 #include "stdinc.h"
@@ -40,7 +40,7 @@
 #include "listener.h"
 #include "numeric.h"
 #include "packet.h"
-#include "res.h"
+#include "irc_res.h"
 #include "restart.h"
 #include "s_auth.h"
 #include "s_conf.h"

@@ -19,16 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.280 2003/05/17 18:59:14 joshk Exp $
+ *  $Id: ircd.c,v 7.281 2003/05/18 23:29:26 michael Exp $
  */
 
 #include "stdinc.h"
-
 #ifdef VMS
 # include descrip
 # include starlet
 #endif
-
 #include "tools.h"
 #include "ircd.h"
 #include "channel.h"
@@ -52,7 +50,7 @@
 #include "hostmask.h"
 #include "numeric.h"
 #include "parse.h"
-#include "res.h"
+#include "irc_res.h"
 #include "restart.h"
 #include "s_auth.h"
 #include "s_bsd.h"
@@ -70,8 +68,8 @@
 #include "hook.h"
 #include "ircd_getopt.h"
 #include "balloc.h"
-/*
- * Try and find the correct name to use with getrlimit() for setting the max.
+
+/* Try and find the correct name to use with getrlimit() for setting the max.
  * number of files allowed to be open by this process.
  */
 

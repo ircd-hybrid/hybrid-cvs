@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_dmem.c,v 1.16 2003/04/18 02:13:42 db Exp $
+ *  $Id: m_dmem.c,v 1.17 2003/05/18 23:29:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -32,7 +32,7 @@
 #include "list.h"
 #include "s_gline.h"
 #include "numeric.h"
-#include "res.h"
+#include "irc_res.h"
 #include "s_conf.h"
 #include "s_log.h"
 #include "send.h"
@@ -46,6 +46,7 @@ struct Message dmem_msgtab = {
   "DMEM", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_dmem, m_ignore}
 };
+
 #ifndef STATIC_MODULES
 void
 _modinit(void)
@@ -59,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&dmem_msgtab);
 }
 
-const char *_version = "$Revision: 1.16 $";
+const char *_version = "$Revision: 1.17 $";
 #endif
 #ifdef MEMDEBUG
 void ReportAllocated(struct Client*);

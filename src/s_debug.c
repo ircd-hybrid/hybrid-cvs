@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.81 2003/05/12 08:09:34 michael Exp $
+ *  $Id: s_debug.c,v 7.82 2003/05/18 23:29:27 michael Exp $
  */
 
 #include "stdinc.h"
@@ -35,7 +35,7 @@
 #include "ircd.h"
 #include "list.h"
 #include "numeric.h"
-#include "res.h"
+#include "irc_res.h"
 #include "resv.h"
 #include "s_conf.h"
 #include "s_log.h"
@@ -45,8 +45,7 @@
 #include "memory.h"
 
 
-/*
- * Option string.
+/* Option string.
  */
 const char serveropts[] =
 {

@@ -19,25 +19,26 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.h,v 7.19 2003/05/12 21:56:56 stu Exp $
+ *  $Id: s_auth.h,v 7.20 2003/05/18 23:29:22 michael Exp $
  */
 
 #ifndef INCLUDED_s_auth_h
 #define INCLUDED_s_auth_h
 
 #include "config.h"
-#include "res.h"
-/* 
- * How many auth allocations to allocate in a block. I'm guessing that
+#include "irc_res.h"
+
+/* How many auth allocations to allocate in a block. I'm guessing that
  * a good number here is 64, because these are temporary and don't live
  * as long as clients do.
  *     -- adrian
  */
-#define	AUTH_BLOCK_SIZE		64
+#define	AUTH_BLOCK_SIZE 64
 
 struct Client;
 
-struct AuthRequest {
+struct AuthRequest
+{
   struct Client*      client;    /* pointer to client struct for request */
   unsigned int        flags;     /* current state of request */
   int                 fd;        /* file descriptor for auth queries */

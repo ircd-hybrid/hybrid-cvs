@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.54 2003/04/16 09:01:52 michael Exp $
+ *  $Id: list.c,v 7.55 2003/05/18 23:29:26 michael Exp $
  */
 
 #include "stdinc.h"
@@ -32,7 +32,7 @@
 #include "list.h"
 #include "hostmask.h"
 #include "numeric.h"
-#include "res.h"
+#include "irc_res.h"
 #include "restart.h"
 #include "s_log.h"
 #include "send.h"
