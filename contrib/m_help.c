@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.1 2003/05/07 02:46:42 michael Exp $
+ *  $Id: m_help.c,v 1.2 2003/05/13 05:10:41 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -35,6 +35,7 @@
 #include "s_log.h"
 #include "parse.h"
 #include "modules.h"
+#include "irc_string.h"
 
 static void m_help(struct Client*, struct Client*, int, char**);
 static void mo_help(struct Client*, struct Client*, int, char**);
@@ -67,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-const char *_version = "$Revision: 1.1 $";
+const char *_version = "$Revision: 1.2 $";
 #endif
 /*
  * m_help - HELP message handler

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.24 2003/05/12 08:09:20 michael Exp $
+ *   $Id: m_operspy.c,v 1.25 2003/05/13 05:10:41 metalrock Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -38,6 +38,7 @@
 #include "client.h"
 #include "common.h"     /* FALSE bleah */
 #include "ircd.h"
+#include "sprintf_irc.h"
 #include "numeric.h"
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -122,7 +123,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.24 $";
+const char *_version = "$Revision: 1.25 $";
 #endif
 
 /*
@@ -635,7 +636,6 @@ do_who_list(struct Client *source_p, struct Channel *chptr,
 {
   dlink_node *ptr;
   struct Client *target_p;
-  int done=0;
   int i=0;
 
   if(peons_list != NULL)

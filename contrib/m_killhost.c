@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.3 2003/05/13 04:48:48 metalrock Exp $
+ *  $Id: m_killhost.c,v 1.4 2003/05/13 05:10:41 metalrock Exp $
  *
  */
 
@@ -64,7 +64,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&killhost_msgtab);
 }
-const char *_version = "$Revision: 1.3 $";
+const char *_version = "$Revision: 1.4 $";
 #endif
 
 /*
@@ -90,7 +90,7 @@ static void mo_killhost(struct Client *client_p,
   host = parv[1];
   reason = parv[2];
 
-  if (!BadPtr(reason))
+  if (!EmptyString(reason))
   {
     if (strlen(reason) > (size_t) KILLLEN)
       reason[KILLLEN] = '\0';
