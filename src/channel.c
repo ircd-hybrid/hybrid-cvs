@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.294 2002/01/13 16:22:12 db Exp $
+ *  $Id: channel.c,v 7.295 2002/01/26 20:16:59 db Exp $
  */
 
 #include "tools.h"
@@ -269,11 +269,10 @@ send_members(struct Client *client_p,
   int data_to_send = 0;
   char *t;                      /* temp char pointer */
 
-  ircsprintf(buf, ":%s SJOIN %lu %s %s %s :", me.name,
-             (unsigned long)chptr->channelts,
-             chptr->chname, lmodebuf, lparabuf);
+  cur_len = mlen = ircsprintf(buf, ":%s SJOIN %lu %s %s %s :", me.name,
+                   (unsigned long)chptr->channelts,
+                   chptr->chname, lmodebuf, lparabuf);
 
-  cur_len = mlen = strlen(buf);
   t = buf + mlen;
 
   for (ptr = list->head; ptr && ptr->data; ptr = ptr->next)
