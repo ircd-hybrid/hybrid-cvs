@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.125 2003/07/25 18:37:53 adx Exp $
+ *  $Id: channel_mode.c,v 7.126 2003/08/10 21:24:07 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1023,7 +1023,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
        char **parv, int *errors, int alev, int dir, char c, void *d,
        const char *chname)
 {
-  int i;
+  int i, was_hopped;
   char *opnick;
   struct Client *targ_p;
   struct Membership *member;
@@ -1079,22 +1079,27 @@ chm_op(struct Client *client_p, struct Client *source_p,
 
   if (dir == MODE_ADD)
   {
+    /* cancel all +/-h */
+    was_hopped = -1;
     for (i = 0; i < mode_count; i++)
-      if (mode_changes[i].client == targ_p)
+      if (mode_changes[i].client == targ_p && mode_changes[i].letter == 'h')
       {
-        if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'o')
-        {
-          mode_changes[i].letter = 0;
-          return;
-        }
-	if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'h')
-	{
-	  mode_changes[i].letter = 0;
-	  DelMemberFlag(member, CHFL_HALFOP);
-	}
+        /* if the first halfop status change in this mode was +h,
+	 * they weren't halfopped. If it was -h, they were halfopped.
+	 */
+	if (was_hopped == -1)
+	  was_hopped = (mode_changes[i].dir == MODE_ADD ? 1 : 0);
+	mode_changes[i].letter = 0;
       }
+    DelMemberFlag(member, CHFL_HALFOP);
 
-    if (has_member_flags(member, CHFL_HALFOP))
+    if (was_hopped == -1)
+    {
+      /* nothing changed */
+      was_hopped = has_member_flags(member, CHFL_HALFOP);
+    }
+
+    if (was_hopped)
     {
       mode_changes[mode_count].letter = 'h';
       mode_changes[mode_count].dir = MODE_DEL;
@@ -1104,43 +1109,24 @@ chm_op(struct Client *client_p, struct Client *source_p,
       mode_changes[mode_count].id = targ_p->id;
       mode_changes[mode_count].arg = targ_p->name;
       mode_changes[mode_count++].client = targ_p;
-
-      DelMemberFlag(member, CHFL_HALFOP);
     }
+  }
 
-    mode_changes[mode_count].letter = 'o';
-    mode_changes[mode_count].dir = MODE_ADD;
-    mode_changes[mode_count].caps = 0;
-    mode_changes[mode_count].nocaps = 0;
-    mode_changes[mode_count].mems = ALL_MEMBERS;
-    mode_changes[mode_count].id = targ_p->id;
-    mode_changes[mode_count].arg = targ_p->name;
-    mode_changes[mode_count++].client = targ_p;
+  mode_changes[mode_count].letter = 'o';
+  mode_changes[mode_count].dir = dir;
+  mode_changes[mode_count].caps = 0;
+  mode_changes[mode_count].nocaps = 0;
+  mode_changes[mode_count].mems = ALL_MEMBERS;
+  mode_changes[mode_count].id = targ_p->id;
+  mode_changes[mode_count].arg = targ_p->name;
+  mode_changes[mode_count++].client = targ_p;
 
+  if (dir == MODE_ADD)
+  {
     AddMemberFlag(member, CHFL_CHANOP);
     DelMemberFlag(member, CHFL_DEOPPED);
   }
-  else
-  {
-    for (i = 0; i < mode_count; i++)
-      if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'o' &&
-          mode_changes[i].client == targ_p)
-      {
-        mode_changes[i].letter = 0;
-        return;
-      }
-
-    mode_changes[mode_count].letter = 'o';
-    mode_changes[mode_count].dir = MODE_DEL;
-    mode_changes[mode_count].caps = 0;
-    mode_changes[mode_count].nocaps = 0;
-    mode_changes[mode_count].mems = ALL_MEMBERS;
-    mode_changes[mode_count].id = targ_p->id;
-    mode_changes[mode_count].arg = targ_p->name;
-    mode_changes[mode_count++].client = targ_p;
-
-    DelMemberFlag(member, CHFL_CHANOP);
-  }
+  else DelMemberFlag(member, CHFL_CHANOP);
 }
 
 #ifdef USE_HALFOPS
@@ -1150,7 +1136,6 @@ chm_hop(struct Client *client_p, struct Client *source_p,
        char **parv, int *errors, int alev, int dir, char c, void *d,
        const char *chname)
 {
-  int i;
   char *opnick;
   struct Client *targ_p;
   struct Membership *member;
@@ -1217,70 +1202,21 @@ chm_hop(struct Client *client_p, struct Client *source_p,
   if (dir == MODE_DEL && !has_member_flags(member, CHFL_HALFOP))
     return;
 
+  mode_changes[mode_count].letter = 'h';
+  mode_changes[mode_count].dir = dir;
+  mode_changes[mode_count].caps = 0;
+  mode_changes[mode_count].nocaps = 0;
+  mode_changes[mode_count].mems = ALL_MEMBERS;
+  mode_changes[mode_count].id = targ_p->id;
+  mode_changes[mode_count].arg = targ_p->name;
+  mode_changes[mode_count++].client = targ_p;
+
   if (dir == MODE_ADD)
   {
-    for (i = 0; i < mode_count; i++)
-      if (mode_changes[i].client == targ_p)
-      {
-        if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'h')
-        {
-          mode_changes[i].letter = 0;
-          return;
-        }
-	if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'v')
-	{
-	  mode_changes[i].letter = 0;
-	  DelMemberFlag(member, CHFL_VOICE);
-	}
-      }
-
-    if (has_member_flags(member, CHFL_VOICE))
-    {
-      mode_changes[mode_count].letter = 'v';
-      mode_changes[mode_count].dir = MODE_DEL;
-      mode_changes[mode_count].caps = 0;
-      mode_changes[mode_count].nocaps = 0;
-      mode_changes[mode_count].mems = ALL_MEMBERS;
-      mode_changes[mode_count].id = targ_p->id;
-      mode_changes[mode_count].arg = targ_p->name;
-      mode_changes[mode_count++].client = targ_p;
-
-      DelMemberFlag(member, CHFL_VOICE);
-    }
-
-    mode_changes[mode_count].letter = 'h';
-    mode_changes[mode_count].dir = MODE_ADD;
-    mode_changes[mode_count].caps = 0;
-    mode_changes[mode_count].nocaps = 0;
-    mode_changes[mode_count].mems = ALL_MEMBERS;
-    mode_changes[mode_count].id = targ_p->id;
-    mode_changes[mode_count].arg = targ_p->name;
-    mode_changes[mode_count++].client = targ_p;
-
     AddMemberFlag(member, CHFL_HALFOP);
     DelMemberFlag(member, CHFL_DEOPPED);
   }
-  else
-  {
-    for (i = 0; i < mode_count; i++)
-      if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'h' &&
-          mode_changes[i].client == targ_p)
-      {
-        mode_changes[i].letter = 0;
-        return;
-      }
-
-    mode_changes[mode_count].letter = 'h';
-    mode_changes[mode_count].dir = MODE_DEL;
-    mode_changes[mode_count].caps = 0;
-    mode_changes[mode_count].nocaps = 0;
-    mode_changes[mode_count].mems = ALL_MEMBERS;
-    mode_changes[mode_count].id = targ_p->id;
-    mode_changes[mode_count].arg = targ_p->name;
-    mode_changes[mode_count++].client = targ_p;
-
-    DelMemberFlag(member, CHFL_HALFOP);
-  }
+  else DelMemberFlag(member, CHFL_HALFOP);
 }
 #endif
 
@@ -1290,7 +1226,6 @@ chm_voice(struct Client *client_p, struct Client *source_p,
           char **parv, int *errors, int alev, int dir, char c, void *d,
           const char *chname)
 {
-  int i;
   char *opnick;
   struct Client *targ_p;
   struct Membership *member;
@@ -1328,53 +1263,24 @@ chm_voice(struct Client *client_p, struct Client *source_p,
     return;
 
   /* no redundant mode changes */
-  if (dir == MODE_ADD &&  has_member_flags(member, CHFL_VOICE | CHFL_HALFOP))
+  if (dir == MODE_ADD &&  has_member_flags(member, CHFL_VOICE))
     return;
   if (dir == MODE_DEL && !has_member_flags(member, CHFL_VOICE))
     return;
 
+  mode_changes[mode_count].letter = 'v';
+  mode_changes[mode_count].dir = dir;
+  mode_changes[mode_count].caps = 0;
+  mode_changes[mode_count].nocaps = 0;
+  mode_changes[mode_count].mems = ALL_MEMBERS;
+  mode_changes[mode_count].id = targ_p->id;
+  mode_changes[mode_count].arg = targ_p->name;
+  mode_changes[mode_count++].client = targ_p;
+
   if (dir == MODE_ADD)
-  {
-    for (i = 0; i < mode_count; i++)
-      if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'v' &&
-          mode_changes[i].client == targ_p)
-      {
-        mode_changes[i].letter = 0;
-	return;
-      }
-
-    mode_changes[mode_count].letter = 'v';
-    mode_changes[mode_count].dir = MODE_ADD;
-    mode_changes[mode_count].caps = 0;
-    mode_changes[mode_count].nocaps = 0;
-    mode_changes[mode_count].mems = ALL_MEMBERS;
-    mode_changes[mode_count].id = targ_p->id;
-    mode_changes[mode_count].arg = targ_p->name;
-    mode_changes[mode_count++].client = targ_p;
-
     AddMemberFlag(member, CHFL_VOICE);
-  }
   else
-  {
-    for (i = 0; i < mode_count; i++)
-      if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'v' &&
-          mode_changes[i].client == targ_p)
-      {
-        mode_changes[i].letter = 0;
-        return;
-      }
-
-    mode_changes[mode_count].letter = 'v';
-    mode_changes[mode_count].dir = MODE_DEL;
-    mode_changes[mode_count].caps = 0;
-    mode_changes[mode_count].nocaps = 0;
-    mode_changes[mode_count].mems = ALL_MEMBERS;
-    mode_changes[mode_count].id = targ_p->id;
-    mode_changes[mode_count].arg = targ_p->name;
-    mode_changes[mode_count++].client = targ_p;
-
     DelMemberFlag(member, CHFL_VOICE);
-  }
 }
 
 static void
