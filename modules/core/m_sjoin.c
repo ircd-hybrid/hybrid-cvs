@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.33 2000/12/21 02:26:50 ejb Exp $
+ *   $Id: m_sjoin.c,v 1.34 2000/12/21 02:35:40 ejb Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -162,7 +162,11 @@ int     ms_sjoin(struct Client *cptr,
       case 't':
         mode.mode |= MODE_TOPICLIMIT;
         break;
-      case 'k':
+		  case 'z':
+			  mode.mode |= MODE_HIDEOPS;
+			  break;
+			  
+		  case 'k':
          strncpy_irc(mode.key, parv[4 + args], KEYLEN);
         args++;
         if (parc < 5+args) return 0;
