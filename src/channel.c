@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.349 2003/01/17 13:00:52 db Exp $
+ *  $Id: channel.c,v 7.350 2003/01/31 12:15:17 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -106,6 +106,9 @@ add_user_to_channel(struct Channel *chptr, struct Client *who, int flags)
   dlink_node *ptr;
   dlink_node *lptr = NULL;
 
+  if (IsDead(who))
+    return;
+
   if (who->user)
   {
     ptr = make_dlink_node();
@@ -189,6 +192,9 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
+
+  if (IsDead(who))
+    return -1;
 
   /* last user in the channel.. set a vchan_id incase we need it */
 #ifdef VCHANS

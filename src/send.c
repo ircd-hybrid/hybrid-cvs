@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.214 2003/01/28 05:28:46 db Exp $
+ *  $Id: send.c,v 7.215 2003/01/31 12:15:16 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -730,6 +730,8 @@ sendto_common_channels_local(struct Client *user, const char *pattern, ...)
   dlink_node *ptr_next;
   struct Channel *chptr;
   buf_head_t linebuf;
+
+  
 
   linebuf_newbuf(&linebuf);
   va_start(args, pattern);

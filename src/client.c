@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.317 2003/01/19 19:02:37 db Exp $
+ *  $Id: client.c,v 7.318 2003/01/31 12:15:17 a1kmm Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -626,6 +626,9 @@ remove_client_from_list(struct Client* client_p)
 {
   assert(client_p != NULL);
 
+  if (IsDead(client_p))
+    return;
+
   if(client_p == NULL)
     return;
   /* A client made with make_client()
@@ -668,6 +671,8 @@ remove_client_from_list(struct Client* client_p)
 void
 add_client_to_list(struct Client *client_p)
 {
+  if (IsDead(client_p))
+    return;
   /*
    * since we always insert new clients to the top of the list,
    * this should mean the "me" is the bottom most item in the list.
@@ -685,6 +690,8 @@ add_client_to_list(struct Client *client_p)
 void
 add_client_to_llist(struct Client **bucket, struct Client *client)
 {
+  if (IsDead(client))
+    return;
   if (!client->lprev && !client->lnext)
     {
       client->lprev = NULL;
@@ -697,6 +704,8 @@ add_client_to_llist(struct Client **bucket, struct Client *client)
 void
 del_client_from_llist(struct Client **bucket, struct Client *client)
 {
+  if (IsDead(client))
+    return;
   if (client->lprev)
     {
       client->lprev->lnext = client->lnext;
@@ -1149,9 +1158,8 @@ dead_link_on_write(struct Client *client_p, int ierrno)
 {
   const char *notice;
 
-  if(IsDefunct(client_p))
+  if(IsDefunct(client_p) || IsClosing(client_p))
     return;
-  SetDead(client_p);
 
   if(client_p->flags & FLAGS_SENDQEX)
     notice = "Max SendQ exceeded";
@@ -1183,9 +1191,8 @@ dead_link_on_read(struct Client* client_p, int error)
   char errmsg[255];
   int  current_error = get_sockerr(client_p->localClient->fd);
 
-  if(IsDead(client_p))
+  if(IsClosing(client_p))
     return;
-  SetDead(client_p);
 
   Debug((DEBUG_ERROR, "READ ERROR: fd = %d %d %d",
          client_p->localClient->fd, current_error, error));
@@ -1411,19 +1418,19 @@ exit_client(
         }
     }
 
-  if(MyConnect(source_p))
-  {
-     close_connection(source_p);
-     SetDead(source_p); /* You are dead my friend */
-  }
-
   /* The client *better* be off all of the lists */
   assert(dlinkFind(&unknown_list, source_p) == NULL);
   assert(dlinkFind(&lclient_list, source_p) == NULL);
   assert(dlinkFind(&serv_list, source_p) == NULL);
   assert(dlinkFind(&oper_list, source_p) == NULL);
-    
+
   exit_one_client(client_p, source_p, from, comment);
+
+  if (MyConnect(source_p))
+  {
+     close_connection(source_p);
+     SetDead(source_p); /* You are dead my friend */
+  }
   return client_p == source_p ? CLIENT_EXITED : 0;
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.176 2003/01/19 13:19:52 db Exp $
+ *  $Id: s_bsd.c,v 7.177 2003/01/31 12:15:16 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -319,7 +319,6 @@ close_connection(struct Client *client_p)
       send_queued_write(client_p->localClient->fd, client_p);
       fd_close(client_p->localClient->fd);
       client_p->localClient->fd = -1;
-      SetDead(client_p);
     }
 
   if(HasServlink(client_p))
