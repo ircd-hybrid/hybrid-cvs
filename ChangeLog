@@ -1,3 +1,9 @@
+*** 20001202_13 by db
+- fixed dlinkMoveList, there are three cases to contend with
+  1) empty from list 2) empty to list 3) move the spaghetti pointers around
+
+
+
 *** 20001202_12 by db
 - fixed DEBUG_BLOCK_ALLOCATOR for free_dlink_node case so it will
   no longer core in sprintf.. all the free calls are "wrapped" 
@@ -1364,7 +1370,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.667 2000/12/03 00:05:44 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.668 2000/12/03 04:36:46 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
