@@ -1,3 +1,15 @@
+leeh        2002/06/17 08:32:59 EDT	(20020617_2)
+
+  Modified files:
+    src                  tools.c 
+  Log:
+  - aaaaaand in tools.c
+  
+  Revision  Changes    Path
+  7.22      +0 -1      ircd-hybrid-7/src/tools.c
+
+
+
 db          2002/06/16 22:57:03 EDT	(20020617_1)
 
   Modified files:
@@ -28478,4 +28490,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3783 2002/06/17 02:57:10 db Exp $
+$Id: ChangeLog,v 7.3784 2002/06/17 12:33:05 leeh Exp $
