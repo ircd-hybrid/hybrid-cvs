@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.h,v 7.42 2003/06/12 03:40:29 joshk Exp $
+ *  $Id: irc_string.h,v 7.43 2003/06/13 07:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_irc_string_h
@@ -62,15 +62,13 @@ extern int ircncmp(const char *s1, const char *s2, int n);
  */
 const char* inetntoa(const char* in_addr);
 
-/* 
+/* XXX
  * inetntop() 
- * inetpton()
- * portable interfaces for inet_ntop() and inet_pton()
+ * portable interface for inet_ntop(), kludge; please use inet_ntop if possible
+ * since inet_misc has a more conformant one
  */
 const char *inetntop(int af, const void *src, char *dst, unsigned int size);
-int inetpton(int af, const char *src, void *dst);
-                                
-
+   
 #ifndef HAVE_STRLCPY
 size_t strlcpy(char *dst, const char *src, size_t siz);
 #endif
@@ -85,6 +83,10 @@ int snprintf (char *str,size_t count,const char *fmt,...);
 
 #ifndef HAVE_VSNPRINTF
 int vsnprintf (char *str, size_t count, const char *fmt, va_list args);
+#endif
+
+#ifndef HAVE_BASENAME
+char* basename (char *path);
 #endif
 
 /*

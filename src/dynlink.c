@@ -19,11 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: dynlink.c,v 7.10 2003/06/01 18:47:03 joshk Exp $
+ * $Id: dynlink.c,v 7.11 2003/06/13 07:40:31 joshk Exp $
  *
  */
 #include "stdinc.h"
 #include "tools.h"
+#include "irc_string.h"
 #include "modules.h"
 #include "s_log.h"
 #include "client.h"
@@ -253,7 +254,7 @@ load_a_module(char *path, int warn, int core)
   char **verp;
   char *ver;
 
-  mod_basename = irc_basename(path);
+  mod_basename = basename(path);
 
 #ifdef HAVE_SHL_LOAD
   tmpptr = shl_load(path, BIND_IMMEDIATE, NULL);
@@ -271,7 +272,7 @@ load_a_module(char *path, int warn, int core)
     sendto_realops_flags(UMODE_ALL, L_ALL, "Error loading module %s: %s",
                          mod_basename, err);
     ilog (L_WARN, "Error loading module %s: %s", mod_basename, err);
-    MyFree(mod_basename);
+    
     return(-1);
   }
 
@@ -284,7 +285,6 @@ load_a_module(char *path, int warn, int core)
       sendto_realops_flags(UMODE_ALL, L_ALL, "Module %s has no _modinit() function",
                            mod_basename);
       shl_unload(tmpptr);
-      MyFree(mod_basename);
       return(-1);
     }
   }
@@ -307,7 +307,6 @@ load_a_module(char *path, int warn, int core)
                          mod_basename);
     ilog (L_WARN, "Module %s has no _modinit() function", mod_basename);
     (void)dlclose (tmpptr);
-    MyFree(mod_basename);
     return(-1);
   }
 
@@ -339,7 +338,6 @@ load_a_module(char *path, int warn, int core)
          mod_basename, ver, tmpptr);
   }
 
-  MyFree(mod_basename);
   return(0);
 }
 

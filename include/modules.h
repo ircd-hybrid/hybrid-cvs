@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.42 2003/06/12 03:40:29 joshk Exp $
+ *  $Id: modules.h,v 7.43 2003/06/13 07:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -71,7 +71,6 @@ extern int unload_one_module(char *, int);
 extern int load_one_module(char *, int);
 extern int load_a_module(char *, int, int);
 extern int findmodule_byname(const char *);
-extern char *irc_basename(char *);
 extern void modules_init(void);
 
 #else /* STATIC_MODULES */

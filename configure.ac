@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.52 2003/06/12 03:40:24 joshk Exp $
+dnl $Id: configure.ac,v 7.53 2003/06/13 07:40:27 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -59,7 +59,7 @@ case `$CC -V 2>&1` in
 ;;
 *Tru64*)
 	AC_MSG_RESULT(Tru64 cc)
-	IRC_CFLAGS="-O1"
+	IRC_CFLAGS="-O2"
 	CPPFLAGS="-I/usr/local/include"
 	Tru=yes
 ;;
@@ -85,7 +85,11 @@ fi
 
 dnl If we support -g, use it!
 if test "$ac_cv_prog_cc_g" = yes; then
-	IRC_CFLAGS="$IRC_CFLAGS -g"
+	if test "$Tru" = yes; then
+		IRC_CFLAGS="$IRC_CFLAGS -g3"
+	else
+		IRC_CFLAGS="$IRC_CFLAGS -g"
+	fi
 fi
 
 dnl SVR4 SGS based on what we know about the compiler -jmallett
@@ -194,7 +198,7 @@ fi
 dnl Checks for header files.
 AC_HEADER_STDC
 
-AC_CHECK_HEADERS([crypt.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h getopt.h sys/wait.h wait.h])
+AC_CHECK_HEADERS([crypt.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h getopt.h libgen.h sys/wait.h wait.h])
 
 dnl Networking Functions
 dnl ====================
@@ -311,8 +315,8 @@ AC_C_BIGENDIAN
 dnl Check for stdarg.h - if we can't find it, halt configure
 AC_CHECK_HEADER(stdarg.h, , [AC_MSG_ERROR([** stdarg.h could not be found - ircd-hybrid will not compile without it **])])
 
-dnl Checks for the existance of strlcat
-AC_CHECK_FUNCS([strlcat strlcpy])
+dnl Checks for the existance of strlcat, strlcpy, basename...
+AC_CHECK_FUNCS([strlcat strlcpy basename])
 
 AC_CHECK_TYPE([u_int32_t], [],
 [

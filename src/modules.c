@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.126 2003/06/02 08:03:43 db Exp $
+ *  $Id: modules.c,v 7.127 2003/06/13 07:40:32 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -185,27 +185,6 @@ mod_clear_paths(void)
   }
 }
 
-/* irc_basename()
- *
- * input	-
- * output	-
- * side effects -
- */
-char *
-irc_basename(char *path)
-{
-  char *mod_basename = MyMalloc(strlen(path) + 1);
-  char *s;
-
-  if ((s = strrchr(path, '/')) == NULL)
-    s = path;
-  else
-    s++;
-
-  strcpy(mod_basename, s);
-  return(mod_basename);
-}
-
 /* findmodule_byname
  *
  * input        -
@@ -266,8 +245,9 @@ load_all_modules(int warn)
         ((ldirent->d_name[len-1] == 'o') ||
         (ldirent->d_name[len-1] == 'l')))
     {
-      snprintf(module_fq_name, sizeof(module_fq_name), "%s/%s",
-               AUTOMODPATH, ldirent->d_name);
+      if ( (snprintf(module_fq_name, sizeof(module_fq_name), "%s/%s",
+               AUTOMODPATH, ldirent->d_name)) == -1)
+	      printf ("Warning, snprintf got cut off\n");
       load_a_module(module_fq_name, warn, 0);
     }
   }
@@ -362,18 +342,16 @@ mo_modload(struct Client *client_p, struct Client *source_p, int parc, char *par
     return;
   }
 
-  m_bn = irc_basename(parv[1]);
+  m_bn = basename(parv[1]);
 
   if (findmodule_byname(m_bn) != -1)
   {
     sendto_one(source_p, ":%s NOTICE %s :Module %s is already loaded",
                me.name, source_p->name, m_bn);
-    MyFree(m_bn);
     return;
   }
 
   load_one_module(parv[1], 0);
-  MyFree(m_bn);
 }
 
 
@@ -391,13 +369,12 @@ mo_modunload(struct Client *client_p, struct Client *source_p, int parc, char *p
     return;
   }
 
-  m_bn = irc_basename(parv[1]);
+  m_bn = basename(parv[1]);
 
   if ((modindex = findmodule_byname(m_bn)) == -1)
   {
     sendto_one(source_p, ":%s NOTICE %s :Module %s is not loaded",
                me.name, source_p->name, m_bn);
-    MyFree(m_bn);
     return;
   }
 
@@ -406,7 +383,6 @@ mo_modunload(struct Client *client_p, struct Client *source_p, int parc, char *p
     sendto_one(source_p,
                ":%s NOTICE %s :Module %s is a core module and may not be unloaded",
 	       me.name, source_p->name, m_bn);
-    MyFree(m_bn);
     return;
   }
 
@@ -415,8 +391,6 @@ mo_modunload(struct Client *client_p, struct Client *source_p, int parc, char *p
     sendto_one(source_p, ":%s NOTICE %s :Module %s is not loaded",
                me.name, source_p->name, m_bn);
   }
-
-  MyFree(m_bn);
 }
 
 /* unload and load in one! */
@@ -434,13 +408,12 @@ mo_modreload(struct Client *client_p, struct Client *source_p, int parc, char *p
     return;
   }
 
-  m_bn = irc_basename(parv[1]);
+  m_bn = basename(parv[1]);
 
   if ((modindex = findmodule_byname(m_bn)) == -1)
   {
     sendto_one(source_p, ":%s NOTICE %s :Module %s is not loaded",
                me.name, source_p->name, m_bn);
-    MyFree(m_bn);
     return;
   }
 
@@ -450,7 +423,6 @@ mo_modreload(struct Client *client_p, struct Client *source_p, int parc, char *p
   {
     sendto_one(source_p, ":%s NOTICE %s :Module %s is not loaded",
                me.name, source_p->name, m_bn);
-    MyFree(m_bn);
     return;
   }
 
@@ -461,8 +433,6 @@ mo_modreload(struct Client *client_p, struct Client *source_p, int parc, char *p
     ilog(L_CRIT, "Error loading core module %s: terminating ircd", parv[1]);
     exit(0);
   }
-
-  MyFree(m_bn);
 }
 
 /* list modules .. */

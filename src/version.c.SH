@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: version.c.SH,v 7.21 2003/05/05 02:01:16 michael Exp $
+# $Id: version.c.SH,v 7.22 2003/06/13 07:40:32 joshk Exp $
 
 spitshell=cat
 package=IRC
@@ -17,7 +17,7 @@ fi
 
 generation=`expr $generation + 1`
 
-uname=`uname -a`
+uname=`uname -a | sed -e 's/\"/\\\"/g'`
 
 creation=`date | \
 awk '{if (NF == 6) \
