@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.187 2001/06/08 22:31:37 kreator Exp $
+ * $Id: ircd_parser.y,v 1.188 2001/06/18 07:30:25 jdc Exp $
  */
 
 %{
@@ -486,6 +486,13 @@ serverinfo_rsa_private_key: RSA_PRIVATE_KEY '=' QSTRING ';'
     RSA_free(ServerInfo.rsa_private_key);
     ServerInfo.rsa_private_key = NULL;
   }
+
+  if (ServerInfo.rsa_private_key_filename)
+  {
+    free(ServerInfo.rsa_private_key_filename);
+  }
+
+  ServerInfo.rsa_private_key_filename = strdup(yylval.string);
 
   file = BIO_new_file( yylval.string, "r" );
 
