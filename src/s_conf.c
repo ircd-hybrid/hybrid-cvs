@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.185 2001/02/13 03:16:44 androsyn Exp $
+ *  $Id: s_conf.c,v 7.186 2001/02/13 08:08:27 db Exp $
  */
 
 #include <sys/types.h>
@@ -1545,9 +1545,6 @@ static int SplitUserHost(struct ConfItem *aconf)
  */
 static void lookup_confhost(struct ConfItem* aconf)
 {
-  unsigned long    ip;
-  unsigned long    mask;
-
   if (BadPtr(aconf->host) || BadPtr(aconf->name))
     {
       log(L_ERROR, "Host/server name error: (%s) (%s)",
@@ -1561,13 +1558,11 @@ static void lookup_confhost(struct ConfItem* aconf)
   ** Do name lookup now on hostnames given and store the
   ** ip numbers in conf structure.
   */
-  if (is_address(aconf->host, &ip, &mask))
+
+  if (inetpton(DEF_FAM, aconf->host, &IN_ADDR(aconf->ipnum)) == 0)
     {
-      /* XXX IPV6 silliness to finish */
-/*      aconf->ipnum.s_addr = htonl(ip); */
+      conf_dns_lookup(aconf);
     }
-  else 
-    conf_dns_lookup(aconf);
 }
 
 /*

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.103 2001/02/12 07:23:54 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.104 2001/02/13 08:08:26 db Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -90,12 +90,26 @@ static PF comm_connect_tryconnect;
 void close_all_connections(void)
 {
   int i;
-  for (i = 0; i < MAXCONNECTIONS; ++i) {
-    if (fd_table[i].flags.open)
+  int fd;
+
+  for (i = 0; i < MAXCONNECTIONS; ++i)
+    {
+      if (fd_table[i].flags.open)
         fd_close(i);
-    else
+      else
         close(i);
-  }
+    }
+
+#ifndef NDEBUG
+  /* fugly hack to reserve fd == 2 */
+  (void)close(2);
+  fd = open("stderr.log",O_WRONLY|O_CREAT|O_APPEND,0755);
+  if( fd >= 0 )
+    {
+      dup2(fd, 2);
+      close(fd);
+    }
+#endif
 }
 
 /*
