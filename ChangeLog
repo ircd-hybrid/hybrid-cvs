@@ -1,3 +1,19 @@
+wiz         2002/11/06 16:18:00 EST	(20021106_0)
+
+  Modified files:
+    modules              m_challenge.c m_oper.c 
+  Log:
+  - Cleaned up failed oper/challenge notices, clarified
+    error messages... yes I am bored, greg.
+  
+  Reviewed by:    xyst, billy-jon
+  
+  Revision  Changes    Path
+  1.40      +27 -13    ircd-hybrid-7/modules/m_challenge.c
+  1.58      +28 -21    ircd-hybrid-7/modules/m_oper.c
+
+
+
 bill        2002/11/05 09:49:51 EST	(20021105_0)
 
   Modified files:
@@ -32999,4 +33015,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4098 2002/11/05 14:49:54 bill Exp $
+$Id: ChangeLog,v 7.4099 2002/11/06 21:18:03 wiz Exp $
