@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.144 2003/08/04 08:58:40 michael Exp $
+ *  $Id: m_stats.c,v 1.145 2003/08/13 09:52:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,10 +78,8 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.144 $";
+const char *_version = "$Revision: 1.145 $";
 #endif
-
-const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
 
 static char *parse_stats_args(int, char **, int *, int *);
 static void stats_L(struct Client *, char *, int, int, char);
@@ -844,13 +842,12 @@ stats_ziplinks(struct Client *source_p)
 static void
 stats_servlinks(struct Client *source_p)
 {
-  static char Sformat[] = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
   long uptime, sendK, receiveK;
-  struct Client        *target_p;
+  struct Client *target_p;
   dlink_node *ptr;
   int j = 0;
 
-  if(ConfigServerHide.flatten_links && !IsOper(source_p))
+  if (ConfigServerHide.flatten_links && !IsOper(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVILEGES),me.name, source_p->name);
     return;
@@ -866,8 +863,8 @@ stats_servlinks(struct Client *source_p)
     sendK += target_p->localClient->sendK;
     receiveK += target_p->localClient->receiveK;
 
-    sendto_one(source_p, Sformat, me.name, RPL_STATSLINKINFO,
-               source_p->name, 
+    sendto_one(source_p, ":%s %d %s %s %u %u %u %u %u :%u %u %s",
+               me.name, RPL_STATSLINKINFO, source_p->name, 
                IsAdmin(source_p) ? get_client_name(target_p, SHOW_IP)
 	       : get_client_name(target_p, MASK_IP),
                (int)dbuf_length(&target_p->localClient->buf_sendq),
@@ -879,7 +876,7 @@ stats_servlinks(struct Client *source_p)
                (CurrentTime > target_p->since) ? (CurrentTime - target_p->since): 0,
                IsOper(source_p) ? show_capabilities(target_p) : "TS");
   }
-  
+
   sendto_one(source_p, ":%s %d %s ? :%u total server(s)",
              me.name, RPL_STATSDEBUG, source_p->name, j);
 
@@ -911,7 +908,7 @@ stats_ltrace(struct Client *source_p, int parc, char *parv[])
   char *name = NULL;
   char statchar;
 
-  if ((name = parse_stats_args(parc,parv,&doall,&wilds)) != NULL)
+  if ((name = parse_stats_args(parc, parv, &doall, &wilds)) != NULL)
   {
     statchar = parv[1][0];
 
@@ -972,7 +969,7 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
    * a wild card based search to list it.
    */
   DLINK_FOREACH(ptr, list->head)
-    {
+  {
       target_p = ptr->data;
 
       if (IsInvisible(target_p) && (doall || wilds) &&
@@ -991,7 +988,7 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
 	(!IsServer(target_p) && !IsAdmin(target_p) && 
 	 !IsHandshake(target_p) && !IsConnecting(target_p))))
 	{
-	  sendto_one(source_p, Lformat, me.name,
+	  sendto_one(source_p, ":%s %d %s %s %u %u %u %u %u :%u %u %s", me.name,
                      RPL_STATSLINKINFO, source_p->name,
                      (IsUpper(statchar)) ?
                      get_client_name(target_p, SHOW_IP) :
@@ -1010,7 +1007,7 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
           /* If its a hidden ip, an admin, or a server, mask the real IP */
 	  if(IsIPSpoof(target_p) || IsServer(target_p) || IsAdmin(target_p)
 	     || IsHandshake(target_p) || IsConnecting(target_p))
-	    sendto_one(source_p, Lformat, me.name,
+	    sendto_one(source_p, ":%s %d %s %s %u %u %u %u %u :%u %u %s", me.name,
 		       RPL_STATSLINKINFO, source_p->name,
 		       get_client_name(target_p, MASK_IP),
 		       (int)dbuf_length(&target_p->localClient->buf_sendq),
@@ -1022,7 +1019,7 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
 		       (CurrentTime > target_p->since) ? (CurrentTime - target_p->since):0,
 		       IsServer(target_p) ? show_capabilities(target_p) : "-");
 	  else /* show the real IP */
-	    sendto_one(source_p, Lformat, me.name,
+	    sendto_one(source_p, ":%s %d %s %s %u %u %u %u %u :%u %u %s", me.name,
 		       RPL_STATSLINKINFO, source_p->name,
 		       (IsUpper(statchar)) ?
 		       get_client_name(target_p, SHOW_IP) :
