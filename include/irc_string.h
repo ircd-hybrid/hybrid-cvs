@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.3 1999/12/30 20:35:29 db Exp $
+ *   $Id: irc_string.h,v 7.4 2000/03/31 02:38:27 db Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -30,6 +30,14 @@
  * match - returns 1 on successful match, 0 otherwise
  */
 extern int match(const char *mask, const char *name);
+/*
+ * match_cidr - compare name with mask, mask may contain * and ? as wildcards, and
+ *              a network of the form 1.2.3.4/5.
+ * match_cidr - return 1 on successful match, 0 otherwise.
+ */
+#if 0
+extern int match_cidr(const char *ban, const char *ip, struct Client *sptr);
+#endif
 /*
  * collapse - collapse a string in place, converts multiple adjacent *'s 
  * into a single *.

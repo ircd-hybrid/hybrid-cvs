@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_help.c,v 7.1 1999/12/30 20:35:49 db Exp $
+ *   $Id: m_help.c,v 7.2 2000/03/31 02:38:29 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"
@@ -100,7 +100,7 @@ int m_help(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (!IsAnOper(sptr))
     {
       /* HELP is always local */
-      if ((last_used + PACE_WAIT) > CurrentTime)
+      if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
         {
           /* safe enough to give this on a local connect only */
           sendto_one(sptr,form_str(RPL_LOAD2HI),me.name,parv[0]);

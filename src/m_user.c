@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_user.c,v 7.2 2000/01/08 01:59:22 db Exp $
+ *   $Id: m_user.c,v 7.3 2000/03/31 02:38:30 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"
@@ -29,12 +29,11 @@
 #include "numeric.h"
 #include "s_user.h"
 #include "send.h"
+#include "s_conf.h"
 
 #include <string.h>
 
-#ifdef BOTCHECK
 static int bot_check(char *host);
-#endif
 
 /*
  * m_functions execute protocol messages on this server:
@@ -132,16 +131,15 @@ int m_user(struct Client* cptr, struct Client* sptr, int parc, char *parv[])
   server   = (parc < 4 || BadPtr(parv[3])) ? "<noserver>" : parv[3];
   realname = (parc < 5 || BadPtr(parv[4])) ? "<bad-realname>" : parv[4];
   
-#ifdef BOTCHECK
+  if (ConfigFileEntry.botcheck) {
   /* Only do bot checks on local connecting clients */
       if(MyClient(cptr))
         cptr->isbot = bot_check(host);
-#endif
+  }
 
   return do_user(parv[0], cptr, sptr, username, host, server, realname);
 }
 
-#ifdef BOTCHECK
 /**
  ** bot_check(host)
  **   Reject a bot based on a fake hostname...
@@ -161,4 +159,3 @@ static int bot_check(char *host)
 
   return 0;
 }
-#endif

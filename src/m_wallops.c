@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_wallops.c,v 7.2 1999/12/30 20:36:03 db Exp $
+ *   $Id: m_wallops.c,v 7.3 2000/03/31 02:38:30 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"
@@ -29,6 +29,7 @@
 #include "numeric.h"
 #include "send.h"
 #include "s_user.h"
+#include "s_conf.h"
 
 /*
  * m_functions execute protocol messages on this server:
@@ -121,10 +122,9 @@ int m_wallops(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if(!IsServer(sptr))   /* If source of message is not a server, i.e. oper */
     {
 
-#ifdef PACE_WALLOPS
-      if( MyClient(sptr) )
+      if( ConfigFileEntry.pace_wallops && MyClient(sptr) )
         {
-          if( (LastUsedWallops + WALLOPS_WAIT) > CurrentTime )
+          if( (LastUsedWallops + ConfigFileEntry.wallops_wait) > CurrentTime )
             { 
           	sendto_one(sptr, ":%s NOTICE %s :Oh, one of those annoying opers who doesn't know how to use a channel",
                      me.name,parv[0]);
@@ -132,7 +132,6 @@ int m_wallops(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
             }
           LastUsedWallops = CurrentTime;
         }
-#endif
 
       send_operwall(sptr, "WALLOPS", message);
       sendto_serv_butone( IsServer(cptr) ? cptr : NULL,

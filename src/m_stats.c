@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 7.2 2000/01/01 06:35:15 db Exp $
+ *  $Id: m_stats.c,v 7.3 2000/03/31 02:38:30 db Exp $
  */
 #include "m_commands.h"  /* m_pass prototype */
 #include "class.h"       /* report_classes */
@@ -140,7 +140,7 @@ int m_stats(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   if(!IsAnOper(sptr))
     {
-      if((last_used + PACE_WAIT) > CurrentTime)
+      if((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
         {
           /* safe enough to give this on a local connect only */
           if(MyClient(sptr))
@@ -433,13 +433,11 @@ int m_stats(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
    * -Dianora
    */
 
-#ifdef STATS_NOTICE
-  if (valid_stats)
+  if (ConfigFileEntry.stats_notice && valid_stats)
     sendto_realops_flags(FLAGS_SPY,
                          "STATS %c requested by %s (%s@%s) [%s]", stat,
                          sptr->name, sptr->username, sptr->host,
                          sptr->user->server);
-#endif
   return 0;
 }
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 7.2 1999/12/30 20:35:59 db Exp $
+ *   $Id: m_server.c,v 7.3 2000/03/31 02:38:30 db Exp $
  */
 #include "m_commands.h"  /* m_server prototype */
 #include "client.h"      /* client struct */
@@ -224,10 +224,9 @@ int m_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     {
       if (find_conf_by_name(host, CONF_NOCONNECT_SERVER) == NULL)
         {
-#ifdef WARN_NO_NLINE
-          sendto_realops("Link %s Server %s dropped, no N: line",
-                         get_client_name(cptr, TRUE), host);
-#endif
+          if (ConfigFileEntry.warn_no_nline)
+              sendto_realops("Link %s Server %s dropped, no N: line",
+                             get_client_name(cptr, TRUE), host);
           return exit_client(cptr, cptr, cptr, "NO N line");
         }
     }

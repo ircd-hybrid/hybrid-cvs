@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_commands.h,v 7.8 2000/01/17 03:21:23 db Exp $
+ * $Id: m_commands.h,v 7.9 2000/03/31 02:38:27 db Exp $
  */
 #ifndef INCLUDED_m_commands_h
 #define INCLUDED_m_commands_h
@@ -91,7 +91,6 @@ extern int m_userhost(struct Client *,struct Client *,int,char **);
 extern int m_ison(struct Client *,struct Client *,int,char **);
 extern int m_svinfo(struct Client *,struct Client *,int,char **);
 extern int m_sjoin(struct Client *,struct Client *,int,char **);
-extern int m_operwall(struct Client *,struct Client *,int,char **);
 extern int m_rehash(struct Client *,struct Client *,int,char **);
 extern int m_restart(struct Client *,struct Client *,int,char **);
 extern int m_die(struct Client *,struct Client *,int,char **);

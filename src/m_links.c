@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 7.2 1999/12/30 20:35:52 db Exp $
+ *   $Id: m_links.c,v 7.3 2000/03/31 02:38:30 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"
@@ -29,6 +29,7 @@
 #include "numeric.h"
 #include "s_serv.h"
 #include "send.h"
+#include "s_conf.h"
 
 #include <assert.h>
 #include <string.h>
@@ -125,7 +126,7 @@ int m_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       if(!MyClient(sptr))
         return 0;
 
-      if((last_used + PACE_WAIT) > CurrentTime)
+      if((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
         {
           /* safe enough to give this on a local connect only */
           sendto_one(sptr,form_str(RPL_LOAD2HI),me.name,parv[0]);

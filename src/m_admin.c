@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_admin.c,v 7.2 2000/01/06 03:31:33 db Exp $
+ *   $Id: m_admin.c,v 7.3 2000/03/31 02:38:29 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"
@@ -99,7 +99,7 @@ int m_admin(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   if(!IsAnOper(sptr))
     {
-      if((last_used + PACE_WAIT) > CurrentTime)
+      if((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
         {
           /* safe enough to give this on a local connect only */
           if(MyClient(sptr))

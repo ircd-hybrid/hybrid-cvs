@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 7.3 2000/01/17 03:21:30 db Exp $
+ *   $Id: m_trace.c,v 7.4 2000/03/31 02:38:30 db Exp $
  */
 #include "m_commands.h"
 #include "class.h"
@@ -151,7 +151,7 @@ int m_trace(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     {
       /* pacing for /trace is problemmatical */
 #if PACE_TRACE
-      if((last_used + PACE_WAIT) > CurrentTime)
+      if((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
         {
           /* safe enough to give this on a local connect only */
           if(MyClient(sptr))

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.50 2000/02/02 01:41:57 db Exp $
+ *  $Id: s_conf.c,v 7.51 2000/03/31 02:38:31 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -53,6 +53,7 @@
 #include <assert.h>
 
 
+extern int yyparse(); /* defined in yy.tab.c */
 extern ConfigFileEntryType ConfigFileEntry; /* defined in ircd.c */
 extern int lineno;
 extern char linebuf[];
@@ -1835,6 +1836,16 @@ static void initconf(FBFILE* file)
   check_class();
   nextping = nextconnect = time(NULL);
 
+  if( ConfigFileEntry.ts_warn_delta < 60 )
+    {
+      ConfigFileEntry.ts_warn_delta = 60;
+    }
+
+  if( ConfigFileEntry.ts_max_delta < 300 )
+    {
+      ConfigFileEntry.ts_max_delta = 300;
+    }
+
   if(me.name[0] == '\0')
     {
       log(L_CRIT, "Server has no M:/serverinfo line");
@@ -2390,7 +2401,7 @@ char *oper_flags_as_string(int flags)
 }
 
 /* table used for is_address */
-static unsigned long cidr_to_bitmask[]=
+unsigned long cidr_to_bitmask[]=
 {
   /* 00 */ 0x00000000,
   /* 01 */ 0x80000000,

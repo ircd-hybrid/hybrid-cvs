@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.11 2000/01/17 03:21:23 db Exp $
+ * $Id: msg.h,v 7.12 2000/03/31 02:38:27 db Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -118,7 +118,6 @@ typedef struct MessageTree MESSAGE_TREE;
 #define MSG_DIE      "DIE"      /* DIE */
 #define MSG_HASH     "HASH"     /* HASH */
 #define MSG_DNS      "DNS"      /* DNS  -> DNSS */
-#define MSG_OPERWALL "OPERWALL" /* OPERWALL */
 #define MSG_KLINE    "KLINE"    /* KLINE */
 #define MSG_UNKLINE  "UNKLINE"  /* UNKLINE */
 #define MSG_DLINE    "DLINE"    /* DLINE */
@@ -243,7 +242,6 @@ struct Message msgtab[] = {
   { MSG_SVINFO,  m_svinfo,   0, MAXPARA, 1, 1, 0, 0L },
   { MSG_SJOIN,   m_sjoin,    0, MAXPARA, 1, 0, 0, 0L },
   { MSG_CAPAB,   m_capab,    0, MAXPARA, 1, 1, 0, 0L },
-  { MSG_OPERWALL, m_operwall,0, MAXPARA, 1, 0, 0, 0L },
   { MSG_CLOSE,   m_close,    0, MAXPARA, 1, 0, 0, 0L },
   { MSG_KLINE,   m_kline,    0, MAXPARA, 1, 0, 0, 0L },
   { MSG_UNKLINE, m_unkline,  0, MAXPARA, 1, 0, 0, 0L },

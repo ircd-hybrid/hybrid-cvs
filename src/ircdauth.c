@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.6 1999/12/31 04:37:30 wnder Exp $
+ *   $Id: ircdauth.c,v 7.7 2000/03/31 02:38:29 db Exp $
  */
 
 #include <stdio.h>
@@ -609,37 +609,33 @@ GreetUser(struct Client *client)
 
 	show_lusers(client, client, 1, parv);
 
-#ifdef SHORT_MOTD
+  if(ConfigFileEntry.short_motd) {
+  	sendto_one(client,"NOTICE %s :*** Notice -- motd was last changed at %s",
+	  	client->name,
+		  ConfigFileEntry.motd.lastChangedDate);
 
-	sendto_one(client,"NOTICE %s :*** Notice -- motd was last changed at %s",
-		client->name,
-		ConfigFileEntry.motd.lastChangedDate);
+  	sendto_one(client,
+	  	"NOTICE %s :*** Notice -- Please read the motd if you haven't read it",
+		  client->name);
 
-	sendto_one(client,
-		"NOTICE %s :*** Notice -- Please read the motd if you haven't read it",
-		client->name);
+	  sendto_one(client, form_str(RPL_MOTDSTART),
+		  me.name,
+		  client->name,
+		  me.name);
 
-	sendto_one(client, form_str(RPL_MOTDSTART),
-		me.name,
-		client->name,
-		me.name);
+	  sendto_one(client,
+		  form_str(RPL_MOTD),
+		  me.name,
+		  client->name,
+		  "*** This is the short motd ***");
 
-	sendto_one(client,
-		form_str(RPL_MOTD),
-		me.name,
-		client->name,
-		"*** This is the short motd ***");
+	  sendto_one(client, form_str(RPL_ENDOFMOTD),
+		  me.name,
+		  client->name);
 
-	sendto_one(client, form_str(RPL_ENDOFMOTD),
-		me.name,
-		client->name);
-
-#else
-
+  } else
 	SendMessageFile(client, &ConfigFileEntry.motd);
 
-#endif /* SHORT_MOTD */
-      
 #ifdef LITTLE_I_LINES
 	if (client->confs && client->confs->value.aconf &&
 			(client->confs->value.aconf->flags & CONF_FLAGS_LITTLE_I_LINE))

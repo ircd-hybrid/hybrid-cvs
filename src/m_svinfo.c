@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_svinfo.c,v 7.2 1999/12/30 20:36:01 db Exp $
+ *   $Id: m_svinfo.c,v 7.3 2000/03/31 02:38:30 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"
@@ -29,6 +29,7 @@
 #include "ircd.h"
 #include "numeric.h"
 #include "send.h"
+#include "s_conf.h"
 
 #include <assert.h>
 #include <time.h>
@@ -129,7 +130,7 @@ int m_svinfo(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   theirtime = atol(parv[4]);
   deltat = abs(theirtime - CurrentTime);
 
-  if (deltat > TS_MAX_DELTA)
+  if (deltat > ConfigFileEntry.ts_max_delta)
     {
       sendto_ops(
        "Link %s dropped, excessive TS delta (my TS=%d, their TS=%d, delta=%d)",
@@ -137,7 +138,7 @@ int m_svinfo(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       return exit_client(sptr, sptr, sptr, "Excessive TS delta");
     }
 
-  if (deltat > TS_WARN_DELTA)
+  if (deltat > ConfigFileEntry.ts_warn_delta)
     { 
       sendto_realops(
                  "Link %s notable TS delta (my TS=%d, their TS=%d, delta=%d)",

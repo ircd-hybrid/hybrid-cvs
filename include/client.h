@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.14 2000/01/24 22:22:24 db Exp $
+ * $Id: client.h,v 7.15 2000/03/31 02:38:26 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -184,9 +184,7 @@ struct Client
    * these fields, if (from != self).
    */
   int               count;       /* Amount of data in buffer */
-#ifdef BOTCHECK
   unsigned char     isbot;      /* non 0 if its a type of bot */
-#endif
 #ifdef FLUD
   time_t            fludblock;
   struct fludbot*   fluders;
@@ -235,10 +233,8 @@ struct Client
   unsigned short    port;       /* and the remote port# too :-) */
   struct DNSReply*  dns_reply;  /* result returned from resolver query */
   unsigned long     serverMask; /* Only used for Lazy Links */
-#ifdef ANTI_NICK_FLOOD
   time_t            last_nick_change;
   int               number_of_nick_changes;
-#endif
   time_t            last_knock; /* don't allow knock to flood */
   /*
    * client->sockhost contains the ip address gotten from the socket as a
