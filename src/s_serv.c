@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.392 2003/10/29 22:37:15 bill Exp $
+ *  $Id: s_serv.c,v 7.393 2004/01/16 01:02:17 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1579,7 +1579,7 @@ server_burst(struct Client *client_p)
 
   /* EOB stuff is now in burst_all */
   /* Always send a PING after connect burst is done */
-  sendto_one(client_p, "PING :%s", me.name);
+  sendto_one(client_p, "PING :%s", ID_or_name(&me, client_p));
 }
 
 /* burst_all()
