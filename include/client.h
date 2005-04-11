@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.221 2004/02/24 03:36:18 michael Exp $
+ *  $Id: client.h,v 7.222 2005/04/11 14:46:10 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -555,4 +555,6 @@ extern void dead_link_on_write(struct Client *client_p, int ierrno);
 extern void dead_link_on_read(struct Client *client_p, int error);
 extern void exit_aborted_clients(void);
 extern void free_exited_clients(void);
+const char *me_id_name(struct Client *source_p);
+const char *source_id_name(struct Client *source_p);
 #endif /* INCLUDED_client_h */

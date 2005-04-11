@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_links.c,v 1.45 2004/07/08 00:27:22 erik Exp $
+ *  $Id: m_links.c,v 1.46 2005/04/11 14:46:12 db Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&links_msgtab);
 }
 
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 
 /*
@@ -92,19 +92,19 @@ m_links(struct Client *client_p, struct Client *source_p,
  */
   
   sendto_one(source_p, form_str(RPL_LINKS),
-             MyConnect(source_p) ? me.name : me.id,
-             MyConnect(source_p) ? parv[0] : ID(source_p),
+             me_id_name(source_p), source_id_name(source_p),
              me.name, me.name, 0, me.info);
       
   sendto_one(source_p, form_str(RPL_ENDOFLINKS),
-             MyConnect(source_p) ? me.name : me.id, 
-             MyConnect(source_p) ? parv[0] : ID(source_p), "*");
+             me_id_name(source_p), "*");
 }
 
 static void
 mo_links(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
+  const char *me_name;
+  const char *nick;
   const char *mask = "";
   struct Client *target_p;
   char clean_mask[2 * HOSTLEN + 4];
@@ -139,6 +139,9 @@ mo_links(struct Client *client_p, struct Client *source_p,
   
   hook_call_event("doing_links", &hd);
   
+  me_name = me_id_name(source_p);
+  nick = source_id_name(source_p);
+
   DLINK_FOREACH(ptr, global_serv_list.head)
     {
       target_p = ptr->data;
@@ -156,19 +159,17 @@ mo_links(struct Client *client_p, struct Client *source_p,
       else
         p = "(Unknown Location)";
 
-     /* We just send the reply, as if theyre here theres either no SHIDE,
-      * or theyre an oper..  
+     /* We just send the reply, as if they are here there's either no SHIDE,
+      * or they're an oper..  
       */
       sendto_one(source_p, form_str(RPL_LINKS),
-                 MyConnect(source_p) ? me.name : me.id, 
-                 MyConnect(source_p) ? parv[0] : ID(source_p),
+                 me_name, nick,
 		 target_p->name, target_p->servptr->name,
                  target_p->hopcount, p);
     }
   
   sendto_one(source_p, form_str(RPL_ENDOFLINKS),
-             MyConnect(source_p) ? me.name : me.id, 
-             MyConnect(source_p) ? parv[0] : ID(source_p),
+             me_name, nick,
              EmptyString(mask) ? "*" : mask);
 }
 
@@ -190,6 +191,8 @@ ms_links(struct Client *client_p, struct Client *source_p,
     return;
 
   if (IsClient(source_p))
-    m_links(client_p,source_p,parc,parv);
+    {
+      m_links(client_p, source_p, parc, parv);
+    }
 }
 

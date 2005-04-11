@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.281 2005/01/01 16:14:51 michael Exp $
+ *  $Id: send.c,v 7.282 2005/04/11 14:46:16 db Exp $
  */
 
 #include "stdinc.h"
@@ -1179,7 +1179,7 @@ kill_client(struct Client *client_p, struct Client *diedie,
   if (IsDead(client_p))
     return;
 
-  len = ircsprintf(buffer, ":%s KILL %s :", me.name,
+  len = ircsprintf(buffer, ":%s KILL %s :", me_id_name(client_p),
                    ID_or_name(diedie, client_p));
 
   va_start(args, pattern);
@@ -1211,10 +1211,10 @@ kill_client_ll_serv_butone(struct Client *one, struct Client *source_p,
   int len_uid = 0, len_nick;
 
   va_start(args, pattern);
-  if (HasID(source_p))
+  if (HasID(source_p) && (me.id[0] != '\0'))
   {
     have_uid = 1;
-    len_uid = ircsprintf(buf_uid, ":%s KILL %s :", me.name, ID(source_p));
+    len_uid = ircsprintf(buf_uid, ":%s KILL %s :", me.id, ID(source_p));
     len_uid += send_format(&buf_uid[len_uid], IRCD_BUFSIZE - len_uid, pattern,
                            args);
   }
