@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.c,v 7.93 2002/10/09 15:08:32 db Exp $
+ *  $Id: linebuf.c,v 7.93.2.1 2005/04/18 16:16:59 joant Exp $
  */
 
 #include "stdinc.h"
@@ -170,8 +170,6 @@ linebuf_skip_crlf(char *ch, int len)
 	break;
       else if(*ch == '\n')
         break;
-      else if (*ch == 0)
-        return -1;
     }
 
   /* Then, skip until the last CRLF */
