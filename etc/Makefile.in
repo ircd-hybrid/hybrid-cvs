@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.14 2003/11/01 06:58:40 joshk Exp $
+# $Id: Makefile.in,v 1.15 2005/04/19 13:34:15 lusky Exp $
 
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
@@ -18,7 +18,7 @@ DISTFILES	= @EXAMPLE_CONF@
 all:
 
 install:
-	@if $(TEST) $(sysconfdir) -ef `pwd`; then exit; fi; \
+	-@if $(TEST) $(sysconfdir) -ef `pwd`; then exit; fi; \
 	mkdir -p $(sysconfdir); \
 	for i in $(DISTFILES); do \
 		if test -f $(sysconfdir)/$$i -a -z "$(CLOBBER)"; then \
