@@ -102,17 +102,13 @@ Feature Specific Requirements:
   IRIX64 6.5.19 (gcc only; MIPSpro is unconfirmed)
   NetBSD 1.4-1.6
   Tru64 UNIX 5.2b (only tested with native cc)
-  
+
   It probably does not compile on AIX or libc5 Linux.
-  
-  Previously, OpenVMS was actively supported, but the port has fallen behind,
-  so a diff is available in contrib/ that may or may not work for you. Use at
-  your own risk.
-  
+
 - Please read RELNOTES and doc/whats-new.txt for information about what is in
   this release
 
 - Other files recommended for reading: BUGS, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: README.FIRST,v 7.44 2004/07/17 00:12:05 lusky Exp $
+$Id: README.FIRST,v 7.45 2005/04/24 12:43:08 michael Exp $

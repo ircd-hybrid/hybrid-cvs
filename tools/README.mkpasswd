@@ -1,5 +1,5 @@
 mkpasswd.c documentation
-$Id: README.mkpasswd,v 1.5 2001/11/04 05:20:21 wcampbel Exp $
+$Id: README.mkpasswd,v 1.6 2005/04/24 12:43:09 michael Exp $
 
 This is documentation for the mkpasswd.c included in ircd-hybrid-7.
 
@@ -43,10 +43,5 @@ Cygwin 1.1.4 (DES only)
 Prior Cygwin with the MD5 libcrypt (MD5 only)
 OpenBSD 2.7 (don't link with -lcrypt) (DES and MD5, no Blowfish support)
 Mac OS-X (Darwin) (don't link with -lcrypt) (DES only)
-
-OpenVMS (MD5 only, with the included crypt.c implementation)
-
-VMS Support works, but it unsupported by me.
-An MMK build script is included, as well as an MD5 crypt() implementation
 
 Other systems probably work, but they haven't been amply tested.
