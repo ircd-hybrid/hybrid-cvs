@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.87 2005/04/26 08:24:20 michael Exp $
+ *  $Id: hash.c,v 7.88 2005/04/26 08:36:41 michael Exp $
  */
 
 #include "stdinc.h"
@@ -48,6 +48,8 @@ extern BlockHeap *channel_heap;
 static BlockHeap *userhost_heap;
 static BlockHeap *namehost_heap;
 static struct UserHost *find_or_add_userhost(const char *);
+
+static unsigned int random_key = 0;
 
 #define FNV1_32_INIT 0x811c9dc5
 #define FNV1_32_BITS 16
@@ -86,6 +88,8 @@ init_hash(void)
   userhost_heap = BlockHeapCreate(sizeof(struct UserHost), CLIENT_HEAP_SIZE);
   namehost_heap = BlockHeapCreate(sizeof(struct NameHost), CLIENT_HEAP_SIZE);
 
+  random_key = random() % 256;  /* better than nothing --adx */
+
   /* Clear the hash tables first */
   for (i = 0; i < HASHSIZE; ++i)
   {
@@ -115,7 +119,7 @@ strhash(const unsigned char *p)
   {
     hval += (hval << 1) + (hval <<  4) + (hval << 7) +
             (hval << 8) + (hval << 24);
-    hval ^= ToLower(*p);
+    hval ^= (ToLower(*p) ^ random_key);
   }
 
   return((hval >> FNV1_32_BITS) ^ (hval & ((1 << FNV1_32_BITS) -1)));
