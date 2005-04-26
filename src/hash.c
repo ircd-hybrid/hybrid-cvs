@@ -19,13 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.86 2004/07/08 00:27:33 erik Exp $
+ *  $Id: hash.c,v 7.87 2005/04/26 08:24:20 michael Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "s_conf.h"
 #include "channel.h"
+#include "channel_mode.h"
 #include "client.h"
 #include "common.h"
 #include "handlers.h"
@@ -42,68 +43,17 @@
 #include "dbuf.h"
 #include "s_user.h"
 
-/* XXX ZZZ for "safe_list" *ugh* */
-#include "channel.h"
-#include "channel_mode.h"
 
 extern BlockHeap *channel_heap;
 static BlockHeap *userhost_heap;
 static BlockHeap *namehost_heap;
-static struct UserHost *find_or_add_userhost(const char *host);
+static struct UserHost *find_or_add_userhost(const char *);
 
-
-/* Hash alghoritm based on ircu 2.10 implementation by Andrea Cocito "Nemesi" */
-
-/* This hash function returns *exactly* N%HASHSIZE, where 'N'
- * is the string itself (included the trailing '\0') seen as 
- * a baseHASHSHIFT number whose "digits" are the bytes of the
- * number mapped through a "weight" transformation that gives
- * the same "weight" to caseless-equal chars, example:
- *
- * Hashing the string "Nick\0" the result will be:
- * N  i  c  k \0
- * |  |  |  |  `--->  ( (hash_weight('\0') * (HASHSHIFT**0) +
- * |  |  |  `------>    (hash_weight('k')  * (HASHSHIFT**1) +
- * |  |  `--------->    (hash_weight('c')  * (HASHSHIFT**2) +
- * |  `------------>    (hash_weight('i')  * (HASHSHIFT**3) +
- * `--------------->    (hash_weight('N')  * (HASHSHIFT**4)   ) % HASHSIZE
- *
- * It's actually a lot similar to a base transformation of the
- * text representation of an integer.
- * Looking at it this way seems slow and requiring unlimited integer
- * precision, but we actually do it with a *very* fast loop, using only 
- * short integer arithmetic and by means of two memory accesses and 
- * 3 additions per each byte processed.. and nothing else, as a side
- * note the distribution of real nicks over the hash table of this
- * function is about 3 times better than the previous one, and the
- * hash function itself is about 25% faster with a "normal" HASHSIZE
- * (it gets slower with larger ones and faster for smallest ones
- * because the hash table size affect the size of some maps and thus
- * the effectiveness of RAM caches while accesing them).
- */
-
-/* The first prime bigger than the maximum character code (255) */
-#define HASHSHIFT 257
-
-#define HASHMAPSIZE (HASHSIZE + HASHSHIFT + 1)
-
-/* Static memory structures */
-
-/* We need a first function that, given an integer h between 0 and
- * HASHSIZE+HASHSHIFT, returns ( (h * HASHSHIFT) % HASHSIZE ) )
- * We'll map this function in this table
- */
-static unsigned int hash_map[HASHMAPSIZE];
-
-/* Then we need a second function that "maps" a char to its weitgh,
- * changed to a table this one too, with this macro we can use a char
- * as index and not care if it is signed or not, no.. this will not
- * cause an addition to take place at each access, trust me, the
- * optimizer takes it out of the actual code and passes "label+shift"
- * to the linker, and the linker does the addition :)
- */
-static unsigned int hash_weight_table[CHAR_MAX - CHAR_MIN + 1];
-#define hash_weight(ch) hash_weight_table[ch - CHAR_MIN]
+#define FNV1_32_INIT 0x811c9dc5
+#define FNV1_32_BITS 16
+#define FNV1_32_SIZE (1 << FNV1_32_BITS)  /* 2^16 = 65536 */
+#undef HASHSIZE
+#define HASHSIZE FNV1_32_SIZE
 
 /* The actual hash tables, both MUST be of the same HASHSIZE, variable
  * size tables could be supported but the rehash routine should also
@@ -127,9 +77,7 @@ static struct ResvChannel *resvchannelTable[HASHSIZE];
 void
 init_hash(void)
 {
-  int i, weight_key;
-  unsigned long l;
-  unsigned long m;
+  unsigned int i;
 
   /* Default the userhost/namehost sizes to CLIENT_HEAP_SIZE for now,
    * should be a good close approximation anyway
@@ -138,49 +86,39 @@ init_hash(void)
   userhost_heap = BlockHeapCreate(sizeof(struct UserHost), CLIENT_HEAP_SIZE);
   namehost_heap = BlockHeapCreate(sizeof(struct NameHost), CLIENT_HEAP_SIZE);
 
-  weight_key = rand() % 256;  /* better than nothing --adx */
-
-  /* Here is to what we "map" a char before working on it */
-  for (i = CHAR_MIN; i <= CHAR_MAX; i++)
-    hash_weight(i) = ((unsigned int) ToLower(i)) ^ weight_key;
-
   /* Clear the hash tables first */
-  for (l = 0; l < HASHSIZE; l++)
+  for (i = 0; i < HASHSIZE; ++i)
   {
-    idTable[l]          = NULL;
-    clientTable[l]      = NULL;
-    channelTable[l]     = NULL;
-    userhostTable[l]    = NULL;
-    resvchannelTable[l] = NULL;
-  }
-
-  /* And this is our hash-loop "transformation" function, 
-   * basically it will be hash_map[x] == ((x*HASHSHIFT)%HASHSIZE)
-   * defined for 0<=x<=(HASHSIZE+HASHSHIFT)
-   */
-  for (m = 0; m < (unsigned long) HASHMAPSIZE; m++)
-  {
-    l = m;
-    l *= (unsigned long) HASHSHIFT;
-    l &= HASHSIZE - 1;
-    hash_map[m] = (unsigned int) l;
+    idTable[i]          = NULL;
+    clientTable[i]      = NULL;
+    channelTable[i]     = NULL;
+    userhostTable[i]    = NULL;
+    resvchannelTable[i] = NULL;
   }
 }
 
-/* These are the actual hash functions, since they are static
- * and very short any decent compiler at a good optimization level
- * WILL inline these in the following functions
+/*
+ * New hash function based on the Fowler/Noll/Vo (FNV) algorithm from
+ * http://www.isthe.com/chongo/tech/comp/fnv/
+ *
+ * Here, we use the FNV-1 method, which gives slightly better results
+ * than FNV-1a.   -Michael
  */
-
 static unsigned int
-strhash(const char *n)
+strhash(const unsigned char *p)
 {
-  unsigned int hash = 0;
+  unsigned int hval = FNV1_32_INIT;
 
-  while (*n != '\0')
-    hash = hash_map[hash + hash_weight(*n++)];
+  if (*p == '\0')
+    return(0);
+  for (; *p != '\0'; ++p)
+  {
+    hval += (hval << 1) + (hval <<  4) + (hval << 7) +
+            (hval << 8) + (hval << 24);
+    hval ^= ToLower(*p);
+  }
 
-  return(hash);
+  return((hval >> FNV1_32_BITS) ^ (hval & ((1 << FNV1_32_BITS) -1)));
 }
 
 /************************** Externally visible functions ********************/
@@ -497,7 +435,7 @@ hash_find_masked_server(const char *name)
   char buf[HOSTLEN + 1];
   char *p = buf;
   char *s;
-  struct Client* server;
+  struct Client *server;
 
   if ('*' == *name || '.' == *name)
     return(NULL);
@@ -604,6 +542,7 @@ hash_find_channel(const char *name)
 struct Channel *
 hash_get_chptr(unsigned int hashv)
 {
+  assert(hashv < HASHSIZE);
   if (hashv >= HASHSIZE)
       return NULL;
 
