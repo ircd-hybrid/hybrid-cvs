@@ -1,5 +1,5 @@
 /* contrib/m_force.c
- * Copyright (C) 2002 Hybrid Development Team
+ * Copyright (C) 2002, 2003, 2004, 2005 Hybrid Development Team
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are
@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.35 2004/07/08 00:27:16 erik Exp $
+ * $Id: m_force.c,v 1.36 2005/04/26 13:36:07 michael Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 
 /* m_forcejoin()
@@ -147,6 +147,7 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
                  me.name, source_p->name, target_p->name, chptr->chname);
       return;
     }
+
     add_user_to_channel(chptr, target_p, type);
 
     if (chptr->chname[0] == '#')

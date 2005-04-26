@@ -1,6 +1,6 @@
 /*
  *   IRC - Internet Relay Chat, contrib/m_clearchan.c
- *   Copyright (C) 2002 Hybrid Development Team
+ *   Copyright (C) 2002, 2003, 2004, 2005 Hybrid Development Team
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.48 2004/07/08 00:27:16 erik Exp $
+ *   $Id: m_clearchan.c,v 1.49 2005/04/26 13:36:07 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 
 /*

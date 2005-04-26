@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.85 2004/11/29 05:40:06 metalrock Exp $
+ *  $Id: m_info.c,v 1.86 2005/04/26 13:36:09 michael Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&info_msgtab);
 }
 
-const char *_version = "$Revision: 1.85 $";
+const char *_version = "$Revision: 1.86 $";
 #endif
 
 /*
@@ -476,10 +476,10 @@ static struct InfoStruct info_table[] =
   },
   /* --[  END OF TABLE  ]---------------------------------------------- */
   {
-    (char *) 0,
-    (unsigned int) 0,
-    (void *) 0,
-    (char *) 0
+    NULL,
+    0,
+    NULL,
+    0
   }
 };
 
@@ -506,8 +506,8 @@ m_info(struct Client *client_p, struct Client *source_p,
 
   if (!ConfigFileEntry.disable_remote)
   {
-    if (hunt_server(client_p,source_p,
-        ":%s INFO :%s", 1, parc, parv) != HUNTED_ISME)
+    if (hunt_server(client_p,source_p, ":%s INFO :%s",
+                    1, parc, parv) != HUNTED_ISME)
     {
       return;
     }
@@ -531,17 +531,18 @@ static void
 mo_info(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
-  if (hunt_server(client_p, source_p, ":%s INFO :%s", 1, parc, parv) == HUNTED_ISME)
-  {
-    info_spy(source_p);
-  
-    send_info_text(source_p);
-    send_conf_options(source_p);
-    send_birthdate_online_time(source_p);
+  if (hunt_server(client_p, source_p, ":%s INFO :%s", 1,
+                  parc, parv) != HUNTED_ISME)
+    return;
 
-    sendto_one(source_p, form_str(RPL_ENDOFINFO),
-               me.name, source_p->name);
-  }
+  info_spy(source_p);
+  
+  send_info_text(source_p);
+  send_conf_options(source_p);
+  send_birthdate_online_time(source_p);
+
+  sendto_one(source_p, form_str(RPL_ENDOFINFO),
+             me.name, source_p->name);
 }
 
 /*
@@ -555,18 +556,20 @@ ms_info(struct Client *client_p, struct Client *source_p,
 {
   if (!IsClient(source_p))
       return;
-  
-  if (hunt_server(client_p, source_p, ":%s INFO :%s", 1, parc, parv) == HUNTED_ISME)
-  {
-    info_spy(source_p);
-    send_info_text(source_p); 
 
-    if (IsOper(source_p))
-      send_conf_options(source_p);
+  if (hunt_server(client_p, source_p, ":%s INFO :%s",
+                  1, parc, parv) != HUNTED_ISME)
+    return;
+
+  info_spy(source_p);
+  send_info_text(source_p); 
+
+  if (IsOper(source_p))
+    send_conf_options(source_p);
       
-    send_birthdate_online_time(source_p);
-    sendto_one(source_p, form_str(RPL_ENDOFINFO),
-               ID_or_name(&me, client_p), ID_or_name(source_p, client_p));
+  send_birthdate_online_time(source_p);
+  sendto_one(source_p, form_str(RPL_ENDOFINFO),
+             ID_or_name(&me, client_p), ID_or_name(source_p, client_p));
 
   }
 }
@@ -694,7 +697,7 @@ send_conf_options(struct Client *source_p)
       /* For "char foo[]" references */
       case OUTPUT_STRING_PTR:
       {
-        char *option = (char *)info_table[i].option;
+        const char *option = info_table[i].option;
 
         sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
                    from, RPL_INFO, to,

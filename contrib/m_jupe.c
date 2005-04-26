@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.60 2004/07/08 00:27:16 erik Exp $
+ *  $Id: m_jupe.c,v 1.61 2005/04/26 13:36:07 michael Exp $
  */
 
 #include "stdinc.h"
@@ -46,7 +46,7 @@
 #include "s_conf.h"
 
 static void mo_jupe(struct Client *client_p, struct Client *source_p, int parc, char *parv[]);
-static int bogus_host(char *host);
+static int bogus_host(char *);
 
 struct Message jupe_msgtab = {
   "JUPE", 0, 0, 3, 0, MFLG_SLOW, 0,
@@ -66,15 +66,15 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.60 $";
+const char *_version = "$Revision: 1.61 $";
 #endif
 
 /*
-** mo_jupe
-**      parv[0] = sender prefix
-**      parv[1] = server we're juping
-**      parv[2] = reason for jupe
-*/
+ * mo_jupe()
+ *      parv[0] = sender prefix
+ *      parv[1] = server we're juping
+ *      parv[2] = reason for jupe
+ */
 static void
 mo_jupe(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
