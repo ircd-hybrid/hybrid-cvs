@@ -1,6 +1,7 @@
 -- ircd-hybrid-7.1rc2
 o) Fixed build system to include ChangeLog
 o) Updated missing entries in 7.1rc1 RELNOTES (see below)
+o) Introduced new Fowler/Noll/Vo (FNV) hash algorithm
 
 
 -- ircd-hybrid-7.1rc1 RELNOTES
@@ -15,6 +16,7 @@ o) Fixed CIDR matchine
 o) Fixed idletime
 o) Fixed null kline reason for anti-idle kline
 o) Fixed TS6 compability with m_links, m_admin, etc
+o) Fixed bug which would allow clients in a certain state to flood the daemon
 
 
 -- ircd-hybrid-7.1beta1 RELNOTES
@@ -82,4 +84,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.80 2005/04/21 04:09:22 metalrock Exp $
+$Id: RELNOTES,v 1.81 2005/04/26 09:09:50 michael Exp $
