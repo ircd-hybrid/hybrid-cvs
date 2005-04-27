@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.86 2005/04/26 13:36:09 michael Exp $
+ *  $Id: m_info.c,v 1.87 2005/04/27 04:40:05 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&info_msgtab);
 }
 
-const char *_version = "$Revision: 1.86 $";
+const char *_version = "$Revision: 1.87 $";
 #endif
 
 /*
@@ -570,8 +570,6 @@ ms_info(struct Client *client_p, struct Client *source_p,
   send_birthdate_online_time(source_p);
   sendto_one(source_p, form_str(RPL_ENDOFINFO),
              ID_or_name(&me, client_p), ID_or_name(source_p, client_p));
-
-  }
 }
 
 /* send_info_text()
