@@ -1,4 +1,4 @@
-$Id: README,v 1.35 2005/01/11 20:17:30 db Exp $
+$Id: README,v 1.36 2005/04/27 01:59:40 metalrock Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
@@ -120,9 +120,7 @@ _______
 
 halfops.diff	- This patch will add halfops support to the ircd. To
 		  use this patch, type "patch -p1 < contrib/halfops.diff"
-		  in the main ircd-hybrid directory. You will then need
-		  to add the --enable-halfops switch when running configure
-		  to enable halfops.
+		  in the main ircd-hybrid directory.
 
 Help files
 ----------
