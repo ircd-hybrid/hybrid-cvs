@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.h,v 7.14 2003/06/26 12:19:45 michael Exp $
+ *  $Id: listener.h,v 7.15 2005/05/12 16:21:49 michael Exp $
  */
 
 #ifndef INCLUDED_listener_h
@@ -37,8 +37,6 @@ struct Listener
   int              port;               /* listener IP port */
   int              ref_count;          /* number of connection references */
   int              active;             /* current state of listener */
-  int              index;              /* index into poll array */
-  time_t           last_accept;        /* last time listener accepted */
 /* jdc -- this seems to be incorrect in comparison to src/listener.c */
 /*
   struct in_addr    addr;

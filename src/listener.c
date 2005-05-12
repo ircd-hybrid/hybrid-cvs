@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.91 2005/05/12 16:01:09 michael Exp $
+ *  $Id: listener.c,v 7.92 2005/05/12 16:21:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -400,7 +400,6 @@ accept_connection(int pfd, void *data)
   assert(listener != NULL);
   if (listener == NULL)
     return;
-  listener->last_accept = CurrentTime;
 
   /* There may be many reasons for error return, but
    * in otherwise correctly working environment the
@@ -427,7 +426,7 @@ accept_connection(int pfd, void *data)
          */
       if ((last_oper_notice + 20) <= CurrentTime)
       {
-        sendto_realops_flags(UMODE_ALL, L_ALL,"All connections in use. (%s)",
+        sendto_realops_flags(UMODE_ALL, L_ALL, "All connections in use. (%s)",
                              get_listener_name(listener));
         last_oper_notice = CurrentTime;
       }
