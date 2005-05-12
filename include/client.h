@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.222 2005/04/11 14:46:10 db Exp $
+ *  $Id: client.h,v 7.223 2005/05/12 16:01:08 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -314,12 +314,6 @@ struct LocalUser
 #define SetClient(x)            {(x)->status = STAT_CLIENT; \
 				 (x)->handler = IsOper((x)) ? \
 					OPER_HANDLER : CLIENT_HANDLER; }
-
-#define STAT_CLIENT_PARSE (STAT_UNKNOWN | STAT_CLIENT)
-#define STAT_SERVER_PARSE (STAT_CONNECTING | STAT_HANDSHAKE | STAT_SERVER)
-
-#define PARSE_AS_CLIENT(x)      ((x)->status & STAT_CLIENT_PARSE)
-#define PARSE_AS_SERVER(x)      ((x)->status & STAT_SERVER_PARSE)
 
 #define SetEob(x)		((x)->flags |= FLAGS_EOB)
 #define HasSentEob(x)		((x)->flags & FLAGS_EOB)

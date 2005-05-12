@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.90 2003/08/10 03:54:21 stu Exp $
+ *  $Id: listener.c,v 7.91 2005/05/12 16:01:09 michael Exp $
  */
 
 #include "stdinc.h"
@@ -412,68 +412,55 @@ accept_connection(int pfd, void *data)
    * point, just assume that connections cannot
    * be accepted until some old is closed first.
    */
-
-  fd = comm_accept(listener->fd, &sai);
-
-  if (fd < 0)
+  while ((fd = comm_accept(listener->fd, &sai)) != -1)
   {
-    /* Re-register a new IO request for the next accept .. */
-    comm_setselect(listener->fd, FDLIST_SERVICE, COMM_SELECT_READ,
-                   accept_connection, listener, 0);
-    return;
-  }
+    memcpy(&addr, &sai, sizeof(struct irc_ssaddr));
 
-  memcpy(&addr, &sai, sizeof(struct irc_ssaddr));
+    /*
+     * check for connection limit
+     */
+    if ((HARD_FDLIMIT - 10) < fd)
+    {
+      ++ServerStats->is_ref;
+        /*
+         * slow down the whining to opers bit
+         */
+      if ((last_oper_notice + 20) <= CurrentTime)
+      {
+        sendto_realops_flags(UMODE_ALL, L_ALL,"All connections in use. (%s)",
+                             get_listener_name(listener));
+        last_oper_notice = CurrentTime;
+      }
 
-  /*
-   * check for connection limit
-   */
-  if ((HARD_FDLIMIT - 10) < fd)
-  {
-    ++ServerStats->is_ref;
-      /*
-       * slow down the whining to opers bit
-       */
-      if((last_oper_notice + 20) <= CurrentTime)
-	{
-	  sendto_realops_flags(UMODE_ALL, L_ALL,"All connections in use. (%s)",
-			       get_listener_name(listener));
-	  last_oper_notice = CurrentTime;
-	}
       send(fd, "ERROR :All connections in use\r\n", 32, 0);
       fd_close(fd);
-      /* Re-register a new IO request for the next accept .. */
-      comm_setselect(listener->fd, FDLIST_SERVICE, COMM_SELECT_READ,
-                     accept_connection, listener, 0);
-      return;
+      break;    /* jump out and re-register a new io request */
     }
 
-  /* Do an initial check we aren't connecting too fast or with too many
-   * from this IP... */
-  if ((pe = conf_connect_allowed(&addr, sai.ss.ss_family)) != 0)
-  {
-   ServerStats->is_ref++;
-   switch (pe)
-   {
-    case BANNED_CLIENT:
-     send(fd, DLINE_WARNING, sizeof(DLINE_WARNING)-1, 0);
-     break;
-    case TOO_FAST:
-     send(fd, TOOFAST_WARNING, sizeof(TOOFAST_WARNING)-1, 0);
-     break;
-   }
-   fd_close(fd);
-   /* Re-register a new IO request for the next accept .. */
-   comm_setselect(listener->fd, FDLIST_SERVICE, COMM_SELECT_READ,
-                  accept_connection, listener, 0);
-   return;
-  }
-  ServerStats->is_ac++;
+    /* Do an initial check we aren't connecting too fast or with too many
+     * from this IP... */
+    if ((pe = conf_connect_allowed(&addr, sai.ss.ss_family)) != 0)
+    {
+      ServerStats->is_ref++;
+      switch (pe)
+      {
+        case BANNED_CLIENT:
+          send(fd, DLINE_WARNING, sizeof(DLINE_WARNING)-1, 0);
+          break;
+        case TOO_FAST:
+          send(fd, TOOFAST_WARNING, sizeof(TOOFAST_WARNING)-1, 0);
+          break;
+      }
 
-  add_connection(listener, fd);
+      fd_close(fd);
+      continue;    /* drop the one and keep on clearing the queue */
+    }
+
+    ServerStats->is_ac++;
+    add_connection(listener, fd);
+  }
 
   /* Re-register a new IO request for the next accept .. */
   comm_setselect(listener->fd, FDLIST_SERVICE, COMM_SELECT_READ,
-    accept_connection, listener, 0);
+                 accept_connection, listener, 0);
 }
-
