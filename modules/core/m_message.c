@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.137 2004/07/08 00:27:30 erik Exp $
+ *  $Id: m_message.c,v 1.138 2005/05/16 16:52:22 michael Exp $
  */
 
 #include "stdinc.h"
@@ -117,7 +117,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.137 $";
+const char *_version = "$Revision: 1.138 $";
 #endif
 
 /*
@@ -256,8 +256,8 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
 {
   int type;
   char *p, *nick, *target_list, ncbuf[BUFSIZE];
-  struct Channel *chptr=NULL;
-  struct Client *target_p;
+  struct Channel *chptr = NULL;
+  struct Client *target_p = NULL;
 
   /* Sigh, we can't mutilate parv[1] incase we need it to send to a hub */
   if (!ServerInfo.hub && (uplink != NULL) && IsCapable(uplink, CAP_LL))
@@ -282,7 +282,7 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
     if (IsChanPrefix(*nick))
     {
       /* ignore send of local channel to a server (should not happen) */
-      if (IsServer(client_p) && *nick == '&')
+      if (*nick == '&' && IsServer(client_p))
         continue;
 
       if ((chptr = hash_find_channel(nick)) != NULL)
@@ -588,7 +588,7 @@ msg_client(int p_or_n, const char *command, struct Client *source_p,
     if (!IsServer(source_p) && IsSetCallerId(target_p))
     {
       /* Here is the anti-flood bot/spambot code -db */
-      if (accept_message(source_p, target_p))
+      if (source_p == target_p || accept_message(source_p, target_p))
       {
         sendto_one(target_p, ":%s!%s@%s %s %s :%s",
                    source_p->name, source_p->username,
