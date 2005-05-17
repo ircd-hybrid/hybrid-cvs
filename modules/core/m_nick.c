@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.141 2004/07/08 00:27:30 erik Exp $
+ *  $Id: m_nick.c,v 1.142 2005/05/17 22:38:04 michael Exp $
  */
 
 #include "stdinc.h"
@@ -93,7 +93,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.141 $";
+const char *_version = "$Revision: 1.142 $";
 #endif
 
 /* mr_nick()
@@ -118,9 +118,10 @@ mr_nick(struct Client *client_p, struct Client *source_p,
   }
 
   /* Terminate the nick at the first ~ */
+  /* XXX - Is this still needed??      */
   if ((s = strchr(parv[1], '~')) != NULL)
     *s = '\0';
-                               
+
   /* copy the nick and terminate it */
   strlcpy(nick, parv[1], sizeof(nick));
 
@@ -316,7 +317,7 @@ ms_nick(struct Client *client_p, struct Client *source_p,
 {
   struct Client* target_p;
   char nick[NICKLEN];
-  char ngecos[REALLEN];
+  char ngecos[REALLEN + 1];
   time_t newts = 0;
   char *nnick = parv[1];
   char *nhop = parv[2];
@@ -428,7 +429,7 @@ ms_uid(struct Client *client_p, struct Client *source_p,
 {
   struct Client *target_p;
   char nick[NICKLEN];
-  char ugecos[REALLEN];
+  char ugecos[REALLEN + 1];
   time_t newts = 0;
   char *unick = parv[1];
   char *uts = parv[3];
