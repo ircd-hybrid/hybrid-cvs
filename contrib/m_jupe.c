@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.61 2005/04/26 13:36:07 michael Exp $
+ *  $Id: m_jupe.c,v 1.62 2005/05/19 22:54:55 michael Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,7 @@
 #include "list.h"
 #include "s_conf.h"
 
-static void mo_jupe(struct Client *client_p, struct Client *source_p, int parc, char *parv[]);
+static void mo_jupe(struct Client *, struct Client *, int, char *[]);
 static int bogus_host(char *);
 
 struct Message jupe_msgtab = {
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.61 $";
+const char *_version = "$Revision: 1.62 $";
 #endif
 
 /*
@@ -82,18 +82,25 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
   struct Client *target_p;
   struct Client *ajupe;
   dlink_node *m;
-  char reason[REALLEN + 2];
+  char reason[REALLEN + 1];
 
-  if (!ServerInfo.hub)
+  if (!IsAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :Must be used from a hub server",
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }
 
-  if (!IsAdmin(source_p))
+  if (*parv[2] == '\0')
   {
-    sendto_one(source_p, ":%s NOTICE %s :You must be an admin to use this command",
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, source_p->name, "JUPE");
+    return;
+  }
+
+  if (!ServerInfo.hub)
+  {
+    sendto_one(source_p, ":%s NOTICE %s :Must be used from a hub server",
                me.name, source_p->name);
     return;
   }
@@ -147,7 +154,7 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
   make_server(ajupe);
 
   strlcpy(ajupe->name, parv[1], sizeof(ajupe->name));
-  ircsprintf(reason, "%s %s", "JUPED:", parv[2]);
+  ircsprintf(reason, "JUPED: %s", parv[2]);
   strlcpy(ajupe->info, reason, sizeof(ajupe->info));
 
   ajupe->servptr  = &me;
