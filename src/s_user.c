@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.316 2003/12/31 01:54:14 metalrock Exp $
+ *  $Id: s_user.c,v 7.317 2005/05/21 21:48:04 michael Exp $
  */
 
 #include "stdinc.h"
@@ -536,8 +536,6 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   SetClient(source_p);
 
-  /* XXX source_p->servptr is &me, since local client */
-  /* source_p->servptr = find_server(user->server);   */
   source_p->servptr = &me;
   dlinkAdd(source_p, &source_p->lnode, &source_p->servptr->serv->users);
 
