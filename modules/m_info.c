@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.87 2005/04/27 04:40:05 metalrock Exp $
+ *  $Id: m_info.c,v 1.88 2005/05/22 22:06:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&info_msgtab);
 }
 
-const char *_version = "$Revision: 1.87 $";
+const char *_version = "$Revision: 1.88 $";
 #endif
 
 /*
@@ -582,18 +582,23 @@ static void
 send_info_text(struct Client *source_p)
 {
   const char **text = infotext;
-
-  if (!MyClient(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
-  {
-    while (*text)
-      sendto_one(source_p, form_str(RPL_INFO),
-                 me.id, source_p->id, *text++);
-  }
+  char *source, *target;
+  
+  if (!MyClient(source_p) && IsCapable(source_p->from, CAP_TS6) &&
+    HasID(source_p))
+    source = me.id, target = source_p->id;
   else
+    source = me.name, target = source_p->name;
+
+  while (*text)
   {
-    while (*text)
-      sendto_one(source_p, form_str(RPL_INFO),
-                 me.name, source_p->name, *text++);
+    char *line = *text++;
+
+    if (!*line)
+      line = " ";
+
+    sendto_one(source_p, form_str(RPL_INFO),
+               me.id, source_p->id, line);
   }
 }
 
