@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.138 2005/05/16 16:52:22 michael Exp $
+ *  $Id: m_message.c,v 1.139 2005/05/22 17:20:31 michael Exp $
  */
 
 #include "stdinc.h"
@@ -117,7 +117,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.138 $";
+const char *_version = "$Revision: 1.139 $";
 #endif
 
 /*
@@ -314,7 +314,7 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
     }
 
     /* look for a privmsg to another client */
-    if ((target_p = find_person(nick)) != NULL)
+    if ((target_p = find_person(client_p, nick)) != NULL)
     {
       if (!duplicate_ptr(target_p))
       {
@@ -412,7 +412,7 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
         return -1;
       else if (p_or_n != NOTICE)
       {
-        if (IsDigit(*nick))
+        if (IsDigit(*nick) && IsServer(client_p))
 	  sendto_one(source_p, form_str(ERR_NOTARGET),
 		     ID_or_name(&me, client_p),
 		     ID_or_name(source_p, client_p));

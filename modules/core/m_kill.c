@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.88 2004/07/08 00:27:30 erik Exp $
+ *  $Id: m_kill.c,v 1.89 2005/05/22 17:20:31 michael Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.88 $";
+const char *_version = "$Revision: 1.89 $";
 #endif
 
 /* mo_kill()
@@ -225,7 +225,7 @@ ms_kill(struct Client *client_p, struct Client *source_p,
     path = parv[2];
   }
 
-  if ((target_p = find_person(user)) == NULL)
+  if ((target_p = find_person(client_p, user)) == NULL)
   {
       /* If the user has recently changed nick, but only if its 
        * not an uid, automatically rewrite the KILL for this new nickname.

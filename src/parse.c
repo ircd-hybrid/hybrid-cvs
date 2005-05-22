@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.196 2005/02/03 00:06:26 michael Exp $
+ *  $Id: parse.c,v 7.197 2005/05/22 17:20:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -222,7 +222,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
        * XXX it could be useful to know which of these occurs most frequently.
        * the ID check should always come first, though, since it is so easy.
        */
-      if ((from = find_person(sender)) == NULL)
+      if ((from = find_person(client_p, sender)) == NULL)
         from = find_server(sender);
 
       /* Hmm! If the client corresponding to the
@@ -764,9 +764,10 @@ do_numeric(char numeric[], struct Client *client_p, struct Client *source_p,
     tl = ircsprintf(t, " %s", parv[i]);
     t += tl;
   }
+
   ircsprintf(t," :%s", parv[parc-1]);
 
-  if (((target_p = find_person(parv[1])) != NULL) ||
+  if (((target_p = find_person(client_p, parv[1])) != NULL) ||
       ((target_p = find_server(parv[1])) != NULL))
   {
     if (IsMe(target_p)) 

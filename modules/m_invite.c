@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.69 2004/07/08 00:27:22 erik Exp $
+ *  $Id: m_invite.c,v 1.70 2005/05/22 17:20:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.69 $";
+const char *_version = "$Revision: 1.70 $";
 #endif
 
 /*
@@ -91,7 +91,7 @@ m_invite(struct Client *client_p, struct Client *source_p,
   if (!IsFloodDone(source_p))
     flood_endgrace(source_p);
 
-  if ((target_p = find_person(parv[1])) == NULL)
+  if ((target_p = find_person(client_p, parv[1])) == NULL)
   {
     if (IsDigit(parv[1][0]))
       sendto_one(source_p, form_str(ERR_NOTARGET),
@@ -272,13 +272,13 @@ ms_invite(struct Client *client_p, struct Client *source_p,
     if (*parv[1] == '\0')
       return;
 
-    if ((source_client_p = find_person(parv[1])) == NULL)
+    if ((source_client_p = find_person(client_p, parv[1])) == NULL)
       return;
 
     if (*parv[2] == '\0')
       return;
 
-    if ((target_p = find_person(parv[2])) == NULL)
+    if ((target_p = find_person(client_p, parv[2])) == NULL)
       return;
 
     if(check_channel_name(parv[3]) == 0)

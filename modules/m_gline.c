@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.129 2004/07/08 00:27:22 erik Exp $
+ *  $Id: m_gline.c,v 1.130 2005/05/22 17:20:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -102,7 +102,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.129 $";
+const char *_version = "$Revision: 1.130 $";
 #endif
 
 /* mo_gline()
@@ -293,7 +293,7 @@ do_sgline(struct Client *client_p, struct Client *source_p,
      * so we update source_p to point to the oper now, so that
      * logging works down the line.  -bill
      */
-    if ((source_p = find_person(parv[1])) == NULL)
+    if ((source_p = find_person(client_p, parv[1])) == NULL)
       return;
 
     if (irccmp(parv[2], source_p->username) != 0 ||

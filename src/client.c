@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.429 2005/04/26 13:36:11 michael Exp $
+ *  $Id: client.c,v 7.430 2005/05/22 17:20:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -642,11 +642,12 @@ release_client_state(struct Client *client_p)
  */
 /* XXX - ugly wrapper */
 struct Client *
-find_person(const char *name)
+find_person(const struct Client *const client_p, const char *name)
 {
   struct Client *c2ptr;
 
-  if (IsDigit(*name))
+  /* Only allow lookups by ID coming from remote! */
+  if (IsDigit(*name) && IsServer(client_p))
     c2ptr = hash_find_id(name);
   else
     c2ptr = find_client(name);
@@ -661,9 +662,9 @@ find_person(const char *name)
  *      through the history, chasing will be 1 and otherwise 0.
  */
 struct Client *
-find_chasing(struct Client *source_p, const char *user, int *chasing)
+find_chasing(struct Client *client_p, struct Client *source_p, const char *user, int *chasing)
 {
-  struct Client *who = find_person(user);
+  struct Client *who = find_person(client_p, user);
 
   if (chasing)
     *chasing = 0;

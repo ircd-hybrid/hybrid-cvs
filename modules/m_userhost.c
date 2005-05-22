@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_userhost.c,v 1.40 2004/07/08 00:27:23 erik Exp $
+ *  $Id: m_userhost.c,v 1.41 2005/05/22 17:20:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -38,7 +38,7 @@
 
 static char buf[BUFSIZE];
 
-static void m_userhost(struct Client*, struct Client*, int, char**);
+static void m_userhost(struct Client *, struct Client *, int, char *[]);
 
 struct Message userhost_msgtab = {
   "USERHOST", 0, 0, 1, 0, MFLG_SLOW, 0,
@@ -58,8 +58,9 @@ _moddeinit(void)
   mod_del_cmd(&userhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
+
 /*
  * m_userhost added by Darren Reed 13/8/91 to aid clients and reduce
  * the need for complicated requests like WHOIS. It returns user/host
@@ -67,7 +68,7 @@ const char *_version = "$Revision: 1.40 $";
  */
 static void
 m_userhost(struct Client *client_p, struct Client *source_p,
-	   int parc, char *parv[])
+           int parc, char *parv[])
 {
   struct Client *target_p;
   char response[NICKLEN*2+USERLEN+HOSTLEN+30];
@@ -79,13 +80,13 @@ m_userhost(struct Client *client_p, struct Client *source_p,
   cur_len = ircsprintf(buf,form_str(RPL_USERHOST),me.name, parv[0], "");
   t = buf + cur_len;
 
-  for ( i = 0; i < 5; i++)
-    {
-      if (parv[i+1] == NULL)
-        break;
+  for (i = 0; i < 5; i++)
+  {
+    if (parv[i+1] == NULL)
+      break;
 
-      if ((target_p = find_person(parv[i+1])) != NULL)
-	{
+    if ((target_p = find_person(client_p, parv[i+1])) != NULL)
+    {
 	  /*
 	   * Show real IP for USERHOST on yourself.
 	   * This is needed for things like mIRC, which do a server-based

@@ -1,4 +1,8 @@
--- ircd-hybrid-7.1rc2
+-- ircd-hybrid-7.1rc3
+o) Disallow locally connected users from doing hash lookups by ID
+
+
+-- ircd-hybrid-7.1rc2 RELNOTES
 o) Fixed build system to include ChangeLog
 o) Updated missing entries in 7.1rc1 RELNOTES (see below)
 o) Introduced new Fowler/Noll/Vo (FNV) hash algorithm
@@ -87,4 +91,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.83 2005/05/17 22:38:03 michael Exp $
+$Id: RELNOTES,v 1.84 2005/05/22 17:20:23 michael Exp $

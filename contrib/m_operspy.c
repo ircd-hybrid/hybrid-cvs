@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.56 2005/05/19 14:10:48 michael Exp $
+ *   $Id: m_operspy.c,v 1.57 2005/05/22 17:20:24 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -140,7 +140,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -373,7 +373,7 @@ operspy_who(struct Client *client_p, int parc, char *parv[])
   }
 
   /* /who nick */
-  if ((target_p_who = find_person(mask)) != NULL)
+  if ((target_p_who = find_person(client_p, mask)) != NULL)
   {
 #ifdef OPERSPY_LOG
     /* "nick!user@host server\0" */
@@ -442,7 +442,7 @@ operspy_whois(struct Client *client_p, int parc, char *parv[])
     return;
   }
 
-  if ((target_p = find_person(parv[2])) == NULL)
+  if ((target_p = find_person(client_p, parv[2])) == NULL)
   {
     sendto_one(client_p, form_str(ERR_NOSUCHNICK),
                me.name, client_p->name, parv[2]);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lljoin.c,v 1.66 2004/07/08 00:27:22 erik Exp $
+ *  $Id: m_lljoin.c,v 1.67 2005/05/22 17:20:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&lljoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.66 $";
+const char *_version = "$Revision: 1.67 $";
 #endif
 /*
  * m_lljoin
@@ -110,19 +110,17 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
   if(nick == NULL)
     return;
 
-  if(parc >3)
-  {
+  if (parc >3)
     key = parv[3];
-  }
 
   flags = 0;
 
-  target_p = find_person(nick);
+  target_p = find_person(client_p, nick);
 
-  if( !target_p || !target_p->user )
+  if (!target_p)
     return;
 
-  if( !MyClient(target_p) )
+  if (!MyClient(target_p))
     return;
 
   chptr = get_or_create_channel(target_p, chname, NULL);

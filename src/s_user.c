@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.317 2005/05/21 21:48:04 michael Exp $
+ *  $Id: s_user.c,v 7.318 2005/05/22 17:20:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -964,7 +964,7 @@ set_user_mode(struct Client *client_p, struct Client *source_p,
     return;
   }
 #endif
-  if ((target_p = find_person(parv[1])) == NULL)
+  if ((target_p = find_person(client_p, parv[1])) == NULL)
   {
     if (MyConnect(source_p))
       sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),

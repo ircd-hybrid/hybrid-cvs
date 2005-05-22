@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.402 2004/10/31 22:44:28 adx Exp $
+ *  $Id: s_serv.c,v 7.403 2005/05/22 17:20:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -391,7 +391,7 @@ hunt_server(struct Client *client_p, struct Client *source_p, const char *comman
   if (MyClient(source_p))
     target_p = find_client(parv[server]);
   else
-    target_p = find_person(parv[server]);
+    target_p = find_person(client_p, parv[server]);
 
   if (target_p)
     if (target_p->from == source_p->from && !MyConnect(target_p))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.179 2004/10/31 21:29:04 metalrock Exp $
+ *  $Id: m_kline.c,v 1.180 2005/05/22 17:20:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.179 $";
+const char *_version = "$Revision: 1.180 $";
 #endif
 
 #define TK_SECONDS 0
@@ -707,7 +707,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
               me.name, parv[0]);
    return;
 #else
-   if ((target_p = find_chasing(source_p, dlhost, NULL)) == NULL)
+   if ((target_p = find_chasing(client_p, source_p, dlhost, NULL)) == NULL)
      return;
 
    if(target_p->user == NULL)
@@ -876,8 +876,7 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
   else
   {
     /* Try to find user@host mask from nick */
-    
-    if (!(target_p = find_chasing(source_p, user_host_or_nick, NULL)))
+    if (!(target_p = find_chasing(client_p, source_p, user_host_or_nick, NULL)))
       return(0);
 
     if (target_p->user == NULL)
@@ -891,9 +890,9 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
       return(0);
     }
 
-    if(IsExemptKline(target_p))
+    if (IsExemptKline(target_p))
     {
-      if(!IsServer(source_p))
+      if (!IsServer(source_p))
 	sendto_one(source_p,
 		   ":%s NOTICE %s :%s is E-lined",
 		   me.name, source_p->name, target_p->name);
