@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.88 2005/05/22 22:06:55 adx Exp $
+ *  $Id: m_info.c,v 1.89 2005/05/22 23:33:44 adx Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&info_msgtab);
 }
 
-const char *_version = "$Revision: 1.88 $";
+const char *_version = "$Revision: 1.89 $";
 #endif
 
 /*
@@ -598,7 +598,7 @@ send_info_text(struct Client *source_p)
       line = " ";
 
     sendto_one(source_p, form_str(RPL_INFO),
-               me.id, source_p->id, line);
+               source, target, line);
   }
 }
 
