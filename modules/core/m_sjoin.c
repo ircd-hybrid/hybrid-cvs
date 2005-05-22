@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.186 2005/05/22 17:20:31 michael Exp $
+ *  $Id: m_sjoin.c,v 1.187 2005/05/22 17:29:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.186 $";
+const char *_version = "$Revision: 1.187 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -292,7 +292,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   }
 
   mbuf = modebuf;
-  for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+  for (lcount = 0; lcount < MAXMODEPARAMS; lcount++)
     para[lcount] = "";
   sendbuf[0] = '\0';
   pargs = 0;
@@ -331,7 +331,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       }
     }
 
-    target_p = find_person(client_p, s);
+    target_p = find_chasing(client_p, source_p, s, NULL);
 
     /*
      * if the client doesnt exist, or if its fake direction/server, skip.
