@@ -1,6 +1,6 @@
-diff -ur ircd-hybrid/contrib/m_clearchan.c halfops/contrib/m_clearchan.c
---- ircd-hybrid/contrib/m_clearchan.c	Tue Apr 26 18:53:30 2005
-+++ halfops/contrib/m_clearchan.c	Tue Apr 26 18:53:57 2005
+diff -ur nohalfops/contrib/m_clearchan.c halfops/contrib/m_clearchan.c
+--- nohalfops/contrib/m_clearchan.c	Sun May 22 16:54:30 2005
++++ halfops/contrib/m_clearchan.c	Sun May 22 16:54:40 2005
 @@ -197,6 +197,7 @@
  remove_our_modes(struct Channel *chptr, struct Client *source_p)
  {
@@ -9,9 +9,9 @@ diff -ur ircd-hybrid/contrib/m_clearchan.c halfops/contrib/m_clearchan.c
    remove_a_mode(chptr, CHFL_VOICE, 'v');
  
    /* Clear all +beI modes */
-diff -ur ircd-hybrid/contrib/m_force.c halfops/contrib/m_force.c
---- ircd-hybrid/contrib/m_force.c	Tue Apr 26 18:53:30 2005
-+++ halfops/contrib/m_force.c	Tue Apr 26 18:53:58 2005
+diff -ur nohalfops/contrib/m_force.c halfops/contrib/m_force.c
+--- nohalfops/contrib/m_force.c	Sun May 22 16:54:30 2005
++++ halfops/contrib/m_force.c	Sun May 22 16:54:40 2005
 @@ -133,6 +133,12 @@
        sjmode = '+';
        parv[2]++;
@@ -25,9 +25,9 @@ diff -ur ircd-hybrid/contrib/m_force.c halfops/contrib/m_force.c
      default:
        type = 0;
        mode = sjmode = '\0'; /* make sure sjmode is 0. sjoin depends on it */
-diff -ur ircd-hybrid/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
---- ircd-hybrid/contrib/m_ojoin.c	Tue Apr 26 18:53:30 2005
-+++ halfops/contrib/m_ojoin.c	Tue Apr 26 18:55:29 2005
+diff -ur nohalfops/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
+--- nohalfops/contrib/m_ojoin.c	Sun May 22 16:54:30 2005
++++ halfops/contrib/m_ojoin.c	Sun May 22 16:54:40 2005
 @@ -103,6 +103,10 @@
          modeletter = 'o';
          name++;
@@ -39,9 +39,9 @@ diff -ur ircd-hybrid/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
        case '+':
          tmp_flags = CHFL_VOICE;
          modeletter = 'v';
-diff -ur ircd-hybrid/include/channel_mode.h halfops/include/channel_mode.h
---- ircd-hybrid/include/channel_mode.h	Sun Apr 11 18:57:39 2004
-+++ halfops/include/channel_mode.h	Tue Apr 26 18:53:58 2005
+diff -ur nohalfops/include/channel_mode.h halfops/include/channel_mode.h
+--- nohalfops/include/channel_mode.h	Sun May 22 16:54:30 2005
++++ halfops/include/channel_mode.h	Sun May 22 16:54:40 2005
 @@ -53,11 +53,12 @@
  
  /* Channel related flags */
@@ -68,9 +68,9 @@ diff -ur ircd-hybrid/include/channel_mode.h halfops/include/channel_mode.h
 +#define CHACCESS_HALFOP     1
 +#define CHACCESS_CHANOP     2
  #endif /* INCLUDED_channel_mode_h */
-diff -ur ircd-hybrid/include/supported.h halfops/include/supported.h
---- ircd-hybrid/include/supported.h	Sat Sep 27 19:16:03 2003
-+++ halfops/include/supported.h	Tue Apr 26 18:53:58 2005
+diff -ur nohalfops/include/supported.h halfops/include/supported.h
+--- nohalfops/include/supported.h	Sun May 22 16:54:30 2005
++++ halfops/include/supported.h	Sun May 22 16:54:40 2005
 @@ -56,7 +56,7 @@
  		  " CALLERID%s"
  
@@ -80,9 +80,9 @@ diff -ur ircd-hybrid/include/supported.h halfops/include/supported.h
                          ConfigChannel.use_except ? "e" : "", \
                          ConfigChannel.use_invex ? "I" : "", \
                          "b,k,l,imnpst", \
-diff -ur ircd-hybrid/modules/core/m_join.c halfops/modules/core/m_join.c
---- ircd-hybrid/modules/core/m_join.c	Wed Jul  7 17:27:30 2004
-+++ halfops/modules/core/m_join.c	Tue Apr 26 18:53:59 2005
+diff -ur nohalfops/modules/core/m_join.c halfops/modules/core/m_join.c
+--- nohalfops/modules/core/m_join.c	Sun May 22 16:54:30 2005
++++ halfops/modules/core/m_join.c	Sun May 22 16:54:40 2005
 @@ -716,6 +716,7 @@
  remove_our_modes(struct Channel *chptr, struct Client *source_p)
  {
@@ -91,19 +91,19 @@ diff -ur ircd-hybrid/modules/core/m_join.c halfops/modules/core/m_join.c
    remove_a_mode(chptr, source_p, CHFL_VOICE, 'v');
  }
  
-diff -ur ircd-hybrid/modules/core/m_kick.c halfops/modules/core/m_kick.c
---- ircd-hybrid/modules/core/m_kick.c	Wed Jul  7 17:27:30 2004
-+++ halfops/modules/core/m_kick.c	Tue Apr 26 18:53:59 2005
-@@ -135,7 +135,7 @@
-         return;
+diff -ur nohalfops/modules/core/m_kick.c halfops/modules/core/m_kick.c
+--- nohalfops/modules/core/m_kick.c	Sun May 22 16:54:30 2005
++++ halfops/modules/core/m_kick.c	Sun May 22 16:55:48 2005
+@@ -136,7 +136,7 @@
        }
      }
+ 
 -    if (!has_member_flags(ms, CHFL_CHANOP))
 +    if (!has_member_flags(ms, CHFL_CHANOP|CHFL_HALFOP))
      {
        /* was a user, not a server, and user isn't seen as a chanop here */
        if (MyConnect(source_p))
-@@ -193,6 +193,17 @@
+@@ -194,6 +194,17 @@
  
    if ((ms_target = find_channel_link(who, chptr)) != NULL)
    {
@@ -121,9 +121,9 @@ diff -ur ircd-hybrid/modules/core/m_kick.c halfops/modules/core/m_kick.c
     /* jdc
      * - In the case of a server kicking a user (i.e. CLEARCHAN),
      *   the kick should show up as coming from the server which did
-diff -ur ircd-hybrid/modules/core/m_message.c halfops/modules/core/m_message.c
---- ircd-hybrid/modules/core/m_message.c	Wed Jul  7 17:27:30 2004
-+++ halfops/modules/core/m_message.c	Tue Apr 26 18:53:59 2005
+diff -ur nohalfops/modules/core/m_message.c halfops/modules/core/m_message.c
+--- nohalfops/modules/core/m_message.c	Sun May 22 16:54:30 2005
++++ halfops/modules/core/m_message.c	Sun May 22 16:54:40 2005
 @@ -342,8 +342,10 @@
      {
        if (*nick == '@')
@@ -157,9 +157,9 @@ diff -ur ircd-hybrid/modules/core/m_message.c halfops/modules/core/m_message.c
    }
    else
    {
-diff -ur ircd-hybrid/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
---- ircd-hybrid/modules/core/m_sjoin.c	Wed Jul  7 17:27:30 2004
-+++ halfops/modules/core/m_sjoin.c	Tue Apr 26 18:53:59 2005
+diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
+--- nohalfops/modules/core/m_sjoin.c	Sun May 22 16:54:30 2005
++++ halfops/modules/core/m_sjoin.c	Sun May 22 16:54:40 2005
 @@ -317,7 +317,7 @@
      fl = 0;
      num_prefix = 0;
@@ -180,7 +180,7 @@ diff -ur ircd-hybrid/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
 +      }
      }
  
-     target_p = find_person(s);
+     target_p = find_chasing(client_p, source_p, s, NULL);
 @@ -353,6 +358,11 @@
          *nick_ptr++ = '@';
          *uid_ptr++  = '@';
@@ -241,10 +241,10 @@ diff -ur ircd-hybrid/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
    remove_a_mode(chptr, source_p, CHFL_VOICE, 'v');
  }
  
-diff -ur ircd-hybrid/modules/m_invite.c halfops/modules/m_invite.c
---- ircd-hybrid/modules/m_invite.c	Wed Jul  7 17:27:22 2004
-+++ halfops/modules/m_invite.c	Tue Apr 26 18:53:59 2005
-@@ -208,13 +208,13 @@
+diff -ur nohalfops/modules/m_invite.c halfops/modules/m_invite.c
+--- nohalfops/modules/m_invite.c	Sun May 22 16:54:30 2005
++++ halfops/modules/m_invite.c	Sun May 22 16:54:40 2005
+@@ -204,13 +204,13 @@
                    me.name, source_p->name, target_p->name, chptr->chname);
  
      /* XXX This possibly should be a numeric -db */
@@ -260,7 +260,7 @@ diff -ur ircd-hybrid/modules/m_invite.c halfops/modules/m_invite.c
  			  NOCAPS, CAP_PARA, chptr,
  			  ":%s NOTICE %s :%s is inviting %s to %s.",
  			  source_p->name, chptr->chname, source_p->name,
-@@ -329,13 +329,13 @@
+@@ -325,13 +325,13 @@
  		    target_p->name, chptr->chname);
  
        /* XXX This possibly should be a numeric -db */
@@ -276,9 +276,9 @@ diff -ur ircd-hybrid/modules/m_invite.c halfops/modules/m_invite.c
  			    NOCAPS, CAP_PARA, chptr,
  			    ":%s NOTICE %s :%s is inviting %s to %s.",
  			    source_client_p->name, chptr->chname,
-diff -ur ircd-hybrid/modules/m_knock.c halfops/modules/m_knock.c
---- ircd-hybrid/modules/m_knock.c	Wed Jul  7 17:27:22 2004
-+++ halfops/modules/m_knock.c	Tue Apr 26 18:53:59 2005
+diff -ur nohalfops/modules/m_knock.c halfops/modules/m_knock.c
+--- nohalfops/modules/m_knock.c	Sun May 22 16:54:30 2005
++++ halfops/modules/m_knock.c	Sun May 22 16:54:40 2005
 @@ -353,7 +353,7 @@
    if (source_p->user != NULL)
    {
@@ -288,9 +288,9 @@ diff -ur ircd-hybrid/modules/m_knock.c halfops/modules/m_knock.c
    			     chptr, form_str(RPL_KNOCK),
  			     me.name, name, name,
  			     source_p->name, source_p->username,
-diff -ur ircd-hybrid/modules/m_topic.c halfops/modules/m_topic.c
---- ircd-hybrid/modules/m_topic.c	Wed Jul  7 17:27:23 2004
-+++ halfops/modules/m_topic.c	Tue Apr 26 18:53:59 2005
+diff -ur nohalfops/modules/m_topic.c halfops/modules/m_topic.c
+--- nohalfops/modules/m_topic.c	Sun May 22 16:54:30 2005
++++ halfops/modules/m_topic.c	Sun May 22 16:54:40 2005
 @@ -135,7 +135,7 @@
          return;
        }
@@ -300,9 +300,9 @@ diff -ur ircd-hybrid/modules/m_topic.c halfops/modules/m_topic.c
        {
          char topic_info[USERHOST_REPLYLEN]; 
          ircsprintf(topic_info, "%s!%s@%s",
-diff -ur ircd-hybrid/src/channel.c halfops/src/channel.c
---- ircd-hybrid/src/channel.c	Sun Apr 11 18:57:44 2004
-+++ halfops/src/channel.c	Tue Apr 26 18:53:59 2005
+diff -ur nohalfops/src/channel.c halfops/src/channel.c
+--- nohalfops/src/channel.c	Sun May 22 16:54:30 2005
++++ halfops/src/channel.c	Sun May 22 16:54:40 2005
 @@ -170,6 +170,8 @@
      tlen = strlen(ms->client_p->name) + 1;  /* nick + space */
      if (ms->flags & CHFL_CHANOP)
@@ -353,9 +353,9 @@ diff -ur ircd-hybrid/src/channel.c halfops/src/channel.c
      return(CAN_SEND_OPV);
  
    if (chptr->mode.mode & MODE_MODERATED)
-diff -ur ircd-hybrid/src/channel_mode.c halfops/src/channel_mode.c
---- ircd-hybrid/src/channel_mode.c	Wed Oct  6 11:35:16 2004
-+++ halfops/src/channel_mode.c	Tue Apr 26 18:53:59 2005
+diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
+--- nohalfops/src/channel_mode.c	Sun May 22 16:54:30 2005
++++ halfops/src/channel_mode.c	Sun May 22 16:54:40 2005
 @@ -72,6 +72,10 @@
  static void chm_op(struct Client *, struct Client *, struct Channel *, int,
                     int *, char **, int *, int, int, char, void *,
@@ -549,10 +549,9 @@ diff -ur ircd-hybrid/src/channel_mode.c halfops/src/channel_mode.c
  
    return(CHACCESS_PEON);
  }
-Only in ircd-hybrid/src: hash.c.orig
-diff -ur ircd-hybrid/src/messages.tab halfops/src/messages.tab
---- ircd-hybrid/src/messages.tab	Mon May 17 17:17:13 2004
-+++ halfops/src/messages.tab	Tue Apr 26 18:53:59 2005
+diff -ur nohalfops/src/messages.tab halfops/src/messages.tab
+--- nohalfops/src/messages.tab	Sun May 22 16:54:30 2005
++++ halfops/src/messages.tab	Sun May 22 16:54:40 2005
 @@ -24,7 +24,7 @@
  /* 001 */  {"RPL_WELCOME", ":%s 001 %s :Welcome to the %s Internet Relay Chat Network %s", NULL},
  /* 002 */  {"RPL_YOURHOST", ":%s 002 %s :Your host is %s, running version %s", NULL},
