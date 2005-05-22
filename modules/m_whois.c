@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.112 2004/07/08 00:27:23 erik Exp $
+ *  $Id: m_whois.c,v 1.113 2005/05/22 19:05:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.112 $";
+const char *_version = "$Revision: 1.113 $";
 #endif
 
 /*
@@ -485,7 +485,7 @@ ms_whois(struct Client *client_p, struct Client *source_p,
     struct Client *target_p;
     
     /* check if parv[1] is a person.. (most common) */
-    if ((target_p = find_person(parv[1])) == NULL)
+    if ((target_p = find_person(clien_p, parv[1])) == NULL)
     {
       /* ok, parv[1] isnt a client, is it a server? */
       if ((target_p = find_server(parv[1])) == NULL)

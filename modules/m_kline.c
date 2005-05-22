@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.180 2005/05/22 17:20:28 michael Exp $
+ *  $Id: m_kline.c,v 1.181 2005/05/22 19:05:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.180 $";
+const char *_version = "$Revision: 1.181 $";
 #endif
 
 #define TK_SECONDS 0
@@ -876,7 +876,8 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
   else
   {
     /* Try to find user@host mask from nick */
-    if (!(target_p = find_chasing(client_p, source_p, user_host_or_nick, NULL)))
+    /* Okay to use source_p as the fisrt param, because source_p == client_p */
+    if (!(target_p = find_chasing(source_p, source_p, user_host_or_nick, NULL)))
       return(0);
 
     if (target_p->user == NULL)
