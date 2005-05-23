@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.273 2004/02/01 05:25:44 metalrock Exp $
+ *  $Id: s_conf.h,v 7.274 2005/05/23 10:16:12 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -310,7 +310,6 @@ struct config_file_entry
   int maximum_links;
   int oper_only_umodes;
   int oper_umodes;
-  int crypt_oper_password;
   int max_targets;
   int caller_id_wait;
   int min_nonwildcard;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_version.c,v 1.51 2004/07/08 00:27:23 erik Exp $
+ *  $Id: m_version.c,v 1.52 2005/05/23 10:16:14 michael Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&version_msgtab);
 }
 
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 
 /*
@@ -185,8 +185,6 @@ confopts(struct Client *source_p)
     *p++ = 'K';
   *p++ = 'M';
 
-  if (ConfigFileEntry.crypt_oper_password)
-    *p++ = 'p';
   if (ConfigFileEntry.ignore_bogus_ts)
     *p++ = 'T';
 #ifdef USE_SYSLOG

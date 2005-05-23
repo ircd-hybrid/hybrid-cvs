@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.495 2005/01/08 04:04:52 michael Exp $
+ *  $Id: s_conf.c,v 7.496 2005/05/23 10:16:16 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2055,7 +2055,6 @@ set_default_conf(void)
   ConfigFileEntry.oper_only_umodes = UMODE_DEBUG;  /* XXX */
   ConfigFileEntry.oper_umodes = UMODE_LOCOPS | UMODE_SERVNOTICE |
     UMODE_OPERWALL | UMODE_WALLOP;        /* XXX */
-  ConfigFileEntry.crypt_oper_password = YES;
   DupString(ConfigFileEntry.servlink_path, SLPATH);
 #ifdef HAVE_LIBCRYPTO
   /* jdc -- This is our default value for a cipher.  According to the

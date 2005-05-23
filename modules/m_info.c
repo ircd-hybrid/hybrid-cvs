@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.90 2005/05/23 10:09:57 michael Exp $
+ *  $Id: m_info.c,v 1.91 2005/05/23 10:16:14 michael Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&info_msgtab);
 }
 
-const char *_version = "$Revision: 1.90 $";
+const char *_version = "$Revision: 1.91 $";
 #endif
 
 /*
@@ -299,12 +299,6 @@ static struct InfoStruct info_table[] =
     OUTPUT_BOOLEAN_YN,
     &ConfigFileEntry.stats_P_oper_only,
     "STATS P is only shown to operators",
-  },
-  {
-    "crypt_oper_password",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigFileEntry.crypt_oper_password,
-    "crypted oper passwords",
   },
   {
     "throttle_time",
