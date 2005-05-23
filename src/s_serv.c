@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.403 2005/05/22 17:20:33 michael Exp $
+ *  $Id: s_serv.c,v 7.404 2005/05/23 10:09:59 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,9 +60,9 @@
 #define MIN_CONN_FREQ 300
 
 struct Client *uplink  = NULL;
-dlink_list cap_list = { NULL, NULL, 0 };
 
 
+static dlink_list cap_list = { NULL, NULL, 0 };
 static unsigned long freeMask;
 static void server_burst(struct Client *);
 static int fork_server(struct Client *);

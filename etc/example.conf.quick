@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.27 2004/05/24 21:57:42 bill Exp $
+ * $Id: example.conf.quick,v 1.28 2005/05/23 10:09:55 michael Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -145,6 +145,7 @@ operator {
 	user = "*god@*";
 	user = "*@127.0.0.1";
 	password = "etcnjl8juSU1E";
+	encrypted = yes;
 	#rsa_public_key_file = "/usr/local/ircd/etc/oper.pub";
 	class = "opers";
 	global_kill = yes;
@@ -354,7 +355,6 @@ general {
 
 	oper_umodes = locops, servnotice, operwall, wallop;
 
-        crypt_oper_password = yes;
 
 	#servlink_path = "/usr/local/ircd/bin/servlink";
 	#default_cipher_preference = "BF/168";

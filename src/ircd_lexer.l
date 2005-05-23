@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.180 2005/01/04 05:52:13 michael Exp $
+ *  $Id: ircd_lexer.l,v 1.181 2005/05/23 10:09:59 michael Exp $
  */
 
 %option case-insensitive
@@ -83,7 +83,7 @@ include   \.include{ws}(\<.*\>|\".*\")
 
 {digit}+        { yylval.number = atoi(yytext); return NUMBER; }
 
-{qstring}	{ if(yytext[yyleng-2] == '\\')
+{qstring}	{ if (yytext[yyleng-2] == '\\')
 		    {
 		      yyless(yyleng-1); /* return last quote */
 		      yymore();		/* append next string */
@@ -318,7 +318,6 @@ unresv			{ return T_UNRESV; }
 
 oper_only_umodes        { return OPER_ONLY_UMODES; }
 oper_umodes             { return OPER_UMODES; }
-crypt_oper_password     { return CRYPT_OPER_PASSWORD; }
 bots                    { return T_BOTS; }
 cconn                   { return T_CCONN; }
 debug                   { return T_DEBUG; }
@@ -378,7 +377,8 @@ tb			{ return TBYTES; }
 %%
 
 /* C-comment ignoring routine -kre*/
-static void ccomment(void)
+static void
+ccomment(void)
 {
   int c = 0;
 
@@ -410,36 +410,39 @@ static void ccomment(void)
 
 /* #-comment style, look for #include */
 #define INCLUDE "#include"
-static void hashcomment(void) 
+static void
+hashcomment(void) 
 {
   if (strlen(yytext) < strlen(INCLUDE))
     return;
 
   if (!strncasecmp(yytext, INCLUDE, strlen(INCLUDE))) 
-      yyerror("You probably meant '.include', skipping");
+    yyerror("You probably meant '.include', skipping");
 }
 
 /* C-style .includes. This function will properly swap input conf buffers,
  * and lineno -kre */
-static void cinclude(void)
+static void
+cinclude(void)
 {
-  char *c;
-  if ((c = strchr(yytext, '<')) == NULL)
-    *strchr(c = strchr(yytext, '"') + 1, '"') = 0;
+  char *p;
+
+  if ((p = strchr(yytext, '<')) == NULL)
+    *strchr(p = strchr(yytext, '"') + 1, '"') = 0;
   else
-    *strchr(++c, '>') = 0;
+    *strchr(++p, '>') = 0;
 
   /* log(L_NOTICE, "got include %s!", c); */
 
   /* do stacking and co. */ 
   if (include_stack_ptr >= MAX_INCLUDE_DEPTH)
-    ilog(L_ERROR, "Includes nested too deep in %s", c);
+    ilog(L_ERROR, "Includes nested too deep in %s", p);
   else
   {
     FBFILE *tmp_fbfile_in;
     char filenamebuf[IRCD_BUFSIZE];
     
-    snprintf(filenamebuf, sizeof(filenamebuf), "%s/%s", ETCPATH, c);
+    snprintf(filenamebuf, sizeof(filenamebuf), "%s/%s", ETCPATH, p);
     tmp_fbfile_in = fbopen(filenamebuf, "r");
     
     if (tmp_fbfile_in == NULL)
@@ -447,13 +450,14 @@ static void cinclude(void)
       ilog(L_ERROR, "Cannot include %s", filenamebuf);
       return;
     }
+
     lineno_stack[include_stack_ptr] = lineno;
     lineno = 1;
     inc_fbfile_in[include_stack_ptr] = conf_fbfile_in;
     strlcpy(conffile_stack[include_stack_ptr], conffilebuf, IRCD_BUFSIZE);
     include_stack[include_stack_ptr++] = YY_CURRENT_BUFFER;
     conf_fbfile_in = tmp_fbfile_in;
-    snprintf(conffilebuf, sizeof(conffilebuf), "%s", c);
+    snprintf(conffilebuf, sizeof(conffilebuf), "%s", p);
     yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
   }
 }
@@ -461,7 +465,8 @@ static void cinclude(void)
 /* This is function that will be called on EOF in conf file. It will
  * apropriately close conf if it not main conf and swap input buffers -kre
  * */
-static int ieof(void)
+static int
+ieof(void)
 {
   /* log(L_NOTICE, "return from include stack!"); */
   if (include_stack_ptr)
@@ -473,7 +478,7 @@ static int ieof(void)
      * later and reenter lexer -kre */
     include_stack_ptr = 0;
     lineno = 1;
-    return 1;
+    return(1);
   }
   /* switch buffer */
   /* log(L_NOTICE, "deleting include_stack_ptr=%d", include_stack_ptr); */
@@ -482,5 +487,5 @@ static int ieof(void)
   conf_fbfile_in = inc_fbfile_in[include_stack_ptr];
   strlcpy(conffilebuf, conffile_stack[include_stack_ptr], IRCD_BUFSIZE); 
   yy_switch_to_buffer(include_stack[include_stack_ptr]);
-  return 0;
+  return(0);
 }

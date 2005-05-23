@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.365 2005/01/02 05:10:06 michael Exp $
+ *  $Id: ircd_parser.y,v 1.366 2005/05/23 10:09:59 michael Exp $
  */
 
 %{
@@ -56,7 +56,7 @@
 #include <openssl/pem.h>
 #endif
 
-static char *class_name;
+static char *class_name = NULL;
 static struct ConfItem *yy_conf = NULL;
 static struct AccessItem *yy_aconf = NULL;
 static struct MatchItem *yy_match_item = NULL;
@@ -248,7 +248,6 @@ unhook_hub_leaf_confs(void)
 %token  OPER_ONLY_UMODES
 %token  OPER_PASS_RESV
 %token  OPER_UMODES
-%token  CRYPT_OPER_PASSWORD
 %token  PACE_WAIT
 %token  PACE_WAIT_SIMPLE
 %token  PASSWORD
@@ -911,7 +910,7 @@ oper_items:     oper_items oper_item | oper_item;
 oper_item:      oper_name  | oper_user | oper_password | oper_hidden_admin |
                 oper_class | oper_global_kill | oper_remote |
                 oper_kline | oper_xline | oper_unkline |
-		oper_gline | oper_nick_changes |
+		oper_gline | oper_nick_changes | oper_encrypted |
                 oper_die | oper_rehash | oper_admin |
 		oper_rsa_public_key_file | error;
 
@@ -959,6 +958,17 @@ oper_password: PASSWORD '=' QSTRING ';'
 
     MyFree(yy_aconf->passwd);
     DupString(yy_aconf->passwd, yylval.string);
+  }
+};
+
+oper_encrypted: ENCRYPTED '=' TBOOL ';'
+{
+  if (ypass == 2)
+  {
+    if (yylval.number)
+      yy_aconf->flags |= CONF_FLAGS_ENCRYPTED;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_ENCRYPTED;
   }
 };
 
@@ -2416,7 +2426,7 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
                     general_message_locale |
                     general_oper_only_umodes | general_max_targets |
                     general_use_egd | general_egdpool_path |
-                    general_oper_umodes | general_crypt_oper_password |
+                    general_oper_umodes |
                     general_caller_id_wait | general_default_floodcount |
                     general_min_nonwildcard | general_min_nonwildcard_simple |
                     general_servlink_path | general_disable_remote_commands |
@@ -2888,12 +2898,6 @@ umode_item:	T_BOTS
 {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_LOCOPS;
-};
-
-general_crypt_oper_password: CRYPT_OPER_PASSWORD '=' TBOOL ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.crypt_oper_password = yylval.number;
 };
 
 general_min_nonwildcard: MIN_NONWILDCARD '=' NUMBER ';'

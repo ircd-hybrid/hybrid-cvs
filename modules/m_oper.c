@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.77 2004/07/08 00:27:22 erik Exp $
+ *  $Id: m_oper.c,v 1.78 2005/05/23 10:09:57 michael Exp $
  */
 
 #include "stdinc.h"
@@ -43,13 +43,11 @@
 #include "modules.h"
 #include "packet.h"
 
-static struct ConfItem *find_password_conf(const char *name,
-					      struct Client *source_p);
-static int match_oper_password(const char *password, struct AccessItem *aconf);
-static void failed_oper_notice(struct Client *source_p, const char *name,
-			       const char *reason);
-static void m_oper(struct Client*, struct Client*, int, char**);
-static void mo_oper(struct Client*, struct Client*, int, char**);
+static struct ConfItem *find_password_conf(const char *, struct Client *);
+static int match_oper_password(const char *, struct AccessItem *);
+static void failed_oper_notice(struct Client *, const char *, const char *);
+static void m_oper(struct Client *, struct Client *, int, char **);
+static void mo_oper(struct Client *, struct Client *, int, char **);
 
 
 struct Message oper_msgtab = {
@@ -70,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.77 $";
+const char *_version = "$Revision: 1.78 $";
 #endif
 
 /*
@@ -99,7 +97,7 @@ m_oper(struct Client *client_p, struct Client *source_p,
   if (!IsFloodDone(source_p))
     flood_endgrace(source_p);
 
-  if ((conf = find_password_conf(name,source_p)) == NULL)
+  if ((conf = find_password_conf(name, source_p)) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOOPERHOST), me.name, source_p->name);
     conf = find_exact_name_conf(OPER_TYPE, name, NULL, NULL);
@@ -191,10 +189,12 @@ match_oper_password(const char *password, struct AccessItem *aconf)
 {
   const char *encr = NULL;
 
-  if (!IsConfOperator(aconf))
-    return(NO);
+  assert(IsConfOperator(aconf));
 
-  if (ConfigFileEntry.crypt_oper_password)
+  if (!IsConfOperator(aconf))
+    return(0);
+
+  if (aconf->flags & CONF_FLAGS_ENCRYPTED)
   {
     /* use first two chars of the password they send in as salt */
     /* If the password in the conf is MD5, and ircd is linked   
@@ -204,7 +204,7 @@ match_oper_password(const char *password, struct AccessItem *aconf)
      */
     /* passwd may be NULL pointer. Head it off at the pass... */
     if (aconf->passwd == NULL)
-      return(NO);
+      return(0);
 
     if (password && *aconf->passwd)
       encr = crypt(password, aconf->passwd);
@@ -214,10 +214,7 @@ match_oper_password(const char *password, struct AccessItem *aconf)
   else
     encr = password;
 
-  if (strcmp(encr, aconf->passwd) == 0)
-    return(YES);
-  else
-    return(NO);
+  return(!strcmp(encr, aconf->passwd));
 }
 
 /* failed_oper_notice()
