@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.367 2005/05/25 17:43:58 michael Exp $
+ *  $Id: ircd_parser.y,v 1.368 2005/05/25 20:08:35 michael Exp $
  */
 
 %{
@@ -533,10 +533,12 @@ serverinfo_name: NAME '=' QSTRING ';'
 serverinfo_sid: SID '=' QSTRING ';' 
 {
   /* this isn't rehashable */
-  if (ypass == 2)
+  if (ypass == 2 && !ServerInfo.sid)
   {
-    if (IsDigit(*yylval.string) && !ServerInfo.sid)
-      DupString(ServerInfo.sid, yylval.string);
+    if (strlen(yylval.string) == IRC_MAXSID && IsDigit(*yylval.string))
+        if ((IsDigit(*(yylval.string+1) || IsAlpha(*(yylval.string+1)) &&
+            (IsDigit(*(yylval.string+2) || IsAlpha(*(yylval.string+2)))
+          DupString(ServerInfo.sid, yylval.string);
   }
 };
 
