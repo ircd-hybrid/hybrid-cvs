@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.181 2005/05/23 10:09:59 michael Exp $
+ *  $Id: ircd_lexer.l,v 1.182 2005/05/25 17:43:58 michael Exp $
  */
 
 %option case-insensitive
@@ -171,6 +171,7 @@ encrypted       { return ENCRYPTED; }
 exceed_limit    { return EXCEED_LIMIT; }
 exempt		{ return EXEMPT; }
 fakename	{ return FAKENAME; }
+flags           { return IRCD_FLAGS; }
 flatten_links	{ return FLATTEN_LINKS; }
 ffailed_operlog	{ return FFAILED_OPERLOG; }
 foperlog   	{ return FOPERLOG; }
@@ -181,7 +182,7 @@ gline		{ return GLINE; }
 glines		{ return GLINES; }
 gline_exempt    { return GLINE_EXEMPT; }
 global_kill	{ return GLOBAL_KILL; }
-have_ident	{ return HAVE_IDENT; }
+need_ident	{ return NEED_IDENT; }
 havent_read_conf { return HAVENT_READ_CONF; }
 hidden		{ return HIDDEN; }
 hidden_admin	{ return HIDDEN_ADMIN; }
@@ -252,7 +253,6 @@ redirserv       { return REDIRSERV; }
 rehash		{ return REHASH; }
 reject		{ return T_REJECT; }
 remote		{ return REMOTE; }
-restricted      { return RESTRICTED; }
 resv		{ return RESV; }
 rsa_private_key_file		{ return RSA_PRIVATE_KEY_FILE; }
 rsa_public_key_file		{ return RSA_PUBLIC_KEY_FILE; }

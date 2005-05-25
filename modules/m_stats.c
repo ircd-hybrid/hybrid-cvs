@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.160 2004/07/08 00:27:23 erik Exp $
+ *  $Id: m_stats.c,v 1.161 2005/05/25 17:43:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.160 $";
+const char *_version = "$Revision: 1.161 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -600,7 +600,7 @@ stats_auth(struct Client *source_p)
     conf = unmap_conf_item(aconf);
     get_printable_conf(conf, &host, &pass, &user, &port, &classname, &oreason);
     sendto_one(source_p, form_str(RPL_STATSILINE), from,
-               to, (IsConfRestricted(aconf)) ? 'i' : 'I',
+               to, 'I',
 	       "*", show_iline_prefix(source_p, aconf, user), host,
 	       port, classname);
   }

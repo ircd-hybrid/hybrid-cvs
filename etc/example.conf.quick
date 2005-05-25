@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.28 2005/05/23 10:09:55 michael Exp $
+ * $Id: example.conf.quick,v 1.29 2005/05/25 17:43:54 michael Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -112,13 +112,9 @@ auth {
 	user = "*@172.16.0.0/12";
 	user = "*test@123D:B567:*";
 	password = "letmein";
-        need_password = yes;
+	flags = need_password, spoof_notice, exceed_limit, kline_exempt,
+		gline_exempt, no_tilde;
 	spoof = "I.still.hate.packets";
-	spoof_notice = yes;
-	exceed_limit = yes;
-	kline_exempt = yes;
-	gline_exempt = yes;
-	no_tilde = yes;
 	class = "opers";
 };
 
@@ -132,8 +128,7 @@ auth {
 auth {
 	user = "*@*";
 	class = "users";
-	#restricted = yes;
-	have_ident = yes;
+	flags = need_ident;
 };
 
 /* operator {}: defines ircd operators. (OLD O:)
@@ -148,17 +143,8 @@ operator {
 	encrypted = yes;
 	#rsa_public_key_file = "/usr/local/ircd/etc/oper.pub";
 	class = "opers";
-	global_kill = yes;
-	remote = yes;
-	kline = yes;
-	unkline = yes;
-	gline = yes;
-	xline = yes;
-	die = yes;
-	rehash = yes;
-	nick_changes = yes;
-	admin = yes;
-	hidden_admin = no;
+	flags = global_kill, remote, kline, unkline, gline,
+		xline, die, rehash, nick_changes, admin;
 };
 
 /* connect {}: controls servers we connect to (OLD C:, N:, H:, L:) */
@@ -172,9 +158,7 @@ connect {
 	hub_mask = "*";
 	#leaf_mask = "*.uk";
 	class = "server";
-	autoconn = yes;
-	#compressed = yes;
-	#lazylink = yes;
+	flags = autoconn;
 	#fakename = "*.arpa";
 };
 
@@ -183,7 +167,7 @@ connect {
 	host = "some.host.somewhere";
 	port = 6667;
 
-	cryptlink = yes;
+	flags = cryptlink;
 	rsa_public_key_file = "etc/remote.server.keyfile";
 	#cipher_preference = "BF/168";
 };

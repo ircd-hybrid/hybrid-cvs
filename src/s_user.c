@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.318 2005/05/22 17:20:33 michael Exp $
+ *  $Id: s_user.c,v 7.319 2005/05/25 17:43:59 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1264,10 +1264,6 @@ user_welcome(struct Client *source_p)
   }
   else  
     send_message_file(source_p, &ConfigFileEntry.motd);
-
-  if (IsRestricted(source_p))
-    sendto_one(source_p,form_str(ERR_RESTRICTED),
-               me.name, source_p->name);
 }
 
 /* check_x_line()

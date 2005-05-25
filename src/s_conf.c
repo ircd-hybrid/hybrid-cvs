@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.496 2005/05/23 10:16:16 michael Exp $
+ *  $Id: s_conf.c,v 7.497 2005/05/25 17:43:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -959,8 +959,6 @@ verify_access(struct Client *client_p, const char *username)
 
       if (IsConfDoIdentd(aconf))
 	SetNeedId(client_p);
-      if (IsConfRestricted(aconf))
-	SetRestricted(client_p);
 
       /* Thanks for spoof idea amm */
       if (IsConfDoSpoofIp(aconf))

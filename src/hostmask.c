@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.93 2003/12/05 22:35:21 metalrock Exp $
+ *  $Id: hostmask.c,v 7.94 2005/05/25 17:43:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -761,8 +761,6 @@ show_iline_prefix(struct Client *sptr, struct AccessItem *aconf, char *name)
     *prefix_ptr++ = '>';
   if (MyOper(sptr) && IsConfIdlelined(aconf))
     *prefix_ptr++ = '<';
-  if (IsConfRestricted(aconf))
-    *prefix_ptr++ = '#';
   if (IsConfCanFlood(aconf))
     *prefix_ptr++ = '|';
   strlcpy(prefix_ptr, name, USERLEN);
@@ -803,14 +801,14 @@ report_auth(struct Client *client_p)
 	 */
         if (ConfigFileEntry.hide_spoof_ips)
           sendto_one(client_p, form_str(RPL_STATSILINE), me.name,
-                     client_p->name, (IsConfRestricted(aconf)) ? 'i' : 'I',
+                     client_p->name, 'I',
 		     conf->name == NULL ? "*" : conf->name,
 		     show_iline_prefix(client_p, aconf, user),
                      IsConfDoSpoofIp(aconf) ? "255.255.255.255" :
                      host, port, classname);
         else
           sendto_one(client_p, form_str(RPL_STATSILINE), me.name,
-                     client_p->name, (IsConfRestricted(aconf)) ? 'i' : 'I',
+                     client_p->name, 'I',
 		     conf->name == NULL ? "*" : conf->name,
 		     show_iline_prefix(client_p, aconf, user),
                      host, port, classname);

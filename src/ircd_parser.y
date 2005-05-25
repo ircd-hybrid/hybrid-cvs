@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.366 2005/05/23 10:09:59 michael Exp $
+ *  $Id: ircd_parser.y,v 1.367 2005/05/25 17:43:58 michael Exp $
  */
 
 %{
@@ -172,6 +172,7 @@ unhook_hub_leaf_confs(void)
 %token  EXEMPT
 %token  FAILED_OPER_NOTICE
 %token  FAKENAME
+%token  IRCD_FLAGS
 %token  FLATTEN_LINKS
 %token  FFAILED_OPERLOG
 %token  FOPERLOG
@@ -184,7 +185,7 @@ unhook_hub_leaf_confs(void)
 %token  GLINE_LOG
 %token  GLINE_TIME
 %token  GLOBAL_KILL
-%token  HAVE_IDENT
+%token  NEED_IDENT
 %token  HAVENT_READ_CONF
 %token  HIDDEN
 %token  HIDDEN_ADMIN
@@ -262,7 +263,6 @@ unhook_hub_leaf_confs(void)
 %token  REDIRSERV
 %token  REHASH
 %token  REMOTE
-%token  RESTRICTED
 %token  RSA_PRIVATE_KEY_FILE
 %token  RSA_PUBLIC_KEY_FILE
 %token  RESV
@@ -535,8 +535,8 @@ serverinfo_sid: SID '=' QSTRING ';'
   /* this isn't rehashable */
   if (ypass == 2)
   {
-    MyFree(ServerInfo.sid);
-    DupString(ServerInfo.sid, yylval.string);
+    if (IsDigit(*yylval.string) && !ServerInfo.sid)
+      DupString(ServerInfo.sid, yylval.string);
   }
 };
 
@@ -829,7 +829,7 @@ oper_entry: OPERATOR
     MyFree(class_name);
     class_name = NULL;
   }
-} '{' oper_items '}' ';'
+} oper_name_b '{' oper_items '}' ';'
 {
   if (ypass == 2)
   {
@@ -894,9 +894,11 @@ oper_entry: OPERATOR
 	if (yy_tmp->name != NULL)
 	  DupString(new_conf->name, yy_tmp->name);
       }
+
       dlinkDelete(&yy_tmp->node, &col_conf_list);
       free_collect_item(yy_tmp);
     }
+
     yy_conf = NULL;
     yy_aconf = NULL;
 
@@ -905,16 +907,25 @@ oper_entry: OPERATOR
     class_name = NULL;
   }
 }; 
-
+oper_name_b: | oper_name_t;
 oper_items:     oper_items oper_item | oper_item;
-oper_item:      oper_name  | oper_user | oper_password | oper_hidden_admin |
-                oper_class | oper_global_kill | oper_remote |
-                oper_kline | oper_xline | oper_unkline |
-		oper_gline | oper_nick_changes | oper_encrypted |
-                oper_die | oper_rehash | oper_admin |
-		oper_rsa_public_key_file | error;
+oper_item:      oper_name | oper_user | oper_password | oper_class |
+                oper_encrypted | oper_rsa_public_key_file |
+                oper_flags | error;
 
 oper_name: NAME '=' QSTRING ';'
+{
+  if (ypass == 2)
+  {
+    if (strlen(yylval.string) > OPERNICKLEN)
+      yylval.string[OPERNICKLEN] = '\0';
+
+    MyFree(yy_conf->name);
+    DupString(yy_conf->name, yylval.string);
+  }
+};
+
+oper_name_t: QSTRING
 {
   if (ypass == 2)
   {
@@ -972,17 +983,6 @@ oper_encrypted: ENCRYPTED '=' TBOOL ';'
   }
 };
 
-oper_hidden_admin: HIDDEN_ADMIN '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->port |= OPER_FLAG_HIDDEN_ADMIN;
-    else
-      yy_aconf->port &= ~OPER_FLAG_HIDDEN_ADMIN;
-  }
-};
-
 oper_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
 {
 #ifdef HAVE_LIBCRYPTO
@@ -1034,115 +1034,59 @@ oper_class: CLASS '=' QSTRING ';'
   }
 };
 
-oper_global_kill: GLOBAL_KILL '=' TBOOL ';'
+oper_flags: IRCD_FLAGS
 {
   if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->port |= OPER_FLAG_GLOBAL_KILL;
-    else
-      yy_aconf->port &= ~OPER_FLAG_GLOBAL_KILL;
-  }
+    yy_aconf->port = 0;
+} '='  oper_flags_items ';';
+
+oper_flags_items: oper_flags_items ',' oper_flags_item | oper_flags_item;
+oper_flags_item: GLOBAL_KILL
+{
+  if (ypass == 2)
+    yy_aconf->port |= OPER_FLAG_GLOBAL_KILL;
+} | REMOTE
+{
+  if (ypass == 2)
+    yy_aconf->port |= OPER_FLAG_REMOTE;
+} | KLINE
+{
+  if (ypass == 2)
+    yy_aconf->port |= OPER_FLAG_K;
+} | UNKLINE
+{
+  if (ypass == 2)
+    yy_aconf->port |= OPER_FLAG_UNKLINE;
+} | XLINE
+{
+  if (ypass == 2)
+    yy_aconf->port |= OPER_FLAG_X;
+} | GLINE
+{
+  if (ypass == 2)
+    yy_aconf->port |= OPER_FLAG_GLINE;
+} | DIE
+{
+  if (ypass == 2)
+    yy_aconf->port |= OPER_FLAG_DIE;
+} | REHASH
+{
+  if (ypass == 2)
+    yy_aconf->port |= OPER_FLAG_REHASH;
+} | ADMIN
+{
+  if (ypass == 2)
+    yy_aconf->port |= OPER_FLAG_ADMIN;
+} | HIDDEN_ADMIN
+{
+  if (ypass == 2)
+    yy_aconf->port |= OPER_FLAG_HIDDEN_ADMIN;
+} | NICK_CHANGES
+{
+  if (ypass == 2)
+    yy_aconf->port |= OPER_FLAG_N;
 };
 
-oper_remote: REMOTE '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->port |= OPER_FLAG_REMOTE;
-    else
-      yy_aconf->port &= ~OPER_FLAG_REMOTE; 
-  }
-};
-
-oper_kline: KLINE '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->port |= OPER_FLAG_K;
-    else
-      yy_aconf->port &= ~OPER_FLAG_K;
-  }
-};
-
-oper_xline: XLINE '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->port |= OPER_FLAG_X;
-    else
-      yy_aconf->port &= ~OPER_FLAG_X;
-  }
-};
-
-oper_unkline: UNKLINE '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->port |= OPER_FLAG_UNKLINE;
-    else
-      yy_aconf->port &= ~OPER_FLAG_UNKLINE; 
-  }
-};
-
-oper_gline: GLINE '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->port |= OPER_FLAG_GLINE;
-    else
-      yy_aconf->port &= ~OPER_FLAG_GLINE;
-  }
-};
-
-oper_nick_changes: NICK_CHANGES '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->port |= OPER_FLAG_N;
-    else
-      yy_aconf->port &= ~OPER_FLAG_N;
-  }
-};
-
-oper_die: DIE '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->port |= OPER_FLAG_DIE;
-    else
-      yy_aconf->port &= ~OPER_FLAG_DIE;
-  }
-};
-
-oper_rehash: REHASH '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->port |= OPER_FLAG_REHASH;
-    else
-      yy_aconf->port &= ~OPER_FLAG_REHASH;
-  }
-};
-
-oper_admin: ADMIN '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->port |= OPER_FLAG_ADMIN;
-    else
-      yy_aconf->port &= ~OPER_FLAG_ADMIN;
-  }
-};
 
 /***************************************************************************
  *  section class
@@ -1154,7 +1098,7 @@ class_entry: CLASS
     yy_conf = make_conf_item(CLASS_TYPE);
     yy_class = (struct ClassItem *)map_to_conf(yy_conf);
   }
-} '{' class_items '}' ';'
+} class_name_b '{' class_items '}' ';'
 {
   if (ypass == 1)
   {
@@ -1166,6 +1110,8 @@ class_entry: CLASS
     }
   }
 };
+
+class_name_b: | class_name_t;
 
 class_items:    class_items class_item | class_item;
 class_item:     class_name |
@@ -1180,6 +1126,52 @@ class_item:     class_name |
 		error;
 
 class_name: NAME '=' QSTRING ';' 
+{
+  if (ypass == 1)
+  {
+    struct ConfItem *cconf = find_exact_name_conf(CLASS_TYPE, yylval.string,
+                                                  NULL, NULL);
+    struct ClassItem *class = NULL;
+
+    if (cconf != NULL)
+    {
+      if (cconf == yy_conf)
+        cconf = NULL;
+      else
+        class = (struct ClassItem *) map_to_conf(cconf);
+    }
+
+    if (class != NULL && MaxTotal(class) >= 0)
+    {
+      yyerror("Multiple classes with the same name, using the first entry");
+      MyFree(yy_conf->name);
+      yy_conf->name = NULL;
+    }
+    else
+    {
+      if (class != NULL)
+      {
+        PingFreq(class) = PingFreq(yy_class);
+        MaxPerIp(class) = MaxPerIp(yy_class);
+        ConFreq(class) = ConFreq(yy_class);
+        MaxTotal(class) = MaxTotal(yy_class);
+        MaxGlobal(class) = MaxGlobal(yy_class);
+        MaxLocal(class) = MaxLocal(yy_class);
+        MaxIdent(class) = MaxIdent(yy_class);
+        MaxSendq(class) = MaxSendq(yy_class);
+        delete_conf_item(yy_conf);
+        yy_conf = cconf;
+        yy_class = class;
+        /* allow changing case - replace old name */
+      }
+
+      MyFree(yy_conf->name);
+      DupString(yy_conf->name, yylval.string);
+    }
+  }
+};
+
+class_name_t: QSTRING
 {
   if (ypass == 1)
   {
@@ -1341,6 +1333,7 @@ auth_entry: IRCD_AUTH
     yy_conf = make_conf_item(CLIENT_TYPE);
     yy_aconf = map_to_conf(yy_conf);
     yy_aconf->flags |= CONF_FLAGS_SPOOF_NOTICE; /* default to spoof_notice=yes: */
+    yy_aconf->flags |= CONF_FLAGS_NEED_PASSWORD;
   }
   else
   {
@@ -1410,12 +1403,9 @@ auth_entry: IRCD_AUTH
 }; 
 
 auth_items:     auth_items auth_item | auth_item;
-auth_item:      auth_user | auth_passwd | auth_class |
-                auth_kline_exempt | auth_have_ident | auth_is_restricted |
-                auth_exceed_limit | auth_no_tilde | auth_gline_exempt |
-                auth_spoof | auth_spoof_notice |
-                auth_redir_serv | auth_redir_port | auth_can_flood |
-                auth_need_password | error;
+auth_item:      auth_user | auth_passwd | auth_class | auth_flags |
+                auth_spoof | auth_redir_serv | auth_redir_port |
+                error;
 
 auth_user: USER '=' QSTRING ';'
 {
@@ -1459,15 +1449,45 @@ auth_passwd: PASSWORD '=' QSTRING ';'
   }
 };
 
-auth_spoof_notice: SPOOF_NOTICE '=' TBOOL ';'
+auth_flags: IRCD_FLAGS
 {
   if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->flags |= CONF_FLAGS_SPOOF_NOTICE;
-    else
-      yy_aconf->flags &= ~CONF_FLAGS_SPOOF_NOTICE;
-  }
+    yy_aconf->flags = 0;
+} '='  auth_flags_items ';';
+
+auth_flags_items: auth_flags_items ',' auth_flags_item | auth_flags_item;
+auth_flags_item: SPOOF_NOTICE
+{
+  if (ypass == 2)
+    yy_aconf->flags |= CONF_FLAGS_SPOOF_NOTICE;
+} | EXCEED_LIMIT
+{
+  if (ypass == 2)
+    yy_aconf->flags |= CONF_FLAGS_NOLIMIT;
+} | KLINE_EXEMPT
+{
+  if (ypass == 2)
+    yy_aconf->flags |= CONF_FLAGS_EXEMPTKLINE;
+} | NEED_IDENT
+{
+  if (ypass == 2)
+    yy_aconf->flags |= CONF_FLAGS_NEED_IDENTD;
+} | CAN_FLOOD
+{
+  if (ypass == 2)
+    yy_aconf->flags |= CONF_FLAGS_CAN_FLOOD;
+} | NO_TILDE
+{
+  if (ypass == 2)
+    yy_aconf->flags |= CONF_FLAGS_NO_TILDE;
+} | GLINE_EXEMPT
+{
+  if (ypass == 2)
+    yy_aconf->flags |= CONF_FLAGS_EXEMPTGLINE;
+} | NEED_PASSWORD
+{
+  if (ypass == 2)
+    yy_aconf->flags &= ~CONF_FLAGS_NEED_PASSWORD; /* XXX - reverted logic */
 };
 
 /* XXX - need check for illegal hostnames here */
@@ -1487,83 +1507,6 @@ auth_spoof: SPOOF '=' QSTRING ';'
       ilog(L_ERROR, "Spoofs must be less than %d..ignoring it", HOSTLEN);
       yy_conf->name = NULL;
     }
-  }
-};
-
-auth_exceed_limit: EXCEED_LIMIT '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->flags |= CONF_FLAGS_NOLIMIT;
-    else
-      yy_aconf->flags &= ~CONF_FLAGS_NOLIMIT;
-  }
-};
-
-auth_is_restricted: RESTRICTED '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->flags |= CONF_FLAGS_RESTRICTED;
-    else
-      yy_aconf->flags &= ~CONF_FLAGS_RESTRICTED;
-  }
-};
-
-auth_kline_exempt: KLINE_EXEMPT '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->flags |= CONF_FLAGS_EXEMPTKLINE;
-    else
-      yy_aconf->flags &= ~CONF_FLAGS_EXEMPTKLINE;
-  }
-};
-
-auth_have_ident: HAVE_IDENT '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->flags |= CONF_FLAGS_NEED_IDENTD;
-    else
-      yy_aconf->flags &= ~CONF_FLAGS_NEED_IDENTD;
-  }
-};
-
-auth_can_flood: CAN_FLOOD '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->flags |= CONF_FLAGS_CAN_FLOOD;
-    else
-      yy_aconf->flags &= ~CONF_FLAGS_CAN_FLOOD;
-  }
-};
-
-auth_no_tilde: NO_TILDE '=' TBOOL ';' 
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->flags |= CONF_FLAGS_NO_TILDE;
-    else
-      yy_aconf->flags &= ~CONF_FLAGS_NO_TILDE;
-  }
-};
-
-auth_gline_exempt: GLINE_EXEMPT '=' TBOOL ';' 
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->flags |= CONF_FLAGS_EXEMPTGLINE;
-    else
-      yy_aconf->flags &= ~CONF_FLAGS_EXEMPTGLINE;
   }
 };
 
@@ -1595,16 +1538,6 @@ auth_class: CLASS '=' QSTRING ';'
   }
 };
 
-auth_need_password: NEED_PASSWORD '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->flags &= ~CONF_FLAGS_NEED_PASSWORD;
-    else
-      yy_aconf->flags |= CONF_FLAGS_NEED_PASSWORD;
-  }
-};
 
 /***************************************************************************
  *  section resv
@@ -1840,7 +1773,7 @@ connect_entry: CONNECT
     MyFree(class_name);
     class_name = NULL;
   }
-} '{' connect_items '}' ';'
+} connect_name_b '{' connect_items '}' ';'
 {
   if (ypass == 2)
   {
@@ -1972,16 +1905,29 @@ connect_entry: CONNECT
   }
 };
 
+connect_name_b: | connect_name_t;
 connect_items:  connect_items connect_item | connect_item;
 connect_item:   connect_name | connect_host | connect_send_password |
                 connect_accept_password | connect_port | connect_aftype | 
- 		connect_fakename | connect_lazylink | connect_hub_mask | 
-		connect_leaf_mask | connect_class | connect_auto | 
-		connect_encrypted | connect_compressed | connect_cryptlink |
+ 		connect_fakename | connect_flags | connect_hub_mask | 
+		connect_leaf_mask | connect_class |
+		connect_encrypted |
 		connect_rsa_public_key_file | connect_cipher_preference |
                 error;
 
 connect_name: NAME '=' QSTRING ';'
+{
+  if (ypass == 2)
+  {
+    if (yy_conf->name != NULL)
+      yyerror("Multiple connect name entry");
+
+    MyFree(yy_conf->name);
+    DupString(yy_conf->name, yylval.string);
+  }
+};
+
+connect_name_t: QSTRING
 {
   if (ypass == 2)
   {
@@ -2053,26 +1999,33 @@ connect_fakename: FAKENAME '=' QSTRING ';'
   }
 };
 
-connect_lazylink: LAZYLINK '=' TBOOL ';'
+connect_flags: IRCD_FLAGS
 {
   if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->flags |= CONF_FLAGS_LAZY_LINK;
-    else
-      yy_aconf->flags &= ~CONF_FLAGS_LAZY_LINK;
-  }
-};
+    yy_aconf->flags = 0;
+} '='  connect_flags_items ';';
 
-connect_encrypted: ENCRYPTED '=' TBOOL ';'
+connect_flags_items: connect_flags_items ',' connect_flags_item | connect_flags_item;
+connect_flags_item: LAZYLINK
 {
   if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->flags |= CONF_FLAGS_ENCRYPTED;
-    else
-      yy_aconf->flags &= ~CONF_FLAGS_ENCRYPTED;
-  }
+    yy_aconf->flags |= CONF_FLAGS_LAZY_LINK;
+} | COMPRESSED
+{
+  if (ypass == 2)
+#ifndef HAVE_LIBZ
+    yyerror("Ignoring flags = compressed; -- no zlib support");
+#else
+    yy_aconf->flags |= CONF_FLAGS_COMPRESSED;
+#endif
+} | CRYPTLINK
+{
+  if (ypass == 2)
+    yy_aconf->flags |= CONF_FLAGS_CRYPTLINK;
+} | AUTOCONN
+{
+  if (ypass == 2)
+    yy_aconf->flags |= CONF_FLAGS_ALLOW_AUTO_CONN;
 };
 
 connect_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
@@ -2116,40 +2069,14 @@ connect_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
 #endif /* HAVE_LIBCRYPTO */
 };
 
-connect_cryptlink: CRYPTLINK '=' TBOOL ';'
+connect_encrypted: ENCRYPTED '=' TBOOL ';'
 {
   if (ypass == 2)
   {
     if (yylval.number)
-      yy_aconf->flags |= CONF_FLAGS_CRYPTLINK;
+      yy_aconf->flags |= CONF_FLAGS_ENCRYPTED;
     else
-      yy_aconf->flags &= ~CONF_FLAGS_CRYPTLINK;
-  }
-};
-
-connect_compressed: COMPRESSED '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-#ifndef HAVE_LIBZ
-      yyerror("Ignoring compressed=yes; -- no zlib support");
-#else
-      yy_aconf->flags |= CONF_FLAGS_COMPRESSED;
-#endif
-    else
-      yy_aconf->flags &= ~CONF_FLAGS_COMPRESSED;
-  }
-};
-
-connect_auto: AUTOCONN '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->flags |= CONF_FLAGS_ALLOW_AUTO_CONN;
-    else
-      yy_aconf->flags &= ~CONF_FLAGS_ALLOW_AUTO_CONN;
+      yy_aconf->flags &= ~CONF_FLAGS_ENCRYPTED;
   }
 };
 
