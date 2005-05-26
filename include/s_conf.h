@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.274 2005/05/23 10:16:12 michael Exp $
+ *  $Id: s_conf.h,v 7.275 2005/05/26 10:50:17 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -37,17 +37,7 @@ struct Client;
 struct DNSReply;
 struct hostent;
 
-/* used by new parser */
-/* yacc/lex love globals!!! */
-struct ip_value
-{
-  struct irc_ssaddr ip;
-  int ip_mask;
-  int type;
-};
-
 extern FBFILE *conf_fbfile_in;
-extern char conf_line_in[256];
 
 typedef enum {  
   CONF_TYPE, 
