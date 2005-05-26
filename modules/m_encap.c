@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_encap.c,v 1.10 2004/07/08 00:27:22 erik Exp $
+ *  $Id: m_encap.c,v 1.11 2005/05/26 01:24:07 michael Exp $
  */
 
 #include "stdinc.h"
@@ -33,8 +33,7 @@
 #include "modules.h"
 #include "irc_string.h"
 
-static void ms_encap(struct Client *client_p, struct Client *source_p,
-                     int parc, char *parv[]);
+static void ms_encap(struct Client *, struct Client *, int, char *[]);
 
 struct Message encap_msgtab = {
   "ENCAP", 0, 0, 3, 0, MFLG_SLOW, 0,
@@ -55,7 +54,7 @@ _moddeinit(void)
   mod_del_cmd(&encap_msgtab);
   delete_capability("ENCAP");
 }
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 #endif
 
 /*
@@ -124,11 +123,11 @@ ms_encap(struct Client *client_p, struct Client *source_p,
    * than being derived from the prefix, as it should have been from the beginning.
    */
   ptr = parv[0];
-  parv+=2;
-  parc-=2;
+  parv += 2;
+  parc -= 2;
   parv[0] = ptr;
 
-  if ((handler = mptr->handlers[2]) == NULL)
+  if ((handler = mptr->handlers[ENCAP_HANDLER]) == NULL)
     return;
 
   (*handler)(client_p, source_p, parc, parv);
