@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.197 2005/05/22 17:20:33 michael Exp $
+ *  $Id: parse.c,v 7.198 2005/05/27 20:16:30 adx Exp $
  */
 
 #include "stdinc.h"
@@ -223,8 +223,20 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
        * the ID check should always come first, though, since it is so easy.
        */
       if ((from = find_person(client_p, sender)) == NULL)
+      {
         from = find_server(sender);
 
+	if (from == NULL && IsCapable(client_p, CAP_TS6) &&
+	  client_p->name[0] == '*' && IsDigit(*sender) && strlen(sender) == 3)
+	{
+          /* Dirty hack to allow messages from masked SIDs (i.e. the ones
+           * hidden by fakename="..."). It shouldn't break anything, since
+           * unknown SIDs don't happen during normal ircd work --adx
+           */
+	  from = client_p;
+	}
+      }
+      
       /* Hmm! If the client corresponding to the
        * prefix is not found--what is the correct
        * action??? Now, I will ignore the message
