@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.372 2005/05/26 12:21:25 metalrock Exp $
+ *  $Id: ircd_parser.y,v 1.373 2005/05/28 20:44:48 michael Exp $
  */
 
 %{
@@ -908,6 +908,7 @@ oper_entry: OPERATOR
     class_name = NULL;
   }
 }; 
+
 oper_name_b: | oper_name_t;
 oper_items:     oper_items oper_item | oper_item;
 oper_item:      oper_name | oper_user | oper_password | oper_class |
@@ -1037,8 +1038,6 @@ oper_class: CLASS '=' QSTRING ';'
 
 oper_flags: IRCD_FLAGS
 {
-  if (ypass == 2)
-    yy_aconf->port = 0;
 } '='  oper_flags_items ';';
 
 oper_flags_items: oper_flags_items ',' oper_flags_item | oper_flags_item;
@@ -1452,8 +1451,6 @@ auth_passwd: PASSWORD '=' QSTRING ';'
 
 auth_flags: IRCD_FLAGS
 {
-  if (ypass == 2)
-    yy_aconf->flags = 0;
 } '='  auth_flags_items ';';
 
 auth_flags_items: auth_flags_items ',' auth_flags_item | auth_flags_item;
@@ -2002,8 +1999,6 @@ connect_fakename: FAKENAME '=' QSTRING ';'
 
 connect_flags: IRCD_FLAGS
 {
-  if (ypass == 2)
-    yy_aconf->flags = 0;
 } '='  connect_flags_items ';';
 
 connect_flags_items: connect_flags_items ',' connect_flags_item | connect_flags_item;
