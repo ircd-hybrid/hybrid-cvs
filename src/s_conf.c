@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.497 2005/05/25 17:43:58 michael Exp $
+ *  $Id: s_conf.c,v 7.498 2005/05/28 13:38:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1076,7 +1076,7 @@ attach_iline(struct Client *client_p, struct ConfItem *conf)
 void
 init_ip_hash_table(void)
 {
-  ip_entry_heap = BlockHeapCreate(sizeof(struct ip_entry), 2*HARD_FDLIMIT);
+  ip_entry_heap = BlockHeapCreate("ip", sizeof(struct ip_entry), 2*HARD_FDLIMIT);
   memset((void *)ip_hash_table, 0, sizeof(ip_hash_table));
 }
 

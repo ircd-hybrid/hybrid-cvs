@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.430 2005/05/22 17:20:33 michael Exp $
+ *  $Id: client.c,v 7.431 2005/05/28 13:38:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -91,8 +91,8 @@ init_client(void)
    * check_pings has to deal with safe lists now,
    * let's call it every 5 seconds -adx
    */
-  client_heap = BlockHeapCreate(sizeof(struct Client), CLIENT_HEAP_SIZE);
-  lclient_heap = BlockHeapCreate(sizeof(struct LocalUser), LCLIENT_HEAP_SIZE);
+  client_heap = BlockHeapCreate("client", sizeof(struct Client), CLIENT_HEAP_SIZE);
+  lclient_heap = BlockHeapCreate("local client", sizeof(struct LocalUser), LCLIENT_HEAP_SIZE);
   eventAdd("check_pings", check_pings, NULL, 5);
 }
 

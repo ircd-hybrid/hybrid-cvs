@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.88 2005/04/26 08:36:41 michael Exp $
+ *  $Id: hash.c,v 7.89 2005/05/28 13:38:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -85,8 +85,8 @@ init_hash(void)
    * should be a good close approximation anyway
    * - Dianora
    */
-  userhost_heap = BlockHeapCreate(sizeof(struct UserHost), CLIENT_HEAP_SIZE);
-  namehost_heap = BlockHeapCreate(sizeof(struct NameHost), CLIENT_HEAP_SIZE);
+  userhost_heap = BlockHeapCreate("userhost", sizeof(struct UserHost), CLIENT_HEAP_SIZE);
+  namehost_heap = BlockHeapCreate("namehost", sizeof(struct NameHost), CLIENT_HEAP_SIZE);
 
   random_key = random() % 256;  /* better than nothing --adx */
 

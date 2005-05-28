@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.h,v 1.17 2005/03/29 19:25:45 michael Exp $
+ *  $Id: balloc.h,v 1.18 2005/05/28 13:38:46 michael Exp $
  */
 
 #ifndef INCLUDED_balloc_h
@@ -67,6 +67,7 @@ struct BlockHeap {
    int     blocksAllocated;             /* Number of blocks allocated */
    int     freeElems;                   /* Number of free elements */
    Block*  base;                        /* Pointer to first block */
+   const char *name;
    struct BlockHeap *next;              /* Pointer to next heap */
 };
 
@@ -76,17 +77,15 @@ typedef struct BlockHeap BlockHeap;
 extern int         BlockHeapFree(BlockHeap *bh, void *ptr);
 extern void *     BlockHeapAlloc(BlockHeap *bh);
 
-extern BlockHeap* BlockHeapCreate(size_t elemsize, int elemsperblock);
+extern BlockHeap* BlockHeapCreate(const char *const, size_t, int);
 extern int        BlockHeapDestroy(BlockHeap *bh);
 extern void	  initBlockHeap(void);
-extern size_t block_heap_get_used(const BlockHeap *const);
-extern size_t block_heap_get_free(const BlockHeap *const);
-extern size_t block_heap_get_size(const BlockHeap *const);
+extern void block_heap_report_stats(struct Client *);
 #else /* NOBALLOC */
 
 typedef struct BlockHeap BlockHeap;
 /* This is really kludgy, passing ints as pointers is always bad. */
-#define BlockHeapCreate(es, epb) ((BlockHeap*)(es))
+#define BlockHeapCreate(blah, es, epb) ((BlockHeap*)(es))
 #define BlockHeapAlloc(x) MyMalloc((int)x)
 #define BlockHeapFree(x,y) MyFree(y)
 

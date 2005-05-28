@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_map.c,v 1.19 2004/07/08 00:27:16 erik Exp $
+ *  $Id: m_map.c,v 1.20 2005/05/28 13:38:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -31,11 +31,9 @@
 #include "s_conf.h"
 #include "ircd.h"
 
-static void m_map(struct Client *client_p, struct Client *source_p,
-                  int parc, char *parv[]);
-static void mo_map(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[]);
-static void dump_map(struct Client *client_p,struct Client *root, char *pbuf);
+static void m_map(struct Client *, struct Client *, int, char *[]);
+static void mo_map(struct Client *, struct Client *, int, char *[]);
+static void dump_map(struct Client *, struct Client *, char *);
 
 struct Message map_msgtab = {
   "MAP", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -53,7 +51,7 @@ void _moddeinit(void)
   mod_del_cmd(&map_msgtab);
 }
 
-const char *_version = "$Revision: 1.19 $";
+const char *_version = "$Revision: 1.20 $";
 #endif
 
 static char buf[BUFSIZE];
@@ -72,8 +70,7 @@ m_map(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  m_not_oper(client_p,source_p,parc,parv);
-  return;
+  m_not_oper(client_p, source_p, parc, parv);
 }
 
 /* mo_map()
@@ -81,9 +78,9 @@ m_map(struct Client *client_p, struct Client *source_p,
  */
 static void
 mo_map(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+       int parc, char *parv[])
 {
-  dump_map(client_p,&me,buf);
+  dump_map(client_p, &me, buf);
   sendto_one(client_p, form_str(RPL_MAPEND), me.name, client_p->name);
 }
 
@@ -91,7 +88,7 @@ mo_map(struct Client *client_p, struct Client *source_p,
  *   dumps server map, called recursively.
  */
 static void
-dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
+dump_map(struct Client *client_p, struct Client *root_p, char *pbuf)
 {
   int cnt = 0, i = 0, len;
   int users;
@@ -99,11 +96,11 @@ dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
   struct Client *server_p;
 
   *pbuf= '\0';
-       
-  strncat(pbuf, root_p->name, BUFSIZE - ((size_t)pbuf - (size_t)buf));
+
+  strlcat(pbuf, root_p->name, BUFSIZE);
   len = strlen(buf);
   buf[len] = ' ';
-	
+
   users = dlink_list_length(&root_p->serv->users);
 
   snprintf(buf + len, BUFSIZE - len, " [Users: %d (%1.1f%%)]", users,
@@ -120,6 +117,7 @@ dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
       if (pbuf > buf + 3)
       {
         pbuf[-2] = ' ';
+
         if (pbuf[-3] == '`')
           pbuf[-3] = ' ';
       }
@@ -142,6 +140,6 @@ dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
     *(pbuf + 3) = ' ';
     dump_map(client_p, server_p, pbuf+4);
  
-    i++;
-   }
+    ++i;
+  }
 }

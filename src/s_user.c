@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.319 2005/05/25 17:43:59 michael Exp $
+ *  $Id: s_user.c,v 7.320 2005/05/28 13:38:49 michael Exp $
  */
 
 #include "stdinc.h"
@@ -176,7 +176,7 @@ const unsigned int user_modes_from_c_to_bitmask[] =
 void
 init_user(void)
 {
-  user_heap = BlockHeapCreate(sizeof(struct User), USER_HEAP_SIZE);
+  user_heap = BlockHeapCreate("user", sizeof(struct User), USER_HEAP_SIZE);
 }
 
 /* make_user()

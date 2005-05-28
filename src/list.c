@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.66 2005/02/15 13:43:55 michael Exp $
+ *  $Id: list.c,v 7.67 2005/05/28 13:38:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ make_server(struct Client *client_p)
 void
 init_dlink_nodes(void)
 {
-  dnode_heap = BlockHeapCreate(sizeof(dlink_node), DNODE_HEAP_SIZE);
+  dnode_heap = BlockHeapCreate("dlink node", sizeof(dlink_node), DNODE_HEAP_SIZE);
 }
 
 /* make_dlink_node()
@@ -112,7 +112,7 @@ free_dlink_node(dlink_node *ptr)
 void
 init_slink_nodes(void)
 {
-  snode_heap = BlockHeapCreate(sizeof(slink_node), SNODE_HEAP_SIZE);
+  snode_heap = BlockHeapCreate("slink node", sizeof(slink_node), SNODE_HEAP_SIZE);
 }
 
 /* make_slink_node()

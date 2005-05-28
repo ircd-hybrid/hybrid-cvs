@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.51 2005/03/29 19:25:47 michael Exp $
+ *  $Id: balloc.c,v 7.52 2005/05/28 13:38:48 michael Exp $
  */
 
 /* 
@@ -62,6 +62,8 @@
 #include "client.h"
 #include "fdlist.h"
 #include "event.h"
+#include "numeric.h"
+#include "send.h"
 
 static BlockHeap *heap_list = NULL;
 
@@ -129,11 +131,8 @@ get_block(size_t size)
 {
   void *ptr;
   ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, zero_fd, 0);
-  if (ptr == MAP_FAILED)
-  {
-    ptr = NULL;
-  }
-  return(ptr);
+
+  return(ptr == MAP_FAILED ? NULL : ptr);
 }
 #else /* MAP_ANON */ 
 
@@ -164,11 +163,8 @@ get_block(size_t size)
 {
   void *ptr;
   ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
-  if (ptr == MAP_FAILED)
-  {
-    ptr = NULL;
-  }
-  return(ptr);
+
+  return(ptr == MAP_FAILED ? NULL : ptr);
 }
 
 #endif /* !MAP_ANON */
@@ -302,7 +298,7 @@ newblock(BlockHeap * bh)
 /*   Pointer to new BlockHeap, or NULL if unsuccessful                      */
 /* ************************************************************************ */
 BlockHeap *
-BlockHeapCreate(size_t elemsize, int elemsperblock)
+BlockHeapCreate(const char *const name, size_t elemsize, int elemsperblock)
 {
   BlockHeap *bh = NULL;
   assert(elemsize > 0 && elemsperblock > 0);
@@ -322,6 +318,7 @@ BlockHeapCreate(size_t elemsize, int elemsperblock)
     elemsize &= ~(sizeof(void *) - 1);
   }
 
+  bh->name = name;
   bh->elemSize = elemsize;
   bh->elemsPerBlock = elemsperblock;
 
@@ -564,7 +561,7 @@ BlockHeapDestroy(BlockHeap * bh)
  * output       - Number of bytes being used
  * side effects - NONE
  */
-size_t
+static size_t
 block_heap_get_used(const BlockHeap *const bh)
 {
   return(((bh->blocksAllocated *
@@ -579,7 +576,7 @@ block_heap_get_used(const BlockHeap *const bh)
  * output       - Number of bytes being free for further allocations
  * side effects - NONE
  */
-size_t
+static size_t
 block_heap_get_free(const BlockHeap *const bh)
 {
   return(bh->freeElems * (bh->elemSize + sizeof(MemBlock)));
@@ -592,10 +589,23 @@ block_heap_get_free(const BlockHeap *const bh)
  * output       - Total number of bytes of memory belonging to a heap
  * side effects - NONE
  */
-size_t
+static size_t
 block_heap_get_size(const BlockHeap *const bh)
 {
   return(((bh->blocksAllocated *
            bh->elemsPerBlock)) *
           (bh->elemSize + sizeof(MemBlock)));
+}
+
+void
+block_heap_report_stats(struct Client *client_p)
+{
+  const BlockHeap *bh;
+
+  for (bh = heap_list; bh != NULL; bh = bh->next)
+    sendto_one(client_p, ":%s %d %s z :%s mempool: used %u free %u (size %u)",
+               me.name, RPL_STATSDEBUG, client_p->name, bh->name,
+               block_heap_get_used(bh),
+               block_heap_get_free(bh),
+               block_heap_get_size(bh));
 }

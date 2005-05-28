@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.413 2004/04/12 01:57:44 metalrock Exp $
+ *  $Id: channel.c,v 7.414 2005/05/28 13:38:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -76,10 +76,10 @@ init_channels(void)
   add_capability("IE", CAP_IE, 1);
   add_capability("CHW", CAP_CHW, 1);
 
-  channel_heap = BlockHeapCreate(sizeof(struct Channel), CHANNEL_HEAP_SIZE);
-  ban_heap = BlockHeapCreate(sizeof(struct Ban), BAN_HEAP_SIZE);
-  topic_heap = BlockHeapCreate(TOPICLEN+1 + USERHOST_REPLYLEN, TOPIC_HEAP_SIZE);
-  member_heap = BlockHeapCreate(sizeof(struct Membership), CHANNEL_HEAP_SIZE /* XXX */ );
+  channel_heap = BlockHeapCreate("channel", sizeof(struct Channel), CHANNEL_HEAP_SIZE);
+  ban_heap = BlockHeapCreate("ban", sizeof(struct Ban), BAN_HEAP_SIZE);
+  topic_heap = BlockHeapCreate("topic", TOPICLEN+1 + USERHOST_REPLYLEN, TOPIC_HEAP_SIZE);
+  member_heap = BlockHeapCreate("member", sizeof(struct Membership), CHANNEL_HEAP_SIZE /* XXX */ );
 }
 
 /* add_user_to_channel()

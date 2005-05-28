@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: dbuf.c,v 7.23 2003/09/13 19:04:32 metalrock Exp $
+ *  $Id: dbuf.c,v 7.24 2005/05/28 13:38:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -35,7 +35,7 @@ static BlockHeap *dbuf_heap;
 void
 dbuf_init(void)
 {
-  dbuf_heap = BlockHeapCreate(sizeof(struct dbuf_block), DBUF_HEAP_SIZE);
+  dbuf_heap = BlockHeapCreate("dbuf", sizeof(struct dbuf_block), DBUF_HEAP_SIZE);
 }
 
 static struct dbuf_block *
