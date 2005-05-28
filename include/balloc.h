@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.h,v 1.18 2005/05/28 13:38:46 michael Exp $
+ *  $Id: balloc.h,v 1.19 2005/05/28 19:00:58 adx Exp $
  */
 
 #ifndef INCLUDED_balloc_h
@@ -29,6 +29,7 @@
 
 #ifndef NOBALLOC
 
+#include "client.h"
 #include "tools.h"
 #include "memory.h"
 #include "ircd_defs.h"
