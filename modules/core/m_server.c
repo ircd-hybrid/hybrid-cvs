@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.127 2005/01/11 21:10:45 db Exp $
+ *  $Id: m_server.c,v 1.128 2005/05/28 17:22:21 adx Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.127 $";
+const char *_version = "$Revision: 1.128 $";
 #endif
 
 
@@ -279,7 +279,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
   int hop;
   int hlined = 0;
   int llined = 0;
-  dlink_node *ptr;
+  dlink_node *ptr, *ptr_next;
 
   /* Just to be sure -A1kmm. */
   if (!IsServer(source_p))
@@ -512,7 +512,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
    * need to send different names to different servers
    * (domain name matching)
    */
-  DLINK_FOREACH(ptr, serv_list.head)
+  DLINK_FOREACH_SAFE(ptr, serv_list.head, ptr_next)
   {
     bclient_p = ptr->data;
 
@@ -528,7 +528,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
 			   "Lost connect{} block for %s on %s. Closing",
                            get_client_name(client_p, MASK_IP), name);
       exit_client(client_p, client_p, client_p, "Lost connect{} block");
-      return;
+      continue;
     }
 
     if (match(my_name_for_link(conf), target_p->name))
@@ -558,11 +558,12 @@ ms_sid(struct Client *client_p, struct Client *source_p,
 {
   char info[REALLEN + 1];
   struct Client *target_p;
+  struct Client *bclient_p;
   struct ConfItem *conf;
   struct MatchItem *match_item;
   int hlined = 0;
   int llined = 0;
-  dlink_node *ptr;
+  dlink_node *ptr, *ptr_next;
   char *name;
   char *sid;
   int hop;
@@ -770,20 +771,39 @@ ms_sid(struct Client *client_p, struct Client *source_p,
 
   hash_add_id(target_p);
 
-  /*
-   * sendto_server() does the work of a nasty DLINK_FOREACH call
-   * that used to be here
-   */
-  sendto_server(client_p, NULL, NULL, CAP_TS6, NOCAPS, NOFLAGS,
-                ":%s SID %s %d %s :%s%s",
-                ID_or_name(source_p, client_p), target_p->name, hop + 1,
-                SID_SID, IsHidden(target_p) ? "(H) " : "",
-                target_p->info);
-  sendto_server(client_p, NULL, NULL, NOCAPS, CAP_TS6, NOFLAGS,
-                ":%s SERVER %s %d :%s%s",
-                source_p->name, target_p->name, hop + 1,
-                IsHidden(target_p) ? "(H) " : "",
-                target_p->info);
+  DLINK_FOREACH_SAFE(ptr, serv_list.head, ptr_next)
+  {
+    bclient_p = ptr->data;
+    
+    if (bclient_p == client_p)
+      continue;
+    
+    if ((conf = bclient_p->serv->sconf) == NULL)
+    {
+      sendto_realops_flags(UMODE_ALL, L_ADMIN,
+                           "Lost connect{} block for %s on %s. Closing",
+                           get_client_name(client_p, HIDE_IP), name);
+      sendto_realops_flags(UMODE_ALL, L_OPER,
+                           "Lost connect{} block for %s on %s. Closing",
+                           get_client_name(client_p, MASK_IP), name);
+      exit_client(client_p, client_p, client_p, "Lost connect{} block");
+      continue;
+    }
+
+    if (match(my_name_for_link(conf), target_p->name))
+      continue;
+    
+    if (IsCapable(bclient_p, CAP_TS6))
+      sendto_one(bclient_p, ":%s SID %s %d %s :%s%s",
+                 ID_or_name(source_p, client_p), target_p->name, hop + 1,
+                 SID_SID, IsHidden(target_p) ? "(H) " : "",
+                 target_p->info);
+    else
+      sendto_one(bclient_p, ":%s SERVER %s %d :%s%s",
+                 source_p->name, target_p->name, hop + 1,
+                 IsHidden(target_p) ? "(H) " : "",
+                 target_p->info);
+  }
 
   sendto_realops_flags(UMODE_EXTERNAL, L_ALL, 
 		       "Server %s being introduced by %s",
