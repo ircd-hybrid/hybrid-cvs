@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.224 2005/05/22 17:20:26 michael Exp $
+ *  $Id: client.h,v 7.225 2005/05/28 18:56:55 adx Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -359,7 +359,7 @@ struct LocalUser
 #define FLAGS_BLOCKED     0x01000000 /* must wait for COMM_SELECT_WRITE          */
 #define FLAGS_SBLOCKED    0x02000000 /* slinkq is blocked                        */
 #define FLAGS_USERHOST    0x04000000 /* client is in userhost hash               */
-/*                        0x08000000  */
+#define FLAGS_BURSTED     0x08000000 /* user was already bursted                 */
 /*                        0x10000000  */
 /*                        0x20000000  */
 /*                        0x40000000  */
@@ -506,6 +506,10 @@ struct LocalUser
 #define IsSlinkqBlocked(x)      ((x)->flags &  FLAGS_SBLOCKED)
 #define SetSlinkqBlocked(x)     ((x)->flags |= FLAGS_SBLOCKED)
 #define ClearSlinkqBlocked(x)   ((x)->flags &= ~FLAGS_SBLOCKED)
+
+#define IsBursted(x)            ((x)->flags &  FLAGS_BURSTED)
+#define SetBursted(x)           ((x)->flags |= FLAGS_BURSTED)
+#define ClearBursted(x)         ((x)->flags &= ~FLAGS_BURSTED)
 
 /* operflags macros */
 #define ClearOperFlags(x)	((x)->localClient->operflags = 0)

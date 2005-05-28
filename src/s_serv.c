@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.406 2005/05/28 18:35:59 adx Exp $
+ *  $Id: s_serv.c,v 7.407 2005/05/28 18:56:57 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1610,13 +1610,10 @@ burst_all(struct Client *client_p)
   {
     target_p = ptr->data;
 
-    if (target_p->serial != current_serial)
-    {
-      target_p->serial = current_serial;
-
-      if (target_p->from != client_p)
-        sendnick_TS(client_p, target_p);
-    }
+    if (!IsBursted(target_p) && target_p->from != client_p)
+      sendnick_TS(client_p, target_p);
+    
+    ClearBursted(target_p);
   }
 
   /* We send the time we started the burst, and let the remote host determine an EOB time,
@@ -1788,9 +1785,9 @@ burst_members(struct Client *client_p, struct Channel *chptr)
     ms       = ptr->data;
     target_p = ms->client_p;
 
-    if (target_p->serial != current_serial)
+    if (!IsBursted(target_p))
     {
-      target_p->serial = current_serial;
+      SetBursted(target_p);
 
       if (target_p->from != client_p)
         sendnick_TS(client_p, target_p);
