@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_map.c,v 1.20 2005/05/28 13:38:44 michael Exp $
+ *  $Id: m_map.c,v 1.21 2005/05/28 13:48:05 michael Exp $
  */
 
 #include "stdinc.h"
@@ -30,6 +30,7 @@
 #include "send.h"
 #include "s_conf.h"
 #include "ircd.h"
+#include "irc_string.h"
 
 static void m_map(struct Client *, struct Client *, int, char *[]);
 static void mo_map(struct Client *, struct Client *, int, char *[]);
@@ -51,7 +52,7 @@ void _moddeinit(void)
   mod_del_cmd(&map_msgtab);
 }
 
-const char *_version = "$Revision: 1.20 $";
+const char *_version = "$Revision: 1.21 $";
 #endif
 
 static char buf[BUFSIZE];
@@ -98,6 +99,15 @@ dump_map(struct Client *client_p, struct Client *root_p, char *pbuf)
   *pbuf= '\0';
 
   strlcat(pbuf, root_p->name, BUFSIZE);
+
+  if (root_p->id[0] != '\0')
+  {
+    char idbuf[IDLEN + 3];  /* [ID]\0 */
+
+    snprintf(idbuf, sizeof(idbuf), "[%s]", root_p->id);
+    strlcat(pbuf, idbuf, BUFSIZE);
+  }
+
   len = strlen(buf);
   buf[len] = ' ';
 
