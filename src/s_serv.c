@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.407 2005/05/28 18:56:57 adx Exp $
+ *  $Id: s_serv.c,v 7.408 2005/05/28 19:25:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1585,9 +1585,6 @@ burst_all(struct Client *client_p)
   struct hook_burst_channel hinfo; 
   dlink_node *gptr;
   dlink_node *ptr;
-
-  /* serial counter borrowed from send.c */
-  current_serial++;
 
   DLINK_FOREACH(gptr, global_channel_list.head)
   {

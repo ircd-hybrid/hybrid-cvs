@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.282 2005/04/11 14:46:16 db Exp $
+ *  $Id: send.c,v 7.283 2005/05/28 19:25:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -48,8 +48,7 @@
 static void send_message(struct Client *, char *, int);
 static void send_message_remote(struct Client *, struct Client *, char *, int);
 
-/* global for now *sigh* */
-unsigned long current_serial = 0L;
+static unsigned long current_serial = 0L;
 
 /* send_format()
  *
