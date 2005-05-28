@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.405 2005/05/28 18:27:14 adx Exp $
+ *  $Id: s_serv.c,v 7.406 2005/05/28 18:35:59 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1782,8 +1782,6 @@ burst_members(struct Client *client_p, struct Channel *chptr)
   struct Client *target_p;
   struct Membership *ms;
   dlink_node *ptr;
-
-  current_serial++;
 
   DLINK_FOREACH(ptr, chptr->members.head)
   {
