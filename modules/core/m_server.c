@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.128 2005/05/28 17:22:21 adx Exp $
+ *  $Id: m_server.c,v 1.129 2005/05/28 17:30:57 adx Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.128 $";
+const char *_version = "$Revision: 1.129 $";
 #endif
 
 
@@ -512,7 +512,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
    * need to send different names to different servers
    * (domain name matching)
    */
-  DLINK_FOREACH_SAFE(ptr, serv_list.head, ptr_next)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, serv_list.head)
   {
     bclient_p = ptr->data;
 
@@ -771,7 +771,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
 
   hash_add_id(target_p);
 
-  DLINK_FOREACH_SAFE(ptr, serv_list.head, ptr_next)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, serv_list.head)
   {
     bclient_p = ptr->data;
     
