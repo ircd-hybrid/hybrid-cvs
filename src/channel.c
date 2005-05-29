@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.415 2005/05/29 02:54:07 adx Exp $
+ *  $Id: channel.c,v 7.416 2005/05/29 03:00:00 adx Exp $
  */
 
 #include "stdinc.h"
@@ -167,7 +167,8 @@ send_members(struct Client *client_p, struct Channel *chptr,
   {
     ms = ptr->data;
 
-    tlen = strlen(ms->client_p->name) + 1;  /* nick + space */
+    tlen = strlen(IsCapable(client_p, CAP_TS6) ?
+      ID(ms->client_p) : ms->client_p->name) + 1;  /* nick + space */
     if (ms->flags & CHFL_CHANOP)
       tlen++;
 #ifdef HALFOPS
@@ -177,7 +178,7 @@ send_members(struct Client *client_p, struct Channel *chptr,
     if (ms->flags & CHFL_VOICE)
       tlen++;
 
-    if (t + tlen - buf > IRCD_BUFSIZE)
+    if (t + tlen - buf > sizeof(buf))
     {
       *(t - 1) = '\0';  /* kill the space and terminate the string */
       sendto_one(client_p, "%s", buf);
