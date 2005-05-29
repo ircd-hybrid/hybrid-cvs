@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.189 2005/05/29 03:09:13 adx Exp $
+ *  $Id: m_sjoin.c,v 1.190 2005/05/29 03:33:25 adx Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.189 $";
+const char *_version = "$Revision: 1.190 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -112,8 +112,8 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   unsigned int fl;
   char           *s;
   char		 *sptr;
-  static         char nick_buf[BUFSIZE]; /* buffer for modes and prefix */
-  static         char uid_buf[BUFSIZE];  /* buffer for modes/prefixes for CAP_TS6 servers */
+  static         char nick_buf[2*BUFSIZE]; /* buffer for modes and prefix */
+  static         char uid_buf[2*BUFSIZE];  /* buffer for modes/prefixes for CAP_TS6 servers */
   char           *nick_ptr, *uid_ptr;      /* pointers used for making the two mode/prefix buffers */
   char           *p; /* pointer used making sjbuf */
   int            i;
@@ -281,9 +281,9 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   uid_ptr = uid_buf + buflen;
 
   /* check we can fit a nick on the end, as well as \r\n and a prefix "
-   * @+".
+   * @%+", and a space.
    */
-  if (buflen >= (BUFSIZE - 2 - NICKLEN))
+  if (buflen >= (BUFSIZE - IRCD_MAX(NICKLEN, IDLEN) - 2 - 3 - 1))
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
 			 "Long SJOIN from server: %s(via %s) (ignored)",
@@ -357,6 +357,39 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       goto nextnick;
     }
 
+    i = 1;
+    if (keep_new_modes)
+    {
+      if (fl & CHFL_CHANOP)
+        i++;
+#ifdef HALFOPS
+      if (fl & CHFL_HALFOP)
+        i++;
+#endif
+      if (fl & CHFL_VOICE)
+        i++;
+    }
+    
+    if (nick_ptr - nick_buf + i + strlen(target_p->name) > BUFSIZE - 2)
+    {
+      sendto_server(client_p, NULL, chptr, 0, CAP_TS6, 0, "%s", nick_buf);
+      
+      buflen = ircsprintf(nick_buf, ":%s SJOIN %lu %s %s %s:",
+                          source_p->name, (unsigned long)tstosend,
+                          chptr->chname, modebuf, parabuf);
+      nick_ptr = nick_buf + buflen;
+    }
+    
+    if (uid_ptr - uid_buf + i + strlen(ID(target_p)) > BUFSIZE - 2)
+    {
+      sendto_server(client_p, NULL, chptr, CAP_TS6, 0, 0, "%s", uid_buf);
+      
+      buflen = ircsprintf(uid_buf, ":%s SJOIN %lu %s %s %s:",
+                          ID(source_p), (unsigned long)tstosend,
+                          chptr->chname, modebuf, parabuf);
+      uid_ptr = uid_buf + buflen;
+    }
+    
     if (keep_new_modes)
     {
       if (fl & CHFL_CHANOP)
@@ -384,11 +417,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
     if (!keep_new_modes)
     {
-#ifdef HALFOPS
       if (fl & (CHFL_CHANOP|CHFL_HALFOP))
-#else
-      if (fl & CHFL_CHANOP)
-#endif
         fl = CHFL_DEOPPED;
       else
         fl = 0;
