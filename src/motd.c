@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.c,v 7.38 2005/05/29 12:55:22 db Exp $
+ *  $Id: motd.c,v 7.39 2005/05/29 23:44:50 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -124,9 +124,6 @@ send_message_file(struct Client *source_p, MessageFile *motdToPrint)
 		   me.name, source_p->name);
       }
       break;
-
-    default:
-      /* NOT REACHED */
   }
 
   return(0);
