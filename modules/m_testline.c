@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.34 2004/07/08 00:27:23 erik Exp $
+ *  $Id: m_testline.c,v 1.35 2005/05/29 20:33:22 db Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&testline_msgtab);
 }
  
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 
 /* mo_testline()
@@ -94,7 +94,7 @@ mo_testline(struct Client *client_p, struct Client *source_p,
 
   given_name = parv[1];
 
-  if ((p = (char *) strchr(given_name, '@')) == NULL)
+  if ((p = strchr(given_name, '@')) == NULL)
   {
     if ((t = parse_netmask(given_name, &ip, &host_mask)) != HM_HOST)
     {

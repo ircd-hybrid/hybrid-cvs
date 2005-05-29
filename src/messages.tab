@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.96 2005/05/29 12:55:22 db Exp $
+ *   $Id: messages.tab,v 7.97 2005/05/29 20:33:26 db Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -307,7 +307,7 @@ static struct NumericInfo replies[] = {
 /* 280 */  {NULL, NULL, NULL},
 /* 281 */  {"RPL_ACCEPTLIST", ":%s 281 %s %s :", NULL},
 /* 282 */  {"RPL_ENDOFACCEPT", ":%s 282 %s :End of /ACCEPT list.", NULL},
-/* 283 */  {"RPL_ISMESSAGING", ":%s 283 %s :Client %s is messaging and you are +g", NULL},
+/* 283 */  {NULL, NULL, NULL},
 /* 284 */  {NULL, NULL, NULL},
 /* 285 */  {NULL, NULL, NULL},
 /* 286 */  {NULL, NULL, NULL},
@@ -740,9 +740,9 @@ static struct NumericInfo replies[] = {
 /* 713 */  {"ERR_CHANOPEN", ":%s 713 %s %s :Channel is open.", NULL},
 /* 714 */  {"ERR_KNOCKONCHAN", ":%s 714 %s %s :You are already on that channel.", NULL},
 /* 715 */  {"ERR_KNOCKDISABLED", ":%s 715 %s :KNOCKs are disabled.", NULL},
-/* 716 */  {"ERR_TARGUMODEG", ":%s 716 %s :is in +g mode (server-side ignore.)", NULL},
-/* 717 */  {"RPL_TARGNOTIFY", ":%s 717 %s :has been informed that you messaged them."},
-/* 718 */  {"RPL_UMODEGMSG", ":%s 718 %s %s %s@%s :is messaging you, and you have umode +g.", NULL},
+/* 716 */  {"ERR_TARGUMODEG", ":%s 716 %s :%s is in +g mode (server side ignore.)", NULL},
+/* 717 */  {"RPL_TARGNOTIFY", ":%s 717 %s :%s has been informed that you messaged them."},
+/* 718 */  {"RPL_UMODEGMSG", ":%s 718 %s %s :is messaging you, and you are umode +g.", NULL},
 /* 719 */  {NULL, NULL, NULL},
 /* 720 */  {"RPL_OMOTDSTART", ":%s 720 %s :Start of OPER MOTD.", NULL},
 /* 721 */  {"RPL_OMOTD", ":%s 721 %s :%s", NULL},

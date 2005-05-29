@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.140 2005/05/29 02:54:05 adx Exp $
+ *  $Id: m_message.c,v 1.141 2005/05/29 20:33:24 db Exp $
  */
 
 #include "stdinc.h"
@@ -117,7 +117,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.140 $";
+const char *_version = "$Revision: 1.141 $";
 #endif
 
 /*
@@ -609,19 +609,19 @@ msg_client(int p_or_n, const char *command, struct Client *source_p,
       {
         /* check for accept, flag recipient incoming message */
         if (p_or_n != NOTICE)
-          sendto_anywhere(source_p, target_p,
-                          "NOTICE %s :*** I'm in +g mode (server side ignore).",
-                          source_p->name);
+	  sendto_one(source_p, form_str(ERR_TARGUMODEG),
+		     ID_or_name(&me, source_p->from),
+		     ID_or_name(source_p, source_p->from), target_p->name);
 
         if ((target_p->localClient->last_caller_id_time +
              ConfigFileEntry.caller_id_wait) < CurrentTime)
         {
           if (p_or_n != NOTICE)
-            sendto_anywhere(source_p, target_p,
-                            "NOTICE %s :*** I've been informed you messaged me.",
-                            source_p->name);
+	    sendto_one(source_p, form_str(RPL_TARGNOTIFY),
+		       ID_or_name(&me, source_p->from),
+		       ID_or_name(source_p, source_p->from), target_p->name);
 
-          sendto_one(target_p, form_str(RPL_ISMESSAGING),
+          sendto_one(target_p, form_str(RPL_UMODEGMSG),
                      me.name, target_p->name,
                      get_client_name(source_p, HIDE_IP));
 
