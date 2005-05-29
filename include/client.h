@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.225 2005/05/28 18:56:55 adx Exp $
+ *  $Id: client.h,v 7.226 2005/05/29 03:46:51 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -410,6 +410,10 @@ struct LocalUser
 #define OPER_FLAG_REHASH       0x00000100 /* oper can rehash             */
 #define OPER_FLAG_ADMIN        0x00000200 /* oper can set umode +a       */
 #define OPER_FLAG_HIDDEN_ADMIN 0x00000400 /* admin is hidden             */
+#define OPER_FLAG_OPERWALL     0x00000800 /* */
+#define OPER_FLAG_OPER_SPY     0x00001000 /* */
+#define OPER_FLAG_REMOTEBAN    0x00002000 /* */
+#define OPER_FLAG_HIDDEN_OPER  0x00004000 /* */
 
 #define SetOFlag(x, y) ((x)->localClient->operflags |= (y))
 
@@ -474,10 +478,10 @@ struct LocalUser
 #define ClearPingSent(x)	((x)->flags &= ~FLAGS_PINGSENT)
 
 #define SetNeedId(x)            ((x)->flags |= FLAGS_NEEDID)
-#define IsNeedId(x)             (((x)->flags & FLAGS_NEEDID) != 0)
+#define IsNeedId(x)             ((x)->flags & FLAGS_NEEDID)
 
 #define SetGotId(x)             ((x)->flags |= FLAGS_GOTID)
-#define IsGotId(x)              (((x)->flags & FLAGS_GOTID) != 0)
+#define IsGotId(x)              ((x)->flags & FLAGS_GOTID)
 
 #define IsExemptKline(x)        ((x)->flags & FLAGS_EXEMPTKLINE)
 #define SetExemptKline(x)       ((x)->flags |= FLAGS_EXEMPTKLINE)
@@ -522,8 +526,11 @@ struct LocalUser
 #define IsOperDie(x)            (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_DIE : 0)
 #define IsOperRehash(x)         (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_REHASH : 0)
 #define IsOperAdmin(x)          (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_ADMIN : 0)
-#define IsOperHiddenAdmin(x)	(MyConnect(x) ? (x)->localClient->operflags  & OPER_FLAG_HIDDEN_ADMIN : 0)
+#define IsOperHiddenAdmin(x)	(MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_HIDDEN_ADMIN : 0)
 #define IsOperX(x)              (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_X : 0)
+#define IsOperWall(x)           (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_OPERWALL : 0)
+#define IsOperRemoteBan(x)      (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_REMOTEBAN : 0)
+#define IsOperHidden(x)         (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_HIDDEN_OPER : 0)
 
 /*
  * definitions for get_client_name

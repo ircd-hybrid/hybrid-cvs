@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.161 2005/05/25 17:43:56 michael Exp $
+ *  $Id: m_stats.c,v 1.162 2005/05/29 03:46:53 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.161 $";
+const char *_version = "$Revision: 1.162 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -728,10 +728,12 @@ stats_operedup(struct Client *source_p)
 
   DLINK_FOREACH(ptr, oper_list.head)
   {
-    struct Client *target_p = ptr->data;
+    const struct Client *target_p = ptr->data;
+
+    if (IsOperHidden(target_p) && !IsOper(source_p))
+      continue;
 
     if (MyClient(source_p) && IsOper(source_p))
-    {
       sendto_one(source_p, ":%s %d %s p :[%c][%s] %s (%s@%s) Idle: %d",
                  from, RPL_STATSDEBUG, to,
                  IsAdmin(target_p) ?
@@ -739,16 +741,13 @@ stats_operedup(struct Client *source_p)
 		 oper_privs_as_string(target_p->localClient->operflags),
 		 target_p->name, target_p->username, target_p->host,
 		 (int)(CurrentTime - target_p->user->last));
-    }
     else
-    {
       sendto_one(source_p, ":%s %d %s p :[%c] %s (%s@%s) Idle: %d",
                  from, RPL_STATSDEBUG, to,
                  IsAdmin(target_p) ?
 		 (IsOperHiddenAdmin(target_p) ? 'O' : 'A') : 'O',
 		 target_p->name, target_p->username, target_p->host,
 		 (int)(CurrentTime - target_p->user->last));
-    }
   }
 
   sendto_one(source_p, ":%s %d %s p :%lu OPER(s)",

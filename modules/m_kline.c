@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.181 2005/05/22 19:05:19 michael Exp $
+ *  $Id: m_kline.c,v 1.182 2005/05/29 03:46:53 michael Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.181 $";
+const char *_version = "$Revision: 1.182 $";
 #endif
 
 #define TK_SECONDS 0
@@ -189,16 +189,25 @@ mo_kline(struct Client *client_p, struct Client *source_p,
 
   if (parc != 0)
   {
-    if (irccmp(*parv,"ON") == 0)
+    if (irccmp(*parv, "ON") == 0)
     {
       parc--;
       parv++;
-      if(parc == 0)
+
+      if (!IsOperRemoteBan(source_p))
+      {
+        sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+                 me.name, source_p->name);
+        return;
+      }
+
+      if (parc == 0)
       {
 	sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
 		   me.name, source_p->name, "KLINE");
 	return;
       }
+
       target_server = *parv;
       parc--;
       parv++;
@@ -251,10 +260,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
 
   /* Look for an oper reason */
   if ((oper_reason = strchr(reason, '|')) != NULL)
-  {
-    *oper_reason = '\0';
-    oper_reason++;
-  }
+    *oper_reason++ = '\0';
 
   set_time();
   cur_time = CurrentTime;
@@ -309,10 +315,7 @@ me_kline(struct Client *client_p, struct Client *source_p,
   kreason = parv[5];
 
   if ((oper_reason = strchr(kreason, '|')) != NULL)
-  {
-    *oper_reason = '\0';
-    oper_reason++;
-  }
+    *oper_reason++ = '\0';
 
   set_time();
   cur_time = CurrentTime;
@@ -858,11 +861,11 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
       if (*user_host_or_nick)
 	strlcpy(luser,user_host_or_nick,USERLEN + 1); /* here is my user */
       else
-	strcpy(luser,"*");
+	strcpy(luser, "*");
       if (*hostp)
 	strlcpy(lhost, hostp, HOSTLEN + 1);    /* here is my host */
       else
-	strcpy(lhost,"*");
+	strcpy(lhost, "*");
     }
     else
     {
@@ -1189,6 +1192,14 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
   /* UNKLINE bill@mu.org ON irc.mu.org */
   if ((parc > 3) && (irccmp(parv[2], "ON") == 0))
   {
+
+    if (!IsOperRemoteBan(source_p))
+    {
+      sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               me.name, source_p->name);
+      return;
+    }
+
     sendto_match_servs(source_p, parv[3], CAP_UNKLN,
                        "UNKLINE %s %s %s",
                        parv[3], user, host);
