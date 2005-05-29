@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.375 2005/05/29 03:46:55 michael Exp $
+ *  $Id: ircd_parser.y,v 1.376 2005/05/29 15:05:11 michael Exp $
  */
 
 %{
@@ -251,7 +251,6 @@ unhook_hub_leaf_confs(void)
 %token  OPER_PASS_RESV
 %token  OPER_SPY_T
 %token  OPER_UMODES
-%token  OPERWALL_T
 %token  PACE_WAIT
 %token  PACE_WAIT_SIMPLE
 %token  PASSWORD
@@ -594,8 +593,6 @@ serverinfo_vhost: VHOST '=' QSTRING ';'
       ilog(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
     else
     {
-      ServerInfo.specific_ipv4_vhost = 1;
-
       assert(res != NULL);
 
       memcpy(&ServerInfo.ip, res->ai_addr, res->ai_addrlen);
@@ -1204,7 +1201,7 @@ oper_flags_item: GLOBAL_KILL
 {
   if (ypass == 2)
     yy_aconf->port |= OPER_FLAG_N;
-} | OPERWALL_T
+} | T_OPERWALL
 {
   if (ypass == 2)
     yy_aconf->port |= OPER_FLAG_OPERWALL;
