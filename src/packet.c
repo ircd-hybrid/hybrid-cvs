@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.115 2005/05/12 16:01:09 michael Exp $
+ *  $Id: packet.c,v 7.116 2005/05/29 00:59:01 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -400,7 +400,7 @@ read_packet(int fd, void *data)
 {
   struct Client *client_p = data;
   int length = 0;
-  int fd_r;
+  int fd_r = 0;
 #ifndef NDEBUG
   struct hook_io_data hdata;
 #endif
@@ -428,7 +428,11 @@ read_packet(int fd, void *data)
        * the loop and re-register a new io-request.
        */
       if ((length == -1) && ignoreErrno(errno))
-        break;
+      {
+        comm_setselect(fd_r, FDLIST_IDLECLIENT, COMM_SELECT_READ,
+                       read_packet, client_p, 0);
+        return;
+      }
 
       dead_link_on_read(client_p, length);
       return;
@@ -464,22 +468,23 @@ read_packet(int fd, void *data)
         return;
       }
     }
-  }
 
-  if (!IsDefunct(client_p))
-  {
-    /* server fd may have changed */
-    fd_r = client_p->localClient->fd;
-#ifndef HAVE_SOCKETPAIR
-    if (HasServlink(client_p))
+    if ((length < sizeof(readBuf)) && !IsDefunct(client_p))
     {
-      assert(client_p->localClient->fd_r > -1);
-      fd_r = client_p->localClient->fd_r;
-    }
+      /* server fd may have changed */
+      fd_r = client_p->localClient->fd;
+#ifndef HAVE_SOCKETPAIR
+      if (HasServlink(client_p))
+      {
+        assert(client_p->localClient->fd_r > -1);
+        fd_r = client_p->localClient->fd_r;
+      }
 #endif
-    /* If we get here, we need to register for another COMM_SELECT_READ */
-    comm_setselect(fd_r, FDLIST_IDLECLIENT, COMM_SELECT_READ,
-                   read_packet, client_p, 0);
+      /* If we get here, we need to register for another COMM_SELECT_READ */
+      comm_setselect(fd_r, FDLIST_IDLECLIENT, COMM_SELECT_READ,
+                     read_packet, client_p, 0);
+      return;
+    }
   }
 }
 
