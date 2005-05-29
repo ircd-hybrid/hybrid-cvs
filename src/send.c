@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.283 2005/05/28 19:25:15 michael Exp $
+ *  $Id: send.c,v 7.284 2005/05/29 12:55:22 db Exp $
  */
 
 #include "stdinc.h"
@@ -1178,7 +1178,7 @@ kill_client(struct Client *client_p, struct Client *diedie,
   if (IsDead(client_p))
     return;
 
-  len = ircsprintf(buffer, ":%s KILL %s :", me_id_name(client_p),
+  len = ircsprintf(buffer, ":%s KILL %s :", ID_or_name(&me, client_p->from),
                    ID_or_name(diedie, client_p));
 
   va_start(args, pattern);

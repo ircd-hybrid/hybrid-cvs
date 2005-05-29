@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.75 2005/04/11 14:46:14 db Exp $
+ *  $Id: m_mode.c,v 1.76 2005/05/29 12:55:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&bmask_msgtab);
 }
 
-const char *_version = "$Revision: 1.75 $";
+const char *_version = "$Revision: 1.76 $";
 #endif
 
 /*
@@ -145,7 +145,9 @@ m_mode(struct Client *client_p, struct Client *source_p,
       else
 	{
 	  sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-		     me_id_name(source_p), source_id_name(source_p), parv[1]);
+		     ID_or_name(&me, source_p->from),
+		     ID_or_name(source_p, source_p->from),
+		     parv[1]);
 	  return;
 	}
     }

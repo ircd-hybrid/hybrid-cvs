@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.c,v 7.37 2003/10/24 11:08:21 michael Exp $
+ *  $Id: motd.c,v 7.38 2005/05/29 12:55:22 db Exp $
  */
 
 #include "stdinc.h"
@@ -69,86 +69,66 @@ send_message_file(struct Client *source_p, MessageFile *motdToPrint)
 
   motdType = motdToPrint->motdType;
 
-  if (!MyConnect(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
-  {
-    from = me.id;
-    to = source_p->id;
-  }
-  else
-  {
-    from = me.name;
-    to = source_p->name;
-  }
+  from = ID_or_name(&me, source_p->from);
+  to = ID_or_name(source_p, source_p->from);
 
   switch (motdType)
   {
     case USER_MOTD:
       if (motdToPrint->contentsOfFile == NULL)
+        sendto_one(source_p, form_str(ERR_NOMOTD), from, to);
+      else
       {
-        sendto_one(source_p, form_str(ERR_NOMOTD),
-                   from, to);
-        return(0);
+	sendto_one(source_p, form_str(RPL_MOTDSTART),
+		   from, to, me.name);
+
+	for (linePointer = motdToPrint->contentsOfFile; linePointer;
+	     linePointer = linePointer->next)
+	{
+	  sendto_one(source_p, form_str(RPL_MOTD),
+		     from, to, linePointer->line);
+	}
+
+	sendto_one(source_p, form_str(RPL_ENDOFMOTD), from, to);
       }
-
-      sendto_one(source_p, form_str(RPL_MOTDSTART),
-                 from, to, me.name);
-
-      for (linePointer = motdToPrint->contentsOfFile; linePointer;
-           linePointer = linePointer->next)
-      {
-        sendto_one(source_p, form_str(RPL_MOTD),
-                   from, to, linePointer->line);
-      }
-
-      sendto_one(source_p, form_str(RPL_ENDOFMOTD), from, to);
-      return(0);
-      /* NOT REACHED */
       break;
 
     case USER_LINKS:
-      if (motdToPrint->contentsOfFile == NULL)
-        return(-1);
-
-      for (linePointer = motdToPrint->contentsOfFile; linePointer;
-           linePointer = linePointer->next)
+      if (motdToPrint->contentsOfFile != NULL)
       {
-        sendto_one(source_p, ":%s 364 %s %s",
-                   from, to, linePointer->line);
+	for (linePointer = motdToPrint->contentsOfFile; linePointer;
+	     linePointer = linePointer->next)
+	{
+	  sendto_one(source_p, ":%s 364 %s %s", /* XXX */
+		     from, to, linePointer->line);
+	}
       }
-
-      return(0);
-      /* NOT REACHED */
       break;
 
     case OPER_MOTD:
-      if (motdToPrint->contentsOfFile == NULL)
+      if (motdToPrint->contentsOfFile != NULL)
       {
-/*      sendto_one(source_p, ":%s NOTICE %s :No OPER MOTD", me.name,
- *                 source_p->name); */
-        return(-1);
-      }
+	sendto_one(source_p, form_str(RPL_OMOTDSTART),
+		   me.name, source_p->name, me.name);
 
-      sendto_one(source_p,":%s NOTICE %s :Start of OPER MOTD",
-                 from, to);
+	sendto_one(source_p, form_str(RPL_OMOTD),
+		   me.name, source_p->name, motdToPrint->lastChangedDate);
+
+	for (linePointer = motdToPrint->contentsOfFile; linePointer;
+	     linePointer = linePointer->next)
+	{
+	  sendto_one(source_p, form_str(RPL_OMOTD),
+		     me.name, source_p->name, linePointer->line);
+	}
+	sendto_one(source_p, form_str(RPL_ENDOFOMOTD),
+		   me.name, source_p->name);
+      }
       break;
 
     default:
-      return(0);
       /* NOT REACHED */
   }
 
-  sendto_one(source_p, ":%s NOTICE %s :%s", from, to,
-             motdToPrint->lastChangedDate);
-
-  for (linePointer = motdToPrint->contentsOfFile; linePointer;
-       linePointer = linePointer->next)
-  {
-    sendto_one(source_p, ":%s NOTICE %s :%s",
-               from, to, linePointer->line);
-  }
-
-  sendto_one(source_p, ":%s NOTICE %s :End",
-             from, to);
   return(0);
 }
 

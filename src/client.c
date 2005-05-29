@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.431 2005/05/28 13:38:48 michael Exp $
+ *  $Id: client.c,v 7.432 2005/05/29 12:55:22 db Exp $
  */
 
 #include "stdinc.h"
@@ -1601,44 +1601,4 @@ change_local_nick(struct Client *client_p, struct Client *source_p, const char *
 
   /* fd_desc is long enough */
   fd_note(client_p->localClient->fd, "Nick: %s", nick);
-}
-
-/* me_id_name()
- *
- * inputs	- pointer to struct Client
- * output	- pointer to either sid or name of "me"
- * side effects	- 
- */
-const char *
-me_id_name(struct Client *source_p)
-{
-  if (MyConnect(source_p))
-    return((const char *)me.name);
-  else
-  {
-    if ((me.id[0] != '\0') && IsCapable(source_p->from, CAP_TS6))
-      return((const char *)me.id);
-    else
-      return((const char *)me.name);
-  }
-}
-
-/* source_id_name()
- *
- * inputs	- source_p pointer to struct Client
- * output	- pointer to either sid or name of "source_p"
- * side effects	- 
- */
-const char *
-source_id_name(struct Client *source_p)
-{
-  if (MyConnect(source_p))
-    return((const char *)source_p->name);
-  else
-  {
-    if ((me.id[0] != '\0') && IsCapable(source_p->from, CAP_TS6))
-      return((const char *)source_p->id);
-    else
-      return((const char *)source_p->name);
-  }
 }

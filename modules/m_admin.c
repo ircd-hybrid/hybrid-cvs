@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_admin.c,v 1.45 2005/04/11 14:46:12 db Exp $
+ *  $Id: m_admin.c,v 1.46 2005/05/29 12:55:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   hook_del_event("doing_admin");
   mod_del_cmd(&admin_msgtab);
 }
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 
 /*
@@ -147,8 +147,8 @@ do_admin(struct Client *source_p)
   if (IsPerson(source_p))
     admin_spy(source_p);
 
-  me_name = me_id_name(source_p);
-  nick = source_id_name(source_p);
+  me_name = ID_or_name(&me, source_p->from);
+  nick = ID_or_name(source_p, source_p->from);
 
   sendto_one(source_p, form_str(RPL_ADMINME),
 	     me_name, nick, me.name);

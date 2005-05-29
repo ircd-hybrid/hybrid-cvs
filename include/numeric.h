@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.40 2004/03/17 04:08:57 db Exp $
+ *  $Id: numeric.h,v 7.41 2005/05/29 12:55:16 db Exp $
  */
 
 #ifndef INCLUDED_numeric_h
@@ -466,6 +466,20 @@ extern const char *get_locale(void);
 #define ERR_CHANOPEN         713
 #define ERR_KNOCKONCHAN      714
 #define ERR_KNOCKDISABLED    715
+
+#define ERR_TARGUMODEG       716
+#define RPL_TARGNOTIFY       717
+#define RPL_UMODEGMSG        718
+
+#define RPL_OMOTDSTART	     720
+#define RPL_OMOTD	     721
+#define RPL_ENDOFOMOTD	     722
+
+#define ERR_NOPRIVS	     723
+
+#define RPL_TESTMASK	     724
+#define RPL_TESTLINE	     725
+#define RPL_NOTESTLINE	     726
 
 #define ERR_LAST_ERR_MSG     999
 
