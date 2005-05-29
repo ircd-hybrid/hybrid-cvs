@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.188 2005/05/29 02:54:05 adx Exp $
+ *  $Id: m_sjoin.c,v 1.189 2005/05/29 03:09:13 adx Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.188 $";
+const char *_version = "$Revision: 1.189 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -112,8 +112,8 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   unsigned int fl;
   char           *s;
   char		 *sptr;
-  static         char nick_buf[2*BUFSIZE]; /* buffer for modes and prefix */
-  static         char uid_buf[2*BUFSIZE];  /* buffer for modes/prefixes for CAP_TS6 servers */
+  static         char nick_buf[BUFSIZE]; /* buffer for modes and prefix */
+  static         char uid_buf[BUFSIZE];  /* buffer for modes/prefixes for CAP_TS6 servers */
   char           *nick_ptr, *uid_ptr;      /* pointers used for making the two mode/prefix buffers */
   char           *p; /* pointer used making sjbuf */
   int            i;
@@ -283,7 +283,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   /* check we can fit a nick on the end, as well as \r\n and a prefix "
    * @+".
    */
-  if (buflen >= (IRCD_BUFSIZE - 2 - NICKLEN))
+  if (buflen >= (BUFSIZE - 2 - NICKLEN))
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
 			 "Long SJOIN from server: %s(via %s) (ignored)",

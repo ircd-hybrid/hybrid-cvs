@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.416 2005/05/29 03:00:00 adx Exp $
+ *  $Id: channel.c,v 7.417 2005/05/29 03:09:14 adx Exp $
  */
 
 #include "stdinc.h"
@@ -178,7 +178,10 @@ send_members(struct Client *client_p, struct Channel *chptr,
     if (ms->flags & CHFL_VOICE)
       tlen++;
 
-    if (t + tlen - buf > sizeof(buf))
+    /* space will be converted into CR, but we also need space for LF..
+     * That's why we use '- 1' here
+     * -adx */
+    if (t + tlen - buf > sizeof(buf) - 1)
     {
       *(t - 1) = '\0';  /* kill the space and terminate the string */
       sendto_one(client_p, "%s", buf);
