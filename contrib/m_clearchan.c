@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.49 2005/04/26 13:36:07 michael Exp $
+ *   $Id: m_clearchan.c,v 1.50 2005/05/29 02:53:59 adx Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 
 /*
@@ -197,6 +197,9 @@ static void
 remove_our_modes(struct Channel *chptr, struct Client *source_p)
 {
   remove_a_mode(chptr, CHFL_CHANOP, 'o');
+#ifdef HALFOPS
+  remove_a_mode(chptr, CHFL_HALFOP, 'h');
+#endif
   remove_a_mode(chptr, CHFL_VOICE, 'v');
 
   /* Clear all +beI modes */

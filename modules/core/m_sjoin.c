@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.187 2005/05/22 17:29:58 michael Exp $
+ *  $Id: m_sjoin.c,v 1.188 2005/05/29 02:54:05 adx Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.187 $";
+const char *_version = "$Revision: 1.188 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -317,13 +317,24 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     fl = 0;
     num_prefix = 0;
 
+#ifdef HALFOPS
+    for (i = 0; i < 3; i++)
+#else
     for (i = 0; i < 2; i++)
+#endif
     {
       if (*s == '@')
       {
         fl |= CHFL_CHANOP;
         s++;
       }
+#ifdef HALFOPS
+      if (*s == '%')
+      {
+        fl |= CHFL_HALFOP;
+        s++;
+      }
+#endif
       else if (*s == '+')
       {
         fl |= CHFL_VOICE;
@@ -353,6 +364,13 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         *nick_ptr++ = '@';
         *uid_ptr++  = '@';
       }
+#ifdef HALFOPS
+      if (fl & CHFL_HALFOP)
+      {
+        *nick_ptr++ = '%';
+        *uid_ptr++  = '%';
+      }
+#endif
       if (fl & CHFL_VOICE)
       {
         *nick_ptr++ = '+';
@@ -366,7 +384,11 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
     if (!keep_new_modes)
     {
+#ifdef HALFOPS
+      if (fl & (CHFL_CHANOP|CHFL_HALFOP))
+#else
       if (fl & CHFL_CHANOP)
+#endif
         fl = CHFL_DEOPPED;
       else
         fl = 0;
@@ -445,6 +467,32 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         pargs = 0;
       }
     }
+#ifdef HALFOPS
+    if (fl & CHFL_HALFOP)
+    {
+      *mbuf++ = 'h';
+      para[pargs++] = target_p->name;
+
+      if (pargs >= MAXMODEPARAMS)
+      {
+        sptr = sendbuf;
+        *mbuf = '\0';
+        for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+        {
+          slen = ircsprintf(sptr, " %s", para[lcount]);
+          sptr += slen;
+        }
+        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s%s",
+                             servername, chptr->chname, modebuf, sendbuf);
+
+        mbuf = modebuf;
+        *mbuf++ = '+';
+
+        sendbuf[0] = '\0';
+        pargs = 0;
+      }
+    }
+#endif
     if (fl & CHFL_VOICE)
     {
       *mbuf++ = 'v';
@@ -681,6 +729,9 @@ static void
 remove_our_modes(struct Channel *chptr, struct Client *source_p)
 {
   remove_a_mode(chptr, source_p, CHFL_CHANOP, 'o');
+#ifdef HALFOPS
+  remove_a_mode(chptr, source_p, CHFL_HALFOP, 'h');
+#endif
   remove_a_mode(chptr, source_p, CHFL_VOICE, 'v');
 }
 

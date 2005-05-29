@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.414 2005/05/28 13:38:48 michael Exp $
+ *  $Id: channel.c,v 7.415 2005/05/29 02:54:07 adx Exp $
  */
 
 #include "stdinc.h"
@@ -170,6 +170,10 @@ send_members(struct Client *client_p, struct Channel *chptr,
     tlen = strlen(ms->client_p->name) + 1;  /* nick + space */
     if (ms->flags & CHFL_CHANOP)
       tlen++;
+#ifdef HALFOPS
+    if (ms->flags & CHFL_HALFOP)
+      tlen++;
+#endif
     if (ms->flags & CHFL_VOICE)
       tlen++;
 
@@ -433,7 +437,7 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
         continue;
 
       tlen = strlen(target_p->name) + 1;  /* nick + space */
-      if (ms->flags & (CHFL_CHANOP | CHFL_VOICE))
+      if (ms->flags & (CHFL_CHANOP | CHFL_HALFOP | CHFL_VOICE))
         tlen++;
       if (t + tlen - lbuf > IRCD_BUFSIZE)
       {
@@ -561,6 +565,15 @@ get_member_status(struct Membership *ms, int combine)
       return "@";
     *p++ = '@';
   }
+
+#ifdef HALFOPS
+  if (ms->flags & CHFL_HALFOP)
+  {
+    if (!combine)
+      return "%";
+    *p++ = '%';
+  }
+#endif
 
   if (ms->flags & CHFL_VOICE)
     *p++ = '+';
@@ -755,7 +768,7 @@ can_send(struct Channel *chptr, struct Client *source_p)
 
   ms = find_channel_link(source_p, chptr);
 
-  if ((ms != NULL) && ms->flags & (CHFL_CHANOP|CHFL_VOICE))
+  if ((ms != NULL) && ms->flags & (CHFL_CHANOP|CHFL_HALFOP|CHFL_VOICE))
      return(CAN_SEND_OPV);
 
   if (chptr->mode.mode & MODE_MODERATED)
@@ -777,7 +790,7 @@ int
 can_send_part(struct Membership *member, struct Channel *chptr,
               struct Client *source_p)
 {
-  if (has_member_flags(member, CHFL_CHANOP))
+  if (has_member_flags(member, CHFL_CHANOP|CHFL_HALFOP))
     return(CAN_SEND_OPV);
 
   if (chptr->mode.mode & MODE_MODERATED)

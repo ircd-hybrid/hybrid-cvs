@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.23 2004/07/08 00:27:30 erik Exp $
+ *  $Id: m_join.c,v 1.24 2005/05/29 02:54:05 adx Exp $
  */
 
 #include "stdinc.h"
@@ -88,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.23 $";
+const char *_version = "$Revision: 1.24 $";
 #endif
 
 /* m_join()
@@ -716,6 +716,9 @@ static void
 remove_our_modes(struct Channel *chptr, struct Client *source_p)
 {
   remove_a_mode(chptr, source_p, CHFL_CHANOP, 'o');
+#ifdef HALFOPS
+  remove_a_mode(chptr, source_p, CHFL_HALFOP, 'h');
+#endif
   remove_a_mode(chptr, source_p, CHFL_VOICE, 'v');
 }
 

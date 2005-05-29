@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.35 2003/09/28 02:16:03 metalrock Exp $
+ *  $Id: supported.h,v 1.36 2005/05/29 02:54:01 adx Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -55,6 +55,15 @@
 		  " CASEMAPPING=%s"   \
 		  " CALLERID%s"
 
+#ifdef HALFOPS
+#define FEATURES2VALUES ConfigChannel.disable_local_channels ? "#" : "#&", \
+                        "(ohv)@%+", \
+                        ConfigChannel.use_except ? "e" : "", \
+                        ConfigChannel.use_invex ? "I" : "", \
+                        "b,k,l,imnpst", \
+                        ServerInfo.network_name, CASEMAP, \
+			(uplink && IsCapable(uplink, CAP_LL)) ? "" : " SAFELIST"
+#else
 #define FEATURES2VALUES ConfigChannel.disable_local_channels ? "#" : "#&", \
                         "(ov)@+", \
                         ConfigChannel.use_except ? "e" : "", \
@@ -62,6 +71,7 @@
                         "b,k,l,imnpst", \
                         ServerInfo.network_name, CASEMAP, \
 			(uplink && IsCapable(uplink, CAP_LL)) ? "" : " SAFELIST"
+#endif
 
 /*
  * - from mirc's versions.txt

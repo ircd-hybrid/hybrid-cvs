@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.28 2004/04/12 01:57:39 metalrock Exp $
+ *  $Id: channel_mode.h,v 7.29 2005/05/29 02:54:01 adx Exp $
  */
 
 
@@ -53,11 +53,12 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 
 /* Channel related flags */
 #define CHFL_CHANOP     0x0001 /* Channel operator   */
-#define CHFL_VOICE      0x0002 /* the power to speak */
-#define CHFL_DEOPPED    0x0004 /* deopped by us, modes need to be bounced */
-#define CHFL_BAN        0x0008 /* ban channel flag */
-#define CHFL_EXCEPTION  0x0010 /* exception to ban channel flag */
-#define CHFL_INVEX      0x0020
+#define CHFL_HALFOP     0x0002 /* Channel half op    */
+#define CHFL_VOICE      0x0004 /* the power to speak */
+#define CHFL_DEOPPED    0x0008 /* deopped by us, modes need to be bounced */
+#define CHFL_BAN        0x0010 /* ban channel flag */
+#define CHFL_EXCEPTION  0x0020 /* exception to ban channel flag */
+#define CHFL_INVEX      0x0040
 
 /* channel modes ONLY */
 #define MODE_PRIVATE    0x0001
@@ -102,5 +103,6 @@ struct ChCapCombo
 
 #define CHACCESS_NOTONCHAN  -1
 #define CHACCESS_PEON       0
-#define CHACCESS_CHANOP     1
+#define CHACCESS_HALFOP     1
+#define CHACCESS_CHANOP     2
 #endif /* INCLUDED_channel_mode_h */

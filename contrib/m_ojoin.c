@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.30 2005/04/26 13:36:07 michael Exp $
+ *   $Id: m_ojoin.c,v 1.31 2005/05/29 02:53:59 adx Exp $
  */
 
 /* Remove this if you do not wish /OJOIN to support multiple channels
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 
 /* mo_ojoin()
@@ -103,6 +103,12 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
         modeletter = 'o';
         name++;
         break;
+#ifdef HALFOPS
+      case '%': tmp_flags = CHFL_HALFOP;
+        modeletter = 'h';
+        name++;
+        break;
+#endif
       case '+':
         tmp_flags = CHFL_VOICE;
         modeletter = 'v';

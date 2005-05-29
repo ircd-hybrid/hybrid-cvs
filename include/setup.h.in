@@ -18,6 +18,9 @@
 /* Define if this ircd will be an EFnet server. */
 #undef EFNET
 
+/* Define if you want halfops support. */
+#undef HALFOPS
+
 /* Max number of buckets in hash tables. */
 #undef HASHSIZE
 

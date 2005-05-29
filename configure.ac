@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.92 2005/05/22 19:39:39 joshk Exp $
+dnl $Id: configure.ac,v 7.93 2005/05/29 02:53:57 adx Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.92 2005/05/22 19:39:39 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.93 2005/05/29 02:53:57 adx Exp $])
 
 AC_INIT([ircd-hybrid],[7.1])
 
@@ -798,6 +798,14 @@ else
 	EXAMPLE_CONF=example.conf
 fi
 
+AC_ARG_ENABLE(halfops,
+AC_HELP_STRING([--enable-halfops],[Enable halfops support.]),
+[halfops=$enableval], [halfops=no])
+
+if test "$halfops" = yes; then
+	AC_DEFINE(HALFOPS, 1, [Define if you want halfops support.])
+fi
+
 AC_SUBST(EXAMPLE_CONF)
 
 AC_MSG_CHECKING(for syslog options)
@@ -1126,6 +1134,7 @@ else
 fi
 
 echo "EFnet server ............ $tmpresult"
+echo "Halfops support ......... $halfops"
 echo "Small network ........... $small_net"
 echo
 echo "Configured limits:"

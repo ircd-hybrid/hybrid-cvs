@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.72 2005/05/22 17:20:31 michael Exp $
+ *  $Id: m_kick.c,v 1.73 2005/05/29 02:54:05 adx Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.72 $";
+const char *_version = "$Revision: 1.73 $";
 #endif
 
 /* m_kick()
@@ -136,7 +136,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
       }
     }
 
-    if (!has_member_flags(ms, CHFL_CHANOP))
+    if (!has_member_flags(ms, CHFL_CHANOP|CHFL_HALFOP))
     {
       /* was a user, not a server, and user isn't seen as a chanop here */
       if (MyConnect(source_p))
@@ -194,13 +194,27 @@ m_kick(struct Client *client_p, struct Client *source_p,
 
   if ((ms_target = find_channel_link(who, chptr)) != NULL)
   {
-   /* jdc
-    * - In the case of a server kicking a user (i.e. CLEARCHAN),
-    *   the kick should show up as coming from the server which did
-    *   the kick.
-    * - Personally, flame and I believe that server kicks shouldn't
-    *   be sent anyways.  Just waiting for some oper to abuse it...
-    */
+#ifdef HALFOPS
+    /* half ops cannot kick other halfops on private channels */
+    if (has_member_flags(ms, CHFL_HALFOP) && !has_member_flags(ms, CHFL_CHANOP))
+    {
+      if (((chptr->mode.mode & MODE_PRIVATE) && has_member_flags(ms_target,
+        CHFL_CHANOP|CHFL_HALFOP)) || has_member_flags(ms_target, CHFL_CHANOP))
+      {
+        sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
+                   me.name, source_p->name, name);
+        return;
+      }
+    }
+#endif
+
+    /* jdc
+     * - In the case of a server kicking a user (i.e. CLEARCHAN),
+     *   the kick should show up as coming from the server which did
+     *   the kick.
+     * - Personally, flame and I believe that server kicks shouldn't
+     *   be sent anyways.  Just waiting for some oper to abuse it...
+     */
     if (IsServer(source_p))
       sendto_channel_local(ALL_MEMBERS, chptr, ":%s KICK %s %s :%s",
                            source_p->name, name, who->name, comment);
