@@ -1,23 +1,25 @@
-/************************************************************************
- *   IRC - Internet Relay Chat, src/ircd_signal.c
- *   Copyright (C) 1990 Jarkko Oikarinen and
- *                      University of Oulu, Computing Center
+/*
+ *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
+ *  ircd_signal.c: responsible for ircd's signal handling
  *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 1, or (at your option)
- *   any later version.
+ *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
  *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * $Id: ircd_signal.c,v 7.15 2003/05/23 17:53:13 joshk Exp $
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ *  USA
+ *
+ *  $Id: ircd_signal.c,v 7.16 2005/05/29 13:49:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -27,6 +29,7 @@
 #include "s_log.h"
 #include "memory.h"
 #include "s_bsd.h"
+
 /*
  * dummy_handler - don't know if this is really needed but if alarm is still
  * being used we probably will
@@ -48,6 +51,7 @@ sigterm_handler(int sig)
    *     -- adrian
    */
   ilog(L_CRIT, "Server killed By SIGTERM");
+  unlink(pidFileName);
   exit(-1);
 }
   
@@ -92,26 +96,27 @@ sigint_handler(int sig)
   static int restarting = 0;
 
   if (server_state.foreground) 
-    {
-      ilog(L_WARN, "Server exiting on SIGINT");
-      exit(0);
-    }
+  {
+    ilog(L_WARN, "Server exiting on SIGINT");
+    exit(0);
+  }
   else
+  {
+    ilog(L_WARN, "Server Restarting on SIGINT");
+
+    if (restarting == 0) 
     {
-      ilog(L_WARN, "Server Restarting on SIGINT");
-      if (restarting == 0) 
-        {
-          restarting = 1;
-          server_reboot();
-        }
+      restarting = 1;
+      server_reboot();
     }
+  }
 }
 
 /*
  * setup_signals - initialize signal handlers for server
  */
 void 
-setup_signals()
+setup_signals(void)
 {
   struct sigaction act;
 
@@ -157,5 +162,3 @@ setup_signals()
   sigaddset(&act.sa_mask, SIGCHLD);
   sigaction(SIGCHLD, &act, 0);
 }
-
-
