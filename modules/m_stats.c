@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.163 2005/05/30 13:19:11 michael Exp $
+ *  $Id: m_stats.c,v 1.164 2005/05/30 21:18:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.163 $";
+const char *_version = "$Revision: 1.164 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -905,8 +905,7 @@ stats_servlinks(struct Client *source_p)
     /* ":%s 211 %s %s %u %u %llu %u %llu :%u %u %s" */
     sendto_one(source_p, form_str(RPL_STATSLINKINFO),
                from, to,
-               IsAdmin(source_p) ? get_client_name(target_p, SHOW_IP)
-	       : get_client_name(target_p, MASK_IP),
+               get_client_name(target_p, IsAdmin(source_p) ? SHOW_IP : MASK_IP),
                dbuf_length(&target_p->localClient->buf_sendq),
                target_p->localClient->send.messages,
                target_p->localClient->send.bytes>>10,
@@ -916,6 +915,9 @@ stats_servlinks(struct Client *source_p)
                (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since): 0,
                IsOper(source_p) ? show_capabilities(target_p) : "TS");
   }
+
+  sendB >>= 10;
+  recvB >>= 10;
 
   sendto_one(source_p, ":%s %d %s ? :%u total server(s)",
              from, RPL_STATSDEBUG, to, j);
@@ -930,14 +932,14 @@ stats_servlinks(struct Client *source_p)
 
   sendto_one(source_p, ":%s %d %s ? :Server send: %7.2f %s (%4.1f K/s)",
              from, RPL_STATSDEBUG, to,
-	     _GMKv(me.localClient->send.bytes),
-             _GMKs(me.localClient->send.bytes),
-	     (float)((float)me.localClient->send.bytes / (float)uptime));
+	     _GMKv((me.localClient->send.bytes>>10)),
+             _GMKs((me.localClient->send.bytes>>10)),
+	     (float)((float)(me.localClient->send.bytes>>10) / (float)uptime));
   sendto_one(source_p, ":%s %d %s ? :Server recv: %7.2f %s (%4.1f K/s)",
              from, RPL_STATSDEBUG, to,
-	     _GMKv(me.localClient->recv.bytes),
-	     _GMKs(me.localClient->recv.bytes),
-	     (float)((float)me.localClient->recv.bytes / (float)uptime));
+	     _GMKv((me.localClient->recv.bytes>>10)),
+	     _GMKs((me.localClient->recv.bytes>>10)),
+	     (float)((float)(me.localClient->recv.bytes>>10) / (float)uptime));
 }
 
 static void
