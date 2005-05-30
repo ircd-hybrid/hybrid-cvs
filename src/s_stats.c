@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_stats.c,v 7.28 2004/11/10 14:32:04 michael Exp $
+ *  $Id: s_stats.c,v 7.29 2005/05/30 13:19:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -51,7 +51,7 @@ init_stats(void)
 void
 tstats(struct Client *source_p)
 {
-  struct Client *target_p;
+  const struct Client *target_p = NULL;
   struct ServerStatistics *sp;
   struct ServerStatistics tmp;
   dlink_node *ptr;
@@ -70,23 +70,9 @@ tstats(struct Client *source_p)
   {
     target_p = ptr->data;
 
-    sp->is_sbs += target_p->localClient->sendB;
-    sp->is_sbr += target_p->localClient->receiveB;
-    sp->is_sks += target_p->localClient->sendK;
-    sp->is_skr += target_p->localClient->receiveK;
+    sp->is_sbs += target_p->localClient->send.bytes;
+    sp->is_sbr += target_p->localClient->recv.bytes;
     sp->is_sti += CurrentTime - target_p->firsttime;
-
-    if (sp->is_sbs > 1023)
-    {
-      sp->is_sks += (sp->is_sbs >> 10);
-      sp->is_sbs &= 0x3ff;
-    }
-
-    if (sp->is_sbr > 1023)
-    {
-      sp->is_skr += (sp->is_sbr >> 10);
-      sp->is_sbr &= 0x3ff;
-    }
   }
 
   sp->is_cl += dlink_list_length(&local_client_list);
@@ -95,23 +81,9 @@ tstats(struct Client *source_p)
   {
     target_p = ptr->data;
 
-    sp->is_cbs += target_p->localClient->sendB;
-    sp->is_cbr += target_p->localClient->receiveB;
-    sp->is_cks += target_p->localClient->sendK;
-    sp->is_ckr += target_p->localClient->receiveK;
+    sp->is_cbs += target_p->localClient->send.bytes;
+    sp->is_cbr += target_p->localClient->recv.bytes;
     sp->is_cti += CurrentTime - target_p->firsttime;
-
-    if (sp->is_cbs > 1023)
-    {
-      sp->is_cks += (sp->is_cbs >> 10);
-      sp->is_cbs &= 0x3ff;
-    }
-
-    if (sp->is_cbr > 1023)
-    {
-      sp->is_ckr += (sp->is_cbr >> 10);
-      sp->is_cbr &= 0x3ff;
-    }
   }
 
   sp->is_ni += dlink_list_length(&unknown_list);
@@ -133,14 +105,16 @@ tstats(struct Client *source_p)
 
   sendto_one(source_p, ":%s %d %s T :connected %u %u",
              me.name, RPL_STATSDEBUG, source_p->name, 
-	     (unsigned int)sp->is_cl, (unsigned int)sp->is_cl);
-  sendto_one(source_p, ":%s %d %s T :bytes sent %d.%uK %d.%uK",
+	     (unsigned int)sp->is_cl,
+             (unsigned int)sp->is_sv);
+  sendto_one(source_p, ":%s %d %s T :bytes sent %llu %llu",
              me.name, RPL_STATSDEBUG, source_p->name,
-             (int)sp->is_cks, sp->is_cbs, (int)sp->is_sks, sp->is_sbs);
-  sendto_one(source_p, ":%s %d %s T :bytes recv %d.%uK %d.%uK",
+             sp->is_cbs, sp->is_sbs);
+  sendto_one(source_p, ":%s %d %s T :bytes recv %llu %llu",
              me.name, RPL_STATSDEBUG, source_p->name,
-             (int)sp->is_ckr, sp->is_cbr, (int)sp->is_skr, sp->is_sbr);
-  sendto_one(source_p, ":%s %d %s T :time connected %d %d",
-             me.name, RPL_STATSDEBUG, source_p->name, (int)sp->is_cti,
-	     (int)sp->is_sti);
+             sp->is_cbr, sp->is_sbr);
+  sendto_one(source_p, ":%s %d %s T :time connected %u %u",
+             me.name, RPL_STATSDEBUG, source_p->name,
+             (unsigned int)sp->is_cti,
+	     (unsigned int)sp->is_sti);
 }

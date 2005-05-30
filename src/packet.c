@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.116 2005/05/29 00:59:01 michael Exp $
+ *  $Id: packet.c,v 7.117 2005/05/30 13:19:13 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -506,27 +506,14 @@ client_dopacket(struct Client *client_p, char *buffer, size_t length)
   /* 
    * Update messages received
    */
-  ++me.localClient->receiveM;
-  ++client_p->localClient->receiveM;
+  ++me.localClient->recv.messages;
+  ++client_p->localClient->recv.messages;
 
   /* 
    * Update bytes received
    */
-  client_p->localClient->receiveB += length;
-
-  if (client_p->localClient->receiveB > 1023)
-  {
-    client_p->localClient->receiveK += (client_p->localClient->receiveB >> 10);
-    client_p->localClient->receiveB &= 0x03ff; /* 2^10 = 1024, 3ff = 1023 */
-  }
-
-  me.localClient->receiveB += length;
-
-  if (me.localClient->receiveB > 1023)
-  {
-    me.localClient->receiveK += (me.localClient->receiveB >> 10);
-    me.localClient->receiveB &= 0x03ff;
-  }
+  client_p->localClient->recv.bytes += length;
+  me.localClient->recv.bytes += length;
 
   parse(client_p, buffer, buffer + length);
 }

@@ -228,6 +228,12 @@
 /* Suffix for shared libraries on this platform. */
 #undef SHARED_SUFFIX
 
+/* The size of a `int64_t', as computed by sizeof. */
+#undef SIZEOF_INT64_T
+
+/* The size of a `long long', as computed by sizeof. */
+#undef SIZEOF_LONG_LONG
+
 /* Size of the slink_node heap. */
 #undef SNODE_HEAP_SIZE
 
@@ -305,6 +311,9 @@
 #undef inline
 #endif
 
+/* Define to `long long' if <sys/types.h> does not define. */
+#undef int64_t
+
 /* If system does not define sa_family_t, define it here. */
 #undef sa_family_t
 
@@ -320,3 +329,6 @@
 
 /* If system does not define u_int32_t, define to unsigned long int here. */
 #undef u_int32_t
+
+/* Define to `unsigned long long' if <sys/types.h> does not define. */
+#undef uint64_t

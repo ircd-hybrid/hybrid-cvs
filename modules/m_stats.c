@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.162 2005/05/29 03:46:53 michael Exp $
+ *  $Id: m_stats.c,v 1.163 2005/05/30 13:19:11 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.162 $";
+const char *_version = "$Revision: 1.163 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -881,10 +881,11 @@ stats_ziplinks(struct Client *source_p)
 static void
 stats_servlinks(struct Client *source_p)
 {
-  long uptime, sendK, receiveK;
-  struct Client *target_p;
-  dlink_node *ptr;
+  uint64_t sendB = 0, recvB = 0;
+  time_t uptime = 0;
   int j = 0;
+  struct Client *target_p = NULL;
+  dlink_node *ptr;
 
   if (ConfigServerHide.flatten_links && !IsOper(source_p))
   {
@@ -893,25 +894,24 @@ stats_servlinks(struct Client *source_p)
     return;
   }
 
-  sendK = receiveK = 0;
-
   DLINK_FOREACH(ptr, serv_list.head)
   {
     target_p = ptr->data;
 
-    j++;
-    sendK += target_p->localClient->sendK;
-    receiveK += target_p->localClient->receiveK;
+    ++j;
+    sendB += target_p->localClient->send.bytes;
+    recvB += target_p->localClient->recv.bytes;
 
+    /* ":%s 211 %s %s %u %u %llu %u %llu :%u %u %s" */
     sendto_one(source_p, form_str(RPL_STATSLINKINFO),
                from, to,
                IsAdmin(source_p) ? get_client_name(target_p, SHOW_IP)
 	       : get_client_name(target_p, MASK_IP),
-               (int)dbuf_length(&target_p->localClient->buf_sendq),
-               (int)target_p->localClient->sendM,
-               (int)target_p->localClient->sendK,
-               (int)target_p->localClient->receiveM,
-               (int)target_p->localClient->receiveK,
+               dbuf_length(&target_p->localClient->buf_sendq),
+               target_p->localClient->send.messages,
+               target_p->localClient->send.bytes>>10,
+               target_p->localClient->recv.messages,
+               target_p->localClient->recv.bytes>>10,
                (unsigned)(CurrentTime - target_p->firsttime),
                (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since): 0,
                IsOper(source_p) ? show_capabilities(target_p) : "TS");
@@ -920,23 +920,24 @@ stats_servlinks(struct Client *source_p)
   sendto_one(source_p, ":%s %d %s ? :%u total server(s)",
              from, RPL_STATSDEBUG, to, j);
   sendto_one(source_p, ":%s %d %s ? :Sent total : %7.2f %s",
-             from, RPL_STATSDEBUG, to, 
-	     _GMKv(sendK), _GMKs(sendK));
+             from, RPL_STATSDEBUG, to,
+	     _GMKv(sendB), _GMKs(sendB));
   sendto_one(source_p, ":%s %d %s ? :Recv total : %7.2f %s",
              from, RPL_STATSDEBUG, to,
-	     _GMKv(receiveK), _GMKs(receiveK));
+	     _GMKv(recvB), _GMKs(recvB));
 
   uptime = (CurrentTime - me.since);
 
   sendto_one(source_p, ":%s %d %s ? :Server send: %7.2f %s (%4.1f K/s)",
              from, RPL_STATSDEBUG, to,
-	     _GMKv(me.localClient->sendK), _GMKs(me.localClient->sendK),
-	     (float)((float)me.localClient->sendK / (float)uptime));
+	     _GMKv(me.localClient->send.bytes),
+             _GMKs(me.localClient->send.bytes),
+	     (float)((float)me.localClient->send.bytes / (float)uptime));
   sendto_one(source_p, ":%s %d %s ? :Server recv: %7.2f %s (%4.1f K/s)",
              from, RPL_STATSDEBUG, to,
-	     _GMKv(me.localClient->receiveK),
-	     _GMKs(me.localClient->receiveK),
-	     (float)((float)me.localClient->receiveK / (float)uptime));
+	     _GMKv(me.localClient->recv.bytes),
+	     _GMKs(me.localClient->recv.bytes),
+	     (float)((float)me.localClient->recv.bytes / (float)uptime));
 }
 
 static void
@@ -1032,11 +1033,11 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
                  (IsUpper(statchar)) ?
                  get_client_name(target_p, SHOW_IP) :
                  get_client_name(target_p, HIDE_IP),
-                 (int)dbuf_length(&target_p->localClient->buf_sendq),
-                 (int)target_p->localClient->sendM,
-                 (int)target_p->localClient->sendK,
-                 (int)target_p->localClient->receiveM,
-                 (int)target_p->localClient->receiveK,
+                 dbuf_length(&target_p->localClient->buf_sendq),
+                 target_p->localClient->send.messages,
+                 target_p->localClient->send.bytes>>10,
+                 target_p->localClient->recv.messages,
+                 target_p->localClient->recv.bytes>>10,
                  (unsigned)(CurrentTime - target_p->firsttime),
                  (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since):0,
                  IsServer(target_p) ? show_capabilities(target_p) : "-");
@@ -1049,11 +1050,11 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
         sendto_one(source_p, form_str(RPL_STATSLINKINFO),
                    from, to,
 		   get_client_name(target_p, MASK_IP),
-		   (int)dbuf_length(&target_p->localClient->buf_sendq),
-		   (int)target_p->localClient->sendM,
-		   (int)target_p->localClient->sendK,
-		   (int)target_p->localClient->receiveM,
-		   (int)target_p->localClient->receiveK,
+		   dbuf_length(&target_p->localClient->buf_sendq),
+		   target_p->localClient->send.messages,
+		   target_p->localClient->send.bytes>>10,
+		   target_p->localClient->recv.messages,
+		   target_p->localClient->recv.bytes>>10,
 		   (unsigned)(CurrentTime - target_p->firsttime),
 		   (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since):0,
 		   IsServer(target_p) ? show_capabilities(target_p) : "-");
@@ -1063,11 +1064,11 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
 	           (IsUpper(statchar)) ?
 		   get_client_name(target_p, SHOW_IP) :
 		   get_client_name(target_p, HIDE_IP),
-		   (int)dbuf_length(&target_p->localClient->buf_sendq),
-		   (int)target_p->localClient->sendM,
-		   (int)target_p->localClient->sendK,
-		   (int)target_p->localClient->receiveM,
-		   (int)target_p->localClient->receiveK,
+		   dbuf_length(&target_p->localClient->buf_sendq),
+		   target_p->localClient->send.messages,
+		   target_p->localClient->send.bytes>>10,
+		   target_p->localClient->recv.messages,
+		   target_p->localClient->recv.bytes>>10,
 		   (unsigned)(CurrentTime - target_p->firsttime),
 		   (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since):0,
 		   IsServer(target_p) ? show_capabilities(target_p) : "-");

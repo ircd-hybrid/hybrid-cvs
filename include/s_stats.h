@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_stats.h,v 7.11 2004/11/10 14:32:03 michael Exp $
+ *  $Id: s_stats.h,v 7.12 2005/05/30 13:19:09 michael Exp $
  */
 
 #ifndef INCLUDED_s_stats_h
@@ -35,14 +35,10 @@ struct ServerStatistics {
   unsigned int    is_sv;  /* number of server connections */
   unsigned int    is_ni;  /* connection but no idea who it was */
 
-  unsigned short  is_cbs; /* bytes sent to clients */
-  unsigned short  is_cbr; /* bytes received to clients */
-  unsigned short  is_sbs; /* bytes sent to servers */
-  unsigned short  is_sbr; /* bytes received to servers */
-  unsigned long   is_cks; /* k-bytes sent to clients */
-  unsigned long   is_ckr; /* k-bytes received to clients */
-  unsigned long   is_sks; /* k-bytes sent to servers */
-  unsigned long   is_skr; /* k-bytes received to servers */
+  uint64_t        is_cbs; /* bytes sent to clients */
+  uint64_t        is_cbr; /* bytes received from clients */
+  uint64_t        is_sbs; /* bytes sent to servers */
+  uint64_t        is_sbr; /* bytes received from servers */
   time_t          is_cti; /* time spent connected by clients */
   time_t          is_sti; /* time spent connected by servers */
   unsigned int    is_ac;  /* connections accepted */

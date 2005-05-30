@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.93 2005/05/29 02:53:57 adx Exp $
+dnl $Id: configure.ac,v 7.94 2005/05/30 13:19:06 michael Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.93 2005/05/29 02:53:57 adx Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.94 2005/05/30 13:19:06 michael Exp $])
 
 AC_INIT([ircd-hybrid],[7.1])
 
@@ -226,7 +226,7 @@ fi
 dnl Checks for header files.
 AC_HEADER_STDC
 
-AC_CHECK_HEADERS([crypt.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h libgen.h sys/wait.h wait.h])
+AC_CHECK_HEADERS([crypt.h inttypes.h stdint.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h libgen.h sys/wait.h wait.h])
 
 dnl Networking Functions
 dnl ====================
@@ -404,6 +404,19 @@ AC_CHECK_FUNCS([strlcat strlcpy])
 
 fi
 
+AC_CHECK_SIZEOF(int64_t)
+AC_CHECK_SIZEOF(long long)
+
+if test "$ac_cv_sizeof_int64_t" = 8; then
+  AC_CHECK_TYPE(uint64_t)
+  AC_CHECK_TYPE(int64_t)
+elif test "$ac_cv_sizeof_long_long" = 8; then
+  AC_CHECK_TYPE(uint64_t, unsigned long long)
+  AC_CHECK_TYPE(int64_t, long long)
+else
+  AC_MSG_ERROR([Your system doesn't appear to have 64 bit integers.  Aborting.])
+fi
+
 AC_CHECK_TYPE([u_int32_t], [],
 [
 	AC_CHECK_TYPE([uint32_t],
@@ -439,6 +452,9 @@ AC_CHECK_TYPE([sa_family_t], [],
 #include <sys/socket.h>]])
 
 AC_CHECK_TYPES([uintptr_t])
+
+
+
 
 dnl check for various functions...
 AC_CHECK_FUNCS([socketpair basename mmap snprintf vsnprintf lrand48 srand48 strtok_r])
@@ -1081,8 +1097,6 @@ fi
 
 AC_CONFIG_FILES(		\
 	Makefile		\
-dnl	iauth/Makefile		\
-dnl	iauth/source/Makefile	\
 	etc/Makefile		\
 	servlink/Makefile	\
 	contrib/Makefile	\

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.16 2003/06/28 18:01:54 joshk Exp $
+ * $Id: stdinc.h,v 1.17 2005/05/30 13:19:09 michael Exp $
  *
  */
 
@@ -53,6 +53,14 @@
 #endif
 
 #include <sys/types.h>
+
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#else
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
+#endif
 
 #ifdef HAVE_STDDEF_H
 # include <stddef.h>

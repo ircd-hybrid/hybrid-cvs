@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.284 2005/05/29 12:55:22 db Exp $
+ *  $Id: send.c,v 7.285 2005/05/30 13:19:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -141,8 +141,8 @@ send_message(struct Client *to, char *buf, int len)
    ** because it counts messages even if queued, but bytes
    ** only really sent. Queued bytes get updated in SendQueued.
    */
-  ++to->localClient->sendM;
-  ++me.localClient->sendM;
+  ++to->localClient->send.messages;
+  ++me.localClient->send.messages;
 
   if (dbuf_length(&to->localClient->buf_sendq) >
       (IsServer(to) ? (unsigned int) 1024 : (unsigned int) 4096))
@@ -288,18 +288,8 @@ send_queued_write(struct Client *to)
       dbuf_delete(&to->localClient->buf_sendq, retlen);
 
       /* We have some data written .. update counters */
-      to->localClient->sendB += retlen;
-      me.localClient->sendB += retlen;
-      if (to->localClient->sendB > 1023)
-      { 
-        to->localClient->sendK += (to->localClient->sendB >> 10);
-        to->localClient->sendB &= 0x03ff;        /* 2^10 = 1024, 3ff = 1023 */
-      }
-      if (me.localClient->sendB > 1023)
-      { 
-        me.localClient->sendK += (me.localClient->sendB >> 10);
-        me.localClient->sendB &= 0x03ff;
-      }
+      to->localClient->send.bytes += retlen;
+      me.localClient->send.bytes += retlen;
     } while (dbuf_length(&to->localClient->buf_sendq));
 
     if ((retlen < 0) && (ignoreErrno(errno)))

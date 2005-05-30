@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.61 2003/10/24 11:08:21 michael Exp $
+ *  $Id: s_log.c,v 7.62 2005/05/30 13:19:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -203,14 +203,14 @@ log_user_exit(struct Client *source_p)
 #ifdef SYSLOG_USERS
   if (IsPerson(source_p))
   {
-    ilog(L_INFO, "%s (%3ld:%02ld:%02ld): %s!%s@%s %ld/%ld\n",
+    ilog(L_INFO, "%s (%3ld:%02ld:%02ld): %s!%s@%s %llu/%llu\n",
          myctime(source_p->firsttime),
 	  (signed long) on_for / 3600,
 	  (signed long) (on_for % 3600)/60,
 	  (signed long) on_for % 60,
 	  source_p->name, source_p->username, source_p->host,
-	  source_p->localClient->sendK,
-	  source_p->localClient->receiveK);
+	  source_p->localClient->send.bytes>>10,
+	  source_p->localClient->recv.bytes>>10);
     }
 #else
   {
@@ -237,14 +237,14 @@ log_user_exit(struct Client *source_p)
       if (user_log_fb != NULL)
       {
         size_t nbytes = ircsprintf(linebuf,
-		   "%s (%3ld:%02ld:%02ld): %s!%s@%s %d/%d\n",
+		   "%s (%3ld:%02ld:%02ld): %s!%s@%s %llu/%llu\n",
 		   myctime(source_p->firsttime),
 		   (signed long) on_for / 3600,
 		   (signed long) (on_for % 3600)/60,
 		   (signed long) on_for % 60,
 		   source_p->name, source_p->username, source_p->host,
-		   source_p->localClient->sendK,
-		   source_p->localClient->receiveK);
+		   source_p->localClient->send.bytes>>10,
+		   source_p->localClient->recv.bytes>>10);
 	fbputs(linebuf, user_log_fb, nbytes);
       }
     }

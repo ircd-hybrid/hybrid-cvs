@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.432 2005/05/29 12:55:22 db Exp $
+ *  $Id: client.c,v 7.433 2005/05/30 13:19:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1343,13 +1343,14 @@ exit_client(
     if (source_p->servptr == &me)
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "%s was connected for %d seconds.  %d/%d sendK/recvK.",
+                           "%s was connected for %d seconds.  %llu/%llu sendK/recvK.",
                            source_p->name, (int)(CurrentTime - source_p->firsttime),
-                           source_p->localClient->sendK,
-                           source_p->localClient->receiveK);
-      ilog(L_NOTICE, "%s was connected for %d seconds.  %d/%d sendK/recvK.",
+                           source_p->localClient->send.bytes>>10,
+                           source_p->localClient->recv.bytes>>10);
+      ilog(L_NOTICE, "%s was connected for %d seconds.  %llu/%llu sendK/recvK.",
            source_p->name, (int)(CurrentTime - source_p->firsttime), 
-           source_p->localClient->sendK, source_p->localClient->receiveK);
+           source_p->localClient->send.bytes>>10,
+           source_p->localClient->recv.bytes>>10);
     }
   }
 

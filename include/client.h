@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.227 2005/05/29 12:55:16 db Exp $
+ *  $Id: client.h,v 7.228 2005/05/30 13:19:09 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -207,13 +207,13 @@ struct LocalUser
    * which is possible for long running server connections. Unsigned values 
    * generally overflow gracefully. --Bleep
    */
-  unsigned int      sendM;      /* Statistics: protocol messages send */
-  unsigned int      sendK;      /* Statistics: total k-bytes send */
-  unsigned int      receiveM;   /* Statistics: protocol messages received */
-  unsigned int      receiveK;   /* Statistics: total k-bytes received */
-  unsigned short    sendB;      /* counters to count upto 1-k lots of bytes */
-  unsigned short    receiveB;   /* sent and received. */
-  struct Listener*  listener;   /* listener accepted from */
+
+  struct {
+    unsigned int messages;      /* Statistics: protocol messages sent/received */
+    uint64_t bytes;             /* Statistics: total bytes sent/received */
+  } recv, send;
+
+  struct Listener *listener;   /* listener accepted from */
   dlink_list        confs;      /* Configuration record associated */
 
   struct irc_ssaddr ip;
