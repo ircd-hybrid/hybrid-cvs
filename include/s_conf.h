@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.275 2005/05/26 10:50:17 michael Exp $
+ *  $Id: s_conf.h,v 7.276 2005/05/30 22:29:11 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -203,6 +203,7 @@ struct ClassItem
 #define CONF_FLAGS_COMPRESSED           0x00020000
 #define CONF_FLAGS_TEMPORARY            0x00040000
 #define CONF_FLAGS_CRYPTLINK            0x00080000
+#define CONF_FLAGS_BURST_AWAY           0x00400000
 
 /* Macros for struct AccessItem */
 #define IsLimitIp(x)            ((x)->flags & CONF_FLAGS_LIMIT_IP)
@@ -231,6 +232,7 @@ struct ClassItem
 #define IsConfTemporary(x)      ((x)->flags & CONF_FLAGS_TEMPORARY)
 #define SetConfTemporary(x)     ((x)->flags |= CONF_FLAGS_TEMPORARY)
 #define IsConfRedir(x)          ((x)->flags & CONF_FLAGS_REDIR)
+#define IsAwayBurst(x)          ((x)->flags & CONF_FLAGS_BURST_AWAY)
 
 /* shared server entry types */
 #define SHARED_KLINE		0x0001
@@ -313,6 +315,7 @@ struct config_file_entry
   int ping_cookie;
   int disable_auth;
   int disable_remote;
+  int burst_away;
 #ifdef HAVE_LIBCRYPTO
   struct EncCapability *default_cipher_preference;
 #endif

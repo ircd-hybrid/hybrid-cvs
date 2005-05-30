@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.498 2005/05/28 13:38:48 michael Exp $
+ *  $Id: s_conf.c,v 7.499 2005/05/30 22:29:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2011,6 +2011,7 @@ set_default_conf(void)
   ConfigServerHide.hide_servers = NO;
   ConfigServerHide.hide_server_ips = NO;
 
+  ConfigFileEntry.burst_away = 0;
   ConfigFileEntry.hide_spoof_ips = YES;
   ConfigFileEntry.ignore_bogus_ts = NO;
   ConfigFileEntry.disable_auth = NO;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.376 2005/05/29 15:05:11 michael Exp $
+ *  $Id: ircd_parser.y,v 1.377 2005/05/30 22:29:13 michael Exp $
  */
 
 %{
@@ -139,6 +139,7 @@ unhook_hub_leaf_confs(void)
 %token  IRCD_AUTH
 %token  AUTOCONN
 %token	T_BLOCK
+%token  BURST_AWAY
 %token  BYTES KBYTES MBYTES GBYTES TBYTES
 %token  CALLER_ID_WAIT
 %token  CAN_FLOOD
@@ -1978,6 +1979,9 @@ connect_entry: CONNECT
     yy_aconf->passwd = NULL;
     /* defaults */
     yy_aconf->port = PORTNUM;
+
+    if (ConfigFileEntry.burst_away)
+      yy_aconf->flags = CONF_FLAGS_BURST_AWAY;
   }
   else
   {
@@ -2235,6 +2239,10 @@ connect_flags_item: LAZYLINK
 {
   if (ypass == 2)
     yy_aconf->flags |= CONF_FLAGS_ALLOW_AUTO_CONN;
+} | BURST_AWAY
+{
+  if (ypass == 2)
+    yy_aconf->flags |= CONF_FLAGS_BURST_AWAY;
 };
 
 connect_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
@@ -2607,8 +2615,14 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
                     general_compression_level | general_client_flood |
                     general_throttle_time | general_havent_read_conf |
                     general_dot_in_ip6_addr | general_ping_cookie |
-                    general_disable_auth |
+                    general_disable_auth | general_burst_away |
 		    error;
+
+general_burst_away: BURST_AWAY '=' TBOOL ';'
+{
+  if (ypass == 1) /* must be set in the 1st pass */
+    ConfigFileEntry.burst_away = yylval.number;
+};
 
 general_kill_chase_time_limit: KILL_CHASE_TIME_LIMIT '=' NUMBER ';'
 {

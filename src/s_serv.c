@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.408 2005/05/28 19:25:15 michael Exp $
+ *  $Id: s_serv.c,v 7.409 2005/05/30 22:29:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -856,7 +856,7 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
 
   send_umode(NULL, target_p, 0, SEND_UMODES, ubuf);
 
-  if (!*ubuf)
+  if (ubuf[0] == '\0')
   {
     ubuf[0] = '+';
     ubuf[1] = '\0';
@@ -877,6 +877,11 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
 	       (unsigned long) target_p->tsinfo,
 	       ubuf, target_p->username, target_p->host,
 	       target_p->user->server->name, target_p->info);
+  if (IsAwayBurst((struct AccessItem *)map_to_conf(client_p->serv->sconf)))
+    if (!EmptyString(target_p->user->away))
+      sendto_one(client_p, ":%s AWAY :%s", target_p->name,
+                 target_p->user->away);
+
 }
 
 /* client_burst_if_needed()
