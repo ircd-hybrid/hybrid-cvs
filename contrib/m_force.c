@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.38 2005/05/30 16:02:39 adx Exp $
+ * $Id: m_force.c,v 1.39 2005/05/30 16:20:11 adx Exp $
  */
 
 #include "stdinc.h"
@@ -52,12 +52,12 @@ static void mo_forcepart(struct Client *, struct Client *, int parc, char **);
 
 struct Message forcejoin_msgtab = {
   "FORCEJOIN", 0, 0, 3, 0, MFLG_SLOW, 0,
-  { m_ignore, m_not_oper, mo_forcejoin, m_ignore, mo_forcejoin, m_ignore }
+  { m_ignore, m_not_oper, mo_forcejoin, mo_forcejoin, mo_forcejoin, m_ignore }
 };
 
 struct Message forcepart_msgtab = {
   "FORCEPART", 0, 0, 3, 0, MFLG_SLOW, 0,
-  { m_ignore, m_not_oper, mo_forcepart, m_ignore, mo_forcepart, m_ignore }
+  { m_ignore, m_not_oper, mo_forcepart, mo_forcepart, mo_forcepart, m_ignore }
 };
 
 #ifndef STATIC_MODULES
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 
 /* m_forcejoin()
@@ -113,8 +113,9 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
 
   if (!MyConnect(target_p))
   {
-    sendto_one(target_p, ":%s FORCEJOIN %s %s",
-               source_p->name, target_p->name, parv[2]);
+    if (target_p->from != client_p)
+      sendto_one(target_p, ":%s FORCEJOIN %s %s",
+                 source_p->name, target_p->name, parv[2]);
     return;
   }
 
@@ -158,11 +159,16 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
 
     add_user_to_channel(chptr, target_p, type);
 
+    sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
+                         target_p->name, target_p->username,
+                         target_p->host, chptr->chname);
+
+    if (sjmode)
+      sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +%c %s",
+                           me.name, chptr->chname, mode, target_p->name);
+
     if (chptr->chname[0] == '#')
     {
-      sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
-                           target_p->name, target_p->username,
-                           target_p->host, chptr->chname);
       if (sjmode)
       {
         sendto_server(target_p, target_p, chptr, CAP_TS6, NOCAPS, LL_ICLIENT,
@@ -173,8 +179,6 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
                       ":%s SJOIN %lu %s + :%c%s",
 	              me.name, (unsigned long)chptr->channelts,
 	              chptr->chname, sjmode, target_p->name);
-        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +%c %s",
-                             me.name, chptr->chname, mode, target_p->name);
       }
       else
       {
@@ -199,6 +203,7 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
                  chptr->topic_info, chptr->topic_time);
     }
 
+    target_p->localClient->last_join_time = CurrentTime;
     channel_member_names(target_p, chptr, 1);
   }
   else
@@ -303,8 +308,9 @@ mo_forcepart(struct Client *client_p, struct Client *source_p,
 
   if (!MyConnect(target_p))
   {
-    sendto_one(target_p, ":%s FORCEPART %s %s",
-               source_p->name, target_p->name, parv[2]);
+    if (target_p->from != client_p)
+      sendto_one(target_p, ":%s FORCEPART %s %s",
+                 source_p->name, target_p->name, parv[2]);
     return;
   }
 
