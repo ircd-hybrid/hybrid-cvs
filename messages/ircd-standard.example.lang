@@ -1,6 +1,6 @@
 ; ircd-hybrid-7 standard message file - for reference only
 ; Copyright (C) 2003 Joshua Kwan <joshk@triplehelix.org>
-; $Id: ircd-standard.example.lang,v 1.4 2005/05/29 23:44:48 metalrock Exp $
+; $Id: ircd-standard.example.lang,v 1.5 2005/05/31 10:45:11 metalrock Exp $
 
 ; Use this file as a starting point for translating everything into the
 ; language you need. This file contains all of the defined events in 
@@ -133,6 +133,6 @@ RPL_OMOTD:		 :%s 721 %s :%s
 RPL_ENDOFOMOTD:		 :%s 722 %s :End of OPER MOTD.
 ERR_NOPRIVS:		 :%s 723 %s %s :Insufficient oper privs.
 RPL_TESTMASK:		 :%s 724 %s %s@%s %d %d :Local/remote clients match.
-RPL_TESTLINE:		 :%s 725 %s %c %ld %s :%s
+RPL_TESTLINE:		 :%s 725 %s %c %ld %s :%s | %s
 RPL_NOTESTLINE:		 :%s 726 %s %s :No matches
 
