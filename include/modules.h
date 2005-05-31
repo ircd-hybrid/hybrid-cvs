@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.54 2004/03/03 05:06:42 db Exp $
+ *  $Id: modules.h,v 7.55 2005/05/31 10:42:32 metalrock Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -142,6 +142,8 @@ extern struct Message squit_msgtab;
 extern struct Message stats_msgtab;
 extern struct Message svinfo_msgtab;
 extern struct Message testline_msgtab;
+extern struct Message testgecos_msgtab;
+extern struct Message testmask_msgtab;
 extern struct Message time_msgtab;
 extern struct Message topic_msgtab;
 extern struct Message trace_msgtab;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.150 2004/07/08 00:27:33 erik Exp $
+ *  $Id: modules.c,v 7.151 2005/05/31 10:42:36 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -646,6 +646,8 @@ load_all_modules(int warn)
   mod_add_cmd(&stats_msgtab);
   mod_add_cmd(&svinfo_msgtab);
   mod_add_cmd(&testline_msgtab);
+  mod_add_cmd(&testgecos_msgtab);
+  mod_add_cmd(&testmask_msgtab);
   mod_add_cmd(&time_msgtab);
   mod_add_cmd(&topic_msgtab);
   mod_add_cmd(&trace_msgtab);

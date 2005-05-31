@@ -29,7 +29,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_testmask.c,v 1.1 2005/05/31 04:01:15 db Exp $
+ *  $Id: m_testmask.c,v 1.2 2005/05/31 10:42:34 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&testmask_msgtab);
 }
  
-const char *_version = "$Revision: 1.1 $";
+const char *_version = "$Revision: 1.2 $";
 #endif
 
 /* mo_testmask()
@@ -94,7 +94,7 @@ mo_testmask(struct Client *client_p, struct Client *source_p,
   dlink_node *ptr, *next_ptr;
   struct Client *target_p;
 
-  if ( parc < 2 || ((given_host = strchr(given_user, '@')) == NULL))
+  if (parc < 2 || ((given_host = strchr(given_user, '@')) == NULL))
   {
     sendto_one(source_p, ":%s NOTICE %s :usage: user@host",
                me.name, source_p->name);
