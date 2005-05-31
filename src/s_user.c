@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.320 2005/05/28 13:38:49 michael Exp $
+ *  $Id: s_user.c,v 7.321 2005/05/31 03:03:31 db Exp $
  */
 
 #include "stdinc.h"
@@ -1276,21 +1276,23 @@ static int
 check_x_line(struct Client *client_p, struct Client *source_p)
 {
   struct ConfItem *conf;
-  struct MatchItem *match_item;
+  struct MatchItem *xconf;
   const char *reason;
 
   if ((conf = find_matching_name_conf(XLINE_TYPE, source_p->info,
                                       NULL, NULL, 0)) != NULL)
   {
-    match_item = (struct MatchItem *)map_to_conf(conf);
-    if (match_item->reason != NULL)
-      reason = match_item->reason;
+    xconf = (struct MatchItem *)map_to_conf(conf);
+    xconf->count++;
+
+    if (xconf->reason != NULL)
+      reason = xconf->reason;
     else
       reason = "No Reason";
 
-    if (match_item->action)
+    if (xconf->action != 0)
     {
-      if (match_item->action == 1)
+      if (xconf->action == 1)
       {
         sendto_realops_flags(UMODE_REJ, L_ALL,
                              "X-line Rejecting [%s] [%s], user %s [%s]",

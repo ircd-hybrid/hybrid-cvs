@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.276 2005/05/30 22:29:11 michael Exp $
+ *  $Id: s_conf.h,v 7.277 2005/05/31 03:03:28 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -76,6 +76,7 @@ struct MatchItem
   char *reason;
   char *oper_reason;
   int action;		/* used for xline and uline */
+  int count;		/* How many times this matchitem has been matched */
   int ref_count;	/* How many times is this matchitem in use */
   int illegal;		/* Should it be deleted when possible? */
 };

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.499 2005/05/30 22:29:13 michael Exp $
+ *  $Id: s_conf.c,v 7.500 2005/05/31 03:03:30 db Exp $
  */
 
 #include "stdinc.h"
@@ -576,7 +576,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
 	typex = 'S';
 
       sendto_one(source_p, form_str(RPL_STATSXLINE),
-		 me.name, source_p->name, typex,
+		 me.name, source_p->name, 'X', matchitem->count, typex,
 		 conf->name, matchitem->reason);
     }
     break;
