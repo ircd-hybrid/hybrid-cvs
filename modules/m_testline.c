@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.38 2005/05/31 04:01:15 db Exp $
+ *  $Id: m_testline.c,v 1.39 2005/05/31 11:15:54 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&testgecos_msgtab);
 }
  
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 
 /* mo_testline()
@@ -241,7 +241,7 @@ mo_testline(struct Client *client_p, struct Client *source_p,
  * output       - always 0
  * side effects - command to test X lines on server
  *   
- * i.e. /quote testline gecos
+ * i.e. /quote testgecos gecos
  *
  */
 static void
