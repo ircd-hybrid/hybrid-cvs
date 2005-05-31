@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.36 2004/02/11 16:42:18 db Exp $
+ *  $Id: csvlib.c,v 7.37 2005/05/31 02:04:10 db Exp $
  */
 
 #include "stdinc.h"
@@ -601,7 +601,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
     (void)rename(temppath, filename);
 
     /* XXX
-     * This is a very ineffient way of removing a kline/xline etc.
+     * This is a very inefficient way of removing a kline/xline etc.
      * This next function call forces a complete re-read of all conf
      * files, instead of a re-read of the kline/dline etc. files modified
      * But, consider how often an /quote unkline etc. is done compared
