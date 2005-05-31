@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.36 2005/05/30 21:46:21 db Exp $
+ *  $Id: m_testline.c,v 1.37 2005/05/31 01:32:38 db Exp $
  */
 
 #include "stdinc.h"
@@ -36,6 +36,8 @@
 #include "hostmask.h"
 #include "numeric.h"
 #include "parse.h"
+#include "resv.h"
+#include "hash.h"
 #include "modules.h"
 
 static void mo_testline(struct Client*, struct Client*, int, char**);
@@ -66,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&testgecos_msgtab);
 }
  
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
 #endif
 
 /* mo_testline()
@@ -86,6 +88,7 @@ static void
 mo_testline(struct Client *client_p, struct Client *source_p,
             int parc, char *parv[])
 {
+  struct ConfItem *conf;
   struct AccessItem *aconf;
   struct irc_ssaddr ip;
   int host_mask;
@@ -102,6 +105,22 @@ mo_testline(struct Client *client_p, struct Client *source_p,
   }
 
   given_name = parv[1];
+
+  if (*given_name == '#')	/* Might be channel resv */
+  {
+    struct ResvChannel *chptr;
+    
+    chptr = match_find_resv(given_name);
+    if (chptr != NULL)
+    {
+      sendto_one(source_p,
+		 form_str(RPL_TESTLINE),
+		 me.name, source_p->name,
+		 'Q', 0, chptr->name, 
+		 chptr->reason ? chptr->reason : "No reason", "" );
+      return;
+    }
+  }
 
   if ((p = strchr(given_name, '@')) != NULL)
   {
@@ -124,7 +143,6 @@ mo_testline(struct Client *client_p, struct Client *source_p,
 			    );
     if (aconf != NULL)
     {
-      struct ConfItem *conf;
       conf = unmap_conf_item(aconf);
 
       get_printable_conf(conf, &host, &pass, &user, &port, 
@@ -179,7 +197,6 @@ mo_testline(struct Client *client_p, struct Client *source_p,
                  
   if (aconf != NULL)
   {
-    struct ConfItem *conf;
     conf = unmap_conf_item(aconf);
     get_printable_conf(conf, &host, &pass, &user, &port, &classname, &oreason);
     snprintf(userhost, sizeof(userhost), "%s@%s", user, host);
@@ -191,6 +208,22 @@ mo_testline(struct Client *client_p, struct Client *source_p,
 		 'I', 0L, userhost, classname, "");
       ++matches;
     }
+  }
+
+  conf = find_matching_name_conf(NRESV_TYPE, given_name, NULL, NULL, 0);
+
+  if (conf != NULL)
+  {
+    struct MatchItem *mconf;
+    mconf = (struct MatchItem *)map_to_conf(conf);
+
+    sendto_one(source_p, form_str(RPL_TESTLINE),
+	       me.name, source_p->name,
+	       'Q', 0L,
+	       conf->name, 
+	       mconf->reason ? mconf->reason : "No Reason",
+	       mconf->oper_reason ? mconf->oper_reason : "");
+    ++matches;
   }
 
   if (matches == 0)
