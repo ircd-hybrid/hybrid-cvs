@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.98 2003/09/29 19:05:51 metalrock Exp $
+# $Id: Makefile.in,v 1.99 2005/05/31 04:01:15 db Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -87,6 +87,7 @@ SRCS =       \
   m_set.c \
   m_stats.c \
   m_svinfo.c \
+  m_testmask.c \
   m_testline.c \
   m_time.c \
   m_topic.c \

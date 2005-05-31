@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.37 2005/05/31 01:32:38 db Exp $
+ *  $Id: m_testline.c,v 1.38 2005/05/31 04:01:15 db Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&testgecos_msgtab);
 }
  
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.38 $";
 #endif
 
 /* mo_testline()
@@ -78,7 +78,7 @@ const char *_version = "$Revision: 1.37 $";
  *              - parc arg count
  *              - parv actual arguments   
  *   
- * output       - always 0
+ * output       - NONE
  * side effects - command to test I/K lines on server
  *   
  * i.e. /quote testline user@host,ip [password]
