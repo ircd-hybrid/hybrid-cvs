@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.409 2005/05/30 22:29:13 michael Exp $
+ *  $Id: s_serv.c,v 7.410 2005/05/31 00:47:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -911,7 +911,7 @@ client_burst_if_needed(struct Client *client_p, struct Client *target_p)
 /*
  * show_capabilities - show current server capabilities
  *
- * inputs       - pointer to an struct Client
+ * inputs       - pointer to a struct Client
  * output       - pointer to static string
  * side effects - build up string representing capabilities of server listed
  */
@@ -919,43 +919,26 @@ const char *
 show_capabilities(struct Client *target_p)
 {
   static char msgbuf[BUFSIZE];
-  struct Capability* cap;
-  char *t;
-  int tl;
+  char *t = msgbuf;
   dlink_node *ptr;
 
-  t  = msgbuf;
-  tl = ircsprintf(msgbuf,"TS ");
-  t += tl;
-
-  if (!target_p->localClient->caps) /* short circuit if no caps */
-  {
-    msgbuf[2] = '\0';
-    return(msgbuf);
-  }
+  t += ircsprintf(msgbuf, "TS ");
 
   DLINK_FOREACH(ptr, cap_list.head)
   {
-    cap = ptr->data;
+    const struct Capability *cap = ptr->data;
 
-    if (cap->cap & target_p->localClient->caps)
-    {
-      tl = ircsprintf(t, "%s ", cap->name);
-      t += tl;
-    }
+    if (IsCapable(target_p, cap->cap))
+      t += ircsprintf(t, "%s ", cap->name);
   }
 #ifdef HAVE_LIBCRYPTO
   if (IsCapable(target_p, CAP_ENC) &&
       target_p->localClient->in_cipher &&
       target_p->localClient->out_cipher)
-  {
-    tl = ircsprintf(t, "ENC:%s ",
+    t += ircsprintf(t, "ENC:%s ",
                     target_p->localClient->in_cipher->name);
-    t += tl;
-  }
 #endif
-  t--;
-  *t = '\0';
+  *(t - 1) = '\0';
 
   return(msgbuf);
 }
