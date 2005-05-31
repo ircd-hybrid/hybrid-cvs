@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.32 2005/05/31 00:43:28 db Exp $
+ *  $Id: resv.c,v 7.33 2005/05/31 23:10:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -169,6 +169,36 @@ find_channel_resv(const char *name)
     return(1);
 
   return(0);
+}
+
+/* match_find_resv()
+ *
+ * inputs       - pointer to name
+ * output       - NONE
+ * side effects - Finds a reserved channel whose name matches 'name',
+ *                if can't find one returns NULL.
+ * walk the hash table.
+ */
+struct ResvChannel *
+match_find_resv(const char *name)
+{
+  struct ResvChannel *prev;
+  struct ResvChannel *chptr;
+  int i;
+
+  for (i = 0; i < HASHSIZE; i++)
+  {
+    if ((chptr = resvchannelTable[i]) != NULL)
+    {
+      for (prev = chptr; chptr != NULL; chptr = chptr->hnext)
+      {
+        if (match(name, chptr->name))
+          return(chptr);
+      }
+    }
+  }
+
+  return(chptr);
 }
 
 /* report_resv()

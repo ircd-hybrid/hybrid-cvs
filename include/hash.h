@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.h,v 7.31 2005/05/31 01:32:36 db Exp $
+ *  $Id: hash.h,v 7.32 2005/05/31 23:10:22 michael Exp $
  */
 
 #ifndef INCLUDED_hash_h
@@ -30,10 +30,9 @@ struct Channel;
 struct ResvChannel;
 struct UserHost;
 
-extern struct Channel *get_or_create_channel(struct Client *client_p, char *chname, int *isnew);
+extern struct Channel *get_or_create_channel(struct Client *, char *, int *);
 
 extern void init_hash(void);
-
 extern void hash_add_client(struct Client *);
 extern void hash_del_client(struct Client *);
 extern void hash_add_channel(struct Channel *);
@@ -45,15 +44,14 @@ extern void hash_del_id(struct Client *);
 extern void hash_add_userhost(struct UserHost *);
 extern void hash_del_userhost(struct UserHost *);
 
-extern struct UserHost *hash_find_userhost(const char *host);
-extern struct Client *hash_find_id(const char *name);
-extern struct Client *find_client(const char *name);
-extern struct Client *find_server(const char *name);
-extern struct Channel *hash_find_channel(const char *name);
-extern struct Channel *hash_get_chptr(unsigned int hashv);
-extern struct ResvChannel *hash_find_resv(const char *name);
-extern struct ResvChannel *match_find_resv(const char *name);
+extern struct UserHost *hash_find_userhost(const char *);
+extern struct Client *hash_find_id(const char *);
+extern struct Client *find_client(const char *);
+extern struct Client *find_server(const char *);
+extern struct Channel *hash_find_channel(const char *);
+extern struct Channel *hash_get_chptr(unsigned int);
+extern struct ResvChannel *hash_find_resv(const char *);
 
 extern void free_list_task(struct ListTask *, struct Client *);
-extern void safe_list_channels(struct Client *source_p, struct ListTask *, int, int);
+extern void safe_list_channels(struct Client *, struct ListTask *, int, int);
 #endif  /* INCLUDED_hash_h */

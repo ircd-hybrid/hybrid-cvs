@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.h,v 1.18 2003/07/08 16:59:25 joshk Exp $
+ *  $Id: resv.h,v 1.19 2005/05/31 23:10:22 michael Exp $
  */
 
 #ifndef INCLUDED_resv_h
@@ -36,6 +36,7 @@ struct ResvChannel
   int	conf;		/* 1 if set from ircd.conf, 0 if from elsewhere */
 };
 
+extern dlink_list nresv_items;
 extern dlink_list resv_channel_list;
 
 extern struct ConfItem *create_channel_resv(char *, char *, int);
@@ -49,5 +50,5 @@ extern void clear_conf_resv(void);
 extern void report_resv(struct Client *);
 
 extern int valid_wild_card_simple(char *);
-extern dlink_list nresv_items;
+extern struct ResvChannel *match_find_resv(const char *);
 #endif  /* INCLUDED_resv_h */
