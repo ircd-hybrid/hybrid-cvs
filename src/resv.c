@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.31 2003/07/05 06:21:03 db Exp $
+ *  $Id: resv.c,v 7.32 2005/05/31 00:43:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -154,6 +154,12 @@ delete_channel_resv(struct ResvChannel *resv_p)
   return(1);
 }
 
+/* find_channel_resv()
+ *
+ * inputs	- pointer to channel resv to find
+ * output	- 1 if found, 0 if not.
+ * side effects	- NONE
+ */
 int
 find_channel_resv(const char *name)
 {
@@ -165,25 +171,12 @@ find_channel_resv(const char *name)
   return(0);
 }
 
-#if 0
-struct ResvNick *
-return_nick_resv(const char *name)
-{
-  dlink_node *ptr;
-  struct ResvNick *resv_p;
-
-  DLINK_FOREACH(ptr, resv_nick_list.head)
-  {
-    resv_p = ptr->data;
-
-    if (0 == irccmp(resv_p->name, name))
-      return(resv_p);
-  }
-
-  return(NULL);
-}
-#endif
-
+/* report_resv()
+ *
+ * inputs	- pointer to client pointer to report to.
+ * output	- NONE
+ * side effects	- report all resvs to client.
+ */
 void
 report_resv(struct Client *source_p)
 {
@@ -213,6 +206,12 @@ report_resv(struct Client *source_p)
   }
 }
 
+/* clean_resv_nick()
+ *
+ * inputs	- pointer to nick to clean
+ * output	- NONE
+ * side effects	- nick is modified in place
+ */
 int
 clean_resv_nick(char *nick)
 {
