@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.166 2005/06/01 18:23:35 db Exp $
+ *  $Id: m_stats.c,v 1.167 2005/06/01 18:40:31 db Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.166 $";
+const char *_version = "$Revision: 1.167 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -236,8 +236,8 @@ m_stats(struct Client *client_p, struct Client *source_p,
       /* The stats table says what privs are needed, so check --fl_ */
       if (stats_cmd_table[i].need_oper || stats_cmd_table[i].need_admin)
       {
-        sendto_one(source_p, form_str(ERR_NOPRIVS),
-                   from, to, "stats");
+        sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+                   from, to);
         break;
       }
 
@@ -309,8 +309,8 @@ mo_stats(struct Client *client_p, struct Client *source_p,
       if ((stats_cmd_table[i].need_admin && !IsAdmin(source_p)) ||
           (stats_cmd_table[i].need_oper && !IsOper(source_p)))
       {
-        sendto_one(source_p, form_str(ERR_NOPRIVS),
-                   from, to, "stats");
+        sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+                   from, to);
         break;
       }
 
@@ -570,10 +570,10 @@ stats_hubleaf(struct Client *source_p)
 static void
 stats_auth(struct Client *source_p)
 {
-  /* Oper only, if unopered, return ERR_NOPRIVS */
+  /* Oper only, if unopered, return ERR_NOPRIVILEGES */
   if ((ConfigFileEntry.stats_i_oper_only == 2) && !IsOper(source_p))
-    sendto_one(source_p, form_str(ERR_NOPRIVS),
-               from, to, "stats");
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               from, to);
 
   /* If unopered, Only return matching auth blocks */
   else if ((ConfigFileEntry.stats_i_oper_only == 1) && !IsOper(source_p))
@@ -613,10 +613,10 @@ static void
 stats_tklines(struct Client *source_p)
 {
   struct ConfItem *conf;
-  /* Oper only, if unopered, return ERR_NOPRIVS */
+  /* Oper only, if unopered, return ERR_NOPRIVILEGES */
   if ((ConfigFileEntry.stats_k_oper_only == 2) && !IsOper(source_p))
-    sendto_one(source_p, form_str(ERR_NOPRIVS),
-               from, to, "stats");
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               from, to);
 
   /* If unopered, Only return matching klines */
   else if((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(source_p))
@@ -659,10 +659,10 @@ stats_klines(struct Client *source_p)
 {
   struct ConfItem *conf=NULL;	/* XXX */
 
-  /* Oper only, if unopered, return ERR_NOPRIVS */
+  /* Oper only, if unopered, return ERR_NOPRIVILEGES */
   if((ConfigFileEntry.stats_k_oper_only == 2) && !IsOper(source_p))
-    sendto_one(source_p, form_str(ERR_NOPRIVS),
-               from, to, "stats");
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               from, to);
 
   /* If unopered, Only return matching klines */
   else if((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(source_p))
@@ -709,8 +709,8 @@ static void
 stats_oper(struct Client *source_p)
 {
   if (!IsOper(source_p) && ConfigFileEntry.stats_o_oper_only)
-    sendto_one(source_p, form_str(ERR_NOPRIVS),
-               from, to, "stats");
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               from, to);
   else
     report_confitem_types(source_p, OPER_TYPE);
 }
@@ -759,8 +759,8 @@ static void
 stats_ports(struct Client *source_p)
 {
   if (!IsOper(source_p) && ConfigFileEntry.stats_P_oper_only)
-    sendto_one(source_p, form_str(ERR_NOPRIVS),
-               from, to, "stats");
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               from, to);
   else
     show_ports(source_p);
 }
@@ -889,8 +889,8 @@ stats_servlinks(struct Client *source_p)
 
   if (ConfigServerHide.flatten_links && !IsOper(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVS),
-               from, to, "stats");
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               from, to);
     return;
   }
 
