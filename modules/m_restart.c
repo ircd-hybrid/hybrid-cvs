@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_restart.c,v 1.32 2005/06/01 18:02:23 db Exp $
+ *  $Id: m_restart.c,v 1.33 2005/06/01 18:23:35 db Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&restart_msgtab);
 }
 
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 
 /*
@@ -76,7 +76,7 @@ mo_restart(struct Client *client_p, struct Client *source_p,
   if (!IsOperDie(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name);
+               me.name, source_p->name, "restart");
     return;
   }
 

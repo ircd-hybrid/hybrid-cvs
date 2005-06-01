@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.43 2005/06/01 18:02:23 db Exp $
+ *  $Id: m_xline.c,v 1.44 2005/06/01 18:23:35 db Exp $
  */
 
 #include "stdinc.h"
@@ -88,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 
 /* mo_xline()
@@ -112,12 +112,11 @@ mo_xline(struct Client *client_p, struct Client *source_p,
   struct MatchItem *match_item;
   char *target_server = NULL;
   time_t tkline_time = 0;
-  time_t cur_time;
 
   if (!IsOperX(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name);
+               me.name, source_p->name, "xline");
     return;
   }
 
@@ -156,7 +155,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
       if (!IsOperRemoteBan(source_p))
       {
         sendto_one(source_p, form_str(ERR_NOPRIVS),
-                 me.name, source_p->name);
+                 me.name, source_p->name, "remoteban");
         return;
       }
 
@@ -283,7 +282,7 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
   if (!IsOperX(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name);
+               me.name, source_p->name, "unxline");
     return;
   }
 

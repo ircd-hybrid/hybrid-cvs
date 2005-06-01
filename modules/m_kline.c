@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.183 2005/06/01 18:02:23 db Exp $
+ *  $Id: m_kline.c,v 1.184 2005/06/01 18:23:34 db Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.183 $";
+const char *_version = "$Revision: 1.184 $";
 #endif
 
 #define TK_SECONDS 0
@@ -159,7 +159,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   if (!IsOperK(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name);
+               me.name, source_p->name, "kline");
     return;
   }
 
@@ -198,7 +198,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
       if (!IsOperRemoteBan(source_p))
       {
         sendto_one(source_p, form_str(ERR_NOPRIVS),
-                 me.name, source_p->name);
+                 me.name, source_p->name, "kline");
         return;
       }
 
@@ -680,7 +680,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   if (!IsOperK(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name);
+               me.name, source_p->name, "kline");
     return;
   }
 
@@ -1158,7 +1158,7 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
   if (!IsOperUnkline(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name);
+               me.name, source_p->name, "unkline");
     return;
   }
 
@@ -1197,7 +1197,7 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
     if (!IsOperRemoteBan(source_p))
     {
       sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name);
+               me.name, source_p->name, "unkline");
       return;
     }
 
@@ -1433,7 +1433,7 @@ mo_undline(struct Client *client_p, struct Client *source_p,
   if (!IsOperUnkline(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name);
+               me.name, source_p->name, "undline");
     return;
   }
 

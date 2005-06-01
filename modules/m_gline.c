@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.131 2005/06/01 18:02:23 db Exp $
+ *  $Id: m_gline.c,v 1.132 2005/06/01 18:23:34 db Exp $
  */
 
 #include "stdinc.h"
@@ -102,7 +102,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.131 $";
+const char *_version = "$Revision: 1.132 $";
 #endif
 
 /* mo_gline()
@@ -140,7 +140,7 @@ mo_gline(struct Client *client_p, struct Client *source_p,
   if (!IsOperGline(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name);
+               me.name, source_p->name, "gline");
     return;
   }
 
@@ -661,7 +661,7 @@ mo_ungline(struct Client *client_p, struct Client *source_p,
   if (!IsOperUnkline(source_p) || !IsOperGline(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name);
+               me.name, source_p->name, "gline");
     return;
   }
 
