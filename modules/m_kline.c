@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.182 2005/05/29 03:46:53 michael Exp $
+ *  $Id: m_kline.c,v 1.183 2005/06/01 18:02:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.182 $";
+const char *_version = "$Revision: 1.183 $";
 #endif
 
 #define TK_SECONDS 0
@@ -158,7 +158,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
 
   if (!IsOperK(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
                me.name, source_p->name);
     return;
   }
@@ -166,6 +166,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   parv++;
   parc--;
 
+  /* XXX make valid_tkline() global shared with m_xline.c */
   tkline_time = valid_tkline(*parv, TK_MINUTES);
 
   if (tkline_time != 0)
@@ -196,7 +197,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
 
       if (!IsOperRemoteBan(source_p))
       {
-        sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+        sendto_one(source_p, form_str(ERR_NOPRIVS),
                  me.name, source_p->name);
         return;
       }
@@ -678,7 +679,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 
   if (!IsOperK(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
                me.name, source_p->name);
     return;
   }
@@ -1156,7 +1157,7 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
 
   if (!IsOperUnkline(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
                me.name, source_p->name);
     return;
   }
@@ -1195,7 +1196,7 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
 
     if (!IsOperRemoteBan(source_p))
     {
-      sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+      sendto_one(source_p, form_str(ERR_NOPRIVS),
                me.name, source_p->name);
       return;
     }
@@ -1431,7 +1432,7 @@ mo_undline(struct Client *client_p, struct Client *source_p,
 
   if (!IsOperUnkline(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
                me.name, source_p->name);
     return;
   }

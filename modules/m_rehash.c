@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rehash.c,v 1.49 2004/07/08 00:27:22 erik Exp $
+ *  $Id: m_rehash.c,v 1.50 2005/06/01 18:02:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&rehash_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 
 /*
@@ -73,7 +73,7 @@ mo_rehash(struct Client *client_p, struct Client *source_p,
 
   if (!IsOperRehash(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
                me.name, source_p->name);
     return;
   }

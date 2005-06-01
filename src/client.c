@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.434 2005/05/31 03:03:30 db Exp $
+ *  $Id: client.c,v 7.435 2005/06/01 18:02:26 db Exp $
  */
 
 #include "stdinc.h"
@@ -558,46 +558,21 @@ check_xlines(void)
       xconf = (struct MatchItem *)map_to_conf(conf);
       xconf->count++;
 
-      if (xconf->action != 0)
-      {
-	sendto_realops_flags(UMODE_ALL, L_ALL,"XLINE active for %s",
-			     get_client_name(client_p, HIDE_IP));
+      sendto_realops_flags(UMODE_ALL, L_ALL,"XLINE active for %s",
+			   get_client_name(client_p, HIDE_IP));
       
-	if (ConfigFileEntry.kline_with_connection_closed &&
-	    ConfigFileEntry.kline_with_reason)
-	{
-	  reason = "Connection closed";
-
-	  if (IsPerson(client_p))
-	    sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
-		       me.name, client_p->name,
-		       xconf->reason ? xconf->reason : "X-lined");
-	}
-	else
-	{
-	  if (ConfigFileEntry.kline_with_connection_closed)
-	    reason = "Connection closed";
-	  else if (ConfigFileEntry.kline_with_reason && xconf->reason)
-	    reason = xconf->reason;
-	  else
-	    reason = "X-lined";
-
-	  if (IsPerson(client_p))
-	    sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
-		       me.name, client_p->name, reason);
-	}
-
-	exit_client(client_p, client_p, &me, reason);
-      }
+      if (ConfigFileEntry.kline_with_connection_closed)
+	reason = "Connection closed";
+      else if (ConfigFileEntry.kline_with_reason && xconf->reason)
+	reason = xconf->reason;
       else
-      {
-	sendto_realops_flags(UMODE_REJ, L_ALL,
-			     "X-line Warning [%s] [%s], user %s [%s]",
-			     client_p->info, 
-			     xconf->reason ? xconf->reason : "none",
-			     get_client_name(client_p, HIDE_IP),
-			     client_p->localClient->sockhost);
-      }
+	reason = "X-lined";
+
+      if (IsPerson(client_p))
+	sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
+		   me.name, client_p->name, reason);
+
+      exit_client(client_p, client_p, &me, reason);
     }
   }
 }

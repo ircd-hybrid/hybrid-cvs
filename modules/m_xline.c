@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.42 2004/10/31 21:29:04 metalrock Exp $
+ *  $Id: m_xline.c,v 1.43 2005/06/01 18:02:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -52,9 +52,15 @@ static void ms_xline(struct Client *, struct Client *, int, char **);
 static void mo_unxline(struct Client *, struct Client *, int, char **);
 static void ms_unxline(struct Client *, struct Client *, int, char **);
 
+#define TK_SECONDS 0
+#define TK_MINUTES 1
+
 static int valid_xline(struct Client *, char *, char *, int);
-static void write_xline(struct Client *, char *, char *, int);
+static void write_xline(struct Client *, char *, char *, time_t);
 static void remove_xline(struct Client *, char *, int);
+
+/* XXX should make this common in s_conf.c */
+static time_t valid_tkline(char *p, int minutes);
 
 struct Message xline_msgtab = {
   "XLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -82,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 
 /* mo_xline()
@@ -99,104 +105,113 @@ static void
 mo_xline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
+  char def_reason[] = "No Reason";
+  char *reason = def_reason;
+  char *gecos=NULL;
   struct ConfItem *conf;
   struct MatchItem *match_item;
-  char *reason;
   char *target_server = NULL;
-  const char *type;
-  int type_i = 1;
-  char def_reason[] = "No Reason";
+  time_t tkline_time = 0;
+  time_t cur_time;
 
   if (!IsOperX(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
                me.name, source_p->name);
     return;
   }
 
-  /* XLINE <gecos> <type> ON <mask> :<reason>
+  /* XLINE <gecos> <time> ON <mask> :<reason>
    * XLINE <gecos> ON <mask> :<reason>
    */
-  if ((parc > 3) && (!irccmp(parv[2], "ON") || !irccmp(parv[3], "ON")))
-  {
-    if (parc < 5)
-    {
-      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, source_p->name, "XLINE");
-      return;
-    }
-    else if (!irccmp(parv[3], "ON"))
-    {
-      type = parv[2];
-      target_server = parv[4];
-      reason = parv[5];
-    }
-    else
-    {
-      type = "REJECT";
-      target_server = parv[3];
-      reason = parv[2];
-    }
-  }
-  /* XLINE <gecos> <type> :<reason> */
-  else if (parc >= 4)
-  {
-    type = parv[2];
-    reason = parv[3];
-  }
-  /* XLINE <gecos> :<reason> */
-  else if (parc == 3)
-  {
-    type = "REJECT";
-    reason = parv[2];
-  }
-  else
-    reason = def_reason;
 
-  if (!valid_xline(source_p, parv[1], reason, 1))
-    return;
+  parv++;
+  parc--;
 
-  if (irccmp(type, "WARN") == 0)
-    type_i = 0;
-  else if (irccmp(type, "REJECT") == 0)
-    type_i = 1;
-  else if (irccmp(type, "SILENT") == 0)
-    type_i = 2;
-  else
+  /* XXX make valid_tkline() global shared with m_kline.c */
+  tkline_time = valid_tkline(*parv, TK_MINUTES);
+
+  if (tkline_time != 0)
   {
-    sendto_one(source_p, ":%s NOTICE %s :Invalid X-Line type",
-               me.name, source_p->name);
+    parv++;
+    parc--;
+  }
+
+  if (parc == 0)
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+	       me.name, source_p->name, "XLINE");
     return;
   }
+
+  gecos = *parv;
+
+  parc--;
+  parv++;
+
+  if (parc != 0)
+  {
+    if (irccmp(*parv, "ON") == 0)
+    {
+      if (!IsOperRemoteBan(source_p))
+      {
+        sendto_one(source_p, form_str(ERR_NOPRIVS),
+                 me.name, source_p->name);
+        return;
+      }
+
+      parc--;
+      parv++;
+
+      if (parc == 0)
+      {
+	sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+		   me.name, source_p->name, "XLINE");
+	return;
+      }
+
+      target_server = *parv;
+      parc--;
+      parv++;
+    }
+  }
+
+  if (parc != 0)
+    reason = *parv;
 
   if (target_server != NULL)
   {
     sendto_match_servs(source_p, target_server, CAP_CLUSTER,
                        "XLINE %s %s %d :%s",
-                       target_server, parv[1], type_i, reason);
+                       target_server, gecos, 0, reason);
     if (!match(target_server, me.name))
       return;
   }
   else if (dlink_list_length(&cluster_items) != 0)
-    cluster_xline(source_p, parv[1], type_i, reason);
+    cluster_xline(source_p, gecos, 0, reason);
 
-  if ((conf = find_matching_name_conf(XLINE_TYPE, parv[1],
+  if (!valid_xline(source_p, gecos, reason, 0))
+    return;
+
+  if ((conf = find_matching_name_conf(XLINE_TYPE, gecos,
                                       NULL, NULL, 0)) != NULL)
   {
     match_item = (struct MatchItem *)map_to_conf(conf);
 
     sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
-               me.name, source_p->name, parv[1],
+               me.name, source_p->name, gecos,
                conf->name, match_item->reason);
     return;
   }
 
-  write_xline(source_p, parv[1], reason, type_i);
+  write_xline(source_p, gecos, reason, 0);
 }
 
 /* ms_xline()
  *
- * inputs	- oper, target server, xline, type, reason
+ * inputs	- oper, target server, xline, {type}, reason
+ *		  deprecate {type} reserve for temp xlines later? XXX
+ *
  * outputs	- none
  * side effects	- propagates xline, applies it if we are a target
  */
@@ -206,12 +221,8 @@ ms_xline(struct Client *client_p, struct Client *source_p,
 {
   struct ConfItem *conf;
   struct MatchItem *match_item;
-  int type = atoi(parv[3]);
 
   if (parc != 5 || EmptyString(parv[4]))
-    return;
-
-  if ((type < 0) || (type > 2))
     return;
 
   if (!IsPerson(source_p))
@@ -234,7 +245,7 @@ ms_xline(struct Client *client_p, struct Client *source_p,
 				NULL, NULL, 0)) != NULL)
       return;
 
-    write_xline(source_p, parv[2], parv[4], type);
+    write_xline(source_p, parv[2], parv[4], 0);
   }
   else if (find_matching_name_conf(ULINE_TYPE,
 		       source_p->user->server->name,
@@ -252,7 +263,7 @@ ms_xline(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    write_xline(source_p, parv[2], parv[4], type);
+    write_xline(source_p, parv[2], parv[4], 0);
   }
 }
 
@@ -271,7 +282,7 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
 {
   if (!IsOperX(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
                me.name, source_p->name);
     return;
   }
@@ -396,7 +407,8 @@ valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
  * side effects	- when succesful, adds an xline to the conf
  */
 static void
-write_xline(struct Client *source_p, char *gecos, char *reason, int type)
+write_xline(struct Client *source_p, char *gecos, char *reason,
+	    time_t tkline_time)
 {
   struct ConfItem *conf;
   struct MatchItem *match_item;
@@ -405,7 +417,7 @@ write_xline(struct Client *source_p, char *gecos, char *reason, int type)
 
   conf = make_conf_item(XLINE_TYPE);
   match_item = (struct MatchItem *)map_to_conf(conf);
-  match_item->action = type;
+  match_item->action = tkline_time;
 
   collapse(gecos);
   DupString(conf->name, gecos);
@@ -414,7 +426,8 @@ write_xline(struct Client *source_p, char *gecos, char *reason, int type)
   set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
-  write_conf_line(source_p, conf, current_date, cur_time);
+  if (tkline_time == 0)
+    write_conf_line(source_p, conf, current_date, cur_time);
   rehashed_xlines = 1;
 }
 
@@ -435,4 +448,54 @@ remove_xline(struct Client *source_p, char *gecos, int cluster)
   else if (!cluster)
     sendto_one(source_p, ":%s NOTICE %s :No X-Line for %s",
                me.name, source_p->name, gecos);
+}
+
+/* XXX */
+
+/*
+ * valid_tkline()
+ * 
+ * inputs       - pointer to ascii string to check
+ *              - whether the specified time is in seconds or minutes
+ * output       - -1 not enough parameters
+ *              - 0 if not an integer number, else the number
+ * side effects - none
+ */
+static time_t
+valid_tkline(char *p, int minutes)
+{
+  time_t result = 0;
+
+  while(*p)
+  {
+    if(IsDigit(*p))
+    {
+      result *= 10;
+      result += ((*p) & 0xF);
+      p++;
+    }
+    else
+      return(0);
+  }
+  /* in the degenerate case where oper does a /quote kline 0 user@host :reason 
+   * i.e. they specifically use 0, I am going to return 1 instead
+   * as a return value of non-zero is used to flag it as a temporary kline
+   */
+
+  if(result == 0)
+    result = 1;
+
+  /* 
+   * If the incoming time is in seconds convert it to minutes for the purpose
+   * of this calculation
+   */
+  if(!minutes)
+      result = (time_t)result / (time_t)60; 
+
+  if(result > MAX_TDKLINE_TIME)
+    result = MAX_TDKLINE_TIME;
+
+  result = (time_t)result * (time_t)60;  /* turn it into seconds */
+
+  return(result);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_operwall.c,v 1.35 2005/05/29 03:46:53 michael Exp $
+ *  $Id: m_operwall.c,v 1.36 2005/06/01 18:02:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&operwall_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 
 
@@ -75,7 +75,7 @@ mo_operwall(struct Client *client_p, struct Client *source_p,
 
   if (!IsOperWall(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
                me.name, source_p->name);
     return;
   }

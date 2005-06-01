@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_connect.c,v 1.53 2004/10/31 22:44:25 adx Exp $
+ *  $Id: m_connect.c,v 1.54 2005/06/01 18:02:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&connect_msgtab);
 }
 
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.54 $";
 #endif
 
 /*
@@ -87,7 +87,7 @@ mo_connect(struct Client* client_p, struct Client* source_p,
   /* always privileged with handlers */
   if (MyConnect(source_p) && !IsOperRemote(source_p) && parc > 3)
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
                me.name, source_p->name);
     return;
   }

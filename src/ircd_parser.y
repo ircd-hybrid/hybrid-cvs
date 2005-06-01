@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.377 2005/05/30 22:29:13 michael Exp $
+ *  $Id: ircd_parser.y,v 1.378 2005/06/01 18:02:26 db Exp $
  */
 
 %{
@@ -2548,7 +2548,7 @@ gecos_entry: GECOS
 }; 
 
 gecos_items: gecos_items gecos_item | gecos_item;
-gecos_item:  gecos_name | gecos_reason | gecos_action | error;
+gecos_item:  gecos_name | gecos_reason | error;
 
 gecos_name: NAME '=' QSTRING ';' 
 {
@@ -2566,20 +2566,6 @@ gecos_reason: REASON '=' QSTRING ';'
     MyFree(yy_match_item->reason);
     DupString(yy_match_item->reason, yylval.string);
   }
-};
-
-gecos_action: ACTION '=' WARN ';'
-{
-  if (ypass == 2)
-    yy_match_item->action = 0;
-} | ACTION '=' T_REJECT ';'
-{
-  if (ypass == 2)
-    yy_match_item->action = 1;
-} | ACTION '=' SILENT ';'
-{
-  if (ypass == 2)
-    yy_match_item->action = 2;
 };
 
 /***************************************************************************

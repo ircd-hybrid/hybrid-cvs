@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.321 2005/05/31 03:03:31 db Exp $
+ *  $Id: s_user.c,v 7.322 2005/06/01 18:02:26 db Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ static int valid_hostname(const char *);
 static int valid_username(const char *);
 static void user_welcome(struct Client *);
 static void report_and_set_user_flags(struct Client *, struct AccessItem *);
-static int check_x_line(struct Client *, struct Client *);
+static int check_xline(struct Client *, struct Client *);
 static int introduce_client(struct Client *, struct Client *);
 
 /* table of ascii char letters
@@ -490,7 +490,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   }
 
   /* end of valid user name check */
-  if ((status = check_x_line(client_p, source_p)) < 0)
+  if ((status = check_xline(client_p, source_p)) != 0)
     return(status);
 
   if (IsDead(client_p))
@@ -1266,14 +1266,14 @@ user_welcome(struct Client *source_p)
     send_message_file(source_p, &ConfigFileEntry.motd);
 }
 
-/* check_x_line()
+/* check_xline()
  *
  * inputs       - pointer to client to test
  * outupt       - -1 if exiting 0 if ok
  * side effects -
  */
 static int
-check_x_line(struct Client *client_p, struct Client *source_p)
+check_xline(struct Client *client_p, struct Client *source_p)
 {
   struct ConfItem *conf;
   struct MatchItem *xconf;
@@ -1290,27 +1290,15 @@ check_x_line(struct Client *client_p, struct Client *source_p)
     else
       reason = "No Reason";
 
-    if (xconf->action != 0)
-    {
-      if (xconf->action == 1)
-      {
-        sendto_realops_flags(UMODE_REJ, L_ALL,
-                             "X-line Rejecting [%s] [%s], user %s [%s]",
-                             source_p->info, reason,
-                             get_client_name(client_p, HIDE_IP),
-                             source_p->localClient->sockhost);
-      }
+    sendto_realops_flags(UMODE_REJ, L_ALL,
+			 "X-line Rejecting [%s] [%s], user %s [%s]",
+			 source_p->info, reason,
+			 get_client_name(client_p, HIDE_IP),
+			 source_p->localClient->sockhost);
 
-      ServerStats->is_ref++;      
-      exit_client(client_p, source_p, &me, "Bad user info");
-      return(CLIENT_EXITED);
-    }
-    else
-      sendto_realops_flags(UMODE_REJ, L_ALL,
-                           "X-line Warning [%s] [%s], user %s [%s]",
-                           source_p->info, reason,
-                           get_client_name(client_p, HIDE_IP),
-                           source_p->localClient->sockhost);
+    ServerStats->is_ref++;      
+    exit_client(client_p, source_p, &me, "Bad user info");
+    return(CLIENT_EXITED);
   }
 
   return(0);

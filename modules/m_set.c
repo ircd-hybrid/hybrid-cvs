@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.56 2004/07/08 00:27:23 erik Exp $
+ *  $Id: m_set.c,v 1.57 2005/06/01 18:02:23 db Exp $
  */
 
 /* rewritten by jdc */
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 
 /* Structure used for the SET table itself */
@@ -210,7 +210,7 @@ quote_identtimeout(struct Client *source_p, int newval)
 {
   if (!IsAdmin(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
                me.name, source_p->name);
     return;
   }
