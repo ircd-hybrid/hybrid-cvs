@@ -16,9 +16,10 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.37 2004/10/07 18:28:32 adx Exp $
+ * $Id: match.c,v 7.38 2005/06/01 18:18:20 michael Exp $
  *
  */
+
 #include "stdinc.h"
 #include "irc_string.h"
 #include "irc_getaddrinfo.h"
@@ -36,8 +37,6 @@
  *
  *  Originally by Douglas A Lewis (dalewis@acsu.buffalo.edu)
  */
-#define MATCH_MAX_CALLS 512  /* ACK! This dies when it's less that this
-                                and we have long lines to parse */
 int
 match(const char *mask, const char *name)
 {
@@ -45,8 +44,7 @@ match(const char *mask, const char *name)
   const unsigned char* n = (const unsigned char*)  name;
   const unsigned char* ma = (const unsigned char*) mask;
   const unsigned char* na = (const unsigned char*) name;
-  int wild  = 0;
-  int calls = 0;
+  int wild = 0;
 
   assert(mask != NULL);
   assert(name != NULL);
@@ -54,7 +52,7 @@ match(const char *mask, const char *name)
   if (!mask || !name)
     return(0);
 
-  while (calls++ < MATCH_MAX_CALLS)
+  while (1)
   {
     if (*m == '*')
     {
@@ -124,7 +122,6 @@ match_esc(const char *mask, const char *name)
   const unsigned char* ma = (const unsigned char*) mask;
   const unsigned char* na = (const unsigned char*) name;
   int wild  = 0;
-  int calls = 0;
   int quote = 0;
 
   assert(mask != NULL);
@@ -133,7 +130,7 @@ match_esc(const char *mask, const char *name)
   if (!mask || !name)
     return(0);
 
-  while (calls++ < MATCH_MAX_CALLS)
+  while (1)
   {
     if (quote)
       quote++;
