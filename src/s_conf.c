@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.501 2005/06/01 19:26:07 db Exp $
+ *  $Id: s_conf.c,v 7.502 2005/06/01 20:24:14 db Exp $
  */
 
 #include "stdinc.h"
@@ -529,7 +529,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
   struct AccessItem *aconf;
   struct MatchItem *matchitem;
   struct ClassItem *classitem;
-  char *host, *reason, *user, *classname, *oreason, typex;
+  char *host, *reason, *user, *classname, *oreason;
   char buf[10], *p = buf;
   int port;
 
@@ -568,15 +568,8 @@ report_confitem_types(struct Client *source_p, ConfType type)
       conf = ptr->data;
       matchitem = (struct MatchItem *)map_to_conf(conf);
 
-      if (matchitem->action == 0)
-        typex = 'W';
-      else if (matchitem->action == 1)
-	typex = 'R';
-      else
-	typex = 'S';
-
       sendto_one(source_p, form_str(RPL_STATSXLINE),
-		 me.name, source_p->name, 'X', matchitem->count, typex,
+		 me.name, source_p->name, 'X', matchitem->count,
 		 conf->name, matchitem->reason);
     }
     break;
