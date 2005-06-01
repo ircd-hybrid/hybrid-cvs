@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.277 2005/05/31 03:03:28 db Exp $
+ *  $Id: s_conf.h,v 7.278 2005/06/01 21:31:11 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -469,6 +469,10 @@ extern void *map_to_conf(struct ConfItem *);
 struct ConfItem *unmap_conf_item(void *);
 
 extern int yylex(void);
+
+#define TK_SECONDS 0
+#define TK_MINUTES 1
+extern time_t valid_tkline(char *, int);
 
 #define NOT_AUTHORIZED    (-1)
 #define IRCD_SOCKET_ERROR (-2)

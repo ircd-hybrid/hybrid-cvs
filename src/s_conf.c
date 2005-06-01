@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.502 2005/06/01 20:24:14 db Exp $
+ *  $Id: s_conf.c,v 7.503 2005/06/01 21:31:15 db Exp $
  */
 
 #include "stdinc.h"
@@ -3148,4 +3148,53 @@ int
 conf_yy_fatal_error(const char *msg)
 {
   return(0);
+}
+
+/*
+ * valid_tkline()
+ * 
+ * inputs       - pointer to ascii string to check
+ *              - whether the specified time is in seconds or minutes
+ * output       - -1 not enough parameters
+ *              - 0 if not an integer number, else the number
+ * side effects - none
+ * Originally written by Dianora (Diane, db@db.net)
+ */
+time_t
+valid_tkline(char *p, int minutes)
+{
+  time_t result = 0;
+
+  while(*p)
+  {
+    if(IsDigit(*p))
+    {
+      result *= 10;
+      result += ((*p) & 0xF);
+      p++;
+    }
+    else
+      return(0);
+  }
+  /* in the degenerate case where oper does a /quote kline 0 user@host :reason 
+   * i.e. they specifically use 0, I am going to return 1 instead
+   * as a return value of non-zero is used to flag it as a temporary kline
+   */
+
+  if(result == 0)
+    result = 1;
+
+  /* 
+   * If the incoming time is in seconds convert it to minutes for the purpose
+   * of this calculation
+   */
+  if(!minutes)
+      result = (time_t)result / (time_t)60; 
+
+  if(result > MAX_TDKLINE_TIME)
+    result = MAX_TDKLINE_TIME;
+
+  result = (time_t)result * (time_t)60;  /* turn it into seconds */
+
+  return(result);
 }

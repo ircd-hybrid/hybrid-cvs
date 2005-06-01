@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.184 2005/06/01 18:23:34 db Exp $
+ *  $Id: m_kline.c,v 1.185 2005/06/01 21:31:13 db Exp $
  */
 
 #include "stdinc.h"
@@ -108,14 +108,10 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.184 $";
+const char *_version = "$Revision: 1.185 $";
 #endif
 
-#define TK_SECONDS 0
-#define TK_MINUTES 1
-
 /* Local function prototypes */
-static time_t valid_tkline(char *, int);
 static char *cluster(char *);
 static int find_user_host(struct Client *source_p,
                           char *user_host_or_nick, char *user, char *host);
@@ -166,7 +162,6 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   parv++;
   parc--;
 
-  /* XXX make valid_tkline() global shared with m_xline.c */
   tkline_time = valid_tkline(*parv, TK_MINUTES);
 
   if (tkline_time != 0)
@@ -490,53 +485,6 @@ apply_tdline(struct Client *source_p, struct ConfItem *conf,
   rehashed_klines = 1;
 }
 
-/*
- * valid_tkline()
- * 
- * inputs       - pointer to ascii string to check
- *              - whether the specified time is in seconds or minutes
- * output       - -1 not enough parameters
- *              - 0 if not an integer number, else the number
- * side effects - none
- */
-static time_t
-valid_tkline(char *p, int minutes)
-{
-  time_t result = 0;
-
-  while(*p)
-  {
-    if(IsDigit(*p))
-    {
-      result *= 10;
-      result += ((*p) & 0xF);
-      p++;
-    }
-    else
-      return(0);
-  }
-  /* in the degenerate case where oper does a /quote kline 0 user@host :reason 
-   * i.e. they specifically use 0, I am going to return 1 instead
-   * as a return value of non-zero is used to flag it as a temporary kline
-   */
-
-  if(result == 0)
-    result = 1;
-
-  /* 
-   * If the incoming time is in seconds convert it to minutes for the purpose
-   * of this calculation
-   */
-  if(!minutes)
-      result = (time_t)result / (time_t)60; 
-
-  if(result > MAX_TDKLINE_TIME)
-    result = MAX_TDKLINE_TIME;
-
-  result = (time_t)result * (time_t)60;  /* turn it into seconds */
-
-  return(result);
-}
 
 /*
  * cluster()

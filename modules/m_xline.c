@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.44 2005/06/01 18:23:35 db Exp $
+ *  $Id: m_xline.c,v 1.45 2005/06/01 21:31:13 db Exp $
  */
 
 #include "stdinc.h"
@@ -52,15 +52,9 @@ static void ms_xline(struct Client *, struct Client *, int, char **);
 static void mo_unxline(struct Client *, struct Client *, int, char **);
 static void ms_unxline(struct Client *, struct Client *, int, char **);
 
-#define TK_SECONDS 0
-#define TK_MINUTES 1
-
 static int valid_xline(struct Client *, char *, char *, int);
 static void write_xline(struct Client *, char *, char *, time_t);
 static void remove_xline(struct Client *, char *, int);
-
-/* XXX should make this common in s_conf.c */
-static time_t valid_tkline(char *p, int minutes);
 
 struct Message xline_msgtab = {
   "XLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -88,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.44 $";
+const char *_version = "$Revision: 1.45 $";
 #endif
 
 /* mo_xline()
@@ -127,7 +121,6 @@ mo_xline(struct Client *client_p, struct Client *source_p,
   parv++;
   parc--;
 
-  /* XXX make valid_tkline() global shared with m_kline.c */
   tkline_time = valid_tkline(*parv, TK_MINUTES);
 
   if (tkline_time != 0)
@@ -449,52 +442,3 @@ remove_xline(struct Client *source_p, char *gecos, int cluster)
                me.name, source_p->name, gecos);
 }
 
-/* XXX */
-
-/*
- * valid_tkline()
- * 
- * inputs       - pointer to ascii string to check
- *              - whether the specified time is in seconds or minutes
- * output       - -1 not enough parameters
- *              - 0 if not an integer number, else the number
- * side effects - none
- */
-static time_t
-valid_tkline(char *p, int minutes)
-{
-  time_t result = 0;
-
-  while(*p)
-  {
-    if(IsDigit(*p))
-    {
-      result *= 10;
-      result += ((*p) & 0xF);
-      p++;
-    }
-    else
-      return(0);
-  }
-  /* in the degenerate case where oper does a /quote kline 0 user@host :reason 
-   * i.e. they specifically use 0, I am going to return 1 instead
-   * as a return value of non-zero is used to flag it as a temporary kline
-   */
-
-  if(result == 0)
-    result = 1;
-
-  /* 
-   * If the incoming time is in seconds convert it to minutes for the purpose
-   * of this calculation
-   */
-  if(!minutes)
-      result = (time_t)result / (time_t)60; 
-
-  if(result > MAX_TDKLINE_TIME)
-    result = MAX_TDKLINE_TIME;
-
-  result = (time_t)result * (time_t)60;  /* turn it into seconds */
-
-  return(result);
-}
