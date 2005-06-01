@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.500 2005/05/31 03:03:30 db Exp $
+ *  $Id: s_conf.c,v 7.501 2005/06/01 19:26:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -631,7 +631,8 @@ report_confitem_types(struct Client *source_p, ConfType type)
 
       sendto_one(source_p, form_str(RPL_STATSULINE),
 		 me.name, source_p->name, conf->name,
-                 matchitem->user, matchitem->host, buf);
+                 matchitem->user?matchitem->user: "*",
+		 matchitem->host?matchitem->host: "*", buf);
     }
 
     DLINK_FOREACH(ptr, cluster_items.head)
