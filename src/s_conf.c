@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.503 2005/06/01 21:31:15 db Exp $
+ *  $Id: s_conf.c,v 7.504 2005/06/02 23:42:46 db Exp $
  */
 
 #include "stdinc.h"
@@ -72,6 +72,7 @@ dlink_list gdeny_items	 = { NULL, NULL, 0 };
 
 dlink_list temporary_klines = { NULL, NULL, 0 };
 dlink_list temporary_dlines = { NULL, NULL, 0 };
+dlink_list temporary_xlines = { NULL, NULL, 0 };
 
 extern unsigned int lineno;
 extern char linebuf[];
@@ -569,7 +570,8 @@ report_confitem_types(struct Client *source_p, ConfType type)
       matchitem = (struct MatchItem *)map_to_conf(conf);
 
       sendto_one(source_p, form_str(RPL_STATSXLINE),
-		 me.name, source_p->name, 'X', matchitem->count,
+		 me.name, source_p->name, 
+		 matchitem->hold ? 'x': 'X', matchitem->count,
 		 conf->name, matchitem->reason);
     }
     break;
@@ -583,7 +585,9 @@ report_confitem_types(struct Client *source_p, ConfType type)
       buf[0] = '\0';
       p = buf;
 
-      /* some of these are redundant for the sake of consistency with clster{} flags */
+      /* some of these are redundant for the sake of 
+       * consistency with cluster{} flags
+       */
       *p++ = 'c';
 
       if (matchitem->action & SHARED_KLINE)
@@ -2256,37 +2260,38 @@ find_kill(struct Client *client_p)
   return(NULL);
 }
 
-/* add_temp_kline()
+/* add_temp_line()
  *
- * inputs        - pointer to struct AccessItem
+ * inputs        - pointer to struct ConfItem
  * output        - none
- * Side effects  - links in given struct AccessItem into 
- *                 temporary kline link list
+ * Side effects  - links in given struct ConfItem into 
+ *                 temporary *line link list
  */
 void
-add_temp_kline(struct AccessItem *aconf)
+add_temp_line(struct ConfItem *conf)
 {
-  dlinkAdd(aconf, make_dlink_node(), &temporary_klines);
-  SetConfTemporary(aconf);
-  add_conf_by_address(CONF_KILL, aconf);
-}
+  struct AccessItem *aconf;
 
-/* add_temp_dline()
- *
- * inputs        - pointer to struct AccessItem
- * output        - none
- * Side effects  - links in given struct AccessItem into 
- *                 temporary dline link list
- */
-void
-add_temp_dline(struct AccessItem *aconf)
-{
-  dlinkAdd(aconf, make_dlink_node(), &temporary_dlines);
-  SetConfTemporary(aconf);
-  /* XXX ensure user is NULL */
-  MyFree(aconf->user);
-  aconf->user = NULL;
-  add_conf_by_address(CONF_DLINE, aconf);
+  if (conf->type == DLINE_TYPE)
+  {
+    aconf = (struct AccessItem *)map_to_conf(conf);
+    SetConfTemporary(aconf);
+    dlinkAdd(conf, &conf->node, &temporary_dlines);
+    MyFree(aconf->user);
+    aconf->user = NULL;
+    add_conf_by_address(CONF_DLINE, aconf);
+  }
+  else if(conf->type == KLINE_TYPE)
+  {
+    aconf = (struct AccessItem *)map_to_conf(conf);
+    SetConfTemporary(aconf);
+    dlinkAdd(conf, &conf->node, &temporary_klines);
+    add_conf_by_address(CONF_KILL, aconf);
+  }
+  else if(conf->type == XLINE_TYPE)
+  {
+    dlinkAdd(conf, make_dlink_node(), &temporary_xlines);
+  }
 }
 
 /* cleanup_tklines()
@@ -2301,6 +2306,7 @@ cleanup_tklines(void *notused)
 {
   expire_tklines(&temporary_klines);
   expire_tklines(&temporary_dlines);
+  expire_tklines(&temporary_xlines);
 }
 
 /* expire_tklines()
@@ -2312,34 +2318,49 @@ cleanup_tklines(void *notused)
 static void
 expire_tklines(dlink_list *tklist)
 {
-  dlink_node *kill_node;
-  dlink_node *next_node;
-  struct AccessItem *kill_ptr;
+  dlink_node *ptr;
+  dlink_node *next_ptr;
+  struct ConfItem *conf;
+  struct MatchItem *xconf;
+  struct AccessItem *aconf;
 
-  DLINK_FOREACH_SAFE(kill_node, next_node, tklist->head)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, tklist->head)
   {
-    kill_ptr = kill_node->data;
-
-    if (kill_ptr->hold <= CurrentTime)
+    conf = ptr->data;
+    if (conf->type == KLINE_TYPE || conf->type == DLINE_TYPE)
     {
-      /* Alert opers that a TKline expired - Hwy */
-      if (kill_ptr->status & CONF_KILL)
+      aconf = (struct AccessItem *)map_to_conf(conf);
+      if (aconf->hold <= CurrentTime)
       {
-	sendto_realops_flags(UMODE_ALL, L_ALL,
-			     "Temporary K-line for [%s@%s] expired",
-			     (kill_ptr->user) ? kill_ptr->user : "*",
-			     (kill_ptr->host) ? kill_ptr->host : "*");
-      }
-      else
-      {
-	sendto_realops_flags(UMODE_ALL, L_ALL,
-			     "Temporary D-line for [%s] expired",
-			     (kill_ptr->host) ? kill_ptr->host : "*");
-      }
+	/* Alert opers that a TKline expired - Hwy */
+	if (aconf->status & CONF_KILL)
+	{
+	  sendto_realops_flags(UMODE_ALL, L_ALL,
+			       "Temporary K-line for [%s@%s] expired",
+			       (aconf->user) ? aconf->user : "*",
+			       (aconf->host) ? aconf->host : "*");
+	}
+	else
+	{
+	  sendto_realops_flags(UMODE_ALL, L_ALL,
+			       "Temporary D-line for [%s] expired",
+			       (aconf->host) ? aconf->host : "*");
+	}
 
-      delete_one_address_conf(kill_ptr->host, kill_ptr);
-      dlinkDelete(kill_node, tklist);
-      free_dlink_node(kill_node);
+	delete_one_address_conf(aconf->host, aconf);
+	dlinkDelete(ptr, tklist);
+      }
+    }
+    else if(conf->type == XLINE_TYPE)
+    {
+      xconf = (struct MatchItem *)map_to_conf(conf);
+      if (xconf->hold <= CurrentTime)
+      {
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+			     "Temporary X-line for [%s] expired", conf->name);
+	dlinkDelete(ptr, tklist);
+	delete_conf_item(conf);
+      }
     }
   }
 }

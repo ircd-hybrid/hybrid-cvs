@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.45 2005/06/01 21:31:13 db Exp $
+ *  $Id: m_xline.c,v 1.46 2005/06/02 23:42:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -28,6 +28,7 @@
 #include "client.h"
 #include "common.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "ircd.h"
 #include "hostmask.h"
 #include "numeric.h"
@@ -82,8 +83,10 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
+
+static char buffer[IRCD_BUFSIZE];
 
 /* mo_xline()
  *
@@ -196,7 +199,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  write_xline(source_p, gecos, reason, 0);
+  write_xline(source_p, gecos, reason, tkline_time);
 }
 
 /* ms_xline()
@@ -418,7 +421,26 @@ write_xline(struct Client *source_p, char *gecos, char *reason,
   set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
-  if (tkline_time == 0)
+
+  if (tkline_time != 0)
+  {
+    ircsprintf(buffer, "Temporary X-line %d min. - %s (%s)",
+	       (int)(tkline_time/60), reason, current_date);
+
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+			 "%s added temporary %d min. X-Line for [%s] [%s]",
+			 get_oper_name(source_p), (int)tkline_time/60,
+			 conf->name, match_item->reason);
+    sendto_one(source_p, ":%s NOTICE %s :Added temporary %d min. X-Line [%s]",
+	       MyConnect(source_p) ? me.name : ID_or_name(&me, source_p->from),
+	       source_p->name, (int)tkline_time/60, conf->name);
+    ilog(L_TRACE, "%s added temporary %d min. X-Line for [%s] [%s]",
+	 source_p->name, (int)tkline_time/60,
+	 conf->name, match_item->reason);
+    match_item->hold = CurrentTime + tkline_time;
+    add_temp_line(conf);
+  }
+  else
     write_conf_line(source_p, conf, current_date, cur_time);
   rehashed_xlines = 1;
 }

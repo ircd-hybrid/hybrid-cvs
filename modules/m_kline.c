@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.185 2005/06/01 21:31:13 db Exp $
+ *  $Id: m_kline.c,v 1.186 2005/06/02 23:42:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.185 $";
+const char *_version = "$Revision: 1.186 $";
 #endif
 
 /* Local function prototypes */
@@ -441,7 +441,7 @@ apply_tkline(struct Client *source_p, struct ConfItem *conf,
 
   aconf = (struct AccessItem *)map_to_conf(conf);
   aconf->hold = CurrentTime + tkline_time;
-  add_temp_kline(aconf);
+  add_temp_line(conf);
   sendto_realops_flags(UMODE_ALL, L_ALL,
 		       "%s added temporary %d min. K-Line for [%s@%s] [%s]",
 		       get_oper_name(source_p), tkline_time/60,
@@ -471,7 +471,7 @@ apply_tdline(struct Client *source_p, struct ConfItem *conf,
   aconf = (struct AccessItem *)map_to_conf(conf);
   aconf->hold = CurrentTime + tkline_time;
 
-  add_temp_dline(aconf);
+  add_temp_line(conf);
   sendto_realops_flags(UMODE_ALL, L_ALL,
 		       "%s added temporary %d min. D-Line for [%s] [%s]",
 		       get_oper_name(source_p), tkline_time/60,

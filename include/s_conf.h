@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.278 2005/06/01 21:31:11 db Exp $
+ *  $Id: s_conf.h,v 7.279 2005/06/02 23:42:42 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -79,6 +79,7 @@ struct MatchItem
   int count;		/* How many times this matchitem has been matched */
   int ref_count;	/* How many times is this matchitem in use */
   int illegal;		/* Should it be deleted when possible? */
+  time_t           hold;     /* Hold action until this time (calendar time) */
 };
 
 struct AccessItem
@@ -450,8 +451,7 @@ extern void write_conf_line(const struct Client *, struct ConfItem *,
                             const char *, time_t);
 extern int remove_conf_line(ConfType, struct Client *, const char *,
                             const char *);
-extern void add_temp_kline(struct AccessItem *);
-extern void add_temp_dline(struct AccessItem *);
+extern void add_temp_line(struct ConfItem *);
 extern void cleanup_tklines(void *);
 extern const char *get_conf_name(ConfType);
 extern int rehash(int);
@@ -463,10 +463,9 @@ extern void conf_add_d_conf(struct AccessItem *);
 extern void parse_csv_file(FBFILE *, ConfType);
 
 extern char *get_oper_name(const struct Client *);
-/* XXX consider inlining this */
+
 extern void *map_to_conf(struct ConfItem *);
-/* XXX consider inlining this */
-struct ConfItem *unmap_conf_item(void *);
+extern struct ConfItem *unmap_conf_item(void *);
 
 extern int yylex(void);
 

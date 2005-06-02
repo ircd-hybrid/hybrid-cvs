@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.435 2005/06/01 18:02:26 db Exp $
+ *  $Id: client.c,v 7.436 2005/06/02 23:42:46 db Exp $
  */
 
 #include "stdinc.h"
@@ -272,7 +272,7 @@ check_pings_list(dlink_list *list)
 	  DupString(aconf->reason, "idle exceeder");
 	  DupString(aconf->user, client_p->username);
 	  aconf->hold = CurrentTime + 60;
-	  add_temp_kline(aconf);
+	  add_temp_line(conf);
 	  sendto_realops_flags(UMODE_ALL, L_ALL,
 		       "Idle time limit exceeded for %s - temp k-lining",
 			       get_client_name(client_p, HIDE_IP));
