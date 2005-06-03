@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2000
 ; David Taylor <davidt@yadt.co.uk>, 2000.
-; $Id: ircd-german.lang,v 1.8 2004/03/06 22:28:46 michael Exp $
+; $Id: ircd-german.lang,v 1.9 2005/06/03 21:00:30 michael Exp $
 
 RPL_WELCOME:             :%s 001 %s :Wilkommen im %s Internet Relay Chat Network %s
 RPL_YOURHOST:            :%s 002 %s :Ihr Host ist %s, die aktuelle Version ist %s
@@ -30,7 +30,6 @@ RPL_LOCALUSERS:          :%s 265 %s :Anzahl aller lokalen User, zur Zeit: %d  Ma
 RPL_GLOBALUSERS:         :%s 266 %s :Anzahl der globalen User, zur Zeit: %d  Maximum: %d
 RPL_UNAWAY:              :%s 305 %s :Willkommen zurück. /away ist nun deaktiviert.
 RPL_NOWAWAY:             :%s 306 %s :Ok, /away ist aktiviert
-RPL_WHOISOPERATOR:       :%s 313 %s %s :ist ein IRC Operator
 RPL_ENDOFWHO:            :%s 315 %s %s :Ende des /WHO Reportes.
 RPL_WHOISIDLE:           :%s 317 %s %s %d %d :Sekunden untätig, loggte sich zu dieser Zeit ein.
 RPL_ENDOFWHOIS:          :%s 318 %s %s :Ende des /WHOIS Reportes.

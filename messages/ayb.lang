@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2000
 ; David Taylor <davidt@yadt.co.uk>, 2000.
-; $Id: ayb.lang,v 1.4 2003/05/19 15:05:39 joshk Exp $
+; $Id: ayb.lang,v 1.5 2005/06/03 21:00:30 michael Exp $
 
 RPL_WELCOME:             :%s 001 %s :ALL YOUR BASE ARE BELONG TO %s, %s!!!
 RPL_CREATED:             :%s 003 %s :Someone set up us the server %s
@@ -16,7 +16,6 @@ RPL_LOCALUSERS:          :%s 265 %s :%d users (max %d) are belong to me
 RPL_GLOBALUSERS:         :%s 266 %s :%d users (max %d) are belong to the network
 RPL_UNAWAY:              :%s 305 %s :OK, you're not /away anymore. Did you move Zig for great justice?
 RPL_NOWAWAY:             :%s 306 %s :OK, you're /away now. Hurry back!
-RPL_WHOISOPERATOR:       :%s 313 %s %s :is a Zig for Great Justice
 RPL_YOUREOPER:           :%s 381 %s :SOMEONE SET YOU UP THE /KILL FOR GREAT JUSTICE!
 ERR_NOSUCHNICK:          :%s 401 %s %s :No such Zig
 ERR_TOOMANYCHANNELS:     :%s 405 %s %s :Too many channels are belong to you

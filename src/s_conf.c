@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.507 2005/06/03 16:43:46 db Exp $
+ *  $Id: s_conf.c,v 7.508 2005/06/03 21:00:35 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2009,6 +2009,8 @@ set_default_conf(void)
   ConfigServerHide.hide_servers = NO;
   ConfigServerHide.hide_server_ips = NO;
 
+  DupString(ConfigFileEntry.default_operstring, "is an IRC Operator");
+  DupString(ConfigFileEntry.default_adminstring, "is a Server Administrator");
   ConfigFileEntry.burst_away = 0;
   ConfigFileEntry.tkline_expire_notices = YES;
   ConfigFileEntry.hide_spoof_ips = YES;
@@ -2673,6 +2675,11 @@ clear_out_old_conf(void)
   AdminInfo.email = NULL;
   MyFree(AdminInfo.description);
   AdminInfo.description = NULL;
+
+  MyFree(ConfigFileEntry.default_operstring);
+  ConfigFileEntry.default_operstring = NULL;
+  MyFree(ConfigFileEntry.default_adminstring);
+  ConfigFileEntry.default_adminstring = NULL;
 
   /* operator{} and class{} blocks are freed above */
   /* clean out listeners */

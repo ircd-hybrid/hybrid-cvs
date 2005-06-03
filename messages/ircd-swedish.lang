@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 swedish message file
 ; Copyright (C) 2000
 ; David Taylor <davidt@yadt.co.uk>, 2000.
-; $Id: ircd-swedish.lang,v 1.4 2003/05/18 14:15:58 adx Exp $
+; $Id: ircd-swedish.lang,v 1.5 2005/06/03 21:00:30 michael Exp $
 
 RPL_WELCOME:             :%s 001 %s :Välkommen till %s Internet Relay Chat Network %s
 RPL_YOURHOST:            :%s 002 %s :Din värd är %s, som kör version %s
@@ -27,7 +27,6 @@ RPL_LOCALUSERS:          :%s 265 %s :Antal lokala användare: %d  Max: %d
 RPL_GLOBALUSERS:         :%s 266 %s :Antal globala användare: %d  Max: %d
 RPL_UNAWAY:              :%s 305 %s :Du är inte längre markerad som borta
 RPL_NOWAWAY:             :%s 306 %s :Du har blivit markerad som borta
-RPL_WHOISOPERATOR:       :%s 313 %s %s :är en IRC Operatör
 RPL_ENDOFWHO:            :%s 315 %s %s :Slut på /WHO lista.
 RPL_WHOISIDLE:           :%s 317 %s %s %d %d :sekunder overksam, login tid
 RPL_ENDOFWHOIS:          :%s 318 %s %s :Slut på /WHOIS lista.

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.380 2005/06/03 16:43:46 db Exp $
+ *  $Id: ircd_parser.y,v 1.381 2005/06/03 21:00:34 michael Exp $
  */
 
 %{
@@ -151,6 +151,8 @@ unhook_hub_leaf_confs(void)
 %token  CONNECT
 %token  CONNECTFREQ
 %token  CRYPTLINK
+%token  DEFAULT_ADMINSTRING
+%token  DEFAULT_OPERSTRING
 %token  DEFAULT_CIPHER_PREFERENCE
 %token  DEFAULT_FLOODCOUNT
 %token  DEFAULT_SPLIT_SERVER_COUNT
@@ -2602,8 +2604,29 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
                     general_throttle_time | general_havent_read_conf |
                     general_dot_in_ip6_addr | general_ping_cookie |
                     general_disable_auth | general_burst_away |
-		    general_tkline_expire_notices |
+		    general_tkline_expire_notices | general_default_operstring |
+                    general_default_adminstring |
 		    error;
+
+
+
+general_default_operstring: DEFAULT_OPERSTRING '=' QSTRING ';'
+{
+  if (ypass == 2)
+  {
+    MyFree(ConfigFileEntry.default_operstring);
+    DupString(ConfigFileEntry.default_operstring, yylval.string);
+  }
+};
+
+general_default_adminstring: DEFAULT_ADMINSTRING '=' QSTRING ';'
+{
+  if (ypass == 2)
+  {
+    MyFree(ConfigFileEntry.default_adminstring);
+    DupString(ConfigFileEntry.default_adminstring, yylval.string);
+  }
+};
 
 general_burst_away: BURST_AWAY '=' TBOOL ';'
 {
@@ -2613,7 +2636,7 @@ general_burst_away: BURST_AWAY '=' TBOOL ';'
 
 general_tkline_expire_notices: TKLINE_EXPIRE_NOTICES '=' TBOOL ';'
 {
-    ConfigFileEntry.tkline_expire_notices = yylval.number;
+  ConfigFileEntry.tkline_expire_notices = yylval.number;
 };
 
 general_kill_chase_time_limit: KILL_CHASE_TIME_LIMIT '=' NUMBER ';'
@@ -2707,13 +2730,9 @@ general_kline_with_reason: KLINE_WITH_REASON '=' TBOOL ';'
 
 general_kline_reason: KLINE_REASON '=' QSTRING ';'
 {
-  if (ypass == 1)
+  if (ypass == 2)
   {
     MyFree(ConfigFileEntry.kline_reason);
-    ConfigFileEntry.kline_reason = NULL;
-  }
-  else
-  {
     DupString(ConfigFileEntry.kline_reason, yylval.string);
   }
 };

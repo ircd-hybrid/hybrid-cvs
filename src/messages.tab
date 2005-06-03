@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.102 2005/06/01 20:24:14 db Exp $
+ *   $Id: messages.tab,v 7.103 2005/06/03 21:00:34 michael Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -337,7 +337,7 @@ static struct NumericInfo replies[] = {
 /* 310 */  {NULL, NULL, NULL},
 /* 311 */  {"RPL_WHOISUSER", ":%s 311 %s %s %s %s * :%s", NULL},
 /* 312 */  {"RPL_WHOISSERVER", ":%s 312 %s %s %s :%s", NULL},
-/* 313 */  {"RPL_WHOISOPERATOR", ":%s 313 %s %s :is an IRC Operator", NULL},
+/* 313 */  {"RPL_WHOISOPERATOR", ":%s 313 %s %s :%s", NULL},
 /* 314 */  {"RPL_WHOWASUSER", ":%s 314 %s %s %s %s * :%s", NULL},
 /* 315 */  {"RPL_ENDOFWHO", ":%s 315 %s %s :End of /WHO list.", NULL},
 /* 316 */  {"RPL_WHOISCHANOP", NULL, NULL},
