@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_map.c,v 1.21 2005/05/28 13:48:05 michael Exp $
+ *  $Id: m_map.c,v 1.22 2005/06/03 21:00:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,7 @@ void _moddeinit(void)
   mod_del_cmd(&map_msgtab);
 }
 
-const char *_version = "$Revision: 1.21 $";
+const char *_version = "$Revision: 1.22 $";
 #endif
 
 static char buf[BUFSIZE];
@@ -100,12 +100,16 @@ dump_map(struct Client *client_p, struct Client *root_p, char *pbuf)
 
   strlcat(pbuf, root_p->name, BUFSIZE);
 
-  if (root_p->id[0] != '\0')
+  /* IsOper isn't called *that* often. */
+  if (IsOper(client_p))
   {
-    char idbuf[IDLEN + 3];  /* [ID]\0 */
+    if (root_p->id[0] != '\0')
+    {
+      char idbuf[IDLEN + 3];  /* [ID]\0 */
 
-    snprintf(idbuf, sizeof(idbuf), "[%s]", root_p->id);
-    strlcat(pbuf, idbuf, BUFSIZE);
+      snprintf(idbuf, sizeof(idbuf), "[%s]", root_p->id);
+      strlcat(pbuf, idbuf, BUFSIZE);
+    }
   }
 
   len = strlen(buf);
