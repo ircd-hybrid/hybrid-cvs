@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.436 2005/06/02 23:42:46 db Exp $
+ *  $Id: client.c,v 7.437 2005/06/03 02:41:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -449,14 +449,14 @@ check_conf_klines(void)
 
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name,
-		     aconf->passwd ? aconf->passwd : "G-lined");
+		     aconf->reason ? aconf->reason : "G-lined");
 	} 
 	else 
 	{
 	  if (ConfigFileEntry.kline_with_connection_closed)
 	    reason = "Connection closed";
-	  else if (ConfigFileEntry.kline_with_reason && aconf->passwd)
-	    reason = aconf->passwd;
+	  else if (ConfigFileEntry.kline_with_reason && aconf->reason)
+	    reason = aconf->reason;
 	  else
 	    reason = "G-lined";
 
