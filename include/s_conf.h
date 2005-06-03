@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.281 2005/06/03 01:10:42 db Exp $
+ *  $Id: s_conf.h,v 7.282 2005/06/03 16:43:42 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -283,7 +283,7 @@ struct config_file_entry
   int ts_max_delta;
   int ts_warn_delta;
   int kline_with_reason;
-  int kline_with_connection_closed;
+  char *kline_reason;
   int warn_no_nline;
   int stats_o_oper_only;
   int stats_k_oper_only;

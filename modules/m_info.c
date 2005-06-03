@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.91 2005/05/23 10:16:14 michael Exp $
+ *  $Id: m_info.c,v 1.92 2005/06/03 16:43:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&info_msgtab);
 }
 
-const char *_version = "$Revision: 1.91 $";
+const char *_version = "$Revision: 1.92 $";
 #endif
 
 /*
@@ -181,10 +181,10 @@ static struct InfoStruct info_table[] =
     "Nick Change Tracker for KILL"
   },
   {
-    "kline_with_connection_closed",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigFileEntry.kline_with_connection_closed,
-    "K-lined clients sign off with 'Connection closed'"
+    "kline_reason",
+    OUTPUT_STRING,
+    &ConfigFileEntry.kline_reason,
+    "Reason given to K-lined clients on sign off"
   },
   {
     "kline_with_reason",

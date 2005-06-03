@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.506 2005/06/03 01:10:44 db Exp $
+ *  $Id: s_conf.c,v 7.507 2005/06/03 16:43:46 db Exp $
  */
 
 #include "stdinc.h"
@@ -2030,7 +2030,7 @@ set_default_conf(void)
   ConfigFileEntry.ts_warn_delta = TS_WARN_DELTA_DEFAULT;
   ConfigFileEntry.ts_max_delta = TS_MAX_DELTA_DEFAULT;  /* XXX */
   ConfigFileEntry.kline_with_reason = YES;
-  ConfigFileEntry.kline_with_connection_closed = NO;
+  ConfigFileEntry.kline_reason = NULL;
   ConfigFileEntry.warn_no_nline = YES;
   ConfigFileEntry.stats_o_oper_only = NO; /* XXX */
   ConfigFileEntry.stats_k_oper_only = 1;  /* masked */

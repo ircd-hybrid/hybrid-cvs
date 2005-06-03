@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.437 2005/06/03 02:41:18 db Exp $
+ *  $Id: client.c,v 7.438 2005/06/03 16:43:46 db Exp $
  */
 
 #include "stdinc.h"
@@ -368,8 +368,9 @@ check_conf_klines(void)
 {               
   struct Client *client_p;       /* current local client_p being examined */
   struct AccessItem *aconf = NULL;
-  const char *reason;            /* pointer to reason string */
   dlink_node *ptr, *next_ptr;
+  const char *user_reason=NULL;		/* What is sent to user */
+  const char *channel_reason=NULL;	/* What is sent to channel */
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, local_client_list.head)
   {
@@ -390,31 +391,21 @@ check_conf_klines(void)
       sendto_realops_flags(UMODE_ALL, L_ALL,"DLINE active for %s",
                            get_client_name(client_p, HIDE_IP));
 
-      if (ConfigFileEntry.kline_with_connection_closed &&
-          ConfigFileEntry.kline_with_reason)
-      {
-        reason = "Connection closed";
-
-        if (IsPerson(client_p))
-          sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
-                     me.name, client_p->name,
-                     aconf->reason ? aconf->reason : "D-lined");
-      }
+      if (ConfigFileEntry.kline_with_reason)
+	user_reason = aconf->reason ? aconf->reason : "D-lined";
       else
-      {
-	if (ConfigFileEntry.kline_with_connection_closed)
-	  reason = "Connection closed";
-	else if (ConfigFileEntry.kline_with_reason && aconf->reason)
-	  reason = aconf->reason;
-	else
-	  reason = "D-lined";
+	user_reason = "D-lined";
 
-	if (IsPerson(client_p))
-	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
-		     me.name, client_p->name, reason);
-      }
+      if (ConfigFileEntry.kline_reason != NULL)
+	channel_reason = ConfigFileEntry.kline_reason;
+      else
+	channel_reason = user_reason;
 
-      exit_client(client_p, client_p, &me, reason);
+      if (IsPerson(client_p))
+	sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
+		   me.name, client_p->name, user_reason);
+
+      exit_client(client_p, client_p, &me, channel_reason);
       continue; /* and go examine next fd/client_p */
     }
 
@@ -442,29 +433,21 @@ check_conf_klines(void)
 	sendto_realops_flags(UMODE_ALL, L_ALL, "GLINE active for %s",
 			     get_client_name(client_p, HIDE_IP));
 			    
-	if (ConfigFileEntry.kline_with_connection_closed &&
-            ConfigFileEntry.kline_with_reason)
-	{
-	  reason = "Connection closed";
+	if (ConfigFileEntry.kline_with_reason)
+	  user_reason = aconf->reason ? aconf->reason : "G-lined";
+	else
+	  user_reason = "G-lined";
 
+	if (ConfigFileEntry.kline_reason != NULL)
+	  channel_reason = ConfigFileEntry.kline_reason;
+	else
+	  channel_reason = user_reason;
+
+	if (IsPerson(client_p))
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
-		     me.name, client_p->name,
-		     aconf->reason ? aconf->reason : "G-lined");
-	} 
-	else 
-	{
-	  if (ConfigFileEntry.kline_with_connection_closed)
-	    reason = "Connection closed";
-	  else if (ConfigFileEntry.kline_with_reason && aconf->reason)
-	    reason = aconf->reason;
-	  else
-	    reason = "G-lined";
+		     me.name, client_p->name, user_reason);
 
-	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
-		     me.name, client_p->name, reason);
-	}
-
-	exit_client(client_p, client_p, &me, reason);
+	exit_client(client_p, client_p, &me, channel_reason);
 	/* and go examine next fd/client_p */    
 	continue;
       } 
@@ -482,29 +465,22 @@ check_conf_klines(void)
 	sendto_realops_flags(UMODE_ALL, L_ALL, "KLINE active for %s",
 			     get_client_name(client_p, HIDE_IP));
 
-	if (ConfigFileEntry.kline_with_connection_closed &&
-            ConfigFileEntry.kline_with_reason)
-	{
-	  reason = "Connection closed";
-
-	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
-		     me.name, client_p->name, 
-		     aconf->reason ? aconf->reason : "K-lined");
-	}
+			    
+	if (ConfigFileEntry.kline_with_reason)
+	  user_reason = aconf->reason ? aconf->reason : "K-lined";
 	else
-	{
-	  if (ConfigFileEntry.kline_with_connection_closed)
-	    reason = "Connection closed";
-	  else if (ConfigFileEntry.kline_with_reason && aconf->reason)
-	    reason = aconf->reason;
-	  else
-	    reason = "K-lined";
+	  user_reason = "K-lined";
 
+	if (ConfigFileEntry.kline_reason != NULL)
+	  channel_reason = ConfigFileEntry.kline_reason;
+	else
+	  channel_reason = user_reason;
+
+	if (IsPerson(client_p))
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
-		     me.name, client_p->name, reason);
-	}
+		     me.name, client_p->name, user_reason);
 
-	exit_client(client_p, client_p, &me, reason);
+	exit_client(client_p, client_p, &me, channel_reason);
 	continue; 
       }
     }
@@ -539,7 +515,8 @@ check_xlines(void)
   struct Client *client_p;       /* current local client_p being examined */
   struct ConfItem *conf;
   struct MatchItem *xconf = NULL;
-  const char *reason;            /* pointer to reason string */
+  const char *user_reason;      /* pointer to user reason string */
+  const char *channel_reason;   /* pointer to channel reason string */
   dlink_node *ptr, *next_ptr;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, local_client_list.head)
@@ -561,18 +538,21 @@ check_xlines(void)
       sendto_realops_flags(UMODE_ALL, L_ALL,"XLINE active for %s",
 			   get_client_name(client_p, HIDE_IP));
       
-      if (ConfigFileEntry.kline_with_connection_closed)
-	reason = "Connection closed";
-      else if (ConfigFileEntry.kline_with_reason && xconf->reason)
-	reason = xconf->reason;
+      if (ConfigFileEntry.kline_with_reason)
+	user_reason = xconf->reason ? xconf->reason : "X-lined";
       else
-	reason = "X-lined";
+	user_reason = "X-lined";
+
+      if (ConfigFileEntry.kline_reason != NULL)
+	channel_reason = ConfigFileEntry.kline_reason;
+      else
+	channel_reason = user_reason;
 
       if (IsPerson(client_p))
 	sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
-		   me.name, client_p->name, reason);
+		   me.name, client_p->name, user_reason);
 
-      exit_client(client_p, client_p, &me, reason);
+      exit_client(client_p, client_p, &me, channel_reason);
     }
   }
 }

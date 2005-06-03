@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.379 2005/06/03 01:10:43 db Exp $
+ *  $Id: ircd_parser.y,v 1.380 2005/06/03 16:43:46 db Exp $
  */
 
 %{
@@ -206,7 +206,7 @@ unhook_hub_leaf_confs(void)
 %token	KILL_CHASE_TIME_LIMIT
 %token  KLINE
 %token  KLINE_EXEMPT
-%token  KLINE_WITH_CONNECTION_CLOSED
+%token  KLINE_REASON
 %token  KLINE_WITH_REASON
 %token  KNOCK_DELAY
 %token  KNOCK_DELAY_CHANNEL
@@ -2582,7 +2582,7 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
 		    general_max_accept | general_anti_spam_exit_message_time |
                     general_ts_warn_delta | general_ts_max_delta |
                     general_kill_chase_time_limit | general_kline_with_reason |
-                    general_kline_with_connection_closed |
+                    general_kline_reason |
                     general_warn_no_nline | general_dots_in_ident |
                     general_stats_o_oper_only | general_stats_k_oper_only |
                     general_pace_wait | general_stats_i_oper_only |
@@ -2705,10 +2705,17 @@ general_kline_with_reason: KLINE_WITH_REASON '=' TBOOL ';'
     ConfigFileEntry.kline_with_reason = yylval.number;
 };
 
-general_kline_with_connection_closed: KLINE_WITH_CONNECTION_CLOSED '=' TBOOL ';'
+general_kline_reason: KLINE_REASON '=' QSTRING ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.kline_with_connection_closed = yylval.number;
+  if (ypass == 1)
+  {
+    MyFree(ConfigFileEntry.kline_reason);
+    ConfigFileEntry.kline_reason = NULL;
+  }
+  else
+  {
+    DupString(ConfigFileEntry.kline_reason, yylval.string);
+  }
 };
 
 general_warn_no_nline: WARN_NO_NLINE '=' TBOOL ';'
