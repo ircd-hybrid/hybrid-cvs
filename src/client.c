@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.438 2005/06/03 16:43:46 db Exp $
+ *  $Id: client.c,v 7.439 2005/06/03 17:22:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -75,6 +75,7 @@ static dlink_node *eac_next;  /* next aborted client to exit */
 
 static void check_pings_list(dlink_list *);
 static void check_unknowns_list(void);
+static void ban_them(struct Client *client_p, struct ConfItem *conf);
 
 
 /* init_client()
@@ -368,9 +369,8 @@ check_conf_klines(void)
 {               
   struct Client *client_p;       /* current local client_p being examined */
   struct AccessItem *aconf = NULL;
+  struct ConfItem *conf=NULL;
   dlink_node *ptr, *next_ptr;
-  const char *user_reason=NULL;		/* What is sent to user */
-  const char *channel_reason=NULL;	/* What is sent to channel */
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, local_client_list.head)
   {
@@ -388,24 +388,8 @@ check_conf_klines(void)
       if (aconf->status & CONF_EXEMPTDLINE)
 	continue;
 
-      sendto_realops_flags(UMODE_ALL, L_ALL,"DLINE active for %s",
-                           get_client_name(client_p, HIDE_IP));
-
-      if (ConfigFileEntry.kline_with_reason)
-	user_reason = aconf->reason ? aconf->reason : "D-lined";
-      else
-	user_reason = "D-lined";
-
-      if (ConfigFileEntry.kline_reason != NULL)
-	channel_reason = ConfigFileEntry.kline_reason;
-      else
-	channel_reason = user_reason;
-
-      if (IsPerson(client_p))
-	sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
-		   me.name, client_p->name, user_reason);
-
-      exit_client(client_p, client_p, &me, channel_reason);
+      conf = unmap_conf_item(aconf);
+      ban_them(client_p, conf);
       continue; /* and go examine next fd/client_p */
     }
 
@@ -430,24 +414,8 @@ check_conf_klines(void)
 	  continue;
 	}
        
-	sendto_realops_flags(UMODE_ALL, L_ALL, "GLINE active for %s",
-			     get_client_name(client_p, HIDE_IP));
-			    
-	if (ConfigFileEntry.kline_with_reason)
-	  user_reason = aconf->reason ? aconf->reason : "G-lined";
-	else
-	  user_reason = "G-lined";
-
-	if (ConfigFileEntry.kline_reason != NULL)
-	  channel_reason = ConfigFileEntry.kline_reason;
-	else
-	  channel_reason = user_reason;
-
-	if (IsPerson(client_p))
-	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
-		     me.name, client_p->name, user_reason);
-
-	exit_client(client_p, client_p, &me, channel_reason);
+	conf = unmap_conf_item(aconf);
+	ban_them(client_p, conf);
 	/* and go examine next fd/client_p */    
 	continue;
       } 
@@ -462,25 +430,8 @@ check_conf_klines(void)
 	  continue;
 	}
 
-	sendto_realops_flags(UMODE_ALL, L_ALL, "KLINE active for %s",
-			     get_client_name(client_p, HIDE_IP));
-
-			    
-	if (ConfigFileEntry.kline_with_reason)
-	  user_reason = aconf->reason ? aconf->reason : "K-lined";
-	else
-	  user_reason = "K-lined";
-
-	if (ConfigFileEntry.kline_reason != NULL)
-	  channel_reason = ConfigFileEntry.kline_reason;
-	else
-	  channel_reason = user_reason;
-
-	if (IsPerson(client_p))
-	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
-		     me.name, client_p->name, user_reason);
-
-	exit_client(client_p, client_p, &me, channel_reason);
+	conf = unmap_conf_item(aconf);
+	ban_them(client_p, conf);
 	continue; 
       }
     }
@@ -515,8 +466,6 @@ check_xlines(void)
   struct Client *client_p;       /* current local client_p being examined */
   struct ConfItem *conf;
   struct MatchItem *xconf = NULL;
-  const char *user_reason;      /* pointer to user reason string */
-  const char *channel_reason;   /* pointer to channel reason string */
   dlink_node *ptr, *next_ptr;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, local_client_list.head)
@@ -534,27 +483,81 @@ check_xlines(void)
     {
       xconf = (struct MatchItem *)map_to_conf(conf);
       xconf->count++;
-
-      sendto_realops_flags(UMODE_ALL, L_ALL,"XLINE active for %s",
-			   get_client_name(client_p, HIDE_IP));
       
-      if (ConfigFileEntry.kline_with_reason)
-	user_reason = xconf->reason ? xconf->reason : "X-lined";
-      else
-	user_reason = "X-lined";
-
-      if (ConfigFileEntry.kline_reason != NULL)
-	channel_reason = ConfigFileEntry.kline_reason;
-      else
-	channel_reason = user_reason;
-
-      if (IsPerson(client_p))
-	sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
-		   me.name, client_p->name, user_reason);
-
-      exit_client(client_p, client_p, &me, channel_reason);
+      ban_them(client_p, conf);
     }
   }
+}
+
+
+/*
+ * ban_them
+ *
+ * inputs	- pointer to client to ban
+ * 		- pointer to ConfItem
+ * output	- NONE
+ * side effects	- given client_p is banned
+ */
+static void
+ban_them(struct Client *client_p, struct ConfItem *conf)
+{
+  const char *user_reason=NULL;		/* What is sent to user */
+  const char *channel_reason=NULL;	/* What is sent to channel */
+  struct AccessItem *aconf=NULL;
+  struct MatchItem *xconf=NULL;
+  const char *type_string;
+  const char dline_string[] = "D-line";
+  const char kline_string[] = "K-line";
+  const char gline_string[] = "G-line";
+  const char xline_string[] = "X-line";
+  const char unknown_string[] = "Unknown";
+
+  switch(conf->type)
+    {
+    case KLINE_TYPE:
+      type_string = kline_string;
+      aconf = map_to_conf(conf);
+      break;
+    case DLINE_TYPE:
+      type_string = dline_string;
+      aconf = map_to_conf(conf);
+      break;
+    case GLINE_TYPE:
+      type_string = gline_string;
+      aconf = map_to_conf(conf);
+      break;
+    case XLINE_TYPE:
+      type_string = xline_string;
+      xconf = map_to_conf(conf);
+      break;
+    default:
+      type_string = unknown_string;
+      break;
+    }
+
+  if (ConfigFileEntry.kline_with_reason)
+  {
+    if (aconf != NULL)
+      user_reason = aconf->reason ? aconf->reason : type_string;
+    if (xconf != NULL)
+      user_reason = xconf->reason ? xconf->reason : type_string;
+  }
+  else
+    user_reason = type_string;
+
+  if (ConfigFileEntry.kline_reason != NULL)
+    channel_reason = ConfigFileEntry.kline_reason;
+  else
+    channel_reason = user_reason;
+
+  sendto_realops_flags(UMODE_ALL, L_ALL,"%s active for %s",
+		       type_string, get_client_name(client_p, HIDE_IP));
+
+  if (IsPerson(client_p))
+    sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
+	       me.name, client_p->name, user_reason);
+
+  exit_client(client_p, client_p, &me, channel_reason);
 }
 
 /* update_client_exit_stats()
