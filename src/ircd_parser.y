@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.378 2005/06/01 18:02:26 db Exp $
+ *  $Id: ircd_parser.y,v 1.379 2005/06/03 01:10:43 db Exp $
  */
 
 %{
@@ -278,6 +278,7 @@ unhook_hub_leaf_confs(void)
 %token  SERVERINFO
 %token  SERVLINK_PATH
 %token  SID
+%token	TKLINE_EXPIRE_NOTICES
 %token  T_SHARED
 %token  T_CLUSTER
 %token  TYPE
@@ -2588,7 +2589,6 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
                     general_pace_wait_simple | general_stats_P_oper_only |
                     general_short_motd | general_no_oper_flood |
                     general_true_no_oper_flood | general_oper_pass_resv |
-                    general_iauth_server | general_iauth_port |
                     general_idletime | general_maximum_links |
                     general_message_locale |
                     general_oper_only_umodes | general_max_targets |
@@ -2602,12 +2602,18 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
                     general_throttle_time | general_havent_read_conf |
                     general_dot_in_ip6_addr | general_ping_cookie |
                     general_disable_auth | general_burst_away |
+		    general_tkline_expire_notices |
 		    error;
 
 general_burst_away: BURST_AWAY '=' TBOOL ';'
 {
   if (ypass == 1) /* must be set in the 1st pass */
     ConfigFileEntry.burst_away = yylval.number;
+};
+
+general_tkline_expire_notices: TKLINE_EXPIRE_NOTICES '=' TBOOL ';'
+{
+    ConfigFileEntry.tkline_expire_notices = yylval.number;
 };
 
 general_kill_chase_time_limit: KILL_CHASE_TIME_LIMIT '=' NUMBER ';'
@@ -2783,22 +2789,6 @@ general_oper_pass_resv: OPER_PASS_RESV '=' TBOOL ';'
 {
   if (ypass == 2)
     ConfigFileEntry.oper_pass_resv = yylval.number;
-};
-
-general_iauth_server: IAUTH_SERVER '=' QSTRING ';'
-{
-#if 0
-  if (ypass == 2)
-    strncpy(iAuth.hostname, yylval.string, HOSTLEN)[HOSTLEN] = 0;
-#endif
-};
-
-general_iauth_port: IAUTH_PORT '=' NUMBER ';'
-{
-#if 0
-  if (ypass == 2)
-    iAuth.port = $3;
-#endif
 };
 
 general_message_locale: MESSAGE_LOCALE '=' QSTRING ';'

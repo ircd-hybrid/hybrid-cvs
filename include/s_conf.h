@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.280 2005/06/03 00:54:02 db Exp $
+ *  $Id: s_conf.h,v 7.281 2005/06/03 01:10:42 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -299,6 +299,8 @@ struct config_file_entry
   int gline_time;
   int gline_logging;
   int hide_spoof_ips;
+  int burst_away;
+  int tkline_expire_notices;
   int idletime;
   int ignore_bogus_ts;
   int maximum_links;
@@ -317,7 +319,6 @@ struct config_file_entry
   int ping_cookie;
   int disable_auth;
   int disable_remote;
-  int burst_away;
 #ifdef HAVE_LIBCRYPTO
   struct EncCapability *default_cipher_preference;
 #endif

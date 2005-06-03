@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.505 2005/06/03 00:54:06 db Exp $
+ *  $Id: s_conf.c,v 7.506 2005/06/03 01:10:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -2010,6 +2010,7 @@ set_default_conf(void)
   ConfigServerHide.hide_server_ips = NO;
 
   ConfigFileEntry.burst_away = 0;
+  ConfigFileEntry.tkline_expire_notices = YES;
   ConfigFileEntry.hide_spoof_ips = YES;
   ConfigFileEntry.ignore_bogus_ts = NO;
   ConfigFileEntry.disable_auth = NO;
@@ -2333,7 +2334,8 @@ expire_tklines(dlink_list *tklist)
       if (aconf->hold <= CurrentTime)
       {
 	/* Alert opers that a TKline expired - Hwy */
-	if (aconf->status & CONF_KILL)
+	if (aconf->status & CONF_KILL 
+	    && ConfigFileEntry.tkline_expire_notices)
 	{
 	  sendto_realops_flags(UMODE_ALL, L_ALL,
 			       "Temporary K-line for [%s@%s] expired",
@@ -2351,7 +2353,8 @@ expire_tklines(dlink_list *tklist)
 	dlinkDelete(ptr, tklist);
       }
     }
-    else if(conf->type == XLINE_TYPE)
+    else if(conf->type == XLINE_TYPE
+	    && ConfigFileEntry.tkline_expire_notices)
     {
       xconf = (struct MatchItem *)map_to_conf(conf);
       if (xconf->hold <= CurrentTime)
