@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.39 2005/05/31 11:15:54 metalrock Exp $
+ *  $Id: m_testline.c,v 1.40 2005/06/03 00:54:04 db Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&testgecos_msgtab);
 }
  
-const char *_version = "$Revision: 1.39 $";
+const char *_version = "$Revision: 1.40 $";
 #endif
 
 /* mo_testline()
@@ -88,12 +88,12 @@ static void
 mo_testline(struct Client *client_p, struct Client *source_p,
             int parc, char *parv[])
 {
+  char *given_name, *given_host, *p;
   struct ConfItem *conf;
   struct AccessItem *aconf;
   struct irc_ssaddr ip;
   int host_mask;
-  char *host, *pass, *user, *classname, *given_host, *given_name, *p, *oreason;
-  int port, t;
+  int t;
   int matches = 0;
   char userhost[HOSTLEN + USERLEN + 2];
 
@@ -145,13 +145,11 @@ mo_testline(struct Client *client_p, struct Client *source_p,
     {
       conf = unmap_conf_item(aconf);
 
-      get_printable_conf(conf, &host, &pass, &user, &port, 
-			 &classname, &oreason);
       if (aconf->status & CONF_EXEMPTDLINE)
       {
 	sendto_one(source_p,
 		   ":%s NOTICE %s :Exempt D-line host [%s] reason [%s]",
-		   me.name, source_p->name, host, pass);
+		   me.name, source_p->name, aconf->host, aconf->reason);
 	++matches;
       }
       else
@@ -162,7 +160,7 @@ mo_testline(struct Client *client_p, struct Client *source_p,
 		   IsConfTemporary(aconf) ? 'd' : 'D',
 		   IsConfTemporary(aconf) ? ((aconf->hold - CurrentTime) / 60)
 		   : 0L,
-		   host, pass, oreason);
+		   aconf->host, aconf->reason, aconf->oper_reason);
 	++matches;
       }
     }
@@ -198,14 +196,15 @@ mo_testline(struct Client *client_p, struct Client *source_p,
   if (aconf != NULL)
   {
     conf = unmap_conf_item(aconf);
-    get_printable_conf(conf, &host, &pass, &user, &port, &classname, &oreason);
-    snprintf(userhost, sizeof(userhost), "%s@%s", user, host);
+
+    snprintf(userhost, sizeof(userhost), "%s@%s", aconf->user, aconf->host);
 
     if (aconf->status & CONF_CLIENT)
     {
       sendto_one(source_p, form_str(RPL_TESTLINE),
 		 me.name, source_p->name,
-		 'I', 0L, userhost, classname, "");
+		 'I', 0L, userhost,
+		 aconf->class_ptr ? aconf->class_ptr->name : "<default>", "");
       ++matches;
     }
   }

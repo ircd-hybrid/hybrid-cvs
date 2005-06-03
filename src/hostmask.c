@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.94 2005/05/25 17:43:58 michael Exp $
+ *  $Id: hostmask.c,v 7.95 2005/06/03 00:54:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -776,11 +776,10 @@ show_iline_prefix(struct Client *sptr, struct AccessItem *aconf, char *name)
 void
 report_auth(struct Client *client_p)
 {
-  char *host, *reason, *user, *classname, *oreason;
   struct AddressRec *arec;
   struct ConfItem *conf;
   struct AccessItem *aconf;
-  int i, port;
+  int i;
 
   for (i = 0; i < ATABLE_SIZE; i++)
   {
@@ -794,7 +793,6 @@ report_auth(struct Client *client_p)
           continue;
 
 	conf = unmap_conf_item(aconf);
-        get_printable_conf(conf, &host, &reason, &user, &port, &classname, &oreason);
 
         /* We are doing a partial list, based on what matches the u@h of the
          * sender, so prepare the strings for comparing --fl_
@@ -803,16 +801,18 @@ report_auth(struct Client *client_p)
           sendto_one(client_p, form_str(RPL_STATSILINE), me.name,
                      client_p->name, 'I',
 		     conf->name == NULL ? "*" : conf->name,
-		     show_iline_prefix(client_p, aconf, user),
+		     show_iline_prefix(client_p, aconf, aconf->user),
                      IsConfDoSpoofIp(aconf) ? "255.255.255.255" :
-                     host, port, classname);
+                     aconf->host, aconf->port,
+		     aconf->class_ptr ? aconf->class_ptr->name : "<default>");
+		     
         else
           sendto_one(client_p, form_str(RPL_STATSILINE), me.name,
                      client_p->name, 'I',
 		     conf->name == NULL ? "*" : conf->name,
-		     show_iline_prefix(client_p, aconf, user),
-                     host, port, classname);
-
+		     show_iline_prefix(client_p, aconf, aconf->user),
+                     aconf->host, aconf->port,
+		     aconf->class_ptr ? aconf->class_ptr->name : "<default>");
       }
     }
   }
@@ -828,11 +828,10 @@ report_auth(struct Client *client_p)
 void
 report_Klines(struct Client *client_p, int tkline)
 {
-  char *host, *reason, *user, *classname, *oreason, c;
   struct AddressRec *arec;
   struct ConfItem *conf = NULL;
   struct AccessItem *aconf = NULL;
-  int i, port;
+  int i, c;
 
   if (tkline)
     c = 'k';
@@ -848,12 +847,14 @@ report_Klines(struct Client *client_p, int tkline)
                 && ((aconf = arec->aconf)->flags & CONF_FLAGS_TEMPORARY)))
           continue;
 	conf = unmap_conf_item(aconf);
-        get_printable_conf(conf, &host, &reason, &user, &port, &classname, &oreason);
+
 	if (IsOper(client_p))
 	  sendto_one(client_p, form_str(RPL_STATSKLINE), me.name,
-                     client_p->name, c, host, user, reason, oreason);
+                     client_p->name, c, aconf->host, aconf->user,
+		     aconf->reason, aconf->oper_reason);
 	else
           sendto_one(client_p, form_str(RPL_STATSKLINE), me.name,
-                     client_p->name, c, host, user, reason, "");
+                     client_p->name, c, aconf->host, aconf->user,
+		     aconf->reason, "");
       }
 }

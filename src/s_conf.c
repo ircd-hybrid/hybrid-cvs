@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.504 2005/06/02 23:42:46 db Exp $
+ *  $Id: s_conf.c,v 7.505 2005/06/03 00:54:06 db Exp $
  */
 
 #include "stdinc.h"
@@ -530,7 +530,6 @@ report_confitem_types(struct Client *source_p, ConfType type)
   struct AccessItem *aconf;
   struct MatchItem *matchitem;
   struct ClassItem *classitem;
-  char *host, *reason, *user, *classname, *oreason;
   char buf[10], *p = buf;
   int port;
 
@@ -691,17 +690,17 @@ report_confitem_types(struct Client *source_p, ConfType type)
     {
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
-      get_printable_conf(conf, &host, &reason, &user, &port, &classname, &oreason);
 
       /* Don't allow non opers to see oper privs */
       if (IsOper(source_p))
 	sendto_one(source_p, form_str(RPL_STATSOLINE),
-		   me.name, source_p->name, 'O', user, host,
-		   conf->name, oper_privs_as_string(port), classname);
+		   me.name, source_p->name, 'O', aconf->user, aconf->host,
+		   conf->name, oper_privs_as_string(port),
+		   aconf->class_ptr ? aconf->class_ptr->name : "<default>");
       else
 	sendto_one(source_p, form_str(RPL_STATSOLINE),
-		   me.name, source_p->name, 'O', user, host,
-		   conf->name, "0", classname);
+		   me.name, source_p->name, 'O', aconf->user, aconf->host,
+		   aconf->class_ptr ? aconf->class_ptr->name : "<default>");
     }
     break;
 
@@ -730,7 +729,6 @@ report_confitem_types(struct Client *source_p, ConfType type)
 
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
-      get_printable_conf(conf, &host, &reason, &user, &port, &classname, &oreason);
 
       sbuf[0] = '\0';
 
@@ -754,12 +752,14 @@ report_confitem_types(struct Client *source_p, ConfType type)
        */
       if (!ConfigServerHide.hide_server_ips && IsAdmin(source_p))
 	sendto_one(source_p, form_str(RPL_STATSCLINE),
-		   me.name, source_p->name, 'C', host,
-		   sbuf, conf->name, port, classname);
+		   me.name, source_p->name, 'C', aconf->host,
+		   sbuf, conf->name, aconf->port,
+		   aconf->class_ptr ? aconf->class_ptr->name : "<default>");
         else
           sendto_one(source_p, form_str(RPL_STATSCLINE),
                      me.name, source_p->name, 'C',
-		     "*@127.0.0.1", sbuf, conf->name, port, classname);
+		     "*@127.0.0.1", sbuf, conf->name, aconf->port,
+		     aconf->class_ptr ? aconf->class_ptr->name : "<default>");
     }
     break;
 
@@ -2451,38 +2451,6 @@ get_oper_name(const struct Client *client_p)
   ircsprintf(buffer, "%s!%s@%s{%s}", client_p->name,
 	     client_p->username, client_p->host, client_p->servptr->name);
   return(buffer);
-}
-
-/* get_printable_conf()
- *
- * inputs        - struct ConfItem
- *
- * output         - host
- *                - reason
- *                - user
- *                - port
- *
- * side effects        -
- * Examine the struct ConfItem *conf, setting the values
- * of host, pass, user to values either
- * in aconf, or "<NULL>" port is set to aconf->port in all cases.
- */
-void
-get_printable_conf(struct ConfItem *conf, char **host, char **reason,
-		   char **user, int *port, char **classname, char **oreason)
-{
-  struct AccessItem *aconf;
-  static char null[] = "<NULL>";
-  static char zero[] = "default";
-
-  aconf = (struct AccessItem *)map_to_conf(conf);
-
-  *host = EmptyString(aconf->host) ? null : aconf->host;
-  *reason = EmptyString(aconf->reason) ? "No reason" : aconf->reason;
-  *oreason = EmptyString(aconf->oper_reason) ? "" : aconf->oper_reason;
-  *user = EmptyString(aconf->user) ? null : aconf->user;
-  *classname = aconf->class_ptr == NULL ? zero : aconf->class_ptr->name;
-  *port = (int)aconf->port;
 }
 
 /* read_conf_files()

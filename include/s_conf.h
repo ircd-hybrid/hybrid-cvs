@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.279 2005/06/02 23:42:42 db Exp $
+ *  $Id: s_conf.h,v 7.280 2005/06/03 00:54:02 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -441,8 +441,6 @@ extern struct ConfItem *find_matching_name_conf(ConfType, const char *,
 extern struct ConfItem *find_exact_name_conf(ConfType, const char *,
                                              const char *, const char *);
 extern void delete_conf_item(struct ConfItem *);
-extern void get_printable_conf(struct ConfItem *, char **, char **,
-                               char **, int *, char **, char **);
 extern void report_confitem_types(struct Client *, ConfType);
 extern void yyerror(const char *);
 extern int conf_yy_fatal_error(const char *);
