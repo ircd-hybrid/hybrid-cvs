@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.508 2005/06/03 21:00:35 michael Exp $
+ *  $Id: s_conf.c,v 7.509 2005/06/04 00:04:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -700,6 +700,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
       else
 	sendto_one(source_p, form_str(RPL_STATSOLINE),
 		   me.name, source_p->name, 'O', aconf->user, aconf->host,
+                   conf->name, "0",
 		   aconf->class_ptr ? aconf->class_ptr->name : "<default>");
     }
     break;
