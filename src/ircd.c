@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.328 2004/10/03 07:54:44 metalrock Exp $
+ *  $Id: ircd.c,v 7.329 2005/06/04 12:27:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -120,7 +120,6 @@ unsigned int split_servers;
  */
 
 int rehashed_klines = 0;
-int rehashed_xlines = 0;
 
 /*
  * get_vm_top - get the operating systems notion of the resident set size
@@ -286,11 +285,6 @@ io_loop(void)
     {
       check_conf_klines();
       rehashed_klines = 0;
-    }
-    else if (rehashed_xlines)
-    {
-      check_xlines();
-      rehashed_xlines = 0;
     }
 
     /* Run pending events, then get the number of seconds to the next

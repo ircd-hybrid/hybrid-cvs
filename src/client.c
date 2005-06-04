@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.439 2005/06/03 17:22:29 db Exp $
+ *  $Id: client.c,v 7.440 2005/06/04 12:27:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -367,9 +367,9 @@ check_unknowns_list(void)
 void 
 check_conf_klines(void)
 {               
-  struct Client *client_p;       /* current local client_p being examined */
+  struct Client *client_p = NULL;       /* current local client_p being examined */
   struct AccessItem *aconf = NULL;
-  struct ConfItem *conf=NULL;
+  struct ConfItem *conf = NULL;
   dlink_node *ptr, *next_ptr;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, local_client_list.head)
@@ -378,7 +378,7 @@ check_conf_klines(void)
 
     /* If a client is already being exited
      */
-    if (IsDead(client_p))
+    if (IsDead(client_p) || !IsClient(client_p))
       continue;
 
     /* if there is a returned struct ConfItem then kill it */
@@ -393,47 +393,45 @@ check_conf_klines(void)
       continue; /* and go examine next fd/client_p */
     }
 
-    if (IsPerson(client_p))
+    if (ConfigFileEntry.glines && (aconf = find_gkill(client_p, client_p->username)))
     {
-      if (ConfigFileEntry.glines &&
-	  (aconf = find_gkill(client_p, client_p->username)))
+      if (IsExemptKline(client_p) ||
+          IsExemptGline(client_p))
       {
-	if (IsExemptKline(client_p))
-	{
-	  sendto_realops_flags(UMODE_ALL, L_ALL,
-		       "GLINE over-ruled for %s, client is kline_exempt",
-			       get_client_name(client_p, HIDE_IP));
-	  continue;
-	}
-
-        if (IsExemptGline(client_p))
-	{
-	  sendto_realops_flags(UMODE_ALL, L_ALL,
-			"GLINE over-ruled for %s, client is gline_exempt",
-			       get_client_name(client_p, HIDE_IP));
-	  continue;
-	}
-       
-	conf = unmap_conf_item(aconf);
-	ban_them(client_p, conf);
-	/* and go examine next fd/client_p */    
-	continue;
-      } 
-      else if ((aconf = find_kill(client_p)) != NULL) 
-      {
-	/* if there is a returned struct AccessItem.. then kill it */
-	if (IsExemptKline(client_p))
-	{
-	  sendto_realops_flags(UMODE_ALL, L_ALL,
-			     "KLINE over-ruled for %s, client is kline_exempt",
-			     get_client_name(client_p, HIDE_IP));
-	  continue;
-	}
-
-	conf = unmap_conf_item(aconf);
-	ban_them(client_p, conf);
-	continue; 
+        sendto_realops_flags(UMODE_ALL, L_ALL,
+                             "GLINE over-ruled for %s, client is %sline_exempt",
+                             get_client_name(client_p, HIDE_IP), IsExemptKline(client_p) ? "k" : "g");
+        continue;
       }
+
+      conf = unmap_conf_item(aconf);
+      ban_them(client_p, conf);
+      /* and go examine next fd/client_p */    
+      continue;
+    } 
+
+    if ((aconf = find_kill(client_p)) != NULL) 
+    {
+      /* if there is a returned struct AccessItem.. then kill it */
+      if (IsExemptKline(client_p))
+      {
+        sendto_realops_flags(UMODE_ALL, L_ALL,
+                             "KLINE over-ruled for %s, client is kline_exempt",
+                             get_client_name(client_p, HIDE_IP));
+        continue;
+      }
+
+      conf = unmap_conf_item(aconf);
+      ban_them(client_p, conf);
+      continue; 
+    }
+
+    /* if there is a returned struct MatchItem then kill it */
+    if ((conf = find_matching_name_conf(XLINE_TYPE, client_p->info,
+                                        NULL, NULL, 0)) != NULL)
+    {
+      ban_them(client_p, conf);
+      continue;
     }
   }
 
@@ -453,43 +451,6 @@ check_conf_klines(void)
   }
 }
 
-/* check_xlines()
- *
- * inputs       - NONE
- * output       - NONE
- * side effects - Check all connections for a pending xline against the
- * 		  client, exit the client if a xline matches.
- */
-void 
-check_xlines(void)
-{               
-  struct Client *client_p;       /* current local client_p being examined */
-  struct ConfItem *conf;
-  struct MatchItem *xconf = NULL;
-  dlink_node *ptr, *next_ptr;
-
-  DLINK_FOREACH_SAFE(ptr, next_ptr, local_client_list.head)
-  {
-    client_p = ptr->data;
-
-    /* If a client is already being exited
-     */
-    if (IsDead(client_p))
-      continue;
-	
-    /* if there is a returned struct MatchItem then kill it */
-    if ((conf = find_matching_name_conf(XLINE_TYPE, client_p->info,
-                                        NULL, NULL, 0)) != NULL)
-    {
-      xconf = (struct MatchItem *)map_to_conf(conf);
-      xconf->count++;
-      
-      ban_them(client_p, conf);
-    }
-  }
-}
-
-
 /*
  * ban_them
  *
@@ -501,19 +462,18 @@ check_xlines(void)
 static void
 ban_them(struct Client *client_p, struct ConfItem *conf)
 {
-  const char *user_reason=NULL;		/* What is sent to user */
-  const char *channel_reason=NULL;	/* What is sent to channel */
-  struct AccessItem *aconf=NULL;
-  struct MatchItem *xconf=NULL;
-  const char *type_string;
+  const char *user_reason = NULL;	/* What is sent to user */
+  const char *channel_reason = NULL;	/* What is sent to channel */
+  struct AccessItem *aconf = NULL;
+  struct MatchItem *xconf = NULL;
+  const char *type_string = NULL;
   const char dline_string[] = "D-line";
   const char kline_string[] = "K-line";
   const char gline_string[] = "G-line";
   const char xline_string[] = "X-line";
-  const char unknown_string[] = "Unknown";
 
-  switch(conf->type)
-    {
+  switch (conf->type)
+  {
     case KLINE_TYPE:
       type_string = kline_string;
       aconf = map_to_conf(conf);
@@ -529,11 +489,12 @@ ban_them(struct Client *client_p, struct ConfItem *conf)
     case XLINE_TYPE:
       type_string = xline_string;
       xconf = map_to_conf(conf);
+      ++xconf->count;
       break;
     default:
-      type_string = unknown_string;
+      assert(0);
       break;
-    }
+  }
 
   if (ConfigFileEntry.kline_with_reason)
   {
@@ -550,10 +511,10 @@ ban_them(struct Client *client_p, struct ConfItem *conf)
   else
     channel_reason = user_reason;
 
-  sendto_realops_flags(UMODE_ALL, L_ALL,"%s active for %s",
-		       type_string, get_client_name(client_p, HIDE_IP));
+  sendto_realops_flags(UMODE_ALL, L_ALL, "%s active for %s",
+                       type_string, get_client_name(client_p, HIDE_IP));
 
-  if (IsPerson(client_p))
+  if (IsClient(client_p))
     sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 	       me.name, client_p->name, user_reason);
 

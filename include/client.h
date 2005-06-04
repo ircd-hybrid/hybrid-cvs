@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.228 2005/05/30 13:19:09 michael Exp $
+ *  $Id: client.h,v 7.229 2005/06/04 12:27:27 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -534,6 +534,7 @@ struct LocalUser
 
 /*
  * definitions for get_client_name
+ * TBD - make this an enum
  */
 #define HIDE_IP 0
 #define SHOW_IP 1
@@ -542,22 +543,21 @@ struct LocalUser
 extern struct Client me;
 extern dlink_list global_client_list;
 
-extern void check_conf_klines(void);
-extern void check_xlines(void);
-extern const char *get_client_name(struct Client *client, int show_ip);
-extern void init_client(void);
-extern struct Client *make_client(struct Client *from);
-extern void free_client(struct Client *client_p);
+extern int accept_message(struct Client *, struct Client *);
+extern int set_initial_nick(struct Client *, struct Client *, const char *);
 extern int exit_client(struct Client *, struct Client *, struct Client *, const char *);
-extern struct Client *find_chasing(struct Client *, struct Client *, const char *, int *);
-extern struct Client *find_person(const struct Client *const, const char *);
-extern int accept_message(struct Client *source, struct Client *target);
-extern void del_from_accept(struct Client *source, struct Client *target);
-extern void del_all_accepts(struct Client *client_p);
-extern int set_initial_nick(struct Client *client_p, struct Client *source_p, const char *nick);
-extern void change_local_nick(struct Client *client_p, struct Client *source_p, const char *nick);
-extern void dead_link_on_write(struct Client *client_p, int ierrno);
-extern void dead_link_on_read(struct Client *client_p, int error);
+extern void check_conf_klines(void);
+extern void init_client(void);
+extern void free_client(struct Client *);
+extern void del_from_accept(struct Client *, struct Client *);
+extern void del_all_accepts(struct Client *);
+extern void change_local_nick(struct Client *, struct Client *, const char *);
+extern void dead_link_on_write(struct Client *, int);
+extern void dead_link_on_read(struct Client *, int);
 extern void exit_aborted_clients(void);
 extern void free_exited_clients(void);
+extern struct Client *make_client(struct Client *);
+extern struct Client *find_chasing(struct Client *, struct Client *, const char *, int *);
+extern struct Client *find_person(const struct Client *const, const char *);
+extern const char *get_client_name(struct Client *, int);
 #endif /* INCLUDED_client_h */
