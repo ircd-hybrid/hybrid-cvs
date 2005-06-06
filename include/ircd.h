@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.76 2003/09/13 19:04:29 metalrock Exp $
+ *  $Id: ircd.h,v 7.77 2005/06/06 11:38:12 bill Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -96,7 +96,6 @@ extern dlink_list global_serv_list;   /* global servers on the network          
 extern dlink_list oper_list;          /* our opers, duplicated in local_client_list */
 extern dlink_list lazylink_channels;  /* known about lazylink channels on HUB       */
 extern int rehashed_klines;
-extern int rehashed_xlines;
 extern unsigned long get_maxrss(void);
 extern void set_time(void);
 #endif
