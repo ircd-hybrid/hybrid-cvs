@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.509 2005/06/04 00:04:48 michael Exp $
+ *  $Id: s_conf.c,v 7.510 2005/06/06 10:57:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -1933,7 +1933,6 @@ rehash(int sig)
   flush_deleted_I_P();
 
   rehashed_klines = 1;
-  rehashed_xlines = 1;
 
   if (ConfigLoggingEntry.use_logging)
     reopen_log(logFileName);
