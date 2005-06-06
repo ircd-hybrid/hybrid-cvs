@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.329 2005/06/04 12:27:30 michael Exp $
+ *  $Id: ircd.c,v 7.330 2005/06/06 04:23:06 bill Exp $
  */
 
 #include "stdinc.h"
@@ -120,6 +120,9 @@ unsigned int split_servers;
  */
 
 int rehashed_klines = 0;
+
+/* what she said, only for xlines. -bill */
+int rehashed_xlines = 0;
 
 /*
  * get_vm_top - get the operating systems notion of the resident set size
