@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.67 2004/07/08 00:27:22 erik Exp $
+ *  $Id: m_knock.c,v 1.68 2005/06/07 22:49:45 db Exp $
  */
 
 #include "stdinc.h"
@@ -84,7 +84,7 @@ _moddeinit(void)
   delete_capability("KNOCK");
 }
 
-const char *_version = "$Revision: 1.67 $";
+const char *_version = "$Revision: 1.68 $";
 #endif
 
 /* m_knock
@@ -219,7 +219,7 @@ parse_knock_local(struct Client *client_p, struct Client *source_p,
       sendto_one(uplink, ":%s KNOCKLL %s %s %s",
                  ID_or_name(source_p, uplink), parv[1],
 		 IsIPSpoof(source_p) ? "255.255.255.255" :
-		 source_p->localClient->sockhost,
+		 source_p->sockhost,
 		 (parc > 2) ? parv[2] : "");
     }
     else

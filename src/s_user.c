@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.322 2005/06/01 18:02:26 db Exp $
+ *  $Id: s_user.c,v 7.323 2005/06/07 22:49:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -401,7 +401,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   {
     sendto_one(source_p, ":%s NOTICE %s :*** Notice -- You have an illegal "
                "character in your hostname", me.name, source_p->name);
-    strlcpy(source_p->host, source_p->localClient->sockhost,
+    strlcpy(source_p->host, source_p->sockhost,
             sizeof(source_p->host));
   }
 
@@ -696,7 +696,7 @@ introduce_client(struct Client *client_p, struct Client *source_p)
                  source_p->name, source_p->hopcount+1,
 		 (unsigned long)source_p->tsinfo,
                  ubuf, source_p->username, source_p->host,
-		 (MyClient(source_p)?source_p->localClient->sockhost:"0"),
+		 (MyClient(source_p)?source_p->sockhost:"0"),
                  source_p->id, source_p->info);
     }
     else
@@ -724,7 +724,7 @@ introduce_client(struct Client *client_p, struct Client *source_p)
                    source_p->name, source_p->hopcount+1,
 		   (unsigned long)source_p->tsinfo,
                    ubuf, source_p->username, source_p->host,
-		   (MyClient(source_p)?source_p->localClient->sockhost:"0"),
+		   (MyClient(source_p)?source_p->sockhost:"0"),
                    source_p->id, source_p->info);
       else
         sendto_one(server, "NICK %s %d %lu %s %s %s %s :%s",
@@ -1294,7 +1294,7 @@ check_xline(struct Client *client_p, struct Client *source_p)
 			 "X-line Rejecting [%s] [%s], user %s [%s]",
 			 source_p->info, reason,
 			 get_client_name(client_p, HIDE_IP),
-			 source_p->localClient->sockhost);
+			 source_p->sockhost);
 
     ServerStats->is_ref++;      
     exit_client(client_p, source_p, &me, "Bad user info");

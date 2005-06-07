@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.59 2005/06/03 21:10:23 michael Exp $
+ *   $Id: m_operspy.c,v 1.60 2005/06/07 22:49:41 db Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -140,7 +140,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.59 $";
+const char *_version = "$Revision: 1.60 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -545,7 +545,7 @@ who_global(struct Client *source_p, char *mask, int server_oper)
         match(mask, target_p->name) || match(mask, target_p->username) ||
         match(mask, target_p->host) || match(mask, target_p->user->server->name) ||
         match(mask, target_p->info) ||
-        (MyClient(target_p) && match(mask, target_p->localClient->sockhost)))
+        (MyClient(target_p) && match(mask, target_p->sockhost)))
     {
       if (dlink_list_length(&target_p->user->channel))
       {

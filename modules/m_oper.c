@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.78 2005/05/23 10:09:57 michael Exp $
+ *  $Id: m_oper.c,v 1.79 2005/06/07 22:49:45 db Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.78 $";
+const char *_version = "$Revision: 1.79 $";
 #endif
 
 /*
@@ -169,7 +169,7 @@ find_password_conf(const char *name, struct Client *source_p)
   else
   if ((conf = find_exact_name_conf(OPER_TYPE,
 				   name, source_p->username,
-				   source_p->localClient->sockhost)) != NULL)
+				   source_p->sockhost)) != NULL)
   {
     return(conf);
   }

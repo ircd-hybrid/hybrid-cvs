@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.55 2004/07/08 00:27:21 erik Exp $
+ *  $Id: m_challenge.c,v 1.56 2005/06/07 22:49:45 db Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif
 
 /*
@@ -150,7 +150,7 @@ m_challenge(struct Client *client_p, struct Client *source_p,
   }
   else if ((conf = find_conf_exact(OPER_TYPE,
 				   parv[1], source_p->username,
-				   source_p->localClient->sockhost)) != NULL)
+				   source_p->sockhost)) != NULL)
   {
     aconf = (struct AccessItem *)map_to_conf(conf);
   }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.511 2005/06/07 13:18:12 michael Exp $
+ *  $Id: s_conf.c,v 7.512 2005/06/07 22:49:49 db Exp $
  */
 
 #include "stdinc.h"
@@ -807,7 +807,7 @@ check_client(struct Client *client_p, struct Client *source_p, const char *usern
   if ((i = verify_access(source_p, username)))
   {
     ilog(L_INFO, "Access denied: %s[%s]", 
-         source_p->name, source_p->localClient->sockhost);
+         source_p->name, source_p->sockhost);
   }
 
   switch (i)
@@ -820,7 +820,7 @@ check_client(struct Client *client_p, struct Client *source_p, const char *usern
       sendto_realops_flags(UMODE_FULL, L_ALL,
                            "Too many on IP for %s (%s).",
 			   get_client_name(source_p, SHOW_IP),
-			   source_p->localClient->sockhost);
+			   source_p->sockhost);
       ilog(L_INFO,"Too many connections on IP from %s.",
 	   get_client_name(source_p, SHOW_IP));
       ServerStats->is_ref++;
@@ -832,7 +832,7 @@ check_client(struct Client *client_p, struct Client *source_p, const char *usern
       sendto_realops_flags(UMODE_FULL, L_ALL,
                            "I-line is full for %s (%s).",
 			   get_client_name(source_p, SHOW_IP),
-			   source_p->localClient->sockhost);
+			   source_p->sockhost);
       ilog(L_INFO,"Too many connections from %s.",
 	   get_client_name(source_p, SHOW_IP));
        ServerStats->is_ref++;

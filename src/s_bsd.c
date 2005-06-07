@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.214 2005/05/30 13:19:13 michael Exp $
+ *  $Id: s_bsd.c,v 7.215 2005/06/07 22:49:49 db Exp $
  */
 
 #include "stdinc.h"
@@ -398,23 +398,23 @@ add_connection(struct Listener* listener, int fd)
   memcpy(&new_client->localClient->ip, &irn, sizeof(struct irc_ssaddr));
   
   irc_getnameinfo((struct sockaddr*)&new_client->localClient->ip,
-        new_client->localClient->ip.ss_len,  new_client->localClient->sockhost, 
+        new_client->localClient->ip.ss_len,  new_client->sockhost, 
         HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
   new_client->localClient->aftype = new_client->localClient->ip.ss.ss_family;
   
   *new_client->host = '\0';
 #ifdef IPV6
-  if(*new_client->localClient->sockhost == ':')
+  if(*new_client->sockhost == ':')
     strlcat(new_client->host, "0",HOSTLEN+1);
 
   if(new_client->localClient->aftype == AF_INET6 && 
         ConfigFileEntry.dot_in_ip6_addr == 1)
   {
-    strlcat(new_client->host, new_client->localClient->sockhost,HOSTLEN+1);
+    strlcat(new_client->host, new_client->sockhost,HOSTLEN+1);
     strlcat(new_client->host, ".",HOSTLEN+1);
   } else
 #endif
-    strlcat(new_client->host, new_client->localClient->sockhost,HOSTLEN+1);
+    strlcat(new_client->host, new_client->sockhost,HOSTLEN+1);
 
   new_client->localClient->fd        = fd;
   

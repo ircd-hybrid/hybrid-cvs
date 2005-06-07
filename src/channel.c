@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.417 2005/05/29 03:09:14 adx Exp $
+ *  $Id: channel.c,v 7.418 2005/06/07 22:49:49 db Exp $
  */
 
 #include "stdinc.h"
@@ -609,7 +609,7 @@ is_banned(struct Channel *chptr, struct Client *who)
 
   ircsprintf(src_host,"%s!%s@%s", who->name, who->username, who->host);
   ircsprintf(src_iphost,"%s!%s@%s", who->name, who->username,
-	     who->localClient->sockhost);
+	     who->sockhost);
 
   return(check_banned(chptr, src_host, src_iphost));
 }
@@ -685,7 +685,7 @@ can_join(struct Client *source_p, struct Channel *chptr, const char *key)
   ircsprintf(src_host, "%s!%s@%s", source_p->name, source_p->username,
              source_p->host);
   ircsprintf(src_iphost, "%s!%s@%s", source_p->name, source_p->username,
-	     source_p->localClient->sockhost);
+	     source_p->sockhost);
 
   if ((check_banned(chptr, src_host, src_iphost)) == CHFL_BAN)
     return(ERR_BANNEDFROMCHAN);

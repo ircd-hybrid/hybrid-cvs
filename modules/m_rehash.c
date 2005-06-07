@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rehash.c,v 1.51 2005/06/01 18:23:35 db Exp $
+ *  $Id: m_rehash.c,v 1.52 2005/06/07 22:49:45 db Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&rehash_msgtab);
 }
 
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 
 /*
@@ -127,7 +127,7 @@ mo_rehash(struct Client *client_p, struct Client *source_p,
                          "%s is rehashing server config file",
                          get_oper_name(source_p));
     ilog(L_NOTICE, "REHASH From %s[%s]",
-         get_oper_name(source_p), source_p->localClient->sockhost);
+         get_oper_name(source_p), source_p->sockhost);
     rehash(0);
   }
 }

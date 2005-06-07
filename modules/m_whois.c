@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.116 2005/06/03 21:10:24 michael Exp $
+ *  $Id: m_whois.c,v 1.117 2005/06/07 22:49:45 db Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.116 $";
+const char *_version = "$Revision: 1.117 $";
 #endif
 
 /*
@@ -428,20 +428,27 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
                IsAdmin(target_p) ? ConfigFileEntry.default_adminstring :
                ConfigFileEntry.default_operstring);
 
-  if (MyConnect(target_p)) /* Can't do any of this if not local! db */
+  if ((glob) || (MyClient(source_p) && (IsOper(source_p) ||
+      ConfigServerHide.hide_servers)) || (source_p == target_p))
   {
-    if ((glob) ||
-         (MyClient(source_p) && (IsOper(source_p) ||
-                                  !ConfigServerHide.hide_servers)) ||
-         (source_p == target_p))
+    if (target_p->sockhost[0] != '\0')
+    {
+      if (IsAdmin(source_p))
+	sendto_one(source_p, form_str(RPL_WHOISACTUALLY),
+		   me.name, source_p->name, target_p->name, target_p->sockhost);
+      else
+	sendto_one(source_p, form_str(RPL_WHOISACTUALLY),
+		   IsIPSpoof(target_p) ? "255.255.255.255" : target_p->sockhost);
+    }
+
+    if (MyConnect(target_p)) /* Can't do any of this if not local! db */
     {
       sendto_one(source_p, form_str(RPL_WHOISIDLE),
-	         me.name, source_p->name, target_p->name,
-	         CurrentTime - target_p->user->last,
-	         target_p->firsttime);
+		 me.name, source_p->name, target_p->name,
+		 CurrentTime - target_p->user->last,
+		 target_p->firsttime);
     }
   }
-
   hd.client_p = target_p;
   hd.source_p = source_p;
 

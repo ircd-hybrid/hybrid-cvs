@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.229 2005/06/04 12:27:27 michael Exp $
+ *  $Id: client.h,v 7.230 2005/06/07 22:49:43 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -160,6 +160,12 @@ struct Client
    */
   char              info[REALLEN + 1]; /* Free form additional client info */
 
+  /* client->sockhost contains the ip address gotten from the socket as a
+   * string, this field should be considered read-only once the connection
+   * has been made. (set in s_bsd.c only)
+   */
+  char              sockhost[HOSTIPLEN + 1]; /* This is the host name from the 
+                                                socket ip address as string */
   /* caller ID allow list */
   /* This has to be here, since a client on an on_allow_list could
    * be a remote client. simpler to keep both here.
@@ -224,12 +230,6 @@ struct LocalUser
   time_t            last_nick_change;
   int               number_of_nick_changes;
 
-  /* client->sockhost contains the ip address gotten from the socket as a
-   * string, this field should be considered read-only once the connection
-   * has been made. (set in s_bsd.c only)
-   */
-  char              sockhost[HOSTIPLEN + 1]; /* This is the host name from the 
-                                                socket ip address as string */
   char              *passwd;
   int               caps;       /* capabilities bit-field */
   int               enc_caps;   /* cipher capabilities bit-field */

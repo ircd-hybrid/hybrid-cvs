@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.441 2005/06/07 13:18:12 michael Exp $
+ *  $Id: client.c,v 7.442 2005/06/07 22:49:49 db Exp $
  */
 
 #include "stdinc.h"
@@ -668,7 +668,7 @@ get_client_name(struct Client *client, int showip)
       if (MyConnect(client))
       {
         ircsprintf(nbuf, "%s[%s@%s]", client->name, client->username,
-                   client->localClient->sockhost);
+                   client->sockhost);
         break;
       }
     case MASK_IP:
@@ -1219,7 +1219,7 @@ exit_client(
       sendto_realops_flags(UMODE_CCONN, L_ALL, "Client exiting: %s (%s@%s) [%s] [%s]",
                            source_p->name, source_p->username, source_p->host, comment,
                            ConfigFileEntry.hide_spoof_ips && IsIPSpoof(source_p) ?
-                           "255.255.255.255" : source_p->localClient->sockhost);
+                           "255.255.255.255" : source_p->sockhost);
 
     log_user_exit(source_p);
 

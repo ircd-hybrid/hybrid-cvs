@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.410 2005/05/31 00:47:52 michael Exp $
+ *  $Id: s_serv.c,v 7.411 2005/06/07 22:49:49 db Exp $
  */
 
 #include "stdinc.h"
@@ -590,7 +590,7 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
     /* XXX: Fix me for IPv6                    */
     /* XXX sockhost is the IPv4 ip as a string */
     if (match(aconf->host, client_p->host) || 
-        match(aconf->host, client_p->localClient->sockhost))
+        match(aconf->host, client_p->sockhost))
     {
       error = -2;
 #ifdef HAVE_LIBCRYPTO
@@ -869,7 +869,7 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
 	       target_p->name, target_p->hopcount + 1,
 	       (unsigned long) target_p->tsinfo,
 	       ubuf, target_p->username, target_p->host,
-	       (MyClient(target_p)?target_p->localClient->sockhost:"0"),
+	       (MyClient(target_p)?target_p->sockhost:"0"),
 	       target_p->id, target_p->info);
   else
     sendto_one(client_p, "NICK %s %d %lu %s %s %s %s :%s",
@@ -1976,7 +1976,8 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
   strlcpy(client_p->name, conf->name, sizeof(client_p->name));
   strlcpy(client_p->host, aconf->host, sizeof(client_p->host));
   /* We already converted the ip once, so lets use it - stu */
-  strlcpy(client_p->localClient->sockhost, buf, HOSTIPLEN);
+
+  strlcpy(client_p->sockhost, buf, HOSTIPLEN);
   client_p->localClient->fd = fd;
 
   /* Set up the initial server evilness, ripped straight from

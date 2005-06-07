@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.140 2005/01/11 21:10:47 db Exp $
+ *  $Id: s_auth.c,v 7.141 2005/06/07 22:49:49 db Exp $
  */
 
 /*
@@ -325,7 +325,7 @@ start_auth_query(struct AuthRequest* auth)
   auth->fd = fd;
   SetAuthConnect(auth);
 
-  comm_connect_tcp(fd, auth->client->localClient->sockhost, 113, 
+  comm_connect_tcp(fd, auth->client->sockhost, 113, 
       (struct sockaddr *)&localaddr, localaddr.ss_len, auth_connect_callback, 
       auth, auth->client->localClient->ip.ss.ss_family, 
       GlobalSetOptions.ident_timeout);
