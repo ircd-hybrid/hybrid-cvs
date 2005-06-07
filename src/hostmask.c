@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.96 2005/06/07 13:18:12 michael Exp $
+ *  $Id: hostmask.c,v 7.97 2005/06/07 23:08:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -849,7 +849,8 @@ report_Klines(struct Client *client_p, int tkline)
 {
   struct AddressRec *arec;
   struct AccessItem *aconf = NULL;
-  int i, c;
+  int i;
+  char c;
 
   if (tkline)
     c = 'k';
@@ -868,7 +869,7 @@ report_Klines(struct Client *client_p, int tkline)
 	if (IsOper(client_p))
 	  sendto_one(client_p, form_str(RPL_STATSKLINE), me.name,
                      client_p->name, c, aconf->host, aconf->user,
-		     aconf->reason, aconf->oper_reason);
+		     aconf->reason, aconf->oper_reason ? aconf->oper_reason : "");
 	else
           sendto_one(client_p, form_str(RPL_STATSKLINE), me.name,
                      client_p->name, c, aconf->host, aconf->user,

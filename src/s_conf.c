@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.512 2005/06/07 22:49:49 db Exp $
+ *  $Id: s_conf.c,v 7.513 2005/06/07 23:08:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2369,6 +2369,7 @@ expire_tklines(dlink_list *tklist)
 	sendto_realops_flags(UMODE_ALL, L_ALL,
 			     "Temporary X-line for [%s] expired", conf->name);
 	dlinkDelete(ptr, tklist);
+        free_dlink_node(ptr);
 	delete_conf_item(conf);
       }
     }
