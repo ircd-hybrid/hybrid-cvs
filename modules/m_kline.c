@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.187 2005/06/07 13:18:09 michael Exp $
+ *  $Id: m_kline.c,v 1.188 2005/06/07 13:27:46 michael Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.187 $";
+const char *_version = "$Revision: 1.188 $";
 #endif
 
 /* Local function prototypes */
@@ -877,35 +877,16 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
 static int
 valid_user_host(struct Client *source_p, char *luser, char *lhost, int warn)
 {
+  const char *p = NULL;
   /*
    * Check for # in user@host
+   * Dont let people kline *!ident@host, as the ! is invalid..
    */
-  if (strchr(lhost, '#') || strchr(luser, '#'))
-  {
+  if ((p = strpbrk(lhost, "#\"")) || (p = strpbrk(luser, "!#\"")))
     if (warn)
-      sendto_one(source_p, ":%s NOTICE %s :Invalid character '#' in kline",
-                 me.name, source_p->name);		    
-    return(0);
-  }
-
-  if (strchr(lhost, '"') || strchr(luser, '"'))
-  {
-    if (warn)
-      sendto_one(source_p, ":%s NOTICE %s :Invalid character '\"' in kline",
-                 me.name, source_p->name);
-    return(0);
-  }
-
-  /* Dont let people kline *!ident@host, as the ! is invalid.. */
-  if (strchr(luser, '!'))
-  {
-    if (warn)
-      sendto_one(source_p, ":%s NOTICE %s :Invalid character '!' in kline",
-                 me.name, source_p->name);
-    return(0);
-  }
-
-  return(1);
+      sendto_one(source_p, ":%s NOTICE %s :Invalid character '%c' in kline",
+                 me.name, source_p->name, *p);		    
+  return(p == NULL);
 }
 
 /* valid_wild_card()
