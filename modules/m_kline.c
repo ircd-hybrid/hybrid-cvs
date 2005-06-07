@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.186 2005/06/02 23:42:44 db Exp $
+ *  $Id: m_kline.c,v 1.187 2005/06/07 13:18:09 michael Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.186 $";
+const char *_version = "$Revision: 1.187 $";
 #endif
 
 /* Local function prototypes */
@@ -1303,7 +1303,7 @@ remove_tkline_match(const char *host, const char *user)
 
   DLINK_FOREACH(tk_n, temporary_klines.head)
   {
-    tk_c = (struct AccessItem*)tk_n->data;
+    tk_c = map_to_conf(tk_n->data);
     cnm_t = parse_netmask(tk_c->host, &caddr, &cbits);
     if (cnm_t != nm_t || irccmp(user, tk_c->user))
       continue;
@@ -1315,7 +1315,6 @@ remove_tkline_match(const char *host, const char *user)
 	)
       {
 	dlinkDelete(tk_n, &temporary_klines);
-	free_dlink_node(tk_n);
 	delete_one_address_conf(tk_c->host, tk_c);
 	return(YES);
       }
@@ -1340,7 +1339,7 @@ remove_tdline_match(const char *cidr)
 
   DLINK_FOREACH(td_node, temporary_dlines.head)
   {
-    td_conf = (struct AccessItem *)td_node->data;
+    td_conf = map_to_conf(td_node->data);
     cnm_t   = parse_netmask(td_conf->host, &caddr, &cbits);
 
     if (cnm_t != nm_t)
@@ -1354,7 +1353,6 @@ remove_tdline_match(const char *cidr)
       )
     {
       dlinkDelete(td_node, &temporary_dlines);
-      free_dlink_node(td_node);
       delete_one_address_conf(td_conf->host, td_conf);
       return(YES);
     }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.510 2005/06/06 10:57:53 db Exp $
+ *  $Id: s_conf.c,v 7.511 2005/06/07 13:18:12 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,12 +67,12 @@ dlink_list uconf_items   = { NULL, NULL, 0 };
 dlink_list xconf_items   = { NULL, NULL, 0 };
 dlink_list nresv_items   = { NULL, NULL, 0 };
 dlink_list class_items   = { NULL, NULL, 0 };
-dlink_list gline_items   = { NULL, NULL, 0 };
 dlink_list gdeny_items	 = { NULL, NULL, 0 };
 
 dlink_list temporary_klines = { NULL, NULL, 0 };
 dlink_list temporary_dlines = { NULL, NULL, 0 };
 dlink_list temporary_xlines = { NULL, NULL, 0 };
+dlink_list temporary_glines = { NULL, NULL, 0 };
 
 extern unsigned int lineno;
 extern char linebuf[];
@@ -230,13 +230,12 @@ make_conf_item(ConfType type)
       status = CONF_DLINE;
       break;
 
-    case GLINE_TYPE:
-      status = CONF_KILL;
-      dlinkAdd(conf, &conf->node, &gline_items);
-      break;
-
     case KLINE_TYPE:
       status = CONF_KILL;
+      break;
+
+    case GLINE_TYPE:
+      status = CONF_GLINE;
       break;
 
     case CLIENT_TYPE:
@@ -343,6 +342,7 @@ delete_conf_item(struct ConfItem *conf)
   {
   case DLINE_TYPE:
   case EXEMPTDLINE_TYPE:
+  case GLINE_TYPE:
   case KLINE_TYPE:
   case CLIENT_TYPE:
   case OPER_TYPE:
@@ -471,16 +471,6 @@ delete_conf_item(struct ConfItem *conf)
     MyFree(match_item->reason);
     MyFree(match_item->oper_reason);
     dlinkDelete(&conf->node, &cluster_items);
-    MyFree(conf);
-    break;
-
-  case GLINE_TYPE:
-    aconf = (struct AccessItem *)map_to_conf(conf);
-    MyFree(aconf->user);
-    MyFree(aconf->host);
-    MyFree(aconf->reason);
-    MyFree(aconf->oper_reason);
-    dlinkDelete(&conf->node, &gline_items);
     MyFree(conf);
     break;
 
@@ -784,10 +774,10 @@ report_confitem_types(struct Client *source_p, ConfType type)
     }
     break;
 
+  case GLINE_TYPE:
   case KLINE_TYPE:
   case DLINE_TYPE:
   case EXEMPTDLINE_TYPE:
-  case GLINE_TYPE:
   case CRESV_TYPE:
   case NRESV_TYPE:
   case CLUSTER_TYPE:
@@ -900,7 +890,6 @@ verify_access(struct Client *client_p, const char *username)
 {
   struct AccessItem *aconf;
   struct ConfItem *conf;
-  struct AccessItem *gkill_conf;
   char non_ident[USERLEN + 1];
 
   if (IsGotId(client_p))
@@ -935,27 +924,6 @@ verify_access(struct Client *client_p, const char *username)
         return(NOT_AUTHORIZED);
       }
 
-      if (ConfigFileEntry.glines)
-      {
-	if (!IsConfExemptKline(aconf) && !IsConfExemptGline(aconf))
-	{
-	  if (IsGotId(client_p))
-	    gkill_conf = find_gkill(client_p, client_p->username);
-	  else
-	    gkill_conf = find_gkill(client_p, non_ident);
-	  
-	  if (gkill_conf != NULL)
-	  {
-	    sendto_one(client_p, ":%s NOTICE %s :*** G-lined", me.name,
-		       client_p->name);
-	    sendto_one(client_p, ":%s NOTICE %s :*** Banned %s",
-		       me.name, client_p->name, 
-		       gkill_conf->passwd);
-	    return(BANNED_CLIENT);
-	  }
-	}
-      }
-
       if (IsConfDoIdentd(aconf))
 	SetNeedId(client_p);
 
@@ -973,8 +941,11 @@ verify_access(struct Client *client_p, const char *username)
 
       return(attach_iline(client_p, conf));
     }
-    else if (IsConfKill(aconf))
+    else if (IsConfKill(aconf) || (ConfigFileEntry.glines && IsConfGline(aconf)))
     {
+      if (IsConfGline(aconf))
+        sendto_one(client_p, ":%s NOTICE %s :*** G-lined", me.name,
+                   client_p->name);
       if (ConfigFileEntry.kline_with_reason)
         sendto_one(client_p, ":%s NOTICE %s :*** Banned %s", 
                   me.name, client_p->name, aconf->reason);
@@ -1703,10 +1674,10 @@ map_to_list(ConfType type)
     return(&cluster_items);
     break;
   case CONF_TYPE:
+  case GLINE_TYPE:
   case KLINE_TYPE:
   case DLINE_TYPE:
   case CRESV_TYPE:
-  case GLINE_TYPE:
   default:
     return(NULL);
   }
@@ -2011,6 +1982,8 @@ set_default_conf(void)
 
   DupString(ConfigFileEntry.default_operstring, "is an IRC Operator");
   DupString(ConfigFileEntry.default_adminstring, "is a Server Administrator");
+  ConfigFileEntry.gline_min_cidr = 16;
+  ConfigFileEntry.gline_min_cidr6 = 48;
   ConfigFileEntry.burst_away = 0;
   ConfigFileEntry.tkline_expire_notices = YES;
   ConfigFileEntry.hide_spoof_ips = YES;
@@ -2263,6 +2236,27 @@ find_kill(struct Client *client_p)
   return(NULL);
 }
 
+struct AccessItem *
+find_gline(struct Client *client_p)
+{
+  struct AccessItem *aconf;
+
+  assert(client_p != NULL);
+
+  if (client_p == NULL)
+    return(NULL);
+
+  aconf = find_gline_conf(client_p->host, client_p->username,
+                          &client_p->localClient->ip,
+                          client_p->localClient->aftype);
+  if (aconf == NULL)
+    return(NULL);
+  if (aconf->status & CONF_GLINE)
+    return(aconf);
+
+  return(NULL);
+}
+
 /* add_temp_line()
  *
  * inputs        - pointer to struct ConfItem
@@ -2284,14 +2278,21 @@ add_temp_line(struct ConfItem *conf)
     aconf->user = NULL;
     add_conf_by_address(CONF_DLINE, aconf);
   }
-  else if(conf->type == KLINE_TYPE)
+  else if (conf->type == KLINE_TYPE)
   {
     aconf = (struct AccessItem *)map_to_conf(conf);
     SetConfTemporary(aconf);
     dlinkAdd(conf, &conf->node, &temporary_klines);
     add_conf_by_address(CONF_KILL, aconf);
   }
-  else if(conf->type == XLINE_TYPE)
+  else if (conf->type == GLINE_TYPE)
+  {
+    aconf = (struct AccessItem *)map_to_conf(conf);
+    SetConfTemporary(aconf);
+    dlinkAdd(conf, &conf->node, &temporary_glines);
+    add_conf_by_address(CONF_GLINE, aconf);
+  }
+  else if (conf->type == XLINE_TYPE)
   {
     dlinkAdd(conf, make_dlink_node(), &temporary_xlines);
   }
@@ -2307,6 +2308,7 @@ add_temp_line(struct ConfItem *conf)
 void
 cleanup_tklines(void *notused)
 {
+  expire_tklines(&temporary_glines);
   expire_tklines(&temporary_klines);
   expire_tklines(&temporary_dlines);
   expire_tklines(&temporary_xlines);
@@ -2330,11 +2332,14 @@ expire_tklines(dlink_list *tklist)
   DLINK_FOREACH_SAFE(ptr, next_ptr, tklist->head)
   {
     conf = ptr->data;
-    if (conf->type == KLINE_TYPE || conf->type == DLINE_TYPE)
+    if (conf->type == GLINE_TYPE ||
+        conf->type == KLINE_TYPE ||
+        conf->type == DLINE_TYPE)
     {
       aconf = (struct AccessItem *)map_to_conf(conf);
       if (aconf->hold <= CurrentTime)
       {
+        /* XXX - Do we want GLINE expiry notices?? */
 	/* Alert opers that a TKline expired - Hwy */
 	if (aconf->status & CONF_KILL 
 	    && ConfigFileEntry.tkline_expire_notices)
@@ -2344,7 +2349,7 @@ expire_tklines(dlink_list *tklist)
 			       (aconf->user) ? aconf->user : "*",
 			       (aconf->host) ? aconf->host : "*");
 	}
-	else
+	else if (conf->type == DLINE_TYPE)
 	{
 	  sendto_realops_flags(UMODE_ALL, L_ALL,
 			       "Temporary D-line for [%s] expired",
@@ -2355,7 +2360,7 @@ expire_tklines(dlink_list *tklist)
 	dlinkDelete(ptr, tklist);
       }
     }
-    else if(conf->type == XLINE_TYPE
+    else if (conf->type == XLINE_TYPE
 	    && ConfigFileEntry.tkline_expire_notices)
     {
       xconf = (struct MatchItem *)map_to_conf(conf);

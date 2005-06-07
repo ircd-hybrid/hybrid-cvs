@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.168 2005/06/03 00:54:04 db Exp $
+ *  $Id: m_stats.c,v 1.169 2005/06/07 13:18:10 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.168 $";
+const char *_version = "$Revision: 1.169 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -518,25 +518,31 @@ stats_pending_glines(struct Client *source_p)
 static void
 stats_glines(struct Client *source_p)
 {
-  dlink_node *ptr;
-  struct AccessItem *kill_ptr;
+  struct AddressRec *arec;
+  int i;
 
   if (!ConfigFileEntry.glines)
   {
     sendto_one(source_p, ":%s NOTICE %s :This server does not support G-Lines",
-               from, to); 
+               from, to);
     return;
   }
 
-  DLINK_FOREACH(ptr, gline_items.head)
+  for (i = 0; i < ATABLE_SIZE; ++i)
   {
-    kill_ptr = map_to_conf(ptr->data);
+    for (arec = atable[i]; arec; arec=arec->next)
+    {
+      if (arec->type == CONF_GLINE)
+      {
+        const struct AccessItem *aconf = arec->aconf;
 
-    sendto_one(source_p, form_str(RPL_STATSKLINE),
-               from, to, 'G',
-               kill_ptr->host ? kill_ptr->host : "*",
-               kill_ptr->user ? kill_ptr->user : "*",
-               kill_ptr->reason ? kill_ptr->reason : "No reason specified", "" );
+        sendto_one(source_p, form_str(RPL_STATSKLINE),
+                   from, to, 'G',
+                   aconf->host ? aconf->host : "*",
+                   aconf->user ? aconf->user : "*",
+                   aconf->reason ? aconf->reason : "No reason specified", "" );
+      }
+    }
   }
 }
 

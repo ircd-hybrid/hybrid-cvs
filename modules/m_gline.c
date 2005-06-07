@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.132 2005/06/01 18:23:34 db Exp $
+ *  $Id: m_gline.c,v 1.133 2005/06/07 13:18:09 michael Exp $
  */
 
 #include "stdinc.h"
@@ -102,7 +102,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.132 $";
+const char *_version = "$Revision: 1.133 $";
 #endif
 
 /* mo_gline()
@@ -126,6 +126,7 @@ mo_gline(struct Client *client_p, struct Client *source_p,
   char *user = NULL;
   char *host = NULL;	     /* user and host of GLINE "victim" */
   const char *reason = NULL; /* reason for "victims" demise     */
+  const char *p = NULL;
   char star[] = "*";
   char tempuser[USERLEN * 2 + 2];
   char temphost[HOSTLEN * 2 + 2];
@@ -183,13 +184,25 @@ mo_gline(struct Client *client_p, struct Client *source_p,
   /* Not enough non-wild characters were found,
    * assume they are trying to gline *@*.
    */
-
   if (check_wild_gline(user, host))
   {
     sendto_one(source_p,
                ":%s NOTICE %s :Please include at least %d non-wildcard characters with the user@host",
                me.name, parv[0], ConfigFileEntry.min_nonwildcard);
     return;
+  }
+
+  if ((p = strchr(host, '/')))
+  {
+    int bitlen = strtol(++p, NULL, 10);
+    int min_bitlen = strchr(host, ':') ? ConfigFileEntry.gline_min_cidr6 :
+                                         ConfigFileEntry.gline_min_cidr;
+    if (bitlen < min_bitlen)
+    {
+      sendto_one(source_p, ":%s NOTICE %s :Cannot set G-Lines with CIDR length < %d",
+                 me.name, source_p->name, min_bitlen);
+      return;
+    }
   }
 
   reason = parv[2];
@@ -379,19 +392,40 @@ do_sgline(struct Client *client_p, struct Client *source_p,
       * gline.. it could lead to a desync... but we have to stop people
       * glining *@*..   -- fl
       */
-     if (check_wild_gline(user, host))
-     {
-       sendto_realops_flags(UMODE_ALL, L_ALL, 
+    if (check_wild_gline(user, host))
+    {
+      sendto_realops_flags(UMODE_ALL, L_ALL, 
                   "%s requesting G-Line without %d non-wildcard characters for [%s@%s] [%s]",
                    get_oper_name(source_p), ConfigFileEntry.min_nonwildcard,
                    user, host, reason);
-       return;
-     }
+      return;
+    }
 
-     sendto_realops_flags(UMODE_ALL, L_ALL,
-                          "%s requesting G-Line for [%s@%s] [%s]",
-                          get_oper_name(source_p),
-                          user, host, reason);
+
+    if (IsClient(source_p))
+    {
+      const char *p = NULL;
+      if ((p = strchr(host, '/')))
+      {
+        int bitlen = strtol(++p, NULL, 10);
+        int min_bitlen = strchr(host, ':') ? ConfigFileEntry.gline_min_cidr6 :
+                                             ConfigFileEntry.gline_min_cidr;
+
+        if (bitlen < min_bitlen)
+        {
+          sendto_realops_flags(UMODE_ALL, L_ALL, "%s!%s@%s on %s is requesting "
+                               "a GLINE with a CIDR mask < %d for [%s@%s] [%s]",
+                               source_p->name, source_p->username, source_p->host,
+                               source_p->user->server->name, min_bitlen, user, host, reason);
+          return;
+        }
+      }
+    }
+
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "%s requesting G-Line for [%s@%s] [%s]",
+                         get_oper_name(source_p),
+                         user, host, reason);
 
      /* If at least 3 opers agree this user should be G lined then do it */
      if (check_majority_gline(source_p, user, host, reason) ==
@@ -405,7 +439,6 @@ do_sgline(struct Client *client_p, struct Client *source_p,
           user, host, reason, get_oper_name(source_p));
   }
 }
-
 
 /* check_wild_gline()
  *
@@ -485,8 +518,8 @@ invalid_gline(struct Client *source_p, const char *luser)
  * side effects	-
  */
 static void
-set_local_gline(const struct Client *source_p,
-                const char *user, const char *host, const char *reason)
+set_local_gline(const struct Client *source_p, const char *user,
+                const char *host, const char *reason)
 {
   char buffer[IRCD_BUFSIZE];
   struct ConfItem *conf;
@@ -496,15 +529,25 @@ set_local_gline(const struct Client *source_p,
 
   set_time();
   cur_time = CurrentTime;
+
   current_date = smalldate(cur_time);
   conf = make_conf_item(GLINE_TYPE);
   aconf = (struct AccessItem *)map_to_conf(conf);
+
   ircsprintf(buffer, "%s (%s)", reason, current_date);
   DupString(aconf->reason, buffer);
   DupString(aconf->user, user);
   DupString(aconf->host, host);
+
   aconf->hold = CurrentTime + ConfigFileEntry.gline_time;
-  write_conf_line(source_p, conf, current_date, cur_time);
+  add_temp_line(conf);
+
+  sendto_realops_flags(UMODE_ALL, L_ALL,
+                       "%s added G-Line for [%s@%s] [%s]",
+                       get_oper_name(source_p),
+                       aconf->user, aconf->host, aconf->reason);
+  ilog(L_TRACE, "%s added G-Line for [%s@%s] [%s]",
+       get_oper_name(source_p), aconf->user, aconf->host, aconf->reason);
   /* Now, activate gline against current online clients */
   rehashed_klines = 1;
 }
@@ -528,8 +571,7 @@ static void
 add_new_majority_gline(const struct Client *source_p,
                        const char *user, const char *host, const char *reason)
 {
-  struct gline_pending *pending = (struct gline_pending *)
-    MyMalloc(sizeof(struct gline_pending));
+  struct gline_pending *pending = MyMalloc(sizeof(struct gline_pending));
 
   strlcpy(pending->oper_nick1, source_p->name, sizeof(pending->oper_nick1));
   strlcpy(pending->oper_user1, source_p->username, sizeof(pending->oper_user1));
@@ -570,7 +612,7 @@ check_majority_gline(const struct Client *source_p,
   struct gline_pending *gline_pending_ptr;
 
   /* if its already glined, why bother? :) -- fl_ */
-  if(find_is_glined(host, user))
+  if (find_is_glined(host, user))
     return(GLINE_NOT_PLACED);
 
   /* special case condition where there are no pending glines */
@@ -636,6 +678,40 @@ check_majority_gline(const struct Client *source_p,
   return(GLINE_NOT_PLACED);
 }
 
+static int
+remove_gline_match(const char *user, const char *host)
+{
+  struct AccessItem *aconf;
+  dlink_node *ptr = NULL;
+  struct irc_ssaddr addr, caddr;
+  int nm_t, cnm_t, bits, cbits;
+
+  nm_t = parse_netmask(host, &addr, &bits);
+
+  DLINK_FOREACH(ptr, temporary_glines.head)
+  {
+    aconf = map_to_conf(ptr->data);
+    cnm_t = parse_netmask(aconf->host, &caddr, &cbits);
+
+    if (cnm_t != nm_t || irccmp(user, aconf->user))
+      continue;
+
+    if ((nm_t == HM_HOST && !irccmp(aconf->host, host)) ||
+        (nm_t == HM_IPV4 && bits == cbits && match_ipv4(&addr, &caddr, bits))
+#ifdef IPV6
+     || (nm_t == HM_IPV6 && bits == cbits && match_ipv6(&addr, &caddr, bits))
+#endif
+    )
+    {
+      dlinkDelete(ptr, &temporary_glines);
+      delete_one_address_conf(aconf->host, aconf);
+      return(1);
+    }
+  }
+
+  return(0);
+}
+
 /*
 ** m_ungline
 ** added May 29th 2000 by Toby Verrall <toot@melnet.co.uk>
@@ -695,12 +771,10 @@ mo_ungline(struct Client *client_p, struct Client *source_p,
                          get_oper_name(source_p), user, host);
     ilog(L_NOTICE, "%s removed G-Line for [%s@%s]",
          get_oper_name(source_p), user, host);
-    return;
   }
   else
   {
     sendto_one(source_p, ":%s NOTICE %s :No G-Line for %s@%s",
                me.name, source_p->name, user, host);
-    return;
   }
 }

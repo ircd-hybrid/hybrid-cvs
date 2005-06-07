@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.283 2005/06/03 22:47:28 michael Exp $
+ *  $Id: s_conf.h,v 7.284 2005/06/07 13:18:07 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -153,6 +153,7 @@ struct ClassItem
 #define CONF_ULINE              0x00002000
 #define CONF_EXEMPTDLINE        0x00004000
 #define CONF_CLUSTER		0x00008000
+#define CONF_GLINE              0x00010000
 
 #define CONF_SERVER_MASK       CONF_SERVER
 #define CONF_CLIENT_MASK       (CONF_CLIENT | CONF_OPERATOR | CONF_SERVER_MASK)
@@ -177,6 +178,7 @@ struct ClassItem
 #define IsConfUline(x)		((x)->status & CONF_ULINE)
 #define IsConfXline(x)		((x)->status & CONF_XLINE)
 #define IsConfCluster(x)	((x)->status & CONF_CLUSTER)
+#define IsConfGline(x)          ((x)->status == CONF_GLINE)
 
 /* AccessItem->flags */
 
@@ -274,6 +276,8 @@ struct config_file_entry
   MessageFile linksfile;
 
   unsigned char compression_level;
+  int gline_min_cidr;
+  int gline_min_cidr6;
   int dot_in_ip6_addr;
   int dots_in_ident;
   int failed_oper_notice;
@@ -400,9 +404,9 @@ extern dlink_list server_items;
 extern dlink_list cluster_items;
 extern dlink_list hub_items;
 extern dlink_list leaf_items;
-extern dlink_list gline_items;
 extern dlink_list temporary_klines;
 extern dlink_list temporary_dlines;
+extern dlink_list temporary_glines;
 extern struct logging_entry ConfigLoggingEntry;
 extern struct config_file_entry ConfigFileEntry;/* defined in ircd.c*/
 extern struct config_channel_entry ConfigChannel;/* defined in channel.c*/
@@ -436,6 +440,7 @@ extern void detach_all_confs(struct Client *);
 extern struct ConfItem *find_conf_name(dlink_list *, const char *, ConfType);
 extern struct ConfItem *find_conf_exact(ConfType, const char *, const char *, const char *);
 extern struct AccessItem *find_kill(struct Client *);
+extern struct AccessItem *find_gline(struct Client *);
 extern int conf_connect_allowed(struct irc_ssaddr *, int);
 extern char *oper_privs_as_string(const unsigned int);
 extern void split_user_host(char *, char **, char **);

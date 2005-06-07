@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.h,v 7.20 2003/06/12 22:05:52 db Exp $
+ *  $Id: s_gline.h,v 7.21 2005/06/07 13:18:07 michael Exp $
  */
 
 #ifndef INCLUDED_s_gline_h
@@ -30,10 +30,8 @@
 struct Client;
 struct AccessItem;
 
-extern int remove_gline_match(const char *user, const char *host);
-extern struct AccessItem *find_gkill(struct Client *client, const char *);
-extern struct AccessItem *find_is_glined(const char *host, const char *name);
-extern void cleanup_glines(void *unused);
+extern void cleanup_glines(void *);
+extern struct AccessItem *find_is_glined(const char *, const char *);
 
 struct gline_pending
 {

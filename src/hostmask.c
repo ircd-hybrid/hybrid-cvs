@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.95 2005/06/03 00:54:05 db Exp $
+ *  $Id: hostmask.c,v 7.96 2005/06/07 13:18:12 michael Exp $
  */
 
 #include "stdinc.h"
@@ -508,12 +508,12 @@ find_address_conf(const char *host, const char *user,
 
   /* Find the best I-line... If none, return NULL -A1kmm */
   if ((iconf = find_conf_by_address(host, ip, CONF_CLIENT, aftype, user,
-				    password)) == NULL)
-    return (NULL);
+                                    password)) == NULL)
+    return(NULL);
 
   /* If they are exempt from K-lines, return the best I-line. -A1kmm */
   if (IsConfExemptKline(iconf))
-    return (iconf);
+    return(iconf);
 
   /* Find the best K-line... -A1kmm */
   kconf = find_conf_by_address(host, ip, CONF_KILL, aftype, user, NULL);
@@ -521,8 +521,27 @@ find_address_conf(const char *host, const char *user,
   /* If they are K-lined, return the K-line. Otherwise, return the
    * I-line. -A1kmm */
   if (kconf != NULL)
-    return (kconf);
-  return (iconf);
+    return(kconf);
+
+  kconf = find_conf_by_address(host, ip, CONF_GLINE, aftype, user, NULL);
+  if (kconf != NULL && !IsConfExemptGline(iconf))
+    return(kconf);
+
+  return(iconf);
+}
+
+struct AccessItem *
+find_gline_conf(const char *host, const char *user,
+                struct irc_ssaddr *ip, int aftype)
+{
+  struct AccessItem *eline;
+
+  eline = find_conf_by_address(host, ip, CONF_EXEMPTKLINE, aftype,
+                               user, NULL);
+  if (eline != NULL)
+    return(eline);
+
+  return(find_conf_by_address(host, ip, CONF_GLINE, aftype, user, NULL));
 }
 
 /* find_kline_conf
@@ -542,9 +561,9 @@ find_kline_conf(const char *host, const char *user,
   eline = find_conf_by_address(host, ip, CONF_EXEMPTKLINE, aftype,
                                user, NULL);
   if (eline != NULL)
-    return (eline);
+    return(eline);
 
-  return (find_conf_by_address(host, ip, CONF_KILL, aftype, user, NULL));
+  return(find_conf_by_address(host, ip, CONF_KILL, aftype, user, NULL));
 }
 
 /* struct AccessItem* find_dline_conf(struct irc_ssaddr*, int)
@@ -561,8 +580,8 @@ find_dline_conf(struct irc_ssaddr *addr, int aftype)
   eline = find_conf_by_address(NULL, addr, CONF_EXEMPTDLINE | 1, aftype,
                                NULL, NULL);
   if (eline != NULL)
-    return (eline);
-  return (find_conf_by_address(NULL, addr, CONF_DLINE | 1, aftype, NULL, NULL));
+    return(eline);
+  return(find_conf_by_address(NULL, addr, CONF_DLINE | 1, aftype, NULL, NULL));
 }
 
 /* void add_conf_by_address(int, struct AccessItem *aconf)
@@ -829,7 +848,6 @@ void
 report_Klines(struct Client *client_p, int tkline)
 {
   struct AddressRec *arec;
-  struct ConfItem *conf = NULL;
   struct AccessItem *aconf = NULL;
   int i, c;
 
@@ -846,7 +864,6 @@ report_Klines(struct Client *client_p, int tkline)
             || (!tkline
                 && ((aconf = arec->aconf)->flags & CONF_FLAGS_TEMPORARY)))
           continue;
-	conf = unmap_conf_item(aconf);
 
 	if (IsOper(client_p))
 	  sendto_one(client_p, form_str(RPL_STATSKLINE), me.name,

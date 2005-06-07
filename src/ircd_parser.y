@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.381 2005/06/03 21:00:34 michael Exp $
+ *  $Id: ircd_parser.y,v 1.382 2005/06/07 13:18:12 michael Exp $
  */
 
 %{
@@ -187,6 +187,8 @@ unhook_hub_leaf_confs(void)
 %token  GLINE_EXEMPT
 %token  GLINE_LOG
 %token  GLINE_TIME
+%token  GLINE_MIN_CIDR
+%token  GLINE_MIN_CIDR6
 %token  GLOBAL_KILL
 %token  NEED_IDENT
 %token  HAVENT_READ_CONF
@@ -2605,10 +2607,23 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
                     general_dot_in_ip6_addr | general_ping_cookie |
                     general_disable_auth | general_burst_away |
 		    general_tkline_expire_notices | general_default_operstring |
-                    general_default_adminstring |
+                    general_default_adminstring | general_gline_min_cidr |
+                    general_gline_min_cidr6 |
 		    error;
 
 
+
+general_gline_min_cidr: GLINE_MIN_CIDR '=' NUMBER ';'
+{
+  if (ypass == 2)
+    ConfigFileEntry.gline_min_cidr = $3;
+};
+
+general_gline_min_cidr6: GLINE_MIN_CIDR6 '=' NUMBER ';'
+{
+  if (ypass == 2)
+    ConfigFileEntry.gline_min_cidr6 = $3;
+};
 
 general_default_operstring: DEFAULT_OPERSTRING '=' QSTRING ';'
 {

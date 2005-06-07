@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.37 2005/05/31 02:04:10 db Exp $
+ *  $Id: csvlib.c,v 7.38 2005/06/07 13:18:12 michael Exp $
  */
 
 #include "stdinc.h"
@@ -259,19 +259,6 @@ write_conf_line(const struct Client *source_p, struct ConfItem *conf,
 		   conf->name, xconf->reason, xconf->oper_reason,
 		   xconf->action,
 		   current_date, get_oper_name(source_p), (long)cur_time);
-    break;
-
-  case GLINE_TYPE:
-    aconf = (struct AccessItem *)map_to_conf(conf);
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-			 "%s added G-Line for [%s@%s] [%s]",
-			 get_oper_name(source_p),
-			 aconf->user, aconf->host, aconf->reason);
-    ilog(L_TRACE, "%s added G-Line for [%s@%s] [%s]",
-         get_oper_name(source_p), aconf->user, aconf->host, aconf->reason);
-    write_csv_line(out, "%s%s%s%d%s%s%ld",
-		   aconf->user, aconf->host, aconf->reason, "", current_date,
-		   get_oper_name(source_p), (long)aconf->hold);
     break;
 
   case CRESV_TYPE:

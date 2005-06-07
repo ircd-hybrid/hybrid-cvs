@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.440 2005/06/04 12:27:30 michael Exp $
+ *  $Id: client.c,v 7.441 2005/06/07 13:18:12 michael Exp $
  */
 
 #include "stdinc.h"
@@ -393,7 +393,7 @@ check_conf_klines(void)
       continue; /* and go examine next fd/client_p */
     }
 
-    if (ConfigFileEntry.glines && (aconf = find_gkill(client_p, client_p->username)))
+    if (ConfigFileEntry.glines && (aconf = find_gline(client_p)))
     {
       if (IsExemptKline(client_p) ||
           IsExemptGline(client_p))

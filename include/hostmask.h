@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.h,v 1.28 2003/07/05 06:20:55 db Exp $
+ *  $Id: hostmask.h,v 1.29 2005/06/07 13:18:07 michael Exp $
  */
 
 #ifndef INCLUDE_hostmask_h
@@ -51,6 +51,8 @@ void init_host_hash(void);
 struct AccessItem* find_address_conf(const char *, const char *,
                                    struct irc_ssaddr *, int, char *);
 struct AccessItem* find_kline_conf(const char *, const char *,
+                                 struct irc_ssaddr *, int);
+struct AccessItem* find_gline_conf(const char *, const char *,
                                  struct irc_ssaddr *, int);
 struct AccessItem* find_dline_conf(struct irc_ssaddr *, int);
 
