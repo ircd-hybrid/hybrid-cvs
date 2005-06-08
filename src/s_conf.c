@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.513 2005/06/07 23:08:54 michael Exp $
+ *  $Id: s_conf.c,v 7.514 2005/06/08 09:02:28 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -685,7 +685,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
       if (IsOper(source_p))
 	sendto_one(source_p, form_str(RPL_STATSOLINE),
 		   me.name, source_p->name, 'O', aconf->user, aconf->host,
-		   conf->name, oper_privs_as_string(port),
+		   conf->name, oper_privs_as_string(aconf->port),
 		   aconf->class_ptr ? aconf->class_ptr->name : "<default>");
       else
 	sendto_one(source_p, form_str(RPL_STATSOLINE),
