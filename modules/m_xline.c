@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.48 2005/06/08 19:19:49 db Exp $
+ *  $Id: m_xline.c,v 1.49 2005/06/08 19:40:32 db Exp $
  */
 
 #include "stdinc.h"
@@ -86,7 +86,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
@@ -498,7 +498,7 @@ remove_txline_match(const char *gecos)
   {
     conf = ptr->data;
 
-    if (irccmp(gecos, conf->name) != 0)
+    if (irccmp(gecos, conf->name) == 0)
     {
       dlinkDelete(ptr, &temporary_xlines);
       free_dlink_node(ptr);
