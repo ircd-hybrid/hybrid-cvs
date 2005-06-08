@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.90 2004/10/31 22:44:23 adx Exp $
+ *  $Id: s_serv.h,v 7.91 2005/06/08 03:58:01 metalrock Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -69,6 +69,7 @@ struct Capability
 #define CAP_UNKLN	0x00040000 /* Can do UNKLINE message		  */
 #define CAP_CLUSTER	0x00080000 /* supports server clustering	  */
 #define CAP_ENCAP	0x00100000 /* supports ENCAP message		  */
+#define CAP_HOPS	0x00200000 /* supports HALFOPS			  */
 
 #ifdef HAVE_LIBZ
 #define CAP_ZIP_SUPPORTED CAP_ZIP

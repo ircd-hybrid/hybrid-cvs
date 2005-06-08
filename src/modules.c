@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.151 2005/05/31 10:42:36 metalrock Exp $
+ *  $Id: modules.c,v 7.152 2005/06/08 03:58:02 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -599,6 +599,7 @@ load_all_modules(int warn)
   mod_add_cmd(&gline_msgtab);
   add_capability("GLN", CAP_GLN, 1);
   mod_add_cmd(&ungline_msgtab);
+  add_capability("HOPS", CAP_HOPS, 1);
   mod_add_cmd(&info_msgtab);
   mod_add_cmd(&invite_msgtab);
   mod_add_cmd(&ison_msgtab);
