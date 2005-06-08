@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.49 2005/06/08 19:40:32 db Exp $
+ *  $Id: m_xline.c,v 1.50 2005/06/08 20:17:27 db Exp $
  */
 
 #include "stdinc.h"
@@ -86,7 +86,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
@@ -219,6 +219,7 @@ ms_xline(struct Client *client_p, struct Client *source_p,
 {
   struct ConfItem *conf;
   struct MatchItem *match_item;
+  int t_sec;
 
   if (parc != 5 || EmptyString(parv[4]))
     return;
@@ -228,6 +229,8 @@ ms_xline(struct Client *client_p, struct Client *source_p,
 
   if (!valid_xline(source_p, parv[2], parv[4], 0))
     return;
+
+  t_sec = atoi(parv[3]);
 
   sendto_match_servs(source_p, parv[1], CAP_CLUSTER,
                      "XLINE %s %s %s :%s",
@@ -243,7 +246,7 @@ ms_xline(struct Client *client_p, struct Client *source_p,
 				NULL, NULL, 0)) != NULL)
       return;
 
-    write_xline(source_p, parv[2], parv[4], 0);
+    write_xline(source_p, parv[2], parv[4], t_sec);
   }
   else if (find_matching_name_conf(ULINE_TYPE,
 		       source_p->user->server->name,
@@ -261,7 +264,9 @@ ms_xline(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    write_xline(source_p, parv[2], parv[4], 0);
+
+
+    write_xline(source_p, parv[2], parv[4], t_sec);
   }
 }
 
