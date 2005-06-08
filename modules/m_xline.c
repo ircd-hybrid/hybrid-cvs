@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.47 2005/06/04 12:27:28 michael Exp $
+ *  $Id: m_xline.c,v 1.48 2005/06/08 19:19:49 db Exp $
  */
 
 #include "stdinc.h"
@@ -46,6 +46,7 @@
 #include "modules.h"
 #include "cluster.h"
 #include "resv.h"
+#include "list.h"
 
 static void mo_xline(struct Client *, struct Client *, int, char **);
 static void ms_xline(struct Client *, struct Client *, int, char **);
@@ -56,6 +57,7 @@ static void ms_unxline(struct Client *, struct Client *, int, char **);
 static int valid_xline(struct Client *, char *, char *, int);
 static void write_xline(struct Client *, char *, char *, time_t);
 static void remove_xline(struct Client *, char *, int);
+static int remove_txline_match(const char *gecos);
 
 struct Message xline_msgtab = {
   "XLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -67,6 +69,7 @@ struct Message unxline_msgtab = {
   {m_unregistered, m_not_oper, ms_unxline, m_ignore, mo_unxline, m_ignore}
 };
 
+extern dlink_list temporary_xlines;
 
 #ifndef STATIC_MODULES
 void
@@ -83,7 +86,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
@@ -448,6 +451,20 @@ write_xline(struct Client *source_p, char *gecos, char *reason,
 static void
 remove_xline(struct Client *source_p, char *gecos, int cluster)
 {
+  /* XXX use common temporary un function later */
+  if (remove_txline_match(gecos))
+  {
+    sendto_one(source_p,
+               ":%s NOTICE %s :Un-xlined [%s] from temporary X-Lines",
+               me.name, source_p->name, gecos);
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "%s has removed the temporary X-Line for: [%s]",
+                         get_oper_name(source_p), gecos);
+    ilog(L_NOTICE, "%s removed temporary X-Line for [%s]",
+         source_p->name, gecos);
+    return;
+  }
+
   if (remove_conf_line(XLINE_TYPE, source_p, gecos, NULL) > 0)
   {
     if (!cluster)
@@ -464,3 +481,31 @@ remove_xline(struct Client *source_p, char *gecos, int cluster)
                me.name, source_p->name, gecos);
 }
 
+/* static int remove_tkline_match(const char *host, const char *user)
+ *
+ * Inputs:	gecos
+ * Output:	returns YES on success, NO if no tkline removed.
+ * Side effects: Any matching tklines are removed.
+ */
+static int
+remove_txline_match(const char *gecos)
+{
+  dlink_node *ptr;
+  dlink_node *next_ptr;
+  struct ConfItem *conf;
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, temporary_xlines.head)
+  {
+    conf = ptr->data;
+
+    if (irccmp(gecos, conf->name) != 0)
+    {
+      dlinkDelete(ptr, &temporary_xlines);
+      free_dlink_node(ptr);
+      delete_conf_item(conf);
+      return(YES);
+    }
+  }
+
+  return(NO);
+}
