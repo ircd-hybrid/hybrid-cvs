@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.411 2005/06/07 22:49:49 db Exp $
+ *  $Id: s_serv.c,v 7.412 2005/06/10 16:41:31 db Exp $
  */
 
 #include "stdinc.h"
@@ -869,8 +869,8 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
 	       target_p->name, target_p->hopcount + 1,
 	       (unsigned long) target_p->tsinfo,
 	       ubuf, target_p->username, target_p->host,
-	       (MyClient(target_p)?target_p->sockhost:"0"),
-	       target_p->id, target_p->info);
+	   ((MyClient(target_p)&&!IsIPSpoof(target_p))?target_p->sockhost:"0"),
+	   target_p->id, target_p->info);
   else
     sendto_one(client_p, "NICK %s %d %lu %s %s %s %s :%s",
 	       target_p->name, target_p->hopcount + 1,
@@ -1010,7 +1010,7 @@ server_estab(struct Client *client_p)
     if (!EmptyString(aconf->spasswd))
     {
       /* only send ts6 format PASS if we have ts6 enabled */
-      if (me.id[0])
+    if (me.id[0] != '\0')		/* Send TS 6 form only if id */
         sendto_one(client_p, "PASS %s TS %d %s",
                    aconf->spasswd, TS_CURRENT, me.id);
       else
@@ -2167,9 +2167,13 @@ serv_connect_callback(int fd, int status, void *data)
     
   /* jdc -- Check and send spasswd, not passwd. */
   if (!EmptyString(aconf->spasswd))
-    sendto_one(client_p, "PASS %s TS %d %s",
-               aconf->spasswd, TS_CURRENT, me.id);
-    
+    if (me.id[0] != '\0')		/* Send TS 6 form only if id */
+      sendto_one(client_p, "PASS %s TS %d %s",
+		 aconf->spasswd, TS_CURRENT, me.id);
+    else
+      sendto_one(client_p, "PASS %s TS 5",
+		 aconf->spasswd);
+      
   /* Pass my info to the new server
    *
    * If trying to negotiate LazyLinks, pass on CAP_LL

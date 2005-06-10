@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.215 2005/06/07 22:49:49 db Exp $
+ *  $Id: s_bsd.c,v 7.216 2005/06/10 16:41:31 db Exp $
  */
 
 #include "stdinc.h"
@@ -354,18 +354,6 @@ add_connection(struct Listener* listener, int fd)
   socklen_t len = sizeof(struct irc_ssaddr);
   struct irc_ssaddr   irn;
   assert(NULL != listener);
-
-#ifdef USE_IAUTH
-  if (iAuth.socket == NOSOCK)
-  {
-    send(fd,
-      "NOTICE AUTH :*** Ircd Authentication Server is temporarily down, please connect later\r\n",
-      87,
-      0);
-    fd_close(fd);
-    return;
-  }
-#endif
 
   /* 
    * get the client socket name from the socket

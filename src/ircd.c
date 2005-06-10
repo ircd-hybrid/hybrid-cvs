@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.331 2005/06/06 10:57:53 db Exp $
+ *  $Id: ircd.c,v 7.332 2005/06/10 16:41:31 db Exp $
  */
 
 #include "stdinc.h"
@@ -586,6 +586,7 @@ main(int argc, char *argv[])
   init_hooks();
   read_conf_files(1);   /* cold start init conf files */
   initServerMask();
+  me.id[0] = '\0';
   init_uid();
   init_auth();          /* Initialise the auth code */
   init_resolver();      /* Needs to be setup before the io loop */
@@ -615,18 +616,6 @@ main(int argc, char *argv[])
     exit(EXIT_FAILURE);
   }
   strlcpy(me.info, ServerInfo.description, sizeof(me.info));
-
-#ifdef USE_IAUTH
-  iAuth.flags = 0;
-
-  ConnectToIAuth();
-
-  if (iAuth.socket == NOSOCK)
-  {
-    fprintf(stderr, "Unable to connect to IAuth server\n");
-    exit(EXIT_FAILURE);
-  }
-#endif
 
   me.from    = &me;
   me.servptr = &me;

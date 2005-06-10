@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.442 2005/06/07 22:49:49 db Exp $
+ *  $Id: client.c,v 7.443 2005/06/10 16:41:31 db Exp $
  */
 
 #include "stdinc.h"
@@ -1440,15 +1440,8 @@ set_initial_nick(struct Client *client_p, struct Client *source_p,
    * may reject the client and call exit_client for it
    * --must test this and exit m_nick too!!!
    */
-#ifdef USE_IAUTH
-  /*
-   * Send the client to the iauth module for verification
-   */
-  BeginAuthorization(source_p);
-#else
   if (register_local_user(client_p, source_p, nick, buf) == CLIENT_EXITED)
    return CLIENT_EXITED;
-#endif
  }
  return(0);
 }
