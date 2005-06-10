@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.50 2005/06/08 20:17:27 db Exp $
+ *  $Id: m_xline.c,v 1.51 2005/06/10 14:06:47 db Exp $
  */
 
 #include "stdinc.h"
@@ -86,7 +86,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
@@ -181,7 +181,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
   {
     sendto_match_servs(source_p, target_server, CAP_CLUSTER,
                        "XLINE %s %s %d :%s",
-                       target_server, gecos, 0, reason);
+                       target_server, gecos, (int)tkline_time, reason);
     if (!match(target_server, me.name))
       return;
   }
@@ -231,6 +231,9 @@ ms_xline(struct Client *client_p, struct Client *source_p,
     return;
 
   t_sec = atoi(parv[3]);
+  /* XXX kludge! */
+  if (t_sec < 3)
+    t_sec = 0;
 
   sendto_match_servs(source_p, parv[1], CAP_CLUSTER,
                      "XLINE %s %s %s :%s",
@@ -263,8 +266,6 @@ ms_xline(struct Client *client_p, struct Client *source_p,
                  parv[2], conf->name, match_item->reason);
       return;
     }
-
-
 
     write_xline(source_p, parv[2], parv[4], t_sec);
   }
