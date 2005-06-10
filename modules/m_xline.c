@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.51 2005/06/10 14:06:47 db Exp $
+ *  $Id: m_xline.c,v 1.52 2005/06/10 18:44:35 db Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ static int remove_txline_match(const char *gecos);
 
 struct Message xline_msgtab = {
   "XLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_xline, m_ignore, mo_xline, m_ignore}
+  {m_unregistered, m_not_oper, ms_xline, ms_xline, mo_xline, m_ignore}
 };
 
 struct Message unxline_msgtab = {
@@ -86,7 +86,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
