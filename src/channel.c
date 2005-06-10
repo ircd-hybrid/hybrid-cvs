@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.418 2005/06/07 22:49:49 db Exp $
+ *  $Id: channel.c,v 7.419 2005/06/10 12:10:26 michael Exp $
  */
 
 #include "stdinc.h"
@@ -498,7 +498,7 @@ add_invite(struct Channel *chptr, struct Client *who)
   if (dlink_list_length(&who->user->invited) >=
       ConfigChannel.max_chans_per_user)
   {
-    del_invite(chptr, who);
+    del_invite(who->user->invited.tail->data, who);
   }
 
   /* add client to channel invite list */
@@ -519,27 +519,13 @@ add_invite(struct Channel *chptr, struct Client *who)
 void
 del_invite(struct Channel *chptr, struct Client *who)
 {
-  dlink_node *ptr;
+  dlink_node *ptr = NULL;
 
-  DLINK_FOREACH(ptr, chptr->invites.head)
-  {
-    if (ptr->data == who)
-    {
-      dlinkDelete(ptr, &chptr->invites);
-      free_dlink_node(ptr);
-      break;
-    }
-  }
+  if ((ptr = dlinkFindDelete(&who->user->invited, chptr)))
+    free_dlink_node(ptr);
 
-  DLINK_FOREACH(ptr, who->user->invited.head)
-  {
-    if (ptr->data == chptr)
-    {
-      dlinkDelete(ptr, &who->user->invited);
-      free_dlink_node(ptr);
-      break;
-    }
-  }
+  if ((ptr = dlinkFindDelete(&chptr->invites, who)))
+    free_dlink_node(ptr);
 }
 
 /* get_member_status()
