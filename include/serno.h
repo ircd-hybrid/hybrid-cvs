@@ -1,1 +1,1 @@
-#define SERIALNUM "20050610_1"
+#define SERIALNUM "20050610_2"
