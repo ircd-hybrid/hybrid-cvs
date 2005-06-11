@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.52 2005/06/10 18:44:35 db Exp $
+ *  $Id: m_xline.c,v 1.53 2005/06/11 01:09:16 db Exp $
  */
 
 #include "stdinc.h"
@@ -86,7 +86,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
@@ -512,6 +512,5 @@ remove_txline_match(const char *gecos)
       return(YES);
     }
   }
-
   return(NO);
 }
