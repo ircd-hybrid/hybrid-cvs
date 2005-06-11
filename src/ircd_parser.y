@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.382 2005/06/07 13:18:12 michael Exp $
+ *  $Id: ircd_parser.y,v 1.383 2005/06/11 01:36:45 michael Exp $
  */
 
 %{
@@ -547,7 +547,10 @@ serverinfo_sid: SID '=' QSTRING ';'
   {
     if (strlen(yylval.string) == IRC_MAXSID && IsDigit(*yylval.string))
       if (IsAlNum(*(yylval.string+1)) && IsAlNum(*(yylval.string+2)))
-        DupString(ServerInfo.sid, yylval.string);
+        DupString(ServerInfo.sid, yylval.string), break;
+
+    yyerror("Ignoring config file entry SID -- invalid SID. Aborting.");
+    exit(0);
   }
 };
 
