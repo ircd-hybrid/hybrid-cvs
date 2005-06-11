@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.444 2005/06/11 01:09:48 db Exp $
+ *  $Id: client.c,v 7.445 2005/06/11 05:59:51 db Exp $
  */
 
 #include "stdinc.h"
@@ -971,8 +971,6 @@ remove_dependents(struct Client *client_p, struct Client *source_p,
        * comstud, since m_squit already does the notification.
        */
       /* But it doesn't because of servlink */
-      sendto_one(to, "ERROR %s :%s %s", ID_or_name(source_p, to), me.name,
-	       comment1);
       if ((conf = to->serv->sconf) != NULL)
         strlcpy(myname, my_name_for_link(conf), sizeof(myname));
       else
