@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.514 2005/06/08 09:02:28 metalrock Exp $
+ *  $Id: s_conf.c,v 7.515 2005/06/11 01:09:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -521,7 +521,6 @@ report_confitem_types(struct Client *source_p, ConfType type)
   struct MatchItem *matchitem;
   struct ClassItem *classitem;
   char buf[10], *p = buf;
-  int port;
 
   switch (type)
   {

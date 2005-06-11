@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.412 2005/06/10 16:41:31 db Exp $
+ *  $Id: s_serv.c,v 7.413 2005/06/11 01:09:49 db Exp $
  */
 
 #include "stdinc.h"
@@ -2166,8 +2166,8 @@ serv_connect_callback(int fd, int status, void *data)
 #endif
     
   /* jdc -- Check and send spasswd, not passwd. */
-  if (!EmptyString(aconf->spasswd))
-    if (me.id[0] != '\0')		/* Send TS 6 form only if id */
+  if (!EmptyString(aconf->spasswd) && (me.id[0] != '\0'))
+      /* Send TS 6 form only if id */
       sendto_one(client_p, "PASS %s TS %d %s",
 		 aconf->spasswd, TS_CURRENT, me.id);
     else

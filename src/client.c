@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.443 2005/06/10 16:41:31 db Exp $
+ *  $Id: client.c,v 7.444 2005/06/11 01:09:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -970,7 +970,9 @@ remove_dependents(struct Client *client_p, struct Client *source_p,
       /* The WALLOPS isn't needed here as pointed out by
        * comstud, since m_squit already does the notification.
        */
-
+      /* But it doesn't because of servlink */
+      sendto_one(to, "ERROR %s :%s %s", ID_or_name(source_p, to), me.name,
+	       comment1);
       if ((conf = to->serv->sconf) != NULL)
         strlcpy(myname, my_name_for_link(conf), sizeof(myname));
       else
