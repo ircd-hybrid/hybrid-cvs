@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.129 2005/05/28 17:30:57 adx Exp $
+ *  $Id: m_server.c,v 1.130 2005/06/11 07:36:46 db Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.129 $";
+const char *_version = "$Revision: 1.130 $";
 #endif
 
 
@@ -190,7 +190,8 @@ mr_server(struct Client *client_p, struct Client *source_p,
       break;
   }
 
-  if ((target_p = server_exists(name)))
+  if ((me.id[0] && client_p->id[0] && (target_p = hash_find_id(client_p->id)))
+      || (target_p = server_exists(name)))
   {
     /* This link is trying feed me a server that I already have
      * access through another path -- multiple paths not accepted
@@ -203,13 +204,15 @@ mr_server(struct Client *client_p, struct Client *source_p,
      * connect - A1kmm.
      */
     sendto_realops_flags(UMODE_ALL, L_ADMIN,
-			 "Attempt to re-introduce server %s from %s",
-                         name, get_client_name(client_p, HIDE_IP));
+			 "Attempt to re-introduce server %s id=%s from %s",
+                         name, client_p->id, 
+			 get_client_name(client_p, HIDE_IP));
     sendto_realops_flags(UMODE_ALL, L_OPER,
-			 "Attempt to re-introduce server %s from %s",
-                         name, get_client_name(client_p, MASK_IP));
-    sendto_one(client_p, "ERROR :Server already exists.");
-    exit_client(client_p, client_p, client_p, "Server Exists");
+			 "Attempt to re-introduce server %s id=%s from %s",
+                         name, client_p->id,
+			 get_client_name(client_p, MASK_IP));
+    sendto_one(client_p, "ERROR :Server ID already exists.");
+    exit_client(client_p, client_p, client_p, "Server ID Exists");
     return;
   }
 
