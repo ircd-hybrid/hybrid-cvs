@@ -2,7 +2,15 @@
 o) Disallow locally connected users from doing hash lookups by ID
 o) Fixed a bug that could have caused network-wide channel desyncs
 o) Added operator:encrypted configuration directive
-
+o) Fix bug in invite code which could have been abused
+o) CIDR glines
+o) Display SIDs in /map to opers only
+o) expanded testmask
+o) fixed memory leak with x-lines
+o) m_force (contrib) fixes 
+o) /whois addition of IP showing
+o) halfops patch re-integrated
+o) fixed possible desync in m_sjoin
 
 -- ircd-hybrid-7.1rc2 RELNOTES
 o) Fixed build system to include ChangeLog
@@ -93,4 +101,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.87 2005/05/23 10:09:53 michael Exp $
+$Id: RELNOTES,v 1.88 2005/06/11 04:33:36 db Exp $

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.383 2005/06/11 01:36:45 michael Exp $
+ *  $Id: ircd_parser.y,v 1.384 2005/06/11 04:33:41 db Exp $
  */
 
 %{
@@ -545,12 +545,16 @@ serverinfo_sid: SID '=' QSTRING ';'
   /* this isn't rehashable */
   if (ypass == 2 && !ServerInfo.sid)
   {
-    if (strlen(yylval.string) == IRC_MAXSID && IsDigit(*yylval.string))
-      if (IsAlNum(*(yylval.string+1)) && IsAlNum(*(yylval.string+2)))
-        DupString(ServerInfo.sid, yylval.string), break;
-
-    yyerror("Ignoring config file entry SID -- invalid SID. Aborting.");
-    exit(0);
+    if ((strlen(yylval.string) == IRC_MAXSID) && IsDigit(yylval.string[0])
+	&& IsAlNum(yylval.string[1]) && IsAlNum(yylval.string[2]))
+    {
+      DupString(ServerInfo.sid, yylval.string);
+    }
+    else
+    {
+      ilog(L_ERROR, "Ignoring config file entry SID -- invalid SID. Aborting.");
+      exit(0);
+    }
   }
 };
 

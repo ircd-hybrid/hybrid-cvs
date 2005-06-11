@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.99 2005/05/31 04:01:15 db Exp $
+# $Id: Makefile.in,v 1.100 2005/06/11 04:33:40 db Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -100,6 +100,7 @@ SRCS =       \
   m_who.c \
   m_whois.c \
   m_whowas.c \
+  m_map.c \
   m_xline.c
 
 ALL_SRCS = $(CORE_SRCS) $(SRCS) @SSL_SRCS_ENABLE@
