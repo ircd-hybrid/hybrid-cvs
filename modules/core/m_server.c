@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.130 2005/06/11 07:36:46 db Exp $
+ *  $Id: m_server.c,v 1.131 2005/06/11 07:41:45 db Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.130 $";
+const char *_version = "$Revision: 1.131 $";
 #endif
 
 
@@ -204,11 +204,11 @@ mr_server(struct Client *client_p, struct Client *source_p,
      * connect - A1kmm.
      */
     sendto_realops_flags(UMODE_ALL, L_ADMIN,
-			 "Attempt to re-introduce server %s id=%s from %s",
+			 "Attempt to re-introduce server %s SID %s from %s",
                          name, client_p->id, 
 			 get_client_name(client_p, HIDE_IP));
     sendto_realops_flags(UMODE_ALL, L_OPER,
-			 "Attempt to re-introduce server %s id=%s from %s",
+			 "Attempt to re-introduce server %s SID %s from %s",
                          name, client_p->id,
 			 get_client_name(client_p, MASK_IP));
     sendto_one(client_p, "ERROR :Server ID already exists.");
