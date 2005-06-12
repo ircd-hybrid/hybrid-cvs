@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.105 2005/06/12 18:23:08 db Exp $
+ *   $Id: messages.tab,v 7.106 2005/06/12 18:45:15 db Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -731,8 +731,8 @@ static struct NumericInfo replies[] = {
 /* 704 */  {"RPL_HELPSTART", ":%s 704 %s %s :%s", NULL},
 /* 705 */  {"RPL_HELPTXT", ":%s 705 %s %s :%s", NULL},
 /* 706 */  {"RPL_ENDOFHELP", ":%s 706 %s %s :End of /HELP.", NULL},
-/* 707 */  {"RPL_ISCAPTURED", ":%s 707 %s %s:Is Captured.", NULL},
-/* 707 */  {"RPL_ISUNCAPTURED", ":%s 708 %s %s:Is UnCaptured.", NULL},
+/* 707 */  {"RPL_ISCAPTURED", ":%s 707 %s :%s Is Captured.", NULL},
+/* 707 */  {"RPL_ISUNCAPTURED", ":%s 708 %s :%s Is UnCaptured.", NULL},
 /* 709 */  {NULL, NULL, NULL},
 /* 710 */  {"RPL_KNOCK", ":%s 710 %s %s %s!%s@%s :has asked for an invite.", NULL},
 /* 711 */  {"RPL_KNOCKDLVR", ":%s 711 %s %s :Your KNOCK has been delivered.", NULL},

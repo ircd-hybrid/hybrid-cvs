@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capture.c,v 1.3 2005/06/12 18:23:02 db Exp $
+ *  $Id: m_capture.c,v 1.4 2005/06/12 18:45:10 db Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&capture_msgtab);
 }
 
-const char *_version = "$Revision: 1.3 $";
+const char *_version = "$Revision: 1.4 $";
 #endif
 
 /* mo_capture
@@ -95,10 +95,15 @@ mo_capture(struct Client *client_p, struct Client *source_p,
   {
     if (MyClient(target_p))
     {
-      target_p->handler = DUMMY_HANDLER;
+      if (IsOper(target_p))
+      {
+	sendto_one(source_p, form_str(ERR_NOPRIVS),
+		   me.name, source_p->name, "capture");
+	return;
+      }
       SetCaptured(target_p);
-      sendto_one(source_p, ":%s NOTICE %s :%s is now captured",
-		 me.name, source_p->name, parv[1]);
+      sendto_one(source_p, form_str(RPL_ISCAPTURED),
+		 me.name, source_p->name, target_p->name);
     }
   }
   else
@@ -127,10 +132,9 @@ mo_uncapture(struct Client *client_p, struct Client *source_p,
   {
     if (MyClient(target_p))
     {
-      target_p->handler = CLIENT_HANDLER;
       ClearCaptured(target_p);
-      sendto_one(source_p, ":%s NOTICE %s :%s is now uncaptured",
-		 me.name, source_p->name, parv[1]);
+      sendto_one(source_p, form_str(RPL_ISUNCAPTURED),
+		 me.name, source_p->name, target_p->name);
     }
   }
   else
