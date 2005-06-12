@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.323 2005/06/07 22:49:50 db Exp $
+ *  $Id: s_user.c,v 7.324 2005/06/12 19:06:01 db Exp $
  */
 
 #include "stdinc.h"
@@ -50,7 +50,7 @@
 #include "memory.h"
 #include "packet.h"
 #include "userhost.h"
-
+#include "hook.h"
 
 int MaxClientCount     = 1;
 int MaxConnectionCount = 1;
@@ -363,6 +363,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   int status;
   dlink_node *ptr;
   dlink_node *m;
+  struct hook_mfunc_data hd;
 
   assert(source_p != NULL);
   assert(MyConnect(source_p));
@@ -506,6 +507,10 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     strlcpy(source_p->id, id, sizeof(source_p->id));
     hash_add_id(source_p);
   }
+
+  hd.client_p = client_p;
+  hd.source_p = source_p;
+  hook_call_event("register_local_user", &hd);
 
   irc_getnameinfo((struct sockaddr *)&source_p->localClient->ip,
                   source_p->localClient->ip.ss_len, ipaddr,
