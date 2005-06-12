@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.445 2005/06/11 05:59:51 db Exp $
+ *  $Id: client.c,v 7.446 2005/06/12 12:38:32 adx Exp $
  */
 
 #include "stdinc.h"
@@ -852,52 +852,36 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
 ** on that one -orabidoo
 */
 static void
-recurse_send_quits(struct Client *client_p, struct Client *source_p,
+recurse_send_quits(struct Client *original_source_p, struct Client *source_p,
                    struct Client *to, const char *comment, /* for servers */
                    const char *myname)
 {
   dlink_node *ptr;
   dlink_node *next;
   struct Client *target_p;
+  int hidden = match(myname, source_p->name);
 
   /* If this server can handle quit storm (QS) removal
    * of dependents, just send the SQUIT
+   *
+   * Always check *all* dependent servers if some of them are
+   * hidden behind fakename. If so, send out the QUITs -adx
    */
-  if (IsCapable(to, CAP_QS))
-  {
-    if (match(myname, source_p->name))
-    {
-      DLINK_FOREACH_SAFE(ptr, next, source_p->serv->users.head)
-      {
-        target_p = ptr->data;
-        sendto_one(to, ":%s QUIT :%s", target_p->name, comment);
-      }
-      DLINK_FOREACH_SAFE(ptr, next, source_p->serv->servers.head)
-      {
-        target_p = ptr->data;
-        recurse_send_quits(client_p, target_p, to, comment, myname);
-      }
-    }
-    else
-      sendto_one(to, "SQUIT %s :%s", ID_or_name(source_p, to), me.name);
-  }
-  else
-  {
+  if (hidden || !IsCapable(to, CAP_QS))
     DLINK_FOREACH_SAFE(ptr, next, source_p->serv->users.head)
     {
       target_p = ptr->data;
       sendto_one(to, ":%s QUIT :%s", target_p->name, comment);
     }
 
-    DLINK_FOREACH_SAFE(ptr, next, source_p->serv->servers.head)
-    {
-      target_p = ptr->data;
-      recurse_send_quits(client_p, target_p, to, comment, myname);
-    }
-
-    if (!match(myname, source_p->name))
-      sendto_one(to, "SQUIT %s :%s", ID_or_name(source_p, to), me.name);
+  DLINK_FOREACH_SAFE(ptr, next, source_p->serv->servers.head)
+  {
+    target_p = ptr->data;
+    recurse_send_quits(original_source_p, target_p, to, comment, myname);
   }
+
+  if (!hidden && (!IsCapable(to, CAP_QS) || source_p == original_source_p))
+    sendto_one(to, "SQUIT %s :%s", ID_or_name(source_p, to), me.name);
 }
 
 /* 
@@ -975,7 +959,7 @@ remove_dependents(struct Client *client_p, struct Client *source_p,
         strlcpy(myname, my_name_for_link(conf), sizeof(myname));
       else
         strlcpy(myname, me.name, sizeof(myname));
-      recurse_send_quits(client_p, source_p, to, comment1, myname);
+      recurse_send_quits(source_p, source_p, to, comment1, myname);
   }
 
   recurse_remove_clients(source_p, comment1);
