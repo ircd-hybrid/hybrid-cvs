@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capture.c,v 1.5 2005/06/12 19:06:00 db Exp $
+ *  $Id: m_capture.c,v 1.6 2005/06/12 22:13:58 db Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&capture_msgtab);
 }
 
-const char *_version = "$Revision: 1.5 $";
+const char *_version = "$Revision: 1.6 $";
 #endif
 
 /* mo_capture
@@ -83,6 +83,8 @@ mo_capture(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
   struct Client *target_p;
+  char *user, *host, *p;
+  dlink_node *ptr;
 
   if (parc < 2 || EmptyString(parv[1]))
   {
@@ -100,24 +102,50 @@ mo_capture(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if ((target_p = find_client(parv[1])) != NULL)
-  {
-    if (MyClient(target_p))
+  if ((p = strchr(parv[1], '@')) == NULL)
+  {      
+    if ((target_p = find_client(parv[1])) != NULL)
     {
-      if (IsOper(target_p))
+      if (MyClient(target_p))
       {
-	sendto_one(source_p, form_str(ERR_NOPRIVS),
-		   me.name, source_p->name, "capture");
-	return;
+	if (IsOper(target_p))
+	{
+	  sendto_one(source_p, form_str(ERR_NOPRIVS),
+		     me.name, source_p->name, "capture");
+	  return;
+	}
+	SetCaptured(target_p);
+	sendto_one(source_p, form_str(RPL_ISCAPTURED),
+		   me.name, source_p->name, target_p->name);
+	sendto_realops_flags(UMODE_ALL, L_ALL, "Captured %s [%s@%s]",
+			     target_p->name, target_p->username, target_p->host);
       }
-      SetCaptured(target_p);
-      sendto_one(source_p, form_str(RPL_ISCAPTURED),
-		 me.name, source_p->name, target_p->name);
     }
+    else
+      sendto_one(source_p, form_str(ERR_NOSUCHNICK),
+		 me.name, source_p->name, parv[1]);
   }
   else
-    sendto_one(source_p, form_str(ERR_NOSUCHNICK),
-               me.name, source_p->name, parv[1]);
+  {
+    /* p != NULL so user @ host given */
+    user = parv[1];
+    *p++ = '\0';
+    host = p;
+    DLINK_FOREACH(ptr, local_client_list.head)
+    {
+      target_p = ptr->data;
+
+      if (!IsPerson(target_p) || (source_p == target_p) || IsOper(target_p))
+	continue;
+      
+      if (match(host, target_p->host) && match(user, target_p->username))
+      {
+	SetCaptured(target_p);
+	sendto_realops_flags(UMODE_ALL, L_ALL, "Captured %s [%s@%s]",
+			     target_p->name, target_p->username, target_p->host);
+      }
+    }
+  }
 }
 
 /* mo_uncapture
