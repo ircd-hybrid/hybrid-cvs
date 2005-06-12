@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_accept.c,v 1.41 2004/07/08 00:27:21 erik Exp $
+ *  $Id: m_accept.c,v 1.42 2005/06/12 13:56:52 db Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,7 @@ static void add_accept(struct Client *, struct Client *);
 static void list_accepts(struct Client *);
 
 struct Message accept_msgtab = {
-  "ACCEPT", 0, 0, 2, 0, MFLG_SLOW, 0, 
+  "ACCEPT", 0, 0, 0, 0, MFLG_SLOW, 0, 
   {m_unregistered, m_accept, m_ignore, m_ignore, m_accept, m_ignore}
 };
 
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&accept_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 
 /*
@@ -80,7 +80,7 @@ m_accept(struct Client *client_p, struct Client *source_p,
   struct Client *target_p;
   int accept_num;
   
-  if (*parv[1] == '*')
+  if ((parc < 2) || (*parv[1] == '*'))
   {
     list_accepts(source_p);
     return;
@@ -220,6 +220,7 @@ add_accept(struct Client *source_p, struct Client *target_p)
 {
   dlinkAdd(target_p, make_dlink_node(), &source_p->allow_list);
   dlinkAdd(source_p, make_dlink_node(), &target_p->on_allow_list);
+  list_accepts(source_p);
 }
 
 /* list_accepts()
@@ -264,7 +265,7 @@ list_accepts(struct Client *source_p)
     }
   }
 
-  if (*nicks)
+  if (*nicks != '\0')
     sendto_one(source_p, form_str(RPL_ACCEPTLIST),
                me.name, source_p->name, nicks);
 

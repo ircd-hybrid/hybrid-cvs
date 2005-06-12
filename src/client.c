@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.446 2005/06/12 12:38:32 adx Exp $
+ *  $Id: client.c,v 7.447 2005/06/12 13:56:54 db Exp $
  */
 
 #include "stdinc.h"
@@ -1385,6 +1385,25 @@ del_all_accepts(struct Client *client_p)
   }
 }
 
+/* del_all_their_accepts()
+ *
+ * inputs	- pointer to exiting client
+ * output	- NONE
+ * side effects - Walk through given clients on_allow_list
+ *                remove all references to this client,
+ *		  allow this client to keep their own allow_list
+ */
+void
+del_all_their_accepts(struct Client *client_p)
+{
+  dlink_node *ptr, *next_ptr;
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->on_allow_list.head)
+  {
+    del_from_accept(client_p, (struct Client *)ptr->data);
+  }
+}
+
 /* set_initial_nick()
  *
  * inputs
@@ -1506,7 +1525,7 @@ change_local_nick(struct Client *client_p, struct Client *source_p, const char *
   /* Make sure everyone that has this client on its accept list
    * loses that reference. 
    */
-  del_all_accepts(source_p);
+  del_all_their_accepts(source_p);
 
   /* fd_desc is long enough */
   fd_note(client_p->localClient->fd, "Nick: %s", nick);

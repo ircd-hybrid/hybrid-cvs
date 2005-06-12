@@ -1,17 +1,7 @@
  Known Bugs worthy of a mention:
 --------------------------------------------------------------------------------
   
-1.  Issues with server hostmasking.
-    - If for example the new servername is blah.blah.blah.nl, the following
-      servernames will be checked, in this order: *.blah.blah.nl, *.blah.nl,
-      *.nl, one of which will match the host-masked server they are
-      connecting behind. This will be accepted by the host-masked server it
-      is connected behind, but when it reaches the server the host-masked
-      server is connected to, the find_server will match, so the host-masked
-      server will be dropped.
-      --> This corrected?
-
-2.  /MODUNLOAD causes cores:
+1.  /MODUNLOAD causes cores:
     - If a module is modified before being unloaded, /MODUNLOAD (and
       therefore /MODRELOAD) may cause a core.
 
@@ -30,15 +20,14 @@
       of upgrading at runtime, but reducing the chances of accidentally
       coring your server.
 
-3.  IAuthd is broken beyond belief. It does not work at this time. If this
-    bothers you, fix it for us.
-
-4.  Solaris stock 32bit stdio is limited to 256 fds. This breaks when using
+2.  Solaris stock 32bit stdio is limited to 256 fds. This breaks when using
     cryptlinks.
 
-5.  Compiling using tinycc is incomplete and unsupported. Mostly the problem
-    is that our name resolver code breaks. Caveat emptor.
- 
+3.  kqueue on FreeBSD 4.11 breaks UDP events, thus DNS resolver breaks.
+    See: http://www.freebsd.org/cgi/query-pr.cgi?pr=82143
+    This may be fixed by the time you see it. The work around is to use
+    poll() for now.
+
  BUG REPORTS: If you run this code and encounter problems, you should report
  the bug on our SourceForge.net bug tracker, which you can find at this URL:
 
@@ -49,4 +38,4 @@
  information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.56 2003/10/13 02:15:15 metalrock Exp $
+$Id: BUGS,v 7.57 2005/06/12 13:56:49 db Exp $
