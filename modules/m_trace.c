@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.78 2004/07/08 00:27:23 erik Exp $
+ *  $Id: m_trace.c,v 1.79 2005/06/12 20:44:52 db Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-const char *_version = "$Revision: 1.78 $";
+const char *_version = "$Revision: 1.79 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
@@ -433,14 +433,20 @@ report_this_status(struct Client *source_p, struct Client *target_p,
 	  }		       
 	  else
           {
+	    const char *format_str=NULL;
+	    if (IsOper(source_p) && IsCaptured(target_p))
+	      format_str = form_str(RPL_TRACECAPTURED);
+	    else
+	      format_str = form_str(RPL_TRACEUSER);
+
             if (ConfigFileEntry.hide_spoof_ips)
-	      sendto_one(source_p, form_str(RPL_TRACEUSER),
+	      sendto_one(source_p, format_str,
 		         from, to, class_name, name,
                          IsIPSpoof(target_p) ? "255.255.255.255" : ip,
 		         CurrentTime - target_p->lasttime,
 		         (target_p->user)?(CurrentTime - target_p->user->last):0);
 	    else
-              sendto_one(source_p, form_str(RPL_TRACEUSER),
+              sendto_one(source_p, format_str,
                          from, to, class_name, name,
                          MyOper(source_p) ? ip :
                          (IsIPSpoof(target_p) ? "255.255.255.255" : ip),

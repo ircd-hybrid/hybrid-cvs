@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.106 2005/06/12 18:45:15 db Exp $
+ *   $Id: messages.tab,v 7.107 2005/06/12 20:44:53 db Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -231,7 +231,7 @@ static struct NumericInfo replies[] = {
 /* 204 */  {"RPL_TRACEOPERATOR", ":%s 204 %s Oper %s %s (%s) %lu %lu", NULL},
 /* 205 */  {"RPL_TRACEUSER", ":%s 205 %s User %s %s (%s) %lu %lu", NULL},
 /* 206 */  {"RPL_TRACESERVER", ":%s 206 %s Serv %s %dS %dC %s %s!%s@%s %lu", NULL},
-/* 207 */  {NULL, NULL, NULL},
+/* 207 */  {"RPL_TRACECAPTURED", ":%s 207 %s Capt %s %s (%s) %lu %lu", NULL},
 /* 208 */  {"RPL_TRACENEWTYPE", ":%s 208 %s <newtype> 0 %s", NULL},
 /* 209 */  {"RPL_TRACECLASS", ":%s 209 %s Class %s %d", NULL},
 /* 210 */  {NULL, NULL, NULL},

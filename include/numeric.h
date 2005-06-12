@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.43 2005/06/12 18:23:04 db Exp $
+ *  $Id: numeric.h,v 7.44 2005/06/12 20:44:50 db Exp $
  */
 
 #ifndef INCLUDED_numeric_h
@@ -78,6 +78,7 @@ extern const char *get_locale(void);
 #define RPL_TRACEOPERATOR    204
 #define RPL_TRACEUSER        205
 #define RPL_TRACESERVER      206
+#define RPL_TRACECAPTURED    207
 #define RPL_TRACENEWTYPE     208
 #define RPL_TRACECLASS       209
 
