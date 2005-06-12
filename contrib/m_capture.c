@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capture.c,v 1.7 2005/06/12 22:42:12 db Exp $
+ *  $Id: m_capture.c,v 1.8 2005/06/12 22:57:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&capture_msgtab);
 }
 
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 #endif
 
 /* mo_capture
@@ -223,9 +223,6 @@ mo_uncapture(struct Client *client_p, struct Client *source_p,
       nick = "*";
     }
 	
-    if (!valid_wild_card(source_p, user, host, YES))
-      return;
-
     DLINK_FOREACH(ptr, local_client_list.head)
     {
       target_p = ptr->data;
