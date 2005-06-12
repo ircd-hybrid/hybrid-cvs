@@ -1,6 +1,6 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.43 2005/02/24 23:13:34 michael Exp $
+   $Id: INSTALL,v 7.44 2005/06/12 13:49:16 adx Exp $
 
    Copyright (c) 2001, 2002, 2003, 2004, 2005 by ircd-hybrid team
 
@@ -93,6 +93,10 @@
           * --enable-assert - Enable use of numerous debugging checks. This
             should not be used on any production servers for maximum speed
 	    so as to prevent cores from things that shouldn't normally happen.
+
+	  * --enable-halfops - Enable halfop (%, mode +h) usage. Halfops
+	    are similar to plain ops, but can't kick/deop them. Depending on
+	    +p setting, they may (-p) or may not (+p) kick/deop other halfops.
 
           * --enable-small-net - Tunes the server for smaller networks by
             reducing the startup memory footprint. This should really only be
