@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.515 2005/06/11 01:09:48 db Exp $
+ *  $Id: s_conf.c,v 7.516 2005/06/12 22:42:17 db Exp $
  */
 
 #include "stdinc.h"
@@ -3201,4 +3201,73 @@ valid_tkline(char *p, int minutes)
   result = (time_t)result * (time_t)60;  /* turn it into seconds */
 
   return(result);
+}
+
+/* valid_wild_card()
+ *
+ * input        - pointer to client
+ *              - pointer to user to check
+ *              - pointer to host to check
+ *		- int flag, 0 for no warning oper 1 for warning oper
+ * output       - 0 if not valid, 1 if valid
+ * side effects -
+ */
+int
+valid_wild_card(struct Client *source_p, char *luser, char *lhost, int warn)
+{
+  char *p;
+  char tmpch;
+  int nonwild;
+
+  /*
+   * Now we must check the user and host to make sure there
+   * are at least NONWILDCHARS non-wildcard characters in
+   * them, otherwise assume they are attempting to kline
+   * *@* or some variant of that. This code will also catch
+   * people attempting to kline *@*.tld, as long as NONWILDCHARS
+   * is greater than 3. In that case, there are only 3 non-wild
+   * characters (tld), so if NONWILDCHARS is 4, the kline will
+   * be disallowed.
+   * -wnder
+   */
+
+  nonwild = 0;
+  p = luser;
+  while ((tmpch = *p++))
+  {
+    if (!IsKWildChar(tmpch))
+    {
+      /*
+       * If we find enough non-wild characters, we can
+       * break - no point in searching further.
+       */
+      if (++nonwild >= ConfigFileEntry.min_nonwildcard)
+        break;
+    }
+  }
+
+  if (nonwild < ConfigFileEntry.min_nonwildcard)
+  {
+    /*
+     * The user portion did not contain enough non-wild
+     * characters, try the host.
+     */
+    p = lhost;
+    while ((tmpch = *p++))
+    {
+      if (!IsKWildChar(tmpch))
+        if (++nonwild >= ConfigFileEntry.min_nonwildcard)
+          break;
+    }
+  }
+
+  if (nonwild < ConfigFileEntry.min_nonwildcard)
+  {
+    if (warn)
+      sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the user@host",
+                 me.name, source_p->name, ConfigFileEntry.min_nonwildcard);
+    return(0);
+  }
+  else
+    return(1);
 }

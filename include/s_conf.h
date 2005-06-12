@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.286 2005/06/12 21:06:24 michael Exp $
+ *  $Id: s_conf.h,v 7.287 2005/06/12 22:42:13 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -414,6 +414,7 @@ extern struct config_channel_entry ConfigChannel;/* defined in channel.c*/
 extern struct config_server_hide ConfigServerHide; /* defined in s_conf.c */
 extern struct server_info ServerInfo;       /* defined in ircd.c */
 extern struct admin_info AdminInfo;        /* defined in ircd.c */
+extern int valid_wild_card(struct Client *source_p, char *user, char *host, int warn);
 /* End GLOBAL section */
 
 
