@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.92 2004/07/08 00:27:23 erik Exp $
+ *  $Id: m_who.c,v 1.93 2005/06/12 20:30:15 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&who_msgtab);
 }
 
-const char *_version = "$Revision: 1.92 $";
+const char *_version = "$Revision: 1.93 $";
 #endif
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);
@@ -362,7 +362,7 @@ static void
 do_who(struct Client *source_p, struct Client *target_p,
        const char *chname, const char *op_flags)
 {
-  char status[5];
+  char status[6];
   const char *from, *to;
 
   if (!MyConnect(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
@@ -376,8 +376,13 @@ do_who(struct Client *source_p, struct Client *target_p,
     to = source_p->name;
   }
 
-  ircsprintf(status, "%c%s%s", target_p->user->away ? 'G' : 'H',
-             IsOper(target_p) ? "*" : "", op_flags);
+  if (IsOper(source_p))
+    ircsprintf(status, "%c%s%s%s", 
+	       target_p->user->away ? 'G' : 'H',
+	       IsOper(target_p) ? "*" : "", IsCaptured(target_p) ? "#" : "", op_flags);
+  else
+    ircsprintf(status, "%c%s%s", target_p->user->away ? 'G' : 'H',
+	       IsOper(target_p) ? "*" : "", op_flags);
 
   if (ConfigServerHide.hide_servers)
   {
