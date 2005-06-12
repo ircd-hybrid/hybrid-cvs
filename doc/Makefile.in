@@ -1,9 +1,9 @@
-# $Id: Makefile.in,v 7.25 2003/09/11 04:19:44 joshk Exp $
+# $Id: Makefile.in,v 7.26 2005/06/12 00:02:42 lusky Exp $
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
 RM		= @RM@
 prefix		= $(DESTDIR)@prefix@
-mandir          = @mandir@
+mandir          = $(DESTDIR)@mandir@
 
 all:
 

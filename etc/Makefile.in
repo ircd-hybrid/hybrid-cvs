@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.15 2005/04/19 13:34:15 lusky Exp $
+# $Id: Makefile.in,v 1.16 2005/06/12 00:02:43 lusky Exp $
 
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
@@ -10,8 +10,8 @@ TEST		= @TEST@
 CLOBBER=@CLOBBER@
 
 prefix		= $(DESTDIR)@prefix@
-sysconfdir	= @sysconfdir@
-exec_prefix	= @exec_prefix@
+sysconfdir	= $(DESTDIR)@sysconfdir@
+exec_prefix	= $(DESTDIR)@exec_prefix@
 
 DISTFILES	= @EXAMPLE_CONF@
 
