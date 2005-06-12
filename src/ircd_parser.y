@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.386 2005/06/12 17:05:33 db Exp $
+ *  $Id: ircd_parser.y,v 1.387 2005/06/12 18:09:14 michael Exp $
  */
 
 %{
@@ -1608,7 +1608,7 @@ auth_entry: IRCD_AUTH
 
 auth_items:     auth_items auth_item | auth_item;
 auth_item:      auth_user | auth_passwd | auth_class | auth_flags |
-                auth_kline_exempt | auth_have_ident | auth_is_restricted |
+                auth_kline_exempt | auth_need_ident |
                 auth_exceed_limit | auth_no_tilde | auth_gline_exempt |
 		auth_spoof | auth_spoof_notice |
                 auth_redir_serv | auth_redir_port | auth_can_flood |
@@ -1724,14 +1724,14 @@ auth_flags_item_atom: SPOOF_NOTICE
 {
   if (ypass == 2)
   {
-    if (not_atom) yy_aconf->flags |= CONF_FLAGS_NO_TILDE;
+    if (not_atom) yy_aconf->flags &= ~CONF_FLAGS_NO_TILDE;
     else yy_aconf->flags |= CONF_FLAGS_NO_TILDE;
   } 
 } | GLINE_EXEMPT
 {
   if (ypass == 2)
   {
-    if (not_atom) yy_aconf->flags |= CONF_FLAGS_EXEMPTGLINE;
+    if (not_atom) yy_aconf->flags &= ~CONF_FLAGS_EXEMPTGLINE;
     else yy_aconf->flags |= CONF_FLAGS_EXEMPTGLINE;
   } 
 } | NEED_PASSWORD
@@ -1754,7 +1754,7 @@ auth_kline_exempt: KLINE_EXEMPT '=' TBOOL ';'
   }
 };
 
-auth_have_ident: NEED_IDENT '=' TBOOL ';'
+auth_need_ident: NEED_IDENT '=' TBOOL ';'
 {
   if (ypass == 2)
   {
@@ -1762,17 +1762,6 @@ auth_have_ident: NEED_IDENT '=' TBOOL ';'
       yy_aconf->flags |= CONF_FLAGS_NEED_IDENTD;
     else
       yy_aconf->flags &= ~CONF_FLAGS_NEED_IDENTD;
-  }
-};
-
-auth_is_restricted: RESTRICTED '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->flags |= CONF_FLAGS_RESTRICTED;
-    else
-      yy_aconf->flags &= ~CONF_FLAGS_RESTRICTED;
   }
 };
 
@@ -1864,9 +1853,9 @@ auth_need_password: NEED_PASSWORD '=' TBOOL ';'
   if (ypass == 2)
   {
     if (yylval.number)
-      yy_aconf->flags &= ~CONF_FLAGS_NEED_PASSWORD;
-    else
       yy_aconf->flags |= CONF_FLAGS_NEED_PASSWORD;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_NEED_PASSWORD;
   }
 };
 
