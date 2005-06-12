@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.189 2005/06/07 13:18:12 michael Exp $
+ *  $Id: ircd_lexer.l,v 1.190 2005/06/12 17:05:32 db Exp $
  */
 
 %option case-insensitive
@@ -128,6 +128,7 @@ include   \.include{ws}(\<.*\>|\".*\")
 		    }
 		}
 
+~		{ return NOT; }
 accept_password { return ACCEPT_PASSWORD; }
 action		{ return ACTION; }
 admin		{ return ADMIN; }
@@ -187,6 +188,7 @@ gline_exempt    { return GLINE_EXEMPT; }
 gline_min_cidr  { return GLINE_MIN_CIDR; }
 gline_min_cidr6 { return GLINE_MIN_CIDR6; }
 global_kill	{ return GLOBAL_KILL; }
+have_ident	{ return NEED_IDENT; }
 need_ident	{ return NEED_IDENT; }
 havent_read_conf { return HAVENT_READ_CONF; }
 hidden		{ return HIDDEN; }

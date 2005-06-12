@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.385 2005/06/12 10:59:53 adx Exp $
+ *  $Id: ircd_parser.y,v 1.386 2005/06/12 17:05:33 db Exp $
  */
 
 %{
@@ -71,6 +71,7 @@ extern dlink_list gdeny_items;
 
 static char *resv_reason;
 static char *listener_address;
+static int not_atom = 0;
 
 struct CollectItem {
   dlink_node node;
@@ -246,6 +247,7 @@ unhook_hub_leaf_confs(void)
 %token  NO_JOIN_ON_SPLIT
 %token  NO_OPER_FLOOD
 %token  NO_TILDE
+%token  NOT
 %token  NUMBER
 %token  NUMBER_PER_IDENT
 %token  NUMBER_PER_IP
@@ -926,8 +928,8 @@ oper_entry: OPERATOR
 
 oper_name_b: | oper_name_t;
 oper_items:     oper_items oper_item | oper_item;
-oper_item:      oper_name | oper_user | oper_password | oper_class |
-		oper_global_kill | oper_remote |
+oper_item:      oper_name | oper_user | oper_password | oper_hidden_admin |
+		oper_class | oper_global_kill | oper_remote |
                 oper_kline | oper_xline | oper_unkline |
 		oper_gline | oper_nick_changes |
                 oper_die | oper_rehash | oper_admin |
@@ -1001,6 +1003,17 @@ oper_encrypted: ENCRYPTED '=' TBOOL ';'
       yy_aconf->flags |= CONF_FLAGS_ENCRYPTED;
     else
       yy_aconf->flags &= ~CONF_FLAGS_ENCRYPTED;
+  }
+};
+
+oper_hidden_admin: HIDDEN_ADMIN '=' TBOOL ';'
+{
+  if (ypass == 2)
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_HIDDEN_ADMIN;
+    else
+      yy_aconf->port &= ~OPER_FLAG_HIDDEN_ADMIN;
   }
 };
 
@@ -1170,66 +1183,114 @@ oper_flags: IRCD_FLAGS
 } '='  oper_flags_items ';';
 
 oper_flags_items: oper_flags_items ',' oper_flags_item | oper_flags_item;
-oper_flags_item: GLOBAL_KILL
+oper_flags_item: NOT oper_flags_item_atom { not_atom = 1; }
+		| oper_flags_item_atom { not_atom = 0; };
+
+oper_flags_item_atom: GLOBAL_KILL
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_GLOBAL_KILL;
+  {
+    if (not_atom)yy_aconf->port &= ~OPER_FLAG_GLOBAL_KILL;
+    else yy_aconf->port |= OPER_FLAG_GLOBAL_KILL;
+  }
 } | REMOTE
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_REMOTE;
+  {
+    if (not_atom) yy_aconf->port &= ~OPER_FLAG_REMOTE;
+    else yy_aconf->port |= OPER_FLAG_REMOTE;
+  }
 } | KLINE
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_K;
+  {
+    if (not_atom) yy_aconf->port &= ~OPER_FLAG_K;
+    else yy_aconf->port |= OPER_FLAG_K;
+  }
 } | UNKLINE
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_UNKLINE;
+  {
+    if (not_atom) yy_aconf->port &= ~OPER_FLAG_UNKLINE;
+    else yy_aconf->port |= OPER_FLAG_UNKLINE;
+  } 
 } | XLINE
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_X;
+  {
+    if (not_atom) yy_aconf->port &= ~OPER_FLAG_X;
+    else yy_aconf->port |= OPER_FLAG_X;
+  }
 } | GLINE
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_GLINE;
+  {
+    if (not_atom) yy_aconf->port &= ~OPER_FLAG_GLINE;
+    else yy_aconf->port |= OPER_FLAG_GLINE;
+  }
 } | DIE
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_DIE;
+  {
+    if (not_atom) yy_aconf->port &= ~OPER_FLAG_DIE;
+    else yy_aconf->port |= OPER_FLAG_DIE;
+  }
 } | REHASH
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_REHASH;
+  {
+    if (not_atom) yy_aconf->port &= ~OPER_FLAG_REHASH;
+    else yy_aconf->port |= OPER_FLAG_REHASH;
+  }
 } | ADMIN
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_ADMIN;
+  {
+    if (not_atom) yy_aconf->port &= ~OPER_FLAG_ADMIN;
+    else yy_aconf->port |= OPER_FLAG_ADMIN;
+  }
 } | HIDDEN_ADMIN
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_HIDDEN_ADMIN;
+  {
+    if (not_atom) yy_aconf->port &= ~OPER_FLAG_HIDDEN_ADMIN;
+    else yy_aconf->port |= OPER_FLAG_HIDDEN_ADMIN;
+  }
 } | NICK_CHANGES
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_N;
+  {
+    if (not_atom) yy_aconf->port &= ~OPER_FLAG_N;
+    else yy_aconf->port |= OPER_FLAG_N;
+  }
 } | T_OPERWALL
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_OPERWALL;
+  {
+    if (not_atom) yy_aconf->port &= ~OPER_FLAG_OPERWALL;
+    else yy_aconf->port |= OPER_FLAG_OPERWALL;
+  }
 } | OPER_SPY_T
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_OPER_SPY;
+  {
+    if (not_atom) yy_aconf->port &= ~OPER_FLAG_OPER_SPY;
+    else yy_aconf->port |= OPER_FLAG_OPER_SPY;
+  }
 } | HIDDEN_OPER
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_HIDDEN_OPER;
+  {
+    if (not_atom) yy_aconf->port &= ~OPER_FLAG_HIDDEN_OPER;
+    else yy_aconf->port |= OPER_FLAG_HIDDEN_OPER;
+  }
 } | REMOTEBAN
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_REMOTEBAN;
+  {
+    if (not_atom) yy_aconf->port &= ~OPER_FLAG_REMOTEBAN;
+    else yy_aconf->port |= OPER_FLAG_REMOTEBAN;
+  }
 };
 
 
@@ -1548,10 +1609,10 @@ auth_entry: IRCD_AUTH
 auth_items:     auth_items auth_item | auth_item;
 auth_item:      auth_user | auth_passwd | auth_class | auth_flags |
                 auth_kline_exempt | auth_have_ident | auth_is_restricted |
-                auth_exceed_limit | auth_can_flood | auth_no_tilde |
-		auth_gline_exempt |
-                auth_spoof | auth_redir_serv | auth_redir_port |
-                error;
+                auth_exceed_limit | auth_no_tilde | auth_gline_exempt |
+		auth_spoof | auth_spoof_notice |
+                auth_redir_serv | auth_redir_port | auth_can_flood |
+                auth_need_password | error;
 
 auth_user: USER '=' QSTRING ';'
 {
@@ -1595,6 +1656,17 @@ auth_passwd: PASSWORD '=' QSTRING ';'
   }
 };
 
+auth_spoof_notice: SPOOF_NOTICE '=' TBOOL ';'
+{
+  if (ypass == 2)
+  {
+    if (yylval.number)
+      yy_aconf->flags |= CONF_FLAGS_SPOOF_NOTICE;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_SPOOF_NOTICE;
+  }
+};
+
 auth_class: CLASS '=' QSTRING ';'
 {
   if (ypass == 2)
@@ -1609,38 +1681,66 @@ auth_flags: IRCD_FLAGS
 } '='  auth_flags_items ';';
 
 auth_flags_items: auth_flags_items ',' auth_flags_item | auth_flags_item;
-auth_flags_item: SPOOF_NOTICE
+auth_flags_item: NOT auth_flags_item_atom { not_atom = 1; }
+		| auth_flags_item_atom { not_atom = 0; };
+
+auth_flags_item_atom: SPOOF_NOTICE
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_SPOOF_NOTICE;
+  {
+    if (not_atom) yy_aconf->flags &= ~CONF_FLAGS_SPOOF_NOTICE;
+    else yy_aconf->flags |= CONF_FLAGS_SPOOF_NOTICE;
+  }
+
 } | EXCEED_LIMIT
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_NOLIMIT;
+  {
+    if (not_atom) yy_aconf->flags &= ~CONF_FLAGS_NOLIMIT;
+    else yy_aconf->flags |= CONF_FLAGS_NOLIMIT;
+  }
 } | KLINE_EXEMPT
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_EXEMPTKLINE;
+  {
+    if (not_atom) yy_aconf->flags &= ~CONF_FLAGS_EXEMPTKLINE;
+    else yy_aconf->flags |= CONF_FLAGS_EXEMPTKLINE;
+  } 
 } | NEED_IDENT
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_NEED_IDENTD;
+  {
+    if (not_atom) yy_aconf->flags &= ~CONF_FLAGS_NEED_IDENTD;
+    else yy_aconf->flags |= CONF_FLAGS_NEED_IDENTD;
+  }
 } | CAN_FLOOD
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_CAN_FLOOD;
+  {
+    if (not_atom) yy_aconf->flags &= ~CONF_FLAGS_CAN_FLOOD;
+    else yy_aconf->flags |= CONF_FLAGS_CAN_FLOOD;
+  }
 } | NO_TILDE
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_NO_TILDE;
+  {
+    if (not_atom) yy_aconf->flags |= CONF_FLAGS_NO_TILDE;
+    else yy_aconf->flags |= CONF_FLAGS_NO_TILDE;
+  } 
 } | GLINE_EXEMPT
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_EXEMPTGLINE;
+  {
+    if (not_atom) yy_aconf->flags |= CONF_FLAGS_EXEMPTGLINE;
+    else yy_aconf->flags |= CONF_FLAGS_EXEMPTGLINE;
+  } 
 } | NEED_PASSWORD
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_NEED_PASSWORD;
+  {
+    if (not_atom) yy_aconf->flags &= ~CONF_FLAGS_NEED_PASSWORD;
+    else yy_aconf->flags |= CONF_FLAGS_NEED_PASSWORD;
+  }
 };
 
 auth_kline_exempt: KLINE_EXEMPT '=' TBOOL ';'
@@ -1759,6 +1859,16 @@ auth_redir_port: REDIRPORT '=' NUMBER ';'
   }
 };
 
+auth_need_password: NEED_PASSWORD '=' TBOOL ';'
+{
+  if (ypass == 2)
+  {
+    if (yylval.number)
+      yy_aconf->flags &= ~CONF_FLAGS_NEED_PASSWORD;
+    else
+      yy_aconf->flags |= CONF_FLAGS_NEED_PASSWORD;
+  }
+};
 
 
 /***************************************************************************
