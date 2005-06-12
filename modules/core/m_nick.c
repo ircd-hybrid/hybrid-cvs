@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.143 2005/06/07 22:49:47 db Exp $
+ *  $Id: m_nick.c,v 1.144 2005/06/12 21:06:26 michael Exp $
  */
 
 #include "stdinc.h"
@@ -93,7 +93,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.143 $";
+const char *_version = "$Revision: 1.144 $";
 #endif
 
 /* mr_nick()
@@ -126,7 +126,7 @@ mr_nick(struct Client *client_p, struct Client *source_p,
   strlcpy(nick, parv[1], sizeof(nick));
 
   /* check the nickname is ok */
-  if(!clean_nick_name(nick))
+  if (!clean_nick_name(nick))
   {
     sendto_one(source_p, form_str(ERR_ERRONEUSNICKNAME),
                me.name, EmptyString(parv[0]) ? "*" : parv[0], parv[1]);
@@ -134,7 +134,8 @@ mr_nick(struct Client *client_p, struct Client *source_p,
   }
 
   /* check if the nick is resv'd */
-  if(find_matching_name_conf(NRESV_TYPE, nick, NULL, NULL, 0))
+  if (find_matching_name_conf(NRESV_TYPE, nick, NULL, NULL, 0) &&
+      !IsExemptResv(source_p))
   {
     sendto_one(source_p, form_str(ERR_ERRONEUSNICKNAME),
                me.name, EmptyString(parv[0]) ? "*" : parv[0], nick);
@@ -143,14 +144,14 @@ mr_nick(struct Client *client_p, struct Client *source_p,
 
   if ((target_p = find_client(nick)) == NULL)
   {
-    if(!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
+    if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
     {
       /* We don't know anyone called nick, but our hub might */
       DLINK_FOREACH(ptr, unknown_list.head)
       {
         uclient_p = ptr->data;
 
-	if(!strcmp(nick, uclient_p->llname))
+	if (!strcmp(nick, uclient_p->llname))
 	{
 	
 	  /* We're already waiting for a reply about this nick
@@ -177,7 +178,7 @@ mr_nick(struct Client *client_p, struct Client *source_p,
       return;
     }
   }
-  else if(source_p == target_p)
+  else if (source_p == target_p)
   {
     strcpy(source_p->name, nick);
     return;
@@ -222,8 +223,8 @@ m_nick(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if(find_matching_name_conf(NRESV_TYPE, nick,
-			     NULL, NULL, 0) &&
+  if (find_matching_name_conf(NRESV_TYPE, nick,
+			     NULL, NULL, 0) && !IsExemptResv(source_p) &&
      !(IsOper(source_p) && ConfigFileEntry.oper_pass_resv))
   {
     sendto_one(source_p, form_str(ERR_ERRONEUSNICKNAME),
@@ -237,21 +238,13 @@ m_nick(struct Client *client_p, struct Client *source_p,
      * equivalent nicknames ie: [nick] -> {nick}
      */
 
-    if(target_p == source_p)
+    if (target_p == source_p)
     {
       /* check the nick isnt exactly the same */
-      if(strcmp(target_p->name, nick))
-      {
-        change_local_nick(client_p, source_p, nick);
-	return;
-      }
-      else
-      {
-        /* client is doing :old NICK old
-	 * ignore it..
-	 */
-        return;
-      }
+      if (!strcmp(target_p->name, nick))
+        return; /* client is doing :old NICK old ignore it. */
+
+      change_local_nick(client_p, source_p, nick);
     }
 
     /* if the client that has the nick isnt registered yet (nick but no
@@ -262,7 +255,6 @@ m_nick(struct Client *client_p, struct Client *source_p,
       /* the old code had an if(MyConnect(target_p)) here.. but I cant see
        * how that can happen, m_nick() is local only --fl_
        */
-      
       exit_client(NULL, target_p, &me, "Overridden");
       change_local_nick(client_p, source_p, nick);
       return;

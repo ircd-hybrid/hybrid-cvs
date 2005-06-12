@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.285 2005/06/12 10:59:51 adx Exp $
+ *  $Id: s_conf.h,v 7.286 2005/06/12 21:06:24 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -208,6 +208,7 @@ struct ClassItem
 #define CONF_FLAGS_TEMPORARY            0x00040000
 #define CONF_FLAGS_CRYPTLINK            0x00080000
 #define CONF_FLAGS_BURST_AWAY           0x00400000
+#define CONF_FLAGS_EXEMPTRESV           0x00800000
 
 /* Macros for struct AccessItem */
 #define IsLimitIp(x)            ((x)->flags & CONF_FLAGS_LIMIT_IP)
@@ -220,6 +221,7 @@ struct ClassItem
 #define IsConfExemptKline(x)    ((x)->flags & CONF_FLAGS_EXEMPTKLINE)
 #define IsConfExemptLimits(x)   ((x)->flags & CONF_FLAGS_NOLIMIT)
 #define IsConfExemptGline(x)    ((x)->flags & CONF_FLAGS_EXEMPTGLINE)
+#define IsConfExemptResv(x)     ((x)->flags & CONF_FLAGS_EXEMPTRESV)
 #define IsConfIdlelined(x)      ((x)->flags & CONF_FLAGS_IDLE_LINED)
 #define IsConfDoIdentd(x)       ((x)->flags & CONF_FLAGS_DO_IDENTD)
 #define IsConfDoSpoofIp(x)      ((x)->flags & CONF_FLAGS_SPOOF_IP)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.233 2005/06/12 18:45:12 db Exp $
+ *  $Id: client.h,v 7.234 2005/06/12 21:06:24 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -360,7 +360,7 @@ struct LocalUser
 #define FLAGS_SBLOCKED    0x02000000 /* slinkq is blocked                        */
 #define FLAGS_USERHOST    0x04000000 /* client is in userhost hash               */
 #define FLAGS_BURSTED     0x08000000 /* user was already bursted                 */
-/*                        0x10000000  */
+#define FLAGS_EXEMPTRESV  0x10000000 /* client is exempt from RESV               */
 /*                        0x20000000  */
 /*                        0x40000000  */
 /*                        0x80000000  */
@@ -489,6 +489,8 @@ struct LocalUser
 #define SetExemptLimits(x)      ((x)->flags |= FLAGS_NOLIMIT)
 #define IsExemptGline(x)        ((x)->flags & FLAGS_EXEMPTGLINE)
 #define SetExemptGline(x)       ((x)->flags |= FLAGS_EXEMPTGLINE)
+#define IsExemptResv(x)         ((x)->flags & FLAGS_EXEMPTRESV)
+#define SetExemptResv(x)        ((x)->flags |= FLAGS_EXEMPTRESV)
 #define SetIPSpoof(x)           ((x)->flags |= FLAGS_IP_SPOOFING)
 #define IsIPSpoof(x)            ((x)->flags & FLAGS_IP_SPOOFING)
 

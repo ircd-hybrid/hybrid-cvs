@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.324 2005/06/12 19:06:01 db Exp $
+ *  $Id: s_user.c,v 7.325 2005/06/12 21:06:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -861,6 +861,13 @@ report_and_set_user_flags(struct Client *source_p, struct AccessItem *aconf)
   {
     SetExemptGline(source_p);
     sendto_one(source_p, ":%s NOTICE %s :*** You are exempt from G lines.",
+               me.name, source_p->name);
+  }
+
+  if (IsConfExemptResv(aconf))
+  {
+    SetExemptResv(source_p);
+    sendto_one(source_p, ":%s NOTICE %s :*** You are exempt from resvs.",
                me.name, source_p->name);
   }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.24 2005/05/29 02:54:05 adx Exp $
+ *  $Id: m_join.c,v 1.25 2005/06/12 21:06:26 michael Exp $
  */
 
 #include "stdinc.h"
@@ -88,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.24 $";
+const char *_version = "$Revision: 1.25 $";
 #endif
 
 /* m_join()
@@ -497,7 +497,7 @@ build_target_list(struct Client *client_p, struct Client *source_p,
       continue;
     }
 
-    if (find_channel_resv(chan) &&
+    if (find_channel_resv(chan) && !IsExemptResv(source_p) &&
         (!IsOper(source_p) && ConfigFileEntry.oper_pass_resv))
     {
       sendto_one(source_p, form_str(ERR_BADCHANNAME),

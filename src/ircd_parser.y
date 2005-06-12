@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.387 2005/06/12 18:09:14 michael Exp $
+ *  $Id: ircd_parser.y,v 1.388 2005/06/12 21:06:28 michael Exp $
  */
 
 %{
@@ -277,6 +277,7 @@ unhook_hub_leaf_confs(void)
 %token  RSA_PRIVATE_KEY_FILE
 %token  RSA_PUBLIC_KEY_FILE
 %token  RESV
+%token  RESV_EXEMPT
 %token  SECONDS MINUTES HOURS DAYS WEEKS
 %token  SENDQ
 %token  SEND_PASSWORD
@@ -1734,6 +1735,13 @@ auth_flags_item_atom: SPOOF_NOTICE
     if (not_atom) yy_aconf->flags &= ~CONF_FLAGS_EXEMPTGLINE;
     else yy_aconf->flags |= CONF_FLAGS_EXEMPTGLINE;
   } 
+} | RESV_EXEMPT
+{
+  if (ypass == 2)
+  {
+    if (not_atom) yy_aconf->flags &= ~CONF_FLAGS_EXEMPTRESV;
+    else yy_aconf->flags |= CONF_FLAGS_EXEMPTRESV;
+  }
 } | NEED_PASSWORD
 {
   if (ypass == 2)
