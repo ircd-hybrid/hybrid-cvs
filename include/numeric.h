@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.42 2005/05/29 23:44:46 metalrock Exp $
+ *  $Id: numeric.h,v 7.43 2005/06/12 18:23:04 db Exp $
  */
 
 #ifndef INCLUDED_numeric_h
@@ -457,6 +457,9 @@ extern const char *get_locale(void);
 #define RPL_HELPSTART        704
 #define RPL_HELPTXT          705
 #define RPL_ENDOFHELP        706
+
+#define RPL_ISCAPTURED	     707
+#define RPL_ISUNCAPTURED     708
 
 #define RPL_KNOCK	     710
 #define RPL_KNOCKDLVR	     711

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.231 2005/06/12 13:56:50 db Exp $
+ *  $Id: client.h,v 7.232 2005/06/12 18:23:04 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -360,7 +360,7 @@ struct LocalUser
 #define FLAGS_SBLOCKED    0x02000000 /* slinkq is blocked                        */
 #define FLAGS_USERHOST    0x04000000 /* client is in userhost hash               */
 #define FLAGS_BURSTED     0x08000000 /* user was already bursted                 */
-/*                        0x10000000  */
+#define FLAGS_CAPTURED    0x10000000 /* user has been "captured"		 */
 /*                        0x20000000  */
 /*                        0x40000000  */
 /*                        0x80000000  */
@@ -514,6 +514,10 @@ struct LocalUser
 #define IsBursted(x)            ((x)->flags &  FLAGS_BURSTED)
 #define SetBursted(x)           ((x)->flags |= FLAGS_BURSTED)
 #define ClearBursted(x)         ((x)->flags &= ~FLAGS_BURSTED)
+
+#define IsCaptured(x)           ((x)->flags &  FLAGS_CAPTURED)
+#define SetCaptured(x)          ((x)->flags |= FLAGS_CAPTURED)
+#define ClearCaptured(x)        ((x)->flags &= ~FLAGS_CAPTURED)
 
 /* operflags macros */
 #define ClearOperFlags(x)	((x)->localClient->operflags = 0)
