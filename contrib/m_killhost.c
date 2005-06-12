@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.12 2005/06/12 20:57:11 db Exp $
+ *  $Id: m_killhost.c,v 1.13 2005/06/12 21:21:31 db Exp $
  *
  */
 
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&killhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 #endif
 
 /* mo_killhost()
@@ -90,8 +90,8 @@ mo_killhost(struct Client *client_p, struct Client *source_p, int parc,
 
   if (!IsOperK(source_p) && !IsOperGlobalKill(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name, "killhost");
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               me.name, source_p->name);
     return;
   }
 
@@ -110,11 +110,10 @@ mo_killhost(struct Client *client_p, struct Client *source_p, int parc,
   {
     target_p = ptr->data;
 
-    if (!IsPerson(target_p) || IsServer(target_p) || IsMe(target_p) ||
-	(source_p == target_p))
+    if (!IsPerson(target_p) || (source_p == target_p))
       continue;
 
-    if (!MyConnect(target_p))
+    if (!MyConnect(target_p) && (!IsOperGlobalKill(source_p)))
       continue;
       
     if (!strcmp(host, target_p->host))
