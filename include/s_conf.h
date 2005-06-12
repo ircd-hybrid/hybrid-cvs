@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.284 2005/06/07 13:18:07 michael Exp $
+ *  $Id: s_conf.h,v 7.285 2005/06/12 10:59:51 adx Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -213,8 +213,7 @@ struct ClassItem
 #define IsLimitIp(x)            ((x)->flags & CONF_FLAGS_LIMIT_IP)
 #define IsNoTilde(x)            ((x)->flags & CONF_FLAGS_NO_TILDE)
 #define IsConfCanFlood(x)       ((x)->flags & CONF_FLAGS_CAN_FLOOD)
-/* see below (default is 0 and need_password = yes) */
-#define IsNeedPassword(x)       (!((x)->flags & CONF_FLAGS_NEED_PASSWORD))
+#define IsNeedPassword(x)       ((x)->flags & CONF_FLAGS_NEED_PASSWORD)
 #define IsNeedIdentd(x)         ((x)->flags & CONF_FLAGS_NEED_IDENTD)
 #define IsPassIdentd(x)         ((x)->flags & CONF_FLAGS_PASS_IDENTD)
 #define IsNoMatchIp(x)          ((x)->flags & CONF_FLAGS_NOMATCH_IP)

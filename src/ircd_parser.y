@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.384 2005/06/11 04:33:41 db Exp $
+ *  $Id: ircd_parser.y,v 1.385 2005/06/12 10:59:53 adx Exp $
  */
 
 %{
@@ -1477,8 +1477,6 @@ auth_entry: IRCD_AUTH
   {
     yy_conf = make_conf_item(CLIENT_TYPE);
     yy_aconf = map_to_conf(yy_conf);
-    yy_aconf->flags |= CONF_FLAGS_SPOOF_NOTICE; /* default to spoof_notice=yes: */
-    yy_aconf->flags |= CONF_FLAGS_NEED_PASSWORD;
   }
   else
   {
@@ -1642,7 +1640,7 @@ auth_flags_item: SPOOF_NOTICE
 } | NEED_PASSWORD
 {
   if (ypass == 2)
-    yy_aconf->flags &= ~CONF_FLAGS_NEED_PASSWORD; /* XXX - reverted logic */
+    yy_aconf->flags |= CONF_FLAGS_NEED_PASSWORD;
 };
 
 auth_kline_exempt: KLINE_EXEMPT '=' TBOOL ';'
