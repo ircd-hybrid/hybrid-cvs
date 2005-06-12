@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.153 2005/06/08 04:08:38 metalrock Exp $
+ *  $Id: modules.c,v 7.154 2005/06/12 03:27:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -624,6 +624,7 @@ load_all_modules(int warn)
   mod_add_cmd(&lusers_msgtab);
   mod_add_cmd(&privmsg_msgtab);
   mod_add_cmd(&notice_msgtab);
+  mod_add_cmd(&map_msgtab);
   mod_add_cmd(&mode_msgtab);
   mod_add_cmd(&motd_msgtab);
   mod_add_cmd(&names_msgtab);
@@ -675,14 +676,13 @@ load_all_modules(int warn)
   mod_add_cmd(&uhelp_msgtab);
   mod_add_cmd(&jupe_msgtab);
   mod_add_cmd(&killhost_msgtab);
-  mod_add_cmd(&map_msgtab);
   mod_add_cmd(&flags_msgtab);
   mod_add_cmd(&ojoin_msgtab);
   mod_add_cmd(&omotd_msgtab);
   mod_add_cmd(&operspy_msgtab);
   mod_add_cmd(&opme_msgtab);
   mod_add_cmd(&tburst_msgtab);
-  add_capability ("TBURST", CAP_TBURST, 1);
+  add_capability("TBURST", CAP_TBURST, 1);
 #endif
 }
 #endif /* STATIC_MODULES */
