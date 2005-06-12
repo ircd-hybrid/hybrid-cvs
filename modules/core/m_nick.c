@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.144 2005/06/12 21:06:26 michael Exp $
+ *  $Id: m_nick.c,v 1.145 2005/06/12 21:47:22 michael Exp $
  */
 
 #include "stdinc.h"
@@ -93,7 +93,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.144 $";
+const char *_version = "$Revision: 1.145 $";
 #endif
 
 /* mr_nick()
@@ -245,9 +245,10 @@ m_nick(struct Client *client_p, struct Client *source_p,
         return; /* client is doing :old NICK old ignore it. */
 
       change_local_nick(client_p, source_p, nick);
+      return;
     }
 
-    /* if the client that has the nick isnt registered yet (nick but no
+    /* if the client that has the nick isn't registered yet (nick but no
      * user) then drop the unregged client
      */
     if (IsUnknown(target_p))
