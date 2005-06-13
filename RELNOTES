@@ -3,15 +3,17 @@ o) Disallow locally connected users from doing hash lookups by ID
 o) Fixed a bug that could have caused network-wide channel desyncs
 o) Added operator:encrypted configuration directive
 o) Fix bug in invite code which could have been abused
-o) CIDR glines
+o) Added support for CIDR glines
 o) Display SIDs in /map to opers only
-o) expanded testmask
-o) fixed memory leak with x-lines
+o) Expanded testmask
+o) Fixed memory leak with x-lines
 o) m_force (contrib) fixes 
 o) /whois addition of IP showing
-o) halfops patch re-integrated
-o) fixed possible desync in m_sjoin
-o) fixed server masking bugs (fakename)
+o) Halfops patch re-integrated
+o) Fixed possible desync in m_sjoin
+o) Fixed server masking bugs (fakename)
+o) Fixed can_idle and added documentation for it
+
 
 -- ircd-hybrid-7.1rc2 RELNOTES
 o) Fixed build system to include ChangeLog
@@ -56,7 +58,7 @@ o) removed virtual channels
 o) the user-channel membership handling has been entirely rewritten to
    be more CPU friendly
 o) fixed a possible /CHALLENGE memory leak
-o) removed OpenVMS support
+o) Removed OpenVMS support
 o) CRYPT_OPER_PASSWORD is now runtime configurable via ircd.conf
 
 --------------------------------------------------------------------------------
@@ -102,4 +104,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.89 2005/06/12 13:40:55 adx Exp $
+$Id: RELNOTES,v 1.90 2005/06/13 08:27:32 michael Exp $
