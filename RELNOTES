@@ -1,4 +1,4 @@
--- ircd-hybrid-7.1rc3
+-- ircd-hybrid-7.1rc3 RELNOTES
 o) Disallow locally connected users from doing hash lookups by ID
 o) Fixed a bug that could have caused network-wide channel desyncs
 o) Added operator:encrypted configuration directive
@@ -7,7 +7,7 @@ o) Added support for CIDR glines
 o) Display SIDs in /map to opers only
 o) Expanded testmask
 o) Fixed memory leak with x-lines
-o) m_force (contrib) fixes 
+o) m_force (contrib) fixes
 o) /whois addition of IP showing
 o) Halfops patch re-integrated
 o) Fixed possible desync in m_sjoin
@@ -105,4 +105,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.91 2005/06/13 08:53:28 michael Exp $
+$Id: RELNOTES,v 1.92 2005/06/13 09:10:03 metalrock Exp $
