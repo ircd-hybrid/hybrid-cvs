@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.287 2005/06/12 22:42:13 db Exp $
+ *  $Id: s_conf.h,v 7.288 2005/06/13 08:53:31 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -188,7 +188,7 @@ struct ClassItem
 #define CONF_FLAGS_LIMIT_IP             0x00000002
 #define CONF_FLAGS_NO_TILDE             0x00000004
 #define CONF_FLAGS_NEED_IDENTD          0x00000008
-#define CONF_FLAGS_PASS_IDENTD          0x00000010
+/*                                      0x00000010 */
 #define CONF_FLAGS_NOMATCH_IP           0x00000020
 #define CONF_FLAGS_EXEMPTKLINE          0x00000040
 #define CONF_FLAGS_NOLIMIT              0x00000080
@@ -216,7 +216,6 @@ struct ClassItem
 #define IsConfCanFlood(x)       ((x)->flags & CONF_FLAGS_CAN_FLOOD)
 #define IsNeedPassword(x)       ((x)->flags & CONF_FLAGS_NEED_PASSWORD)
 #define IsNeedIdentd(x)         ((x)->flags & CONF_FLAGS_NEED_IDENTD)
-#define IsPassIdentd(x)         ((x)->flags & CONF_FLAGS_PASS_IDENTD)
 #define IsNoMatchIp(x)          ((x)->flags & CONF_FLAGS_NOMATCH_IP)
 #define IsConfExemptKline(x)    ((x)->flags & CONF_FLAGS_EXEMPTKLINE)
 #define IsConfExemptLimits(x)   ((x)->flags & CONF_FLAGS_NOLIMIT)

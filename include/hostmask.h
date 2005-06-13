@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.h,v 1.29 2005/06/07 13:18:07 michael Exp $
+ *  $Id: hostmask.h,v 1.30 2005/06/13 08:53:31 michael Exp $
  */
 
 #ifndef INCLUDE_hostmask_h
@@ -100,7 +100,6 @@ struct AddressRec
 };
 
 extern char *
-show_iline_prefix(struct Client *sptr, struct AccessItem *aconf, char *name);
+show_iline_prefix(struct Client *, struct AccessItem *, const char *);
 
 #endif /* INCLUDE_hostmask_h */
-

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.97 2005/06/07 23:08:54 michael Exp $
+ *  $Id: hostmask.c,v 7.98 2005/06/13 08:53:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -308,11 +308,12 @@ hash_ipv4(struct irc_ssaddr *addr, int bits)
 {
   if (bits != 0)
   {
-    struct sockaddr_in *v4 = (struct sockaddr_in*) addr;
+    struct sockaddr_in *v4 = (struct sockaddr_in *)addr;
     unsigned long av = ntohl(v4->sin_addr.s_addr) & ~((1 << (32 - bits)) - 1);
-    return (av ^ (av >> 12) ^ (av >> 24)) & (ATABLE_SIZE - 1);
+    return((av ^ (av >> 12) ^ (av >> 24)) & (ATABLE_SIZE - 1));
   }
-  else return 0;
+
+  return(0);
 }
 
 /* unsigned long hash_ipv6(struct irc_ssaddr*)
@@ -752,7 +753,7 @@ clear_out_address_conf(void)
  * side effects - NONE
  */
 char *
-show_iline_prefix(struct Client *sptr, struct AccessItem *aconf, char *name)
+show_iline_prefix(struct Client *sptr, struct AccessItem *aconf, const char *name)
 {
   static char prefix_of_host[USERLEN + 14];
   char *prefix_ptr;
@@ -766,7 +767,7 @@ show_iline_prefix(struct Client *sptr, struct AccessItem *aconf, char *name)
     *prefix_ptr++ = '+';
   if (!IsNeedPassword(aconf))
     *prefix_ptr++ = '&';
-  if (IsPassIdentd(aconf))
+  if (IsConfExemptResv(aconf))
     *prefix_ptr++ = '$';
   if (IsNoMatchIp(aconf))
     *prefix_ptr++ = '%';
@@ -783,7 +784,8 @@ show_iline_prefix(struct Client *sptr, struct AccessItem *aconf, char *name)
   if (IsConfCanFlood(aconf))
     *prefix_ptr++ = '|';
   strlcpy(prefix_ptr, name, USERLEN);
-  return (prefix_of_host);
+
+  return(prefix_of_host);
 }
 
 /* report_auth()
@@ -858,12 +860,13 @@ report_Klines(struct Client *client_p, int tkline)
     c = 'K';
 
   for (i = 0; i < ATABLE_SIZE; i++)
+  {
     for (arec = atable[i]; arec; arec = arec->next)
+    {
       if (arec->type == CONF_KILL)
       {
-        if ((tkline && !((aconf = arec->aconf)->flags & CONF_FLAGS_TEMPORARY))
-            || (!tkline
-                && ((aconf = arec->aconf)->flags & CONF_FLAGS_TEMPORARY)))
+        if ((tkline && !((aconf = arec->aconf)->flags & CONF_FLAGS_TEMPORARY)) ||
+            (!tkline && ((aconf = arec->aconf)->flags & CONF_FLAGS_TEMPORARY)))
           continue;
 
 	if (IsOper(client_p))
@@ -875,4 +878,6 @@ report_Klines(struct Client *client_p, int tkline)
                      client_p->name, c, aconf->host, aconf->user,
 		     aconf->reason, "");
       }
+    }
+  }
 }

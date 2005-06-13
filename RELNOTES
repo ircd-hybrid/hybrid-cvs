@@ -13,6 +13,7 @@ o) Halfops patch re-integrated
 o) Fixed possible desync in m_sjoin
 o) Fixed server masking bugs (fakename)
 o) Fixed can_idle and added documentation for it
+o) Added resv_exempt to auth{} options
 
 
 -- ircd-hybrid-7.1rc2 RELNOTES
@@ -54,10 +55,10 @@ o) LIST extensions borrowed from undernet (SAFELIST, channel filtering -
 o) A native i18n support is provided instead of the former gettext,
    which is no longer needed. Old message files have been updated
    according to the new format, plus some new translations are available.
-o) removed virtual channels
-o) the user-channel membership handling has been entirely rewritten to
+o) Removed virtual channels
+o) The user-channel membership handling has been entirely rewritten to
    be more CPU friendly
-o) fixed a possible /CHALLENGE memory leak
+o) Fixed a possible /CHALLENGE memory leak
 o) Removed OpenVMS support
 o) CRYPT_OPER_PASSWORD is now runtime configurable via ircd.conf
 
@@ -104,4 +105,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.90 2005/06/13 08:27:32 michael Exp $
+$Id: RELNOTES,v 1.91 2005/06/13 08:53:28 michael Exp $
