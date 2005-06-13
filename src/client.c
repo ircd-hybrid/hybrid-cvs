@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.447 2005/06/12 13:56:54 db Exp $
+ *  $Id: client.c,v 7.448 2005/06/13 08:22:26 michael Exp $
  */
 
 #include "stdinc.h"
@@ -257,30 +257,30 @@ check_pings_list(dlink_list *list)
       continue; 
     }
 
-    if (IsPerson(client_p))
+    if (GlobalSetOptions.idletime && IsPerson(client_p))
     {
-      if (!IsExemptKline(client_p) && GlobalSetOptions.idletime && 
-          !IsOper(client_p) && !IsIdlelined(client_p) && 
+      if (!IsExemptKline(client_p) && !IsOper(client_p) &&
+          !IsIdlelined(client_p) &&
 	  ((CurrentTime - client_p->user->last) > GlobalSetOptions.idletime))
-	{
-	  struct ConfItem *conf;
-	  struct AccessItem *aconf;
+      {
+        struct ConfItem *conf;
+        struct AccessItem *aconf;
 
-	  conf = make_conf_item(KLINE_TYPE);
-	  aconf = (struct AccessItem *)map_to_conf(conf);
+        conf = make_conf_item(KLINE_TYPE);
+        aconf = (struct AccessItem *)map_to_conf(conf);
 
-	  DupString(aconf->host, client_p->host);
-	  DupString(aconf->reason, "idle exceeder");
-	  DupString(aconf->user, client_p->username);
-	  aconf->hold = CurrentTime + 60;
-	  add_temp_line(conf);
-	  sendto_realops_flags(UMODE_ALL, L_ALL,
-		       "Idle time limit exceeded for %s - temp k-lining",
-			       get_client_name(client_p, HIDE_IP));
+        DupString(aconf->host, client_p->host);
+        DupString(aconf->reason, "idle exceeder");
+        DupString(aconf->user, client_p->username);
+        aconf->hold = CurrentTime + 60;
+        add_temp_line(conf);
 
-	  exit_client(client_p, client_p, &me, aconf->reason);
-	  continue;
-	}
+        sendto_realops_flags(UMODE_ALL, L_ALL,
+                             "Idle time limit exceeded for %s - temp k-lining",
+                             get_client_name(client_p, HIDE_IP));
+        exit_client(client_p, client_p, &me, aconf->reason);
+        continue;
+      }
     }
 
     if (!IsRegistered(client_p))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.388 2005/06/12 21:06:28 michael Exp $
+ *  $Id: ircd_parser.y,v 1.389 2005/06/13 08:22:26 michael Exp $
  */
 
 %{
@@ -144,6 +144,7 @@ unhook_hub_leaf_confs(void)
 %token  BYTES KBYTES MBYTES GBYTES TBYTES
 %token  CALLER_ID_WAIT
 %token  CAN_FLOOD
+%token  CAN_IDLE
 %token  CHANNEL
 %token  CIPHER_PREFERENCE
 %token  CLASS
@@ -1720,6 +1721,13 @@ auth_flags_item_atom: SPOOF_NOTICE
   {
     if (not_atom) yy_aconf->flags &= ~CONF_FLAGS_CAN_FLOOD;
     else yy_aconf->flags |= CONF_FLAGS_CAN_FLOOD;
+  }
+} | CAN_IDLE
+{
+  if (ypass == 2)
+  {
+    if (not_atom) yy_aconf->flags &= ~CONF_FLAGS_IDLE_LINED;
+    else yy_aconf->flags |= CONF_FLAGS_IDLE_LINED;
   }
 } | NO_TILDE
 {
