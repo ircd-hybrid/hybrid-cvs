@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capture.c,v 1.8 2005/06/12 22:57:23 db Exp $
+ *  $Id: m_capture.c,v 1.9 2005/06/13 00:17:06 michael Exp $
  */
 
 #include "stdinc.h"
@@ -44,8 +44,8 @@
 #include "modules.h"
 #include "hook.h"
 
-static void mo_capture(struct Client*, struct Client*, int, char**);
-static void mo_uncapture(struct Client*, struct Client*, int, char**);
+static void mo_capture(struct Client *, struct Client *, int, char **);
+static void mo_uncapture(struct Client *, struct Client *, int, char **);
 
 struct Message capture_msgtab = {
   "CAPTURE", 0, 0, 0, 0, MFLG_SLOW, 0L,
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&capture_msgtab);
 }
 
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 #endif
 
 /* mo_capture
@@ -80,7 +80,7 @@ const char *_version = "$Revision: 1.8 $";
  */
 static void
 mo_capture(struct Client *client_p, struct Client *source_p,
-        int parc, char *parv[])
+           int parc, char *parv[])
 {
   struct Client *target_p;
   char *nick, *user, *host, *p;
@@ -114,6 +114,7 @@ mo_capture(struct Client *client_p, struct Client *source_p,
 		     me.name, source_p->name, "capture");
 	  return;
 	}
+
 	SetCaptured(target_p);
 	sendto_one(source_p, form_str(RPL_ISCAPTURED),
 		   me.name, source_p->name, target_p->name);
@@ -131,10 +132,10 @@ mo_capture(struct Client *client_p, struct Client *source_p,
     nick = parv[1];
     *p++ = '\0';
     host = p;
+
     if ((p = strchr(nick, '!')) != NULL)
     {
-      *p = '\0';
-      p++;
+      *p++ = '\0';
       user = p;
     }
     else
@@ -142,7 +143,7 @@ mo_capture(struct Client *client_p, struct Client *source_p,
       user = nick;
       nick = "*";
     }
-	
+
     if (!valid_wild_card(source_p, user, host, YES))
       return;
 
@@ -169,7 +170,7 @@ mo_capture(struct Client *client_p, struct Client *source_p,
  */
 static void
 mo_uncapture(struct Client *client_p, struct Client *source_p,
-        int parc, char *parv[])
+             int parc, char *parv[])
 {
   struct Client *target_p;
   char *nick, *user, *host, *p;
@@ -186,14 +187,8 @@ mo_uncapture(struct Client *client_p, struct Client *source_p,
   {      
     if ((target_p = find_client(parv[1])) != NULL)
     {
-      if (MyClient(target_p))
+      if (MyClient(target_p) && IsCaptured(target_p))
       {
-	if (IsOper(target_p))
-	{
-	  sendto_one(source_p, form_str(ERR_NOPRIVS),
-		     me.name, source_p->name, "capture");
-	  return;
-	}
 	ClearCaptured(target_p);
 	sendto_one(source_p, form_str(RPL_ISUNCAPTURED),
 		   me.name, source_p->name, target_p->name);
@@ -211,10 +206,10 @@ mo_uncapture(struct Client *client_p, struct Client *source_p,
     nick = parv[1];
     *p++ = '\0';
     host = p;
+
     if ((p = strchr(nick, '!')) != NULL)
     {
-      *p = '\0';
-      p++;
+      *p++ = '\0';
       user = p;
     }
     else
@@ -222,15 +217,16 @@ mo_uncapture(struct Client *client_p, struct Client *source_p,
       user = nick;
       nick = "*";
     }
-	
+
     DLINK_FOREACH(ptr, local_client_list.head)
     {
       target_p = ptr->data;
 
-      if (!IsPerson(target_p) || (source_p == target_p) || IsOper(target_p))
+      if (!IsPerson(target_p) || (source_p == target_p) || IsOper(target_p) || !IsCaptured(target_p))
 	continue;
-      
-      if (match(nick, target_p->name) && match(host, target_p->host) && match(user, target_p->username))
+
+      if (match(nick, target_p->name) &&
+          match(host, target_p->host) && match(user, target_p->username))
       {
 	ClearCaptured(target_p);
 	sendto_realops_flags(UMODE_ALL, L_ALL, "Uncaptured %s (%s@%s)",
