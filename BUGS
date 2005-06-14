@@ -23,11 +23,6 @@
 2.  Solaris stock 32bit stdio is limited to 256 fds. This breaks when using
     cryptlinks.
 
-3.  kqueue on FreeBSD 4.11 breaks UDP events, thus DNS resolver breaks.
-    See: http://www.freebsd.org/cgi/query-pr.cgi?pr=82143
-    This may be fixed by the time you see it. The work around is to use
-    poll() for now.
-
  BUG REPORTS: If you run this code and encounter problems, you should report
  the bug on our SourceForge.net bug tracker, which you can find at this URL:
 
@@ -38,4 +33,4 @@
  information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.57 2005/06/12 13:56:49 db Exp $
+$Id: BUGS,v 7.58 2005/06/14 19:44:02 db Exp $
