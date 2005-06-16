@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.516 2005/06/12 22:42:17 db Exp $
+ *  $Id: s_conf.c,v 7.517 2005/06/16 02:38:17 db Exp $
  */
 
 #include "stdinc.h"
@@ -970,9 +970,9 @@ attach_iline(struct Client *client_p, struct ConfItem *conf)
   struct ip_entry *ip_found;
   int a_limit_reached = 0;
   int max_limit_reached = 0;
-  int local;
-  int global;
-  int ident;
+  int local=0;
+  int global=0;
+  int ident=0;
 
   ip_found = find_or_add_ip(&client_p->localClient->ip);
 
