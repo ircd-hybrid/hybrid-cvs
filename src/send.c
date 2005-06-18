@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.286 2005/06/18 10:46:36 michael Exp $
+ *  $Id: send.c,v 7.287 2005/06/18 10:50:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -451,7 +451,7 @@ sendto_one_prefix(struct Client *to, struct Client *prefix,
   else
     tmp = to;
 
-  if (IsDead(to))
+  if (IsDead(tmp))
     return; /* This socket has already been marked as dead */
 
   len = ircsprintf(buffer, ":%s %s %s ", ID_or_name(prefix, to),
