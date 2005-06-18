@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.91 2005/06/08 03:58:01 metalrock Exp $
+ *  $Id: s_serv.h,v 7.92 2005/06/18 10:46:32 michael Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -59,17 +59,16 @@ struct Capability
 #define CAP_EOB		0x00000040 /* Can do EOB message                  */
 #define CAP_KLN		0x00000080 /* Can do KLINE message                */
 #define CAP_GLN		0x00000100 /* Can do GLINE message                */
-#define CAP_HUB		0x00000400 /* This server is a HUB                */
-#define CAP_TS6		0x00001000 /* Can do TS6                          */
-#define CAP_ZIP		0x00002000 /* Can do ZIPlinks                     */
-#define CAP_ENC		0x00004000 /* Can do ENCrypted links              */
-#define CAP_KNOCK	0x00008000 /* supports KNOCK                      */
-#define CAP_TBURST	0x00010000 /* supports TBURST                     */
-#define CAP_PARA	0x00020000 /* supports invite broadcasting for +p */
-#define CAP_UNKLN	0x00040000 /* Can do UNKLINE message		  */
-#define CAP_CLUSTER	0x00080000 /* supports server clustering	  */
-#define CAP_ENCAP	0x00100000 /* supports ENCAP message		  */
-#define CAP_HOPS	0x00200000 /* supports HALFOPS			  */
+#define CAP_HUB		0x00000200 /* This server is a HUB                */
+#define CAP_TS6		0x00000400 /* Can do TS6                          */
+#define CAP_ZIP		0x00000800 /* Can do ZIPlinks                     */
+#define CAP_ENC		0x00001000 /* Can do ENCrypted links              */
+#define CAP_KNOCK	0x00002000 /* supports KNOCK                      */
+#define CAP_TBURST	0x00004000 /* supports TBURST                     */
+#define CAP_UNKLN	0x00008000 /* Can do UNKLINE message		  */
+#define CAP_CLUSTER	0x00010000 /* supports server clustering	  */
+#define CAP_ENCAP	0x00020000 /* supports ENCAP message		  */
+#define CAP_HOPS	0x00040000 /* supports HALFOPS			  */
 
 #ifdef HAVE_LIBZ
 #define CAP_ZIP_SUPPORTED CAP_ZIP
