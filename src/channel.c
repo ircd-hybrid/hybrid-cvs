@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.420 2005/06/12 21:06:28 michael Exp $
+ *  $Id: channel.c,v 7.421 2005/06/20 10:52:53 michael Exp $
  */
 
 #include "stdinc.h"
@@ -256,9 +256,9 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
   if (top == NULL || top->length == 0)
     return;
 
-  if(IsCapable(client_p, CAP_TS6))
-      ircsprintf(buf, ":%s BMASK %lu %s ", me.id,
-                 (unsigned long)chptr->channelts, chptr->chname);
+  if (IsCapable(client_p, CAP_TS6))
+    ircsprintf(buf, ":%s BMASK %lu %s ", me.id,
+               (unsigned long)chptr->channelts, chptr->chname);
   else
     ircsprintf(buf, ":%s MODE %s +", me.name, chptr->chname);
 
@@ -418,9 +418,9 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
   struct Membership *ms;
   dlink_node *ptr;
   char lbuf[IRCD_BUFSIZE + 1];
-  char *t, *start;
-  int tlen;
-  int is_member;
+  char *t = NULL, *start = NULL;
+  int tlen = 0;
+  int is_member = 0;
 
   if (ShowChannel(source_p, chptr))
   {
@@ -430,7 +430,6 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
                           channel_pub_or_secret(chptr),
                           chptr->chname);
     start = t;
-    tlen = 0;
 
     DLINK_FOREACH(ptr, chptr->members.head)
     {
@@ -442,7 +441,7 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
 
       tlen = strlen(target_p->name) + 1;  /* nick + space */
       if (ms->flags & (CHFL_CHANOP | CHFL_HALFOP | CHFL_VOICE))
-        tlen++;
+        ++tlen;
       if (t + tlen - lbuf > IRCD_BUFSIZE)
       {
         *(t - 1) = '\0';
@@ -451,11 +450,14 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
       }
 
       t += ircsprintf(t, "%s%s ", get_member_status(ms, NO),
-                      target_p->name); /* XXX */
+                      target_p->name);
     }
 
     if (tlen != 0)
+    {
+      *(t - 1) = '\0';
       sendto_one(source_p, "%s", lbuf);
+    }
   }
 
   if (show_eon)
