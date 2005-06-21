@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.73 2005/06/18 10:46:34 michael Exp $
+ *  $Id: m_invite.c,v 1.74 2005/06/21 21:34:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.73 $";
+const char *_version = "$Revision: 1.74 $";
 #endif
 
 /*
@@ -171,7 +171,7 @@ m_invite(struct Client *client_p, struct Client *source_p,
 
   if (MyConnect(target_p))
   {
-    sendto_one(target_p, "%s!%s@%s INVITE %s :%s",
+    sendto_one(target_p, ":%s!%s@%s INVITE %s :%s",
                source_p->name, source_p->username,
                source_p->host,
                target_p->name, chptr->chname);
