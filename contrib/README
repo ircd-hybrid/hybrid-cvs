@@ -1,4 +1,4 @@
-$Id: README,v 1.36 2005/04/27 01:59:40 metalrock Exp $
+$Id: README,v 1.37 2005/06/22 22:12:46 adx Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
@@ -87,6 +87,13 @@ m_operspy.c    - OPERSPY - Allows operators with access to spy on users
 m_opme.c       - OPME - Allows an admin to op themselves in an opless channel
                  Syntax: OPME <channel>
 		 Example: OPME #channel
+
+m_spoof.c      - SPOOF - Automatizes auth{} configuration on local and
+                         overlocal level. Check m_spoof.c for more info.
+                 Syntax: SPOOF <umask@hmask> <spoof> [flags [password]]
+                         DELSPOOF <umask@hmask>
+                 Example: SPOOF *@some.host.org i.am.l33t lkgf
+                          DELSPOOF *@other.host.edu
 
 m_tburst.c     - TBURST - module that will make servers send channel topics
                           to each other after a netsplit/restart.
