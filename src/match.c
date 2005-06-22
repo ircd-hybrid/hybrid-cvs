@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.38 2005/06/01 18:18:20 michael Exp $
+ * $Id: match.c,v 7.39 2005/06/22 14:59:11 adx Exp $
  *
  */
 
@@ -42,15 +42,11 @@ match(const char *mask, const char *name)
 {
   const unsigned char* m = (const unsigned char*)  mask;
   const unsigned char* n = (const unsigned char*)  name;
-  const unsigned char* ma = (const unsigned char*) mask;
+  const unsigned char* ma = NULL;
   const unsigned char* na = (const unsigned char*) name;
-  int wild = 0;
 
   assert(mask != NULL);
   assert(name != NULL);
-
-  if (!mask || !name)
-    return(0);
 
   while (1)
   {
@@ -62,7 +58,6 @@ match(const char *mask, const char *name)
        */
       while (*m == '*')
         m++;
-      wild = 1;
       ma = m;
       na = n;
     }
@@ -71,12 +66,12 @@ match(const char *mask, const char *name)
     {
       if (!*n)
         return 1;
+      if (!ma)
+        return 0;
       for (m--; (m > (const unsigned char*) mask) && (*m == '?'); m--)
         ;
-      if (*m == '*' && (m > (const unsigned char*) mask))
+      if (*m == '*')
         return 1;
-      if (!wild)
-        return(0);
       m = ma;
       n = ++na;
     }
@@ -90,20 +85,15 @@ match(const char *mask, const char *name)
         m++;
       return (*m == 0);
     }
-    if (ToLower(*m) != ToLower(*n) && *m != '?')
+    if (ToLower(*m) != ToLower(*n) && *m != '?' && (*m != '#' || !IsDigit(*n)))
     {
-      if (!wild)
+      if (!ma)
         return(0);
       m = ma;
       n = ++na;
     }
     else
-    {
-      if (*m)
-        m++;
-      if (*n)
-        n++;
-    }
+      m++, n++;
   }
 
   return(0);
@@ -532,7 +522,7 @@ const unsigned int CharAttrs[] = {
 /* SP */     PRINT_C|SPACE_C,
 /* ! */      PRINT_C|KWILD_C|CHAN_C|NONEOS_C,
 /* " */      PRINT_C|CHAN_C|NONEOS_C,
-/* # */      PRINT_C|CHANPFX_C|CHAN_C|NONEOS_C,
+/* # */      PRINT_C|KWILD_C|MWILD_C|CHANPFX_C|CHAN_C|NONEOS_C,
 /* $ */      PRINT_C|CHAN_C|NONEOS_C|USER_C,
 /* % */      PRINT_C|CHAN_C|NONEOS_C,
 /* & */      PRINT_C|CHANPFX_C|CHAN_C|NONEOS_C,
