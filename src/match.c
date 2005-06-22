@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.39 2005/06/22 14:59:11 adx Exp $
+ * $Id: match.c,v 7.40 2005/06/22 15:29:43 adx Exp $
  *
  */
 
@@ -85,6 +85,7 @@ match(const char *mask, const char *name)
         m++;
       return (*m == 0);
     }
+
     if (ToLower(*m) != ToLower(*n) && *m != '?' && (*m != '#' || !IsDigit(*n)))
     {
       if (!ma)
@@ -109,30 +110,15 @@ match_esc(const char *mask, const char *name)
 {
   const unsigned char* m = (const unsigned char*)  mask;
   const unsigned char* n = (const unsigned char*)  name;
-  const unsigned char* ma = (const unsigned char*) mask;
+  const unsigned char* ma = NULL;
   const unsigned char* na = (const unsigned char*) name;
-  int wild  = 0;
-  int quote = 0;
 
   assert(mask != NULL);
   assert(name != NULL);
 
-  if (!mask || !name)
-    return(0);
-
   while (1)
   {
-    if (quote)
-      quote++;
-    if (quote == 3)
-      quote = 0;
-    if (*m == '\\' && !quote)
-    {
-      m++;
-      quote = 1;
-      continue;
-    }
-    if (!quote && *m == '*')
+    if (*m == '*')
     {
       /*
        * XXX - shouldn't need to spin here, the mask should have been
@@ -140,15 +126,6 @@ match_esc(const char *mask, const char *name)
        */
       while (*m == '*')
         m++;
-      if (*m == '\\')
-      {
-	m++;
-	/* This means it is an invalid mask -A1kmm. */
-	if (!*m)
-	  return(0);
-	quote = 2;
-      }
-      wild = 1;
       ma = m;
       na = n;
     }
@@ -157,14 +134,12 @@ match_esc(const char *mask, const char *name)
     {
       if (!*n)
         return 1;
-      if (quote)
+      if (!ma)
         return 0;
       for (m--; (m > (const unsigned char*) mask) && (*m == '?'); m--)
         ;
-      if (*m == '*' && (m > (const unsigned char*) mask))
-        return(1);
-      if (!wild)
-        return(0);
+      if (*m == '*')
+        return 1;
       m = ma;
       n = ++na;
     }
@@ -174,29 +149,31 @@ match_esc(const char *mask, const char *name)
        * XXX - shouldn't need to spin here, the mask should have been
        * collapsed before match is called
        */
-      if (quote)
-        return(0);
       while (*m == '*')
         m++;
       return (*m == 0);
     }
-    if (ToLower(*m) != ToLower(*n) && !(!quote && *m == '?'))
+
+    if (*m != '?' && (*m != '#' || IsDigit(*n)))
     {
-      if (!wild)
-        return(0);
-      m = ma;
-      n = ++na;
+      if (*m == '\\')
+	if (!*++m)
+	  return 0;
+      if (ToLower(*m) != ToLower(*n))
+      {
+        if (!ma)
+          return 0;
+        m = ma;
+        n = ++na;
+      }
+      else
+        m++, n++;
     }
     else
-    {
-      if (*m)
-        m++;
-      if (*n)
-        n++;
-    }
+      m++, n++;
   }
 
-  return(0);
+  return 0;
 }
 
 static inline int 
@@ -309,24 +286,19 @@ collapse(char *pattern)
   char c;
 
   if (p == NULL)
-    return(NULL);
+    return NULL;
  
   while ((c = *p++))
   {
-    if (c == '*')
-    {
-      if (!(*p == '*'))
-        *po++ = '*';
-    }
-    else
-    {
+    if (c != '*')
       *po++ = c;
-    }
+    else if (*p != '*')
+      *po++ = '*';
   }
 
-  *po = '\0';
+  *po = 0;
 
-  return(pattern);
+  return pattern;
 }
 
 /* collapse_esc()
@@ -336,35 +308,28 @@ collapse(char *pattern)
 char *
 collapse_esc(char *pattern)
 {
- char *p = pattern, *po = pattern;
- char c;
- int f = 0;
+  char *p = pattern, *po = pattern;
+  char c;
+  int f = 0;
 
- if (p == NULL)
-   return(NULL);
- 
- while ((c = *p++))
- {
-   if (!(f & 2) && c == '*')
-   {
-     if (!(f & 1))
-       *po++ = '*';
-     f |= 1;
-   }
-   else if (!(f & 2) && c == '\\')
-   {
-     *po++ = '\\';
-     f |= 2;
-   }
-   else
-   {
-     *po++ = c;
-     f &= ~3;
-   }
- }
- *po++ = 0;
+  if (p == NULL)
+    return NULL;
 
- return(pattern);
+  while ((c = *p++))
+  {
+    if (c != '*')
+    {
+      *po++ = c;
+      if (c == '\\' && *p)
+        *po++ = *p++;
+    }
+    else if (*p != '*')
+      *po++ = '*';
+  }
+
+  *po = 0;
+
+  return pattern;
 }
 
 /*
