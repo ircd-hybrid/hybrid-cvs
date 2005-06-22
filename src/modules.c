@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.154 2005/06/12 03:27:25 michael Exp $
+ *  $Id: modules.c,v 7.155 2005/06/22 22:37:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -593,7 +593,6 @@ load_all_modules(int warn)
   mod_add_cmd(&cryptlink_msgtab);
 #endif
   mod_add_cmd(&die_msgtab);
-  mod_add_cmd(&dmem_msgtab);
   mod_add_cmd(&drop_msgtab);
   mod_add_cmd(&eob_msgtab);
   mod_add_cmd(&gline_msgtab);
