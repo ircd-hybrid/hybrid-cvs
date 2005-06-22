@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.389 2005/06/13 08:22:26 michael Exp $
+ *  $Id: ircd_parser.y,v 1.390 2005/06/22 23:39:33 adx Exp $
  */
 
 %{
@@ -153,8 +153,6 @@ unhook_hub_leaf_confs(void)
 %token  CONNECT
 %token  CONNECTFREQ
 %token  CRYPTLINK
-%token  DEFAULT_ADMINSTRING
-%token  DEFAULT_OPERSTRING
 %token  DEFAULT_CIPHER_PREFERENCE
 %token  DEFAULT_FLOODCOUNT
 %token  DEFAULT_SPLIT_SERVER_COUNT
@@ -2726,8 +2724,7 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
                     general_throttle_time | general_havent_read_conf |
                     general_dot_in_ip6_addr | general_ping_cookie |
                     general_disable_auth | general_burst_away |
-		    general_tkline_expire_notices | general_default_operstring |
-                    general_default_adminstring | general_gline_min_cidr |
+		    general_tkline_expire_notices | general_gline_min_cidr |
                     general_gline_min_cidr6 |
 		    error;
 
@@ -2743,24 +2740,6 @@ general_gline_min_cidr6: GLINE_MIN_CIDR6 '=' NUMBER ';'
 {
   if (ypass == 2)
     ConfigFileEntry.gline_min_cidr6 = $3;
-};
-
-general_default_operstring: DEFAULT_OPERSTRING '=' QSTRING ';'
-{
-  if (ypass == 2)
-  {
-    MyFree(ConfigFileEntry.default_operstring);
-    DupString(ConfigFileEntry.default_operstring, yylval.string);
-  }
-};
-
-general_default_adminstring: DEFAULT_ADMINSTRING '=' QSTRING ';'
-{
-  if (ypass == 2)
-  {
-    MyFree(ConfigFileEntry.default_adminstring);
-    DupString(ConfigFileEntry.default_adminstring, yylval.string);
-  }
 };
 
 general_burst_away: BURST_AWAY '=' TBOOL ';'

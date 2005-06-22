@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.108 2005/06/21 18:34:13 db Exp $
+ *   $Id: messages.tab,v 7.109 2005/06/22 23:39:33 adx Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -332,12 +332,12 @@ static struct NumericInfo replies[] = {
 /* 305 */  {"RPL_UNAWAY", ":%s 305 %s :You are no longer marked as being away", NULL},
 /* 306 */  {"RPL_NOWAWAY", ":%s 306 %s :You have been marked as being away", NULL},
 /* 307 */  {NULL, NULL, NULL},
-/* 308 */  {NULL, NULL, NULL},
+/* 308 */  {"RPL_WHOISADMIN", ":%s 313 %s %s :is a Server Administrator", NULL},
 /* 309 */  {NULL, NULL, NULL},
 /* 310 */  {NULL, NULL, NULL},
 /* 311 */  {"RPL_WHOISUSER", ":%s 311 %s %s %s %s * :%s", NULL},
 /* 312 */  {"RPL_WHOISSERVER", ":%s 312 %s %s %s :%s", NULL},
-/* 313 */  {"RPL_WHOISOPERATOR", ":%s 313 %s %s :%s", NULL},
+/* 313 */  {"RPL_WHOISOPERATOR", ":%s 313 %s %s :is an IRC Operator", NULL},
 /* 314 */  {"RPL_WHOWASUSER", ":%s 314 %s %s %s %s * :%s", NULL},
 /* 315 */  {"RPL_ENDOFWHO", ":%s 315 %s %s :End of /WHO list.", NULL},
 /* 316 */  {"RPL_WHOISCHANOP", NULL, NULL},

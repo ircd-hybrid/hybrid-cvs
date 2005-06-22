@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.288 2005/06/13 08:53:31 michael Exp $
+ *  $Id: s_conf.h,v 7.289 2005/06/22 23:39:27 adx Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -268,8 +268,6 @@ struct config_file_entry
 
   char *servlink_path;
   char *egdpool_path;
-  char *default_operstring;
-  char *default_adminstring;
 
   MessageFile motd;
   MessageFile opermotd;

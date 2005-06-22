@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.62 2005/06/22 16:56:36 adx Exp $
+ *   $Id: m_operspy.c,v 1.63 2005/06/22 23:39:24 adx Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -140,7 +140,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.62 $";
+const char *_version = "$Revision: 1.63 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -497,10 +497,8 @@ operspy_whois(struct Client *client_p, int parc, char *parv[])
              a2client_p->info);
 
   if (IsOper(target_p))
-    sendto_one(client_p, form_str(RPL_WHOISOPERATOR),
-               me.name, client_p->name, target_p->name,
-               IsAdmin(target_p) ? ConfigFileEntry.default_adminstring :
-               ConfigFileEntry.default_operstring);
+    sendto_one(client_p, form_str(IsAdmin(target_p) ? RPL_WHOISADMIN :
+               RPL_WHOISOPERATOR), me.name, client_p->name, target_p->name);
 
   if (MyConnect(target_p))
     sendto_one(client_p, form_str(RPL_WHOISIDLE), me.name,

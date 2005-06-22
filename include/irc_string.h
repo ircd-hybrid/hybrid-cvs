@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.h,v 7.47 2005/06/22 16:56:38 adx Exp $
+ *  $Id: irc_string.h,v 7.48 2005/06/22 23:39:27 adx Exp $
  */
 
 #ifndef INCLUDED_irc_string_h
@@ -148,7 +148,7 @@ extern const unsigned int CharAttrs[];
 #define IsChanPrefix(c) (CharAttrs[(unsigned char)(c)] & CHANPFX_C)
 #define IsChanChar(c)   (CharAttrs[(unsigned char)(c)] & CHAN_C)
 #define IsKWildChar(c)  (CharAttrs[(unsigned char)(c)] & KWILD_C)
-#define IsMWildChar(c)	(CharAttrs[(unsigned char)(c)] & MWILD_C)
+#define IsMWildChar(c)  (CharAttrs[(unsigned char)(c)] & MWILD_C)
 #define IsNickChar(c)   (CharAttrs[(unsigned char)(c)] & NICK_C)
 #define IsServChar(c)   (CharAttrs[(unsigned char)(c)] & (NICK_C | SERV_C))
 #define IsCntrl(c)      (CharAttrs[(unsigned char)(c)] & CNTRL_C)

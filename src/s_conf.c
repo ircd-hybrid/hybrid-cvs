@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.517 2005/06/16 02:38:17 db Exp $
+ *  $Id: s_conf.c,v 7.518 2005/06/22 23:39:33 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1979,8 +1979,6 @@ set_default_conf(void)
   ConfigServerHide.hide_servers = NO;
   ConfigServerHide.hide_server_ips = NO;
 
-  DupString(ConfigFileEntry.default_operstring, "is an IRC Operator");
-  DupString(ConfigFileEntry.default_adminstring, "is a Server Administrator");
   ConfigFileEntry.gline_min_cidr = 16;
   ConfigFileEntry.gline_min_cidr6 = 48;
   ConfigFileEntry.burst_away = 0;
@@ -2680,11 +2678,6 @@ clear_out_old_conf(void)
   AdminInfo.email = NULL;
   MyFree(AdminInfo.description);
   AdminInfo.description = NULL;
-
-  MyFree(ConfigFileEntry.default_operstring);
-  ConfigFileEntry.default_operstring = NULL;
-  MyFree(ConfigFileEntry.default_adminstring);
-  ConfigFileEntry.default_adminstring = NULL;
 
   /* operator{} and class{} blocks are freed above */
   /* clean out listeners */
