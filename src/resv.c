@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.34 2005/05/31 23:18:34 michael Exp $
+ *  $Id: resv.c,v 7.35 2005/06/22 15:55:49 adx Exp $
  */
 
 #include "stdinc.h"
@@ -55,10 +55,10 @@ create_channel_resv(char *name, char *reason, int in_conf)
   struct ResvChannel *resv_p;
 
   if (name == NULL || reason == NULL)
-    return(NULL);
+    return NULL;
 
   if (find_channel_resv(name))
-    return(NULL);
+    return NULL;
 
   if (strlen(reason) > TOPICLEN)
     reason[TOPICLEN] = '\0';
@@ -73,7 +73,7 @@ create_channel_resv(char *name, char *reason, int in_conf)
   dlinkAdd(resv_p, &resv_p->node, &resv_channel_list);
   hash_add_resv(resv_p);
 
-  return(conf);
+  return conf;
 }
 
 /* create_nick_resv()
@@ -91,11 +91,11 @@ create_nick_resv(char *name, char *reason, int in_conf)
   struct MatchItem *resv_p;
 
   if (name == NULL || reason == NULL)
-    return(NULL);
+    return NULL;
 
   if (find_matching_name_conf(NRESV_TYPE, name,
 			      NULL, NULL, 0))
-    return(NULL);
+    return NULL;
 
   if (strlen(reason) > TOPICLEN)
     reason[TOPICLEN] = '\0';
@@ -107,7 +107,7 @@ create_nick_resv(char *name, char *reason, int in_conf)
   DupString(resv_p->reason, reason);
   resv_p->action = in_conf;
 
-  return(conf);
+  return conf;
 }
 
 /* clear_conf_resv()
@@ -151,7 +151,7 @@ delete_channel_resv(struct ResvChannel *resv_p)
   conf = unmap_conf_item(resv_p);
   delete_conf_item(conf);
 
-  return(1);
+  return 1;
 }
 
 /* find_channel_resv()
@@ -166,9 +166,9 @@ find_channel_resv(const char *name)
   struct ResvChannel *resv_p;
 
   if ((resv_p = hash_find_resv(name)) != NULL)
-    return(1);
+    return 1;
 
-  return(0);
+  return 0;
 }
 
 /* match_find_resv()
@@ -183,15 +183,18 @@ match_find_resv(const char *name)
 {
   dlink_node *ptr = NULL;
 
+  if (!*name)
+    return 0;
+
   DLINK_FOREACH(ptr, resv_channel_list.head)
   {
     struct ResvChannel *chptr = ptr->data;
 
-    if (match(name, chptr->name))
-      return(chptr);
+    if (name[0] == chptr->name[0] && match(name + 1, chptr->name + 1))
+      return chptr;
   }
 
-  return(NULL);
+  return NULL;
 }
 
 /* report_resv()
@@ -244,7 +247,7 @@ clean_resv_nick(char *nick)
   int ch = 0;
 
   if (*nick == '-' || IsDigit(*nick))
-    return(0);
+    return 0;
 
   while ((tmpch = *nick++))
   {
@@ -255,13 +258,13 @@ clean_resv_nick(char *nick)
     else if (IsNickChar(tmpch))
       ch++;
     else
-      return(0);
+      return 0;
   }
 
   if (!ch && as)
-    return(0);
+    return 0;
 
-  return(1);
+  return 1;
 }
 
 /* valid_wild_card_simple()

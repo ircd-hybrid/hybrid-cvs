@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.40 2005/06/03 00:54:04 db Exp $
+ *  $Id: m_testline.c,v 1.41 2005/06/22 15:55:48 adx Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&testgecos_msgtab);
 }
  
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
 
 /* mo_testline()
@@ -106,7 +106,7 @@ mo_testline(struct Client *client_p, struct Client *source_p,
 
   given_name = parv[1];
 
-  if (*given_name == '#')	/* Might be channel resv */
+  if (IsChanPrefix(*given_name))	/* Might be channel resv */
   {
     struct ResvChannel *chptr;
     
