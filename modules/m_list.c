@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.63 2005/06/22 16:56:40 adx Exp $
+ *  $Id: m_list.c,v 1.64 2005/06/22 20:34:22 adx Exp $
  */
 
 #include "stdinc.h"
@@ -62,10 +62,10 @@ _moddeinit(void)
   mod_del_cmd(&list_msgtab);
 }
 
-const char *_version = "$Revision: 1.63 $";
+const char *_version = "$Revision: 1.64 $";
 #endif
 
-static void
+static int
 has_wildcards(const char *s)
 {
   char c;
