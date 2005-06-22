@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.40 2005/06/22 15:29:43 adx Exp $
+ * $Id: match.c,v 7.41 2005/06/22 15:42:51 adx Exp $
  *
  */
 
@@ -40,10 +40,10 @@
 int
 match(const char *mask, const char *name)
 {
-  const unsigned char* m = (const unsigned char*)  mask;
-  const unsigned char* n = (const unsigned char*)  name;
+  const unsigned char* m = (const unsigned char *) mask;
+  const unsigned char* n = (const unsigned char *) name;
   const unsigned char* ma = NULL;
-  const unsigned char* na = (const unsigned char*) name;
+  const unsigned char* na = (const unsigned char *) name;
 
   assert(mask != NULL);
   assert(name != NULL);
@@ -89,7 +89,7 @@ match(const char *mask, const char *name)
     if (ToLower(*m) != ToLower(*n) && *m != '?' && (*m != '#' || !IsDigit(*n)))
     {
       if (!ma)
-        return(0);
+        return 0;
       m = ma;
       n = ++na;
     }
@@ -97,7 +97,7 @@ match(const char *mask, const char *name)
       m++, n++;
   }
 
-  return(0);
+  return 0;
 }
 
 /* match_esc()
@@ -108,10 +108,10 @@ match(const char *mask, const char *name)
 int
 match_esc(const char *mask, const char *name)
 {
-  const unsigned char* m = (const unsigned char*)  mask;
-  const unsigned char* n = (const unsigned char*)  name;
-  const unsigned char* ma = NULL;
-  const unsigned char* na = (const unsigned char*) name;
+  const unsigned char *m = (const unsigned char *) mask;
+  const unsigned char *n = (const unsigned char *) name;
+  const unsigned char *ma = NULL;
+  const unsigned char *na = (const unsigned char *) name;
 
   assert(mask != NULL);
   assert(name != NULL);
@@ -183,12 +183,13 @@ comp_with_mask(void *addr, void *dest, unsigned int mask)
   {
     int n = mask / 8;
     int m = ((-1) << (8 - (mask % 8)));
+
     if (mask % 8 == 0 || 
        (((unsigned char *) addr)[n] & m) == (((unsigned char *) dest)[n] & m))  
-      return(1);
+      return 1;
   }
 
-  return(0);
+  return 0;
 }
 
 /* match_cidr()
@@ -212,24 +213,24 @@ match_cidr(const char *s1, const char *s2)
   
   ipmask = strrchr(mask, '@');
   if (ipmask == NULL)
-    return(0);
+    return 0;
   
   *ipmask++ = '\0';
   
   ip = strrchr(address, '@');
   if (ip == NULL)
-    return(0);
+    return 0;
   *ip++ = '\0';
   
   len = strrchr(ipmask, '/');
   if (len == NULL)
-    return(0);
+    return 0;
   
   *len++ = '\0';
   
   cidrlen = atoi(len);
   if (cidrlen == 0) 
-    return(0);
+    return 0;
 
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_UNSPEC;
@@ -268,11 +269,8 @@ match_cidr(const char *s1, const char *s2)
   if (maskaddr.ss_len != ipaddr.ss_len)
     return 0;
 
-  if (comp_with_mask(((char *) &ipaddr) + offset, ((char *) &maskaddr) +
-    offset, cidrlen) && match(mask, address))
-    return(1);
-  else
-    return(0);
+  return (comp_with_mask(((char *) &ipaddr) + offset, ((char *) &maskaddr) +
+    offset, cidrlen) && match(mask, address));
 }
 
 /* collapse()
@@ -310,7 +308,6 @@ collapse_esc(char *pattern)
 {
   char *p = pattern, *po = pattern;
   char c;
-  int f = 0;
 
   if (p == NULL)
     return NULL;
@@ -341,8 +338,8 @@ collapse_esc(char *pattern)
 int
 irccmp(const char *s1, const char *s2)
 {
-  const unsigned char *str1 = (const unsigned char *)s1;
-  const unsigned char *str2 = (const unsigned char *)s2;
+  const unsigned char *str1 = (const unsigned char *) s1;
+  const unsigned char *str2 = (const unsigned char *) s2;
 
   assert(s1 != NULL);
   assert(s2 != NULL);
@@ -350,29 +347,31 @@ irccmp(const char *s1, const char *s2)
   while (ToUpper(*str1) == ToUpper(*str2))
   {
     if (*str1 == '\0')
-      return(0);
+      return 0;
     str1++;
     str2++;
   }
-  return(1);
+
+  return 1;
 }
 
 int
 ircncmp(const char* s1, const char *s2, size_t n)
 {
-  const unsigned char* str1 = (const unsigned char*) s1;
-  const unsigned char* str2 = (const unsigned char*) s2;
+  const unsigned char *str1 = (const unsigned char *) s1;
+  const unsigned char *str2 = (const unsigned char *) s2;
   int res;
+
   assert(s1 != NULL);
   assert(s2 != NULL);
 
   while ((res = ToUpper(*str1) - ToUpper(*str2)) == 0)
   {
-    str1++; str2++; n--;
+    str1++, str2++, n--;
     if (n == 0 || (*str1 == '\0' && *str2 == '\0'))
-      return(0);
+      return 0;
   }
-  return(res);
+  return res;
 }
 
 const unsigned char ToLowerTab[] = { 

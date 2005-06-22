@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.66 2003/06/29 02:48:18 joshk Exp $
+ *  $Id: irc_string.c,v 7.67 2005/06/22 15:42:51 adx Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ myctime(time_t value)
 
   if ((p = strchr(buf, '\n')) != NULL)
     *p = '\0';
-  return(buf);
+  return buf;
 }
 
 /*
@@ -88,23 +88,22 @@ clean_string(char* dest, const unsigned char* src, size_t len)
   len -= 3;  /* allow for worst case, '^A\0' */
 
   while (*src && (len > 0))
+  {
+    if (*src & 0x80)             /* if high bit is set */
     {
-      if(*src & 0x80)             /* if high bit is set */
-        {
-          *d++ = '.';
-          --len;
-        }
-      else if(!IsPrint(*src))       /* if NOT printable */
-        {
-          *d++ = '^';
-          --len;
-          *d++ = 0x40 + *src;   /* turn it into a printable */
-        }
-      else
-        *d++ = *src;
-      ++src;
+      *d++ = '.';
       --len;
     }
+    else if (!IsPrint(*src))       /* if NOT printable */
+    {
+      *d++ = '^';
+      --len;
+      *d++ = 0x40 + *src;   /* turn it into a printable */
+    }
+    else
+      *d++ = *src;
+    ++src, --len;
+  }
   *d = '\0';
   return dest;
 }
@@ -123,10 +122,10 @@ strip_tabs(char *dest, const unsigned char *src, size_t len)
 
   /* Sanity check; we don't want anything nasty... */
   assert(dest != NULL);
-  assert(src  != NULL);
+  assert(src != NULL);
 
   if (dest == NULL || src == NULL)
-    return(NULL);
+    return NULL;
 
   while (*src && (len > 0))
   {
@@ -140,7 +139,7 @@ strip_tabs(char *dest, const unsigned char *src, size_t len)
   }
 
   *d = '\0'; /* Null terminate, thanks and goodbye */
-  return(dest);
+  return dest;
 }
 
 /*
@@ -237,18 +236,18 @@ inetntoa(const char *in)
     *bufptr++ = *n++;
   *bufptr++ = '.';
   n = IpQuadTab[ *a++ ];
-  while ( *n )
+  while (*n)
     *bufptr++ = *n++;
   *bufptr++ = '.';
   n = IpQuadTab[ *a++ ];
-  while ( *n )
+  while (*n)
     *bufptr++ = *n++;
   *bufptr++ = '.';
   n = IpQuadTab[ *a ];
-  while ( *n )
+  while (*n)
     *bufptr++ = *n++;
   *bufptr = '\0';
-  return(buf);
+  return buf;
 }
 
 #ifndef HAVE_BASENAME
@@ -269,7 +268,7 @@ basename(char *path)
   else
     s++;
 
-  return (s);
+  return s;
 }
 
 #endif /* !HAVE_BASENAME */
@@ -318,9 +317,9 @@ static const char *
 inet_ntop4(const unsigned char *src, char *dst, unsigned int size)
 {
   if (size < 16)
-    return(NULL);
+    return NULL;
 
-  return(strcpy(dst, inetntoa((const char *)src)));
+  return strcpy(dst, inetntoa((const char *)src));
 }
 
 /* const char *
@@ -434,17 +433,17 @@ inetntop(int af, const void *src, char *dst, unsigned int size)
   switch (af)
   {
     case AF_INET:
-      return(inet_ntop4(src, dst, size));
+      return inet_ntop4(src, dst, size);
 #ifdef IPV6
     case AF_INET6:
       if (IN6_IS_ADDR_V4MAPPED((const struct in6_addr *)src) ||
           IN6_IS_ADDR_V4COMPAT((const struct in6_addr *)src))
-        return(inet_ntop4((unsigned char *)&((const struct in6_addr *)src)->s6_addr[12], dst, size));
+        return inet_ntop4((unsigned char *)&((const struct in6_addr *)src)->s6_addr[12], dst, size);
       else 
-        return(inet_ntop6(src, dst, size));
+        return inet_ntop6(src, dst, size);
 #endif
     default:
-      return(NULL);
+      return NULL;
   }
   /* NOTREACHED */
 }
@@ -509,7 +508,7 @@ strlcat(char *dst, const char *src, size_t siz)
   }
 
   *d = '\0';
-  return(dlen + (s - src)); /* count does not include NUL */
+  return dlen + (s - src); /* count does not include NUL */
 }
 #endif
 
@@ -540,6 +539,6 @@ strlcpy(char *dst, const char *src, size_t siz)
       ;
   }
 
-  return(s - src - 1); /* count does not include NUL */
+  return s - src - 1; /* count does not include NUL */
 }
 #endif
