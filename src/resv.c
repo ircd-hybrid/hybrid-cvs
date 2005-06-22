@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.35 2005/06/22 15:55:49 adx Exp $
+ *  $Id: resv.c,v 7.36 2005/06/22 16:56:42 adx Exp $
  */
 
 #include "stdinc.h"
@@ -190,7 +190,7 @@ match_find_resv(const char *name)
   {
     struct ResvChannel *chptr = ptr->data;
 
-    if (name[0] == chptr->name[0] && match(name + 1, chptr->name + 1))
+    if (match_chan(name, chptr->name))
       return chptr;
   }
 

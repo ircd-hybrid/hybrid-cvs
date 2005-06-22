@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.91 2005/05/31 23:10:23 michael Exp $
+ *  $Id: hash.c,v 7.92 2005/06/22 16:56:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1053,11 +1053,11 @@ list_allow_channel(const char *chname, struct ListTask *lt)
   dlink_node *dl;
 
   DLINK_FOREACH(dl, lt->show_mask.head)
-    if (!match(dl->data, chname))
+    if (!match_chan(dl->data, chname))
       return(0);
 
   DLINK_FOREACH(dl, lt->hide_mask.head)
-    if (match(dl->data, chname))
+    if (match_chan(dl->data, chname))
       return(0);
 
   return(1);
@@ -1121,13 +1121,10 @@ safe_list_channels(struct Client *source_p, struct ListTask *list_task,
 
     for (i = list_task->hash_index; i < HASHSIZE; i++)
     {
-      if (MyConnect(source_p))
+      if (exceeding_sendq(source_p->from))
       {
-        if (exceeding_sendq(source_p))
-        {
-          list_task->hash_index = i;
-          return; /* still more to do */
-        }
+        list_task->hash_index = i;
+        return; /* still more to do */
       }
 
       for (chptr = channelTable[i]; chptr; chptr = chptr->hnextch)

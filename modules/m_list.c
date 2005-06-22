@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.62 2005/04/26 13:36:09 michael Exp $
+ *  $Id: m_list.c,v 1.63 2005/06/22 16:56:40 adx Exp $
  */
 
 #include "stdinc.h"
@@ -62,9 +62,20 @@ _moddeinit(void)
   mod_del_cmd(&list_msgtab);
 }
 
-const char *_version = "$Revision: 1.62 $";
+const char *_version = "$Revision: 1.63 $";
 #endif
 
+static void
+has_wildcards(const char *s)
+{
+  char c;
+
+  while ((c = *s++))
+    if (IsMWildChar(c))
+      return 1;
+
+  return 0;
+}
 
 static void
 do_list(struct Client *source_p, int parc, char *parv[])
@@ -153,7 +164,8 @@ do_list(struct Client *source_p, int parc, char *parv[])
 		   opt++;
 		 }
 		 else list = &lt->show_mask;
-		 if (strpbrk(opt, "?*") != NULL)
+
+		 if (has_wildcards(opt + !!IsChanPrefix(*opt)))
 		 {
 		   if (list == &lt->show_mask)
 		     no_masked_channels = 0;

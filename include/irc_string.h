@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.h,v 7.46 2003/06/29 18:09:36 joshk Exp $
+ *  $Id: irc_string.h,v 7.47 2005/06/22 16:56:38 adx Exp $
  */
 
 #ifndef INCLUDED_irc_string_h
@@ -32,10 +32,12 @@
  * match - returns 1 on successful match, 0 otherwise
  *
  * match_esc - compare with support for escaping chars
+ * match_chan - like match_esc with first character auto-escaped
  * match_cidr - compares u!h@addr with u!h@addr/cidr
  */
 extern int match(const char *mask, const char *name);
 extern int match_esc(const char *mask, const char *name);
+extern int match_chan(const char *mask, const char *name);
 extern int match_cidr(const char *mask, const char *name);
 
 /*

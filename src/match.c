@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.41 2005/06/22 15:42:51 adx Exp $
+ * $Id: match.c,v 7.42 2005/06/22 16:56:41 adx Exp $
  *
  */
 
@@ -174,6 +174,17 @@ match_esc(const char *mask, const char *name)
   }
 
   return 0;
+}
+
+/* match_chan()
+ *
+ * The match_esc() function doing channel prefix auto-escape,
+ * ie. mask: #blah*blah is seen like \#blah*blah
+ */
+int
+match_chan(const char *mask, const char *name)
+{
+  return *mask ? (*mask == *name && match_esc(mask + 1, name + 1)) : !*name;
 }
 
 static inline int 
