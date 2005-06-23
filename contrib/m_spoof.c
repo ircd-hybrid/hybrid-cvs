@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_spoof.c,v 1.2 2005/06/23 04:48:36 metalrock Exp $
+ *  $Id: m_spoof.c,v 1.3 2005/06/23 09:33:52 michael Exp $
  */
 
 /* MODULE CONFIGURATION FOLLOWS -- please read!! */
@@ -88,7 +88,6 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <string.h>
 
 static void mo_spoof(struct Client *, struct Client *, int, char *[]);
 static void mo_delspoof(struct Client *, struct Client *, int, char *[]);
@@ -128,7 +127,8 @@ _moddeinit(void)
 const char *_version = "20050622";
 
 #ifdef SPOOF_FILE
-static void try_flag(FBFILE *f, int *flags, int flag, const char *string)
+static void
+try_flag(FBFILE *f, int *flags, int flag, const char *string)
 {
   if ((*flags & flag))
   {
@@ -140,10 +140,14 @@ static void try_flag(FBFILE *f, int *flags, int flag, const char *string)
 }
 #endif
 
-static void mo_spoof(struct Client *client_p, struct Client *source_p,
-                     int parc, char *parv[])
+static void
+mo_spoof(struct Client *client_p, struct Client *source_p,
+         int parc, char *parv[])
 {
-  char *user, *host, *spoof, *password, *tmp, *flags;
+  char *host, *spoof, *password;
+  const char *tmp = NULL;
+  const char *user = NULL;
+  const char *flags = NULL;
   int i = 0;
 #ifdef SPOOF_FILE
   int class_opers;
@@ -276,7 +280,7 @@ static void mo_spoof(struct Client *client_p, struct Client *source_p,
 
   /* process given flags */
   i = class_opers = 0;
-  for (tmp = flags; *tmp; tmp++)
+  for (tmp = flags; *tmp; ++tmp)
     switch (*tmp)
     {
       case 't': i |= CONF_FLAGS_NO_TILDE;      /* no_tilde = yes; */
@@ -331,15 +335,17 @@ static void mo_spoof(struct Client *client_p, struct Client *source_p,
 /* Now, our job is a bit harder. I will scan through the SPOOF_FILE
  * and read all auths{} (assuming they are written in our line formatting..),
  * then rewrite them skipping the one to delete. --adx */
-static void mo_delspoof(struct Client *client_p, struct Client *source_p,
-                        int parc, char *parv[])
+static void
+mo_delspoof(struct Client *client_p, struct Client *source_p,
+            int parc, char *parv[])
 {
 #ifdef SPOOF_FILE
   FBFILE *f, *fout;
   int ignore_it = 1, spoof_found = 0;
   char buffer[1024], *tmp;
 #endif
-  char *user, *host;
+  const char *user = NULL;
+  char *host = NULL;
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
@@ -478,7 +484,7 @@ static void mo_delspoof(struct Client *client_p, struct Client *source_p,
   {
     if (MyConnect(source_p))
       sendto_one(source_p, ":%s NOTICE %s :No auth for %s@%s found",
-                           me.name, parv[0], user, host);
+                 me.name, parv[0], user, host);
     unlink(SPOOF_FILE ".new");
     return;
   }
@@ -490,6 +496,6 @@ static void mo_delspoof(struct Client *client_p, struct Client *source_p,
 
 #ifdef LOG_SPOOF
   sendto_realops_flags(UMODE_ALL, L_ALL, "%s deleted auth for %s@%s",
-                                         parv[0], user, host);
+                       parv[0], user, host);
 #endif
 }

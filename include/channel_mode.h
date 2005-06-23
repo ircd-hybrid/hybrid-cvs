@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.29 2005/05/29 02:54:01 adx Exp $
+ *  $Id: channel_mode.h,v 7.30 2005/06/23 09:33:54 michael Exp $
  */
 
 
@@ -38,8 +38,8 @@ extern void set_channel_mode(struct Client *, struct Client *, struct Channel *,
                              struct Membership *, int, char **, char *);
 
 extern void init_chcap_usage_counts(void);
-extern void set_chcap_usage_counts(struct Client *serv_p);
-extern void unset_chcap_usage_counts(struct Client *serv_p);
+extern void set_chcap_usage_counts(struct Client *);
+extern void unset_chcap_usage_counts(struct Client *);
 
 /*
 ** Channel Related macros follow
@@ -72,6 +72,11 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 #define MODE_ADD    1
 #define MODE_DEL   -1
 
+#define CHACCESS_NOTONCHAN  -1
+#define CHACCESS_PEON       0
+#define CHACCESS_HALFOP     1
+#define CHACCESS_CHANOP     2
+
 /* name invisible */
 #define SecretChannel(x)        ((x) && ((x)->mode.mode & MODE_SECRET))
 /* channel not shown but names are */
@@ -85,8 +90,8 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 struct ChModeChange
 {
   char letter;
-  char *arg;
-  char *id;
+  const char *arg;
+  const char *id;
   int dir;
   int caps;
   int nocaps;
@@ -100,9 +105,4 @@ struct ChCapCombo
   int cap_yes;
   int cap_no;
 };
-
-#define CHACCESS_NOTONCHAN  -1
-#define CHACCESS_PEON       0
-#define CHACCESS_HALFOP     1
-#define CHACCESS_CHANOP     2
 #endif /* INCLUDED_channel_mode_h */

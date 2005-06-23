@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.190 2005/05/29 03:33:25 adx Exp $
+ *  $Id: m_sjoin.c,v 1.191 2005/06/23 09:33:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,13 +63,13 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.190 $";
+const char *_version = "$Revision: 1.191 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
 static char parabuf[MODEBUFLEN];
 static char sendbuf[MODEBUFLEN];
-static char *para[MAXMODEPARAMS];
+static const char *para[MAXMODEPARAMS];
 static char *mbuf;
 static int pargs;
 
@@ -770,21 +770,21 @@ remove_our_modes(struct Channel *chptr, struct Client *source_p)
  * output	- NONE
  * side effects	- remove ONE mode from a channel
  */
-static
-void remove_a_mode(struct Channel *chptr, struct Client *source_p,
-                   int mask, char flag)
+static void
+remove_a_mode(struct Channel *chptr, struct Client *source_p,
+             int mask, char flag)
 {
   dlink_node *ptr;
   struct Membership *ms;
   char lmodebuf[MODEBUFLEN];
-  char *lpara[MAXMODEPARAMS];
+  const char *lpara[MAXMODEPARAMS];
   int count = 0;
   int lcount;
 
   mbuf = lmodebuf;
   *mbuf++ = '-';
 
-  for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+  for (lcount = 0; lcount < MAXMODEPARAMS; lcount++)
     lpara[lcount] = "";
   sendbuf[0] = '\0';
 

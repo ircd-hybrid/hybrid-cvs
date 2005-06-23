@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.98 2005/06/13 08:53:33 michael Exp $
+ *  $Id: hostmask.c,v 7.99 2005/06/23 09:34:00 michael Exp $
  */
 
 #include "stdinc.h"
@@ -396,7 +396,7 @@ get_mask_hash(const char *text)
  */
 struct AccessItem *
 find_conf_by_address(const char *name, struct irc_ssaddr *addr, int type,
-                     int fam, const char *username, char *password)
+                     int fam, const char *username, const char *password)
 {
   unsigned long hprecv = 0;
   struct AccessItem *hprec = NULL;

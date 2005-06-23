@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.h,v 1.30 2005/06/13 08:53:31 michael Exp $
+ *  $Id: hostmask.h,v 1.31 2005/06/23 09:33:54 michael Exp $
  */
 
 #ifndef INCLUDE_hostmask_h
@@ -42,7 +42,7 @@ struct HostMaskEntry
 
 int parse_netmask(const char *, struct irc_ssaddr *, int *);
 struct AccessItem *find_conf_by_address(const char *, struct irc_ssaddr *,
-                                        int, int, const char *, char *);
+                                        int, int, const char *, const char *);
 void add_conf_by_address(int, struct AccessItem *);
 void delete_one_address_conf(const char *, struct AccessItem *);
 
@@ -59,7 +59,7 @@ struct AccessItem* find_dline_conf(struct irc_ssaddr *, int);
 int match_ipv6(struct irc_ssaddr *, struct irc_ssaddr *, int);
 int match_ipv4(struct irc_ssaddr *, struct irc_ssaddr *, int);
 
-void report_Klines(struct Client *, int temp);
+void report_Klines(struct Client *, int);
 void report_auth(struct Client *);
 
 /* Hashtable stuff... */

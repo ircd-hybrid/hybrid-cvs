@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.50 2005/05/29 02:53:59 adx Exp $
+ *   $Id: m_clearchan.c,v 1.51 2005/06/23 09:33:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -30,7 +30,6 @@
 #include "s_log.h"
 #include "s_serv.h"
 #include "send.h"
-#include "whowas.h"
 #include "irc_string.h"
 #include "sprintf_irc.h"
 #include "hash.h"
@@ -43,10 +42,9 @@
 
 extern BlockHeap *ban_heap;
 
-static char *mbuf;
-static void mo_clearchan(struct Client *, struct Client *, int, char **);
-static void kick_list(struct Client *, struct Client *, struct Channel *, char *);
-static void remove_our_modes(struct Channel *, struct Client *);
+static void mo_clearchan(struct Client *, struct Client *, int, char *[]);
+static void kick_list(struct Client *, struct Client *, struct Channel *);
+static void remove_our_modes(struct Channel *);
 static void remove_a_mode(struct Channel *, int, char);
 
 struct Message clearchan_msgtab = {
@@ -67,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 
 /*
@@ -79,7 +77,7 @@ static void
 mo_clearchan(struct Client *client_p, struct Client *source_p,
              int parc, char *parv[])
 {
-  struct Channel *chptr;
+  struct Channel *chptr = NULL;
 
   /* admins only */
   if (!IsAdmin(source_p))
@@ -117,7 +115,7 @@ mo_clearchan(struct Client *client_p, struct Client *source_p,
   /* Kill all the modes we have about the channel..
    * making everyone a peon
    */  
-  remove_our_modes(chptr, source_p);
+  remove_our_modes(chptr);
 
   /* SJOIN the user to give them ops, and lock the channel */
   sendto_server(client_p, source_p, chptr, CAP_TS6, NOCAPS, LL_ICLIENT,
@@ -138,20 +136,20 @@ mo_clearchan(struct Client *client_p, struct Client *source_p,
   /* Take the TS down by 1, so we don't see the channel taken over
    * again. */
   if (chptr->channelts)
-    chptr->channelts--;
+    --chptr->channelts;
 
-  chptr->mode.mode =
-    MODE_SECRET | MODE_TOPICLIMIT | MODE_INVITEONLY | MODE_NOPRIVMSGS;
+  chptr->mode.mode = MODE_SECRET | MODE_TOPICLIMIT |
+                     MODE_INVITEONLY | MODE_NOPRIVMSGS;
   free_topic(chptr);
   chptr->mode.key[0] = '\0';
 
   /* Kick the users out and join the oper */
-  kick_list(client_p, source_p, chptr, chptr->chname);
+  kick_list(client_p, source_p, chptr);
 }
 
 static void
 kick_list(struct Client *client_p, struct Client *source_p,
-          struct Channel *chptr, char *chname)
+          struct Channel *chptr)
 {
   dlink_node *m, *next_m;
   struct Membership *ms;
@@ -161,10 +159,10 @@ kick_list(struct Client *client_p, struct Client *source_p,
     ms = m->data;
     sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s KICK %s %s :CLEARCHAN",
                          source_p->name, source_p->username, source_p->host,
-                         chname, ms->client_p->name);
+                         chptr->chname, ms->client_p->name);
     sendto_server(NULL, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
                   ":%s KICK %s %s :CLEARCHAN", source_p->name,
-                  chname, ms->client_p->name);
+                  chptr->chname, ms->client_p->name);
   }
 
   /* Join the user themselves to the channel down here, so they dont see a nicklist 
@@ -180,7 +178,7 @@ kick_list(struct Client *client_p, struct Client *source_p,
 
   sendto_one(source_p, ":%s!%s@%s JOIN %s",
              source_p->name, source_p->username,
-             source_p->host, chname);
+             source_p->host, chptr->chname);
   channel_member_names(source_p, chptr, 1);
 }
 
@@ -194,7 +192,7 @@ kick_list(struct Client *client_p, struct Client *source_p,
  *                chanop modes etc., this side lost the TS.
  */
 static void
-remove_our_modes(struct Channel *chptr, struct Client *source_p)
+remove_our_modes(struct Channel *chptr)
 {
   remove_a_mode(chptr, CHFL_CHANOP, 'o');
 #ifdef HALFOPS
@@ -206,8 +204,14 @@ remove_our_modes(struct Channel *chptr, struct Client *source_p)
   free_channel_list(&chptr->banlist);
   free_channel_list(&chptr->exceptlist);
   free_channel_list(&chptr->invexlist);
-  chptr->banlist.head = chptr->exceptlist.head = chptr->invexlist.head = NULL;
-  chptr->banlist.tail = chptr->exceptlist.tail = chptr->invexlist.tail = NULL;
+#if 1
+  assert(!chptr->banlist.head);
+  assert(!chptr->banlist.tail);
+  assert(!chptr->exceptlist.head);
+  assert(!chptr->exceptlist.tail);
+  assert(!chptr->invexlist.head);
+  assert(!chptr->invexlist.tail);
+#endif
 }
 
 /* remove_a_mode()
@@ -219,20 +223,17 @@ remove_our_modes(struct Channel *chptr, struct Client *source_p)
 static void
 remove_a_mode(struct Channel *chptr, int mask, char flag)
 {
-  dlink_node *ptr;
-  struct Membership *ms;
+  const dlink_node *ptr = NULL;
   char lmodebuf[MODEBUFLEN];
-  char *lpara[4];
+  const char *lpara[4] = { "", "", "", "" };
+  char *mbuf = lmodebuf;
   int count = 0;
 
-  mbuf = lmodebuf;
   *mbuf++ = '-';
-
-  lpara[0] = lpara[1] = lpara[2] = lpara[3] = "";
 
   DLINK_FOREACH(ptr, chptr->members.head)
   {
-    ms = ptr->data;
+    const struct Membership *ms = ptr->data;
     if ((ms->flags & mask) == 0)
       continue;
 
@@ -242,7 +243,7 @@ remove_a_mode(struct Channel *chptr, int mask, char flag)
 
     *mbuf++ = flag;
 
-    if (count >= 4)
+    if (count == 4)
     {
       *mbuf = '\0';
       sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",

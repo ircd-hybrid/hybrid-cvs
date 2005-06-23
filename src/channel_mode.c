@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.143 2005/05/29 02:54:07 adx Exp $
+ *  $Id: channel_mode.c,v 7.144 2005/06/23 09:34:00 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1506,7 +1506,7 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
 {
   int i, mbl, pbl, arglen, nc, mc;
   int len;
-  char *arg;
+  const char *arg = NULL;
   char *parptr;
   int dir = MODE_QUERY;
 
@@ -1625,12 +1625,12 @@ send_mode_changes(struct Client *client_p, struct Client *source_p,
 {
   int i, mbl, pbl, arglen, nc, mc;
   int len;
-  char *arg;
+  const char *arg = NULL;
   char *parptr;
   int dir = MODE_QUERY;
 
   /* bail out if we have nothing to do... */
-  if (!(mode_count))
+  if (!mode_count)
     return;
 
   if (IsServer(source_p))

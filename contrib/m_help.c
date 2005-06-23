@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.12 2004/07/08 00:27:16 erik Exp $
+ *  $Id: m_help.c,v 1.13 2005/06/23 09:33:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -40,11 +40,11 @@
 #define UHPATH IRCD_PREFIX "/help/users"
 #define HELPLEN 400
 
-static void m_help(struct Client*, struct Client*, int, char**);
-static void mo_help(struct Client*, struct Client*, int, char**);
-static void mo_uhelp(struct Client*, struct Client*, int, char**);
+static void m_help(struct Client*, struct Client*, int, char *[]);
+static void mo_help(struct Client*, struct Client*, int, char *[]);
+static void mo_uhelp(struct Client*, struct Client*, int, char *[]);
 static void dohelp(struct Client *, const char *, char *);
-static void sendhelpfile(struct Client *, char *, char *);
+static void sendhelpfile(struct Client *, const char *, const char *);
 
 struct Message help_msgtab = {
   "HELP", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 #endif
 
 /*
@@ -92,8 +92,8 @@ m_help(struct Client *client_p, struct Client *source_p,
                me.name, source_p->name);
     return;
   }
-  else
-    last_used = CurrentTime;
+
+  last_used = CurrentTime;
 
   dohelp(source_p, UHPATH, parv[1]);
 }
@@ -178,7 +178,7 @@ dohelp(struct Client *source_p, const char *hpath, char *topic)
 }
 
 static void 
-sendhelpfile(struct Client *source_p, char *path, char *topic)
+sendhelpfile(struct Client *source_p, const char *path, const char *topic)
 {
   FBFILE *file;
   char line[HELPLEN];

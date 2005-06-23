@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.41 2005/06/22 15:55:48 adx Exp $
+ *  $Id: m_testline.c,v 1.42 2005/06/23 09:33:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&testgecos_msgtab);
 }
  
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 
 /* mo_testline()
@@ -88,7 +88,8 @@ static void
 mo_testline(struct Client *client_p, struct Client *source_p,
             int parc, char *parv[])
 {
-  char *given_name, *given_host, *p;
+  char *given_name, *p;
+  const char *given_host = NULL;
   struct ConfItem *conf;
   struct AccessItem *aconf;
   struct irc_ssaddr ip;
