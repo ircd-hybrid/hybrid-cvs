@@ -15,15 +15,8 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.31 2005/05/29 02:53:59 adx Exp $
+ *   $Id: m_ojoin.c,v 1.32 2005/06/23 10:03:59 michael Exp $
  */
-
-/* Remove this if you do not wish /OJOIN to support multiple channels
- * at once. Or add an #undef for it in setup.h, since it is subsequently
- * #included.
- */
-
-#define OJOIN_MULTIJOIN
 
 #include "stdinc.h"
 #include "tools.h"
@@ -41,11 +34,11 @@
 #include "list.h"
 #include "channel_mode.h"
 
-static void mo_ojoin(struct Client *, struct Client *, int, char **);
+static void mo_ojoin(struct Client *, struct Client *, int, char *[]);
 
 struct Message ojoin_msgtab = {
   "OJOIN", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_ojoin, m_ignore}
+  { m_unregistered, m_not_oper, m_ignore, m_ignore, mo_ojoin, m_ignore }
 };
 
 #ifndef STATIC_MODULES
@@ -61,22 +54,21 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.32 $";
 #endif
 
 /* mo_ojoin()
  *      parv[0] = sender prefix
- *      parv[1] = channels separated by commas (#ifdef OJOIN_MULTIJOIN)
+ *      parv[1] = channels separated by commas
  */
 static void
 mo_ojoin(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
   struct Channel *chptr = NULL;
-  char *name = parv[1], modeletter;
-#ifdef OJOIN_MULTIJOIN
-  char *t;
-#endif
+  char modeletter = '\0';
+  char *name = parv[1];
+  char *t = NULL;
   int move_me = 1;
   unsigned int tmp_flags;
 
@@ -88,12 +80,9 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-#ifdef OJOIN_MULTIJOIN
   for (name = strtoken(&t, name, ","); name;
        name = strtoken(&t, NULL, ","))
   {
-#endif
-    
     move_me = 1;
 
     switch (*name)
@@ -101,36 +90,30 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
       case '@':
         tmp_flags = CHFL_CHANOP;
         modeletter = 'o';
-        name++;
+        ++name;
         break;
 #ifdef HALFOPS
-      case '%': tmp_flags = CHFL_HALFOP;
+      case '%':
+        tmp_flags = CHFL_HALFOP;
         modeletter = 'h';
-        name++;
+        ++name;
         break;
 #endif
       case '+':
         tmp_flags = CHFL_VOICE;
         modeletter = 'v';
-        name++;
+        ++name;
         break;
       case '#':
       case '&':
         tmp_flags = 0;
 	modeletter = '\0';
 	break;
-	
-       /* We're not joining a channel, or we don't know the mode,
-	* what ARE we joining? */
+
       default:
         sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
                    me.name, source_p->name, name);
-
-#ifdef OJOIN_MULTIJOIN
 	continue;
-#else
-	return;
-#endif
     }
 
     /* Error checking here */
@@ -144,14 +127,13 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
       sendto_one(source_p, ":%s NOTICE %s :Please part %s before using OJOIN",
                  me.name, source_p->name, name);
     }
-  
     else
     {
       if (move_me == 1)
         --name;
 
       add_user_to_channel(chptr, source_p, tmp_flags);
-  
+
       if (chptr->chname[0] == '#')
       {
         sendto_server(client_p, source_p, chptr, CAP_TS6, NOCAPS, LL_ICLIENT,
@@ -160,21 +142,21 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
                       (modeletter != '\0') ? *name : ' ',
                       source_p->id);
         sendto_server(client_p, source_p, chptr, NOCAPS, CAP_TS6, LL_ICLIENT, 
-                     ":%s SJOIN %lu %s + :%c%s", me.name,
-                     (unsigned long)chptr->channelts,
-                     chptr->chname, (modeletter != '\0') ? *name : ' ',
-		     source_p->name);
+                      ":%s SJOIN %lu %s + :%c%s", me.name,
+                      (unsigned long)chptr->channelts,
+                      chptr->chname, (modeletter != '\0') ? *name : ' ',
+                      source_p->name);
       }
-      
+
       sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
                            source_p->name, source_p->username,
                            source_p->host,
                            chptr->chname);
-      
+
       if (modeletter != '\0')
         sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +%c %s",
                              me.name, chptr->chname, modeletter, source_p->name);
-      
+
       /* send the topic... */
       if (chptr->topic != NULL)
       {
@@ -189,7 +171,5 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
       source_p->localClient->last_join_time = CurrentTime;
       channel_member_names(source_p, chptr, 1);
     }
-#ifdef OJOIN_MULTIJOIN
   }
-#endif
 }
