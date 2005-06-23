@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.68 2005/06/07 22:49:45 db Exp $
+ *  $Id: m_knock.c,v 1.69 2005/06/23 00:16:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -53,10 +53,6 @@ static void parse_knock_remote(struct Client *, struct Client *,
 static void send_knock(struct Client *, struct Client *,
                        struct Channel *, char *, char *, int, int);
 
-static int is_banned_knock(struct Channel *, struct Client *, char *);
-static int check_banned_knock(struct Channel *, struct Client *,
-                              char *, char *);
-
 struct Message knock_msgtab = {
   "KNOCK", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_knock, ms_knock, me_knock, m_knock, m_ignore}
@@ -84,7 +80,7 @@ _moddeinit(void)
   delete_capability("KNOCK");
 }
 
-const char *_version = "$Revision: 1.68 $";
+const char *_version = "$Revision: 1.69 $";
 #endif
 
 /* m_knock
@@ -249,9 +245,7 @@ parse_knock_local(struct Client *client_p, struct Client *source_p,
   }
 
   /* don't allow a knock if the user is banned, or the channel is secret */
-  if ((chptr->mode.mode & MODE_PRIVATE) ||
-      (sockhost && is_banned_knock(chptr, source_p, sockhost)) ||
-      (!sockhost && is_banned(chptr, source_p)))
+  if ((chptr->mode.mode & MODE_PRIVATE) || is_banned(chptr, source_p))
   {
     sendto_one(source_p, form_str(ERR_CANNOTSENDTOCHAN),
                me.name, source_p->name, name);
@@ -371,69 +365,3 @@ send_knock(struct Client *client_p, struct Client *source_p,
   }
 }
 
-/* is_banned_knock()
- * 
- * input	- pointer to channel
- *		- pointer to client
- *		- clients sockhost
- * output	- 
- * side effects - return check_banned_knock()
- */
-static int
-is_banned_knock(struct Channel *chptr, struct Client *who, char *sockhost)
-{
-  char src_host[NICKLEN + USERLEN + HOSTLEN + 6];
-  char src_iphost[NICKLEN + USERLEN + HOSTLEN + 6];
-
-  if (!IsPerson(who))
-    return(0);
-
-  ircsprintf(src_host, "%s!%s@%s", who->name, who->username, who->host);
-  ircsprintf(src_iphost, "%s!%s@%s", who->name, who->username, sockhost);
-
-  return(check_banned_knock(chptr, who, src_host, src_iphost));
-}
-
-/** XXX - need CIDR support **/
-
-/* check_banned_knock()
- *
- * input	- pointer to channel
- * 		- pointer to client
- *		- preformed nick!user@host
- *		- preformed nick!user@ip
- * output	- 
- * side effects - return CHFL_EXCEPTION, CHFL_BAN or 0
- */
-static int
-check_banned_knock(struct Channel *chptr, struct Client *who,
-                   char *s, char *s2)
-{
-  dlink_node *ban;
-  dlink_node *except;
-  struct Ban *actualBan = NULL;
-  struct Ban *actualExcept = NULL;
-
-  DLINK_FOREACH(ban, chptr->banlist.head)
-  {
-    actualBan = ban->data;
-
-    if (match(actualBan->banstr, s) || match(actualBan->banstr, s2))
-      break;
-    else
-      actualBan = NULL;
-  }
-
-  if ((actualBan != NULL) && ConfigChannel.use_except)
-  {
-    DLINK_FOREACH(except, chptr->exceptlist.head)
-    {
-      actualExcept = except->data;
-
-      if (match(actualExcept->banstr, s) || match(actualExcept->banstr, s2))
-        return(CHFL_EXCEPTION);
-    }
-  }
-
-  return((actualBan ? CHFL_BAN : 0));
-}
