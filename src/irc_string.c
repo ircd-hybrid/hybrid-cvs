@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.67 2005/06/22 15:42:51 adx Exp $
+ *  $Id: irc_string.c,v 7.68 2005/06/23 03:27:54 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -508,7 +508,7 @@ strlcat(char *dst, const char *src, size_t siz)
   }
 
   *d = '\0';
-  return dlen + (s - src); /* count does not include NUL */
+  return dlen + (s - src); /* count does not include NULL */
 }
 #endif
 
