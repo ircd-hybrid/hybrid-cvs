@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.518 2005/06/22 23:39:33 adx Exp $
+ *  $Id: s_conf.c,v 7.519 2005/06/23 11:33:12 adx Exp $
  */
 
 #include "stdinc.h"
@@ -3206,11 +3206,12 @@ valid_tkline(char *p, int minutes)
  * side effects -
  */
 int
-valid_wild_card(struct Client *source_p, char *luser, char *lhost, int warn)
+valid_wild_card(struct Client *source_p, int warn, int count, ...)
 {
   char *p;
   char tmpch;
-  int nonwild;
+  int nonwild = 0;
+  va_list args;
 
   /*
    * Now we must check the user and host to make sure there
@@ -3224,43 +3225,28 @@ valid_wild_card(struct Client *source_p, char *luser, char *lhost, int warn)
    * -wnder
    */
 
-  nonwild = 0;
-  p = luser;
-  while ((tmpch = *p++))
-  {
-    if (!IsKWildChar(tmpch))
-    {
-      /*
-       * If we find enough non-wild characters, we can
-       * break - no point in searching further.
-       */
-      if (++nonwild >= ConfigFileEntry.min_nonwildcard)
-        break;
-    }
-  }
+  va_start(args, count);
 
-  if (nonwild < ConfigFileEntry.min_nonwildcard)
+  while (count--)
   {
-    /*
-     * The user portion did not contain enough non-wild
-     * characters, try the host.
-     */
-    p = lhost;
+    p = va_arg(args, char *);
+
     while ((tmpch = *p++))
     {
       if (!IsKWildChar(tmpch))
+      {
+        /*
+         * If we find enough non-wild characters, we can
+         * break - no point in searching further.
+         */
         if (++nonwild >= ConfigFileEntry.min_nonwildcard)
-          break;
+          return (1);
+      }
     }
   }
 
-  if (nonwild < ConfigFileEntry.min_nonwildcard)
-  {
-    if (warn)
-      sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the user@host",
-                 me.name, source_p->name, ConfigFileEntry.min_nonwildcard);
-    return(0);
-  }
-  else
-    return(1);
+  if (warn)
+    sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the mask",
+               me.name, source_p->name, ConfigFileEntry.min_nonwildcard);
+  return(0);
 }

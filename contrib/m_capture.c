@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capture.c,v 1.10 2005/06/13 00:29:02 michael Exp $
+ *  $Id: m_capture.c,v 1.11 2005/06/23 11:33:06 adx Exp $
  */
 
 #include "stdinc.h"
@@ -49,12 +49,12 @@ static void mo_uncapture(struct Client *, struct Client *, int, char **);
 
 struct Message capture_msgtab = {
   "CAPTURE", 0, 0, 0, 0, MFLG_SLOW, 0L,
-  {m_unregistered, m_ignore, m_ignore, m_ignore, mo_capture, m_ignore}
+  {m_unregistered, m_ignore, mo_capture, mo_capture, mo_capture, m_ignore}
 };
 
 struct Message uncapture_msgtab = {
   "UNCAPTURE", 0, 0, 0, 0, MFLG_SLOW, 0L,
-  {m_unregistered, m_ignore, m_ignore, m_ignore, mo_uncapture, m_ignore}
+  {m_unregistered, m_ignore, mo_capture, mo_capture, mo_uncapture, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&capture_msgtab);
 }
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 #endif
 
 /* mo_capture
@@ -98,7 +98,7 @@ mo_capture(struct Client *client_p, struct Client *source_p,
   if (!IsAdmin(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
-	       me.name, source_p->name, "capture");
+	       me.name, source_p->name, "CAPTURE");
     return;
   }
 
@@ -111,16 +111,26 @@ mo_capture(struct Client *client_p, struct Client *source_p,
 	if (IsOper(target_p))
 	{
 	  sendto_one(source_p, form_str(ERR_NOPRIVS),
-		     me.name, source_p->name, "capture");
+		     me.name, source_p->name, "CAPTURE");
 	  return;
 	}
 
-	SetCaptured(target_p);
+        if (!IsCaptured(target_p))
+	{
+          sendto_realops_flags(UMODE_ALL, L_ALL, "Captured %s (%s@%s)",
+                               target_p->name, target_p->username,
+                               target_p->host);
+          SetCaptured(target_p);
+	}
+
 	sendto_one(source_p, form_str(RPL_ISCAPTURED),
 		   me.name, source_p->name, target_p->name);
-	sendto_realops_flags(UMODE_ALL, L_ALL, "Captured %s (%s@%s)",
-			     target_p->name, target_p->username, target_p->host);
       }
+      else if (IsCapable(target_p->from, CAP_ENCAP))
+        sendto_one(target_p, ":%s ENCAP %s CAPTURE %s",
+	           parv[0], target_p->from->name, target_p->name);
+      else
+        sendto_one(target_p, ":%s CAPTURE %s", parv[0], target_p->name);
     }
     else
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
@@ -128,6 +138,8 @@ mo_capture(struct Client *client_p, struct Client *source_p,
   }
   else
   {
+    int matches = 0;
+
     /* p != NULL so user @ host given */
     nick = parv[1];
     *p++ = '\0';
@@ -144,23 +156,35 @@ mo_capture(struct Client *client_p, struct Client *source_p,
       nick = "*";
     }
 
-    if (!valid_wild_card(source_p, user, host, YES))
+    if (!valid_wildcard(source_p, YES, 3, nick, user, host))
       return;
+
+    sendto_server(client_p, NULL, NULL, CAP_ENCAP, 0, 0,
+                  ":%s ENCAP * CAPTURE %s!%s@%s",
+		  parv[0], nick, user, host);
+    sendto_server(client_p, NULL, NULL, 0, CAP_ENCAP, 0,
+                  ":%s CAPTURE %s!%s@%s",
+		  parv[0], nick, user, host);
 
     DLINK_FOREACH(ptr, local_client_list.head)
     {
       target_p = ptr->data;
 
-      if (!IsPerson(target_p) || (source_p == target_p) || IsOper(target_p))
+      if (!IsPerson(target_p) || (source_p == target_p) || IsOper(target_p) ||
+          IsCaptured(target_p))
 	continue;
-      
-      if (match(nick, target_p->name) && match(host, target_p->host) && match(user, target_p->username))
+
+      if (match(nick, target_p->name) && match(host, target_p->host) &&
+          match(user, target_p->username))
       {
 	SetCaptured(target_p);
-	sendto_realops_flags(UMODE_ALL, L_ALL, "Captured %s (%s@%s)",
-			     target_p->name, target_p->username, target_p->host);
+	++matches;
       }
     }
+
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "Bulk captured %s!%s@%s, %d local match(es)",
+                         nick, user, host, matches);
   }
 }
 
@@ -187,14 +211,24 @@ mo_uncapture(struct Client *client_p, struct Client *source_p,
   {      
     if ((target_p = find_client(parv[1])) != NULL)
     {
-      if (MyClient(target_p) && IsCaptured(target_p))
+      if (MyClient(target_p))
       {
-	ClearCaptured(target_p);
+        if (IsCaptured(target_p))
+	{
+	  ClearCaptured(target_p);
+
+	  sendto_realops_flags(UMODE_ALL, L_ALL, "Uncaptured %s (%s@%s)",
+                               target_p->name, target_p->username,
+			       target_p->host);
+        }
 	sendto_one(source_p, form_str(RPL_ISUNCAPTURED),
 		   me.name, source_p->name, target_p->name);
-	sendto_realops_flags(UMODE_ALL, L_ALL, "Uncaptured %s (%s@%s)",
-			     target_p->name, target_p->username, target_p->host);
       }
+      else if (IsCapable(target_p->from, CAP_ENCAP))
+        sendto_one(target_p, ":%s ENCAP %s UNCAPTURE %s",
+	           parv[0], target_p->from->name, target_p->from);
+      else
+        sendto_one(target_p, ":%s UNCAPTURE %s", parv[0], target_p->from);
     }
     else
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
@@ -202,6 +236,8 @@ mo_uncapture(struct Client *client_p, struct Client *source_p,
   }
   else
   {
+    int matches = 0;
+
     /* p != NULL so user @ host given */
     nick = parv[1];
     *p++ = '\0';
@@ -218,6 +254,13 @@ mo_uncapture(struct Client *client_p, struct Client *source_p,
       nick = "*";
     }
 
+    sendto_server(client_p, NULL, NULL, CAP_ENCAP, 0, 0,
+                  ":%s ENCAP * UNCAPTURE %s!%s@%s",
+		  parv[0], nick, user, host);
+    sendto_server(client_p, NULL, NULL, 0, CAP_ENCAP, 0,
+                  ":%s UNCAPTURE %s!%s@%s",
+		  parv[0], nick, user, host);
+
     DLINK_FOREACH(ptr, local_client_list.head)
     {
       target_p = ptr->data;
@@ -229,9 +272,12 @@ mo_uncapture(struct Client *client_p, struct Client *source_p,
           match(host, target_p->host) && match(user, target_p->username))
       {
 	ClearCaptured(target_p);
-	sendto_realops_flags(UMODE_ALL, L_ALL, "Uncaptured %s (%s@%s)",
-			     target_p->name, target_p->username, target_p->host);
+	++matches;
       }
     }
+
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "Bulk uncaptured %s!%s@%s, %d local match(es)",
+                         nick, user, host, matches);
   }
 }

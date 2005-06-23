@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.39 2005/05/30 16:20:11 adx Exp $
+ * $Id: m_force.c,v 1.40 2005/06/23 11:33:06 adx Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.39 $";
+const char *_version = "$Revision: 1.40 $";
 #endif
 
 /* m_forcejoin()
@@ -114,8 +114,15 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
   if (!MyConnect(target_p))
   {
     if (target_p->from != client_p)
-      sendto_one(target_p, ":%s FORCEJOIN %s %s",
-                 source_p->name, target_p->name, parv[2]);
+    {
+      if (IsCapable(target_p->from, CAP_ENCAP))
+        sendto_one(target_p, ":%s ENCAP %s FORCEJOIN %s %s",
+                   source_p->name, target_p->from->name,
+                   target_p->name, parv[2]);
+      else
+        sendto_one(target_p, ":%s FORCEJOIN %s %s",
+	           source_p->name, target_p->name, parv[2]);
+    }
     return;
   }
 
@@ -309,8 +316,15 @@ mo_forcepart(struct Client *client_p, struct Client *source_p,
   if (!MyConnect(target_p))
   {
     if (target_p->from != client_p)
-      sendto_one(target_p, ":%s FORCEPART %s %s",
-                 source_p->name, target_p->name, parv[2]);
+    {
+      if (IsCapable(target_p->from, CAP_ENCAP))
+        sendto_one(target_p, ":%s ENCAP %s FORCEPART %s %s",
+                   source_p->name, target_p->from->name,
+                   target_p->name, parv[2]);
+      else
+        sendto_one(target_p, ":%s FORCEPART %s %s",
+	           source_p->name, target_p->name, parv[2]);
+    }
     return;
   }
 

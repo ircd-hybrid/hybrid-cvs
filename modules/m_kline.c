@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.189 2005/06/12 22:42:15 db Exp $
+ *  $Id: m_kline.c,v 1.190 2005/06/23 11:33:10 adx Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.189 $";
+const char *_version = "$Revision: 1.190 $";
 #endif
 
 /* Local function prototypes */
@@ -215,7 +215,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   if (!valid_user_host(source_p, user, host, YES))
     return;
 
-  if (!valid_wild_card(source_p, user, host, YES))
+  if (!valid_wild_card(source_p, YES, 2, user, host))
     return;
 
   if (!valid_comment(source_p, reason, YES))
@@ -319,7 +319,7 @@ me_kline(struct Client *client_p, struct Client *source_p,
   if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
                               NULL, NULL, CLUSTER_KLINE))
   {
-    if (!valid_wild_card(source_p, kuser, khost, NO) ||
+    if (!valid_wild_card(source_p, NO, 2, kuser, khost) ||
         !valid_user_host(source_p, kuser, khost, NO) ||
         !valid_comment(source_p, kreason, NO) ||
         !IsPerson(source_p) ||
@@ -356,7 +356,7 @@ me_kline(struct Client *client_p, struct Client *source_p,
 				  source_p->username, source_p->host,
 				  SHARED_KLINE))
   {
-    if (!valid_wild_card(source_p, kuser, khost, YES) ||
+    if (!valid_wild_card(source_p, YES, 2, kuser, khost) ||
         !valid_user_host(source_p, kuser, khost, YES) ||
         !valid_comment(source_p, kreason, YES) ||
         !IsPerson(source_p) ||
