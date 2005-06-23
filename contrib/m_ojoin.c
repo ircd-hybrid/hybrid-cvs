@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.32 2005/06/23 10:03:59 michael Exp $
+ *   $Id: m_ojoin.c,v 1.33 2005/06/23 10:33:14 michael Exp $
  */
 
 #include "stdinc.h"
@@ -54,7 +54,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 
 /* mo_ojoin()
@@ -66,11 +66,11 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
   struct Channel *chptr = NULL;
+  const char *prefix = "";
   char modeletter = '\0';
   char *name = parv[1];
   char *t = NULL;
-  int move_me = 1;
-  unsigned int tmp_flags;
+  unsigned int flags = 0;
 
   /* admins only */
   if (!IsAdmin(source_p))
@@ -83,30 +83,32 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
   for (name = strtoken(&t, name, ","); name;
        name = strtoken(&t, NULL, ","))
   {
-    move_me = 1;
-
     switch (*name)
     {
       case '@':
-        tmp_flags = CHFL_CHANOP;
+        prefix = "@";
+        flags = CHFL_CHANOP;
         modeletter = 'o';
         ++name;
         break;
 #ifdef HALFOPS
       case '%':
-        tmp_flags = CHFL_HALFOP;
+        prefix = "%";
+        flags = CHFL_HALFOP;
         modeletter = 'h';
         ++name;
         break;
 #endif
       case '+':
-        tmp_flags = CHFL_VOICE;
+        prefix = "+";
+        flags = CHFL_VOICE;
         modeletter = 'v';
         ++name;
         break;
       case '#':
       case '&':
-        tmp_flags = 0;
+        prefix = "";
+        flags = 0;
 	modeletter = '\0';
 	break;
 
@@ -129,23 +131,18 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
     }
     else
     {
-      if (move_me == 1)
-        --name;
-
-      add_user_to_channel(chptr, source_p, tmp_flags);
+      add_user_to_channel(chptr, source_p, flags);
 
       if (chptr->chname[0] == '#')
       {
         sendto_server(client_p, source_p, chptr, CAP_TS6, NOCAPS, LL_ICLIENT,
-                      ":%s SJOIN %lu %s + :%c%s",
+                      ":%s SJOIN %lu %s + :%s%s",
                       me.id, (unsigned long)chptr->channelts, chptr->chname,
-                      (modeletter != '\0') ? *name : ' ',
-                      source_p->id);
+                      prefix, source_p->id);
         sendto_server(client_p, source_p, chptr, NOCAPS, CAP_TS6, LL_ICLIENT, 
-                      ":%s SJOIN %lu %s + :%c%s", me.name,
-                      (unsigned long)chptr->channelts,
-                      chptr->chname, (modeletter != '\0') ? *name : ' ',
-                      source_p->name);
+                      ":%s SJOIN %lu %s + :%s%s",
+                      me.name, (unsigned long)chptr->channelts, chptr->chname,
+                      prefix, source_p->name);
       }
 
       sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
