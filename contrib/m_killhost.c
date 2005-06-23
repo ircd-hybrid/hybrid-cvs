@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.13 2005/06/12 21:21:31 db Exp $
+ *  $Id: m_killhost.c,v 1.14 2005/06/23 10:55:00 michael Exp $
  *
  */
 
@@ -41,15 +41,13 @@
 #include "modules.h"
 
 
-static char bufhost[BUFSIZE];
-
-static void mo_killhost(struct Client*, struct Client*, int, char**);
+static void mo_killhost(struct Client *, struct Client *, int, char *[]);
 static void kh_relay_kill(struct Client *, struct Client *, struct Client *,
                 const char *, const char *);
 
 struct Message killhost_msgtab = {
   "KILLHOST", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_ignore, m_ignore, m_ignore, mo_killhost,  m_ignore}
+  { m_unregistered, m_ignore, m_ignore, m_ignore, mo_killhost, m_ignore }
 };
 
 #ifndef STATIC_MODULES
@@ -65,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&killhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.13 $";
+const char *_version = "$Revision: 1.14 $";
 #endif
 
 /* mo_killhost()
@@ -77,18 +75,20 @@ const char *_version = "$Revision: 1.13 $";
  *      parv[2] = reason
  */
 static void
-mo_killhost(struct Client *client_p, struct Client *source_p, int parc,
-            char *parv[])
+mo_killhost(struct Client *client_p, struct Client *source_p,
+            int parc, char *parv[])
 {
   dlink_node *ptr;
   dlink_node *ptr_next;
   struct Client *target_p;
   const char *inpath = client_p->name;
-  char *host, *reason;
-  char def_reason[] = "No Reason";
-  int count = 0;
+  const char *host = NULL;
+  char *reason;
+  char bufhost[BUFSIZE];
+  char def_reason[] = "No reason specified";
+  unsigned int count = 0;
 
-  if (!IsOperK(source_p) && !IsOperGlobalKill(source_p))
+  if (!(IsOperK(source_p) || IsOperGlobalKill(source_p)))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
@@ -100,7 +100,7 @@ mo_killhost(struct Client *client_p, struct Client *source_p, int parc,
   if (!EmptyString(parv[2]))
   {
     reason = parv[2];
-    if (strlen(reason) > (size_t) KILLLEN)
+    if (strlen(reason) > (size_t)KILLLEN)
       reason[KILLLEN] = '\0';
   }
   else
@@ -113,13 +113,11 @@ mo_killhost(struct Client *client_p, struct Client *source_p, int parc,
     if (!IsPerson(target_p) || (source_p == target_p))
       continue;
 
-    if (!MyConnect(target_p) && (!IsOperGlobalKill(source_p)))
+    if (!MyConnect(target_p) && !IsOperGlobalKill(source_p))
       continue;
       
     if (!strcmp(host, target_p->host))
     {
-      count++;
-    
       if (MyConnect(target_p))
         sendto_one(target_p, ":%s!%s@%s KILL %s :%s",
                    source_p->name, source_p->username, source_p->host,
@@ -130,7 +128,7 @@ mo_killhost(struct Client *client_p, struct Client *source_p, int parc,
                            target_p->name, source_p->name, me.name, reason);
 
       ilog(L_INFO,"KILL From %s For %s Path %s (%s)",
-           parv[0], target_p->name, me.name, reason);
+           source_p->name, target_p->name, me.name, reason);
 
       if (!MyConnect(target_p))
       {
@@ -138,7 +136,9 @@ mo_killhost(struct Client *client_p, struct Client *source_p, int parc,
 	SetKilled(target_p);
       }
 
-      ircsprintf(bufhost, "Killed (%s (%s))", source_p->name, reason);
+      if (!count++)
+        ircsprintf(bufhost, "Killed (%s (%s))", source_p->name, reason);
+
       exit_client(client_p, target_p, source_p, bufhost);
     }
   }
@@ -147,7 +147,7 @@ mo_killhost(struct Client *client_p, struct Client *source_p, int parc,
     sendto_wallops_flags(UMODE_OPERWALL, source_p, "OPERWALL - KILLHOST %s %s",
 			 host, reason);
 
-  sendto_one(source_p,":%s NOTICE %s :%d clients killed",
+  sendto_one(source_p,":%s NOTICE %s :%u clients killed",
              me.name, source_p->name, count);
 }
 
@@ -183,14 +183,14 @@ kh_relay_kill(struct Client *one, struct Client *source_p, struct Client *target
   {
     client_p = ptr->data;
     
-    if(client_p == one)
+    if (client_p == one)
       continue;
 
-    if(!introduce_killed_client)
+    if (!introduce_killed_client)
     {
-      if( ServerInfo.hub && IsCapable(client_p, CAP_LL) )
+      if (ServerInfo.hub && IsCapable(client_p, CAP_LL) )
       {
-        if(((client_p->localClient->serverMask &
+        if (((client_p->localClient->serverMask &
              target_p->lazyLinkClientExists) == 0))
         {
           /* target isn't known to lazy leaf, skip it */
@@ -200,7 +200,7 @@ kh_relay_kill(struct Client *one, struct Client *source_p, struct Client *target
     }
     /* force introduction of killed client but check that
      * its not on the server we're bursting too.. */
-    else if(strcmp(target_p->user->server->name,client_p->name))
+    else if (strcmp(target_p->user->server->name,client_p->name))
       client_burst_if_needed(client_p, target_p);
 
     /* introduce source of kill */
@@ -212,7 +212,7 @@ kh_relay_kill(struct Client *one, struct Client *source_p, struct Client *target
     else
       user = target_p->name;
 
-    if(MyClient(source_p))
+    if (MyClient(source_p))
     {
       sendto_one(client_p, ":%s KILL %s :%s!%s!%s!%s (%s)",
                  source_p->name, user,
