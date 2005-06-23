@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_spoof.c,v 1.1 2005/06/22 22:12:46 adx Exp $
+ *  $Id: m_spoof.c,v 1.2 2005/06/23 04:48:36 metalrock Exp $
  */
 
 /* MODULE CONFIGURATION FOLLOWS -- please read!! */
@@ -90,10 +90,8 @@
 
 #include <string.h>
 
-static void mo_spoof(struct Client *client_p, struct Client *source_p,
-                     int parc, char *parv[]);
-static void mo_delspoof(struct Client *client_p, struct Client *source_p,
-                        int parc, char *parv[]);
+static void mo_spoof(struct Client *, struct Client *, int, char *[]);
+static void mo_delspoof(struct Client *, struct Client *, int, char *[]);
 
 struct Message spoof_msgtab = {
   "SPOOF", 0, 0, 3, 0, MFLG_SLOW, 0,
@@ -127,7 +125,7 @@ _moddeinit(void)
   mod_del_cmd(&spoof_msgtab);
 }
 
-char *_version = "20050622";
+const char *_version = "20050622";
 
 #ifdef SPOOF_FILE
 static void try_flag(FBFILE *f, int *flags, int flag, const char *string)
@@ -156,7 +154,7 @@ static void mo_spoof(struct Client *client_p, struct Client *source_p,
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need admin=yes", me.name, parv[0]);
+    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag", me.name, parv[0]);
     return;
   }
 
@@ -192,7 +190,8 @@ static void mo_spoof(struct Client *client_p, struct Client *source_p,
     *host = '\0';
     host++;
   }
-  else {
+  else
+  {
     user = "*";
     host = parv[1];
   }
@@ -344,7 +343,7 @@ static void mo_delspoof(struct Client *client_p, struct Client *source_p,
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no A flag", me.name, parv[0]);
+    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag", me.name, parv[0]);
     return;
   }
 
