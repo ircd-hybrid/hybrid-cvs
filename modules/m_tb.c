@@ -1,5 +1,5 @@
 /*  contrib/m_tburst.c
- *  Copyright (C) 2002 Hybrid Development Team
+ *  Copyright (C) 2002, 2003, 2004, 2005 Hybrid Development Team
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are
@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.24 2004/07/08 00:27:17 erik Exp $
+ *  $Id: m_tb.c,v 1.25 2005/06/23 16:04:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -50,7 +50,7 @@
  */
 #define TBURST_PROPAGATE
 
-static void ms_tburst(struct Client *, struct Client *, int, char **);
+static void ms_tburst(struct Client *, struct Client *, int, char *[]);
 static void set_topic(struct Client *, struct Channel *, time_t, char *, char *);
 int send_tburst(struct hook_burst_channel *);
 
@@ -77,7 +77,7 @@ _moddeinit(void)
   delete_capability("TBURST");
 }
 
-const char *_version = "$Revision: 1.24 $";
+const char *_version = "$Revision: 1.25 $";
 
 #endif /* !STATIC_MODULES */
 
@@ -126,7 +126,7 @@ set_topic(struct Client *source_p, struct Channel *chptr,
 
 #ifdef TBURST_PROPAGATE
   sendto_server(source_p, NULL, chptr, CAP_TBURST, NOCAPS, NOFLAGS,
-		":%s TBURST %ld %s %ld %s :%s",
+		":%s TBURST %lu %s %lu %s :%s",
 		me.name, (unsigned long)chptr->channelts, chptr->chname,
 		(unsigned long)chptr->topic_time, 
                 chptr->topic_info == NULL ? "" : chptr->topic_info,
@@ -138,7 +138,7 @@ int
 send_tburst(struct hook_burst_channel *data)
 {
   if (data->chptr->topic != NULL && IsCapable(data->client, CAP_TBURST))
-    sendto_one(data->client, ":%s TBURST %ld %s %ld %s :%s",
+    sendto_one(data->client, ":%s TBURST %lu %s %lu %s :%s",
                me.name, (unsigned long)data->chptr->channelts, data->chptr->chname,
 	       (unsigned long)data->chptr->topic_time, data->chptr->topic_info, 
 	       data->chptr->topic);

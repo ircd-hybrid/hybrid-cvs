@@ -15,8 +15,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.53 2005/04/26 13:36:07 michael Exp $
+ *   $Id: m_opme.c,v 1.54 2005/06/23 16:04:39 michael Exp $
  */
+
 #include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
@@ -36,12 +37,11 @@
 #include "modules.h"
 
 
-static void mo_opme(struct Client *client_p, struct Client *source_p, int parc, char *parv[]);
-static int chan_is_opless(struct Channel *chptr);
+static void mo_opme(struct Client *, struct Client *, int, char *[]);
 
 struct Message opme_msgtab = {
   "OPME", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_opme, m_ignore}
+  { m_unregistered, m_not_oper, m_ignore, m_ignore, mo_opme, m_ignore }
 };
 
 #ifndef STATIC_MODULES
@@ -57,13 +57,13 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.54 $";
 #endif
 
 static int
-chan_is_opless(struct Channel *chptr)
+chan_is_opless(const struct Channel *const chptr)
 {
-  dlink_node *ptr;
+  const dlink_node *ptr = NULL;
 
   DLINK_FOREACH(ptr, chptr->members.head)
     if (((struct Membership *)ptr->data)->flags & CHFL_CHANOP)
@@ -81,10 +81,9 @@ static void
 mo_opme(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
-  struct Channel *chptr;
-  struct Membership *member;
+  struct Channel *chptr = NULL;
+  struct Membership *member = NULL;
 
-  /* admins only */
   if (!IsAdmin(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
@@ -117,7 +116,7 @@ mo_opme(struct Client *client_p, struct Client *source_p,
 
   AddMemberFlag(member, CHFL_CHANOP);
 
-  if (parv[1][0] == '&')
+  if (*parv[1] == '&')
   {
     sendto_wallops_flags(UMODE_LOCOPS, &me,
                          "OPME called for [%s] by %s!%s@%s",
@@ -145,11 +144,11 @@ mo_opme(struct Client *client_p, struct Client *source_p,
   sendto_server(NULL, source_p, chptr, NOCAPS, CAP_TS6, NOFLAGS,
                 ":%s PART %s", source_p->name, chptr->chname);
   sendto_server(NULL, source_p, chptr, CAP_TS6, NOCAPS, NOFLAGS,
-                ":%s SJOIN %ld %s + :@%s",
+                ":%s SJOIN %lu %s + :@%s",
                 me.id, (unsigned long)chptr->channelts,
                 chptr->chname, ID(source_p));
   sendto_server(NULL, source_p, chptr, NOCAPS, CAP_TS6, NOFLAGS,
-                ":%s SJOIN %ld %s + :@%s",
+                ":%s SJOIN %lu %s + :@%s",
                 me.name, (unsigned long)chptr->channelts,
                 chptr->chname, source_p->name);
 

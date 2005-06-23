@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.519 2005/06/23 11:33:12 adx Exp $
+ *  $Id: s_conf.c,v 7.520 2005/06/23 16:04:41 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1267,56 +1267,6 @@ garbage_collect_ip_entries(void)
     }
   }
 }
-
-#if 0
-/*
- * iphash_stats()
- *
- * input	- 
- * output	-
- * side effects	-
- */
-void 
-iphash_stats(struct Client *client_p, struct Client *source_p,
-             int parc, char *parv[], FBFILE *out)
-{
-  struct ip_entry *ptr;
-  int i;
-  int collision_count;
-  char result_buf[256];
-
-  if (out == NULL)
-    sendto_one(source_p,":%s NOTICE %s :*** hash stats for iphash",
-               me.name,client_p->name);
-  else
-  {
-    (void)sprintf(result_buf,"*** hash stats for iphash\n");
-    (void)fbputs(result_buf,out);
-  }
-
-  for(i = 0; i < IP_HASH_SIZE ;i++)
-  {
-    collision_count = 0;
-    for (ptr = ip_hash_table[i]; ptr; ptr = ptr->next)
-      collision_count++;
-
-    if (collision_count != 0)
-    {
-      if (out == NULL)
-      {
-	sendto_one(source_p,":%s NOTICE %s :Entry %d (0x%X) Collisions %d",
-		   me.name,client_p->name,i,i,collision_count);
-      }
-      else
-      {
-	(void)sprintf(result_buf,"Entry %d (0x%X) Collisions %d\n",
-		      i,i,collision_count);
-	(void)fbputs(result_buf,out);
-      }
-    }
-  }
-}
-#endif
 
 /* detach_conf()
  *
