@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capture.c,v 1.11 2005/06/23 11:33:06 adx Exp $
+ *  $Id: m_capture.c,v 1.12 2005/06/23 11:38:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&capture_msgtab);
 }
 
-const char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 #endif
 
 /* mo_capture
@@ -156,7 +156,7 @@ mo_capture(struct Client *client_p, struct Client *source_p,
       nick = "*";
     }
 
-    if (!valid_wildcard(source_p, YES, 3, nick, user, host))
+    if (!valid_wild_card(source_p, YES, 3, nick, user, host))
       return;
 
     sendto_server(client_p, NULL, NULL, CAP_ENCAP, 0, 0,
@@ -226,9 +226,9 @@ mo_uncapture(struct Client *client_p, struct Client *source_p,
       }
       else if (IsCapable(target_p->from, CAP_ENCAP))
         sendto_one(target_p, ":%s ENCAP %s UNCAPTURE %s",
-	           parv[0], target_p->from->name, target_p->from);
+	           parv[0], target_p->from->name, target_p->name);
       else
-        sendto_one(target_p, ":%s UNCAPTURE %s", parv[0], target_p->from);
+        sendto_one(target_p, ":%s UNCAPTURE %s", parv[0], target_p->name);
     }
     else
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),

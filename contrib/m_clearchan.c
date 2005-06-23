@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.51 2005/06/23 09:33:52 michael Exp $
+ *   $Id: m_clearchan.c,v 1.52 2005/06/23 11:38:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 
 /*
@@ -233,7 +233,7 @@ remove_a_mode(struct Channel *chptr, int mask, char flag)
 
   DLINK_FOREACH(ptr, chptr->members.head)
   {
-    const struct Membership *ms = ptr->data;
+    struct Membership *ms = ptr->data;
     if ((ms->flags & mask) == 0)
       continue;
 
