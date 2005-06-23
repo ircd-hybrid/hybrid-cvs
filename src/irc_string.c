@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.69 2005/06/23 03:32:54 metalrock Exp $
+ *  $Id: irc_string.c,v 7.70 2005/06/23 03:52:38 db Exp $
  */
 
 #include "stdinc.h"
@@ -508,7 +508,7 @@ strlcat(char *dst, const char *src, size_t siz)
   }
 
   *d = '\0';
-  return dlen + (s - src); /* count does not include NULL */
+  return dlen + (s - src); /* count does not include NUL */
 }
 #endif
 
@@ -530,15 +530,15 @@ strlcpy(char *dst, const char *src, size_t siz)
     } while (--n != 0);
   }
 
-  /* Not enough room in dst, add NULL and traverse rest of src */
+  /* Not enough room in dst, add NUL and traverse rest of src */
   if (n == 0)
   {
     if (siz != 0)
-      *d = '\0'; /* NULL-terminate dst */
+      *d = '\0'; /* NUL-terminate dst */
     while (*s++)
       ;
   }
 
-  return s - src - 1; /* count does not include NULL */
+  return s - src - 1; /* count does not include NUL */
 }
 #endif
