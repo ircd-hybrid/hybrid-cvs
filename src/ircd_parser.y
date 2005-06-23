@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.390 2005/06/22 23:39:33 adx Exp $
+ *  $Id: ircd_parser.y,v 1.391 2005/06/23 22:29:02 adx Exp $
  */
 
 %{
@@ -869,6 +869,8 @@ oper_entry: OPERATOR
 
       new_conf = make_conf_item(OPER_TYPE);
       new_aconf = (struct AccessItem *)map_to_conf(new_conf);
+
+      new_aconf->flags = yy_aconf->flags;
 
       if (yy_conf->name != NULL)
         DupString(new_conf->name, yy_conf->name);
