@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.448 2005/06/13 08:22:26 michael Exp $
+ *  $Id: client.c,v 7.449 2005/06/24 19:53:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -115,21 +115,14 @@ init_client(void)
 struct Client *
 make_client(struct Client *from)
 {
-  struct Client *client_p;
-  struct LocalUser *localClient;
-
-  client_p = BlockHeapAlloc(client_heap);
-  memset(client_p, 0, sizeof(struct Client)); 
+  struct Client *client_p = BlockHeapAlloc(client_heap);
 
   if (from == NULL)
   {
     client_p->from  = client_p; /* 'from' of local client is self! */
     client_p->since = client_p->lasttime = client_p->firsttime = CurrentTime;
 
-    localClient = BlockHeapAlloc(lclient_heap);
-    memset(localClient, 0, sizeof(struct LocalUser));
-
-    client_p->localClient = localClient;
+    client_p->localClient = BlockHeapAlloc(lclient_heap);
     client_p->localClient->fd       = -1;
     client_p->localClient->ctrlfd   = -1;
 #ifndef HAVE_SOCKETPAIR
@@ -140,9 +133,7 @@ make_client(struct Client *from)
     dlinkAdd(client_p, make_dlink_node(), &unknown_list);
   }
   else
-  { /* from is not NULL */
     client_p->from = from; /* 'from' of local client is self! */
-  }
 
   client_p->hnext  = client_p;
   client_p->status = STAT_UNKNOWN;

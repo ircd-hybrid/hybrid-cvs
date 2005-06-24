@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.520 2005/06/23 16:04:41 michael Exp $
+ *  $Id: s_conf.c,v 7.521 2005/06/24 19:53:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1097,15 +1097,10 @@ find_or_add_ip(struct irc_ssaddr *ip_in)
   newptr = BlockHeapAlloc(ip_entry_heap);
   ip_entries_count++;
   memcpy(&newptr->ip, ip_in, sizeof(struct irc_ssaddr));
-  newptr->count = 0;
-  newptr->last_attempt = 0;
 
-  if ((ptr = ip_hash_table[hash_index]) != NULL)
-    newptr->next = ptr;
-  else
-    newptr->next = NULL;
-
+  newptr->next = ip_hash_table[hash_index];
   ip_hash_table[hash_index] = newptr;
+
   return(newptr);
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.92 2005/06/22 16:56:41 adx Exp $
+ *  $Id: hash.c,v 7.93 2005/06/24 19:53:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -630,7 +630,7 @@ hash_find_userhost(const char *host)
 struct Channel *
 get_or_create_channel(struct Client *client_p, char *chname, int *isnew)
 {
-  struct Channel *chptr;
+  struct Channel *chptr = NULL;
   int len;
 
   if (EmptyString(chname))
@@ -661,10 +661,11 @@ get_or_create_channel(struct Client *client_p, char *chname, int *isnew)
     *isnew = 1;
 
   chptr = BlockHeapAlloc(channel_heap);
-  memset(chptr, 0, sizeof(struct Channel));
+  chptr->channelts = CurrentTime; /* doesn't hurt to set it here */
+
   strlcpy(chptr->chname, chname, sizeof(chptr->chname));
   dlinkAdd(chptr, &chptr->node, &global_channel_list);
-  chptr->channelts = CurrentTime; /* doesn't hurt to set it here */
+
   hash_add_channel(chptr);
 
   return(chptr);
@@ -753,7 +754,6 @@ add_user_host(char *user, const char *host, int global)
   }
 
   nameh = BlockHeapAlloc(namehost_heap);
-  memset(nameh, 0, sizeof(struct NameHost));
   strlcpy(nameh->name, user, sizeof(nameh->name));
 
   if (global)
@@ -842,7 +842,6 @@ find_or_add_userhost(const char *host)
     return(userhost);
 
   userhost = BlockHeapAlloc(userhost_heap);
-  memset(userhost, 0, sizeof(struct UserHost));
   strlcpy(userhost->host, host, sizeof(userhost->host));
   hash_add_userhost(userhost);
 

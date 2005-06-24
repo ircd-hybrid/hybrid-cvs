@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: dbuf.c,v 7.24 2005/05/28 13:38:48 michael Exp $
+ *  $Id: dbuf.c,v 7.25 2005/06/24 19:53:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -41,9 +41,8 @@ dbuf_init(void)
 static struct dbuf_block *
 dbuf_alloc(struct dbuf_queue *qptr)
 {
-  struct dbuf_block *block = (struct dbuf_block *) BlockHeapAlloc(dbuf_heap);
+  struct dbuf_block *block = BlockHeapAlloc(dbuf_heap);
 
-  block->size = 0;
   dlinkAddTail(block, make_dlink_node(), &qptr->blocks);
   return block;
 }

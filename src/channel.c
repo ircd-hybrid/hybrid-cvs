@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.421 2005/06/20 10:52:53 michael Exp $
+ *  $Id: channel.c,v 7.422 2005/06/24 19:53:32 michael Exp $
  */
 
 #include "stdinc.h"
@@ -100,8 +100,6 @@ add_user_to_channel(struct Channel *chptr, struct Client *who,
   assert(who->user != NULL);
 
   ms = BlockHeapAlloc(member_heap);
-  memset(ms, 0, sizeof(struct Membership));
-
   ms->client_p = who;
   ms->chptr = chptr;
   ms->flags = flags;

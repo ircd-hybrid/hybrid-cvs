@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.325 2005/06/12 21:06:28 michael Exp $
+ *  $Id: s_user.c,v 7.326 2005/06/24 19:53:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -190,10 +190,7 @@ static struct User *
 make_user(struct Client *client_p)
 {
   if (client_p->user == NULL)
-  {
     client_p->user = BlockHeapAlloc(user_heap);
-    memset(client_p->user, 0, sizeof(struct User));
-  }
 
   return(client_p->user);
 }

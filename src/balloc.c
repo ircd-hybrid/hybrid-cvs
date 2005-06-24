@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.52 2005/05/28 13:38:48 michael Exp $
+ *  $Id: balloc.c,v 7.53 2005/06/24 19:53:32 michael Exp $
  */
 
 /* 
@@ -352,10 +352,10 @@ BlockHeapCreate(const char *const name, size_t elemsize, int elemsperblock)
 /* ************************************************************************ */
 
 void *
-BlockHeapAlloc(BlockHeap * bh)
+BlockHeapAlloc(BlockHeap *bh)
 {
-    Block *walker;
-    dlink_node *new_node;
+    Block *walker = NULL;
+    dlink_node *new_node = NULL;
 
     assert(bh != NULL);
     if (bh == NULL)
@@ -389,9 +389,10 @@ BlockHeapAlloc(BlockHeap * bh)
             dlinkDelete(new_node, &walker->free_list);
             dlinkAdd(new_node->data, new_node, &walker->used_list);
             assert(new_node->data != NULL);
-            if(new_node->data == NULL)
+            if (new_node->data == NULL)
               outofmemory();
-            return (new_node->data);
+            memset(new_node->data, 0, bh->elemSize);
+            return(new_node->data);
 	  }
       }
     assert(0 == 1);
