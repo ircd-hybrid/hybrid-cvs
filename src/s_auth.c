@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.141 2005/06/07 22:49:49 db Exp $
+ *  $Id: s_auth.c,v 7.142 2005/06/24 05:31:43 michael Exp $
  */
 
 /*
@@ -54,24 +54,15 @@
 #include "send.h"
 #include "memory.h"
 
-/*
- * a bit different approach
- * this replaces the original sendheader macros
- */
-static const struct {
-  const char *message;
-  const size_t length;
-} HeaderMessages[] = {
-  /* 123456789012345678901234567890123456789012345678901234567890 */
-  { "NOTICE AUTH :*** Looking up your hostname...\r\n",    46 },
-  { "NOTICE AUTH :*** Found your hostname\r\n",            38 },
-  { "NOTICE AUTH :*** Couldn't look up your hostname\r\n", 49 },
-  { "NOTICE AUTH :*** Checking Ident\r\n",                 33 },
-  { "NOTICE AUTH :*** Got Ident response\r\n",             37 },
-  { "NOTICE AUTH :*** No Ident response\r\n",              36 },
-  { "NOTICE AUTH :*** Your forward and reverse DNS do not match, " \
-    "ignoring hostname.\r\n",                              80 },
-  { "NOTICE AUTH :*** Your hostname is too long, ignoring hostname\r\n", 63 }
+static const char *HeaderMessages[] = {
+  ":%s NOTICE AUTH :*** Looking up your hostname...",
+  ":%s NOTICE AUTH :*** Found your hostname",
+  ":%s NOTICE AUTH :*** Couldn't look up your hostname",
+  ":%s NOTICE AUTH :*** Checking Ident",
+  ":%s NOTICE AUTH :*** Got Ident response",
+  ":%s NOTICE AUTH :*** No Ident response",
+  ":%s NOTICE AUTH :*** Your forward and reverse DNS do not match, ignoring hostname.",
+  ":%s NOTICE AUTH :*** Your hostname is too long, ignoring hostname"
 };
 
 enum {
@@ -85,8 +76,7 @@ enum {
   REPORT_HOST_TOOLONG
 };
 
-#define sendheader(c, r) \
-   send((c)->localClient->fd, HeaderMessages[(r)].message, HeaderMessages[(r)].length, 0)
+#define sendheader(c, i) sendto_one((c), HeaderMessages[(i)], me.name)
 
 /*
  * Ok, the original was confusing.
@@ -118,11 +108,12 @@ init_auth(void)
 static struct AuthRequest *
 make_auth_request(struct Client *client)
 {
-  struct AuthRequest *request = 
-    (struct AuthRequest *)MyMalloc(sizeof(struct AuthRequest));
+  struct AuthRequest *request = MyMalloc(sizeof(struct AuthRequest));
+
   request->fd      = -1;
   request->client  = client;
   request->timeout = CurrentTime + CONNECTTIMEOUT;
+
   return(request);
 }
 
@@ -145,7 +136,7 @@ release_auth_client(struct Client *client)
   client->localClient->allow_read = MAX_FLOOD;
   comm_setflush(client->localClient->fd, 1000, flood_recalc, client);
   set_no_delay(client->localClient->fd);
-  if((client->node.prev != NULL) || (client->node.next != NULL))
+  if ((client->node.prev != NULL) || (client->node.next != NULL))
   {
     sendto_realops_flags(UMODE_ALL, L_OPER,
 			 "already linked %s at %s:%d", client->name,
@@ -167,7 +158,7 @@ release_auth_client(struct Client *client)
  * of success of failure
  */
 static void
-auth_dns_callback(void* vptr, struct DNSReply *reply)
+auth_dns_callback(void *vptr, struct DNSReply *reply)
 {
   struct AuthRequest *auth = (struct AuthRequest *)vptr;
 
@@ -184,11 +175,11 @@ auth_dns_callback(void* vptr, struct DNSReply *reply)
     int good = 1;
 
 #ifdef IPV6
-    if(auth->client->localClient->ip.ss.ss_family == AF_INET6)
+    if (auth->client->localClient->ip.ss.ss_family == AF_INET6)
     {
       v6 = (struct sockaddr_in6 *)&auth->client->localClient->ip;
       v6dns = (struct sockaddr_in6 *)&reply->addr;
-      if(memcmp(&v6->sin6_addr, &v6dns->sin6_addr, sizeof(struct in6_addr)) != 0)
+      if (memcmp(&v6->sin6_addr, &v6dns->sin6_addr, sizeof(struct in6_addr)) != 0)
       {
         sendheader(auth->client, REPORT_IP_MISMATCH);
         good = 0;
@@ -232,7 +223,7 @@ auth_dns_callback(void* vptr, struct DNSReply *reply)
  * authsenderr - handle auth send errors
  */
 static void
-auth_error(struct AuthRequest* auth)
+auth_error(struct AuthRequest *auth)
 {
   ++ServerStats->is_abad;
 
@@ -261,7 +252,7 @@ auth_error(struct AuthRequest* auth)
  * of "unknown".
  */
 static int
-start_auth_query(struct AuthRequest* auth)
+start_auth_query(struct AuthRequest *auth)
 {
   struct irc_ssaddr localaddr;
   socklen_t locallen = sizeof(struct irc_ssaddr);
