@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.413 2005/06/11 01:09:49 db Exp $
+ *  $Id: s_serv.c,v 7.414 2005/06/24 05:51:40 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1979,16 +1979,6 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
 
   strlcpy(client_p->sockhost, buf, HOSTIPLEN);
   client_p->localClient->fd = fd;
-
-  /* Set up the initial server evilness, ripped straight from
-   * connect_server(), so don't blame me for it being evil.
-   *   -- adrian
-   */
-  if (!set_non_blocking(client_p->localClient->fd))
-  {
-    report_error(L_ADMIN, NONB_ERROR_MSG, get_client_name(client_p, SHOW_IP), errno);
-    report_error(L_OPER, NONB_ERROR_MSG, get_client_name(client_p, MASK_IP), errno);
-  }
 
   if (!set_sock_buffers(client_p->localClient->fd, READBUF_SIZE))
   {

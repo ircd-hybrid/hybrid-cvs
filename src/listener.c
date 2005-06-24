@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.92 2005/05/12 16:21:50 michael Exp $
+ *  $Id: listener.c,v 7.93 2005/06/24 05:51:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -137,7 +137,7 @@ inetport(struct Listener *listener)
 {
   struct irc_ssaddr lsin;
   int fd;
-  int opt = 1;
+  socklen_t opt = 1;
 
   /*
    * At first, open a new socket
@@ -156,18 +156,20 @@ inetport(struct Listener *listener)
                  get_listener_name(listener), errno);
     return(0);
   }
-  else if ((HARD_FDLIMIT - 10) < fd)
+
+  if ((HARD_FDLIMIT - 10) < fd)
   {
     report_error(L_ALL, "no more connections left for listener %s:%s",
                  get_listener_name(listener), errno);
     fd_close(fd);
     return(0);
   }
+
   /*
    * XXX - we don't want to do all this crap for a listener
    * set_sock_opts(listener);
    */
-  if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char*) &opt, sizeof(opt)))
+  if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
   {
     report_error(L_ALL, "setting SO_REUSEADDR for listener %s:%s",
                  get_listener_name(listener), errno);
@@ -181,9 +183,7 @@ inetport(struct Listener *listener)
    */
   lsin.ss_port = htons(listener->port);
 
-
-  if (bind(fd, (struct sockaddr*)&lsin,
-        lsin.ss_len))
+  if (bind(fd, (struct sockaddr *)&lsin, lsin.ss_len))
   {
     report_error(L_ALL, "binding listener socket %s:%s",
                  get_listener_name(listener), errno);
@@ -198,12 +198,6 @@ inetport(struct Listener *listener)
     fd_close(fd);
     return(0);
   }
-
-  /*
-   * XXX - this should always work, performance will suck if it doesn't
-   */
-  if (!set_non_blocking(fd))
-    report_error(L_ALL, NONB_ERROR_MSG, get_listener_name(listener), errno);
 
   listener->fd = fd;
 

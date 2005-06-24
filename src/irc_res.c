@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.38 2004/11/09 03:59:57 db Exp $
+ * $Id: irc_res.c,v 7.39 2005/06/24 05:51:39 michael Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -189,7 +189,7 @@ start_resolver(void)
   {
     ResolverFileDescriptor = comm_open(irc_nsaddr_list[0].ss.ss_family, 
         SOCK_DGRAM, 0, "Resolver socket");
-    set_non_blocking(ResolverFileDescriptor);
+
     /* At the moment, the resolver FD data is global .. */
     comm_setselect(ResolverFileDescriptor, FDLIST_SERVICE, COMM_SELECT_READ,
         res_readreply, NULL, 0);

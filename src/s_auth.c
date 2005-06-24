@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.142 2005/06/24 05:31:43 michael Exp $
+ *  $Id: s_auth.c,v 7.143 2005/06/24 05:51:39 michael Exp $
  */
 
 /*
@@ -284,12 +284,6 @@ start_auth_query(struct AuthRequest *auth)
   }
 
   sendheader(auth->client, REPORT_DO_ID);
-  if (!set_non_blocking(fd))
-  {
-    report_error(L_ALL, NONB_ERROR_MSG, get_client_name(auth->client, SHOW_IP), errno);
-    fd_close(fd);
-    return 0;
-  }
 
   /* 
    * get the local address of the client and bind to that to
@@ -417,8 +411,8 @@ start_auth(struct Client *client)
   SetDNSPending(auth);
   dlinkAdd(auth, &auth->dns_node, &auth_doing_dns_list);
 
-  if(ConfigFileEntry.disable_auth == 0)
-    (void)start_auth_query(auth);
+  if (ConfigFileEntry.disable_auth == 0)
+    start_auth_query(auth);
 }
 
 /*

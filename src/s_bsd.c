@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.216 2005/06/10 16:41:31 db Exp $
+ *  $Id: s_bsd.c,v 7.217 2005/06/24 05:51:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -409,10 +409,9 @@ add_connection(struct Listener* listener, int fd)
   new_client->localClient->listener  = listener;
   ++listener->ref_count;
 
-  if (!set_non_blocking(new_client->localClient->fd))
-    report_error(L_ALL, NONB_ERROR_MSG, get_client_name(new_client, SHOW_IP), errno);
   if (!disable_sock_options(new_client->localClient->fd))
     report_error(L_ALL, OPT_ERROR_MSG, get_client_name(new_client, SHOW_IP), errno);
+
   start_auth(new_client);
 }
 
@@ -734,12 +733,13 @@ int
 comm_open(int family, int sock_type, int proto, const char *note)
 {
   int fd;
+
   /* First, make sure we aren't going to run out of file descriptors */
   if (number_fd >= MASTER_MAX)
-    {
-      errno = ENFILE;
-      return -1;
-    }
+  {
+    errno = ENFILE;
+    return -1;
+  }
 
   /*
    * Next, we try to open the socket. We *should* drop the reserved FD
@@ -752,12 +752,12 @@ comm_open(int family, int sock_type, int proto, const char *note)
 
   /* Set the socket non-blocking, and other wonderful bits */
   if (!set_non_blocking(fd))
-    {
-      ilog(L_CRIT, "comm_open: Couldn't set FD %d non blocking: %s", fd, strerror(errno));
+  {
+    ilog(L_CRIT, "comm_open: Couldn't set FD %d non blocking: %s", fd, strerror(errno));
       
-      close(fd);
-      return -1;
-    }
+    close(fd);
+    return -1;
+  }
 
   /* Next, update things in our fd tracking */
   fd_open(fd, FD_SOCKET, note);
@@ -775,11 +775,12 @@ comm_accept(int fd, struct irc_ssaddr *pn)
 {
   int newfd;
   socklen_t addrlen = sizeof(struct irc_ssaddr);
+
   if (number_fd >= MASTER_MAX)
-    {
-      errno = ENFILE;
-      return -1;
-    }
+  {
+    errno = ENFILE;
+    return -1;
+  }
 
   /*
    * Next, do the accept(). if we get an error, we should drop the
@@ -798,11 +799,12 @@ comm_accept(int fd, struct irc_ssaddr *pn)
  
   /* Set the socket non-blocking, and other wonderful bits */
   if (!set_non_blocking(newfd))
-    {
-      ilog(L_CRIT, "comm_accept: Couldn't set FD %d non blocking!", newfd);
-      close(newfd);
-      return -1;
-    }
+  {
+    ilog(L_CRIT, "comm_accept: Couldn't set FD %d non blocking!", newfd);
+
+    close(newfd);
+    return -1;
+  }
 
   /* Next, tag the FD as an incoming connection */
   fd_open(newfd, FD_SOCKET, "Incoming connection");
@@ -822,12 +824,12 @@ comm_accept(int fd, struct irc_ssaddr *pn)
 void
 remove_ipv6_mapping(struct irc_ssaddr *addr)
 {
-  if(addr->ss.ss_family == AF_INET6)
+  if (addr->ss.ss_family == AF_INET6)
   {
     struct sockaddr_in6 *v6;
 
     v6 = (struct sockaddr_in6*)addr;
-    if(IN6_IS_ADDR_V4MAPPED(&v6->sin6_addr))
+    if (IN6_IS_ADDR_V4MAPPED(&v6->sin6_addr))
     {
       char v4ip[HOSTIPLEN];
       struct sockaddr_in *v4 = (struct sockaddr_in*)addr;
