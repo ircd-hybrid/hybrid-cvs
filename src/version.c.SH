@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: version.c.SH,v 7.25 2005/05/22 22:06:57 adx Exp $
+# $Id: version.c.SH,v 7.26 2005/06/24 10:00:35 michael Exp $
 
 spitshell=cat
 package=IRC
@@ -63,11 +63,11 @@ const char *infotext[] =
   "$package --",
   "Based on the original code written by Jarkko Oikarinen",
   "Copyright 1988, 1989, 1990, 1991 University of Oulu, Computing Center",
-  "Copyright (c) 1996-2003 Hybrid Development Team", 
+  "Copyright (c) 1996-2005 Hybrid Development Team", 
   "",
   "This program is free software; you can redistribute it and/or",
   "modify it under the terms of the GNU General Public License as",
-  "published by the Free Software Foundation; either version 1, or",
+  "published by the Free Software Foundation; either version 2, or",
   "(at your option) any later version.",
   "",
 !SUB!THIS!
@@ -78,6 +78,6 @@ for i in `grep -v '^$[I]d' ../Hybrid-team | tr -d '"' | awk '{printf "\"%s\"\n",
 echo "  $i," >> version.c
 done
 $spitshell >>version.c <<!SUB!THISTOO!
-  "", 0
+  "", NULL
 };
 !SUB!THISTOO!
