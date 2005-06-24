@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.193 2005/06/22 23:39:33 adx Exp $
+ *  $Id: ircd_lexer.l,v 1.194 2005/06/24 19:26:07 michael Exp $
  */
 
 %option case-insensitive
@@ -315,8 +315,6 @@ pace_wait               { return PACE_WAIT; }
 pace_wait_simple	{ return PACE_WAIT_SIMPLE; }
 knock_delay             { return KNOCK_DELAY; }
 knock_delay_channel	{ return KNOCK_DELAY_CHANNEL; }
-iauth_server            { return IAUTH_SERVER; }
-iauth_port		{ return IAUTH_PORT; }
 max_bans                { return MAX_BANS; }
 modules                 { return MODULES; }
 module                  { return MODULE; }
@@ -396,14 +394,19 @@ ccomment(void)
   while (1)
   {
     while ((c = input()) != '*' && c != EOF)
-      if (c == '\n') ++lineno;
+      if (c == '\n')
+        ++lineno;
+
     if (c == '*')
     {
-      while ((c = input()) == '*');
-      if (c == '/') break;
+      while ((c = input()) == '*')
+        /* Nothing */ ;
+      if (c == '/')
+        break;
       else if (c == '\n')
         ++lineno;
     }
+
     if (c == EOF)
     {
       YY_FATAL_ERROR("EOF in comment");
@@ -411,8 +414,8 @@ ccomment(void)
        * the stupid unused function warning
        * gcc generates 
        */
-      if(1 == 0)
-		yy_fatal_error("EOF in comment");
+      if (1 == 0)
+        yy_fatal_error("EOF in comment");
       break;
     }
   }
@@ -438,9 +441,9 @@ cinclude(void)
   char *p;
 
   if ((p = strchr(yytext, '<')) == NULL)
-    *strchr(p = strchr(yytext, '"') + 1, '"') = 0;
+    *strchr(p = strchr(yytext, '"') + 1, '"') = '\0';
   else
-    *strchr(++p, '>') = 0;
+    *strchr(++p, '>') = '\0';
 
   /* log(L_NOTICE, "got include %s!", c); */
 
@@ -490,6 +493,7 @@ ieof(void)
     lineno = 1;
     return(1);
   }
+
   /* switch buffer */
   /* log(L_NOTICE, "deleting include_stack_ptr=%d", include_stack_ptr); */
   yy_delete_buffer(YY_CURRENT_BUFFER);
@@ -497,5 +501,6 @@ ieof(void)
   conf_fbfile_in = inc_fbfile_in[include_stack_ptr];
   strlcpy(conffilebuf, conffile_stack[include_stack_ptr], IRCD_BUFSIZE); 
   yy_switch_to_buffer(include_stack[include_stack_ptr]);
+
   return(0);
 }
