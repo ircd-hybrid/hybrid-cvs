@@ -1,3 +1,8 @@
+-- ircd-hybrid-7.1rc4 RELNOTES
+o) Fix max_global bug
+o) Fix interoperability in invite
+
+
 -- ircd-hybrid-7.1rc3 RELNOTES
 o) Disallow locally connected users from doing hash lookups by ID
 o) Fixed a bug that could have caused network-wide channel desyncs
@@ -105,4 +110,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.92 2005/06/13 09:10:03 metalrock Exp $
+$Id: RELNOTES,v 1.93 2005/06/24 22:07:16 db Exp $
