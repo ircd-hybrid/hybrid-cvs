@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: version.c.SH,v 7.26 2005/06/24 10:00:35 michael Exp $
+# $Id: version.c.SH,v 7.27 2005/06/24 22:54:15 db Exp $
 
 spitshell=cat
 package=IRC
@@ -78,6 +78,6 @@ for i in `grep -v '^$[I]d' ../Hybrid-team | tr -d '"' | awk '{printf "\"%s\"\n",
 echo "  $i," >> version.c
 done
 $spitshell >>version.c <<!SUB!THISTOO!
-  "", NULL
+  "", 0
 };
 !SUB!THISTOO!
