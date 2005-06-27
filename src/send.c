@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.287 2005/06/18 10:50:28 michael Exp $
+ *  $Id: send.c,v 7.288 2005/06/27 22:13:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -427,41 +427,6 @@ sendto_one(struct Client *to, const char *pattern, ...)
   va_end(args);
 
   send_message(to, buffer, len);
-}
-
-/* sendto_one_prefix()
- *
- * inputs	- pointer to destination client
- *		- pointer to client to form prefix from
- *		- var args message
- * output	- NONE
- * side effects	- send message to single client
- */
-void
-sendto_one_prefix(struct Client *to, struct Client *prefix,
-                  const char *cmd, const char *pattern, ...)
-{
-  struct Client *tmp = NULL;
-  va_list args;
-  char buffer[IRCD_BUFSIZE];
-  int len;
-
-  if (to->from != NULL)
-    tmp = to->from;
-  else
-    tmp = to;
-
-  if (IsDead(tmp))
-    return; /* This socket has already been marked as dead */
-
-  len = ircsprintf(buffer, ":%s %s %s ", ID_or_name(prefix, to),
-                   cmd, ID_or_name(to, to));
-
-  va_start(args, pattern);
-  len += send_format(&buffer[len], IRCD_BUFSIZE - len, pattern, args);
-  va_end(args);
-
-  send_message(tmp, buffer, len);
 }
 
 /* sendto_channel_butone()

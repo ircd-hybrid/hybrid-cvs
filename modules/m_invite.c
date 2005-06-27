@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.74 2005/06/21 21:34:38 michael Exp $
+ *  $Id: m_invite.c,v 1.75 2005/06/27 22:13:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -46,7 +46,7 @@ static void m_invite(struct Client *, struct Client *, int, char *[]);
 
 struct Message invite_msgtab = {
   "INVITE", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_invite, m_invite, m_ignore, m_invite, m_ignore}
+  { m_unregistered, m_invite, m_invite, m_ignore, m_invite, m_ignore }
 };
 
 #ifndef STATIC_MODULES
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.74 $";
+const char *_version = "$Revision: 1.75 $";
 #endif
 
 /*
@@ -192,6 +192,8 @@ m_invite(struct Client *client_p, struct Client *source_p,
     }
   }
   else if (target_p->from != client_p)
-    sendto_one_prefix(target_p, source_p, "INVITE", "%s %lu",
-                      chptr->chname, (unsigned long)chptr->channelts);
+    sendto_one(target_p, ":%s INVITE %s %s %lu",
+               ID_or_name(source_p, target_p->from),
+               ID_or_name(target_p, target_p->from),
+               chptr->chname, (unsigned long)chptr->channelts);
 }
