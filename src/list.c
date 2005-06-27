@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.68 2005/06/24 19:53:33 michael Exp $
+ *  $Id: list.c,v 7.69 2005/06/27 00:18:22 db Exp $
  */
 
 #include "stdinc.h"
@@ -33,8 +33,6 @@ static int32_t dlinks_count = 0;
 static int32_t slinks_count = 0;
 
 static BlockHeap *dnode_heap;
-static BlockHeap *snode_heap;
-
 
 /* make_server()
  *
@@ -97,48 +95,6 @@ free_dlink_node(dlink_node *ptr)
   BlockHeapFree(dnode_heap, ptr);
   --dlinks_count;
   assert(dlinks_count >= 0);
-}
-
-/* init_slink_nodes()
- *
- * inputs       - NONE
- * output       - NONE
- * side effects - initializes the snode BlockHeap
- */
-void
-init_slink_nodes(void)
-{
-  snode_heap = BlockHeapCreate("slink node", sizeof(slink_node), SNODE_HEAP_SIZE);
-}
-
-/* make_slink_node()
- *
- * inputs       - NONE
- * output       - pointer to new slink_node
- * side effects - NONE
- */
-slink_node *
-make_slink_node(void)
-{
-  slink_node *lp = BlockHeapAlloc(snode_heap);
-
-  ++slinks_count;
-
-  return(lp);
-}
-
-/* free_slink_node()
- *
- * inputs       - pointer to slink_node
- * output       - NONE
- * side effects - free given slink_node
- */
-void
-free_slink_node(slink_node *ptr)
-{
-  BlockHeapFree(snode_heap, ptr);
-  --slinks_count;
-  assert(slinks_count >= 0);
 }
 
 /* count_links_memory()

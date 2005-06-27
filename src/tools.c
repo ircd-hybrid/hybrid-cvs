@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.c,v 7.32 2003/10/24 11:38:44 michael Exp $
+ *  $Id: tools.c,v 7.33 2005/06/27 00:18:22 db Exp $
  *
  * When you update these functions make sure you update the ones in tools.h
  * as well!!!
@@ -220,65 +220,4 @@ dlinkFindDelete(dlink_list *list, void *data)
   }
 
   return(NULL);
-}
-
-void
-slink_add(void *data, slink_node *node, slink_list *list)
-{
-    assert(list != NULL && node != NULL);
-
-    if(list->head == NULL)
-    {
-        list->head = node;
-        node->next = NULL;
-    }
-    else
-    {
-        node->next = list->head->next;
-        list->head = node;
-    }
-
-    node->data = data;
-    list->length++;
-}
-
-void
-slink_delete(slink_node *node, slink_list *list)
-{
-    slink_node *ptr;
-
-    assert(node != NULL && list != NULL);
-
-    if(list->head == NULL)
-        return;
-
-    if(list->head->next == NULL)
-        list->head = NULL;
-    else
-    {
-        SLINK_FOREACH(ptr, list->head)
-        {
-            if(ptr->next == node)
-            {
-                ptr->next = node->next;
-                break;
-            }
-        }
-    }
-    list->length--;
-}
-
-slink_node*
-slink_find(slink_list *list, void *data)
-{
-    slink_node *ptr;
-
-    assert(list != NULL && data != NULL);
-
-    SLINK_FOREACH(ptr, list->head)
-    {
-        if(ptr->data == data)
-            return ptr;
-    }
-    return NULL;
 }

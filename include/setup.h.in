@@ -234,9 +234,6 @@
 /* The size of a `long long', as computed by sizeof. */
 #undef SIZEOF_LONG_LONG
 
-/* Size of the slink_node heap. */
-#undef SNODE_HEAP_SIZE
-
 /* Define to 1 if sockaddr_in has a 'sin_len' member. */
 #undef SOCKADDR_IN_HAS_LEN
 

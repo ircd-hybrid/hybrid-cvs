@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.h,v 1.26 2003/10/24 11:38:43 michael Exp $
+ *  $Id: tools.h,v 1.27 2005/06/27 00:18:20 db Exp $
  */
 
 #ifndef __TOOLS_H__
@@ -31,8 +31,6 @@
  */
 typedef struct _dlink_node dlink_node;
 typedef struct _dlink_list dlink_list;
-typedef struct _slink_node slink_node;
-typedef struct _slink_list slink_list;
 
 struct _dlink_node
 {
@@ -45,18 +43,6 @@ struct _dlink_list
 {
   dlink_node *head;
   dlink_node *tail;
-  unsigned long length;
-};
-
-struct _slink_node
-{
-  void *data;
-  slink_node *next;
-};
-
-struct _slink_list
-{
-  slink_node *head;
   unsigned long length;
 };
 
@@ -73,10 +59,6 @@ void mem_frob(void *data, int len);
 #else
 #define mem_frob(x, y) 
 #endif
-
-extern void slink_add(void *data, slink_node *node, slink_list *list);
-extern void slink_delete(slink_node *node, slink_list *list);
-extern slink_node *slink_find(slink_list *list, void *data);
 
 /* These macros are basically swiped from the linux kernel
  * they are simple yet effective
@@ -283,66 +265,6 @@ dlinkFindDelete(dlink_list *list, void *data)
   return(NULL);
 }
 
-extern inline void
-slink_add(void *data, slink_node *node, slink_list *list)
-{
-    assert(list != NULL && node != NULL);
-
-    if(list->head == NULL)
-    {
-        list->head = node;
-        node->next = NULL;
-    }
-    else
-    {
-        node->next = list->head->next;
-        list->head = node;
-    }
-
-    node->data = data;
-    list->length++;
-}
-
-extern inline void
-slink_delete(slink_node *node, slink_list *list)
-{
-    slink_node *ptr;
-
-    assert(node != NULL && list != NULL);
-
-    if(list->head == NULL)
-        return;
-
-    if(list->head->next == NULL)
-        list->head = NULL;
-    else
-    {
-        SLINK_FOREACH(ptr, list->head)
-        {
-            if(ptr->next == node)
-            {
-                ptr->next = node->next;
-                break;
-            }
-        }
-    }
-    list->length--;
-}
-
-extern inline slink_node*
-slink_find(slink_list *list, void *data)
-{
-    slink_node *ptr;
-
-    assert(list != NULL && data != NULL);
-
-    SLINK_FOREACH(ptr, list->head)
-    {
-        if(ptr->data == data)
-            return ptr;
-    }
-    return NULL;
-}
 #endif /* __GNUC__ */
 
 #endif /* __TOOLS_H__ */
