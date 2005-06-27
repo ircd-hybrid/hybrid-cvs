@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.h,v 1.27 2005/06/27 00:18:20 db Exp $
+ *  $Id: tools.h,v 1.28 2005/06/27 00:32:53 metalrock Exp $
  */
 
 #ifndef __TOOLS_H__
@@ -78,15 +78,10 @@ void mem_frob(void *data, int len);
  * head is your list head
  */
 #define DLINK_FOREACH_SAFE(pos, n, head) for (pos = (head), n = pos ? pos->next : NULL; pos != NULL; pos = n, n = pos ? pos->next : NULL)
-	        
 #define DLINK_FOREACH_PREV(pos, head) for (pos = (head); pos != NULL; pos = pos->prev)
               		       
-#define SLINK_FOREACH(pos, head) for (pos = (head); pos != NULL; pos = pos->next)
-#define SLINK_FOREACH_SAFE(pos, n, head) for (pos = (head), n = pos ? pos->next : NULL; pos != NULL; pos = n, n = pos ? pos->next : NULL)
-
 /* Returns the list length */
 #define dlink_list_length(list) (list)->length
-#define slink_list_length(list) (list)->length
 
 /*
  * The functions below are included for the sake of inlining

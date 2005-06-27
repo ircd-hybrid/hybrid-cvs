@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.69 2005/06/27 00:18:22 db Exp $
+ *  $Id: list.c,v 7.70 2005/06/27 00:32:55 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -30,7 +30,6 @@
 #include "balloc.h"
 
 static int32_t dlinks_count = 0;
-static int32_t slinks_count = 0;
 
 static BlockHeap *dnode_heap;
 
