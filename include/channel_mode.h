@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.30 2005/06/23 09:33:54 michael Exp $
+ *  $Id: channel_mode.h,v 7.31 2005/06/28 19:47:10 adx Exp $
  */
 
 
@@ -80,9 +80,7 @@ extern void unset_chcap_usage_counts(struct Client *);
 /* name invisible */
 #define SecretChannel(x)        ((x) && ((x)->mode.mode & MODE_SECRET))
 /* channel not shown but names are */
-#define HiddenChannel(x)        ((x) && ((x)->mode.mode & MODE_PRIVATE))
-#define PubChannel(x)           ((!x) || ((x)->mode.mode &\
-                                 (MODE_PRIVATE | MODE_SECRET)) == 0)
+#define PubChannel(x)           (!SecretChannel(x))
 #define ParanoidChannel(x)	((x) && ((x)->mode.mode &\
 			        (MODE_PRIVATE|MODE_INVITEONLY))==\
 		                (MODE_PRIVATE|MODE_INVITEONLY))
