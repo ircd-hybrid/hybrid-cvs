@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.75 2005/06/27 22:13:48 michael Exp $
+ *  $Id: m_invite.c,v 1.76 2005/06/28 00:21:36 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.75 $";
+const char *_version = "$Revision: 1.76 $";
 #endif
 
 /*
@@ -90,7 +90,7 @@ m_invite(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (!IsFloodDone(source_p))
+  if (MyClient(source_p) && !IsFloodDone(source_p))
     flood_endgrace(source_p);
 
   if ((target_p = find_person(client_p, parv[1])) == NULL)
