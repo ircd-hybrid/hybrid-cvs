@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.423 2005/06/28 20:16:32 adx Exp $
+ *  $Id: channel.c,v 7.424 2005/06/28 21:26:08 adx Exp $
  */
 
 #include "stdinc.h"
@@ -418,11 +418,10 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
   char lbuf[IRCD_BUFSIZE + 1];
   char *t = NULL, *start = NULL;
   int tlen = 0;
-  int is_member = 0;
+  int is_member = IsMember(source_p, chptr);
 
-  if (ShowChannel(source_p, chptr))
+  if (PubChannel(chptr) || is_member)
   {
-    is_member = IsMember(source_p, chptr);
     t = lbuf + ircsprintf(lbuf, form_str(RPL_NAMREPLY),
                           me.name, source_p->name,
                           channel_pub_or_secret(chptr),
