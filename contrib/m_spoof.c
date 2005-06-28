@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_spoof.c,v 1.3 2005/06/23 09:33:52 michael Exp $
+ *  $Id: m_spoof.c,v 1.4 2005/06/28 23:16:17 adx Exp $
  */
 
 /* MODULE CONFIGURATION FOLLOWS -- please read!! */
@@ -31,13 +31,13 @@
  * If you decide to enable this, remember to load m_spoof on all servers
  * I am connected to, or you'll get plenty of "Unknown command" errors...
  */
-#define PROPAGATE_SPOOF
+#undef PROPAGATE_SPOOF
 
 /*
  * this server is allowed to receive spoofs/delspoofs from other servers.
  * Use in conjunction with PROPAGATE_SPOOF (on target servers).
  */
-#define RECEIVE_SPOOF
+#undef RECEIVE_SPOOF
 
 /* where to put dynamic auth's -- this must be included from ircd.conf!
  * Ideally put .include "spoof.conf" before all other auths.
