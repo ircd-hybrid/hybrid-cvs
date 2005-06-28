@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.124 2005/06/28 20:16:31 adx Exp $
+ *  $Id: m_whois.c,v 1.125 2005/06/28 20:20:10 adx Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.124 $";
+const char *_version = "$Revision: 1.125 $";
 #endif
 
 /*
@@ -282,16 +282,14 @@ single_whois(struct Client *source_p, struct Client *target_p)
 
   assert(target_p->user != NULL);
 
-  if (!IsInvisible(target_p))
+  if (!IsInvisible(target_p) || target_p == source_p)
   {
-    /* always show user if they are visible (no +i) or
-     * were identified with their exact nickname */
+    /* always show user if they are visible (no +i) */
     whois_person(source_p, target_p);
     return 1;
   }
 
-  /* whois with wildcards, target_p is +i. Check if it is on
-   * any common channels with source_p */
+  /* target_p is +i. Check if it is on any common channels with source_p */
   DLINK_FOREACH(ptr, target_p->user->channel.head)
   {
     chptr = ((struct Membership *) ptr->data)->chptr;
