@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.93 2005/06/12 20:30:15 db Exp $
+ *  $Id: m_who.c,v 1.94 2005/06/28 22:55:09 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&who_msgtab);
 }
 
-const char *_version = "$Revision: 1.93 $";
+const char *_version = "$Revision: 1.94 $";
 #endif
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);
@@ -84,14 +84,11 @@ m_who(struct Client *client_p, struct Client *source_p,
   struct Client *target_p;
   char *mask = parv[1];
   dlink_node *lp;
-  dlink_node *lp_next;
-  struct Channel *chptr = NULL;
-  struct Channel *mychannel = NULL;
   int server_oper = parc > 2 ? (*parv[2] == 'o') : 0; /* Show OPERS only */
-  int member;
+  struct Channel *chptr;
   const char *from, *to;
 
-  if (!MyConnect(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
+  if (IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
   {
     from = me.id;
     to = source_p->id;
@@ -103,18 +100,7 @@ m_who(struct Client *client_p, struct Client *source_p,
   }
 
   /* See if mask is there, collapse it or return if not there */
-  if (mask != NULL)
-  {
-    collapse(mask);
-
-    if (*mask == '\0')
-    {
-      sendto_one(source_p, form_str(RPL_ENDOFWHO),
-                 from, to, "*");
-      return;
-    }
-  }
-  else
+  if (mask == NULL || !*mask)
   {
     who_global(source_p, mask, server_oper);
     sendto_one(source_p, form_str(RPL_ENDOFWHO),
@@ -123,21 +109,18 @@ m_who(struct Client *client_p, struct Client *source_p,
   }
 
   /* mask isn't NULL at this point. repeat after me... -db */
+  collapse(mask);
 
   /* '/who *' */
-  if ((*(mask + 1) == '\0') && (*mask == '*'))
+  if (mask[0] == '*' && !mask[1])
   {
-    if (source_p->user != NULL)
-      if ((lp = source_p->user->channel.head) != NULL)
-        mychannel = ((struct Membership *)lp->data)->chptr;
-
-    if (mychannel == NULL)
+    if ((lp = source_p->user->channel.head) != NULL)
     {
-      sendto_one(source_p, form_str(RPL_ENDOFWHO), from, to, "*");
-      return;
+      struct Channel *mychannel = ((struct Membership *)lp->data)->chptr;
+      do_who_on_channel(source_p, mychannel, mychannel->chname, YES,
+                        server_oper);
     }
 
-    do_who_on_channel(source_p, mychannel, mychannel->chname, YES, server_oper);
     sendto_one(source_p, form_str(RPL_ENDOFWHO), from, to, "*");
     return;
   }
@@ -163,24 +146,18 @@ m_who(struct Client *client_p, struct Client *source_p,
   if (((target_p = find_client(mask)) != NULL) &&
       IsPerson(target_p) && (!server_oper || IsOper(target_p)))
   {
-    int isinvis = 0;
- 
     if (IsServer(client_p))
       client_burst_if_needed(client_p,target_p);
 
-    isinvis = IsInvisible(target_p);
-    DLINK_FOREACH_SAFE(lp, lp_next, target_p->user->channel.head)
+    DLINK_FOREACH(lp, target_p->user->channel.head)
     {
       chptr = ((struct Membership *) lp->data)->chptr;
-      member = IsMember(source_p, chptr);
-      if (isinvis && !member)
-        continue;
-      if (member || (!isinvis && PubChannel(chptr)))
+      if (PubChannel(chptr) || IsMember(source_p, chptr))
         break;
     }
 
     if (lp != NULL)
-      do_who(source_p, target_p, ((struct Membership *) lp->data)->chptr->chname,
+      do_who(source_p, target_p, chptr->chname,
              get_member_status(lp->data, NO));
     else
       do_who(source_p, target_p, NULL, "");
@@ -191,7 +168,7 @@ m_who(struct Client *client_p, struct Client *source_p,
   }
 
   /* '/who 0' */
-  if ((*(mask + 1) == '\0') && (*mask == '0'))
+  if (mask[0] == '0' && !mask[1])
     who_global(source_p, NULL, server_oper);
   else
     who_global(source_p, mask, server_oper);
@@ -217,10 +194,9 @@ who_common_channel(struct Client *source_p, struct Channel *chptr,
                    char *mask, int server_oper, int *maxmatches)
 {
   dlink_node *ptr;
-  dlink_node *ptr_next;
   struct Client *target_p;
 
-  DLINK_FOREACH_SAFE(ptr, ptr_next, chptr->members.head)
+  DLINK_FOREACH(ptr, chptr->members.head)
   {
     target_p = ((struct Membership *)ptr->data)->client_p;
 
@@ -238,8 +214,8 @@ who_common_channel(struct Client *source_p, struct Channel *chptr,
     if ((mask == NULL) ||
 	match(mask, target_p->name) || match(mask, target_p->username) ||
 	match(mask, target_p->host) || 
-	(match(mask, target_p->user->server->name) && 
-	 (IsOper(source_p) || !ConfigServerHide.hide_servers)) ||
+	((!ConfigServerHide.hide_servers || IsOper(source_p)) &&
+	 match(mask, target_p->user->server->name)) ||
 	match(mask, target_p->info))
     {
       do_who(source_p, target_p, NULL, "");
@@ -263,7 +239,7 @@ who_common_channel(struct Client *source_p, struct Channel *chptr,
  *		  this is slightly expensive on EFnet ...
  */
 static void
-who_global(struct Client *source_p,char *mask, int server_oper)
+who_global(struct Client *source_p, char *mask, int server_oper)
 {
   struct Channel *chptr;
   struct Client *target_p;
@@ -365,7 +341,7 @@ do_who(struct Client *source_p, struct Client *target_p,
   char status[6];
   const char *from, *to;
 
-  if (!MyConnect(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
+  if (IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
   {
     from = me.id;
     to = source_p->id;
@@ -388,17 +364,16 @@ do_who(struct Client *source_p, struct Client *target_p,
   {
     sendto_one(source_p, form_str(RPL_WHOREPLY), from, to,
 	       (chname) ? (chname) : "*",
-	       target_p->username,
-	       target_p->host, IsOper(source_p) ? target_p->user->server->name : "*",
-	       target_p->name,
-	       status, 0, target_p->info);
+	       target_p->username, target_p->host,
+	       IsOper(source_p) ? target_p->user->server->name : "*",
+	       target_p->name, status, 0, target_p->info);
   }
   else
   {
     sendto_one(source_p, form_str(RPL_WHOREPLY), from, to,
 	       (chname) ? (chname) : "*",
 	       target_p->username,
-	       target_p->host,  target_p->user->server->name, target_p->name,
+	       target_p->host, target_p->user->server->name, target_p->name,
 	       status, target_p->hopcount, target_p->info);
   }
 }
@@ -417,11 +392,7 @@ ms_who(struct Client *client_p, struct Client *source_p,
    * then allow leaf to use normal client m_who()
    * other wise, ignore it.
    */
-  if (ServerInfo.hub)
-  {
-    if (!IsCapable(client_p->from, CAP_LL))
-      return;
-  }
-
-  m_who(client_p, source_p, parc, parv);
+  if (IsPerson(source_p) &&
+      ServerInfo.hub && IsCapable(client_p->from, CAP_LL))
+    m_who(client_p, source_p, parc, parv);
 }
