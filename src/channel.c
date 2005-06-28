@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.422 2005/06/24 19:53:32 michael Exp $
+ *  $Id: channel.c,v 7.423 2005/06/28 20:16:32 adx Exp $
  */
 
 #include "stdinc.h"
@@ -472,11 +472,11 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
 static const char *
 channel_pub_or_secret(struct Channel *chptr)
 {
-  if (PubChannel(chptr))
-    return("=");
-  else if (SecretChannel(chptr))
-    return("@");
-  return("*");
+  if (SecretChannel(chptr))
+    return "@";
+  if (PrivateChannel(chptr))
+    return "*";
+  return "=";
 }
 
 /* add_invite()

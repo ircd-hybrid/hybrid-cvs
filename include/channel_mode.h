@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.31 2005/06/28 19:47:10 adx Exp $
+ *  $Id: channel_mode.h,v 7.32 2005/06/28 20:16:29 adx Exp $
  */
 
 
@@ -78,12 +78,11 @@ extern void unset_chcap_usage_counts(struct Client *);
 #define CHACCESS_CHANOP     2
 
 /* name invisible */
-#define SecretChannel(x)        ((x) && ((x)->mode.mode & MODE_SECRET))
-/* channel not shown but names are */
+#define SecretChannel(x)        (((x)->mode.mode & MODE_SECRET))
 #define PubChannel(x)           (!SecretChannel(x))
-#define ParanoidChannel(x)	((x) && ((x)->mode.mode &\
-			        (MODE_PRIVATE|MODE_INVITEONLY))==\
-		                (MODE_PRIVATE|MODE_INVITEONLY))
+/* knock is forbidden, halfops can't kick/deop other halfops.
+ * +pi means paranoid and will generate notices on each invite */
+#define PrivateChannel(x)       (((x)->mode.mode & MODE_PRIVATE))
 
 struct ChModeChange
 {
