@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.125 2005/06/28 20:20:10 adx Exp $
+ *  $Id: m_whois.c,v 1.126 2005/06/29 11:10:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -43,17 +43,17 @@
 #include "modules.h"
 #include "hook.h"
 
-static void do_whois(struct Client *client_p, struct Client *source_p, int parc, char *parv[]);
-static int single_whois(struct Client *source_p, struct Client *target_p);
-static void whois_person(struct Client *source_p, struct Client *target_p);
-static int global_whois(struct Client *source_p, const char *nick);
+static void do_whois(struct Client *, struct Client *, int, char *[]);
+static int single_whois(struct Client *, struct Client *);
+static void whois_person(struct Client *, struct Client *);
+static int global_whois(struct Client *, const char *);
 
-static void m_whois(struct Client *, struct Client *, int, char **);
-static void mo_whois(struct Client *, struct Client *, int, char **);
+static void m_whois(struct Client *, struct Client *, int, char *[]);
+static void mo_whois(struct Client *, struct Client *, int, char *[]);
 
 struct Message whois_msgtab = {
   "WHOIS", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_whois, mo_whois, m_ignore, mo_whois, m_ignore}
+  { m_unregistered, m_whois, mo_whois, m_ignore, mo_whois, m_ignore }
 };
 
 #ifndef STATIC_MODULES
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.125 $";
+const char *_version = "$Revision: 1.126 $";
 #endif
 
 /*
@@ -111,7 +111,8 @@ m_whois(struct Client *client_p, struct Client *source_p,
     if (ConfigFileEntry.disable_remote)
       parv[1] = parv[2];
 
-    if (hunt_server(client_p,source_p,":%s WHOIS %s :%s", 1, parc, parv) != HUNTED_ISME)
+    if (hunt_server(client_p, source_p, ":%s WHOIS %s :%s", 1,
+                    parc, parv) != HUNTED_ISME)
       return;
 
     parv[1] = parv[2];
@@ -138,7 +139,8 @@ mo_whois(struct Client *client_p, struct Client *source_p,
 
   if (parc > 2)
   {
-    if (hunt_server(client_p,source_p,":%s WHOIS %s :%s", 1, parc, parv) != HUNTED_ISME)
+    if (hunt_server(client_p, source_p, ":%s WHOIS %s :%s", 1,
+                    parc, parv) != HUNTED_ISME)
       return;
 
     parv[1] = parv[2];
@@ -320,7 +322,7 @@ whois_person(struct Client *source_p, struct Client *target_p)
   struct Membership *ms;
   int cur_len = 0;
   int mlen;
-  char *t;
+  char *t = NULL;
   int tlen;
   int reply_to_send = NO;
   struct hook_mfunc_data hd;
@@ -346,11 +348,12 @@ whois_person(struct Client *source_p, struct Client *target_p)
     {
       if ((cur_len + 3 + strlen(chptr->chname) + 1) > (BUFSIZE - 2))
       {
+	*(t - 1) = '\0';
 	sendto_one(source_p, "%s", buf);
 	cur_len = mlen;
 	t = buf + mlen;
       }
-                             /* XXX -eeeek */
+
       tlen = ircsprintf(t, "%s%s ", get_member_status(ms, YES), chptr->chname);
       t += tlen;
       cur_len += tlen;
@@ -359,9 +362,12 @@ whois_person(struct Client *source_p, struct Client *target_p)
   }
 
   if (reply_to_send)
+  {
+    *(t - 1) = '\0';
     sendto_one(source_p, "%s", buf);
+  }
 
-  if ((IsOper(source_p) || !ConfigServerHide.hide_servers) || target_p == source_p)
+  if (IsOper(source_p) || !ConfigServerHide.hide_servers || target_p == source_p)
     sendto_one(source_p, form_str(RPL_WHOISSERVER),
                me.name, source_p->name, target_p->name,
                server_p->name, server_p->info);
