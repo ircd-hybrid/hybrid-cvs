@@ -4,13 +4,13 @@ Hybrid 7 includes a new and power feature that all users can take advantage
 of to help prevent flooding and unwanted messages.  This new feature is 
 invoked by setting user mode +g.  When a client is set +g, that user will
 be in "Caller ID" mode.  Any user that messages a +g client will receive
-a notice saying that they are in +g (server side ignore) mode.  The target
-client (who is set +g) will also receive a notice saying that so and so
+a numeric saying that they are in +g (server side ignore) mode.  The target
+client (who is set +g) will also receive a numeric saying that so and so
 messaged them, and that they are in +g mode.
 
 The target of the message will only receive one notification per minute, from
 any client, in order to help prevent flooding.  The sender will NOT have the
-rate limit, and will receive a notice saying the target is in +g mode every
+rate limit, and will receive a numeric saying the target is in +g mode every
 time they send a message.  Note that this behavior is similar to the way AWAY
 messages are done.
 
@@ -67,16 +67,16 @@ Hwy101 will see:  -Hwy-LL- *** I'm in +g mode (server side ignore).
 Hwy-LL will see:  Client Hwy101 [wcampbel@admin.irc.monkie.org] is messaging
                     you and you are +g
 
-The sender will receive the NOTICE from the target of the message, while
-the recipient will receive the NOTICE from the server.
+The sender will receive the numeric from the target of the message, while
+the recipient will receive the numeric from the server.
 
 --
 
 If Hwy101 sends another message to Hwy-LL (before the minute expires), he will
 see:  -Hwy-LL- *** I'm in +g mode (server side ignore).
-and will not receive the second notice
+and will not receive the second numeric
 
-Hwy-LL will NOT see any notice.
+Hwy-LL will NOT see any numeric.
 
 --
 
@@ -137,4 +137,4 @@ We hope that these goals are obtained.
 
 --
 W. Campbell
-$Id: modeg.txt,v 1.4 2003/05/15 22:16:43 joshk Exp $
+$Id: modeg.txt,v 1.5 2005/06/29 23:42:29 metalrock Exp $

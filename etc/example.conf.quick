@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.30 2005/06/11 01:36:43 michael Exp $
+ * $Id: example.conf.quick,v 1.31 2005/06/29 23:42:30 metalrock Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -269,6 +269,7 @@ channel {
 	use_knock = yes;
 	knock_delay = 5 minutes;
 	knock_delay_channel = 1 minute;
+	invite_ops_only = yes;
 	max_chans_per_user = 15;
 	quiet_on_ban = yes;
 	max_bans = 25;

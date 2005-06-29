@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.290 2005/06/23 11:33:08 adx Exp $
+ *  $Id: s_conf.h,v 7.291 2005/06/29 23:42:32 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -336,6 +336,7 @@ struct config_channel_entry
   int use_knock;
   int knock_delay;
   int knock_delay_channel;
+  int invite_ops_only;
   unsigned int max_bans;
   unsigned int max_chans_per_user;
   int no_create_on_split;

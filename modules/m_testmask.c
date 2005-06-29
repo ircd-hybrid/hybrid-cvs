@@ -29,7 +29,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_testmask.c,v 1.2 2005/05/31 10:42:34 metalrock Exp $
+ *  $Id: m_testmask.c,v 1.3 2005/06/29 23:42:34 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -48,7 +48,7 @@
 #include "parse.h"
 #include "modules.h"
 
-static void mo_testmask(struct Client*, struct Client*, int, char**);
+static void mo_testmask(struct Client *, struct Client *, int, char *[]);
 
 struct Message testmask_msgtab = {
   "TESTMASK", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&testmask_msgtab);
 }
  
-const char *_version = "$Revision: 1.2 $";
+const char *_version = "$Revision: 1.3 $";
 #endif
 
 /* mo_testmask()
@@ -77,12 +77,9 @@ const char *_version = "$Revision: 1.2 $";
  *              - pointer to source connection request is coming from
  *              - parc arg count
  *              - parv actual arguments   
- *   
  * output       - NONE
  * side effects - count up clients matching mask
- *   
  * i.e. /quote testmask user@host
- *
  */
 static void
 mo_testmask(struct Client *client_p, struct Client *source_p,

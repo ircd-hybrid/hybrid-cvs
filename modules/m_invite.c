@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.78 2005/06/28 20:03:41 db Exp $
+ *  $Id: m_invite.c,v 1.79 2005/06/29 23:42:34 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.78 $";
+const char *_version = "$Revision: 1.79 $";
 #endif
 
 /*
@@ -129,7 +129,8 @@ m_invite(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (!has_member_flags(ms, CHFL_CHANOP))
+  if (MyConnect(source_p) && !has_member_flags(ms, CHFL_CHANOP|CHFL_HALFOP)
+      && ConfigChannel.invite_ops_only)
   {
     sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
                me.name, source_p->name, chptr->chname);

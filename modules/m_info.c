@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.92 2005/06/03 16:43:44 db Exp $
+ *  $Id: m_info.c,v 1.93 2005/06/29 23:42:34 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&info_msgtab);
 }
 
-const char *_version = "$Revision: 1.92 $";
+const char *_version = "$Revision: 1.93 $";
 #endif
 
 /*
@@ -173,6 +173,12 @@ static struct InfoStruct info_table[] =
     OUTPUT_DECIMAL,
     &ConfigFileEntry.idletime,
     "Number of seconds before a client is considered idle"
+  },
+  {
+    "invite_ops_only",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigChannel.invite_ops_only,
+    "Restrict invite to ops only",
   },
   {
     "kill_chase_time_limit",

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.521 2005/06/24 19:53:33 michael Exp $
+ *  $Id: s_conf.c,v 7.522 2005/06/29 23:42:36 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1909,6 +1909,7 @@ set_default_conf(void)
   ConfigChannel.use_knock = YES;
   ConfigChannel.knock_delay = 300;
   ConfigChannel.knock_delay_channel = 60;
+  ConfigChannel.invite_ops_only = YES;
   ConfigChannel.max_chans_per_user = 15;
   ConfigChannel.quiet_on_ban = YES;
   ConfigChannel.max_bans = 25;

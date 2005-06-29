@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.392 2005/06/24 19:26:07 michael Exp $
+ *  $Id: ircd_parser.y,v 1.393 2005/06/29 23:42:36 metalrock Exp $
  */
 
 %{
@@ -255,6 +255,7 @@ unhook_hub_leaf_confs(void)
 %token  OPER_PASS_RESV
 %token  OPER_SPY_T
 %token  OPER_UMODES
+%token	INVITE_OPS_ONLY
 %token  PACE_WAIT
 %token  PACE_WAIT_SIMPLE
 %token  PASSWORD
@@ -3399,6 +3400,7 @@ channel_item:       channel_disable_local_channels |
                     channel_max_bans |
                     channel_knock_delay |
 		    channel_knock_delay_channel |
+		    channel_invite_ops_only |
                     channel_max_chans_per_user |
                     channel_quiet_on_ban |
 		    channel_default_split_user_count | 
@@ -3441,6 +3443,12 @@ channel_knock_delay_channel: KNOCK_DELAY_CHANNEL '=' timespec ';'
 {
   if (ypass == 2)
     ConfigChannel.knock_delay_channel = $3;
+};
+
+channel_invite_ops_only: INVITE_OPS_ONLY '=' TBOOL ';'
+{
+  if (ypass == 2)
+    ConfigChannel.invite_ops_only = yylval.number;
 };
 
 channel_max_chans_per_user: MAX_CHANS_PER_USER '=' NUMBER ';'

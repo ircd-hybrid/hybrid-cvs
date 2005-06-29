@@ -2,7 +2,7 @@
 o) Fix max_global bug
 o) Fix interoperability in invite
 o) Allow multiple oper user hosts
-o) Only allow chanops to invite users to channels
+o) Added invite_ops_only option
 
 -- ircd-hybrid-7.1rc3 RELNOTES
 o) Disallow locally connected users from doing hash lookups by ID
@@ -111,4 +111,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.95 2005/06/28 21:31:30 metalrock Exp $
+$Id: RELNOTES,v 1.96 2005/06/29 23:42:27 metalrock Exp $
