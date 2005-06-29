@@ -22,7 +22,7 @@ One question that arises is how to message specific users, while blocking
 out everyone else.  The command ACCEPT is your answer.  To add a user to
 your accept list, issue the raw command ACCEPT <nick>,<nick>,<nick>,...
 
-You will not receive a reply from the ACCEPT command if it is succesful,
+You will not receive a reply from the ACCEPT command if it is successful,
 only if an error has occured.  There are three possible errors, shown by
 numerics:
 
@@ -85,7 +85,7 @@ Hwy-LL now wishes to see messages from Hwy101 and SpamBot
 Client Hwy-LL:  /accept Hwy101,SpamBot
 
 Neither side will be told of the change in the accept list, Hwy-LL should
-presume that the accept was succesful if no error occurs.
+presume that the accept was successful if no error occurs.
 
 Now Hwy-LL can see messages from Hwy101 and SpamBot without any blockage.
 If Hwy101 was also set +g, then he would have to issue /accept Hwy-LL
@@ -137,4 +137,4 @@ We hope that these goals are obtained.
 
 --
 W. Campbell
-$Id: modeg.txt,v 1.5 2005/06/29 23:42:29 metalrock Exp $
+$Id: modeg.txt,v 1.6 2005/06/29 23:46:55 metalrock Exp $

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.53 2005/06/11 01:09:16 db Exp $
+ *  $Id: m_xline.c,v 1.54 2005/06/29 23:48:52 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -86,7 +86,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.54 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
@@ -408,7 +408,7 @@ valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
  *
  * inputs	- client taking credit for xline, gecos, reason, xline type
  * outputs	- none
- * side effects	- when succesful, adds an xline to the conf
+ * side effects	- when successful, adds an xline to the conf
  */
 static void
 write_xline(struct Client *source_p, char *gecos, char *reason,
