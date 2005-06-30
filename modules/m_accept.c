@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_accept.c,v 1.42 2005/06/12 13:56:52 db Exp $
+ *  $Id: m_accept.c,v 1.43 2005/06/30 19:49:31 michael Exp $
  */
 
 #include "stdinc.h"
@@ -38,7 +38,7 @@
 #include "parse.h"
 #include "modules.h"
 
-static void m_accept(struct Client *, struct Client *, int, char **);
+static void m_accept(struct Client *, struct Client *, int, char *[]);
 static void build_nicklist(struct Client *, char *, char *, char *);
 static void add_accept(struct Client *, struct Client *);
 static void list_accepts(struct Client *);
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&accept_msgtab);
 }
 
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 
 /*
@@ -75,9 +75,9 @@ m_accept(struct Client *client_p, struct Client *source_p,
 {
   char *nick;
   char *p = NULL;
-  static char addbuf[BUFSIZE];
-  static char delbuf[BUFSIZE];
-  struct Client *target_p;
+  char addbuf[BUFSIZE];
+  char delbuf[BUFSIZE];
+  struct Client *target_p = NULL;
   int accept_num;
   
   if ((parc < 2) || (*parv[1] == '*'))
@@ -160,15 +160,14 @@ static void
 build_nicklist(struct Client *source_p, char *addbuf,
                char *delbuf, char *nicks)
 {
-  char *name;
-  char *p;
-  int lenadd;
-  int lendel;
-  int del;
-  struct Client *target_p;
+  char *name = NULL;
+  char *p = NULL;
+  int lenadd = 0;
+  int lendel = 0;
+  int del = 0;
+  struct Client *target_p = NULL;
 
   *addbuf = *delbuf = '\0';
-  del = lenadd = lendel = 0;
 
   /* build list of clients to add into addbuf, clients to remove in delbuf */
   for (name = strtoken(&p, nicks, ","); name; 
@@ -232,44 +231,34 @@ add_accept(struct Client *source_p, struct Client *target_p)
 static void
 list_accepts(struct Client *source_p)
 {
-  dlink_node *ptr;
-  struct Client *target_p;
-  char nicks[BUFSIZE];
+  dlink_node *ptr = NULL;
+  char nicks[BUFSIZE] = { '\0' };
   int len   = 0;
   int len2  = 0;
   int count = 0;
 
-  *nicks = '\0';
-  len2   = strlen(source_p->name) + 10;
+  len2 = strlen(me.name) + strlen(source_p->name) + 12;
 
   DLINK_FOREACH(ptr, source_p->allow_list.head)
   {
-    target_p = ptr->data;
+    const struct Client *target_p = ptr->data;
 
-    if (target_p)
+    if (len + strlen(target_p->name) + len2 > BUFSIZE)
     {
-
-      if ((len + strlen(target_p->name) + len2 > BUFSIZE) || count > 14)
-      {
-        sendto_one(source_p, form_str(RPL_ACCEPTLIST),
-                   me.name, source_p->name, nicks);
+      sendto_one(source_p, form_str(RPL_ACCEPTLIST),
+                 me.name, source_p->name, nicks);
 		   
-	len = count = 0;
-	*nicks = '\0';
-      }
-
-      ircsprintf(nicks+len, "%s ", target_p->name);
-
-      count++;
-      len += strlen(target_p->name) + 1;
+      len = count = 0;
+      nicks[0] = '\0';
     }
+
+    len += ircsprintf(nicks + len, "%s ", target_p->name);
   }
 
-  if (*nicks != '\0')
+  if (nicks[0] != '\0')
     sendto_one(source_p, form_str(RPL_ACCEPTLIST),
                me.name, source_p->name, nicks);
 
   sendto_one(source_p, form_str(RPL_ENDOFACCEPT),
              me.name, source_p->name);
-
 }

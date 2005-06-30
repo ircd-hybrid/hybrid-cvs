@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.109 2005/06/22 23:39:33 adx Exp $
+ *   $Id: messages.tab,v 7.110 2005/06/30 19:49:33 michael Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -305,7 +305,7 @@ static struct NumericInfo replies[] = {
 /* 278 */  {NULL, NULL, NULL},
 /* 279 */  {NULL, NULL, NULL},
 /* 280 */  {NULL, NULL, NULL},
-/* 281 */  {"RPL_ACCEPTLIST", ":%s 281 %s %s :", NULL},
+/* 281 */  {"RPL_ACCEPTLIST", ":%s 281 %s :%s", NULL},
 /* 282 */  {"RPL_ENDOFACCEPT", ":%s 282 %s :End of /ACCEPT list.", NULL},
 /* 283 */  {NULL, NULL, NULL},
 /* 284 */  {NULL, NULL, NULL},
