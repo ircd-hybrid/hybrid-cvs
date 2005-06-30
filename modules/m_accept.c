@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_accept.c,v 1.43 2005/06/30 19:49:31 michael Exp $
+ *  $Id: m_accept.c,v 1.44 2005/06/30 23:37:17 michael Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&accept_msgtab);
 }
 
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 
 /*
@@ -231,33 +231,34 @@ add_accept(struct Client *source_p, struct Client *target_p)
 static void
 list_accepts(struct Client *source_p)
 {
-  dlink_node *ptr = NULL;
+  int len = 0;
   char nicks[BUFSIZE] = { '\0' };
-  int len   = 0;
-  int len2  = 0;
-  int count = 0;
+  char *t = nicks;
+  const dlink_node *ptr = NULL;
 
-  len2 = strlen(me.name) + strlen(source_p->name) + 12;
+  len = strlen(me.name) + strlen(source_p->name) + 12;
 
   DLINK_FOREACH(ptr, source_p->allow_list.head)
   {
     const struct Client *target_p = ptr->data;
 
-    if (len + strlen(target_p->name) + len2 > BUFSIZE)
+    if ((t - nicks) + strlen(target_p->name) + len > BUFSIZE)
     {
+      *(t - 1) = '\0';
       sendto_one(source_p, form_str(RPL_ACCEPTLIST),
                  me.name, source_p->name, nicks);
-		   
-      len = count = 0;
-      nicks[0] = '\0';
+      t = nicks;
     }
 
-    len += ircsprintf(nicks + len, "%s ", target_p->name);
+    t += ircsprintf(t, "%s ", target_p->name);
   }
 
   if (nicks[0] != '\0')
+  {
+    *(t - 1) = '\0';
     sendto_one(source_p, form_str(RPL_ACCEPTLIST),
                me.name, source_p->name, nicks);
+  }
 
   sendto_one(source_p, form_str(RPL_ENDOFACCEPT),
              me.name, source_p->name);
