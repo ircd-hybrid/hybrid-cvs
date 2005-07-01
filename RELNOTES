@@ -1,10 +1,10 @@
 -- ircd-hybrid-7.1rc4 RELNOTES
-o) Fix max_global bug
-o) Fix interoperability in invite
+o) Various cleanups and bugfixes: invite, max_global, who, whois, names
 o) Allow multiple oper user hosts
 o) Added invite_ops_only configuration directive
-o) Added m_spoof.c to contrib/
+o) Added m_spoof.c to contrib/, improved m_ojoin and m_force
 o) Added ELIST token to RPL_ISSUPORTED numeric
+o) Added '#' wildcard, matching any digit
 
 
 -- ircd-hybrid-7.1rc3 RELNOTES
@@ -114,4 +114,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.97 2005/07/01 11:49:41 michael Exp $
+$Id: RELNOTES,v 1.98 2005/07/01 14:22:54 adx Exp $
