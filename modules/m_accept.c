@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_accept.c,v 1.44 2005/06/30 23:37:17 michael Exp $
+ *  $Id: m_accept.c,v 1.45 2005/07/01 00:04:31 michael Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&accept_msgtab);
 }
 
-const char *_version = "$Revision: 1.44 $";
+const char *_version = "$Revision: 1.45 $";
 #endif
 
 /*
@@ -75,8 +75,8 @@ m_accept(struct Client *client_p, struct Client *source_p,
 {
   char *nick;
   char *p = NULL;
-  char addbuf[BUFSIZE];
-  char delbuf[BUFSIZE];
+  char addbuf[BUFSIZE] = { '\0' };
+  char delbuf[BUFSIZE] = { '\0' };
   struct Client *target_p = NULL;
   int accept_num;
   
@@ -162,22 +162,17 @@ build_nicklist(struct Client *source_p, char *addbuf,
 {
   char *name = NULL;
   char *p = NULL;
-  int lenadd = 0;
-  int lendel = 0;
-  int del = 0;
+  char *buf_p = NULL;
   struct Client *target_p = NULL;
-
-  *addbuf = *delbuf = '\0';
 
   /* build list of clients to add into addbuf, clients to remove in delbuf */
   for (name = strtoken(&p, nicks, ","); name; 
-       name = strtoken(&p, NULL, ","), del = 0)
+       name = strtoken(&p, NULL, ","))
   {
     if (*name == '-')
-    {
-      del = 1;
-      name++;
-    }
+      buf_p = delbuf, ++name;
+    else
+      buf_p = addbuf;
 
     if (((target_p = find_client(name)) == NULL) || !IsPerson(target_p))
     {
@@ -186,24 +181,9 @@ build_nicklist(struct Client *source_p, char *addbuf,
       continue;
     }
 
-    /* we're deleting a client */
-    if (del)
-    {
-      if (*delbuf)
-        strcat(delbuf, ",");
-
-      strncat(delbuf, name, BUFSIZE - lendel - 1);
-      lendel += strlen(name) + 1;
-    }
-    /* adding a client */
-    else
-    {
-      if (*addbuf)
-        strcat(addbuf, ",");
-
-      strncat(addbuf, name, BUFSIZE - lenadd - 1);
-      lenadd += strlen(name) + 1;
-    }
+    if (*buf_p)
+      strlcat(buf_p, ",", BUFSIZE);
+    strlcat(buf_p, name, BUFSIZE);
   }
 }
 
