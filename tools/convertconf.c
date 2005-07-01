@@ -1,21 +1,24 @@
-/************************************************************************
- *   IRC - Internet Relay Chat, tools/convertconf.c
+/*
+ *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 1, or (at your option)
- *   any later version.
+ *  Copyright (C) 2002, 2003, 2004, 2005 Hybrid Development Team
  *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
  *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * $Id: convertconf.c,v 1.40 2003/06/12 03:40:35 joshk Exp $
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ *  USA
+ *
+ *  $Id: convertconf.c,v 1.41 2005/07/01 22:39:04 michael Exp $
  */
 
 #include <stdio.h>
@@ -42,7 +45,6 @@ struct ConnectPair
   char*		   hub_mask;
   char*		   leaf_mask;
   int		   compressed;
-  int		   lazylink;
   int              port;
   char             *class;     /* Class of connection */
 };
@@ -342,6 +344,8 @@ oldParseOneLine(FILE *out, char *line)
     case 'C':
       pair = (struct ConnectPair *)malloc(sizeof(struct ConnectPair));
       memset(pair,0,sizeof(struct ConnectPair));
+      if (conf_leter == 'c')
+        pair->compressed = 1;
       if(user_field)
 	pair->name = strdup(user_field);
       if(host_field)
@@ -418,23 +422,7 @@ oldParseOneLine(FILE *out, char *line)
       fprintf(out,"};\n\n");
       break;
 
-    case 'n': 
-      pair = (struct ConnectPair *)malloc(sizeof(struct ConnectPair));
-      memset(pair,0,sizeof(struct ConnectPair));
-      if(user_field)
-	pair->name = strdup(user_field);
-      if(host_field)
-	pair->host = strdup(host_field);
-      if(passwd_field)
-	pair->n_passwd = strdup(passwd_field);
-      pair->lazylink = 1;
-      if(port_field)
-	pair->port = atoi(port_field);
-      if(class_field)
-	pair->class = strdup(class_field);
-      PairUpServers(pair);
-      break;
-
+    case 'n':
     case 'N': 
       pair = (struct ConnectPair *)malloc(sizeof(struct ConnectPair));
       memset(pair,0,sizeof(struct ConnectPair));
@@ -596,15 +584,9 @@ static void PrintOutServers(FILE *out)
 	  fprintf(out,"\taccept_password=\"%s\";\n", p->n_passwd);
 	  fprintf(out,"\tport=%d;\n", p->port );
 
-#if 0
-          /* ZIP links are gone */
 	  if(p->compressed)
 	    fprintf(out,"\tcompressed=yes;\n");
-#endif
-#if 0
-	  if(p->lazylink)
-	    fprintf(out,"\tlazylink=yes;\n");
-#endif
+
 	  if(p->hub_mask)
 	    {
 	      fprintf(out,"\thub_mask=\"%s\";\n",p->hub_mask);
@@ -647,7 +629,6 @@ static void PairUpServers(struct ConnectPair* pair)
 		p->c_passwd = strdup(pair->c_passwd);
 
 	      p->compressed |= pair->compressed;
-	      p->lazylink |= pair->lazylink;
 
 	      if(pair->port)
 		p->port = pair->port;
