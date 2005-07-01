@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.326 2005/06/24 19:53:33 michael Exp $
+ *  $Id: s_user.c,v 7.327 2005/07/01 00:44:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -698,7 +698,7 @@ introduce_client(struct Client *client_p, struct Client *source_p)
                  source_p->name, source_p->hopcount+1,
 		 (unsigned long)source_p->tsinfo,
                  ubuf, source_p->username, source_p->host,
-		 (MyClient(source_p)?source_p->sockhost:"0"),
+		 ((MyClient(source_p)&&!IsIPSpoof(source_p))?source_p->sockhost:"0"),
                  source_p->id, source_p->info);
     }
     else
@@ -726,7 +726,7 @@ introduce_client(struct Client *client_p, struct Client *source_p)
                    source_p->name, source_p->hopcount+1,
 		   (unsigned long)source_p->tsinfo,
                    ubuf, source_p->username, source_p->host,
-		   (MyClient(source_p)?source_p->sockhost:"0"),
+		   ((MyClient(source_p)&&!IsIPSpoof(source_p))?source_p->sockhost:"0"),
                    source_p->id, source_p->info);
       else
         sendto_one(server, "NICK %s %d %lu %s %s %s %s :%s",
