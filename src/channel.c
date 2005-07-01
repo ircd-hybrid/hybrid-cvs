@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.424 2005/06/28 21:26:08 adx Exp $
+ *  $Id: channel.c,v 7.425 2005/07/01 13:01:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -213,7 +213,7 @@ send_members(struct Client *client_p, struct Channel *chptr,
 void
 send_channel_modes(struct Client *client_p, struct Channel *chptr)
 {
-  if (*chptr->chname != '#')
+  if (chptr->chname[0] != '#')
     return;
 
   *modebuf = *parabuf = '\0';
@@ -351,6 +351,8 @@ free_channel_list(dlink_list *list)
     dlinkDelete(&actualBan->node, list);
     BlockHeapFree(ban_heap, actualBan);
   }
+
+  assert(list->tail == NULL && list->head == NULL);
 }
 
 /* destroy_channel()
@@ -362,7 +364,7 @@ free_channel_list(dlink_list *list)
 void
 destroy_channel(struct Channel *chptr)
 {
-  dlink_node *ptr, *ptr_next;
+  dlink_node *ptr = NULL, *ptr_next = NULL;
 
   DLINK_FOREACH_SAFE(ptr, ptr_next, chptr->invites.head)
     del_invite(chptr, ptr->data);
@@ -375,26 +377,12 @@ destroy_channel(struct Channel *chptr)
   /* Free the topic */
   free_topic(chptr);
 
-  /* This should be redundant at this point but JIC */
-  chptr->banlist.head = chptr->exceptlist.head = chptr->invexlist.head = NULL;
-  chptr->banlist.tail = chptr->exceptlist.tail = chptr->invexlist.tail = NULL;
-
   dlinkDelete(&chptr->node, &global_channel_list);
   hash_del_channel(chptr);
 
   if (ServerInfo.hub == 1)
-  {
-    dlink_node *m;
-
-    DLINK_FOREACH(m, lazylink_channels.head)
-    {
-      if (m->data != chptr)
-        continue;
-      dlinkDelete(m, &lazylink_channels);
-      free_dlink_node(m);
-      break;
-    }
-  }
+    if ((ptr = dlinkFindDelete(&lazylink_channels, chptr)))
+      free_dlink_node(ptr);
 
   BlockHeapFree(channel_heap, chptr);
 }
@@ -650,6 +638,25 @@ check_banned(struct Channel *chptr, const char *s, const char *s2)
   return((actualBan ? CHFL_BAN : 0));
 }
 
+static int
+find_invex(const char *host, const char *iphost,
+           const struct Channel *chptr)
+{
+  const dlink_node *ptr = NULL
+
+  DLINK_FOREACH(ptr, chptr->invexlist.head)
+  {
+    const struct Ban *invex = ptr->data;
+
+    if (match(invex->banstr, src_host) ||
+        match(invex->banstr, src_iphost) ||
+        match_cidr(invex->banstr, src_iphost))
+      return(1);
+  }
+
+  return(0);
+}
+
 /* can_join()
  *
  * inputs       -
@@ -659,9 +666,6 @@ check_banned(struct Channel *chptr, const char *s, const char *s2)
 int
 can_join(struct Client *source_p, struct Channel *chptr, const char *key)
 {
-  dlink_node *lp;
-  dlink_node *ptr;
-  struct Ban *invex = NULL;
   char src_host[NICKLEN + USERLEN + HOSTLEN + 6];
   char src_iphost[NICKLEN + USERLEN + HOSTLEN + 6];
 
@@ -676,27 +680,9 @@ can_join(struct Client *source_p, struct Channel *chptr, const char *key)
     return(ERR_BANNEDFROMCHAN);
 
   if (chptr->mode.mode & MODE_INVITEONLY)
-  {
-    DLINK_FOREACH(lp, source_p->user->invited.head)
-      if (lp->data == chptr)
-        break;
-
-    if (lp == NULL)
-    {
-      if (!ConfigChannel.use_invex)
+    if (!dlinkFind(&source_p->user->invited, chptr))
+      if (!ConfigChannel.use_invex || !find_invex(src_host, src_iphost, chptr))
         return(ERR_INVITEONLYCHAN);
-      DLINK_FOREACH(ptr, chptr->invexlist.head)
-      {
-        invex = ptr->data;
-
-        if (match(invex->banstr, src_host) || match(invex->banstr, src_iphost) ||
-            match_cidr(invex->banstr, src_iphost))
-          break;
-      }
-      if (ptr == NULL)
-        return(ERR_INVITEONLYCHAN);
-    }
-  }
 
   if (*chptr->mode.key && (EmptyString(key) || irccmp(chptr->mode.key, key)))
     return(ERR_BADCHANNELKEY);
