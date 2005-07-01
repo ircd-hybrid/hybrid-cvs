@@ -18,7 +18,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: convertconf.c,v 1.41 2005/07/01 22:39:04 michael Exp $
+ *  $Id: convertconf.c,v 1.42 2005/07/01 23:02:15 michael Exp $
  */
 
 #include <stdio.h>
@@ -344,7 +344,7 @@ oldParseOneLine(FILE *out, char *line)
     case 'C':
       pair = (struct ConnectPair *)malloc(sizeof(struct ConnectPair));
       memset(pair,0,sizeof(struct ConnectPair));
-      if (conf_leter == 'c')
+      if (conf_letter == 'c')
         pair->compressed = 1;
       if(user_field)
 	pair->name = strdup(user_field);
