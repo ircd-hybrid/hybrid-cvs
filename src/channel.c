@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.426 2005/07/01 13:29:56 michael Exp $
+ *  $Id: channel.c,v 7.427 2005/07/01 13:39:59 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,6 @@ static char modebuf[MODEBUFLEN];
 static char parabuf[MODEBUFLEN];
 
 static void send_mode_list(struct Client *, struct Channel *, dlink_list *, char);
-static int check_banned(struct Channel *, const char *, const char *);
 static const char *channel_pub_or_secret(struct Channel *);
 
 
@@ -559,6 +558,25 @@ get_member_status(struct Membership *ms, int combine)
   return(buffer);
 }
 
+static int
+find_bmask(const char *host, const char *iphost,
+           const dlink_list *const list)
+{
+  const dlink_node *ptr = NULL;
+
+  DLINK_FOREACH(ptr, list->head)
+  {
+    const struct Ban *bp = ptr->data;
+
+    if (match(bp->banstr, host) ||
+        match(bp->banstr, iphost) ||
+        match_cidr(bp->banstr, iphost))
+      return(1);
+  }
+
+  return(0);
+}
+
 /* is_banned()
  *
  * inputs       - pointer to channel block
@@ -586,25 +604,6 @@ is_banned(struct Channel *chptr, struct Client *who)
 
   return(find_bmask(src_host, src_iphost, &chptr->banlist) &&
          (!ConfigChannel.use_except || !find_bmask(src_host, src_iphost, &chptr->exceptlist)));
-}
-
-static int
-find_bmask(const char *host, const char *iphost,
-           const dlink_list *const list)
-{
-  const dlink_node *ptr = NULL
-
-  DLINK_FOREACH(ptr, list->head)
-  {
-    const struct Ban *bp = ptr->data;
-
-    if (match(bp->banstr, src_host) ||
-        match(bp->banstr, src_iphost) ||
-        match_cidr(bp->banstr, src_iphost))
-      return(1);
-  }
-
-  return(0);
 }
 
 /* can_join()
