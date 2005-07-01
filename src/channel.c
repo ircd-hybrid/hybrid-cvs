@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.425 2005/07/01 13:01:30 michael Exp $
+ *  $Id: channel.c,v 7.426 2005/07/01 13:29:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -584,73 +584,23 @@ is_banned(struct Channel *chptr, struct Client *who)
   ircsprintf(src_iphost,"%s!%s@%s", who->name, who->username,
 	     who->sockhost);
 
-  return(check_banned(chptr, src_host, src_iphost));
-}
-
-/* check_banned()
- *
- * inputs       - pointer to channel block
- *              - pointer to pre-formed nick!user@host
- *              - pointer to pre-formed nick!user@ip
- * output       - returns an int 0 if not banned,
- *                CHFL_BAN if banned
- *
- * IP_BAN_ALL from comstud
- * always on...
- *
- * +e code from orabidoo
- */
-static int
-check_banned(struct Channel *chptr, const char *s, const char *s2)
-{
-  dlink_node *ban;
-  dlink_node *except;
-  struct Ban *actualBan = NULL;
-  struct Ban *actualExcept = NULL;
-
-  DLINK_FOREACH(ban, chptr->banlist.head)
-  {
-    actualBan = ban->data;
-
-    if (match(actualBan->banstr,  s) || 
-    	match(actualBan->banstr, s2) ||
-        match_cidr(actualBan->banstr, s2))
-      break;
-    else
-      actualBan = NULL;
-  }
-
-  if ((actualBan != NULL) && ConfigChannel.use_except)
-  {
-    DLINK_FOREACH(except, chptr->exceptlist.head)
-    {
-      actualExcept = except->data;
-
-      if (match(actualExcept->banstr,  s) || 
-          match(actualExcept->banstr, s2) ||
-          match_cidr(actualExcept->banstr, s2))
-      {
-        return(CHFL_EXCEPTION);
-      }
-    }
-  }
-
-  return((actualBan ? CHFL_BAN : 0));
+  return(find_bmask(src_host, src_iphost, &chptr->banlist) &&
+         (!ConfigChannel.use_except || !find_bmask(src_host, src_iphost, &chptr->exceptlist)));
 }
 
 static int
-find_invex(const char *host, const char *iphost,
-           const struct Channel *chptr)
+find_bmask(const char *host, const char *iphost,
+           const dlink_list *const list)
 {
   const dlink_node *ptr = NULL
 
-  DLINK_FOREACH(ptr, chptr->invexlist.head)
+  DLINK_FOREACH(ptr, list->head)
   {
-    const struct Ban *invex = ptr->data;
+    const struct Ban *bp = ptr->data;
 
-    if (match(invex->banstr, src_host) ||
-        match(invex->banstr, src_iphost) ||
-        match_cidr(invex->banstr, src_iphost))
+    if (match(bp->banstr, src_host) ||
+        match(bp->banstr, src_iphost) ||
+        match_cidr(bp->banstr, src_iphost))
       return(1);
   }
 
@@ -676,12 +626,13 @@ can_join(struct Client *source_p, struct Channel *chptr, const char *key)
   ircsprintf(src_iphost, "%s!%s@%s", source_p->name, source_p->username,
 	     source_p->sockhost);
 
-  if ((check_banned(chptr, src_host, src_iphost)) == CHFL_BAN)
-    return(ERR_BANNEDFROMCHAN);
+  if (find_bmask(src_host, src_iphost, &chptr->banlist))
+    if (!ConfigChannel.use_except || !find_bmask(src_host, src_iphost, &chptr->exceptlist))
+      return(ERR_BANNEDFROMCHAN);
 
   if (chptr->mode.mode & MODE_INVITEONLY)
     if (!dlinkFind(&source_p->user->invited, chptr))
-      if (!ConfigChannel.use_invex || !find_invex(src_host, src_iphost, chptr))
+      if (!ConfigChannel.use_invex || !find_bmask(src_host, src_iphost, &chptr->invexlist))
         return(ERR_INVITEONLYCHAN);
 
   if (*chptr->mode.key && (EmptyString(key) || irccmp(chptr->mode.key, key)))
@@ -750,7 +701,7 @@ can_send(struct Channel *chptr, struct Client *source_p)
     return(CAN_SEND_NO);
 
   if (ConfigChannel.quiet_on_ban && MyClient(source_p) &&
-      (is_banned(chptr, source_p) == CHFL_BAN))
+      is_banned(chptr, source_p))
     return(CAN_SEND_NO);
 
   if (chptr->mode.mode & MODE_NOPRIVMSGS && ms == NULL)
@@ -770,7 +721,7 @@ can_send_part(struct Membership *member, struct Channel *chptr,
     return(CAN_SEND_NO);
 
   if (ConfigChannel.quiet_on_ban && MyClient(source_p) &&
-      (is_banned(chptr, source_p) == CHFL_BAN))
+      is_banned(chptr, source_p))
     return(CAN_SEND_NO);
 
   return(CAN_SEND_NONOP);
