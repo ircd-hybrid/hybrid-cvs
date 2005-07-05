@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.234 2005/06/12 21:06:24 michael Exp $
+ *  $Id: client.h,v 7.235 2005/07/05 15:58:23 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -547,6 +547,7 @@ struct LocalUser
 #define MASK_IP 2
 
 extern struct Client me;
+extern dlink_list listing_client_list;
 extern dlink_list global_client_list;
 
 extern int accept_message(struct Client *, struct Client *);

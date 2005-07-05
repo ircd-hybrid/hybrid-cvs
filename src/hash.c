@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.93 2005/06/24 19:53:33 michael Exp $
+ *  $Id: hash.c,v 7.94 2005/07/05 15:58:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1020,6 +1020,9 @@ free_list_task(struct ListTask *lt, struct Client *source_p)
 {
   dlink_node *dl, *dln;
 
+  if ((dl = dlinkFindDelete(&listing_client_list, source_p)) != NULL)
+    free_dlink_node(dl);
+
   DLINK_FOREACH_SAFE(dl, dln, lt->show_mask.head)
   {
     MyFree(dl->data);
@@ -1108,7 +1111,7 @@ list_one_channel(struct Client *source_p, struct Channel *chptr,
  *
  * - Dianora
  */
-void
+int
 safe_list_channels(struct Client *source_p, struct ListTask *list_task,
                    int only_unmasked_channels, int remote_request)
 {
@@ -1123,7 +1126,7 @@ safe_list_channels(struct Client *source_p, struct ListTask *list_task,
       if (exceeding_sendq(source_p->from))
       {
         list_task->hash_index = i;
-        return; /* still more to do */
+        return(1); /* still more to do */
       }
 
       for (chptr = channelTable[i]; chptr; chptr = chptr->hnextch)
@@ -1142,4 +1145,5 @@ safe_list_channels(struct Client *source_p, struct ListTask *list_task,
   free_list_task(list_task, source_p);
   sendto_one(source_p, form_str(RPL_LISTEND),
              me.name, source_p->name);
+  return(0);
 }

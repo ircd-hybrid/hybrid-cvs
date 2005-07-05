@@ -1,6 +1,6 @@
 ; ircd-hybrid-7 standard message file - for reference only
 ; Copyright (C) 2003 Joshua Kwan <joshk@triplehelix.org>
-; $Id: ircd-standard.example.lang,v 1.7 2005/06/22 23:39:29 adx Exp $
+; $Id: ircd-standard.example.lang,v 1.8 2005/07/05 15:58:25 michael Exp $
 
 ; Use this file as a starting point for translating everything into the
 ; language you need. This file contains all of the defined events in 
@@ -39,8 +39,8 @@ RPL_LUSERME:		 :%s 255 %s :I have %d clients and %d servers
 RPL_ADMINME:		 :%s 256 %s :Administrative info about %s
 RPL_ENDOFTRACE:		 :%s 262 %s %s :End of TRACE
 RPL_LOAD2HI:		 :%s 263 %s :Server load is temporarily too heavy. Please wait a while and try again.
-RPL_LOCALUSERS:		 :%s 265 %s :Current local  users: %d  Max: %d
-RPL_GLOBALUSERS:	 :%s 266 %s :Current global users: %d  Max: %d
+RPL_LOCALUSERS:		 :%s 265 %s %d %d :Current local users %d, max %d
+RPL_GLOBALUSERS:	 :%s 266 %s %d %d :Current global users %d, max %d
 RPL_ENDOFACCEPT:	 :%s 282 %s :End of /ACCEPT list.
 RPL_UNAWAY:		 :%s 305 %s :You are no longer marked as being away
 RPL_NOWAWAY:		 :%s 306 %s :You have been marked as being away

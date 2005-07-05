@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.53 2005/06/24 19:53:32 michael Exp $
+ *  $Id: balloc.c,v 7.54 2005/07/05 15:58:29 michael Exp $
  */
 
 /* 
@@ -255,7 +255,7 @@ newblock(BlockHeap * bh)
     b->used_list.head = b->used_list.tail = NULL;
     b->next = bh->base;
 
-    b->alloc_size = (bh->elemsPerBlock + 1) * (bh->elemSize + sizeof(MemBlock));
+    b->alloc_size = bh->elemsPerBlock * (bh->elemSize + sizeof(MemBlock));
 
     b->elems = get_block(b->alloc_size);
     if (b->elems == NULL)

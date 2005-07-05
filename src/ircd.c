@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.334 2005/06/27 00:18:22 db Exp $
+ *  $Id: ircd.c,v 7.335 2005/07/05 15:58:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -285,6 +285,18 @@ io_loop(void)
     {
       check_conf_klines();
       rehashed_klines = 0;
+    }
+
+    if (listing_client_list.head)
+    {
+      dlink_node *ptr = NULL, *ptr_next = NULL;
+      DLINK_FOREACH_SAFE(ptr, ptr_next, listing_client_list.head)
+      {
+        struct Client *client_p = ptr->data;
+        while (client_p->localClient->list_task)
+          if (safe_list_channels(client_p, client_p->localClient->list_task, 0, 0))
+           break;
+      }
     }
 
     /* Run pending events, then get the number of seconds to the next

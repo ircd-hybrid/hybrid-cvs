@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.327 2005/07/01 00:44:57 db Exp $
+ *  $Id: s_user.c,v 7.328 2005/07/05 15:58:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -279,7 +279,7 @@ show_lusers(struct Client *source_p)
 	       from, to,
 	       Count.local, Count.myserver);
     sendto_one(source_p, form_str(RPL_LOCALUSERS),
-	       from, to,
+	       from, to, Count.local, Count.max_loc
 	       Count.local, Count.max_loc);
   }
   else
@@ -287,11 +287,13 @@ show_lusers(struct Client *source_p)
     sendto_one(source_p, form_str(RPL_LUSERME),
 	       from, to, Count.total, 0);
     sendto_one(source_p, form_str(RPL_LOCALUSERS), 
-	       from, to, Count.total, Count.max_tot);
+	       from, to, Count.total, Count.max_tot,
+               Count.total, Count.max_tot);
   }
 
   sendto_one(source_p, form_str(RPL_GLOBALUSERS),
-             from, to, Count.total, Count.max_tot);
+             from, to, Count.total, Count.max_tot,
+             Count.total, Count.max_tot);
 
   if (!ConfigServerHide.hide_servers || IsOper(source_p))
     sendto_one(source_p, form_str(RPL_STATSCONN), from, to,

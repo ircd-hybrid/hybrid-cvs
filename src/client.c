@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.449 2005/06/24 19:53:33 michael Exp $
+ *  $Id: client.c,v 7.450 2005/07/05 15:58:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -54,6 +54,7 @@
 #include "irc_res.h"
 #include "userhost.h"
 
+dlink_list listing_client_list = { NULL, NULL, 0 };
 /* Pointer to beginning of Client list */
 dlink_list global_client_list = {NULL, NULL, 0};
 /* unknown/client pointer lists */
@@ -89,8 +90,6 @@ init_client(void)
 {
   /* start off the check ping event ..  -- adrian
    * Every 30 seconds is plenty -- db
-   * check_pings has to deal with safe lists now,
-   * let's call it every 5 seconds -adx
    */
   client_heap = BlockHeapCreate("client", sizeof(struct Client), CLIENT_HEAP_SIZE);
   lclient_heap = BlockHeapCreate("local client", sizeof(struct LocalUser), LCLIENT_HEAP_SIZE);
@@ -318,10 +317,6 @@ check_pings_list(dlink_list *list)
 	sendto_one(client_p, "PING :%s", ID_or_name(&me, client_p));
       }
     }
-    /* ping_timeout: */
-    /* Safe list */
-    if (client_p->localClient->list_task != NULL)
-      safe_list_channels(client_p, client_p->localClient->list_task, 0, 0);
   }
 }
 
