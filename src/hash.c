@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.94 2005/07/05 15:58:29 michael Exp $
+ *  $Id: hash.c,v 7.95 2005/07/05 21:05:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1111,11 +1111,11 @@ list_one_channel(struct Client *source_p, struct Channel *chptr,
  *
  * - Dianora
  */
-int
+void
 safe_list_channels(struct Client *source_p, struct ListTask *list_task,
                    int only_unmasked_channels, int remote_request)
 {
-  struct Channel *chptr;
+  struct Channel *chptr = NULL;
 
   if (!only_unmasked_channels)
   {
@@ -1126,7 +1126,7 @@ safe_list_channels(struct Client *source_p, struct ListTask *list_task,
       if (exceeding_sendq(source_p->from))
       {
         list_task->hash_index = i;
-        return(1); /* still more to do */
+        return; /* still more to do */
       }
 
       for (chptr = channelTable[i]; chptr; chptr = chptr->hnextch)
@@ -1145,5 +1145,4 @@ safe_list_channels(struct Client *source_p, struct ListTask *list_task,
   free_list_task(list_task, source_p);
   sendto_one(source_p, form_str(RPL_LISTEND),
              me.name, source_p->name);
-  return(0);
 }

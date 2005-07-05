@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.335 2005/07/05 15:58:29 michael Exp $
+ *  $Id: ircd.c,v 7.336 2005/07/05 21:05:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -293,9 +293,8 @@ io_loop(void)
       DLINK_FOREACH_SAFE(ptr, ptr_next, listing_client_list.head)
       {
         struct Client *client_p = ptr->data;
-        while (client_p->localClient->list_task)
-          if (safe_list_channels(client_p, client_p->localClient->list_task, 0, 0))
-           break;
+        assert(client_p->localClient->list_task);
+        safe_list_channels(client_p, client_p->localClient->list_task, 0, 0);
       }
     }
 
