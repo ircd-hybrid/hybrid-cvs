@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_users.c,v 1.29 2005/07/05 15:58:27 michael Exp $
+ *  $Id: m_users.c,v 1.30 2005/07/05 22:53:09 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&users_msgtab);
 }
 
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 
 /*
@@ -75,7 +75,7 @@ m_users(struct Client *client_p, struct Client *source_p,
   sendto_one(source_p, form_str(RPL_LOCALUSERS), me.name, source_p->name,
              ConfigServerHide.hide_servers ? Count.total : Count.local,
              ConfigServerHide.hide_servers ? Count.total : Count.local,
-             ConfigServerHide.hide_servers ? Count.max_tot : Count.max_loc 
+             ConfigServerHide.hide_servers ? Count.max_tot : Count.max_loc,
 	     ConfigServerHide.hide_servers ? Count.max_tot : Count.max_loc);
 
   sendto_one(source_p, form_str(RPL_GLOBALUSERS), me.name, source_p->name,
