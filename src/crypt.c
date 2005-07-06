@@ -9,7 +9,7 @@
  *  this stuff is worth it, you can buy me a beer in return.  Poul-Henning Kamp
  *  ----------------------------------------------------------------------------
  *  
- *  $Id: crypt.c,v 7.5 2003/06/29 18:09:37 joshk Exp $
+ *  $Id: crypt.c,v 7.6 2005/07/06 11:17:59 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ crypt(const char *pw, const char *salt)
 					 * This string is magic for
 					 * this algorithm.  Having
 					 * it this way, we can get
-					 * get better later on
+					 * better later on
 					 */
 	static char     passwd[120], *p;
 	static const char *sp,*ep;
