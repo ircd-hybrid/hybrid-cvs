@@ -26,11 +26,12 @@ Necessary Requirements:
   compiling statically, without module
   support.
 
-- A working lex.  Solaris /usr/ccs/bin/lex
-  appears to be broken, on this system flex
-  should be used.
+- A working Flex.  ircd-hybrid makes use of several
+  flex features that aren't supported by lex nor are
+  they POSIX compatible.
+  Flex can be obtained from http://www.gnu.org/software/flex/
 
-- A working bison or byacc.  FreeBSD and BSD/OS
+- A working Bison or Byacc.  FreeBSD and BSD/OS
   byacc are broken in some releases, and will
   dump core when building the ircd_parser.y. The
   solution to this is to upgrade to the most
@@ -111,4 +112,4 @@ Feature Specific Requirements:
 - Other files recommended for reading: BUGS, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: README.FIRST,v 7.45 2005/04/24 12:43:08 michael Exp $
+$Id: README.FIRST,v 7.46 2005/07/07 15:04:45 michael Exp $
