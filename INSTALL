@@ -1,6 +1,6 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.45 2005/06/13 09:10:03 metalrock Exp $
+   $Id: INSTALL,v 7.46 2005/07/07 18:03:33 adx Exp $
 
    Copyright (c) 2001, 2002, 2003, 2004, 2005 by ircd-hybrid team
 
@@ -174,7 +174,7 @@
 
                                 HOW TO GET HELP
 
-   Send Check or Money Order to... just kidding! You're on your own for
+   - Send Check or Money Order to... just kidding! You're on your own for
    support. Try asking other ircd-hybrid admins on EFnet if you can't fix it
    yourself. If you do fix anything, however, please send context or unified
    diffs to bugs@ircd-hybrid.org so the fixes can be incorporated into
@@ -182,8 +182,12 @@
    bugs@ircd-hybrid.org ASAP with a backtrace of the core. The Hybrid
    team can't fix bugs if no one tells us about them!
 
-   There is now a mailing list for general discussion of Hybrid. To subscribe,
-   use this link: https://lists.ircd-hybrid.org/mailman/listinfo/hybrid
+   - http://www.forum.ircd-hybrid.org/
+   We decided to create a phpBB-like forum about ircd-hybrid, where you can
+   get help from coders and admins, post your suggestions, modules etc.
+
+   - https://lists.ircd-hybrid.org/mailman/listinfo/hybrid
+   Here you can subscribe to a mailing list for general discussion of Hybrid.
 
      ----------------------------------------------------------------------
 
@@ -194,7 +198,7 @@
 
    1.  Change to the directory containing the core file
 
-   2.  Run gdb on the binary and the core file. With an unmodified Hybrid-7
+   2.  Run gdb on the binary and the core file. With an unmodified Hybrid-7.1
        installation, an example command line is below (in the /usr/local/ircd
        directory)
 
