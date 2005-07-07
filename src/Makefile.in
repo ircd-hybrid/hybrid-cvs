@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.152 2004/01/23 00:46:43 joshk Exp $
+# $Id: Makefile.in,v 7.153 2005/07/07 18:39:00 adx Exp $
 #
 @SET_MAKE@
 
@@ -9,7 +9,6 @@ CC		= @CC@
 INSTALL		= @INSTALL@
 INSTALL_BIN	= @INSTALL_PROGRAM@
 INSTALL_DATA	= @INSTALL_DATA@
-LEX		= @LEX@
 CFLAGS		= @IRC_CFLAGS@
 LDFLAGS   	= @LDFLAGS@
 MKDEP		= @MKDEP@
@@ -17,7 +16,6 @@ STDOUT		= @STDOUT@
 MV		= @MV@
 RM		= @RM@
 SED		= @SED@
-YACC		= @YACC@
 
 prefix		= @prefix@
 exec_prefix	= $(DESTDIR)@exec_prefix@
@@ -45,15 +43,8 @@ default:	all
 y.tab.o:	y.tab.c ircd_parser.y
 	${CC} ${CPPFLAGS} ${CFLAGS} -I. -c y.tab.c
 
-# Note GNU bison uses <file>.tab.c not y.tab.c
-y.tab.c:	ircd_parser.y
-	${YACC} -d ircd_parser.y
-
 lex.yy.o:	y.tab.c lex.yy.c ircd_lexer.l
 	${CC} ${CPPFLAGS} ${CFLAGS} -I. -c lex.yy.c
-
-lex.yy.c:	ircd_lexer.l
-	${LEX} ircd_lexer.l
 
 SSL_SRCS = rsa.c
 
@@ -79,6 +70,7 @@ BASE_SRCS =	\
  ircd.c \
  ircd_signal.c \
  csvlib.c \
+ lex.yy.c \
  list.c \
  listener.c \
  m_error.c \
@@ -109,7 +101,8 @@ BASE_SRCS =	\
  @SSL_SRCS_ENABLE@ \
  @DYNLINK_C@ \
  tools.c \
- whowas.c
+ whowas.c \
+ y.tab.c
 
 SRCS = ${BASE_SRCS} $(NETIO_SRC)
 OBJS = ${SRCS:.c=.o}
@@ -118,8 +111,8 @@ all: .depend ircd
 
 build: all
 
-ircd: @MODULES_LIBS@ $(OBJS) y.tab.o lex.yy.o version.o
-	${CC} ${CFLAGS} ${LDFLAGS} -o $@ ${OBJS} lex.yy.o y.tab.o version.o ${IRCDLIBS}
+ircd: @MODULES_LIBS@ $(OBJS) version.o
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ ${OBJS} version.o ${IRCDLIBS}
 	${MV} -f version.c version.c.last
 
 ../modules/libmodules.a:
@@ -127,7 +120,7 @@ ircd: @MODULES_LIBS@ $(OBJS) y.tab.o lex.yy.o version.o
 
 install-mkdirs:
 	mkdir -p $(DESTDIR)$(prefix) $(exec_prefix) $(bindir) $(sysconfdir) \
-		$(localstatedir)/logs 
+		$(localstatedir)/logs
 
 install: install-mkdirs build
 	@for i in $(PROGS); do \
@@ -154,7 +147,7 @@ version.c: version.c.SH
 	@${MV} Makefile.depend Makefile
 
 clean:
-	${RM} -f *.o *.exe *~ y.tab.* lex.yy.c *core ircd
+	${RM} -f *.o *.exe *~ *core ircd
 
 distclean: clean
 	${RM} -f Makefile version.c version.c.last .depend

@@ -26,20 +26,6 @@ Necessary Requirements:
   compiling statically, without module
   support.
 
-- A working Flex.  ircd-hybrid makes use of several
-  flex features that aren't supported by lex nor are
-  they POSIX compatible.
-  Flex can be obtained from http://www.gnu.org/software/flex/
-
-- A working Bison or Byacc.  FreeBSD and BSD/OS
-  byacc are broken in some releases, and will
-  dump core when building the ircd_parser.y. The
-  solution to this is to upgrade to the most
-  recent release, or to simply obtain a current
-  copy of byacc (such as building source from
-  FreeBSD CVS/CVSup). This is fixed in FreeBSD
-  4.4-STABLE and later.
-
 Feature Specific Requirements:
 
 - For the SSL Challenge controlled OPER feature and encrypted server links,
@@ -115,4 +101,4 @@ Feature Specific Requirements:
 - Other files recommended for reading: BUGS, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: README.FIRST,v 7.47 2005/07/07 18:03:33 adx Exp $
+$Id: README.FIRST,v 7.48 2005/07/07 18:38:57 adx Exp $

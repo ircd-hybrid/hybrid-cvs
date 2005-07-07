@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.95 2005/06/27 00:18:17 db Exp $
+dnl $Id: configure.ac,v 7.96 2005/07/07 18:38:57 adx Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.95 2005/06/27 00:18:17 db Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.96 2005/07/07 18:38:57 adx Exp $])
 
 AC_INIT([ircd-hybrid],[7.1])
 
@@ -203,18 +203,6 @@ AC_PATH_PROG(SED, sed)
 AC_PATH_PROG(AR, ar)
 AC_PATH_PROG(LD, ld)
 AC_PATH_PROG(TEST, [test], [test])
-AC_PROG_YACC
-
-dnl AC_PROG_YACC defaults to yacc unconditionally if nothing can be found
-if test "$YACC" = "yacc" -a -z "`which $YACC 2>/dev/null`"; then
-	AC_MSG_ERROR([could not locate a suitable parser generator; install bison, yacc, or byacc])
-fi
-
-AC_PROG_LEX
-
-if test "$LEX" = ":"; then
-	AC_MSG_ERROR([could not locate a suitable lexical generator, install flex or lex.])
-fi
 
 dnl use directory structure of cached as default (hack)
 if test "$libexecdir" = '${exec_prefix}/libexec' &&
