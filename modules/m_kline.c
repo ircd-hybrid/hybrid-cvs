@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.190 2005/06/23 11:33:10 adx Exp $
+ *  $Id: m_kline.c,v 1.191 2005/07/07 20:36:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -49,11 +49,11 @@
 #include "cluster.h"
 #include "tools.h"
 
-static inline void me_kline(struct Client *, struct Client *, int, char **);
+static void me_kline(struct Client *, struct Client *, int, char **);
 static void mo_kline(struct Client *, struct Client *, int, char **);
 static void ms_kline(struct Client *, struct Client *, int, char **);
 static void mo_dline(struct Client *, struct Client *, int, char **);
-static inline void me_unkline(struct Client *, struct Client *, int, char **);
+static void me_unkline(struct Client *, struct Client *, int, char **);
 static void mo_unkline(struct Client *, struct Client *, int, char **);
 static void ms_unkline(struct Client *, struct Client *, int, char **);
 static void mo_undline(struct Client *, struct Client *, int, char **);
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.190 $";
+const char *_version = "$Revision: 1.191 $";
 #endif
 
 /* Local function prototypes */
@@ -192,7 +192,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
       if (!IsOperRemoteBan(source_p))
       {
         sendto_one(source_p, form_str(ERR_NOPRIVS),
-                 me.name, source_p->name, "kline");
+                 me.name, source_p->name, "remoteban");
         return;
       }
 
@@ -287,7 +287,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
 }
 
 /* me_kline - handle remote kline. no propagation */
-static inline void
+static void
 me_kline(struct Client *client_p, struct Client *source_p,
 	 int parc, char *parv[])
 {
@@ -483,7 +483,6 @@ apply_tdline(struct Client *source_p, struct ConfItem *conf,
        source_p->name, tkline_time/60, aconf->host, aconf->reason);
   rehashed_klines = 1;
 }
-
 
 /*
  * cluster()
@@ -1058,7 +1057,7 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
     if (!IsOperRemoteBan(source_p))
     {
       sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name, "unkline");
+               me.name, source_p->name, "remoteban");
       return;
     }
 
@@ -1110,7 +1109,7 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
  * side effects	- if server is authorized, kline is removed
  *                does not propagate message
  */
-static inline void
+static void
 me_unkline(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
@@ -1132,6 +1131,9 @@ me_unkline(struct Client *client_p, struct Client *source_p,
   {
     if (remove_tkline_match(khost, kuser))
     {
+      sendto_one(source_p,
+                 ":%s NOTICE %s :Un-klined [%s@%s] from temporary K-Lines",
+                 me.name, source_p->name, kuser, khost);
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "%s has removed the temporary K-Line for: [%s@%s]",
                            get_oper_name(source_p), kuser, khost);
@@ -1142,6 +1144,8 @@ me_unkline(struct Client *client_p, struct Client *source_p,
 
     if (remove_conf_line(KLINE_TYPE, source_p, kuser, khost))
     {
+      sendto_one(source_p, ":%s NOTICE %s :K-Line for [%s@%s] is removed",
+                 me.name, source_p->name, kuser, khost);
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "%s has removed the K-Line for: [%s@%s]",
                            get_oper_name(source_p), kuser, khost);
