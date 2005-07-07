@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capture.c,v 1.12 2005/06/23 11:38:55 adx Exp $
+ *  $Id: m_capture.c,v 1.13 2005/07/07 17:42:12 adx Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&capture_msgtab);
 }
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 #endif
 
 /* mo_capture
@@ -129,8 +129,6 @@ mo_capture(struct Client *client_p, struct Client *source_p,
       else if (IsCapable(target_p->from, CAP_ENCAP))
         sendto_one(target_p, ":%s ENCAP %s CAPTURE %s",
 	           parv[0], target_p->from->name, target_p->name);
-      else
-        sendto_one(target_p, ":%s CAPTURE %s", parv[0], target_p->name);
     }
     else
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
@@ -159,12 +157,10 @@ mo_capture(struct Client *client_p, struct Client *source_p,
     if (!valid_wild_card(source_p, YES, 3, nick, user, host))
       return;
 
-    sendto_server(client_p, NULL, NULL, CAP_ENCAP, 0, 0,
-                  ":%s ENCAP * CAPTURE %s!%s@%s",
-		  parv[0], nick, user, host);
-    sendto_server(client_p, NULL, NULL, 0, CAP_ENCAP, 0,
-                  ":%s CAPTURE %s!%s@%s",
-		  parv[0], nick, user, host);
+    if (IsClient(client_p))
+      sendto_server(client_p, NULL, NULL, CAP_ENCAP, 0, 0,
+                    ":%s ENCAP * CAPTURE %s!%s@%s",
+                    parv[0], nick, user, host);
 
     DLINK_FOREACH(ptr, local_client_list.head)
     {
@@ -227,8 +223,6 @@ mo_uncapture(struct Client *client_p, struct Client *source_p,
       else if (IsCapable(target_p->from, CAP_ENCAP))
         sendto_one(target_p, ":%s ENCAP %s UNCAPTURE %s",
 	           parv[0], target_p->from->name, target_p->name);
-      else
-        sendto_one(target_p, ":%s UNCAPTURE %s", parv[0], target_p->name);
     }
     else
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
@@ -254,12 +248,10 @@ mo_uncapture(struct Client *client_p, struct Client *source_p,
       nick = "*";
     }
 
-    sendto_server(client_p, NULL, NULL, CAP_ENCAP, 0, 0,
-                  ":%s ENCAP * UNCAPTURE %s!%s@%s",
-		  parv[0], nick, user, host);
-    sendto_server(client_p, NULL, NULL, 0, CAP_ENCAP, 0,
-                  ":%s UNCAPTURE %s!%s@%s",
-		  parv[0], nick, user, host);
+    if (IsClient(client_p))
+      sendto_server(client_p, NULL, NULL, CAP_ENCAP, 0, 0,
+                    ":%s ENCAP * UNCAPTURE %s!%s@%s",
+                    parv[0], nick, user, host);
 
     DLINK_FOREACH(ptr, local_client_list.head)
     {
