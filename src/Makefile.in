@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.153 2005/07/07 18:39:00 adx Exp $
+# $Id: Makefile.in,v 7.154 2005/07/08 01:49:02 metalrock Exp $
 #
 @SET_MAKE@
 
@@ -49,12 +49,15 @@ lex.yy.o:	y.tab.c lex.yy.c ircd_lexer.l
 SSL_SRCS = rsa.c
 
 BASE_SRCS =	\
+ @BALLOC_C@ \
  channel.c \
  channel_mode.c \
  client.c \
  cluster.c \
  @CRYPT_C@ \
+ csvlib.c \
  dbuf.c	\
+ @DYNLINK_C@ \
  event.c \
  fdlist.c \
  fileio.c \
@@ -62,6 +65,7 @@ BASE_SRCS =	\
  hash.c	\
  hook.c	\
  hostmask.c \
+ @INET_MISC@ \
  irc_getaddrinfo.c \
  irc_getnameinfo.c \
  irc_res.c \
@@ -69,7 +73,6 @@ BASE_SRCS =	\
  irc_string.c \
  ircd.c \
  ircd_signal.c \
- csvlib.c \
  lex.yy.c \
  list.c \
  listener.c \
@@ -83,6 +86,7 @@ BASE_SRCS =	\
  parse.c \
  restart.c \
  resv.c	\
+ @SSL_SRCS_ENABLE@ \
  s_auth.c \
  s_bsd.c \
  s_conf.c \
@@ -94,12 +98,8 @@ BASE_SRCS =	\
  s_stats.c \
  s_user.c \
  send.c \
- sprintf_irc.c \
  @SNPRINTF_C@ \
- @BALLOC_C@ \
- @INET_MISC@ \
- @SSL_SRCS_ENABLE@ \
- @DYNLINK_C@ \
+ sprintf_irc.c \
  tools.c \
  whowas.c \
  y.tab.c
