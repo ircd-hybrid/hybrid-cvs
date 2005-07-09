@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.191 2005/06/23 09:33:58 michael Exp $
+ *  $Id: m_sjoin.c,v 1.192 2005/07/09 22:59:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.191 $";
+const char *_version = "$Revision: 1.192 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -593,14 +593,13 @@ nextnick:
 
   /* If this happens, its the result of a malformed SJOIN
    * a remnant from the old persistent channel code. *sigh*
+   * Or it could be the result of a client just leaving
+   * and leaving us with a channel formed just as the client parts.
    * - Dianora
    */
 
   if ((people == 0) && isnew)
   {
-    sendto_realops_flags(UMODE_ALL,L_ALL,
-			 "zero users in channel %s introduced by %s",
-			 chptr->chname, source_p->name);
     destroy_channel(chptr);
     return;
   }
