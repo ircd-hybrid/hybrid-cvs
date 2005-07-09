@@ -1,4 +1,4 @@
-# $Id: ircd-hybrid.spec,v 1.2 2005/07/09 18:48:36 lusky Exp $
+# $Id: ircd-hybrid.spec,v 1.3 2005/07/09 19:13:00 lusky Exp $
 
 %{!?ircd_uid:%define ircd_uid 79}
 %{!?ircd_gid:%define ircd_gid 79}
@@ -6,7 +6,7 @@
 
 Summary: IRCD-Hybrid - Internet Relay Chat server
 Name: ircd-hybrid
-Version: 7.1
+Version: 7.1.0
 Release: 1
 License: GPL
 Group: System Environment/Daemons
