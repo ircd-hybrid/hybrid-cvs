@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.31 2005/06/29 23:42:30 metalrock Exp $
+ * $Id: example.conf.quick,v 1.32 2005/07/09 23:40:20 db Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -247,19 +247,16 @@ resv {
 gecos {
 	name = "*sex*";
 	reason = "Possible spambot";
-	action = warn;
 };
 
 gecos {
 	name = "sub7server";
 	reason = "Trojan drone";
-	action = reject;
 };
 
 gecos {
 	name = "*http*";
 	reason = "Spambot";
-	action = silent;
 };
 
 channel {
