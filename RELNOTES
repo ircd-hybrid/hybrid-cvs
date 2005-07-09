@@ -1,90 +1,20 @@
--- ircd-hybrid-7.1 RELNOTES
-o) Improved SAFELIST
-o) Added m_change.c
-o) Fixed m_capture
-
-
--- ircd-hybrid-7.1rc4 RELNOTES
-o) Various cleanups and bugfixes: invite, max_global, who, whois, names
-o) Allow multiple oper user hosts
-o) Added invite_ops_only configuration directive
-o) Added m_spoof.c to contrib/, improved m_ojoin and m_force
-o) Added ELIST token to RPL_ISSUPORTED numeric
-o) Added '#' wildcard, matching any digit
-
-
--- ircd-hybrid-7.1rc3 RELNOTES
-o) Disallow locally connected users from doing hash lookups by ID
-o) Fixed a bug that could have caused network-wide channel desyncs
-o) Added operator:encrypted configuration directive
-o) Fix bug in invite code which could have been abused
-o) Added support for CIDR glines
-o) Display SIDs in /map to opers only
-o) Expanded testmask
-o) Fixed memory leak with x-lines
-o) m_force (contrib) fixes
-o) /whois addition of IP showing
-o) Halfops patch re-integrated
-o) Fixed possible desync in m_sjoin
-o) Fixed server masking bugs (fakename)
-o) Fixed can_idle and added documentation for it
-o) Added resv_exempt to auth{} options
-
-
--- ircd-hybrid-7.1rc2 RELNOTES
-o) Fixed build system to include ChangeLog
-o) Updated missing entries in 7.1rc1 RELNOTES (see below)
-o) Introduced new Fowler/Noll/Vo (FNV) hash algorithm
-o) Fixed half broken sigio support
-o) Allow users messaging themselves even if +g is set
-o) Fixed bug causing remote servers to cut off the last character of a 50char-gecos
-
-
--- ircd-hybrid-7.1rc1 RELNOTES
-o) Added m_etrace.c and confgen.pl to contrib/
-o) Fixed serious nick TS bug which could have led to desyncs
-o) Various fixes and improvements to ircd's configuration scanner
-o) Fixed incorrect /INFO output
-o) Non-critical resolver bugs fixed
-o) Disallow '"' in kline and xline host/gecos
-o) Fixed statistics generation
-o) Fixed CIDR matchine
-o) Fixed idletime
-o) Fixed null kline reason for anti-idle kline
-o) Fixed TS6 compability with m_links, m_admin, etc
-o) Fixed bug which would allow clients in a certain state to flood the daemon
-
-
--- ircd-hybrid-7.1beta1 RELNOTES
-o) TS6 support has been introduced, although it is still not to be
-   used on production networks.
-o) Halfops are no longer a configure option - if you prefer to use
-   them, you have to patch the source against contrib/halfops.diff;
-   anonops (+a) have been ripped out completely.
-o) A new, more effective hash algorithm (from ircu).
-o) Linebufs have been replaced with the new rewritten dbuf code;
-   noticeable performance improvements to the network I/O system.
-o) Major changes to the configure script.
-o) LIST extensions borrowed from undernet (SAFELIST, channel filtering -
-   see contrib/help/opers/list for more details).
-o) A native i18n support is provided instead of the former gettext,
-   which is no longer needed. Old message files have been updated
-   according to the new format, plus some new translations are available.
-o) Removed virtual channels
-o) The user-channel membership handling has been entirely rewritten to
-   be more CPU friendly
-o) Fixed a possible /CHALLENGE memory leak
-o) Removed OpenVMS support
-o) CRYPT_OPER_PASSWORD is now runtime configurable via ircd.conf
+-- ircd-hybrid-7.2beta1 RELNOTES
+o) Nothing yet
 
 --------------------------------------------------------------------------------
+
+This is a beta version of ircd-hybrid-7.2.
+
+NOTE: This is still BETA code.  Run it at your own risk.  By running this
+ code you assume FULL responsibility for any problems it may cause.  We do
+ NOT recommend that you run BETA code on production IRC networks such
+ as EFnet.
 
 BUGS: Major bugs in this release are listed in BUGS
 
 BUG REPORTS: If you run this code and encounter problems, you must report
  the bug in one of the following ways:
-  a) By EMAIL to bugs@ircd-hybrid.org.  
-  b) On http://forum.ircd-hybrid.org
+  a) By EMAIL to bugs@ircd-hybrid.org.
  Please include a gdb backtrace and a copy of your setup.h, defaults.h, and
  ircd.conf with any report  (with passwords and other sensitive
  information masked).
@@ -95,6 +25,18 @@ DISCUSSION: There is a mailing list for discussion of hybrid issues,
  This is the proper place to discuss new features, bugs, etc.  Posting here
  is much more likely to get something done than ranting on #TZ.
 
+TESTING: This code is under active development, and a lot changes from beta
+ to beta.  As the user of this code, we request that you help us test things
+ which have changed recently, and which would benefeit from being tested
+ much as possible.  The following are some things that have changed, and what
+ you can do to help us test them.
+     o) Mac OS X Modules
+        - Support for Darwin and Mac OS X style modules, through the
+          NSModule(3) interface has been added, and is designed to work as
+          loadable modules do on most UNIX systems.  Feeding it bad or
+          duplicate modules to find bugs would be appriciated.
+
+
 Questions/comments directed to bugs@ircd-hybrid.org
 
 Please read doc/whats-new.txt for information about what is in this release
@@ -102,4 +44,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.105 2005/07/09 19:07:49 adx Exp $
+$Id: RELNOTES,v 1.106 2005/07/09 19:33:35 lusky Exp $
