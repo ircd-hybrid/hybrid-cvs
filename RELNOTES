@@ -79,13 +79,6 @@ o) CRYPT_OPER_PASSWORD is now runtime configurable via ircd.conf
 
 --------------------------------------------------------------------------------
 
-This is the current beta version of ircd-hybrid-7.1.
-
-NOTE: This is still BETA code.  Run it at your own risk.  By running this
- code you assume FULL responsibility for any problems it may cause.  We do
- NOT recommend that you run BETA code on production IRC networks such
- as EFnet.
-
 BUGS: Major bugs in this release are listed in BUGS
 
 BUG REPORTS: If you run this code and encounter problems, you must report
@@ -101,18 +94,6 @@ DISCUSSION: There is a mailing list for discussion of hybrid issues,
  This is the proper place to discuss new features, bugs, etc.  Posting here
  is much more likely to get something done than ranting on #TZ.
 
-TESTING: This code is under active development, and a lot changes from beta
- to beta.  As the user of this code, we request that you help us test things
- which have changed recently, and which would benefeit from being tested
- much as possible.  The following are some things that have changed, and what
- you can do to help us test them.
-     o) Mac OS X Modules
-        - Support for Darwin and Mac OS X style modules, through the
-          NSModule(3) interface has been added, and is designed to work as
-          loadable modules do on most UNIX systems.  Feeding it bad or
-          duplicate modules to find bugs would be appriciated.
-
-
 Questions/comments directed to bugs@ircd-hybrid.org
 
 Please read doc/whats-new.txt for information about what is in this release
@@ -120,4 +101,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.102 2005/07/09 19:01:54 adx Exp $
+$Id: RELNOTES,v 1.103 2005/07/09 19:04:09 lusky Exp $
