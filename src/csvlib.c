@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.38 2005/06/07 13:18:12 michael Exp $
+ *  $Id: csvlib.c,v 7.39 2005/07/09 14:24:17 joant Exp $
  */
 
 #include "stdinc.h"
@@ -21,6 +21,12 @@
 #include "send.h"
 #include "resv.h"
 #include "s_serv.h"
+
+/* Fix "statement not reached" warnings on Sun WorkShop C */
+#ifdef __SUNPRO_C
+#   pragma error_messages(off, E_STATEMENT_NOT_REACHED)
+#endif
+
 
 static void parse_csv_line(char *line, ...);
 static int write_csv_line(FBFILE *out, const char *format, ...);

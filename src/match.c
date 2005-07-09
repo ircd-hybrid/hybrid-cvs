@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.42 2005/06/22 16:56:41 adx Exp $
+ * $Id: match.c,v 7.43 2005/07/09 14:24:17 joant Exp $
  *
  */
 
@@ -25,6 +25,11 @@
 #include "irc_getaddrinfo.h"
 #include "client.h"
 #include "ircd.h"
+
+/* Fix "statement not reached" warnings on Sun WorkShop C */
+#ifdef __SUNPRO_C
+#   pragma error_messages(off, E_STATEMENT_NOT_REACHED)
+#endif
 
 /* match()
  * 
