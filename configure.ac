@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.96 2005/07/07 18:38:57 adx Exp $
+dnl $Id: configure.ac,v 7.97 2005/07/09 13:09:21 joant Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.96 2005/07/07 18:38:57 adx Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.97 2005/07/09 13:09:21 joant Exp $])
 
 AC_INIT([ircd-hybrid],[7.1])
 
@@ -55,9 +55,9 @@ esac
 
 AC_MSG_CHECKING([$CC -V for Sun Workshop, Forte, HPUX or Tru64 cc])
 case `$CC -V 2>&1` in
-*Sun*WorkShop* | *Forte*Developer*)
+*Sun*WorkShop* | *Forte*Developer* | *Sun*C*)
 	AC_MSG_RESULT(Sun Workshop/Forte)
-	IRC_CFLAGS="-fast -xinline=dlinkAdd,dlinkAddBefore,dlinkAddTail,dlinkDelete,dlink_list_length,dlink_node,dlinkMoveList,_MyMalloc,_MyRealloc,_MyFree,_DupString"
+	IRC_CFLAGS="-xO3 -xdepend -xinline=dlinkAdd,dlinkAddBefore,dlinkAddTail,dlinkDelete,dlink_list_length,dlink_node,dlinkMoveList,_MyMalloc,_MyRealloc,_MyFree,_DupString"
 	SunWorkShop=yes
 	SGS=yes
 ;;
@@ -473,7 +473,7 @@ if test "$cf_enable_openssl" != "no" ; then
 	else
 	dnl Do the auto-probe here.  Check some common directory paths.
 		for dirs in /usr/local/ssl /usr/pkg /usr/local \
-		/usr/local/openssl ; do
+		/usr/local/openssl /usr/sfw; do
 			if test -f "${dirs}/include/openssl/opensslv.h" ; then
 				cf_openssl_basedir="${dirs}"
 			break
