@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.95 2005/07/05 21:05:08 michael Exp $
+ *  $Id: hash.c,v 7.96 2005/07/09 23:19:57 michael Exp $
  */
 
 #include "stdinc.h"
@@ -44,9 +44,9 @@
 #include "s_user.h"
 
 
-extern BlockHeap *channel_heap;
-static BlockHeap *userhost_heap;
-static BlockHeap *namehost_heap;
+extern BlockHeap *channel_heap; /* XXX */
+static BlockHeap *userhost_heap = NULL;
+static BlockHeap *namehost_heap = NULL;
 static struct UserHost *find_or_add_userhost(const char *);
 
 static unsigned int random_key = 0;
@@ -109,7 +109,7 @@ init_hash(void)
  * than FNV-1a.   -Michael
  */
 static unsigned int
-strhash(const unsigned char *p)
+strhash(const char *p)
 {
   unsigned int hval = FNV1_32_INIT;
 
@@ -439,7 +439,7 @@ hash_find_masked_server(const char *name)
   char buf[HOSTLEN + 1];
   char *p = buf;
   char *s;
-  struct Client *server;
+  struct Client *server = NULL;
 
   if ('*' == *name || '.' == *name)
     return(NULL);
@@ -1052,7 +1052,7 @@ free_list_task(struct ListTask *lt, struct Client *source_p)
 static int
 list_allow_channel(const char *chname, struct ListTask *lt)
 {
-  dlink_node *dl;
+  dlink_node *dl = NULL;
 
   DLINK_FOREACH(dl, lt->show_mask.head)
     if (!match_chan(dl->data, chname))
