@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.329 2005/07/05 22:53:11 metalrock Exp $
+ *  $Id: s_user.c,v 7.330 2005/07/09 13:27:56 adx Exp $
  */
 
 #include "stdinc.h"
@@ -752,27 +752,24 @@ introduce_client(struct Client *client_p, struct Client *source_p)
  * NOTE: this doesn't allow a hostname to begin with a dot and
  * will not allow more dots than chars.
  */
-static int
+int
 valid_hostname(const char *hostname)
 {
   const char *p = hostname;
 
   assert(p != NULL);
 
-  if (hostname == NULL)
-    return(0);
-
   if (('.' == *p) || (':' == *p))
-    return(0);
+    return (0);
 
   while (*p)
   {
     if (!IsHostChar(*p))
-      return(0);
+      return (0);
     p++;
   }
 
-  return(1);
+  return (1);
 }
 
 /* valid_username()
@@ -786,16 +783,13 @@ valid_hostname(const char *hostname)
  * Allow '.' in username to allow for "first.last"
  * style of username
  */
-static int
+int
 valid_username(const char *username)
 {
   int dots      = 0;
   const char *p = username;
 
   assert(p != NULL);
-
-  if (username == NULL)
-    return(0);
 
   if ('~' == *p)
     ++p;
@@ -805,7 +799,7 @@ valid_username(const char *username)
    * or "-hi-@somehost", "h-----@somehost" would still be accepted.
    */
   if (!IsAlNum(*p))
-    return(0);
+    return (0);
 
   while (*++p)
   {
@@ -814,15 +808,15 @@ valid_username(const char *username)
       dots++;
 
       if (dots > ConfigFileEntry.dots_in_ident)
-        return(0);
+        return (0);
       if (!IsUserChar(p[1]))
-        return(0);
+        return (0);
     }
     else if (!IsUserChar(*p))
-      return(0);
+      return (0);
   }
 
-  return(1);
+  return (1);
 }
 
 /* report_and_set_user_flags()

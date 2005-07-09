@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.39 2003/10/07 22:37:10 bill Exp $
+ *  $Id: s_user.h,v 7.40 2005/07/09 13:27:54 adx Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -57,5 +57,7 @@ extern int do_local_user(const char *, struct Client *, struct Client *,
 extern const unsigned int user_modes_from_c_to_bitmask[];
 extern void init_uid(void);
 extern char *uid_get(void);
-#endif
+extern int valid_hostname(const char *);
+extern int valid_username(const char *);
 
+#endif

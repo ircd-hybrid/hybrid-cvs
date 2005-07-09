@@ -1,4 +1,4 @@
-$Id: README,v 1.37 2005/06/22 22:12:46 adx Exp $
+$Id: README,v 1.38 2005/07/09 13:27:52 adx Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
@@ -23,6 +23,11 @@ m_capture.c    - CAPTURE - Makes <nick> captive (unable to
 			   issue commands to the server).
 		 Syntax: CAPTURE <nick>
 		 Example: CAPTURE kiddie
+
+m_change.c     - CHANGE - Modify username/host/realname of a connected client.
+                 Syntax: CHGIDENT <nick> <newuser>
+		         CHGHOST <nick> <newhost>
+			 CHGNAME <nick/server> <newname>
 
 m_classlist.c  - CLASSLIST - Shows the number of clients in the specified
 			     class.
