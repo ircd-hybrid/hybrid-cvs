@@ -1,6 +1,6 @@
 -*- How to use ircd-hybrid's CVS system.
 -*- By Juli Mallett <jmallett@FreeBSD.org>.
--*- $Id: HOWTO-CVS,v 1.7 2005/07/09 19:29:38 lusky Exp $
+-*- $Id: HOWTO-CVS,v 1.8 2005/07/09 20:07:19 lusky Exp $
 
 --- Open branches:
 --- HEAD version: 7.2 (CURRENT)
@@ -59,3 +59,25 @@ be determined based on the results of your actions, and efforts to be careful
 when committing in the future.
 
 Happy hacking!
+
+
+
+
+
+
+
+
+
+
+
+Rodder's notes to self:
+
+To create a branch from the main trunk of my_module at the revision that was
+last committed, use the command 
+	cvs rtag -b <Branchname> <my_module>
+To create a branch from a tagged revision of my_module, use the command 
+	cvs rtag -r <Tagname> -b <Branchname> my_module 
+
+Branching breaks serno.h.  Manually checkin a new serno.h into the branch to
+fix it.
+
