@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.330 2005/07/09 13:27:56 adx Exp $
+ *  $Id: s_user.c,v 7.331 2005/07/09 13:55:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,8 +57,6 @@ int MaxConnectionCount = 1;
 
 static BlockHeap *user_heap;
 
-static int valid_hostname(const char *);
-static int valid_username(const char *);
 static void user_welcome(struct Client *);
 static void report_and_set_user_flags(struct Client *, struct AccessItem *);
 static int check_xline(struct Client *, struct Client *);
