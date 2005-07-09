@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.235 2005/07/05 15:58:23 michael Exp $
+ *  $Id: client.h,v 7.236 2005/07/09 23:38:28 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -103,7 +103,7 @@ struct ListTask
 struct Client
 {
   dlink_node node;
-  dlink_node lnode;      /* Used for Server->servers/users */
+  dlink_node lnode;             /* Used for Server->servers/users */
 
   struct Client *hnext;		/* For client hash table lookups by name */
   struct Client *idhnext;	/* For SID hash table lookups by sid */
@@ -134,11 +134,13 @@ struct Client
    */
   char name[HOSTLEN + 1]; 
   char id[IDLEN + 1];       /* client ID, unique ID per client */
+
   /*
    * client->llname is used to store the clients requested nick
    * temporarily for new connections.
    */
   char              llname[NICKLEN];
+
   /* 
    * client->username is the username from ident or the USER message, 
    * If the client is idented the USER message is ignored, otherwise 
@@ -147,6 +149,7 @@ struct Client
    * field should be considered read-only.
    */ 
   char              username[USERLEN + 1]; /* client's username */
+
   /*
    * client->host contains the resolved name or ip address
    * as a string for the user, it may be fiddled with for oper spoofing etc.
@@ -154,6 +157,7 @@ struct Client
    * considered a read-only field after the client has registered.
    */
   char              host[HOSTLEN + 1];     /* client's hostname */
+
   /*
    * client->info for unix clients will normally contain the info from the 
    * gcos field in /etc/passwd but anything can go here.
@@ -178,7 +182,8 @@ struct Client
 
 struct LocalUser
 {
-  /* The following fields are allocated only for local clients
+  /*
+   * The following fields are allocated only for local clients
    * (directly connected to *this* server with a socket.
    */
   /* Anti flooding part, all because of lamers... */
@@ -203,16 +208,6 @@ struct LocalUser
   /* Send and receive dbufs .. */
   struct dbuf_queue buf_sendq;
   struct dbuf_queue buf_recvq;
-
-  /* we want to use unsigned int here so the sizes have a better chance of
-   * staying the same on 64 bit machines. The current trend is to use
-   * I32LP64, (32 bit ints, 64 bit longs and pointers) and since ircd
-   * will NEVER run on an operating system where ints are less than 32 bits, 
-   * it's a relatively safe bet to use ints. Since right shift operations are
-   * performed on these, it's not safe to allow them to become negative, 
-   * which is possible for long running server connections. Unsigned values 
-   * generally overflow gracefully. --Bleep
-   */
 
   struct {
     unsigned int messages;      /* Statistics: protocol messages sent/received */
