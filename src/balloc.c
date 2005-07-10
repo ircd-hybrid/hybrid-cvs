@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.54 2005/07/05 15:58:29 michael Exp $
+ *  $Id: balloc.c,v 7.55 2005/07/10 13:53:32 michael Exp $
  */
 
 /* 
@@ -237,12 +237,12 @@ heap_garbage_collection(void *arg)
 /* ************************************************************************ */
 
 static int
-newblock(BlockHeap * bh)
+newblock(BlockHeap *bh)
 {
     MemBlock *newblk;
     Block *b;
     int i;
-    void *offset;
+    void *offset = NULL;
 
     /* Setup the initial data structure. */
     b = (Block *) calloc(1, sizeof(Block));
@@ -267,7 +267,7 @@ newblock(BlockHeap * bh)
     for (i = 0; i < bh->elemsPerBlock; i++)
       {
         void *data;
-        newblk = (void *)offset;
+        newblk = offset;
         newblk->block = b;
         data = (void *)((size_t)offset + sizeof(MemBlock));
         dlinkAdd(data, &newblk->self, &b->free_list);
@@ -467,21 +467,18 @@ BlockHeapFree(BlockHeap * bh, void *ptr)
 static int
 BlockHeapGarbageCollect(BlockHeap *bh)
 {
-    Block *walker, *last;
+  Block *walker = NULL, *last = NULL;
 
-    if (bh == NULL)
-      {
-        return(1);
-      }
+  if (bh == NULL)
+    return(1);
 
-    if (bh->freeElems < bh->elemsPerBlock || bh->blocksAllocated == 1)
-      {
-        /* There couldn't possibly be an entire free block.  Return. */
-        return(0);
-      }
+  if (bh->freeElems < bh->elemsPerBlock || bh->blocksAllocated == 1)
+  {
+    /* There couldn't possibly be an entire free block.  Return. */
+    return(0);
+  }
 
-    last = NULL;
-    walker = bh->base;
+  walker = bh->base;
 
     while (walker != NULL)
       {
@@ -525,45 +522,45 @@ BlockHeapGarbageCollect(BlockHeap *bh)
 /*   0 if successful, 1 if bh == NULL                                       */
 /* ************************************************************************ */
 int
-BlockHeapDestroy(BlockHeap * bh)
+BlockHeapDestroy(BlockHeap *bh)
 {
-    Block *walker, *next;
+  Block *walker, *next;
 
-    if (bh == NULL)
-      {
-        return(1);
-      }
+  if (bh == NULL)
+    return(1);
 
-    for (walker = bh->base; walker != NULL; walker = next)
-      {
-        next = walker->next;
-        free_block(walker->elems, walker->alloc_size);
-        if(walker != NULL)
-          free(walker);
-      }
+  for (walker = bh->base; walker != NULL; walker = next)
+  {
+    next = walker->next;
+    free_block(walker->elems, walker->alloc_size);
 
-    if (heap_list == bh)
-      heap_list = bh->next;
-    else {
-      BlockHeap *prev;
+    if (walker != NULL)
+      free(walker);
+  }
 
-      for (prev = heap_list; prev->next != bh; prev = prev->next);
-      prev->next = bh->next;
-    }
+  if (heap_list == bh)
+    heap_list = bh->next;
+  else {
+    BlockHeap *prev;
 
-    free(bh);
-    return(0);
+    for (prev = heap_list; prev->next != bh; prev = prev->next)
+      /* nothing */ ;
+    prev->next = bh->next;
+  }
+
+  free(bh);
+  return(0);
 }
 
 /*
- * block_heap_get_used()
+ * block_heap_get_used_mem()
  *
  * inputs       - Pointer to a BlockHeap
  * output       - Number of bytes being used
  * side effects - NONE
  */
 static size_t
-block_heap_get_used(const BlockHeap *const bh)
+block_heap_get_used_mem(const BlockHeap *const bh)
 {
   return(((bh->blocksAllocated *
            bh->elemsPerBlock)-bh->freeElems) *
@@ -571,42 +568,85 @@ block_heap_get_used(const BlockHeap *const bh)
 }
 
 /*
- * block_heap_get_free()
+ * block_heap_get_free_mem()
  *
  * inputs       - Pointer to a BlockHeap
  * output       - Number of bytes being free for further allocations
  * side effects - NONE
  */
 static size_t
-block_heap_get_free(const BlockHeap *const bh)
+block_heap_get_free_mem(const BlockHeap *const bh)
 {
   return(bh->freeElems * (bh->elemSize + sizeof(MemBlock)));
 }
 
 /*
- * block_heap_get_size()
+ * block_heap_get_size_mem()
  *
  * inputs       - Pointer to a BlockHeap
  * output       - Total number of bytes of memory belonging to a heap
  * side effects - NONE
  */
 static size_t
-block_heap_get_size(const BlockHeap *const bh)
+block_heap_get_size_mem(const BlockHeap *const bh)
 {
   return(((bh->blocksAllocated *
            bh->elemsPerBlock)) *
           (bh->elemSize + sizeof(MemBlock)));
 }
 
+/*
+ * block_heap_get_used_elm()
+ *
+ * inputs       - Pointer to a BlockHeap
+ * output       - Number of elements being used
+ * side effects - NONE
+ */
+static unsigned int
+block_heap_get_used_elm(const BlockHeap *const bh)
+{
+  return((bh->blocksAllocated *
+          bh->elemsPerBlock)-bh->freeElems);
+}
+
+/*
+ * block_heap_get_free_elm()
+ *
+ * inputs       - Pointer to a BlockHeap
+ * output       - Number of elements being free for further allocations
+ * side effects - NONE
+ */
+static unsigned int
+block_heap_get_free_elm(const BlockHeap *const bh)
+{
+  return(bh->freeElems);
+}
+
+/*
+ * block_heap_get_size_elm()
+ *
+ * inputs       - Pointer to a BlockHeap
+ * output       - Total number of total elements belonging to a heap
+ * side effects - NONE
+ */
+static unsigned int
+block_heap_get_size_elm(const BlockHeap *const bh)
+{
+  return(bh->blocksAllocated * bh->elemsPerBlock);
+}
+
 void
 block_heap_report_stats(struct Client *client_p)
 {
-  const BlockHeap *bh;
+  const BlockHeap *bh = NULL;
 
   for (bh = heap_list; bh != NULL; bh = bh->next)
-    sendto_one(client_p, ":%s %d %s z :%s mempool: used %u free %u (size %u)",
+    sendto_one(client_p, ":%s %d %s z :%s mempool: used %u/%u free %u/%u (size %u/%u)",
                me.name, RPL_STATSDEBUG, client_p->name, bh->name,
-               block_heap_get_used(bh),
-               block_heap_get_free(bh),
-               block_heap_get_size(bh));
+               block_heap_get_used_elm(bh),
+               block_heap_get_used_mem(bh),
+               block_heap_get_free_elm(bh),
+               block_heap_get_free_mem(bh),
+               block_heap_get_size_elm(bh),
+               block_heap_get_size_mem(bh));
 }
