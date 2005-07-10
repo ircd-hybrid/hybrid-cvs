@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.154 2005/07/08 01:49:02 metalrock Exp $
+# $Id: Makefile.in,v 7.155 2005/07/10 12:30:13 michael Exp $
 #
 @SET_MAKE@
 
@@ -90,7 +90,6 @@ BASE_SRCS =	\
  s_auth.c \
  s_bsd.c \
  s_conf.c \
- s_debug.c \
  s_gline.c \
  s_log.c \
  s_misc.c \
