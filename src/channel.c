@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.428 2005/07/10 00:44:07 db Exp $
+ *  $Id: channel.c,v 7.429 2005/07/10 01:28:12 adx Exp $
  */
 
 #include "stdinc.h"
@@ -254,33 +254,34 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
     return;
 
   if (IsCapable(client_p, CAP_TS6))
-    ircsprintf(buf, ":%s BMASK %lu %s ", me.id,
-               (unsigned long)chptr->channelts, chptr->chname);
+    ircsprintf(buf, ":%s BMASK %lu %s %c :", me.id,
+               (unsigned long)chptr->channelts, chptr->chname, flag);
   else
     ircsprintf(buf, ":%s MODE %s +", me.name, chptr->chname);
 
-  cur_len = mlen = (strlen(buf) + 2);
+  /* MODE needs additional one byte for space between mbuf and pbuf */
+  cur_len = mlen = strlen(buf) + !IsCapable(client_p, CAP_TS6);
   *mp = *pp = '\0';
 
   DLINK_FOREACH(lp, top->head)
   {
     banptr = lp->data;
+    /* must add another b/e/I letter if we use MODE */
     tlen = strlen(banptr->name) + strlen(banptr->username) +
-      strlen(banptr->host) + 1;
-
-    assert(tlen > 1);  /* this could only be false if our banstr was empty */
+      strlen(banptr->host) + 3 + !IsCapable(client_p, CAP_TS6);
 
     /*
      * send buffer and start over if we cannot fit another ban,
      * or if the target is non-ts6 and we have too many modes in
      * in this line.
      */
-    if ((cur_len + tlen + 2) > MODEBUFLEN || (!IsCapable(client_p, CAP_TS6) && count >= MAXMODEPARAMS))
+    if (cur_len + tlen > BUFSIZE - 2 || (!IsCapable(client_p, CAP_TS6) &&
+      count >= MAXMODEPARAMS))
     {
       *(pp-1) = '\0'; /* get rid of trailing space on buffer */
    
       if(IsCapable(client_p, CAP_TS6))
-        sendto_one(client_p, "%s%c :%s", buf, flag, pbuf);
+        sendto_one(client_p, "%s%s", buf, pbuf);
       else
         sendto_one(client_p, "%s%s %s", buf, mbuf, pbuf);
 
@@ -292,16 +293,16 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
 
     count++;
     *mp++ = flag;
-    *mp = *pp = '\0';
-    ircsprintf(pp, "%s!%s@%s ", banptr->name, banptr->username, banptr->host);
-    pp += tlen;
+    *mp = '\0';
+    pp += ircsprintf(pp, "%s!%s@%s ", banptr->name, banptr->username,
+                     banptr->host);
     cur_len += tlen;
   }
 
   *(pp-1) = '\0'; /* get rid of trailing space on buffer */
 
-  if(IsCapable(client_p, CAP_TS6))
-    sendto_one(client_p, "%s%c :%s", buf, flag, pbuf);
+  if (IsCapable(client_p, CAP_TS6))
+    sendto_one(client_p, "%s%s", buf, pbuf);
   else
     sendto_one(client_p, "%s%s %s", buf, mbuf, pbuf);
 }
