@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.146 2005/07/10 02:02:02 db Exp $
+ *  $Id: channel_mode.c,v 7.147 2005/07/10 10:12:52 adx Exp $
  */
 
 #include "stdinc.h"
@@ -214,6 +214,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
 
   DLINK_FOREACH(ban, list->head)
   {
+    actualBan = ban->data;
     if ((irccmp(actualBan->name, name) == 0) &&
 	(irccmp(actualBan->username, username) == 0) &&
 	(irccmp(actualBan->host, host) == 0))
