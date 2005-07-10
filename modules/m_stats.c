@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.170 2005/07/10 12:30:11 michael Exp $
+ *  $Id: m_stats.c,v 1.171 2005/07/10 12:45:11 michael Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.170 $";
+const char *_version = "$Revision: 1.171 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -422,6 +422,9 @@ count_memory(struct Client *source_p)
   size_t channel_except_memory = 0;
   size_t channel_invex_memory = 0;
 
+  unsigned int safelist_count = 0;
+  size_t safelist_memory = 0;
+
   unsigned long away_memory = 0;       /* memory used by aways           */
   unsigned long wwm = 0;               /* whowas array memory used       */
   unsigned long conf_memory = 0;       /* memory used by conf lines      */
@@ -530,6 +533,21 @@ count_memory(struct Client *source_p)
     }
   }
 
+  if ((safelist_count = dlink_list_length(&listing_client_list)))
+  {
+    safelist_memory = safelist_count * sizeof(struct ListTask);
+    DLINK_FOREACH(gptr, listing_client_list.head)
+    {
+      struct Client *acptr = gptr->data;
+
+      DLINK_FOREACH(dlink, acptr->localClient->list_task->show_mask.head)
+        safelist_memory += strlen(dlink->data);
+
+      DLINK_FOREACH(dlink, acptr->localClient->list_task->hide_mask.head)
+        safelist_memory += strlen(dlink->data);
+    }
+  }
+
 #if 0
   /* XXX THIS has to be fixed !!!! -db */
   /* count up all config items */
@@ -604,6 +622,10 @@ count_memory(struct Client *source_p)
   total_channel_memory = channel_memory + channel_ban_memory +
                          channel_users * sizeof(struct Membership) +
                          channel_invites * sizeof(dlink_node);
+
+  sendto_one(source_p, ":%s %d %s z :Safelist %u(%u)",
+             me.name, RPL_STATSDEBUG, source_p->name,
+             safelist_count, safelist_memory);
 
   sendto_one(source_p, ":%s %d %s z :Whowas users %u(%lu)",
              me.name, RPL_STATSDEBUG, source_p->name,
