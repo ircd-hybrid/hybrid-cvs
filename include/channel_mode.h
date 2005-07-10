@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.32 2005/06/28 20:16:29 adx Exp $
+ *  $Id: channel_mode.h,v 7.33 2005/07/10 00:44:01 db Exp $
  */
 
 
@@ -40,6 +40,7 @@ extern void set_channel_mode(struct Client *, struct Client *, struct Channel *,
 extern void init_chcap_usage_counts(void);
 extern void set_chcap_usage_counts(struct Client *);
 extern void unset_chcap_usage_counts(struct Client *);
+extern void split_nuh(char *mask, char **nick, char **user, char **host);
 
 /*
 ** Channel Related macros follow

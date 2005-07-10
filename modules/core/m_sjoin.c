@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.192 2005/07/09 22:59:55 db Exp $
+ *  $Id: m_sjoin.c,v 1.193 2005/07/10 00:44:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.192 $";
+const char *_version = "$Revision: 1.193 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -875,7 +875,8 @@ remove_ban_list(struct Channel *chptr, struct Client *source_p,
   {
     banptr = ptr->data;
  
-    plen = strlen(banptr->banstr) + 1;
+    plen = strlen(banptr->name) + strlen(banptr->username) +
+      strlen(banptr->host) + 1;
  
     if(count >= MAXMODEPARAMS || (cur_len + plen) > BUFSIZE - 4)
     {
@@ -896,7 +897,8 @@ remove_ban_list(struct Channel *chptr, struct Client *source_p,
 
     *mbuf++ = c;
     cur_len += plen;
-    pbuf += ircsprintf(pbuf, "%s ", banptr->banstr);
+    pbuf += ircsprintf(pbuf, "%s!%s@%s ", banptr->name, banptr->username,
+		       banptr->host);
     count++;
 
     BlockHeapFree(ban_heap, banptr);

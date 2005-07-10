@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.100 2005/05/28 13:38:49 michael Exp $
+ *  $Id: s_debug.c,v 7.101 2005/07/10 00:44:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -209,9 +209,13 @@ count_memory(struct Client *source_p)
 
         channel_ban_memory += sizeof(struct Ban);
 
-        if (actualBan->banstr)
-          channel_ban_memory += strlen(actualBan->banstr) + 1;
-        if (actualBan->who)
+        if (actualBan->name != NULL)
+          channel_ban_memory += strlen(actualBan->name) + 1;
+        if (actualBan->username != NULL)
+          channel_ban_memory += strlen(actualBan->username) + 1;
+        if (actualBan->host != NULL)
+          channel_ban_memory += strlen(actualBan->host) + 1;
+        if (actualBan->who != NULL)
           channel_ban_memory += strlen(actualBan->who) + 1;
       }
     }
@@ -226,9 +230,13 @@ count_memory(struct Client *source_p)
 
         channel_except_memory += sizeof(struct Ban);
 
-        if (actualBan->banstr)
-          channel_except_memory += strlen(actualBan->banstr) + 1;
-        if (actualBan->who)
+        if (actualBan->name != NULL)
+          channel_except_memory += strlen(actualBan->name) + 1;
+        if (actualBan->username != NULL)
+          channel_except_memory += strlen(actualBan->username) + 1;
+        if (actualBan->host != NULL)
+          channel_except_memory += strlen(actualBan->host) + 1;
+        if (actualBan->who != NULL)
           channel_except_memory += strlen(actualBan->who) + 1;
       }
     }
@@ -243,8 +251,12 @@ count_memory(struct Client *source_p)
 
         channel_invex_memory += sizeof(struct Ban);
 
-        if (actualBan->banstr)
-          channel_invex_memory += strlen(actualBan->banstr) + 1;
+        if (actualBan->name != NULL)
+          channel_invex_memory += strlen(actualBan->name) + 1;
+        if (actualBan->username != NULL)
+          channel_invex_memory += strlen(actualBan->username) + 1;
+        if (actualBan->host != NULL)
+          channel_invex_memory += strlen(actualBan->host) + 1;
         if (actualBan->who)
           channel_invex_memory += strlen(actualBan->who) + 1;
       }

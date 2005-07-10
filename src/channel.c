@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.427 2005/07/01 13:39:59 michael Exp $
+ *  $Id: channel.c,v 7.428 2005/07/10 00:44:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -265,7 +265,8 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
   DLINK_FOREACH(lp, top->head)
   {
     banptr = lp->data;
-    tlen = strlen(banptr->banstr) + 1;
+    tlen = strlen(banptr->name) + strlen(banptr->username) +
+      strlen(banptr->host) + 1;
 
     assert(tlen > 1);  /* this could only be false if our banstr was empty */
 
@@ -292,7 +293,7 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
     count++;
     *mp++ = flag;
     *mp = *pp = '\0';
-    ircsprintf(pp, "%s ", banptr->banstr);
+    ircsprintf(pp, "%s!%s@%s ", banptr->name, banptr->username, banptr->host);
     pp += tlen;
     cur_len += tlen;
   }
@@ -345,7 +346,9 @@ free_channel_list(dlink_list *list)
   {
     struct Ban *actualBan = ptr->data;
 
-    MyFree(actualBan->banstr);
+    MyFree(actualBan->name);
+    MyFree(actualBan->username);
+    MyFree(actualBan->host);
     MyFree(actualBan->who);
     dlinkDelete(&actualBan->node, list);
     BlockHeapFree(ban_heap, actualBan);
@@ -558,9 +561,15 @@ get_member_status(struct Membership *ms, int combine)
   return(buffer);
 }
 
+/* find_bmask()
+ *
+ * inputs       - pointer to Client to check
+ *		- pointer to ban list to search
+ * output       - returns an int 1 if match found
+ *
+ */
 static int
-find_bmask(const char *host, const char *iphost,
-           const dlink_list *const list)
+find_bmask(const struct Client *who, const dlink_list *const list)
 {
   const dlink_node *ptr = NULL;
 
@@ -568,9 +577,11 @@ find_bmask(const char *host, const char *iphost,
   {
     const struct Ban *bp = ptr->data;
 
-    if (match(bp->banstr, host) ||
-        match(bp->banstr, iphost) ||
-        match_cidr(bp->banstr, iphost))
+    if (match(bp->name, who->name) &&
+	match(bp->username, who->username) &&
+	(match(bp->host, who->host) ||
+	 match(bp->host, who->sockhost) ||
+	 match_cidr(bp->host, who->sockhost)))
       return(1);
   }
 
@@ -592,46 +603,32 @@ find_bmask(const char *host, const char *iphost,
 int
 is_banned(struct Channel *chptr, struct Client *who)
 {
-  char src_host[NICKLEN + USERLEN + HOSTLEN + 6];
-  char src_iphost[NICKLEN + USERLEN + HOSTLEN + 6];
-
   if (!IsPerson(who))
     return(0);
 
-  ircsprintf(src_host,"%s!%s@%s", who->name, who->username, who->host);
-  ircsprintf(src_iphost,"%s!%s@%s", who->name, who->username,
-	     who->sockhost);
-
-  return(find_bmask(src_host, src_iphost, &chptr->banlist) &&
-         (!ConfigChannel.use_except || !find_bmask(src_host, src_iphost, &chptr->exceptlist)));
+  return(find_bmask(who, &chptr->banlist) && (!ConfigChannel.use_except ||
+         !find_bmask(who, &chptr->exceptlist)));
 }
 
 /* can_join()
  *
- * inputs       -
- * output       -
+ * inputs       - pointer to client attempting to join
+ *		- pointer to channel 
+ *		- key sent by client attempting to join if present
+ * output       - ERR_BANNEDFROMCHAN, ERR_INVITEONLYCHAN, ERR_CHANNELISFULL
+ *		  or 0 if allowed to join.
  * side effects - NONE
  */
 int
 can_join(struct Client *source_p, struct Channel *chptr, const char *key)
 {
-  char src_host[NICKLEN + USERLEN + HOSTLEN + 6];
-  char src_iphost[NICKLEN + USERLEN + HOSTLEN + 6];
-
-  assert(source_p->localClient != NULL);
-
-  ircsprintf(src_host, "%s!%s@%s", source_p->name, source_p->username,
-             source_p->host);
-  ircsprintf(src_iphost, "%s!%s@%s", source_p->name, source_p->username,
-	     source_p->sockhost);
-
-  if (find_bmask(src_host, src_iphost, &chptr->banlist))
-    if (!ConfigChannel.use_except || !find_bmask(src_host, src_iphost, &chptr->exceptlist))
+  if (find_bmask(source_p, &chptr->banlist))
+    if (!ConfigChannel.use_except || !find_bmask(source_p, &chptr->exceptlist))
       return(ERR_BANNEDFROMCHAN);
 
   if (chptr->mode.mode & MODE_INVITEONLY)
     if (!dlinkFind(&source_p->user->invited, chptr))
-      if (!ConfigChannel.use_invex || !find_bmask(src_host, src_iphost, &chptr->invexlist))
+      if (!ConfigChannel.use_invex || !find_bmask(source_p, &chptr->invexlist))
         return(ERR_INVITEONLYCHAN);
 
   if (*chptr->mode.key && (EmptyString(key) || irccmp(chptr->mode.key, key)))

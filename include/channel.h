@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.157 2004/03/02 17:02:58 db Exp $
+ *  $Id: channel.h,v 7.158 2005/07/10 00:44:01 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -117,7 +117,9 @@ extern void free_channel_list(dlink_list *);
 struct Ban          /* also used for exceptions -orabidoo */
 {
   dlink_node node;
-  char *banstr;
+  char *name;
+  char *username;
+  char *host;
   char *who;
   time_t when;
 };

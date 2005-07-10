@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.144 2005/06/23 09:34:00 michael Exp $
+ *  $Id: channel_mode.c,v 7.145 2005/07/10 00:44:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -164,6 +164,8 @@ check_string(char *s)
  *   -is 8/9/00 
  */
 
+char banid_copy[BUFSIZE];
+
 int
 add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
 {
@@ -171,6 +173,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
   dlink_node *ban;
   struct Ban *actualBan;
   unsigned int num_mask = 0;
+  char *name, *username, *host;
 
   /* dont let local clients overflow the b/e/I lists */
   if (MyClient(client_p))
@@ -188,6 +191,9 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
 
     collapse(banid);
   }
+
+  strcpy(banid_copy, banid);
+  split_nuh(banid_copy, &name, &username, &host);
 
   switch (type)
   {
@@ -208,15 +214,16 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
 
   DLINK_FOREACH(ban, list->head)
   {
-    actualBan = ban->data;
-
-    if (!irccmp(actualBan->banstr, banid))
+    if ((irccmp(actualBan->name, name) == 0) &&
+	(irccmp(actualBan->username, username) == 0) &&
+	(irccmp(actualBan->host, host) == 0))
       return(0);
   }
 
   actualBan = (struct Ban *)BlockHeapAlloc(ban_heap);
-  memset(actualBan, 0, sizeof(struct Ban));
-  DupString(actualBan->banstr, banid);
+  DupString(actualBan->name, name);
+  DupString(actualBan->username, username);
+  DupString(actualBan->host, host);
 
   if (IsPerson(client_p))
   {
@@ -252,9 +259,13 @@ del_id(struct Channel *chptr, const char *banid, int type)
   dlink_list *list;
   dlink_node *ban;
   struct Ban *banptr;
+  char *name, *username, *host;
 
   if (banid == NULL)
     return(0);
+
+  strcpy(banid_copy, banid);
+  split_nuh(banid_copy, &name, &username, &host);
 
   switch (type)
   {
@@ -277,9 +288,13 @@ del_id(struct Channel *chptr, const char *banid, int type)
   {
     banptr = ban->data;
 
-    if (irccmp(banid, banptr->banstr) == 0)
+    if ((irccmp(name, banptr->name) == 0) &&
+	(irccmp(username, banptr->username) == 0) &&
+	(irccmp(host, banptr->host) == 0))
     {
-      MyFree(banptr->banstr);
+      MyFree(banptr->name);
+      MyFree(banptr->username);
+      MyFree(banptr->host);
       MyFree(banptr->who);
       dlinkDelete(&banptr->node, list);
       BlockHeapFree(ban_heap, banptr);
@@ -719,7 +734,8 @@ chm_ban(struct Client *client_p, struct Client *source_p,
       banptr = ptr->data;
       sendto_one(client_p, form_str(RPL_BANLIST),
                  me.name, client_p->name, chname,
-                 banptr->banstr, banptr->who, banptr->when);
+                 banptr->name, banptr->username, banptr->host,
+		 banptr->who, banptr->when);
     }
     sendto_one(source_p, form_str(RPL_ENDOFBANLIST), me.name,
                source_p->name, chname);
@@ -841,7 +857,8 @@ chm_except(struct Client *client_p, struct Client *source_p,
       banptr = ptr->data;
       sendto_one(client_p, form_str(RPL_EXCEPTLIST),
                  me.name, client_p->name, chname,
-                 banptr->banstr, banptr->who, banptr->when);
+                 banptr->name, banptr->username, banptr->host,
+		 banptr->who, banptr->when);
     }
     sendto_one(source_p, form_str(RPL_ENDOFEXCEPTLIST), me.name,
                source_p->name, chname);
@@ -943,7 +960,8 @@ chm_invex(struct Client *client_p, struct Client *source_p,
     {
       banptr = ptr->data;
       sendto_one(client_p, form_str(RPL_INVITELIST), me.name,
-                 client_p->name, chname, banptr->banstr,
+                 client_p->name, chname,
+		 banptr->name, banptr->username, banptr->host,
                  banptr->who, banptr->when);
     }
     sendto_one(source_p, form_str(RPL_ENDOFINVITELIST), me.name,
@@ -1781,4 +1799,88 @@ set_channel_mode(struct Client *client_p, struct Client *source_p, struct Channe
     }
   }
   send_mode_changes(client_p, source_p, chptr, chname);
+}
+
+/*
+ * split_nuh
+ *
+ * inputs	- pointer to original mask (modified in place)
+ *		- pointer to pointer where nick should go
+ *		- pointer to pointer where user should go
+ *		- pointer to pointer where host should go
+ * output	- NONE
+ * side effects	- mask is modified in place
+ *
+ * mask				nick	user	host
+ * ----------------------	------- ------- ------
+ * Dianora!db@db.net		Dianora	db	db.net
+ * Dianora			Dianora	*	*
+ * Dianora!			Dianora	*	*
+ * Dianora!@			Dianora	*	*
+ * Dianora!db			Dianora	db	*
+ * Dianora!@db.net		Dianora	*	db.net
+ * db@db.net			*	db	db.net
+ * !@				*	*	*
+ * @				*	*	*
+ * !				*	*	*
+ */
+
+void
+split_nuh(char *mask, char **nick, char **user, char **host)
+{
+  char *p, *q;
+
+  if ((p = strchr(mask, '!')) != NULL)
+  {
+    *p = '\0';
+    if (*mask != '\0')
+      *nick = mask;
+    else
+      *nick = "*";
+    p++;
+    if ((q = strchr(p, '@')) != NULL)
+    {
+      *q = '\0';
+      if (*p != '\0')
+	*user = p;
+      else
+	*user = "*";
+      q++;
+      if (*q != '\0')
+	*host = q;
+      else
+	*host = "*";
+    }
+    else
+    {
+      if (*p != '\0')
+	*user = p;
+      else
+	*user = "*";
+      *host = "*";
+    }
+  }
+  else
+  {
+    if ((p = strchr(mask, '@')) != NULL)
+    {
+      *nick = "*";
+      *p = '\0';
+      if (*mask != '\0')
+	*user = mask;
+      else
+	*user = "*";
+      p++;
+      if (*p != '\0')
+	*host = p;
+      else
+	*host = "*";
+    }
+    else
+    {
+      *nick = mask;
+      *user = "*";
+      *host = "*";
+    }
+  }
 }

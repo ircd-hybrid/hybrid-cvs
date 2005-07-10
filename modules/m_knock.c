@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.69 2005/06/23 00:16:05 db Exp $
+ *  $Id: m_knock.c,v 1.70 2005/07/10 00:44:03 db Exp $
  */
 
 #include "stdinc.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   delete_capability("KNOCK");
 }
 
-const char *_version = "$Revision: 1.69 $";
+const char *_version = "$Revision: 1.70 $";
 #endif
 
 /* m_knock
@@ -173,7 +173,7 @@ me_knock(struct Client *client_p, struct Client *source_p,
  *              - pointer to source struct source_p
  *              - number of args
  *              - pointer to array of args
- *		- clients sockhost (if remote)
+ *		- clients sockhost
  * output       -
  * side effects - sets name to name of base channel
  *                or sends failure message to source_p
