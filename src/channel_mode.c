@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.145 2005/07/10 00:44:07 db Exp $
+ *  $Id: channel_mode.c,v 7.146 2005/07/10 02:02:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -224,6 +224,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
   DupString(actualBan->name, name);
   DupString(actualBan->username, username);
   DupString(actualBan->host, host);
+  actualBan->len = strlen(name) + strlen(username) + strlen(host);
 
   if (IsPerson(client_p))
   {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.429 2005/07/10 01:28:12 adx Exp $
+ *  $Id: channel.c,v 7.430 2005/07/10 02:02:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -266,9 +266,9 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
   DLINK_FOREACH(lp, top->head)
   {
     banptr = lp->data;
+
     /* must add another b/e/I letter if we use MODE */
-    tlen = strlen(banptr->name) + strlen(banptr->username) +
-      strlen(banptr->host) + 3 + !IsCapable(client_p, CAP_TS6);
+    tlen = banptr->len + 3 + !IsCapable(client_p, CAP_TS6);
 
     /*
      * send buffer and start over if we cannot fit another ban,
