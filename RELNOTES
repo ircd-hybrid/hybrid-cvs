@@ -1,5 +1,5 @@
 -- ircd-hybrid-7.2beta1 RELNOTES
-o) Nothing yet
+o) Usermode +G, like +g, but allow messaging from people on common channels
 
 --------------------------------------------------------------------------------
 
@@ -44,4 +44,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.106 2005/07/09 19:33:35 lusky Exp $
+$Id: RELNOTES,v 1.107 2005/07/10 19:46:07 adx Exp $

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.236 2005/07/09 23:38:28 michael Exp $
+ *  $Id: client.h,v 7.237 2005/07/10 19:46:16 adx Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -376,12 +376,13 @@ struct LocalUser
 #define UMODE_BOTS         0x00800 /* shows bots */
 #define UMODE_EXTERNAL     0x01000 /* show servers introduced and splitting */
 #define UMODE_CALLERID     0x02000 /* block unless caller id's */
-#define UMODE_UNAUTH       0x04000 /* show unauth connects here */
-#define UMODE_LOCOPS       0x08000 /* show locops */
+#define UMODE_SOFTCALLERID 0x04000 /* block unless on common channel */
+#define UMODE_UNAUTH       0x08000 /* show unauth connects here */
+#define UMODE_LOCOPS       0x10000 /* show locops */
 
 /* user information flags, only settable by remote mode or local oper */
-#define UMODE_OPER         0x10000 /* Operator */
-#define UMODE_ADMIN        0x20000 /* Admin on server */
+#define UMODE_OPER         0x20000 /* Operator */
+#define UMODE_ADMIN        0x40000 /* Admin on server */
 #define UMODE_ALL	   UMODE_SERVNOTICE
 
 #define SEND_UMODES  (UMODE_INVISIBLE | UMODE_OPER | UMODE_WALLOP | \
@@ -390,7 +391,8 @@ struct LocalUser
                       UMODE_REJ | UMODE_SKILL | UMODE_FULL | UMODE_SPY | \
                       UMODE_NCHANGE | UMODE_OPERWALL | UMODE_DEBUG | \
                       UMODE_BOTS | UMODE_EXTERNAL | UMODE_LOCOPS | \
-                      UMODE_ADMIN | UMODE_UNAUTH | UMODE_CALLERID)
+                      UMODE_ADMIN | UMODE_UNAUTH | UMODE_CALLERID | \
+		      UMODE_SOFTCALLERID)
 
 
 /* oper priv flags */
@@ -455,7 +457,9 @@ struct LocalUser
 /* umode flags */
 #define IsInvisible(x)          ((x)->umodes & UMODE_INVISIBLE)
 #define SendWallops(x)          ((x)->umodes & UMODE_WALLOP)
-#define IsSetCallerId(x)	((x)->umodes & UMODE_CALLERID)
+#define IsSetCallerId(x)        ((x)->umodes & \
+                                 (UMODE_CALLERID|UMODE_SOFTCALLERID))
+#define IsSoftCallerId(x)       ((x)->umodes & UMODE_SOFTCALLERID)
 
 #define SetSendQExceeded(x)	((x)->flags |= FLAGS_SENDQEX)
 #define IsSendQExceeded(x)	((x)->flags &  FLAGS_SENDQEX)

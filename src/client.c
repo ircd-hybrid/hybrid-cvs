@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.450 2005/07/05 15:58:29 michael Exp $
+ *  $Id: client.c,v 7.451 2005/07/10 19:46:17 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1300,10 +1300,17 @@ accept_message(struct Client *source, struct Client *target)
     struct Client *target_p = ptr->data;
 
     if (source == target_p)
-      return(1);
+      return (1);
   }
 
-  return(0);
+  if (IsSoftCallerId(target))
+  {
+    DLINK_FOREACH(ptr, target->user->channel.head)
+      if (IsMember(source, (struct Channel *) ptr->data))
+        return (1);
+  }
+
+  return (0);
 }
 
 /* del_from_accept()

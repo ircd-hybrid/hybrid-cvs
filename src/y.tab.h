@@ -1,5 +1,5 @@
 /* A Bison parser, made by GNU Bison 1.875.  */
-/* $Id: y.tab.h,v 7.15 2005/07/07 20:47:37 adx Exp $ */
+/* $Id: y.tab.h,v 7.16 2005/07/10 19:46:19 adx Exp $ */
 
 /* Skeleton parser for Yacc-like parsing with Bison,
    Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002 Free Software Foundation, Inc.
@@ -211,50 +211,51 @@
      TWODOTS = 436,
      T_ALL = 437,
      T_BOTS = 438,
-     T_CALLERID = 439,
-     T_CCONN = 440,
-     T_CLIENT_FLOOD = 441,
-     T_DEBUG = 442,
-     T_DRONE = 443,
-     T_EXTERNAL = 444,
-     T_FULL = 445,
-     T_INVISIBLE = 446,
-     T_IPV4 = 447,
-     T_IPV6 = 448,
-     T_LOCOPS = 449,
-     T_LOGPATH = 450,
-     T_L_CRIT = 451,
-     T_L_DEBUG = 452,
-     T_L_ERROR = 453,
-     T_L_INFO = 454,
-     T_L_NOTICE = 455,
-     T_L_TRACE = 456,
-     T_L_WARN = 457,
-     T_MAX_CLIENTS = 458,
-     T_NCHANGE = 459,
-     T_OPERWALL = 460,
-     T_REJ = 461,
-     T_SERVNOTICE = 462,
-     T_SKILL = 463,
-     T_SPY = 464,
-     T_UNAUTH = 465,
-     T_UNRESV = 466,
-     T_UNXLINE = 467,
-     T_WALLOP = 468,
-     THROTTLE_TIME = 469,
-     TRUE_NO_OPER_FLOOD = 470,
-     UNKLINE = 471,
-     USER = 472,
-     USE_EGD = 473,
-     USE_EXCEPT = 474,
-     USE_INVEX = 475,
-     USE_KNOCK = 476,
-     USE_LOGGING = 477,
-     VHOST = 478,
-     VHOST6 = 479,
-     XLINE = 480,
-     WARN = 481,
-     WARN_NO_NLINE = 482
+     T_SOFTCALLERID = 439,
+     T_CALLERID = 440,
+     T_CCONN = 441,
+     T_CLIENT_FLOOD = 442,
+     T_DEBUG = 443,
+     T_DRONE = 444,
+     T_EXTERNAL = 445,
+     T_FULL = 446,
+     T_INVISIBLE = 447,
+     T_IPV4 = 448,
+     T_IPV6 = 449,
+     T_LOCOPS = 450,
+     T_LOGPATH = 451,
+     T_L_CRIT = 452,
+     T_L_DEBUG = 453,
+     T_L_ERROR = 454,
+     T_L_INFO = 455,
+     T_L_NOTICE = 456,
+     T_L_TRACE = 457,
+     T_L_WARN = 458,
+     T_MAX_CLIENTS = 459,
+     T_NCHANGE = 460,
+     T_OPERWALL = 461,
+     T_REJ = 462,
+     T_SERVNOTICE = 463,
+     T_SKILL = 464,
+     T_SPY = 465,
+     T_UNAUTH = 466,
+     T_UNRESV = 467,
+     T_UNXLINE = 468,
+     T_WALLOP = 469,
+     THROTTLE_TIME = 470,
+     TRUE_NO_OPER_FLOOD = 471,
+     UNKLINE = 472,
+     USER = 473,
+     USE_EGD = 474,
+     USE_EXCEPT = 475,
+     USE_INVEX = 476,
+     USE_KNOCK = 477,
+     USE_LOGGING = 478,
+     VHOST = 479,
+     VHOST6 = 480,
+     XLINE = 481,
+     WARN = 482,
+     WARN_NO_NLINE = 483
    };
 #endif
 #define ACCEPT_PASSWORD 258
@@ -438,50 +439,51 @@
 #define TWODOTS 436
 #define T_ALL 437
 #define T_BOTS 438
-#define T_CALLERID 439
-#define T_CCONN 440
-#define T_CLIENT_FLOOD 441
-#define T_DEBUG 442
-#define T_DRONE 443
-#define T_EXTERNAL 444
-#define T_FULL 445
-#define T_INVISIBLE 446
-#define T_IPV4 447
-#define T_IPV6 448
-#define T_LOCOPS 449
-#define T_LOGPATH 450
-#define T_L_CRIT 451
-#define T_L_DEBUG 452
-#define T_L_ERROR 453
-#define T_L_INFO 454
-#define T_L_NOTICE 455
-#define T_L_TRACE 456
-#define T_L_WARN 457
-#define T_MAX_CLIENTS 458
-#define T_NCHANGE 459
-#define T_OPERWALL 460
-#define T_REJ 461
-#define T_SERVNOTICE 462
-#define T_SKILL 463
-#define T_SPY 464
-#define T_UNAUTH 465
-#define T_UNRESV 466
-#define T_UNXLINE 467
-#define T_WALLOP 468
-#define THROTTLE_TIME 469
-#define TRUE_NO_OPER_FLOOD 470
-#define UNKLINE 471
-#define USER 472
-#define USE_EGD 473
-#define USE_EXCEPT 474
-#define USE_INVEX 475
-#define USE_KNOCK 476
-#define USE_LOGGING 477
-#define VHOST 478
-#define VHOST6 479
-#define XLINE 480
-#define WARN 481
-#define WARN_NO_NLINE 482
+#define T_SOFTCALLERID 439
+#define T_CALLERID 440
+#define T_CCONN 441
+#define T_CLIENT_FLOOD 442
+#define T_DEBUG 443
+#define T_DRONE 444
+#define T_EXTERNAL 445
+#define T_FULL 446
+#define T_INVISIBLE 447
+#define T_IPV4 448
+#define T_IPV6 449
+#define T_LOCOPS 450
+#define T_LOGPATH 451
+#define T_L_CRIT 452
+#define T_L_DEBUG 453
+#define T_L_ERROR 454
+#define T_L_INFO 455
+#define T_L_NOTICE 456
+#define T_L_TRACE 457
+#define T_L_WARN 458
+#define T_MAX_CLIENTS 459
+#define T_NCHANGE 460
+#define T_OPERWALL 461
+#define T_REJ 462
+#define T_SERVNOTICE 463
+#define T_SKILL 464
+#define T_SPY 465
+#define T_UNAUTH 466
+#define T_UNRESV 467
+#define T_UNXLINE 468
+#define T_WALLOP 469
+#define THROTTLE_TIME 470
+#define TRUE_NO_OPER_FLOOD 471
+#define UNKLINE 472
+#define USER 473
+#define USE_EGD 474
+#define USE_EXCEPT 475
+#define USE_INVEX 476
+#define USE_KNOCK 477
+#define USE_LOGGING 478
+#define VHOST 479
+#define VHOST6 480
+#define XLINE 481
+#define WARN 482
+#define WARN_NO_NLINE 483
 
 
 
@@ -493,7 +495,7 @@ typedef union YYSTYPE {
   char *string;
 } YYSTYPE;
 /* Line 1238 of yacc.c.  */
-#line 495 "y.tab.h"
+#line 497 "y.tab.h"
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1
