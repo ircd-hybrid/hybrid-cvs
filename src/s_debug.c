@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.101 2005/07/10 00:44:07 db Exp $
+ *  $Id: s_debug.c,v 7.102 2005/07/10 12:03:57 michael Exp $
  */
 
 #include "stdinc.h"
@@ -77,12 +77,12 @@ send_usage(struct Client *source_p)
 
   secs = rus.ru_utime.tv_sec + rus.ru_stime.tv_sec;
 
-  if (0 == secs)
+  if (secs == 0)
     secs = 1;
 
   rup = (CurrentTime - me.since) * hzz;
 
-  if (0 == rup)
+  if (rup == 0)
     rup = 1;
 
   sendto_one(source_p,
@@ -111,8 +111,8 @@ send_usage(struct Client *source_p)
 void
 count_memory(struct Client *source_p)
 {
-  dlink_node *gptr;
-  dlink_node *dlink;
+  const dlink_node *gptr = NULL;
+  const dlink_node *dlink = NULL;
 
   int local_client_conf_count = 0;      /* local client conf links */
   int users_counted = 0;                /* user structs */
@@ -130,9 +130,9 @@ count_memory(struct Client *source_p)
   int number_ips_stored;        /* number of ip addresses hashed */
 
   unsigned long channel_memory = 0;
-  unsigned long channel_ban_memory = 0;
-  unsigned long channel_except_memory = 0;
-  unsigned long channel_invex_memory = 0;
+  size_t channel_ban_memory = 0;
+  size_t channel_except_memory = 0;
+  size_t channel_invex_memory = 0;
 
   unsigned long away_memory = 0;       /* memory used by aways           */
   unsigned long wwm = 0;               /* whowas array memory used       */
@@ -166,21 +166,21 @@ count_memory(struct Client *source_p)
 
     if (MyConnect(target_p))
     {
-      local_client_count++;
+      ++local_client_count;
       local_client_conf_count += dlink_list_length(&target_p->localClient->confs);
     }
     else
-      remote_client_count++;
+      ++remote_client_count;
 
     if (target_p->user != NULL)
     {
-      users_counted++;
+      ++users_counted;
       users_invited_count += dlink_list_length(&target_p->user->invited);
 
       if (target_p->user->away != NULL)
       {
-        aways_counted++;
-        away_memory += (strlen(target_p->user->away)+1);
+        ++aways_counted;
+        away_memory += strlen(target_p->user->away) + 1;
       }
     }
   }
@@ -197,68 +197,47 @@ count_memory(struct Client *source_p)
     channel_invites += dlink_list_length(&chptr->invites);
 
     if (chptr->topic != NULL)
-      topic_count++;
+      ++topic_count;
 
-    if (dlink_list_length(&chptr->banlist))
+    if ((channel_bans = dlink_list_length(&chptr->banlist)))
     {
-      channel_bans += dlink_list_length(&chptr->banlist);
+      channel_ban_memory = channel_bans * sizeof(struct Ban);
 
       DLINK_FOREACH(dlink, chptr->banlist.head)
       {
         actualBan = dlink->data;
+        assert(actualBan->who);
 
-        channel_ban_memory += sizeof(struct Ban);
-
-        if (actualBan->name != NULL)
-          channel_ban_memory += strlen(actualBan->name) + 1;
-        if (actualBan->username != NULL)
-          channel_ban_memory += strlen(actualBan->username) + 1;
-        if (actualBan->host != NULL)
-          channel_ban_memory += strlen(actualBan->host) + 1;
-        if (actualBan->who != NULL)
-          channel_ban_memory += strlen(actualBan->who) + 1;
+        channel_ban_memory += actualBan->len + 3;
+        channel_ban_memory += strlen(actualBan->who) + 1;
       }
     }
 
-    if (dlink_list_length(&chptr->exceptlist))
+    if ((channel_except = dlink_list_length(&chptr->exceptlist)))
     {
-      channel_except += dlink_list_length(&chptr->exceptlist);
+      channel_except_memory = channel_except * sizeof(struct Ban);
 
       DLINK_FOREACH(dlink, chptr->exceptlist.head)
       {
         actualBan = dlink->data;
+        assert(actualBan->who);
 
-        channel_except_memory += sizeof(struct Ban);
-
-        if (actualBan->name != NULL)
-          channel_except_memory += strlen(actualBan->name) + 1;
-        if (actualBan->username != NULL)
-          channel_except_memory += strlen(actualBan->username) + 1;
-        if (actualBan->host != NULL)
-          channel_except_memory += strlen(actualBan->host) + 1;
-        if (actualBan->who != NULL)
-          channel_except_memory += strlen(actualBan->who) + 1;
+        channel_except_memory += actualBan->len + 3;
+        channel_except_memory += strlen(actualBan->who) + 1;
       }
     }
 
-    if (dlink_list_length(&chptr->invexlist))
+    if ((channel_invex = dlink_list_length(&chptr->invexlist)))
     {
-      channel_invex += dlink_list_length(&chptr->invexlist);
+      channel_invex_memory = channel_invex * sizeof(struct Ban);
 
       DLINK_FOREACH(dlink, chptr->invexlist.head)
       {
         actualBan = dlink->data;
+        assert(actualBan->who);
 
-        channel_invex_memory += sizeof(struct Ban);
-
-        if (actualBan->name != NULL)
-          channel_invex_memory += strlen(actualBan->name) + 1;
-        if (actualBan->username != NULL)
-          channel_invex_memory += strlen(actualBan->username) + 1;
-        if (actualBan->host != NULL)
-          channel_invex_memory += strlen(actualBan->host) + 1;
-        if (actualBan->who)
-          channel_invex_memory += strlen(actualBan->who) + 1;
+        channel_invex_memory += actualBan->len + 3;
+        channel_invex_memory += strlen(actualBan->who) + 1;
       }
     }
   }
@@ -316,15 +295,15 @@ count_memory(struct Client *source_p)
              channel_memory, topic_count, topic_count *
 	     (TOPICLEN + 1 + USERHOST_REPLYLEN));
 
-  sendto_one(source_p, ":%s %d %s z :Bans %u(%lu)",
+  sendto_one(source_p, ":%s %d %s z :Bans %u(%u)",
              me.name, RPL_STATSDEBUG, source_p->name,
 	     channel_bans, channel_ban_memory);
 
-  sendto_one(source_p, ":%s %d %s z :Exceptions %u(%lu)",
+  sendto_one(source_p, ":%s %d %s z :Exceptions %u(%u)",
              me.name, RPL_STATSDEBUG, source_p->name,
 	     channel_except, channel_except_memory);
 
-  sendto_one(source_p, ":%s %d %s z :Invex %u(%lu)",
+  sendto_one(source_p, ":%s %d %s z :Invex %u(%u)",
              me.name, RPL_STATSDEBUG, source_p->name,
 	     channel_invex, channel_invex_memory);
 
