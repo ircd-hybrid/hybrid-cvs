@@ -1,8 +1,7 @@
-$Id: TODO,v 7.96 2005/01/14 20:48:34 michael Exp $
+$Id: TODO,v 7.97 2005/07/11 16:26:38 metalrock Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
-- finish RFC'ing m_message.c
 - change nick instead of kill on nick collide
 - dynamically extensible parser for modules
 - modularize channel, network code etc (not just commands)
