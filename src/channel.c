@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.431 2005/07/11 19:06:20 db Exp $
+ *  $Id: channel.c,v 7.432 2005/07/11 21:05:38 adx Exp $
  */
 
 #include "stdinc.h"
@@ -274,8 +274,8 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
      * or if the target is non-ts6 and we have too many modes in
      * in this line.
      */
-    if (cur_len + tlen > BUFSIZE - 2 || (!IsCapable(client_p, CAP_TS6) &&
-      count >= MAXMODEPARAMS))
+    if (cur_len + (tlen - 1) > BUFSIZE - 2 ||
+        (!IsCapable(client_p, CAP_TS6) && count >= MAXMODEPARAMS))
     {
       *(pp-1) = '\0'; /* get rid of trailing space on buffer */
    
