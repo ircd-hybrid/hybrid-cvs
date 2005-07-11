@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.218 2005/07/11 03:03:34 adx Exp $
+ *  $Id: s_bsd.c,v 7.219 2005/07/11 16:32:24 adx Exp $
  */
 
 #include "stdinc.h"
@@ -753,7 +753,8 @@ comm_open(int family, int sock_type, int proto, const char *note)
   /* Set the socket non-blocking, and other wonderful bits */
   if (!set_non_blocking(fd))
   {
-    ilog(L_CRIT, "comm_open: Couldn't set FD %d non blocking: %s", fd, strerror(errno));
+    ilog(L_CRIT, "comm_open: Couldn't set FD %d non blocking: %s",
+         fd, strerror(errno));
       
     close(fd);
     return -1;
@@ -816,7 +817,8 @@ comm_accept(int fd, struct irc_ssaddr *pn, int is_ssl)
 
     if ((ssl = SSL_new(ServerInfo.ctx)) == NULL)
     {
-      ilog(L_CRIT, "SSL_new() ERROR! -- %s", ERR_error_string(ERR_get_error(), NULL));
+      ilog(L_CRIT, "SSL_new() ERROR! -- %s",
+           ERR_error_string(ERR_get_error(), NULL));
 
       close(newfd);
       return -1;
