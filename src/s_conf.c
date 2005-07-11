@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.524 2005/07/11 19:40:29 adx Exp $
+ *  $Id: s_conf.c,v 7.525 2005/07/11 19:49:34 adx Exp $
  */
 
 #include "stdinc.h"
@@ -2457,10 +2457,9 @@ read_conf_files(int cold)
 
   add_isupport("NETWORK", ServerInfo.network_name, -1);
   add_isupport("MAXCHANNELS", NULL, ConfigChannel.max_chans_per_user);
-  ircsprintf(chanmodes, "b%s%s:%d", ConfigChannel.max_bans,
-             ConfigChannel.use_except ? "e" : "",
-	     ConfigChannel.use_invex ? "I" : "");
-  add_isupport("MAXLIST", NULL, chanmodes);
+  ircsprintf(chanmodes, "b%s%s:%d", ConfigChannel.use_except ? "e" : "",
+             ConfigChannel.use_invex ? "I" : "", ConfigChannel.max_bans);
+  add_isupport("MAXLIST", chanmodes, -1);
   add_isupport("MAXTARGETS", NULL, ConfigFileEntry.max_targets);
   if (ConfigChannel.disable_local_channels)
     add_isupport("CHANTYPES", "#", -1);
