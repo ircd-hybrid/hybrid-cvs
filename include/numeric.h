@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.46 2005/07/11 03:03:27 adx Exp $
+ *  $Id: numeric.h,v 7.47 2005/07/11 12:00:18 michael Exp $
  */
 
 #ifndef INCLUDED_numeric_h
@@ -163,6 +163,8 @@ extern const char *get_locale(void);
 #define RPL_LOCALUSERS       265
 #define RPL_GLOBALUSERS      266
 
+#define RPL_WHOISSSL         275
+
 #define RPL_ACCEPTLIST	     281
 #define RPL_ENDOFACCEPT      282
 
@@ -193,8 +195,6 @@ extern const char *get_locale(void);
 /*      RPL_END_CHANINFO     299           aircd */
 
 /* numeric_replies */
-
-#define RPL_WHOISSSL         297
 #define RPL_AWAY             301
 #define RPL_USERHOST         302
 #define RPL_ISON             303
