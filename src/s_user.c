@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.336 2005/07/11 19:40:29 adx Exp $
+ *  $Id: s_user.c,v 7.337 2005/07/11 20:13:45 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1493,14 +1493,31 @@ init_isupport(void)
 void
 add_isupport(const char *name, const char *options, int n)
 {
+  dlink_node *ptr;
   struct Isupport *support;
 
-  support = (struct Isupport *)MyMalloc (sizeof(*support));
+  DLINK_FOREACH(ptr, support_list.head)
+  {
+    support = ptr->data;
+    if (irccmp(support->name, name) == 0)
+    {
+      MyFree(support->name);
+      MyFree(support->options);
+      break;
+    }
+  }
+
+  if (ptr == NULL)
+  {
+    support = (struct Isupport *)MyMalloc (sizeof(*support));
+    dlinkAddTail(support, &support->node, &support_list);
+  }
+
   DupString(support->name, name);
   if (options != NULL)
     DupString(support->options, options);
   support->number = n;
-  dlinkAdd(support, &support->node, &support_list);
+
   rebuild_isupport_message_line();
 }
 
@@ -1545,20 +1562,21 @@ rebuild_isupport_message_line(void)
   char isupportbuffer[512];
   char *p;
   dlink_node *ptr;
-  int len=0;
-  int n=0;
-  int tokens=0;
+  int len = 0;
+  int n = 0;
+  int tokens = 0;
 
   destroy_MessageLine(isupportFile);
   p = isupportbuffer;
 
   DLINK_FOREACH(ptr, support_list.head)
   {
-    struct Isupport *support;
-    support = ptr->data;
+    struct Isupport *support = ptr->data;
+
     n = ircsprintf(p, "%s", support->name);
     len += n;
     p += n;
+
     if (support->options != NULL)
     {
       *p++ = '=';
@@ -1566,6 +1584,7 @@ rebuild_isupport_message_line(void)
       len += n;
       p += n;
     }
+
     if (support->number > 0)
     {
       *p++ = '=';
@@ -1573,6 +1592,7 @@ rebuild_isupport_message_line(void)
       len += n;
       p += n;
     }
+
     *p++ = ' ';
     len++;
     *p = '\0';
@@ -1589,6 +1609,7 @@ rebuild_isupport_message_line(void)
       tokens = 0;
     }
   }
+
   if (len != 0)
   {
     --p;

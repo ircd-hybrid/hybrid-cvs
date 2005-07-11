@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.525 2005/07/11 19:49:34 adx Exp $
+ *  $Id: s_conf.c,v 7.526 2005/07/11 20:13:45 adx Exp $
  */
 
 #include "stdinc.h"
@@ -2660,15 +2660,6 @@ clear_out_old_conf(void)
 #ifdef HAVE_LIBCRYPTO
   ConfigFileEntry.default_cipher_preference = NULL;
 #endif /* HAVE_LIBCRYPTO */
-
-  delete_isupport("NETWORK");
-  delete_isupport("MAXCHANNELS");
-  delete_isupport("MAXLIST");
-  delete_isupport("MAXTARGETS");
-  delete_isupport("CHANTYPES");
-  delete_isupport("CHANMODES");
-  delete_isupport("EXCEPTS");
-  delete_isupport("INVEX");
 }
 
 /* flush_deleted_I_P()
