@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.33 2003/10/24 11:08:21 michael Exp $
+ *  $Id: fileio.c,v 7.34 2005/07/11 03:03:34 adx Exp $
  */
 
 #include "stdinc.h"
@@ -45,12 +45,12 @@ file_open(const char *filename, int mode, int fmode)
 
   if (fd == MASTER_MAX)
   {
-    close(fd); /* Too many FDs! */
+    fd_close(fd); /* Too many FDs! */
     errno = ENFILE;
     fd = -1;
   }
   else if (fd >= 0)
-    fd_open(fd, FD_FILE, filename);
+    fd_open(fd, FD_FILE, filename, NULL);
 
   return(fd);
 }

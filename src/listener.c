@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.93 2005/06/24 05:51:39 michael Exp $
+ *  $Id: listener.c,v 7.94 2005/07/11 03:03:34 adx Exp $
  */
 
 #include "stdinc.h"
@@ -112,7 +112,7 @@ show_ports(struct Client *source_p)
     listener = ptr->data;
     sendto_one(source_p, form_str(RPL_STATSPLINE),
                me.name, source_p->name,
-               'P', listener->port,
+               'P', listener->is_ssl? 'S' : 'P', listener->port,
                IsAdmin(source_p) ? listener->name : me.name,
                listener->ref_count,
                (listener->active)?"active":"disabled");
@@ -239,7 +239,7 @@ find_listener(int port, struct irc_ssaddr *addr)
  * the format "255.255.255.255"
  */
 void 
-add_listener(int port, const char* vhost_ip)
+add_listener(int port, const char* vhost_ip, int is_ssl)
 {
   struct Listener *listener;
   struct irc_ssaddr vaddr;
@@ -307,7 +307,7 @@ add_listener(int port, const char* vhost_ip)
   {
     /* add the ipv4 listener if we havent already */
     pass = 1;
-    add_listener(port, "0.0.0.0");
+    add_listener(port, "0.0.0.0", is_ssl);
   }
   pass = 0;
 #endif
@@ -321,6 +321,7 @@ add_listener(int port, const char* vhost_ip)
   {
     listener = make_listener(port, &vaddr);
     dlinkAdd(listener, &listener->listener_node, &ListenerPollList);
+    listener->is_ssl = is_ssl;
   }
 
   listener->fd = -1;
@@ -405,7 +406,7 @@ accept_connection(int pfd, void *data)
    * point, just assume that connections cannot
    * be accepted until some old is closed first.
    */
-  while ((fd = comm_accept(listener->fd, &sai)) != -1)
+  while ((fd = comm_accept(listener->fd, &sai, listener->is_ssl)) != -1)
   {
     memcpy(&addr, &sai, sizeof(struct irc_ssaddr));
 

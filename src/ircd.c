@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.336 2005/07/05 21:05:08 michael Exp $
+ *  $Id: ircd.c,v 7.337 2005/07/11 03:03:34 adx Exp $
  */
 
 #include "stdinc.h"
@@ -600,6 +600,24 @@ main(int argc, char *argv[])
   init_auth();          /* Initialise the auth code */
   init_resolver();      /* Needs to be setup before the io loop */
 #ifdef HAVE_LIBCRYPTO
+  SSL_load_error_strings();
+  SSLeay_add_ssl_algorithms();
+
+  ServerInfo.ctx = SSL_CTX_new(SSLv23_server_method());
+  if (!ServerInfo.ctx)
+  {
+    char *s;
+
+    fprintf(stderr, "ERROR: Could not initialize the SSL context -- %s\n",
+            s = ERR_error_string(ERR_get_error(), NULL));
+    ilog(L_CRIT, "ERROR: Could not initialize the SSL context -- %s\n", s);
+    exit(EXIT_FAILURE);
+  }
+
+  SSL_CTX_set_options(ServerInfo.ctx, SSL_OP_NO_SSLv2);
+  SSL_CTX_set_options(ServerInfo.ctx, SSL_OP_TLS_ROLLBACK_BUG|SSL_OP_ALL);
+  SSL_CTX_set_verify(ServerInfo.ctx, SSL_VERIFY_NONE, NULL);
+
   bio_spare_fd = save_spare_fd("SSL private key validation");
 #endif /* HAVE_LIBCRYPTO */
    

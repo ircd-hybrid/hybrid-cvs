@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.288 2005/06/27 22:13:50 michael Exp $
+ *  $Id: send.c,v 7.289 2005/07/11 03:03:35 adx Exp $
  */
 
 #include "stdinc.h"
@@ -42,6 +42,7 @@
 #include "s_log.h"
 #include "memory.h"
 #include "hook.h"
+#include "irc_getnameinfo.h"
 
 #define LOG_BUFSIZE 2048
 
@@ -226,7 +227,7 @@ send_message_remote(struct Client *to, struct Client *from,
  ** sendq_unblocked
  **      Called when a socket is ready for writing.
  */
-static void
+void
 sendq_unblocked(int fd, struct Client *client_p)
 {
   ClearSendqBlocked(client_p);
@@ -258,7 +259,7 @@ send_queued_write(struct Client *to)
   struct hook_io_data hdata;
 #endif
   struct dbuf_block *first;
-  
+
   /*
    ** Once socket is marked dead, we cannot start writing to it,
    ** even if the error is removed...
@@ -267,7 +268,35 @@ send_queued_write(struct Client *to)
     return;  /* no use calling send() now */
 
   /* Next, lets try to write some data */
-  
+
+#ifdef HAVE_LIBCRYPTO
+  if (fd_table[to->localClient->fd].flags.accept_write)
+  {
+    fd_table[to->localClient->fd].flags.accept_read = 0;
+    fd_table[to->localClient->fd].flags.accept_write = 0;
+
+    if ((retlen = SSL_accept(fd_table[to->localClient->fd].ssl)) <= 0)
+      switch (SSL_get_error(fd_table[to->localClient->fd].ssl, retlen))
+      {
+        case SSL_ERROR_WANT_WRITE:
+          fd_table[to->localClient->fd].flags.accept_write = 1;
+
+          SetSendqBlocked(to);
+          comm_setselect(to->localClient->fd, FDLIST_IDLECLIENT,
+            COMM_SELECT_WRITE, (PF *) sendq_unblocked, (void *) to, 0);
+          return;
+
+        case SSL_ERROR_WANT_READ:
+          fd_table[to->localClient->fd].flags.accept_read = 1;
+          return;
+
+        default:
+          exit_client(to, to, &me, "Error during SSL handshake");
+	  return;
+      }
+  }
+#endif
+
   if (dbuf_length(&to->localClient->buf_sendq))
   {
 #ifndef NDEBUG
@@ -275,8 +304,16 @@ send_queued_write(struct Client *to)
 #endif
     do {
       first = to->localClient->buf_sendq.blocks.head->data;
-      if ((retlen = send(to->localClient->fd, first->data,
-                         first->size, 0)) <= 0)
+
+#ifdef HAVE_LIBCRYPTO
+      if (fd_table[to->localClient->fd].ssl)
+        retlen = SSL_write(fd_table[to->localClient->fd].ssl, first->data,
+                           first->size);
+      else
+#endif
+        retlen = send(to->localClient->fd, first->data, first->size, 0);
+
+      if (retlen <= 0)
         break;
 
 #ifndef NDEBUG

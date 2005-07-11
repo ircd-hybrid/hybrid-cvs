@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.38 2003/12/09 00:29:40 metalrock Exp $
+ *  $Id: fdlist.c,v 7.39 2005/07/11 03:03:34 adx Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -48,15 +48,16 @@ fdlist_update_biggest(int fd, int opening)
   assert(fd < HARD_FDLIMIT);
 
   if (fd > highest_fd)
-    {
-      /*  
-       * assert that we are not closing a FD bigger than
-       * our known biggest FD
-       */
-      assert(opening);
-      highest_fd = fd;
-      return;
-    }
+  {
+    /*  
+     * assert that we are not closing a FD bigger than
+     * our known biggest FD
+     */
+    assert(opening);
+    highest_fd = fd;
+    return;
+  }
+
   /* if we are here, then fd == Biggest_FD */
   /*
    * assert that we are closing the biggest FD; we can't be
@@ -82,7 +83,7 @@ fdlist_init(void)
 
 /* Called to open a given filedescriptor */
 void
-fd_open(int fd, unsigned int type, const char *desc)
+fd_open(int fd, unsigned int type, const char *desc, void *ssl)
 {
   fde_t *F = &fd_table[fd];
   assert(fd >= 0);
@@ -112,6 +113,9 @@ fd_open(int fd, unsigned int type, const char *desc)
   if (desc)
     strlcpy(F->desc, desc, sizeof(F->desc));
   number_fd++;
+#ifdef HAVE_LIBCRYPTO
+  F->ssl = (SSL *)ssl;
+#endif
 }
 
 /* Called to close a given filedescriptor */
@@ -140,11 +144,22 @@ fd_close(int fd)
     MyFree(F->dns_query);
     F->dns_query = NULL;
   }
+
+#ifdef HAVE_LIBCRYPTO
+  if (F->ssl)
+  {
+    SSL_shutdown(F->ssl);
+    SSL_free(F->ssl);
+    F->ssl = NULL;
+  }
+#endif
+
   F->flags.open = 0;
   fdlist_update_biggest(fd, 0);
+
   number_fd--;
   memset(F, '\0', sizeof(fde_t));
-  F->timeout = 0;
+
   /* Unlike squid, we're actually closing the FD here! -- adrian */
   close(fd);
 }

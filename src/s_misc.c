@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_misc.c,v 7.33 2003/05/20 06:51:52 michael Exp $
+ *  $Id: s_misc.c,v 7.34 2005/07/11 03:03:34 adx Exp $
  */
 
 #include "stdinc.h"
@@ -126,3 +126,36 @@ small_file_date(time_t lclock)
   return(timebuffer);
 }
 
+#ifdef HAVE_LIBCRYPTO
+char *ssl_get_cipher(SSL *ssl)
+{
+  char buffer[128];
+  char *name;
+  int bits;
+
+  switch (ssl->session->ssl_version)
+  {
+    case SSL2_VERSION:
+      name = "SSLv2";
+      break;
+
+    case SSL3_VERSION:
+      name = "SSLv3";
+      break;
+
+    case TLS1_VERSION:
+      name = "TLSv1";
+      break;
+
+    default:
+      name = "UNKNOWN";
+  }
+
+  SSL_CIPHER_get_bits(SSL_get_current_cipher(ssl), &bits);
+
+  snprintf(buffer, sizeof(buffer), "%s %s-%d",
+           name, SSL_get_cipher(ssl), bits);
+  
+  return (buffer);
+}
+#endif

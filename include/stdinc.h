@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.17 2005/05/30 13:19:09 michael Exp $
+ * $Id: stdinc.h,v 1.18 2005/07/11 03:03:28 adx Exp $
  *
  */
 
@@ -75,6 +75,11 @@
 
 #ifdef HAVE_CRYPT_H
 #include <crypt.h>
+#endif
+
+#ifdef HAVE_LIBCRYPTO
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 #endif
 
 #include <stdio.h>

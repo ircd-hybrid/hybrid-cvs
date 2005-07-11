@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.394 2005/07/10 19:46:18 adx Exp $
+ *  $Id: ircd_parser.y,v 1.395 2005/07/11 03:03:34 adx Exp $
  */
 
 %{
@@ -263,6 +263,7 @@ unhook_hub_leaf_confs(void)
 %token  PING_COOKIE
 %token  PING_TIME
 %token  PORT
+%token  SSLPORT
 %token  QSTRING
 %token  QUIET_ON_BAN
 %token  REASON
@@ -274,6 +275,7 @@ unhook_hub_leaf_confs(void)
 %token  RESTRICTED
 %token  RSA_PRIVATE_KEY_FILE
 %token  RSA_PUBLIC_KEY_FILE
+%token  SSL_CERTIFICATE_FILE
 %token  RESV
 %token  RESV_EXEMPT
 %token  SECONDS MINUTES HOURS DAYS WEEKS
@@ -470,13 +472,52 @@ serverinfo_item:        serverinfo_name | serverinfo_vhost |
                         serverinfo_network_name | serverinfo_network_desc |
                         serverinfo_max_clients | 
                         serverinfo_rsa_private_key_file | serverinfo_vhost6 |
-                        serverinfo_sid |
+                        serverinfo_sid | serverinfo_ssl_certificate_file |
 			error;
+
+serverinfo_ssl_certificate_file: SSL_CERTIFICATE_FILE '=' QSTRING ';'
+{
+#ifdef HAVE_LIBCRYPTO
+  if (ypass == 2 && ServerInfo.ctx) 
+  {
+    if (!ServerInfo.rsa_private_key_file)
+    {
+      yyerror("Ignoring config file entry ssl_certificate "
+              "-- no rsa_private_key");
+      break;
+    }
+
+    if (SSL_CTX_use_certificate_file(ServerInfo.ctx,
+      yylval.string, SSL_FILETYPE_PEM) <= 0)
+    {
+      sendto_realops_flags(FLAGS_ALL, L_ALL,
+            "Error using config file entry ssl_certificate -- %s",
+            ERR_error_string(ERR_get_error(), NULL));
+      break;
+    }
+
+    if (SSL_CTX_use_PrivateKey_file(ServerInfo.ctx,
+      ServerInfo.rsa_private_key_file, SSL_FILETYPE_PEM) <= 0)
+    {
+      sendto_realops_flags(FLAGS_ALL, L_ALL,
+            "Error using config file entry rsa_private_key -- %s",
+            ERR_error_string(ERR_get_error(), NULL));
+      break;
+    }
+
+    if (!SSL_CTX_check_private_key(ServerInfo.ctx))
+    {
+      yyerror("RSA private key does not match the SSL certificate public key!");
+      break;
+    }
+  }
+#endif
+};
 
 serverinfo_rsa_private_key_file: RSA_PRIVATE_KEY_FILE '=' QSTRING ';'
 {
 #ifdef HAVE_LIBCRYPTO
-  if (ypass == 2)
+  if (ypass == 1)
   {
     BIO *file;
 
@@ -1490,7 +1531,7 @@ listen_entry: LISTEN
 };
 
 listen_items:   listen_items listen_item | listen_item;
-listen_item:    listen_port | listen_address | listen_host | error;
+listen_item:    listen_port | listen_sslport | listen_address | listen_host | error;
 
 listen_port: PORT '=' port_items ';' ;
 
@@ -1499,7 +1540,7 @@ port_items: port_items ',' port_item | port_item;
 port_item: NUMBER
 {
   if (ypass == 2)
-    add_listener($1, listener_address);
+    add_listener($1, listener_address, 0);
 } | NUMBER TWODOTS NUMBER
 {
   if (ypass == 2)
@@ -1508,7 +1549,28 @@ port_item: NUMBER
 
     for (i = $1; i <= $3; i++)
     {
-      add_listener(i, listener_address);
+      add_listener(i, listener_address, 0);
+    }
+  }
+};
+
+listen_sslport: SSLPORT '=' sslport_items ';';
+
+sslport_items: sslport_items ',' sslport_item | sslport_item;
+
+sslport_item: NUMBER
+{
+  if (ypass == 2)
+    add_listener($1, listener_address, 1);
+} | NUMBER TWODOTS NUMBER
+{
+  if (ypass == 2)
+  {
+    int i;
+
+    for (i = $1; i <= $3; i++)
+    {
+      add_listener(i, listener_address, 1);
     }
   }
 };

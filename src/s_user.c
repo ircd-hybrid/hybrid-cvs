@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.331 2005/07/09 13:55:08 michael Exp $
+ *  $Id: s_user.c,v 7.332 2005/07/11 03:03:35 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1221,12 +1221,20 @@ send_umode_out(struct Client *client_p, struct Client *source_p,
 static void
 user_welcome(struct Client *source_p)
 {
+#ifdef HAVE_LIBCRYPTO
+  if (source_p->localClient->fd > -1)
+    if (fd_table[source_p->localClient->fd].ssl != NULL)
+      sendto_one(source_p, "NOTICE %s :*** Connected securely via %s",
+                 source_p->name,
+		 ssl_get_cipher(fd_table[source_p->localClient->fd].ssl));
+#endif
+
   sendto_one(source_p, form_str(RPL_WELCOME), me.name, source_p->name, 
              ServerInfo.network_name, source_p->name);
   /* This is a duplicate of the NOTICE but see below...*/
   sendto_one(source_p, form_str(RPL_YOURHOST), me.name, source_p->name,
 	     get_listener_name(source_p->localClient->listener), ircd_version);
-  
+
 #if 0
   /*
   ** Don't mess with this one - IRCII needs it! -Avalon

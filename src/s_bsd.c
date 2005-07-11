@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.217 2005/06/24 05:51:39 michael Exp $
+ *  $Id: s_bsd.c,v 7.218 2005/07/11 03:03:34 adx Exp $
  */
 
 #include "stdinc.h"
@@ -760,7 +760,7 @@ comm_open(int family, int sock_type, int proto, const char *note)
   }
 
   /* Next, update things in our fd tracking */
-  fd_open(fd, FD_SOCKET, note);
+  fd_open(fd, FD_SOCKET, note, NULL);
   return fd;
 }
 
@@ -771,10 +771,13 @@ comm_open(int family, int sock_type, int proto, const char *note)
  * comm_open() does.
  */
 int
-comm_accept(int fd, struct irc_ssaddr *pn)
+comm_accept(int fd, struct irc_ssaddr *pn, int is_ssl)
 {
   int newfd;
   socklen_t addrlen = sizeof(struct irc_ssaddr);
+#ifdef HAVE_LIBCRYPTO
+  SSL *ssl;
+#endif
 
   if (number_fd >= MASTER_MAX)
   {
@@ -806,8 +809,49 @@ comm_accept(int fd, struct irc_ssaddr *pn)
     return -1;
   }
 
+#ifdef HAVE_LIBCRYPTO
+  if (is_ssl && ServerInfo.ctx)
+  {
+    int retval;
+
+    if ((ssl = SSL_new(ServerInfo.ctx)) == NULL)
+    {
+      ilog(L_CRIT, "SSL_new() ERROR! -- %s", ERR_error_string(ERR_get_error(), NULL));
+
+      close(newfd);
+      return -1;
+    }
+
+    SSL_set_fd(ssl, newfd);
+
+    /* Start an SSL handshake */
+    if ((retval = SSL_accept(ssl)) <= 0)
+      switch (SSL_get_error(ssl, retval))
+      {
+        case SSL_ERROR_WANT_READ:
+          fd_table[newfd].flags.accept_read = 1;
+          break;
+
+        case SSL_ERROR_WANT_WRITE:
+          fd_table[newfd].flags.accept_write = 1;
+          break;
+
+        default:
+          SSL_free(ssl);
+          close(newfd);
+          return -1;
+      }
+  }
+#endif
+
   /* Next, tag the FD as an incoming connection */
-  fd_open(newfd, FD_SOCKET, "Incoming connection");
+
+#ifdef HAVE_LIBCRYPTO
+  if (is_ssl && ServerInfo.ctx)
+    fd_open(newfd, FD_SOCKET, "Incoming SSL connection", ssl);
+  else
+#endif
+    fd_open(newfd, FD_SOCKET, "Incoming connection", NULL);
 
   /* .. and return */
   return newfd;

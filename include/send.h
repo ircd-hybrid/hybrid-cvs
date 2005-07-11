@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.h,v 7.73 2005/06/27 22:13:46 michael Exp $
+ *  $Id: send.h,v 7.74 2005/07/11 03:03:28 adx Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -44,6 +44,8 @@ struct Channel;
 struct dlink_list;
 
 /* send.c prototypes */
+
+extern void sendq_unblocked(int fd, struct Client *client_p);
 
 extern void send_queued_write(struct Client *to);
 

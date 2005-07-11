@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.291 2005/06/29 23:42:32 metalrock Exp $
+ *  $Id: s_conf.h,v 7.292 2005/07/11 03:03:28 adx Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -366,6 +366,7 @@ struct server_info
 #ifdef HAVE_LIBCRYPTO
   char *rsa_private_key_file;
   RSA *rsa_private_key;
+  SSL_CTX *ctx;
 #endif
   char *sid;
   int hub;

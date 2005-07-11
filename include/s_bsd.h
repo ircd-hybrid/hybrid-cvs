@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.47 2003/09/15 23:24:46 metalrock Exp $
+ *  $Id: s_bsd.h,v 7.48 2005/07/11 03:03:28 adx Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -66,7 +66,7 @@ extern void comm_connect_tcp(int, const char *, u_short,
 extern const char * comm_errstr(int status);
 extern int comm_open(int family, int sock_type, int proto,
            	     const char *note);
-extern int comm_accept(int fd, struct irc_ssaddr *pn);
+extern int comm_accept(int fd, struct irc_ssaddr *pn, int is_ssl);
 
 /* These must be defined in the network IO loop code of your choice */
 extern void comm_setselect(int fd, fdlist_t list, unsigned int type,

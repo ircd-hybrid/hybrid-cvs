@@ -19,10 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.127 2005/06/30 22:31:24 adx Exp $
+ *  $Id: m_whois.c,v 1.128 2005/07/11 03:03:32 adx Exp $
  */
 
 #include "stdinc.h"
+#include "fdlist.h"
 #include "tools.h"
 #include "common.h"  
 #include "handlers.h"
@@ -33,6 +34,7 @@
 #include "ircd.h"
 #include "numeric.h"
 #include "s_conf.h"
+#include "s_misc.h"
 #include "s_serv.h"
 #include "send.h"
 #include "list.h"
@@ -71,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.127 $";
+const char *_version = "$Revision: 1.128 $";
 #endif
 
 /*
@@ -404,10 +406,19 @@ whois_person(struct Client *source_p, struct Client *target_p)
   }
 
   if (MyConnect(target_p)) /* Can't do any of this if not local! db */
+  {
+#ifdef HAVE_LIBCRYPTO
+    int fd = target_p->localClient->fd;
+
+    if (fd > -1 && fd_table[fd].ssl)
+      sendto_one(source_p, form_str(RPL_WHOISSSL),
+                      me.name, source_p->name, target_p->name);
+#endif
     sendto_one(source_p, form_str(RPL_WHOISIDLE),
                me.name, source_p->name, target_p->name,
                CurrentTime - target_p->user->last,
                target_p->firsttime);
+  }
 
   hd.client_p = target_p;
   hd.source_p = source_p;

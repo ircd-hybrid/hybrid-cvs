@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.117 2005/05/30 13:19:13 michael Exp $
+ *  $Id: packet.c,v 7.118 2005/07/11 03:03:34 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -37,6 +37,7 @@
 #include "memory.h"
 #include "hook.h"
 #include "send.h"
+#include "irc_getnameinfo.h"
 
 static char readBuf[READBUF_SIZE];
 static void client_dopacket(struct Client *, char *, size_t);
@@ -405,34 +406,66 @@ read_packet(int fd, void *data)
   struct hook_io_data hdata;
 #endif
 
-  while (!IsDefunct(client_p)) {
-    fd_r = client_p->localClient->fd;
+  if (IsDefunct(client_p))
+    return;
+
+  fd_r = client_p->localClient->fd;
 
 #ifndef HAVE_SOCKETPAIR
-    if (HasServlink(client_p))
-    {
-      assert(client_p->localClient->fd_r > -1);
-      fd_r = client_p->localClient->fd_r;
-    }
+  if (HasServlink(client_p))
+  {
+    assert(client_p->localClient->fd_r > -1);
+    fd_r = client_p->localClient->fd_r;
+  }
 #endif
 
-    /*
-     * Read some data. We *used to* do anti-flood protection here, but
-     * I personally think it makes the code too hairy to make sane.
-     *     -- adrian
-     */
-    if ((length = recv(fd_r, readBuf, READBUF_SIZE, 0)) <= 0)
+#ifdef HAVE_LIBCRYPTO
+  if (fd_table[fd].flags.accept_read)
+  {
+    fd_table[fd].flags.accept_read = fd_table[fd].flags.accept_write = 0;
+
+    if ((length = SSL_accept(fd_table[fd].ssl)) <= 0)
+      switch (SSL_get_error(fd_table[fd].ssl, length))
+      {
+        case SSL_ERROR_WANT_WRITE:
+	  fd_table[fd].flags.accept_write = 1;
+
+	  SetSendqBlocked(client_p);
+	  comm_setselect(client_p->localClient->fd, FDLIST_IDLECLIENT,
+	    COMM_SELECT_WRITE, (PF *) sendq_unblocked, (void *) client_p, 0);
+	  break;
+
+        case SSL_ERROR_WANT_READ:
+          fd_table[fd].flags.accept_read = 1;
+          break;
+
+	default:
+	  exit_client(client_p, client_p, &me, "Error during SSL handshake");
+      }
+  }
+  else
+#endif
+  /*
+   * Read some data. We *used to* do anti-flood protection here, but
+   * I personally think it makes the code too hairy to make sane.
+   *     -- adrian
+   */
+  do {
+#ifdef HAVE_LIBCRYPTO
+    if (fd_table[fd].ssl)
+      length = SSL_read(fd_table[fd].ssl, readBuf, READBUF_SIZE);
+    else
+#endif
+      length = recv(fd_r, readBuf, READBUF_SIZE, 0);
+
+    if (length <= 0)
     {
       /*
        * If true, then we can recover from this error.  Just jump out of
        * the loop and re-register a new io-request.
        */
-      if ((length == -1) && ignoreErrno(errno))
-      {
-        comm_setselect(fd_r, FDLIST_IDLECLIENT, COMM_SELECT_READ,
-                       read_packet, client_p, 0);
-        return;
-      }
+      if (length < 0 && ignoreErrno(errno))
+        break;
 
       dead_link_on_read(client_p, length);
       return;
@@ -456,11 +489,14 @@ read_packet(int fd, void *data)
     /* Attempt to parse what we have */
     parse_client_queued(client_p);
 
+    if (IsDefunct(client_p))
+      return;
+
     /* Check to make sure we're not flooding */
     /* TBD - ConfigFileEntry.client_flood should be a size_t */
-    if (!(IsServer(client_p) || IsHandshake(client_p) || IsConnecting(client_p)) &&
-        (dbuf_length(&client_p->localClient->buf_recvq) >
-       (unsigned int)ConfigFileEntry.client_flood))
+    if (!(IsServer(client_p) || IsHandshake(client_p) || IsConnecting(client_p))
+        && (dbuf_length(&client_p->localClient->buf_recvq) >
+            (unsigned int)ConfigFileEntry.client_flood))
     {
       if (!(ConfigFileEntry.no_oper_flood && IsOper(client_p)))
       {
@@ -468,24 +504,12 @@ read_packet(int fd, void *data)
         return;
       }
     }
-
-    if ((length < sizeof(readBuf)) && !IsDefunct(client_p))
-    {
-      /* server fd may have changed */
-      fd_r = client_p->localClient->fd;
-#ifndef HAVE_SOCKETPAIR
-      if (HasServlink(client_p))
-      {
-        assert(client_p->localClient->fd_r > -1);
-        fd_r = client_p->localClient->fd_r;
-      }
-#endif
-      /* If we get here, we need to register for another COMM_SELECT_READ */
-      comm_setselect(fd_r, FDLIST_IDLECLIENT, COMM_SELECT_READ,
-                     read_packet, client_p, 0);
-      return;
-    }
   }
+  while (length == sizeof(readBuf));
+
+  /* If we get here, we need to register for another COMM_SELECT_READ */
+  comm_setselect(fd_r, FDLIST_IDLECLIENT, COMM_SELECT_READ,
+                 read_packet, client_p, 0);
 }
 
 /*
