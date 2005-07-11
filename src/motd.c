@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.c,v 7.40 2005/05/30 00:26:05 michael Exp $
+ *  $Id: motd.c,v 7.41 2005/07/11 19:06:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -125,6 +125,18 @@ send_message_file(struct Client *source_p, MessageFile *motdToPrint)
       }
       break;
 
+  case ISSUPPORT:
+      if (motdToPrint->contentsOfFile != NULL)
+      {
+	for (linePointer = motdToPrint->contentsOfFile; linePointer;
+	     linePointer = linePointer->next)
+	{
+	  sendto_one(source_p, form_str(RPL_ISUPPORT),
+		     me.name, source_p->name, linePointer->line);
+	}
+      }
+    break;
+
     default:
       break;
   }
@@ -207,4 +219,86 @@ read_message_file(MessageFile *MessageFileptr)
 
   fbclose(file);
   return(0);
+}
+
+/*
+ * init_MessageLine
+ *
+ * inputs	- NONE
+ * output	- pointer to new MessageFile
+ * side effects	- Use this when an internal Message File is wanted
+ *		  without reading an actual file. The MessageFile 
+ *		  is init'ed, but must have content added to it through
+ *		  addto_MessageLine()
+ */
+
+MessageFile *
+init_MessageLine(void)
+{
+  MessageFile *mf;
+  MessageFileLine *mptr = NULL;
+
+  mf = MyMalloc(sizeof(MessageFile));
+  mf->motdType = ISSUPPORT;	/* XXX maybe pass it alone in args? */
+  mptr = MyMalloc(sizeof(MessageFileLine));
+  mf->contentsOfFile = mptr;
+  return(mf);
+}
+
+/*
+ * addto_MessageLine
+ *
+ * inputs	- Pointer to existing MessageFile
+ *		- New string to add to this MessageFile
+ * output	- NONE
+ * side effects	- Use this when an internal MessageFile is wanted
+ *		  without reading an actual file. Content is added
+ *		  to this MessageFile through this function.
+ */
+
+void
+addto_MessageLine(MessageFile *mf, const char *str)
+{
+  MessageFileLine *mptr = mf->contentsOfFile;
+  MessageFileLine *nmptr = NULL;
+
+  if (mptr == NULL)
+  {
+    mptr = MyMalloc(sizeof(MessageFileLine));
+    strcpy(mptr->line, str);
+    mf->contentsOfFile = mptr;
+  }
+  else
+  {
+    while (mptr->next != NULL)
+      mptr = mptr->next;
+    nmptr = MyMalloc(sizeof(MessageFileLine));
+    strcpy(nmptr->line, str);
+    mptr->next = nmptr;
+  }
+}
+
+/*
+ * destroy_MessageLine(MessageFile *mf)
+ *
+ * inputs	- pointer to the MessageFile to destroy
+ * output	- NONE
+ * side effects	- All the MessageLines attached to the given mf
+ *		  Are freed then one MessageLine is recreated
+ */
+void
+destroy_MessageLine(MessageFile *mf)
+{
+  MessageFileLine *mptr = mf->contentsOfFile;
+  MessageFileLine *nmptr = NULL;
+
+  if (mptr == NULL)
+    return;
+
+  for (mptr = mf->contentsOfFile; mptr != NULL; mptr = nmptr)
+  {
+    nmptr = mptr->next;
+    MyFree(mptr);
+  } 
+  mf->contentsOfFile = NULL;
 }

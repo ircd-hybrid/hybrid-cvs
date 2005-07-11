@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.65 2005/07/05 15:58:27 michael Exp $
+ *  $Id: m_list.c,v 1.66 2005/07/11 19:06:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -39,6 +39,7 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "s_user.h"
 
 static void m_list(struct Client *, struct Client *, int, char **);
 static void ms_list(struct Client *, struct Client *, int, char **);
@@ -54,15 +55,21 @@ void
 _modinit(void)
 {
   mod_add_cmd(&list_msgtab);
+  add_isupport("ELIST", "CMNTU", -1);
+  add_isupport("SAFELIST", NULL, -1);
+  add_isupport("MAXLIST", "beI:30", -1);
 }
 
 void
 _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
+  delete_isupport("ELIST");
+  delete_isupport("SAFELIST");
+  delete_isupport("MAXLIST");
 }
 
-const char *_version = "$Revision: 1.65 $";
+const char *_version = "$Revision: 1.66 $";
 #endif
 
 static int

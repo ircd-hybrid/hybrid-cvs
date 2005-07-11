@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.522 2005/06/29 23:42:36 metalrock Exp $
+ *  $Id: s_conf.c,v 7.523 2005/07/11 19:06:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -54,6 +54,8 @@
 #include "memory.h"
 #include "irc_res.h"
 #include "userhost.h"
+#include "s_user.h"
+#include "channel_mode.h"
 
 struct config_server_hide ConfigServerHide;
 
@@ -2417,6 +2419,7 @@ void
 read_conf_files(int cold)
 {
   const char *filename;
+  char chanmodes[32];
 
   conf_fbfile_in = NULL;
 
@@ -2451,6 +2454,47 @@ read_conf_files(int cold)
 
   read_conf(conf_fbfile_in);
   fbclose(conf_fbfile_in);
+
+  delete_isupport("NETWORK");
+  delete_isupport("WALLCHOPS");
+  delete_isupport("MODES");
+  delete_isupport("MAXCHANNELS");
+  delete_isupport("MAXBANS");
+  delete_isupport("MAXTARGETS");
+  delete_isupport("NICKLEN");
+  delete_isupport("TOPICLEN");
+  delete_isupport("KICKLEN");
+  delete_isupport("CHANTYPES");
+  delete_isupport("PREFIX");
+  delete_isupport("CHANMODES");
+  delete_isupport("EXCEPTS");
+  delete_isupport("INVEX");
+  add_isupport("NETWORK", ServerInfo.network_name, -1);
+  add_isupport("WALLCHOPS", NULL, -1);
+  add_isupport("MODES", NULL, MAXMODEPARAMS);
+  add_isupport("MAXCHANNELS", NULL, ConfigChannel.max_chans_per_user);
+  add_isupport("MAXBANS", NULL, ConfigChannel.max_bans);
+  add_isupport("MAXTARGETS", NULL, ConfigFileEntry.max_targets);
+  add_isupport("NICKLEN", NULL, NICKLEN-1);
+  add_isupport("TOPICLEN", NULL, TOPICLEN);
+  add_isupport("KICKLEN", NULL, TOPICLEN);
+
+  if(ConfigChannel.disable_local_channels)
+    add_isupport("CHANTYPES", "#", -1);
+  else
+    add_isupport("CHANTYPES", "#&", -1);
+#ifdef HALFOPS
+  add_isupport("PREFIX", "(ohv)@%+", -1);
+#else
+  add_isupport("PREFIX", "(ov)@+", -1);
+#endif
+  ircsprintf(chanmodes, "%s%s%s", ConfigChannel.use_except ? "e" : "",
+	     ConfigChannel.use_invex ? "I" : "", "b,k,l,imnpst");
+  if (ConfigChannel.use_except)
+    add_isupport("EXCEPTS", "e", -1);
+  if (ConfigChannel.use_invex)
+    add_isupport("INVEX", "I", -1);
+  add_isupport("CHANMODES", chanmodes, -1);
 
   parse_conf_file(KLINE_TYPE, cold);
   parse_conf_file(DLINE_TYPE, cold);

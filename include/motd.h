@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.h,v 7.13 2003/05/10 04:04:59 michael Exp $
+ *  $Id: motd.h,v 7.14 2005/07/11 19:06:16 db Exp $
  */
 
 #ifndef INCLUDED_motd_h
@@ -29,13 +29,6 @@
 
 /* XXX really, should be mallocing this on the fly but... */
 #define MESSAGELINELEN 256
-
-typedef enum {
-  USER_MOTD,
-  USER_LINKS,
-  OPER_MOTD
-} MotdType;
-
 struct MessageFileLine
 {
   char line[MESSAGELINELEN + 1];
@@ -44,6 +37,13 @@ struct MessageFileLine
 
 typedef struct MessageFileLine MessageFileLine;
 
+typedef enum {
+  USER_MOTD,
+  USER_LINKS,
+  OPER_MOTD,
+  ISSUPPORT
+} MotdType;
+  
 struct MessageFile
 {
   char fileName[PATH_MAX + 1];
@@ -59,4 +59,8 @@ struct Client;
 extern void init_message_file(MotdType, const char *, struct MessageFile *);
 extern int send_message_file(struct Client *, struct MessageFile *);
 extern int read_message_file(MessageFile *);
+extern MessageFile * init_MessageLine(void);
+void addto_MessageLine(MessageFile *mf, const char *str);
+void destroy_MessageLine(MessageFile *mf);
+
 #endif /* INCLUDED_motd_h */

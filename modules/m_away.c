@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_away.c,v 1.38 2004/07/08 00:27:21 erik Exp $
+ *  $Id: m_away.c,v 1.39 2005/07/11 19:06:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -35,7 +35,7 @@
 #include "s_conf.h"
 #include "s_serv.h"
 #include "packet.h"
-
+#include "s_user.h"
 
 static void m_away(struct Client *, struct Client *, int, char **);
 static void mo_away(struct Client *, struct Client *, int, char **);
@@ -51,14 +51,16 @@ void
 _modinit(void)
 {
   mod_add_cmd(&away_msgtab);
+  add_isupport("AWAYLEN", NULL, TOPICLEN);
 }
 
 void
 _moddeinit(void)
 {
   mod_del_cmd(&away_msgtab);
+  delete_isupport("AWAYLEN");
 }
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 
 /***********************************************************************

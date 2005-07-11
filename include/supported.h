@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.37 2005/06/22 22:45:05 michael Exp $
+ *  $Id: supported.h,v 1.38 2005/07/11 19:06:16 db Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -31,48 +31,7 @@
 
 #define CASEMAP "rfc1459"
 
-#define FEATURES "WALLCHOPS"       \
-                 "%s%s%s"          \
-                 " MODES=%i"       \
-                 " MAXCHANNELS=%i" \
-                 " MAXBANS=%i"     \
-                 " MAXTARGETS=%i"  \
-                 " NICKLEN=%i"     \
-                 " TOPICLEN=%i"    \
-                 " KICKLEN=%i"
-
-#define FEATURESVALUES ConfigChannel.use_knock ? " KNOCK" : "", \
-        ConfigChannel.use_except ? " EXCEPTS" : "", \
-        ConfigChannel.use_invex ? " INVEX" : "", \
-        MAXMODEPARAMS,ConfigChannel.max_chans_per_user, \
-        ConfigChannel.max_bans, \
-        ConfigFileEntry.max_targets,NICKLEN-1,TOPICLEN,TOPICLEN
-
-#define FEATURES2 "CHANTYPES=%s"      \
-                  " PREFIX=%s"        \
-		  " CHANMODES=%s%s%s" \
-		  " NETWORK=%s"       \
-		  " CASEMAPPING=%s"   \
-		  " CALLERID%s"       \
-                  " ELIST=CMNTU"
-
-#ifdef HALFOPS
-#define FEATURES2VALUES ConfigChannel.disable_local_channels ? "#" : "#&", \
-                        "(ohv)@%+", \
-                        ConfigChannel.use_except ? "e" : "", \
-                        ConfigChannel.use_invex ? "I" : "", \
-                        "b,k,l,imnpst", \
-                        ServerInfo.network_name, CASEMAP, \
-			(uplink && IsCapable(uplink, CAP_LL)) ? "" : " SAFELIST"
-#else
-#define FEATURES2VALUES ConfigChannel.disable_local_channels ? "#" : "#&", \
-                        "(ov)@+", \
-                        ConfigChannel.use_except ? "e" : "", \
-                        ConfigChannel.use_invex ? "I" : "", \
-                        "b,k,l,imnpst", \
-                        ServerInfo.network_name, CASEMAP, \
-			(uplink && IsCapable(uplink, CAP_LL)) ? "" : " SAFELIST"
-#endif
+/* ConfigChannel.use_knock ? " KNOCK" */
 
 /*
  * - from mirc's versions.txt

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.70 2005/07/10 00:44:03 db Exp $
+ *  $Id: m_knock.c,v 1.71 2005/07/11 19:06:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -39,7 +39,7 @@
 #include "parse.h"
 #include "modules.h"
 #include "s_serv.h"
-
+#include "s_user.h"
 
 static void m_knock(struct Client*, struct Client*, int, char**);
 static void ms_knock(struct Client *, struct Client *, int, char**);
@@ -70,6 +70,7 @@ _modinit(void)
   mod_add_cmd(&knock_msgtab);
   mod_add_cmd(&knockll_msgtab);
   add_capability("KNOCK", CAP_KNOCK, 1);
+  add_isupport("KNOCK", NULL, -1);
 }
 
 void
@@ -78,9 +79,10 @@ _moddeinit(void)
   mod_del_cmd(&knock_msgtab);
   mod_del_cmd(&knockll_msgtab);
   delete_capability("KNOCK");
+  delete_isupport("KNOCK");
 }
 
-const char *_version = "$Revision: 1.70 $";
+const char *_version = "$Revision: 1.71 $";
 #endif
 
 /* m_knock

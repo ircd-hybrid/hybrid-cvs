@@ -19,12 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.334 2005/07/11 16:53:51 adx Exp $
+ *  $Id: s_user.c,v 7.335 2005/07/11 19:06:21 db Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "s_user.h"
+#include "s_misc.h"
 #include "channel.h"
 #include "channel_mode.h"
 #include "client.h"
@@ -62,6 +63,18 @@ static void user_welcome(struct Client *);
 static void report_and_set_user_flags(struct Client *, struct AccessItem *);
 static int check_xline(struct Client *, struct Client *);
 static int introduce_client(struct Client *, struct Client *);
+
+struct Isupport 
+{
+  dlink_node node;
+  char *name;
+  char *options;
+  int number;
+};
+
+dlink_list support_list = { NULL, NULL, 0 };
+MessageFile *isupportFile;
+static void rebuild_isupport_message_line(void);
 
 /* table of ascii char letters
  * to corresponding bitmask
@@ -314,19 +327,7 @@ show_lusers(struct Client *source_p)
 void
 show_isupport(struct Client *source_p) 
 {
-  char isupportbuffer[512];
-
-  ircsprintf(isupportbuffer, FEATURES, FEATURESVALUES);
-  sendto_one(source_p, form_str(RPL_ISUPPORT),
-             ID_or_name(&me, source_p->from),
-             ID_or_name(source_p, source_p->from),
-             isupportbuffer);
-
-  ircsprintf(isupportbuffer, FEATURES2, FEATURES2VALUES);
-  sendto_one(source_p, form_str(RPL_ISUPPORT),
-             ID_or_name(&me, source_p->from),
-             ID_or_name(source_p, source_p->from),
-             isupportbuffer);
+  send_message_file(source_p, isupportFile);
 }
 
 /*
@@ -1450,5 +1451,135 @@ add_one_to_uid(int i)
     if (new_uid[i] == 'Z')
       memcpy(new_uid+IRC_MAXSID, "AAAAAA", IRC_MAXUID);
     else new_uid[i] = new_uid[i] + 1;
+  }
+}
+
+/*
+ * init_isupport()
+ *
+ * input	- NONE
+ * output	- NONE
+ * side effects	- Must be called before isupport is enabled
+ */
+void
+init_isupport(void)
+{
+  isupportFile = init_MessageLine();
+}
+
+/*
+ * add_isupport()
+ *
+ * input	- name of supported function
+ *		- options if any
+ *		- number if any
+ * output	- NONE
+ * side effects	- Each supported item must call this when activated
+ */
+void
+add_isupport(const char *name, const char *options, int n)
+{
+  struct Isupport *support;
+
+  support = (struct Isupport *)MyMalloc (sizeof(*support));
+  DupString(support->name, name);
+  if (options != NULL)
+    DupString(support->options, options);
+  support->number = n;
+  dlinkAdd(support, &support->node, &support_list);
+  rebuild_isupport_message_line();
+}
+
+/*
+ * delete_isupport()
+ *
+ * input	- name of supported function
+ * output	- NONE
+ * side effects	- Each supported item must call this when deactivated
+ */
+void
+delete_isupport(const char *name)
+{
+  dlink_node *ptr;
+  dlink_node *next_ptr;
+  struct Isupport *support;
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, support_list.head)
+  {
+    support = ptr->data;
+    if (irccmp(support->name, name) == 0)
+    {
+      dlinkDelete(ptr, &support_list);
+      MyFree(support->name);
+      MyFree(support->options);
+      MyFree(support);
+    }
+  }
+  rebuild_isupport_message_line();
+}
+
+/*
+ * rebuild_isupport_message_line
+ *
+ * input	- NONE
+ * output	- NONE
+ * side effects	- Destroy the isupport MessageFile lines, and rebuild.
+ */
+static void
+rebuild_isupport_message_line(void)
+{
+  char isupportbuffer[512];
+  char *p;
+  dlink_node *ptr;
+  int len=0;
+  int n=0;
+  int tokens=0;
+
+  destroy_MessageLine(isupportFile);
+  p = isupportbuffer;
+
+  DLINK_FOREACH(ptr, support_list.head)
+  {
+    struct Isupport *support;
+    support = ptr->data;
+    n = ircsprintf(p, "%s", support->name);
+    len += n;
+    p += n;
+    if (support->options != NULL)
+    {
+      *p++ = '=';
+      n = ircsprintf(p, "%s", support->options);
+      len += n;
+      p += n;
+    }
+    if (support->number > 0)
+    {
+      *p++ = '=';
+      n = ircsprintf(p, "%d", support->number);
+      len += n;
+      p += n;
+    }
+    *p++ = ' ';
+    len++;
+    *p = '\0';
+    tokens++;
+
+    if ((tokens > 8) || (len > 400))
+    { /* arbritrary for now */
+      --p;
+      if (*p == ' ')
+	*p = '\0';
+      addto_MessageLine(isupportFile, isupportbuffer);
+      p = isupportbuffer;
+      n = len = 0;
+      tokens = 0;
+    }
+  }
+  if (len != 0)
+  {
+    --p;
+    if (*p == ' ')
+      *p = '\0';
+    addto_MessageLine(isupportFile, isupportbuffer);
   }
 }

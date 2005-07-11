@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.337 2005/07/11 03:03:34 adx Exp $
+ *  $Id: ircd.c,v 7.338 2005/07/11 19:06:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,8 @@
 #include "hook.h"
 #include "ircd_getopt.h"
 #include "balloc.h"
-
+#include "motd.h"
+#include "supported.h"
 
 /* Try and find the correct name to use with getrlimit() for setting the max.
  * number of files allowed to be open by this process.
@@ -378,6 +379,8 @@ initialize_message_files(void)
   read_message_file(&ConfigFileEntry.motd);
   read_message_file(&ConfigFileEntry.opermotd);
   read_message_file(&ConfigFileEntry.linksfile);
+
+  init_isupport();
 }
 
 /* initialize_server_capabs()
@@ -581,6 +584,7 @@ main(int argc, char *argv[])
 #endif
   init_dlink_nodes();
   initialize_message_files();
+  add_isupport("CASEMAPPING", CASEMAP, -1); /* XXX Does this belong here? */
   dbuf_init();
   init_hash();
   init_ip_hash_table();      /* client host ip hash table */
@@ -588,7 +592,6 @@ main(int argc, char *argv[])
   clear_tree_parse();
   init_client();
   init_user();
-  init_channels();
   init_class();
   init_whowas();
   init_stats();
@@ -623,6 +626,7 @@ main(int argc, char *argv[])
    
   initialize_server_capabs();   /* Set up default_server_capabs */
   initialize_global_set_options();
+  init_channels();
 
   if (ServerInfo.name == NULL)
   {

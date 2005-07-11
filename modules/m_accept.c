@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_accept.c,v 1.45 2005/07/01 00:04:31 michael Exp $
+ *  $Id: m_accept.c,v 1.46 2005/07/11 19:06:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -36,6 +36,7 @@
 #include "send.h"
 #include "msg.h"
 #include "parse.h"
+#include "s_user.h"
 #include "modules.h"
 
 static void m_accept(struct Client *, struct Client *, int, char *[]);
@@ -53,15 +54,17 @@ void
 _modinit(void)
 {
   mod_add_cmd(&accept_msgtab);
+  add_isupport("CALLERID", NULL, -1);
 }
 
 void
 _moddeinit(void)
 {
   mod_del_cmd(&accept_msgtab);
+  delete_isupport("CALLERID");
 }
 
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 
 /*

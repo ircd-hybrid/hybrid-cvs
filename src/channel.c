@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.430 2005/07/10 02:02:02 db Exp $
+ *  $Id: channel.c,v 7.431 2005/07/11 19:06:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,6 @@
 #include "memory.h"
 #include "balloc.h"
 #include "resv.h"
-
 
 struct config_channel_entry ConfigChannel;
 dlink_list global_channel_list = { NULL, NULL, 0 };
