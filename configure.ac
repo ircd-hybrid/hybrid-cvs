@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.98 2005/07/11 03:29:49 metalrock Exp $
+dnl $Id: configure.ac,v 7.99 2005/07/11 23:19:35 metalrock Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.98 2005/07/11 03:29:49 metalrock Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.99 2005/07/11 23:19:35 metalrock Exp $])
 
 AC_INIT([ircd-hybrid],[7.1])
 
@@ -315,17 +315,6 @@ fi
 
 AC_SUBST(CRYPT_C)
 AC_SUBST(CRYPT_LIB)
-
-if test "$ac_cv_header_sys_wait_h" = yes -o "$ac_cv_header_wait_h" = yes; then
-	VICONF=viconf
-	dnl We need one of the above to build viconf. Just a sanity check,
-	dnl we don't want to stop people from building the rest of ircd
-	dnl just because they can't build viconf.
-else
-	VICONF=""
-fi
-
-AC_SUBST(VICONF)
 
 dnl See whether we can include both string.h and strings.h.
 AC_CACHE_CHECK([whether string.h and strings.h may both be included],

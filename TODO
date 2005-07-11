@@ -1,4 +1,4 @@
-$Id: TODO,v 7.97 2005/07/11 16:26:38 metalrock Exp $
+$Id: TODO,v 7.98 2005/07/11 23:19:34 metalrock Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
@@ -35,7 +35,6 @@ $Id: TODO,v 7.97 2005/07/11 16:26:38 metalrock Exp $
 ------------------------------------------------------------------------------
 Little things to be done given enough time and initiative -Hwy
 
-.  Fix convertconf more
 .  <Riedel> walter : have you implemented the motd= thing in the auth block ?
 .  Fix topic bursting to LL servers (broke lately for some reason)
 .  A FAQ
@@ -80,7 +79,6 @@ it's a leaf.
 
 * Don't show local channels in a remote whois.
 * Write documentation for example.conf changes.
-* Update convertconf to the latest example.conf format.
 
 -- adx's list
 

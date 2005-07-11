@@ -7,13 +7,12 @@ If you don't read this first, we won't help you.
   * - Reading INSTALL is now a must, as the old DPATH is now specified    *
   *   when configure is run.                                              *
   *   You now need to ./configure --prefix="/path/to/install/it"          *
-  * - The old config format WILL NOT WORK.  Please see etc/example.conf ! *
-  * - The old kline format WILL NOT WORK.  Please use convertklines which *
-  *   will be installed with your ircd!					  *
+  * - The old config format WILL NOT WORK. Please see etc/example.conf ! *
+  * - The old kline, dline, xline, gline format WILL NOT WORK.
   *************************************************************************
 
   ALSO, IF YOU ARE UPGRADING YOUR CURRENT SOURCE TREE, AND YOU TRY TO BUILD
-  IN IT WITHOUT PERFORMING AT LEAST 'make clean', THINGS _WILL_ BREAK.  IT IS
+  IN IT WITHOUT PERFORMING AT LEAST 'make clean', THINGS _WILL_ BREAK. IT IS
   RECOMMENDED THAT YOU RUN 'make distclean' AND THEN RERUN './configure'!
 
 ******************************* REQUIREMENTS **********************************
@@ -83,8 +82,7 @@ Feature Specific Requirements:
   It probably does not compile on AIX or libc5 Linux.
 
 - Old Hybrid 5/6 configuration files are no longer supported.  All conf
-  files will have to be converted to the Hybrid 7 format.  A convertconf
-  utility is provided and installed into bin/.
+  files will have to be converted to the Hybrid 7 format.
 
 - If you are wondering why config.h no longer exists, it's because most
   things that were once in config.h are now specified in the 'general'
@@ -100,4 +98,4 @@ Feature Specific Requirements:
 - Other files recommended for reading: BUGS, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: README.FIRST,v 7.49 2005/07/11 16:33:15 metalrock Exp $
+$Id: README.FIRST,v 7.50 2005/07/11 23:19:34 metalrock Exp $

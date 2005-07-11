@@ -1,6 +1,6 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.46 2005/07/07 18:03:33 adx Exp $
+   $Id: INSTALL,v 7.47 2005/07/11 23:19:34 metalrock Exp $
 
    Copyright (c) 2001, 2002, 2003, 2004, 2005 by ircd-hybrid team
 
@@ -24,8 +24,7 @@
    ***** EFNET NOTE *****
    You should run ./configure with the option '--enable-efnet' to tweak
    some options to be EFNet based.  You must also use the example.efnet.conf
-   instead of example.conf.  Please see note 7 for information about
-   converting old configs to new.
+   instead of example.conf.
    **********************
 
      ----------------------------------------------------------------------
@@ -144,31 +143,17 @@
          Note: If you use different names in ircd.conf, you must 'touch' the
          specific names.
 
-   6.  If you are upgrading from Hybrid 5 or Hybrid 6, the config file has
-       changed drastically...
+   6.  If you are upgrading from Hybrid 5 or Hybrid 6, the config files
+       have changed drastically...
 
-       There is a utility to convert your old config file to the new format.
-       In prefix/bin there is something called "convertconf". Its usage is:
-       ./convertconf (old config file to convert) (converted file name)
+       By default, the kline file is named kline.conf, the dline file is 
+       named dline.conf, the xline file is called xline.conf, and the gline 
+       file is called gline.conf.
 
-       Convertconf will NOT convert I: lines.  You must use "convertilines"
-       for this which contains a much superior method of conversion and
-       will group I: together under one auth {};.
+       The nick resv file is named nresv.conf, channel resv file is named
+       cresv.conf.
 
-       Once this is done, move your new config to prefix/etc/ircd.conf and
-       EDIT IT!
-
-   7.  If you are upgrading from Hybrid 5 or Hybrid 6, the kline file has
-       also changed...
-
-       There is a utility to convert the old kline configuration file to the
-       new format. In prefix/bin there is a program called "convertklines".
-       Its usage is: ./convertklines (old kline.conf filename) (new
-       kline.conf filename) (dline.conf filename).
-
-       Once this is done, move the new files into the prefix/etc/ directory
-       under their proper names. By default, the kline file is named
-       kline.conf and the dline file is named dline.conf.
+       The oper motd file is named opers.motd.
 
      ----------------------------------------------------------------------
 
