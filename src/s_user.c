@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.335 2005/07/11 19:06:21 db Exp $
+ *  $Id: s_user.c,v 7.336 2005/07/11 19:40:29 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1465,6 +1465,20 @@ void
 init_isupport(void)
 {
   isupportFile = init_MessageLine();
+
+  add_isupport("CALLERID", NULL, -1);
+  add_isupport("CASEMAPPING", CASEMAP, -1);
+  add_isupport("KICKLEN", NULL, TOPICLEN);
+  add_isupport("MODES", NULL, MAXMODEPARAMS);
+  add_isupport("NICKLEN", NULL, NICKLEN-1);
+#ifdef HALFOPS
+  add_isupport("PREFIX", "(ohv)@%+", -1);
+  add_isupport("STATUSMSG", "(ohv)@%+", -1);
+#else
+  add_isupport("PREFIX", "(ov)@+", -1);
+  add_isupport("STATUSMSG", "(ov)@+", -1);
+#endif
+  add_isupport("TOPICLEN", NULL, TOPICLEN);
 }
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_accept.c,v 1.46 2005/07/11 19:06:18 db Exp $
+ *  $Id: m_accept.c,v 1.47 2005/07/11 19:40:27 adx Exp $
  */
 
 #include "stdinc.h"
@@ -54,17 +54,15 @@ void
 _modinit(void)
 {
   mod_add_cmd(&accept_msgtab);
-  add_isupport("CALLERID", NULL, -1);
 }
 
 void
 _moddeinit(void)
 {
   mod_del_cmd(&accept_msgtab);
-  delete_isupport("CALLERID");
 }
 
-const char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.47 $";
 #endif
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.338 2005/07/11 19:06:20 db Exp $
+ *  $Id: ircd.c,v 7.339 2005/07/11 19:40:29 adx Exp $
  */
 
 #include "stdinc.h"
@@ -584,7 +584,6 @@ main(int argc, char *argv[])
 #endif
   init_dlink_nodes();
   initialize_message_files();
-  add_isupport("CASEMAPPING", CASEMAP, -1); /* XXX Does this belong here? */
   dbuf_init();
   init_hash();
   init_ip_hash_table();      /* client host ip hash table */

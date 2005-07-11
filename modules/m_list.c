@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.66 2005/07/11 19:06:18 db Exp $
+ *  $Id: m_list.c,v 1.67 2005/07/11 19:40:27 adx Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,6 @@ _modinit(void)
   mod_add_cmd(&list_msgtab);
   add_isupport("ELIST", "CMNTU", -1);
   add_isupport("SAFELIST", NULL, -1);
-  add_isupport("MAXLIST", "beI:30", -1);
 }
 
 void
@@ -66,10 +65,9 @@ _moddeinit(void)
   mod_del_cmd(&list_msgtab);
   delete_isupport("ELIST");
   delete_isupport("SAFELIST");
-  delete_isupport("MAXLIST");
 }
 
-const char *_version = "$Revision: 1.66 $";
+const char *_version = "$Revision: 1.67 $";
 #endif
 
 static int
