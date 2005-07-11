@@ -19,13 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.14 2005/06/23 10:55:00 michael Exp $
+ *  $Id: m_killhost.c,v 1.14.2.1 2005/07/11 15:57:06 metalrock Exp $
  *
  */
 
 #include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
+#include "common.h"
 #include "hash.h"
 #include "ircd.h"
 #include "numeric.h"
@@ -39,7 +40,6 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-
 
 static void mo_killhost(struct Client *, struct Client *, int, char *[]);
 static void kh_relay_kill(struct Client *, struct Client *, struct Client *,
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&killhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.14 $";
+const char *_version = "$Revision: 1.14.2.1 $";
 #endif
 
 /* mo_killhost()
@@ -96,6 +96,9 @@ mo_killhost(struct Client *client_p, struct Client *source_p,
   }
 
   host = parv[1];
+
+  if (!valid_wild_card(source_p, YES, 1, host))
+    return;
 
   if (!EmptyString(parv[2]))
   {

@@ -1,4 +1,4 @@
-$Id: README,v 1.38 2005/07/09 13:27:52 adx Exp $
+$Id: README,v 1.38.2.1 2005/07/11 15:57:06 metalrock Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
@@ -42,6 +42,11 @@ m_clearchan.c  - CLEARCHAN - Clears all users out of a channel and joins person
 m_ctrace.c     - CTRACE - Performs a trace on a certain class
 		 Syntax: CTRACE <class>
 		 Example: CTRACE users
+
+m_etrace.c     - ETRACE - Gives a list of all clients connected to the local server,
+			  both users and operators.
+		 Syntax: ETRACE <mask>
+		 Example: ETRACE *
 
 m_flags.c      - FLAGS - csircd like support of changing usermodes
                  Syntax: FLAGS :+OWALLOPS -SWALLOPS
