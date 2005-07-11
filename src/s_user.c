@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.332 2005/07/11 03:03:35 adx Exp $
+ *  $Id: s_user.c,v 7.333 2005/07/11 11:36:58 adx Exp $
  */
 
 #include "stdinc.h"
@@ -51,6 +51,7 @@
 #include "packet.h"
 #include "userhost.h"
 #include "hook.h"
+#include "s_misc.h"
 
 int MaxClientCount     = 1;
 int MaxConnectionCount = 1;
