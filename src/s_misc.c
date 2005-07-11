@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_misc.c,v 7.34 2005/07/11 03:03:34 adx Exp $
+ *  $Id: s_misc.c,v 7.35 2005/07/11 04:15:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -129,7 +129,7 @@ small_file_date(time_t lclock)
 #ifdef HAVE_LIBCRYPTO
 char *ssl_get_cipher(SSL *ssl)
 {
-  char buffer[128];
+  static char buffer[128];
   char *name;
   int bits;
 
