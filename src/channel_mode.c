@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.148 2005/07/11 00:36:48 metalrock Exp $
+ *  $Id: channel_mode.c,v 7.149 2005/07/11 21:00:25 adx Exp $
  */
 
 #include "stdinc.h"
@@ -138,7 +138,7 @@ check_string(char *s)
   static char star[] = "*";
 
   if (EmptyString(s))
-    return(star);
+    return (star);
 
   for (; *s; ++s)
   {
@@ -149,7 +149,7 @@ check_string(char *s)
     }
   }
 
-  return(str);
+  return (str);
 }
 
 /*
@@ -473,7 +473,7 @@ pretty_mask(char *mask)
   if (he)
     host[HOSTLEN] = he;
 
-  return(mask_buf + old_mask_pos);
+  return (mask_buf + old_mask_pos);
 }
 
 /* fix_key()
@@ -755,7 +755,12 @@ chm_ban(struct Client *client_p, struct Client *source_p,
   raw_mask = parv[(*parn)++];
   
   if (IsServer(client_p))
+  {
+    if (strchr(raw_mask, ' '))
+      return;
+
     mask = raw_mask;
+  }
   else
     mask = pretty_mask(raw_mask);
     
