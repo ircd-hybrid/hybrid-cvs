@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_change.c,v 1.1 2005/07/09 13:27:52 adx Exp $
+ *  $Id: m_change.c,v 1.2 2005/07/11 00:36:46 metalrock Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -42,12 +42,9 @@
 #include "s_user.h"
 #include "hash.h"
 
-static void mo_chgident(struct Client *client_p, struct Client *source_p,
-                        int parc, char *parv[]);
-static void mo_chghost(struct Client *client_p, struct Client *source_p,
-                       int parc, char *parv[]);
-static void mo_chgname(struct Client *client_p, struct Client *source_p,
-                       int parc, char *parv[]);
+static void mo_chgident(struct Client *, struct Client *, int, char *[]);
+static void mo_chghost(struct Client *, struct Client *, int, char *[]);
+static void mo_chgname(struct Client *, struct Client *, int, char *[]);
 
 struct Message chgident_msgtab = {
   "CHGIDENT", 0, 0, 3, 0, MFLG_SLOW, 0,

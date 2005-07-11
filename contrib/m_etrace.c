@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_etrace.c,v 1.1 2004/11/09 04:02:26 db Exp $
+ *  $Id: m_etrace.c,v 1.2 2005/07/11 00:36:46 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -44,8 +44,7 @@
 
 #define FORM_STR_RPL_ETRACE	":%s 709 %s %s %s %s %s %s :%s"
 
-static void mo_etrace(struct Client*, struct Client*, int, char**);
-
+static void mo_etrace(struct Client *, struct Client *, int, char *[]);
 static void etrace_spy(struct Client *);
 
 struct Message etrace_msgtab = {
@@ -67,12 +66,10 @@ _moddeinit(void)
   hook_del_event("doing_etrace");
   mod_del_cmd(&etrace_msgtab);
 }
-const char *_version = "$Revision: 1.1 $";
+const char *_version = "$Revision: 1.2 $";
 #endif
 
-static void report_this_status(struct Client *source_p,
-			       struct Client *target_p);
-
+static void report_this_status(struct Client *, struct Client *);
 
 /* mo_etrace()
  *      parv[0] = sender prefix
@@ -82,10 +79,10 @@ static void
 mo_etrace(struct Client *client_p, struct Client *source_p,
 	  int parc, char *parv[])
 {
-  const char *tname=NULL;
+  const char *tname = NULL;
   struct Client *target_p = NULL;
-  int wilds=0;
-  int do_all=0;
+  int wilds = 0;
+  int do_all = 0;
   dlink_node *ptr;
 
   etrace_spy(source_p);
@@ -109,8 +106,8 @@ mo_etrace(struct Client *client_p, struct Client *source_p,
   if (!wilds && !do_all)
   {
     target_p = find_client(tname);
-      
-    if(target_p && IsPerson(target_p)) 
+
+    if (target_p && IsPerson(target_p) && MyConnect(target_p))
       report_this_status(source_p, target_p);
       
     sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name, 
@@ -155,6 +152,7 @@ report_this_status(struct Client *source_p, struct Client *target_p)
   irc_getnameinfo((struct sockaddr*)&target_p->localClient->ip, 
         target_p->localClient->ip.ss_len, ip, HOSTIPLEN, NULL, 0, 
         NI_NUMERICHOST);
+
   name = get_client_name(target_p, HIDE_IP);
   class_name = get_client_class(target_p);
 

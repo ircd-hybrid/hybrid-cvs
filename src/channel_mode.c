@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.147 2005/07/10 10:12:52 adx Exp $
+ *  $Id: channel_mode.c,v 7.148 2005/07/11 00:36:48 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -52,58 +52,53 @@ static char *pretty_mask(char *);
 static char *fix_key(char *);
 static char *fix_key_old(char *);
 
-
 static void chm_nosuch(struct Client *, struct Client *,
                        struct Channel *, int, int *, char **, int *, int,
-                       int, char, void *, const char *chname);
+                       int, char, void *, const char *);
 
 static void chm_simple(struct Client *, struct Client *, struct Channel *,
                        int, int *, char **, int *, int, int, char, void *,
-                       const char *chname);
+                       const char *);
 
 static void chm_limit(struct Client *, struct Client *, struct Channel *,
                       int, int *, char **, int *, int, int, char, void *,
-                      const char *chname);
+                      const char *);
 
 static void chm_key(struct Client *, struct Client *, struct Channel *,
                     int, int *, char **, int *, int, int, char, void *,
-                    const char *chname);
+                    const char *);
 
 static void chm_op(struct Client *, struct Client *, struct Channel *, int,
                    int *, char **, int *, int, int, char, void *,
-                   const char *chname);
+                   const char *);
 #ifdef HALFOPS
 static void chm_hop(struct Client *, struct Client *, struct Channel *, int,
                    int *, char **, int *, int, int, char, void *,
-                   const char *chname);
+                   const char *);
 #endif
 static void chm_voice(struct Client *, struct Client *, struct Channel *,
                       int, int *, char **, int *, int, int, char, void *,
-                      const char *chname);
+                      const char *);
 
 static void chm_ban(struct Client *, struct Client *, struct Channel *, int,
                     int *, char **, int *, int, int, char, void *,
-                    const char *chname);
+                    const char *);
 
 static void chm_except(struct Client *, struct Client *, struct Channel *,
                        int, int *, char **, int *, int, int, char, void *,
-                       const char *chname);
+                       const char *);
 
 static void chm_invex(struct Client *, struct Client *, struct Channel *,
                       int, int *, char **, int *, int, int, char, void *,
-                      const char *chname);
+                      const char *);
 
 static void send_cap_mode_changes(struct Client *, struct Client *,
                                   struct Channel *, int, int);
 
 static void send_mode_changes(struct Client *, struct Client *,
-                              struct Channel *, char *chname);
+                              struct Channel *, char *);
 
-
-/*
- * some buffers for rebuilding channel/nick lists with ,'s
- */
-
+/* some buffers for rebuilding channel/nick lists with ,'s */
 static char modebuf[BUFSIZE];
 static char parabuf[MODEBUFLEN];
 static char mask_buf[BUFSIZE];
