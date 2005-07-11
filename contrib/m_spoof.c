@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_spoof.c,v 1.5 2005/07/09 13:27:52 adx Exp $
+ *  $Id: m_spoof.c,v 1.6 2005/07/11 01:19:35 metalrock Exp $
  */
 
 /* MODULE CONFIGURATION FOLLOWS -- please read!! */
@@ -91,7 +91,6 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-
 
 static void mo_spoof(struct Client *, struct Client *, int, char *[]);
 static void mo_delspoof(struct Client *, struct Client *, int, char *[]);

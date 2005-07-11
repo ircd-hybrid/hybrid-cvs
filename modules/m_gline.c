@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.133 2005/06/07 13:18:09 michael Exp $
+ *  $Id: m_gline.c,v 1.134 2005/07/11 01:19:37 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,6 @@ static int check_majority_gline(const struct Client *,
 static void add_new_majority_gline(const struct Client *,
                                    const char *, const char *, const char *);
 
-static int check_wild_gline(char *, char *);
 static int invalid_gline(struct Client *, const char *);
 
 static inline void do_sgline(struct Client *, struct Client *, int, char **, int);
@@ -102,7 +101,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.133 $";
+const char *_version = "$Revision: 1.134 $";
 #endif
 
 /* mo_gline()
@@ -181,16 +180,8 @@ mo_gline(struct Client *client_p, struct Client *source_p,
   if (invalid_gline(source_p, user))
     return;
 			
-  /* Not enough non-wild characters were found,
-   * assume they are trying to gline *@*.
-   */
-  if (check_wild_gline(user, host))
-  {
-    sendto_one(source_p,
-               ":%s NOTICE %s :Please include at least %d non-wildcard characters with the user@host",
-               me.name, parv[0], ConfigFileEntry.min_nonwildcard);
+  if (!valid_wild_card(source_p, YES, 2, user, host))
     return;
-  }
 
   if ((p = strchr(host, '/')))
   {
@@ -388,19 +379,8 @@ do_sgline(struct Client *client_p, struct Client *source_p,
 
   if (ConfigFileEntry.glines)
   {
-     /* I dont like the idea of checking for x non-wildcard chars in a
-      * gline.. it could lead to a desync... but we have to stop people
-      * glining *@*..   -- fl
-      */
-    if (check_wild_gline(user, host))
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL, 
-                  "%s requesting G-Line without %d non-wildcard characters for [%s@%s] [%s]",
-                   get_oper_name(source_p), ConfigFileEntry.min_nonwildcard,
-                   user, host, reason);
+    if (!valid_wild_card(source_p, YES, 2, user, host))
       return;
-    }
-
 
     if (IsClient(source_p))
     {
@@ -438,55 +418,6 @@ do_sgline(struct Client *client_p, struct Client *source_p,
      ilog(L_TRACE, "#gline for %s@%s [%s] requested by %s",
           user, host, reason, get_oper_name(source_p));
   }
-}
-
-/* check_wild_gline()
- *
- * inputs       - user, host of gline
- * output       - 1 if not enough non-wildchar char's, 0 if ok
- * side effects - NONE
- */
-static int
-check_wild_gline(char *user, char *host)
-{
-  char *p;
-  char tmpch;
-  unsigned int nonwild = 0;
-  const unsigned int min_nonwildcard = ConfigFileEntry.min_nonwildcard;
-
-  p = user;
-
-  while ((tmpch = *p++))
-  {
-    if (!IsKWildChar(tmpch))
-    {
-      /* If we find enough non-wild characters, we can
-       * break - no point in searching further.
-       */
-      if (++nonwild >= min_nonwildcard)
-        break;
-    }
-  }
-
-  if (nonwild < min_nonwildcard)
-  {
-    /* The user portion did not contain enough non-wild
-     * characters, try the host.
-     */
-    p = host;
-
-    while ((tmpch = *p++))
-    {
-      if (!IsKWildChar(tmpch))
-        if (++nonwild >= min_nonwildcard)
-          break;
-    }
-  }
-
-  if (nonwild < min_nonwildcard)
-    return(1);
-  else
-    return(0);
 }
 
 /* invalid_gline()

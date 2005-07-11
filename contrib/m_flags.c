@@ -27,7 +27,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_flags.c,v 1.17 2004/07/08 00:27:16 erik Exp $
+ *  $Id: m_flags.c,v 1.18 2005/07/11 01:19:35 metalrock Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -50,14 +50,11 @@
 #include "modules.h"
 #include "s_user.h"    /* send_umode_out() */
 
+static void m_flags(struct Client *, struct Client *, int, char *[]);
+static void mo_flags(struct Client *, struct Client *, int, char *[]);
 
-static void m_flags(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[]);
-static void mo_flags(struct Client *client_p, struct Client *source_p,
-                     int parc, char *parv[]);
-
-static char *set_flags_to_string(struct Client *client_p);
-static char *unset_flags_to_string(struct Client *client_p);
+static char *set_flags_to_string(struct Client *);
+static char *unset_flags_to_string(struct Client *);
 
 struct Message flags_msgtab = {
   "FLAGS", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -77,15 +74,15 @@ _moddeinit(void)
   mod_del_cmd(&flags_msgtab);
 }
 
-const char *_version = "$Revision: 1.17 $";
+const char *_version = "$Revision: 1.18 $";
 #endif
 
 /* FLAGS requires it's own mini parser, since the last parameter in it can
-** contain a number of FLAGS.  CS handles FLAGS mode1 mode2 OR
-** FLAGS :mode1 mode2, but not both mixed.
-**
-** The best way to match a flag to a mode is with a simple table
-*/
+ * contain a number of FLAGS.  CS handles FLAGS mode1 mode2 OR
+ * FLAGS :mode1 mode2, but not both mixed.
+ *
+ * The best way to match a flag to a mode is with a simple table
+ */
 
 struct FlagTable
 {
@@ -142,11 +139,11 @@ static struct FlagTable flag_table[] =
                            UMODE_OPERWALL | UMODE_BOTS | UMODE_EXTERNAL |\
                            UMODE_UNAUTH | UMODE_LOCOPS )
 
-/*
-** m_flags
-**      parv[0] = sender prefix
-**      parv[1] = parameter
-*/
+/* m_flags()
+ *
+ *      parv[0] = sender prefix
+ *      parv[1] = parameter
+ */
 static void 
 m_flags(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
@@ -223,9 +220,9 @@ m_flags(struct Client *client_p, struct Client *source_p,
         }
       }
       /* This for ended without matching a valid FLAG, here is where
-      ** I want to operate differently than ircd-comstud, and just ignore
-      ** the invalid flag, send a warning and go on.
-      */
+       * I want to operate differently than ircd-comstud, and just ignore
+       * the invalid flag, send a warning and go on.
+       */
       if (!isgood)
         sendto_one(source_p, ":%s NOTICE %s :Invalid FLAGS: %s (IGNORING)",
                    me.name, parv[0], flag);
@@ -233,8 +230,8 @@ m_flags(struct Client *client_p, struct Client *source_p,
   }
 
   /* All done setting the flags, print the notices out to the user
-  ** telling what flags they have and what flags they are missing
-  */
+   * telling what flags they have and what flags they are missing
+   */
   sendto_one(source_p, ":%s NOTICE %s :Current flags:%s",
              me.name, parv[0], set_flags_to_string(source_p));
   sendto_one(source_p, ":%s NOTICE %s :Current missing flags:%s",
@@ -243,11 +240,11 @@ m_flags(struct Client *client_p, struct Client *source_p,
   send_umode_out(client_p, source_p, setflags);
 }
 
-/*
-** mo_flags
-**      parv[0] = sender prefix
-**      parv[1] = parameter
-*/
+/* mo_flags()
+ *
+ *      parv[0] = sender prefix
+ *      parv[1] = parameter
+ */
 static void 
 mo_flags(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
@@ -341,9 +338,9 @@ mo_flags(struct Client *client_p, struct Client *source_p,
         }
       }
       /* This for ended without matching a valid FLAG, here is where
-      ** I want to operate differently than ircd-comstud, and just ignore
-      ** the invalid flag, send a warning and go on.
-      */
+       * I want to operate differently than ircd-comstud, and just ignore
+       * the invalid flag, send a warning and go on.
+       */
       if (!isgood)
         sendto_one(source_p, ":%s NOTICE %s :Invalid FLAGS: %s (IGNORING)",
                    me.name, parv[0], flag);
@@ -388,8 +385,8 @@ set_flags_to_string(struct Client *client_p)
   {
 #endif
     /* You can only be set +NICKCHANGES if you are an oper and
-    ** IsOperN(client_p) is true
-    */
+     * IsOperN(client_p) is true
+     */
     if (client_p->umodes & UMODE_NCHANGE)
     {
       ircsprintf(setflags, "%s %s", setflags, "NICKCHANGES");
