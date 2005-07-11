@@ -67,5 +67,7 @@ ircd features
 - New ACL G-lines can now be 'rejected' from being placed on the local server as
   well as 'blocked' from being propagated through the local server onto another
   server. Failures can also be logged for rejected and/or blocked glines.
+- Testmask feature allows you to count number of local and remote clients for
+  a given hostmask.
 
-$Id: whats-new.txt,v 7.48 2004/04/22 03:40:56 bill Exp $
+$Id: whats-new.txt,v 7.49 2005/07/11 23:35:09 metalrock Exp $
