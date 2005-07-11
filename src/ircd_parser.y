@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.395 2005/07/11 03:03:34 adx Exp $
+ *  $Id: ircd_parser.y,v 1.396 2005/07/11 04:20:53 db Exp $
  */
 
 %{
@@ -490,7 +490,7 @@ serverinfo_ssl_certificate_file: SSL_CERTIFICATE_FILE '=' QSTRING ';'
     if (SSL_CTX_use_certificate_file(ServerInfo.ctx,
       yylval.string, SSL_FILETYPE_PEM) <= 0)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
             "Error using config file entry ssl_certificate -- %s",
             ERR_error_string(ERR_get_error(), NULL));
       break;
@@ -499,7 +499,7 @@ serverinfo_ssl_certificate_file: SSL_CERTIFICATE_FILE '=' QSTRING ';'
     if (SSL_CTX_use_PrivateKey_file(ServerInfo.ctx,
       ServerInfo.rsa_private_key_file, SSL_FILETYPE_PEM) <= 0)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
             "Error using config file entry rsa_private_key -- %s",
             ERR_error_string(ERR_get_error(), NULL));
       break;
