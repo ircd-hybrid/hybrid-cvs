@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.114 2005/07/11 12:00:22 michael Exp $
+ *   $Id: messages.tab,v 7.115 2005/07/11 16:53:51 adx Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -299,7 +299,7 @@ static struct NumericInfo replies[] = {
 /* 272 */  {NULL, NULL, NULL},
 /* 273 */  {NULL, NULL, NULL},
 /* 274 */  {NULL, NULL, NULL},
-/* 275 */  {"RPL_WHOISSSL", ":%s 275 %s %s: is connected via SSL (secure link)", NULL},
+/* 275 */  {"RPL_WHOISSSL", ":%s 275 %s %s :is connected via SSL (secure link)", NULL},
 /* 276 */  {NULL, NULL, NULL},
 /* 277 */  {NULL, NULL, NULL},
 /* 278 */  {NULL, NULL, NULL},

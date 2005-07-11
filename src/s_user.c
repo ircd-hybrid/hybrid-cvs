@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.333 2005/07/11 11:36:58 adx Exp $
+ *  $Id: s_user.c,v 7.334 2005/07/11 16:53:51 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1225,8 +1225,8 @@ user_welcome(struct Client *source_p)
 #ifdef HAVE_LIBCRYPTO
   if (source_p->localClient->fd > -1)
     if (fd_table[source_p->localClient->fd].ssl != NULL)
-      sendto_one(source_p, "NOTICE %s :*** Connected securely via %s",
-                 source_p->name,
+      sendto_one(source_p, ":%s NOTICE %s :*** Connected securely via %s",
+                 me.name, source_p->name,
 		 ssl_get_cipher(fd_table[source_p->localClient->fd].ssl));
 #endif
 
