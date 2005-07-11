@@ -1,8 +1,7 @@
-/* A Bison parser, made by GNU Bison 1.875.  */
-/* $Id: y.tab.c,v 7.23 2005/07/11 03:03:35 adx Exp $ */
+/* A Bison parser, made by GNU Bison 1.875d.  */
 
 /* Skeleton parser for Yacc-like parsing with Bison,
-   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -33,6 +32,7 @@
    There are some unavoidable exceptions within include files to
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
+/* $Id: y.tab.c,v 7.24 2005/07/11 05:00:25 metalrock Exp $*/
 
 /* Identify Bison output.  */
 #define YYBISON 1
@@ -641,7 +641,7 @@ typedef union YYSTYPE {
   char *string;
 } YYSTYPE;
 /* Line 191 of yacc.c.  */
-#line 643 "y.tab.c"
+#line 644 "y.tab.c"
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1
@@ -653,22 +653,29 @@ typedef union YYSTYPE {
 
 
 /* Line 214 of yacc.c.  */
-#line 655 "y.tab.c"
+#line 656 "y.tab.c"
 
 #if ! defined (yyoverflow) || YYERROR_VERBOSE
 
+# ifndef YYFREE
+#  define YYFREE free
+# endif
+# ifndef YYMALLOC
+#  define YYMALLOC malloc
+# endif
+
 /* The parser invokes alloca or malloc; define the necessary symbols.  */
 
-# if YYSTACK_USE_ALLOCA
-#  define YYSTACK_ALLOC alloca
+# ifdef YYSTACK_USE_ALLOCA
+#  if YYSTACK_USE_ALLOCA
+#   define YYSTACK_ALLOC alloca
+#  endif
 # else
-#  ifndef YYSTACK_USE_ALLOCA
-#   if defined (alloca) || defined (_ALLOCA_H)
-#    define YYSTACK_ALLOC alloca
-#   else
-#    ifdef __GNUC__
-#     define YYSTACK_ALLOC __builtin_alloca
-#    endif
+#  if defined (alloca) || defined (_ALLOCA_H)
+#   define YYSTACK_ALLOC alloca
+#  else
+#   ifdef __GNUC__
+#    define YYSTACK_ALLOC __builtin_alloca
 #   endif
 #  endif
 # endif
@@ -681,20 +688,20 @@ typedef union YYSTYPE {
 #   include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
 #   define YYSIZE_T size_t
 #  endif
-#  define YYSTACK_ALLOC malloc
-#  define YYSTACK_FREE free
+#  define YYSTACK_ALLOC YYMALLOC
+#  define YYSTACK_FREE YYFREE
 # endif
 #endif /* ! defined (yyoverflow) || YYERROR_VERBOSE */
 
 
 #if (! defined (yyoverflow) \
      && (! defined (__cplusplus) \
-	 || (YYSTYPE_IS_TRIVIAL)))
+	 || (defined (YYSTYPE_IS_TRIVIAL) && YYSTYPE_IS_TRIVIAL)))
 
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
 {
-  short yyss;
+  short int yyss;
   YYSTYPE yyvs;
   };
 
@@ -704,13 +711,13 @@ union yyalloc
 /* The size of an array large to enough to hold all stacks, each with
    N elements.  */
 # define YYSTACK_BYTES(N) \
-     ((N) * (sizeof (short) + sizeof (YYSTYPE))				\
+     ((N) * (sizeof (short int) + sizeof (YYSTYPE))			\
       + YYSTACK_GAP_MAXIMUM)
 
 /* Copy COUNT objects from FROM to TO.  The source and destination do
    not overlap.  */
 # ifndef YYCOPY
-#  if 1 < __GNUC__
+#  if defined (__GNUC__) && 1 < __GNUC__
 #   define YYCOPY(To, From, Count) \
       __builtin_memcpy (To, From, (Count) * sizeof (*(From)))
 #  else
@@ -746,7 +753,7 @@ union yyalloc
 #if defined (__STDC__) || defined (__cplusplus)
    typedef signed char yysigned_char;
 #else
-   typedef short yysigned_char;
+   typedef short int yysigned_char;
 #endif
 
 /* YYFINAL -- State number of the termination state. */
@@ -827,7 +834,7 @@ static const unsigned char yytranslate[] =
 #if YYDEBUG
 /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
    YYRHS.  */
-static const unsigned short yyprhs[] =
+static const unsigned short int yyprhs[] =
 {
        0,     0,     3,     4,     7,     9,    11,    13,    15,    17,
       19,    21,    23,    25,    27,    29,    31,    33,    35,    37,
@@ -896,7 +903,7 @@ static const unsigned short yyprhs[] =
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS. */
-static const short yyrhs[] =
+static const short int yyrhs[] =
 {
      237,     0,    -1,    -1,   237,   238,    -1,   262,    -1,   268,
       -1,   279,    -1,   508,    -1,   307,    -1,   322,    -1,   334,
@@ -1099,7 +1106,7 @@ static const short yyrhs[] =
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
-static const unsigned short yyrline[] =
+static const unsigned short int yyrline[] =
 {
        0,   362,   362,   363,   366,   367,   368,   369,   370,   371,
      372,   373,   374,   375,   376,   377,   378,   379,   380,   381,
@@ -1173,155 +1180,151 @@ static const unsigned short yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals. */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "ACCEPT_PASSWORD", "ACTION", "ADMIN", 
-  "AFTYPE", "T_ALLOW", "ANTI_NICK_FLOOD", "ANTI_SPAM_EXIT_MESSAGE_TIME", 
-  "IRCD_AUTH", "AUTOCONN", "T_BLOCK", "BURST_AWAY", "BYTES", "KBYTES", 
-  "MBYTES", "GBYTES", "TBYTES", "CALLER_ID_WAIT", "CAN_FLOOD", "CAN_IDLE", 
-  "CHANNEL", "CIPHER_PREFERENCE", "CLASS", "COMPRESSED", 
-  "COMPRESSION_LEVEL", "CONNECT", "CONNECTFREQ", "CRYPTLINK", 
-  "DEFAULT_CIPHER_PREFERENCE", "DEFAULT_FLOODCOUNT", 
-  "DEFAULT_SPLIT_SERVER_COUNT", "DEFAULT_SPLIT_USER_COUNT", "DENY", 
-  "DESCRIPTION", "DIE", "DISABLE_AUTH", "DISABLE_HIDDEN", 
-  "DISABLE_LOCAL_CHANNELS", "DISABLE_REMOTE_COMMANDS", "DOT_IN_IP6_ADDR", 
-  "DOTS_IN_IDENT", "DURATION", "EGDPOOL_PATH", "EMAIL", "ENABLE", 
-  "ENCRYPTED", "EXCEED_LIMIT", "EXEMPT", "FAILED_OPER_NOTICE", "FAKENAME", 
-  "IRCD_FLAGS", "FLATTEN_LINKS", "FFAILED_OPERLOG", "FOPERLOG", 
-  "FUSERLOG", "GECOS", "GENERAL", "GLINE", "GLINES", "GLINE_EXEMPT", 
-  "GLINE_LOG", "GLINE_TIME", "GLINE_MIN_CIDR", "GLINE_MIN_CIDR6", 
-  "GLOBAL_KILL", "NEED_IDENT", "HAVENT_READ_CONF", "HIDDEN", 
-  "HIDDEN_ADMIN", "HIDDEN_OPER", "HIDE_SERVER_IPS", "HIDE_SERVERS", 
-  "HIDE_SPOOF_IPS", "HOST", "HUB", "HUB_MASK", "IDLETIME", 
-  "IGNORE_BOGUS_TS", "IP", "KILL", "KILL_CHASE_TIME_LIMIT", "KLINE", 
-  "KLINE_EXEMPT", "KLINE_REASON", "KLINE_WITH_REASON", "KNOCK_DELAY", 
-  "KNOCK_DELAY_CHANNEL", "LAZYLINK", "LEAF_MASK", "LINKS_DELAY", "LISTEN", 
-  "LOGGING", "LOG_LEVEL", "MAXIMUM_LINKS", "MAX_ACCEPT", "MAX_BANS", 
-  "MAX_CHANS_PER_USER", "MAX_GLOBAL", "MAX_IDENT", "MAX_LOCAL", 
-  "MAX_NICK_CHANGES", "MAX_NICK_TIME", "MAX_NUMBER", "MAX_TARGETS", 
-  "MESSAGE_LOCALE", "MIN_NONWILDCARD", "MIN_NONWILDCARD_SIMPLE", "MODULE", 
-  "MODULES", "NAME", "NEED_PASSWORD", "NETWORK_DESC", "NETWORK_NAME", 
-  "NICK", "NICK_CHANGES", "NO_CREATE_ON_SPLIT", "NO_JOIN_ON_SPLIT", 
-  "NO_OPER_FLOOD", "NO_TILDE", "NOT", "NUMBER", "NUMBER_PER_IDENT", 
-  "NUMBER_PER_IP", "NUMBER_PER_IP_GLOBAL", "OPERATOR", "OPER_LOG", 
-  "OPER_ONLY_UMODES", "OPER_PASS_RESV", "OPER_SPY_T", "OPER_UMODES", 
-  "INVITE_OPS_ONLY", "PACE_WAIT", "PACE_WAIT_SIMPLE", "PASSWORD", "PATH", 
-  "PING_COOKIE", "PING_TIME", "PORT", "SSLPORT", "QSTRING", 
-  "QUIET_ON_BAN", "REASON", "REDIRPORT", "REDIRSERV", "REHASH", "REMOTE", 
-  "REMOTEBAN", "RESTRICTED", "RSA_PRIVATE_KEY_FILE", 
-  "RSA_PUBLIC_KEY_FILE", "SSL_CERTIFICATE_FILE", "RESV", "RESV_EXEMPT", 
-  "SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS", "SENDQ", 
-  "SEND_PASSWORD", "SERVERHIDE", "SERVERINFO", "SERVLINK_PATH", "SID", 
-  "TKLINE_EXPIRE_NOTICES", "T_SHARED", "T_CLUSTER", "TYPE", "SHORT_MOTD", 
-  "SILENT", "SPOOF", "SPOOF_NOTICE", "STATS_I_OPER_ONLY", 
-  "STATS_K_OPER_ONLY", "STATS_O_OPER_ONLY", "STATS_P_OPER_ONLY", "TBOOL", 
-  "TMASKED", "T_REJECT", "TS_MAX_DELTA", "TS_WARN_DELTA", "TWODOTS", 
-  "T_ALL", "T_BOTS", "T_SOFTCALLERID", "T_CALLERID", "T_CCONN", 
-  "T_CLIENT_FLOOD", "T_DEBUG", "T_DRONE", "T_EXTERNAL", "T_FULL", 
-  "T_INVISIBLE", "T_IPV4", "T_IPV6", "T_LOCOPS", "T_LOGPATH", "T_L_CRIT", 
-  "T_L_DEBUG", "T_L_ERROR", "T_L_INFO", "T_L_NOTICE", "T_L_TRACE", 
-  "T_L_WARN", "T_MAX_CLIENTS", "T_NCHANGE", "T_OPERWALL", "T_REJ", 
-  "T_SERVNOTICE", "T_SKILL", "T_SPY", "T_UNAUTH", "T_UNRESV", "T_UNXLINE", 
-  "T_WALLOP", "THROTTLE_TIME", "TRUE_NO_OPER_FLOOD", "UNKLINE", "USER", 
-  "USE_EGD", "USE_EXCEPT", "USE_INVEX", "USE_KNOCK", "USE_LOGGING", 
-  "VHOST", "VHOST6", "XLINE", "WARN", "WARN_NO_NLINE", "';'", "'}'", 
-  "'{'", "'='", "','", "$accept", "conf", "conf_item", "timespec_", 
-  "timespec", "sizespec_", "sizespec", "modules_entry", "modules_items", 
-  "modules_item", "modules_module", "modules_path", "serverinfo_entry", 
-  "serverinfo_items", "serverinfo_item", 
-  "serverinfo_ssl_certificate_file", "serverinfo_rsa_private_key_file", 
-  "serverinfo_name", "serverinfo_sid", "serverinfo_description", 
-  "serverinfo_network_name", "serverinfo_network_desc", 
-  "serverinfo_vhost", "serverinfo_vhost6", "serverinfo_max_clients", 
-  "serverinfo_hub", "admin_entry", "admin_items", "admin_item", 
-  "admin_name", "admin_email", "admin_description", "logging_entry", 
-  "logging_items", "logging_item", "logging_path", "logging_oper_log", 
-  "logging_gline_log", "logging_fuserlog", "logging_ffailed_operlog", 
-  "logging_foperlog", "logging_log_level", "logging_use_logging", 
-  "oper_entry", "@1", "oper_name_b", "oper_items", "oper_item", 
-  "oper_name", "oper_name_t", "oper_user", "oper_password", 
-  "oper_encrypted", "oper_hidden_admin", "oper_rsa_public_key_file", 
-  "oper_class", "oper_global_kill", "oper_remote", "oper_kline", 
-  "oper_xline", "oper_unkline", "oper_gline", "oper_nick_changes", 
-  "oper_die", "oper_rehash", "oper_admin", "oper_flags", "@2", 
-  "oper_flags_items", "oper_flags_item", "oper_flags_item_atom", 
-  "class_entry", "@3", "class_name_b", "class_items", "class_item", 
-  "class_name", "class_name_t", "class_ping_time", "class_number_per_ip", 
-  "class_connectfreq", "class_max_number", "class_max_global", 
-  "class_max_local", "class_max_ident", "class_sendq", "listen_entry", 
-  "@4", "listen_items", "listen_item", "listen_port", "port_items", 
-  "port_item", "listen_sslport", "sslport_items", "sslport_item", 
-  "listen_address", "listen_host", "auth_entry", "@5", "auth_items", 
-  "auth_item", "auth_user", "auth_passwd", "auth_spoof_notice", 
-  "auth_class", "auth_flags", "@6", "auth_flags_items", "auth_flags_item", 
-  "auth_flags_item_atom", "auth_kline_exempt", "auth_need_ident", 
-  "auth_exceed_limit", "auth_can_flood", "auth_no_tilde", 
-  "auth_gline_exempt", "auth_spoof", "auth_redir_serv", "auth_redir_port", 
-  "auth_need_password", "resv_entry", "@7", "resv_items", "resv_item", 
-  "resv_creason", "resv_channel", "resv_nick", "shared_entry", "@8", 
-  "shared_items", "shared_item", "shared_name", "shared_user", 
-  "shared_type", "@9", "shared_types", "shared_type_item", 
-  "cluster_entry", "@10", "cluster_items", "cluster_item", "cluster_name", 
-  "cluster_type", "@11", "cluster_types", "cluster_type_item", 
-  "connect_entry", "@12", "connect_name_b", "connect_items", 
-  "connect_item", "connect_name", "connect_name_t", "connect_host", 
-  "connect_send_password", "connect_accept_password", "connect_port", 
-  "connect_aftype", "connect_fakename", "connect_flags", "@13", 
-  "connect_flags_items", "connect_flags_item", 
-  "connect_rsa_public_key_file", "connect_encrypted", "connect_cryptlink", 
-  "connect_compressed", "connect_auto", "connect_hub_mask", 
-  "connect_leaf_mask", "connect_class", "connect_cipher_preference", 
-  "kill_entry", "@14", "kill_items", "kill_item", "kill_user", 
-  "kill_reason", "deny_entry", "@15", "deny_items", "deny_item", 
-  "deny_ip", "deny_reason", "exempt_entry", "@16", "exempt_items", 
-  "exempt_item", "exempt_ip", "gecos_entry", "@17", "gecos_items", 
-  "gecos_item", "gecos_name", "gecos_reason", "general_entry", 
-  "general_items", "general_item", "general_gline_min_cidr", 
-  "general_gline_min_cidr6", "general_burst_away", 
-  "general_tkline_expire_notices", "general_kill_chase_time_limit", 
-  "general_hide_spoof_ips", "general_ignore_bogus_ts", 
-  "general_disable_remote_commands", "general_failed_oper_notice", 
-  "general_anti_nick_flood", "general_max_nick_time", 
-  "general_max_nick_changes", "general_max_accept", 
-  "general_anti_spam_exit_message_time", "general_ts_warn_delta", 
-  "general_ts_max_delta", "general_havent_read_conf", 
-  "general_kline_with_reason", "general_kline_reason", 
-  "general_warn_no_nline", "general_stats_o_oper_only", 
-  "general_stats_P_oper_only", "general_stats_k_oper_only", 
-  "general_stats_i_oper_only", "general_pace_wait", 
-  "general_caller_id_wait", "general_pace_wait_simple", 
-  "general_short_motd", "general_no_oper_flood", 
-  "general_true_no_oper_flood", "general_oper_pass_resv", 
-  "general_message_locale", "general_idletime", "general_dots_in_ident", 
-  "general_maximum_links", "general_max_targets", "general_servlink_path", 
-  "general_default_cipher_preference", "general_compression_level", 
-  "general_use_egd", "general_egdpool_path", "general_ping_cookie", 
-  "general_disable_auth", "general_throttle_time", "general_oper_umodes", 
-  "@18", "umode_oitems", "umode_oitem", "general_oper_only_umodes", "@19", 
-  "umode_items", "umode_item", "general_min_nonwildcard", 
-  "general_min_nonwildcard_simple", "general_default_floodcount", 
-  "general_client_flood", "general_dot_in_ip6_addr", "gline_entry", "@20", 
-  "gline_items", "gline_item", "gline_enable", "gline_duration", 
-  "gline_logging", "@21", "gline_logging_types", 
-  "gline_logging_type_item", "gline_user", "gline_server", "gline_action", 
-  "@22", "gdeny_types", "gdeny_type_item", "channel_entry", 
-  "channel_items", "channel_item", "channel_disable_local_channels", 
-  "channel_use_except", "channel_use_invex", "channel_use_knock", 
-  "channel_knock_delay", "channel_knock_delay_channel", 
-  "channel_invite_ops_only", "channel_max_chans_per_user", 
-  "channel_quiet_on_ban", "channel_max_bans", 
-  "channel_default_split_user_count", 
-  "channel_default_split_server_count", "channel_no_create_on_split", 
-  "channel_no_join_on_split", "serverhide_entry", "serverhide_items", 
-  "serverhide_item", "serverhide_flatten_links", 
-  "serverhide_hide_servers", "serverhide_links_delay", 
-  "serverhide_hidden", "serverhide_disable_hidden", 
-  "serverhide_hide_server_ips", 0
+  "$end", "error", "$undefined", "ACCEPT_PASSWORD", "ACTION", "ADMIN",
+  "AFTYPE", "T_ALLOW", "ANTI_NICK_FLOOD", "ANTI_SPAM_EXIT_MESSAGE_TIME",
+  "IRCD_AUTH", "AUTOCONN", "T_BLOCK", "BURST_AWAY", "BYTES", "KBYTES",
+  "MBYTES", "GBYTES", "TBYTES", "CALLER_ID_WAIT", "CAN_FLOOD", "CAN_IDLE",
+  "CHANNEL", "CIPHER_PREFERENCE", "CLASS", "COMPRESSED",
+  "COMPRESSION_LEVEL", "CONNECT", "CONNECTFREQ", "CRYPTLINK",
+  "DEFAULT_CIPHER_PREFERENCE", "DEFAULT_FLOODCOUNT",
+  "DEFAULT_SPLIT_SERVER_COUNT", "DEFAULT_SPLIT_USER_COUNT", "DENY",
+  "DESCRIPTION", "DIE", "DISABLE_AUTH", "DISABLE_HIDDEN",
+  "DISABLE_LOCAL_CHANNELS", "DISABLE_REMOTE_COMMANDS", "DOT_IN_IP6_ADDR",
+  "DOTS_IN_IDENT", "DURATION", "EGDPOOL_PATH", "EMAIL", "ENABLE",
+  "ENCRYPTED", "EXCEED_LIMIT", "EXEMPT", "FAILED_OPER_NOTICE", "FAKENAME",
+  "IRCD_FLAGS", "FLATTEN_LINKS", "FFAILED_OPERLOG", "FOPERLOG", "FUSERLOG",
+  "GECOS", "GENERAL", "GLINE", "GLINES", "GLINE_EXEMPT", "GLINE_LOG",
+  "GLINE_TIME", "GLINE_MIN_CIDR", "GLINE_MIN_CIDR6", "GLOBAL_KILL",
+  "NEED_IDENT", "HAVENT_READ_CONF", "HIDDEN", "HIDDEN_ADMIN",
+  "HIDDEN_OPER", "HIDE_SERVER_IPS", "HIDE_SERVERS", "HIDE_SPOOF_IPS",
+  "HOST", "HUB", "HUB_MASK", "IDLETIME", "IGNORE_BOGUS_TS", "IP", "KILL",
+  "KILL_CHASE_TIME_LIMIT", "KLINE", "KLINE_EXEMPT", "KLINE_REASON",
+  "KLINE_WITH_REASON", "KNOCK_DELAY", "KNOCK_DELAY_CHANNEL", "LAZYLINK",
+  "LEAF_MASK", "LINKS_DELAY", "LISTEN", "LOGGING", "LOG_LEVEL",
+  "MAXIMUM_LINKS", "MAX_ACCEPT", "MAX_BANS", "MAX_CHANS_PER_USER",
+  "MAX_GLOBAL", "MAX_IDENT", "MAX_LOCAL", "MAX_NICK_CHANGES",
+  "MAX_NICK_TIME", "MAX_NUMBER", "MAX_TARGETS", "MESSAGE_LOCALE",
+  "MIN_NONWILDCARD", "MIN_NONWILDCARD_SIMPLE", "MODULE", "MODULES", "NAME",
+  "NEED_PASSWORD", "NETWORK_DESC", "NETWORK_NAME", "NICK", "NICK_CHANGES",
+  "NO_CREATE_ON_SPLIT", "NO_JOIN_ON_SPLIT", "NO_OPER_FLOOD", "NO_TILDE",
+  "NOT", "NUMBER", "NUMBER_PER_IDENT", "NUMBER_PER_IP",
+  "NUMBER_PER_IP_GLOBAL", "OPERATOR", "OPER_LOG", "OPER_ONLY_UMODES",
+  "OPER_PASS_RESV", "OPER_SPY_T", "OPER_UMODES", "INVITE_OPS_ONLY",
+  "PACE_WAIT", "PACE_WAIT_SIMPLE", "PASSWORD", "PATH", "PING_COOKIE",
+  "PING_TIME", "PORT", "SSLPORT", "QSTRING", "QUIET_ON_BAN", "REASON",
+  "REDIRPORT", "REDIRSERV", "REHASH", "REMOTE", "REMOTEBAN", "RESTRICTED",
+  "RSA_PRIVATE_KEY_FILE", "RSA_PUBLIC_KEY_FILE", "SSL_CERTIFICATE_FILE",
+  "RESV", "RESV_EXEMPT", "SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS",
+  "SENDQ", "SEND_PASSWORD", "SERVERHIDE", "SERVERINFO", "SERVLINK_PATH",
+  "SID", "TKLINE_EXPIRE_NOTICES", "T_SHARED", "T_CLUSTER", "TYPE",
+  "SHORT_MOTD", "SILENT", "SPOOF", "SPOOF_NOTICE", "STATS_I_OPER_ONLY",
+  "STATS_K_OPER_ONLY", "STATS_O_OPER_ONLY", "STATS_P_OPER_ONLY", "TBOOL",
+  "TMASKED", "T_REJECT", "TS_MAX_DELTA", "TS_WARN_DELTA", "TWODOTS",
+  "T_ALL", "T_BOTS", "T_SOFTCALLERID", "T_CALLERID", "T_CCONN",
+  "T_CLIENT_FLOOD", "T_DEBUG", "T_DRONE", "T_EXTERNAL", "T_FULL",
+  "T_INVISIBLE", "T_IPV4", "T_IPV6", "T_LOCOPS", "T_LOGPATH", "T_L_CRIT",
+  "T_L_DEBUG", "T_L_ERROR", "T_L_INFO", "T_L_NOTICE", "T_L_TRACE",
+  "T_L_WARN", "T_MAX_CLIENTS", "T_NCHANGE", "T_OPERWALL", "T_REJ",
+  "T_SERVNOTICE", "T_SKILL", "T_SPY", "T_UNAUTH", "T_UNRESV", "T_UNXLINE",
+  "T_WALLOP", "THROTTLE_TIME", "TRUE_NO_OPER_FLOOD", "UNKLINE", "USER",
+  "USE_EGD", "USE_EXCEPT", "USE_INVEX", "USE_KNOCK", "USE_LOGGING",
+  "VHOST", "VHOST6", "XLINE", "WARN", "WARN_NO_NLINE", "';'", "'}'", "'{'",
+  "'='", "','", "$accept", "conf", "conf_item", "timespec_", "timespec",
+  "sizespec_", "sizespec", "modules_entry", "modules_items",
+  "modules_item", "modules_module", "modules_path", "serverinfo_entry",
+  "serverinfo_items", "serverinfo_item", "serverinfo_ssl_certificate_file",
+  "serverinfo_rsa_private_key_file", "serverinfo_name", "serverinfo_sid",
+  "serverinfo_description", "serverinfo_network_name",
+  "serverinfo_network_desc", "serverinfo_vhost", "serverinfo_vhost6",
+  "serverinfo_max_clients", "serverinfo_hub", "admin_entry", "admin_items",
+  "admin_item", "admin_name", "admin_email", "admin_description",
+  "logging_entry", "logging_items", "logging_item", "logging_path",
+  "logging_oper_log", "logging_gline_log", "logging_fuserlog",
+  "logging_ffailed_operlog", "logging_foperlog", "logging_log_level",
+  "logging_use_logging", "oper_entry", "@1", "oper_name_b", "oper_items",
+  "oper_item", "oper_name", "oper_name_t", "oper_user", "oper_password",
+  "oper_encrypted", "oper_hidden_admin", "oper_rsa_public_key_file",
+  "oper_class", "oper_global_kill", "oper_remote", "oper_kline",
+  "oper_xline", "oper_unkline", "oper_gline", "oper_nick_changes",
+  "oper_die", "oper_rehash", "oper_admin", "oper_flags", "@2",
+  "oper_flags_items", "oper_flags_item", "oper_flags_item_atom",
+  "class_entry", "@3", "class_name_b", "class_items", "class_item",
+  "class_name", "class_name_t", "class_ping_time", "class_number_per_ip",
+  "class_connectfreq", "class_max_number", "class_max_global",
+  "class_max_local", "class_max_ident", "class_sendq", "listen_entry",
+  "@4", "listen_items", "listen_item", "listen_port", "port_items",
+  "port_item", "listen_sslport", "sslport_items", "sslport_item",
+  "listen_address", "listen_host", "auth_entry", "@5", "auth_items",
+  "auth_item", "auth_user", "auth_passwd", "auth_spoof_notice",
+  "auth_class", "auth_flags", "@6", "auth_flags_items", "auth_flags_item",
+  "auth_flags_item_atom", "auth_kline_exempt", "auth_need_ident",
+  "auth_exceed_limit", "auth_can_flood", "auth_no_tilde",
+  "auth_gline_exempt", "auth_spoof", "auth_redir_serv", "auth_redir_port",
+  "auth_need_password", "resv_entry", "@7", "resv_items", "resv_item",
+  "resv_creason", "resv_channel", "resv_nick", "shared_entry", "@8",
+  "shared_items", "shared_item", "shared_name", "shared_user",
+  "shared_type", "@9", "shared_types", "shared_type_item", "cluster_entry",
+  "@10", "cluster_items", "cluster_item", "cluster_name", "cluster_type",
+  "@11", "cluster_types", "cluster_type_item", "connect_entry", "@12",
+  "connect_name_b", "connect_items", "connect_item", "connect_name",
+  "connect_name_t", "connect_host", "connect_send_password",
+  "connect_accept_password", "connect_port", "connect_aftype",
+  "connect_fakename", "connect_flags", "@13", "connect_flags_items",
+  "connect_flags_item", "connect_rsa_public_key_file", "connect_encrypted",
+  "connect_cryptlink", "connect_compressed", "connect_auto",
+  "connect_hub_mask", "connect_leaf_mask", "connect_class",
+  "connect_cipher_preference", "kill_entry", "@14", "kill_items",
+  "kill_item", "kill_user", "kill_reason", "deny_entry", "@15",
+  "deny_items", "deny_item", "deny_ip", "deny_reason", "exempt_entry",
+  "@16", "exempt_items", "exempt_item", "exempt_ip", "gecos_entry", "@17",
+  "gecos_items", "gecos_item", "gecos_name", "gecos_reason",
+  "general_entry", "general_items", "general_item",
+  "general_gline_min_cidr", "general_gline_min_cidr6",
+  "general_burst_away", "general_tkline_expire_notices",
+  "general_kill_chase_time_limit", "general_hide_spoof_ips",
+  "general_ignore_bogus_ts", "general_disable_remote_commands",
+  "general_failed_oper_notice", "general_anti_nick_flood",
+  "general_max_nick_time", "general_max_nick_changes",
+  "general_max_accept", "general_anti_spam_exit_message_time",
+  "general_ts_warn_delta", "general_ts_max_delta",
+  "general_havent_read_conf", "general_kline_with_reason",
+  "general_kline_reason", "general_warn_no_nline",
+  "general_stats_o_oper_only", "general_stats_P_oper_only",
+  "general_stats_k_oper_only", "general_stats_i_oper_only",
+  "general_pace_wait", "general_caller_id_wait",
+  "general_pace_wait_simple", "general_short_motd",
+  "general_no_oper_flood", "general_true_no_oper_flood",
+  "general_oper_pass_resv", "general_message_locale", "general_idletime",
+  "general_dots_in_ident", "general_maximum_links", "general_max_targets",
+  "general_servlink_path", "general_default_cipher_preference",
+  "general_compression_level", "general_use_egd", "general_egdpool_path",
+  "general_ping_cookie", "general_disable_auth", "general_throttle_time",
+  "general_oper_umodes", "@18", "umode_oitems", "umode_oitem",
+  "general_oper_only_umodes", "@19", "umode_items", "umode_item",
+  "general_min_nonwildcard", "general_min_nonwildcard_simple",
+  "general_default_floodcount", "general_client_flood",
+  "general_dot_in_ip6_addr", "gline_entry", "@20", "gline_items",
+  "gline_item", "gline_enable", "gline_duration", "gline_logging", "@21",
+  "gline_logging_types", "gline_logging_type_item", "gline_user",
+  "gline_server", "gline_action", "@22", "gdeny_types", "gdeny_type_item",
+  "channel_entry", "channel_items", "channel_item",
+  "channel_disable_local_channels", "channel_use_except",
+  "channel_use_invex", "channel_use_knock", "channel_knock_delay",
+  "channel_knock_delay_channel", "channel_invite_ops_only",
+  "channel_max_chans_per_user", "channel_quiet_on_ban", "channel_max_bans",
+  "channel_default_split_user_count", "channel_default_split_server_count",
+  "channel_no_create_on_split", "channel_no_join_on_split",
+  "serverhide_entry", "serverhide_items", "serverhide_item",
+  "serverhide_flatten_links", "serverhide_hide_servers",
+  "serverhide_links_delay", "serverhide_hidden",
+  "serverhide_disable_hidden", "serverhide_hide_server_ips", 0
 };
 #endif
 
 # ifdef YYPRINT
 /* YYTOKNUM[YYLEX-NUM] -- Internal token number corresponding to
    token YYLEX-NUM.  */
-static const unsigned short yytoknum[] =
+static const unsigned short int yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
@@ -1351,7 +1354,7 @@ static const unsigned short yytoknum[] =
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
-static const unsigned short yyr1[] =
+static const unsigned short int yyr1[] =
 {
        0,   236,   237,   237,   238,   238,   238,   238,   238,   238,
      238,   238,   238,   238,   238,   238,   238,   238,   238,   238,
@@ -1491,7 +1494,7 @@ static const unsigned char yyr2[] =
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
    STATE-NUM when YYTABLE doesn't specify something else to do.  Zero
    means the default is an error.  */
-static const unsigned short yydefact[] =
+static const unsigned short int yydefact[] =
 {
        2,     0,     1,     0,     0,   221,     0,   174,   323,   383,
      392,   399,     0,   556,   374,   200,     0,     0,   110,   271,
@@ -1625,7 +1628,7 @@ static const unsigned short yydefact[] =
 };
 
 /* YYDEFGOTO[NTERM-NUM]. */
-static const short yydefgoto[] =
+static const short int yydefgoto[] =
 {
       -1,     1,    24,   815,   816,   953,   954,    25,   247,   248,
      249,   250,    26,   282,   283,   284,   285,   286,   287,   288,
@@ -1662,7 +1665,7 @@ static const short yydefgoto[] =
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
 #define YYPACT_NINF -771
-static const short yypact[] =
+static const short int yypact[] =
 {
     -771,   706,  -771,  -217,  -230,  -771,  -213,  -771,  -771,  -771,
     -771,  -771,  -205,  -771,  -771,  -771,  -203,  -200,  -771,  -771,
@@ -1796,7 +1799,7 @@ static const short yypact[] =
 };
 
 /* YYPGOTO[NTERM-NUM].  */
-static const short yypgoto[] =
+static const short int yypgoto[] =
 {
     -771,  -771,  -771,  -770,  -338,  -591,  -416,  -771,  -771,   684,
     -771,  -771,  -771,  -771,   854,  -771,  -771,  -771,  -771,  -771,
@@ -1835,7 +1838,7 @@ static const short yypgoto[] =
    number is the opposite.  If zero, do what YYDEFACT says.
    If YYTABLE_NINF, syntax error.  */
 #define YYTABLE_NINF -1
-static const unsigned short yytable[] =
+static const unsigned short int yytable[] =
 {
      544,   545,   674,    47,   360,   440,   353,   512,   365,   117,
      473,   503,    67,    67,    45,    46,   118,   119,   447,   353,
@@ -1964,7 +1967,7 @@ static const unsigned short yytable[] =
        0,     0,     0,     0,     0,     0,     0,   489
 };
 
-static const short yycheck[] =
+static const short int yycheck[] =
 {
      338,   339,   418,   233,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,   231,   232,     8,     9,     1,     1,
@@ -2095,7 +2098,7 @@ static const short yycheck[] =
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
-static const unsigned short yystos[] =
+static const unsigned short int yystos[] =
 {
        0,   237,     0,     1,     5,    10,    22,    24,    27,    34,
       49,    57,    58,    60,    81,    92,    93,   110,   126,   153,
@@ -2251,8 +2254,8 @@ static const unsigned short yystos[] =
 
 #define YYACCEPT	goto yyacceptlab
 #define YYABORT		goto yyabortlab
-#define YYERROR		\
-			goto yyerrlab1
+#define YYERROR		goto yyerrorlab
+
 
 /* Like YYERROR except do call yyerror.  This remains here temporarily
    to ease the transition to the new meaning of YYERROR, for GCC.
@@ -2286,11 +2289,11 @@ while (0)
    are run).  */
 
 #ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)         \
-  Current.first_line   = Rhs[1].first_line;      \
-  Current.first_column = Rhs[1].first_column;    \
-  Current.last_line    = Rhs[N].last_line;       \
-  Current.last_column  = Rhs[N].last_column;
+# define YYLLOC_DEFAULT(Current, Rhs, N)		\
+   ((Current).first_line   = (Rhs)[1].first_line,	\
+    (Current).first_column = (Rhs)[1].first_column,	\
+    (Current).last_line    = (Rhs)[N].last_line,	\
+    (Current).last_column  = (Rhs)[N].last_column)
 #endif
 
 /* YYLEX -- calling `yylex' with the right arguments.  */
@@ -2334,17 +2337,17 @@ do {								\
 
 /*------------------------------------------------------------------.
 | yy_stack_print -- Print the state stack from its BOTTOM up to its |
-| TOP (cinluded).                                                   |
+| TOP (included).                                                   |
 `------------------------------------------------------------------*/
 
 #if defined (__STDC__) || defined (__cplusplus)
 static void
-yy_stack_print (short *bottom, short *top)
+yy_stack_print (short int *bottom, short int *top)
 #else
 static void
 yy_stack_print (bottom, top)
-    short *bottom;
-    short *top;
+    short int *bottom;
+    short int *top;
 #endif
 {
   YYFPRINTF (stderr, "Stack now");
@@ -2374,9 +2377,9 @@ yy_reduce_print (yyrule)
 #endif
 {
   int yyi;
-  unsigned int yylineno = yyrline[yyrule];
+  unsigned int yylno = yyrline[yyrule];
   YYFPRINTF (stderr, "Reducing stack by rule %d (line %u), ",
-             yyrule - 1, yylineno);
+             yyrule - 1, yylno);
   /* Print the symbols being reduced, and their result.  */
   for (yyi = yyprhs[yyrule]; 0 <= yyrhs[yyi]; yyi++)
     YYFPRINTF (stderr, "%s ", yytname [yyrhs[yyi]]);
@@ -2413,7 +2416,7 @@ int yydebug;
    SIZE_MAX < YYSTACK_BYTES (YYMAXDEPTH)
    evaluated with infinite-precision integer arithmetic.  */
 
-#if YYMAXDEPTH == 0
+#if defined (YYMAXDEPTH) && YYMAXDEPTH == 0
 # undef YYMAXDEPTH
 #endif
 
@@ -2611,9 +2614,9 @@ yyparse ()
      to reallocate them elsewhere.  */
 
   /* The state stack.  */
-  short	yyssa[YYINITDEPTH];
-  short *yyss = yyssa;
-  register short *yyssp;
+  short int yyssa[YYINITDEPTH];
+  short int *yyss = yyssa;
+  register short int *yyssp;
 
   /* The semantic value stack.  */
   YYSTYPE yyvsa[YYINITDEPTH];
@@ -2650,6 +2653,7 @@ yyparse ()
   yyssp = yyss;
   yyvsp = yyvs;
 
+
   goto yysetstate;
 
 /*------------------------------------------------------------.
@@ -2675,7 +2679,7 @@ yyparse ()
 	   these so that the &'s don't force the real ones into
 	   memory.  */
 	YYSTYPE *yyvs1 = yyvs;
-	short *yyss1 = yyss;
+	short int *yyss1 = yyss;
 
 
 	/* Each stack pointer address is followed by the size of the
@@ -2703,7 +2707,7 @@ yyparse ()
 	yystacksize = YYMAXDEPTH;
 
       {
-	short *yyss1 = yyss;
+	short int *yyss1 = yyss;
 	union yyalloc *yyptr =
 	  (union yyalloc *) YYSTACK_ALLOC (YYSTACK_BYTES (yystacksize));
 	if (! yyptr)
@@ -2954,7 +2958,7 @@ yyreduce:
     if (SSL_CTX_use_certificate_file(ServerInfo.ctx,
       yylval.string, SSL_FILETYPE_PEM) <= 0)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
             "Error using config file entry ssl_certificate -- %s",
             ERR_error_string(ERR_get_error(), NULL));
       break;
@@ -2963,7 +2967,7 @@ yyreduce:
     if (SSL_CTX_use_PrivateKey_file(ServerInfo.ctx,
       ServerInfo.rsa_private_key_file, SSL_FILETYPE_PEM) <= 0)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
             "Error using config file entry rsa_private_key -- %s",
             ERR_error_string(ERR_get_error(), NULL));
       break;
@@ -6668,8 +6672,8 @@ yyreduce:
 
     }
 
-/* Line 997 of yacc.c.  */
-#line 6671 "y.tab.c"
+/* Line 1010 of yacc.c.  */
+#line 6676 "y.tab.c"
 
   yyvsp -= yylen;
   yyssp -= yylen;
@@ -6710,18 +6714,33 @@ yyerrlab:
 	{
 	  YYSIZE_T yysize = 0;
 	  int yytype = YYTRANSLATE (yychar);
+	  const char* yyprefix;
 	  char *yymsg;
-	  int yyx, yycount;
+	  int yyx;
 
-	  yycount = 0;
 	  /* Start YYX at -YYN if negative to avoid negative indexes in
 	     YYCHECK.  */
-	  for (yyx = yyn < 0 ? -yyn : 0;
-	       yyx < (int) (sizeof (yytname) / sizeof (char *)); yyx++)
+	  int yyxbegin = yyn < 0 ? -yyn : 0;
+
+	  /* Stay within bounds of both yycheck and yytname.  */
+	  int yychecklim = YYLAST - yyn;
+	  int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
+	  int yycount = 0;
+
+	  yyprefix = ", expecting ";
+	  for (yyx = yyxbegin; yyx < yyxend; ++yyx)
 	    if (yycheck[yyx + yyn] == yyx && yyx != YYTERROR)
-	      yysize += yystrlen (yytname[yyx]) + 15, yycount++;
-	  yysize += yystrlen ("syntax error, unexpected ") + 1;
-	  yysize += yystrlen (yytname[yytype]);
+	      {
+		yysize += yystrlen (yyprefix) + yystrlen (yytname [yyx]);
+		yycount += 1;
+		if (yycount == 5)
+		  {
+		    yysize = 0;
+		    break;
+		  }
+	      }
+	  yysize += (sizeof ("syntax error, unexpected ")
+		     + yystrlen (yytname[yytype]));
 	  yymsg = (char *) YYSTACK_ALLOC (yysize);
 	  if (yymsg != 0)
 	    {
@@ -6730,16 +6749,13 @@ yyerrlab:
 
 	      if (yycount < 5)
 		{
-		  yycount = 0;
-		  for (yyx = yyn < 0 ? -yyn : 0;
-		       yyx < (int) (sizeof (yytname) / sizeof (char *));
-		       yyx++)
+		  yyprefix = ", expecting ";
+		  for (yyx = yyxbegin; yyx < yyxend; ++yyx)
 		    if (yycheck[yyx + yyn] == yyx && yyx != YYTERROR)
 		      {
-			const char *yyq = ! yycount ? ", expecting " : " or ";
-			yyp = yystpcpy (yyp, yyq);
+			yyp = yystpcpy (yyp, yyprefix);
 			yyp = yystpcpy (yyp, yytname[yyx]);
-			yycount++;
+			yyprefix = " or ";
 		      }
 		}
 	      yyerror (yymsg);
@@ -6760,25 +6776,27 @@ yyerrlab:
       /* If just tried and failed to reuse lookahead token after an
 	 error, discard it.  */
 
-      /* Return failure if at end of input.  */
-      if (yychar == YYEOF)
+      if (yychar <= YYEOF)
         {
-	  /* Pop the error token.  */
-          YYPOPSTACK;
-	  /* Pop the rest of the stack.  */
-	  while (yyss < yyssp)
-	    {
-	      YYDSYMPRINTF ("Error: popping", yystos[*yyssp], yyvsp, yylsp);
-	      yydestruct (yystos[*yyssp], yyvsp);
-	      YYPOPSTACK;
-	    }
-	  YYABORT;
+          /* If at end of input, pop the error token,
+	     then the rest of the stack, then return failure.  */
+	  if (yychar == YYEOF)
+	     for (;;)
+	       {
+		 YYPOPSTACK;
+		 if (yyssp == yyss)
+		   YYABORT;
+		 YYDSYMPRINTF ("Error: popping", yystos[*yyssp], yyvsp, yylsp);
+		 yydestruct (yystos[*yyssp], yyvsp);
+	       }
         }
+      else
+	{
+	  YYDSYMPRINTF ("Error: discarding", yytoken, &yylval, &yylloc);
+	  yydestruct (yytoken, &yylval);
+	  yychar = YYEMPTY;
 
-      YYDSYMPRINTF ("Error: discarding", yytoken, &yylval, &yylloc);
-      yydestruct (yytoken, &yylval);
-      yychar = YYEMPTY;
-
+	}
     }
 
   /* Else will try to reuse lookahead token after shifting the error
@@ -6786,9 +6804,27 @@ yyerrlab:
   goto yyerrlab1;
 
 
-/*----------------------------------------------------.
-| yyerrlab1 -- error raised explicitly by an action.  |
-`----------------------------------------------------*/
+/*---------------------------------------------------.
+| yyerrorlab -- error raised explicitly by YYERROR.  |
+`---------------------------------------------------*/
+yyerrorlab:
+
+#ifdef __GNUC__
+  /* Pacify GCC when the user code never invokes YYERROR and the label
+     yyerrorlab therefore never appears in user code.  */
+  if (0)
+     goto yyerrorlab;
+#endif
+
+  yyvsp -= yylen;
+  yyssp -= yylen;
+  yystate = *yyssp;
+  goto yyerrlab1;
+
+
+/*-------------------------------------------------------------.
+| yyerrlab1 -- common code for both syntax error and YYERROR.  |
+`-------------------------------------------------------------*/
 yyerrlab1:
   yyerrstatus = 3;	/* Each real token shifted decrements this.  */
 
@@ -6812,9 +6848,8 @@ yyerrlab1:
 
       YYDSYMPRINTF ("Error: popping", yystos[*yyssp], yyvsp, yylsp);
       yydestruct (yystos[yystate], yyvsp);
-      yyvsp--;
-      yystate = *--yyssp;
-
+      YYPOPSTACK;
+      yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
     }
 
