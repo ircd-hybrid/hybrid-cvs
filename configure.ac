@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.97 2005/07/09 13:09:21 joant Exp $
+dnl $Id: configure.ac,v 7.98 2005/07/11 03:29:49 metalrock Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.97 2005/07/09 13:09:21 joant Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.98 2005/07/11 03:29:49 metalrock Exp $])
 
 AC_INIT([ircd-hybrid],[7.1])
 
@@ -560,7 +560,7 @@ if test "$cf_enable_openssl" != no; then
 			AC_CHECK_FUNCS(EVP_des_cfb,
 			cf_openssl_ciphers="${cf_openssl_ciphers}DES/56 ")
 		fi
-		SSL_LIBS="$SSL_LIBS -lcrypto"
+		SSL_LIBS="$SSL_LIBS -lcrypto -lssl"
 		SSL_SRCS_ENABLE='$(SSL_SRCS)'
 	else
 	        AC_MSG_RESULT(no - OpenSSL support disabled)
