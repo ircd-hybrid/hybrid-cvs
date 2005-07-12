@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.119 2005/07/12 18:34:42 adx Exp $
+ *  $Id: packet.c,v 7.120 2005/07/12 18:39:37 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -471,7 +471,7 @@ read_packet(int fd, void *data)
           case SSL_ERROR_SYSCALL:
 	    break;
           default:
-	    errno = 0;
+	    length = errno = 0;
 	}
     }
     else

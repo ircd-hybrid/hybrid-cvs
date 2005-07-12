@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.290 2005/07/12 18:34:42 adx Exp $
+ *  $Id: send.c,v 7.291 2005/07/12 18:39:37 adx Exp $
  */
 
 #include "stdinc.h"
@@ -333,7 +333,7 @@ send_queued_write(struct Client *to)
 	      break;
 
             default:
-	      errno = 0;  /* either an SSL-specific error or EOF */
+	      retlen = errno = 0;  /* either an SSL-specific error or EOF */
 	  }
       }
       else
