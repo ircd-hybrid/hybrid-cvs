@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.341 2005/07/12 11:20:03 db Exp $
+ *  $Id: ircd.c,v 7.342 2005/07/12 17:46:19 adx Exp $
  */
 
 #include "stdinc.h"
@@ -499,6 +499,37 @@ setup_corefile(void)
 #endif
 }
 
+/* init_ssl()
+ *
+ * inputs       - nothing
+ * output       - nothing
+ * side effects - setups SSL context.
+ */
+static void
+init_ssl(void)
+{
+#ifdef HAVE_LIBCRYPTO
+  SSL_load_error_strings();
+  SSLeay_add_ssl_algorithms();
+
+  ServerInfo.ctx = SSL_CTX_new(SSLv23_server_method());
+  if (!ServerInfo.ctx)
+  {
+    const char *s;
+
+    fprintf(stderr, "ERROR: Could not initialize the SSL context -- %s\n",
+            s = ERR_lib_error_string(ERR_get_error()));
+    ilog(L_CRIT, "ERROR: Could not initialize the SSL context -- %s\n", s);
+  }
+
+  SSL_CTX_set_options(ServerInfo.ctx, SSL_OP_NO_SSLv2);
+  SSL_CTX_set_options(ServerInfo.ctx, SSL_OP_TLS_ROLLBACK_BUG|SSL_OP_ALL);
+  SSL_CTX_set_verify(ServerInfo.ctx, SSL_VERIFY_NONE, NULL);
+
+  bio_spare_fd = save_spare_fd("SSL private key validation");
+#endif /* HAVE_LIBCRYPTO */
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -581,6 +612,7 @@ main(int argc, char *argv[])
   /* Init the event subsystem */
   eventInit();
   init_sys();
+  init_ssl();
 
 #ifndef NOBALLOC
   initBlockHeap();
@@ -604,28 +636,6 @@ main(int argc, char *argv[])
   init_uid();
   init_auth();          /* Initialise the auth code */
   init_resolver();      /* Needs to be setup before the io loop */
-#ifdef HAVE_LIBCRYPTO
-  SSL_load_error_strings();
-  SSLeay_add_ssl_algorithms();
-
-  ServerInfo.ctx = SSL_CTX_new(SSLv23_server_method());
-  if (!ServerInfo.ctx)
-  {
-    char *s;
-
-    fprintf(stderr, "ERROR: Could not initialize the SSL context -- %s\n",
-            s = ERR_error_string(ERR_get_error(), NULL));
-    ilog(L_CRIT, "ERROR: Could not initialize the SSL context -- %s\n", s);
-    exit(EXIT_FAILURE);
-  }
-
-  SSL_CTX_set_options(ServerInfo.ctx, SSL_OP_NO_SSLv2);
-  SSL_CTX_set_options(ServerInfo.ctx, SSL_OP_TLS_ROLLBACK_BUG|SSL_OP_ALL);
-  SSL_CTX_set_verify(ServerInfo.ctx, SSL_VERIFY_NONE, NULL);
-
-  bio_spare_fd = save_spare_fd("SSL private key validation");
-#endif /* HAVE_LIBCRYPTO */
-   
   initialize_server_capabs();   /* Set up default_server_capabs */
   initialize_global_set_options();
   init_channels();
