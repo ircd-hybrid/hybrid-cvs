@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.77 2005/07/11 21:00:23 adx Exp $
+ *  $Id: m_mode.c,v 1.78 2005/07/12 00:44:59 adx Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&bmask_msgtab);
 }
 
-const char *_version = "$Revision: 1.77 $";
+const char *_version = "$Revision: 1.78 $";
 #endif
 
 /*
@@ -247,7 +247,7 @@ ms_tmode(struct Client *client_p, struct Client *source_p, int parc, char *parv[
  * outputs	- none
  * side effects	- propagates unchanged bmask line to CAP_TS6 servers,
  *		  sends plain modes to the others.  nothing is sent
- *		  to the issuing server is connected through
+ *		  to the server the issuing server is connected through
  */
 static void
 ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
