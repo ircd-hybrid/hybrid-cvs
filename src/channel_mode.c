@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.144 2005/06/23 09:34:00 michael Exp $
+ *  $Id: channel_mode.c,v 7.144.2.1 2005/07/12 11:32:53 michael Exp $
  */
 
 #include "stdinc.h"
@@ -742,7 +742,12 @@ chm_ban(struct Client *client_p, struct Client *source_p,
   raw_mask = parv[(*parn)++];
   
   if (IsServer(client_p))
+  {
+    if (strchr(raw_mask, ' '))
+      return;
+
     mask = raw_mask;
+  }
   else
     mask = pretty_mask(raw_mask);
     
@@ -853,7 +858,11 @@ chm_except(struct Client *client_p, struct Client *source_p,
 
   raw_mask = parv[(*parn)++];
   if (IsServer(client_p))
+  {
+    if (strchr(raw_mask, ' '))
+      return;
     mask = raw_mask;
+  }
   else
     mask = pretty_mask(raw_mask);
 
@@ -956,7 +965,11 @@ chm_invex(struct Client *client_p, struct Client *source_p,
 
   raw_mask = parv[(*parn)++];
   if (IsServer(client_p))
+  {
+    if (strchr(raw_mask, ' '))
+      return;
     mask = raw_mask;
+  }
   else
     mask = pretty_mask(raw_mask);
 
