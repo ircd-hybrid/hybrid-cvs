@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.340 2005/07/12 10:12:31 adx Exp $
+ *  $Id: ircd.c,v 7.341 2005/07/12 11:20:03 db Exp $
  */
 
 #include "stdinc.h"
@@ -672,6 +672,7 @@ main(int argc, char *argv[])
   }
   mod_set_base();
   load_all_modules(1);
+  load_conf_modules(1);
   load_core_modules(1);
   /* Go back to DPATH after checking to see if we can chdir to MODPATH */
   chdir(ConfigFileEntry.dpath);

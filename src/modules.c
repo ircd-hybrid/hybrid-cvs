@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.156 2005/07/12 10:12:31 adx Exp $
+ *  $Id: modules.c,v 7.157 2005/07/12 11:20:04 db Exp $
  */
 
 #include "stdinc.h"
@@ -74,6 +74,7 @@ static const char *core_module_table[] =
 int num_mods = 0;
 
 static dlink_list mod_paths = { NULL, NULL, 0 };
+static dlink_list conf_modules = { NULL, NULL, 0 };
 
 static void mo_modload(struct Client *, struct Client *, int, char **);
 static void mo_modlist(struct Client *, struct Client *, int, char **);
@@ -189,11 +190,27 @@ mod_add_path(const char *path)
   dlinkAdd(pathst, &pathst->node, &mod_paths);
 }
 
+/* add_conf_module
+ *
+ * input	- module name
+ * output	- NONE
+ * side effects - adds module to conf_mod
+ */
+void
+add_conf_module(const char *name)
+{
+  struct module_path *pathst;
+
+  pathst = MyMalloc(sizeof(struct module_path));
+  DupString(pathst->path, name);
+  dlinkAdd(pathst, &pathst->node, &conf_modules);
+}
+
 /* mod_clear_paths()
  *
- * input	-
- * output	-
- * side effects - clear the lists of paths
+ * input	- NONE
+ * output	- NONE
+ * side effects - clear the lists of paths and conf modules
  */
 void
 mod_clear_paths(void)
@@ -207,6 +224,15 @@ mod_clear_paths(void)
     pathst = ptr->data;
 
     dlinkDelete(&pathst->node, &mod_paths);
+    MyFree(pathst->path);
+    MyFree(pathst);
+  }
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, conf_modules.head)
+  {
+    pathst = ptr->data;
+
+    dlinkDelete(&pathst->node, &conf_modules);
     MyFree(pathst->path);
     MyFree(pathst);
   }
@@ -236,9 +262,9 @@ findmodule_byname(const char *name)
 
 /* load_all_modules()
  *
- * input        -
- * output       -
- * side effects -
+ * input        - int flag warn
+ * output       - NONE
+ * side effects - load all modules found in autoload directory
  */
 void
 load_all_modules(int warn)
@@ -289,10 +315,31 @@ load_all_modules(int warn)
   closedir(system_module_dir);
 }
 
+/* load_conf_modules()
+ *
+ * input        - int flag warn
+ * output       - NONE
+ * side effects - load modules given in ircd.conf
+ */
+void
+load_conf_modules(int warn)
+{
+  dlink_node *ptr;
+  struct module_path *mpath;
+
+  DLINK_FOREACH(ptr, conf_modules.head)
+  {
+    mpath = ptr->data;
+
+    if (findmodule_byname(mpath->path) == NULL)
+      load_one_module(mpath->path, warn);
+  }
+}
+
 /* load_core_modules()
  *
- * input        -
- * output       -
+ * input        - int flag warn
+ * output       - NONE
  * side effects - core modules are loaded, if any fail, kill ircd
  */
 void
