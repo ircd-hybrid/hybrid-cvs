@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.155 2005/06/22 22:37:48 michael Exp $
+ *  $Id: modules.c,v 7.156 2005/07/12 10:12:31 adx Exp $
  */
 
 #include "stdinc.h"
@@ -598,9 +598,6 @@ load_all_modules(int warn)
   mod_add_cmd(&gline_msgtab);
   add_capability("GLN", CAP_GLN, 1);
   mod_add_cmd(&ungline_msgtab);
-#ifdef HALFOPS
-  add_capability("HOPS", CAP_HOPS, 1);
-#endif
   mod_add_cmd(&info_msgtab);
   mod_add_cmd(&invite_msgtab);
   mod_add_cmd(&ison_msgtab);

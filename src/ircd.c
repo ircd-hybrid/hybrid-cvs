@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.339 2005/07/11 19:40:29 adx Exp $
+ *  $Id: ircd.c,v 7.340 2005/07/12 10:12:31 adx Exp $
  */
 
 #include "stdinc.h"
@@ -398,6 +398,9 @@ initialize_server_capabs(void)
     add_capability("TS6", CAP_TS6, 0);
   add_capability("ZIP", CAP_ZIP, 0);
   add_capability("CLUSTER", CAP_CLUSTER, 1);
+#ifdef HALFOPS
+  add_capability("HOPS", CAP_HOPS, 1);
+#endif
 }
 
 /* write_pidfile()
