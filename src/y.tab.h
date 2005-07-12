@@ -1,5 +1,5 @@
 /* A Bison parser, made by GNU Bison 1.875.  */
-/* $Id: y.tab.h,v 7.19 2005/07/12 17:29:44 adx Exp $ */
+/* $Id: y.tab.h,v 7.20 2005/07/12 17:38:53 adx Exp $ */
 
 /* Skeleton parser for Yacc-like parsing with Bison,
    Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002 Free Software Foundation, Inc.

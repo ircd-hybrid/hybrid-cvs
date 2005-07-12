@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.398 2005/07/12 17:29:43 adx Exp $
+ *  $Id: ircd_parser.y,v 1.399 2005/07/12 17:38:52 adx Exp $
  */
 
 %{
@@ -537,6 +537,9 @@ serverinfo_rsa_private_key_file: RSA_PRIVATE_KEY_FILE '=' QSTRING ';'
     ServerInfo.rsa_private_key = (RSA *)PEM_read_bio_RSAPrivateKey(file, NULL,
       0, NULL);
 
+    BIO_set_close(file, BIO_CLOSE);
+    BIO_free(file);
+
     if (ServerInfo.rsa_private_key == NULL)
     {
       yyerror("Couldn't extract key, ignoring");
@@ -545,6 +548,9 @@ serverinfo_rsa_private_key_file: RSA_PRIVATE_KEY_FILE '=' QSTRING ';'
 
     if (!RSA_check_key(ServerInfo.rsa_private_key))
     {
+      RSA_free(ServerInfo.rsa_private_key);
+      ServerInfo.rsa_private_key = NULL;
+
       yyerror("Invalid key, ignoring");
       break;
     }
@@ -552,12 +558,11 @@ serverinfo_rsa_private_key_file: RSA_PRIVATE_KEY_FILE '=' QSTRING ';'
     /* require 2048 bit (256 byte) key */
     if (RSA_size(ServerInfo.rsa_private_key) != 256)
     {
-      yyerror("Not a 2048 bit key, ignoring");
-      break;
-    }
+      RSA_free(ServerInfo.rsa_private_key);
+      ServerInfo.rsa_private_key = NULL;
 
-    BIO_set_close(file, BIO_CLOSE);
-    BIO_free(file);
+      yyerror("Not a 2048 bit key, ignoring");
+    }
   }
 #endif
 };
