@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.157 2005/07/12 11:20:04 db Exp $
+ *  $Id: modules.c,v 7.158 2005/07/12 16:19:56 db Exp $
  */
 
 #include "stdinc.h"
@@ -111,6 +111,13 @@ struct Message modrestart_msgtab = {
 extern struct Message hash_msgtab; /* XXX */
 extern struct Message error_msgtab;
 
+/*
+ * modules_init
+ *
+ * input	- NONE
+ * output	- NONE
+ * side effects	- The basic module manipulation modules are loaded
+ */
 void
 modules_init(void)
 {
@@ -150,8 +157,8 @@ mod_find_path(const char *path)
  * Defines the base path to find the official hybrid modules.
  * I.E., all core/ modules MUST be in this directory. Specified in ircd.conf.
  * 
- * input - path
- * output - none
+ * input 	- path
+ * output 	- none
  * side effects - sets the base path to path
  */
 void
@@ -171,7 +178,7 @@ mod_set_base(void)
 /* mod_add_path()
  *
  * input	- path
- * output	- 
+ * output	- NONE
  * side effects - adds path to list
  */
 void
@@ -240,9 +247,9 @@ mod_clear_paths(void)
 
 /* findmodule_byname
  *
- * input        -
- * output       -
- * side effects -
+ * input        - name of module
+ * output       - NULL if not found or pointer to module
+ * side effects - NONE
  */
 dlink_node *
 findmodule_byname(const char *name)
@@ -373,9 +380,10 @@ load_core_modules(int warn)
 
 /* load_one_module()
  *
- * input        -
- * output       -
- * side effects -
+ * input        - pointer to path
+ *		- flagged as core module or not
+ * output       - -1 if error 
+ * side effects - module is loaded if found.
  */
 int
 load_one_module(char *path, int coremodule)
@@ -620,8 +628,8 @@ mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *
 
 /* load_all_modules()
  *
- * input        -
- * output       -
+ * input        - warn flag
+ * output       - NONE
  * side effects - all the msgtabs are added for static modules
  */
 void
