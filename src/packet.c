@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.121 2005/07/12 22:50:39 adx Exp $
+ *  $Id: packet.c,v 7.122 2005/07/12 23:12:47 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -441,6 +441,7 @@ read_packet(int fd, void *data)
 
 	default:
 	  exit_client(client_p, client_p, &me, "Error during SSL handshake");
+	  return;
       }
   }
   else
