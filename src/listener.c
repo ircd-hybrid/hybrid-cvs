@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.94 2005/07/11 03:03:34 adx Exp $
+ *  $Id: listener.c,v 7.95 2005/07/12 18:46:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -112,7 +112,7 @@ show_ports(struct Client *source_p)
     listener = ptr->data;
     sendto_one(source_p, form_str(RPL_STATSPLINE),
                me.name, source_p->name,
-               'P', listener->is_ssl? 'S' : 'P', listener->port,
+               listener->is_ssl? 'S' : 'P', listener->port,
                IsAdmin(source_p) ? listener->name : me.name,
                listener->ref_count,
                (listener->active)?"active":"disabled");
