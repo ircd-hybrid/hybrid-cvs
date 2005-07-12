@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.291 2005/06/29 23:42:32 metalrock Exp $
+ *  $Id: s_conf.h,v 7.291.2.1 2005/07/12 10:38:56 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -453,7 +453,7 @@ extern void report_confitem_types(struct Client *, ConfType);
 extern void yyerror(const char *);
 extern int conf_yy_fatal_error(const char *);
 extern int conf_fbgets(char *, unsigned int, FBFILE *);
-extern void write_conf_line(const struct Client *, struct ConfItem *,
+extern void write_conf_line(struct Client *, struct ConfItem *,
                             const char *, time_t);
 extern int remove_conf_line(ConfType, struct Client *, const char *,
                             const char *);

@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.39 2005/07/09 14:24:17 joant Exp $
+ *  $Id: csvlib.c,v 7.39.2.1 2005/07/12 10:38:57 michael Exp $
  */
 
 #include "stdinc.h"
@@ -184,7 +184,7 @@ parse_csv_line(char *line, ...)
  * - Dianora
  */
 void 
-write_conf_line(const struct Client *source_p, struct ConfItem *conf,
+write_conf_line(struct Client *source_p, struct ConfItem *conf,
 		const char *current_date, time_t cur_time)
 {
   FBFILE *out;
@@ -224,7 +224,7 @@ write_conf_line(const struct Client *source_p, struct ConfItem *conf,
                          "%s added K-Line for [%s@%s] [%s]",
                          get_oper_name(source_p),
 			 aconf->user, aconf->host, aconf->reason);
-    sendto_one((struct Client *)source_p, ":%s NOTICE %s :Added K-Line [%s@%s]",
+    sendto_one(source_p, ":%s NOTICE %s :Added K-Line [%s@%s]",
                from, to, aconf->user, aconf->host);
     ilog(L_TRACE, "%s added K-Line for [%s@%s] [%s]",
          source_p->name, aconf->user, aconf->host, aconf->reason);
@@ -239,7 +239,7 @@ write_conf_line(const struct Client *source_p, struct ConfItem *conf,
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s added D-Line for [%s] [%s]",
                          get_oper_name(source_p), aconf->host, aconf->reason);
-    sendto_one((struct Client *)source_p, ":%s NOTICE %s :Added D-Line [%s] to %s",
+    sendto_one(source_p, ":%s NOTICE %s :Added D-Line [%s] to %s",
                from, to, aconf->host, filename);
     ilog(L_TRACE, "%s added D-Line for [%s] [%s]",
          get_oper_name(source_p), aconf->host, aconf->reason);
@@ -255,7 +255,7 @@ write_conf_line(const struct Client *source_p, struct ConfItem *conf,
                          "%s added X-Line for [%s] [%d] [%s]",
                          get_oper_name(source_p), conf->name,
 			 xconf->action, xconf->reason);
-    sendto_one((struct Client *)source_p,
+    sendto_one(source_p,
 	       ":%s NOTICE %s :Added X-Line [%s] [%d] [%s] to %s",
                from, to, conf->name, 
 	       xconf->action, xconf->reason, filename);

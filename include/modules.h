@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.55 2005/05/31 10:42:32 metalrock Exp $
+ *  $Id: modules.h,v 7.55.2.1 2005/07/12 10:38:56 michael Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -119,6 +119,7 @@ extern struct Message locops_msgtab;
 extern struct Message lusers_msgtab;
 extern struct Message privmsg_msgtab;
 extern struct Message notice_msgtab;
+extern struct Message map_msgtab;
 extern struct Message mode_msgtab;
 extern struct Message motd_msgtab;
 extern struct Message names_msgtab;
@@ -172,7 +173,6 @@ extern struct Message help_msgtab;
 extern struct Message uhelp_msgtab;
 extern struct Message jupe_msgtab;
 extern struct Message killhost_msgtab;
-extern struct Message map_msgtab;
 extern struct Message ojoin_msgtab;
 extern struct Message omotd_msgtab;
 extern struct Message operspy_msgtab;
