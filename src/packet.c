@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.118 2005/07/11 03:03:34 adx Exp $
+ *  $Id: packet.c,v 7.119 2005/07/12 18:34:42 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -453,7 +453,27 @@ read_packet(int fd, void *data)
   do {
 #ifdef HAVE_LIBCRYPTO
     if (fd_table[fd].ssl)
+    {
       length = SSL_read(fd_table[fd].ssl, readBuf, READBUF_SIZE);
+
+      /* translate openssl error codes, sigh */
+      if (length < 0)
+        switch (SSL_get_error(fd_table[fd].ssl, length))
+	{
+          case SSL_ERROR_WANT_WRITE:
+            fd_table[fd].flags.pending_read = 1;
+	    SetSendqBlocked(client_p);
+	    comm_setselect(fd, FDLIST_IDLECLIENT, COMM_SELECT_WRITE,
+	                   (PF *) sendq_unblocked, client_p, 0);
+	    return;
+	  case SSL_ERROR_WANT_READ:
+	    errno = EWOULDBLOCK;
+          case SSL_ERROR_SYSCALL:
+	    break;
+          default:
+	    errno = 0;
+	}
+    }
     else
 #endif
       length = recv(fd_r, readBuf, READBUF_SIZE, 0);

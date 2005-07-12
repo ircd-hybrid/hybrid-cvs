@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.39 2005/07/11 03:03:34 adx Exp $
+ *  $Id: fdlist.c,v 7.40 2005/07/12 18:34:42 adx Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -148,7 +148,6 @@ fd_close(int fd)
 #ifdef HAVE_LIBCRYPTO
   if (F->ssl)
   {
-    SSL_shutdown(F->ssl);
     SSL_free(F->ssl);
     F->ssl = NULL;
   }

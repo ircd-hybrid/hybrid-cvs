@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.289 2005/07/11 03:03:35 adx Exp $
+ *  $Id: send.c,v 7.290 2005/07/12 18:34:42 adx Exp $
  */
 
 #include "stdinc.h"
@@ -43,6 +43,7 @@
 #include "memory.h"
 #include "hook.h"
 #include "irc_getnameinfo.h"
+#include "packet.h"
 
 #define LOG_BUFSIZE 2048
 
@@ -232,6 +233,14 @@ sendq_unblocked(int fd, struct Client *client_p)
 {
   ClearSendqBlocked(client_p);
   /* let send_queued_write be executed by send_queued_all */
+
+#ifdef HAVE_LIBCRYPTO
+  if (fd_table[fd].flags.pending_read)
+  {
+    fd_table[fd].flags.pending_read = 0;
+    read_packet(fd, client_p);
+  }
+#endif
 }
 
 /*
@@ -307,8 +316,26 @@ send_queued_write(struct Client *to)
 
 #ifdef HAVE_LIBCRYPTO
       if (fd_table[to->localClient->fd].ssl)
+      {
         retlen = SSL_write(fd_table[to->localClient->fd].ssl, first->data,
-                           first->size);
+	  first->size);
+
+        /* translate openssl error codes, sigh */
+	if (retlen < 0)
+	  switch (SSL_get_error(fd_table[to->localClient->fd].ssl, retlen))
+	  {
+            case SSL_ERROR_WANT_READ:
+	      return;  /* retry later, don't register for write events */
+
+	    case SSL_ERROR_WANT_WRITE:
+	      errno = EWOULDBLOCK;
+            case SSL_ERROR_SYSCALL:
+	      break;
+
+            default:
+	      errno = 0;  /* either an SSL-specific error or EOF */
+	  }
+      }
       else
 #endif
         retlen = send(to->localClient->fd, first->data, first->size, 0);
