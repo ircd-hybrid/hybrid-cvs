@@ -1,7 +1,8 @@
-/* A Bison parser, made by GNU Bison 1.875d.  */
+/* A Bison parser, made by GNU Bison 1.875.  */
+/* $Id: y.tab.h,v 7.19 2005/07/12 17:29:44 adx Exp $ */
 
 /* Skeleton parser for Yacc-like parsing with Bison,
-   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -22,8 +23,6 @@
    Bison output file, you may use that output file without restriction.
    This special exception was added by the Free Software Foundation
    in version 1.24 of Bison.  */
-
-/* $Id: y.tab.h,v 7.18 2005/07/11 05:00:25 metalrock Exp $*/
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -499,8 +498,8 @@ typedef union YYSTYPE {
   int number;
   char *string;
 } YYSTYPE;
-/* Line 1285 of yacc.c.  */
-#line 502 "y.tab.h"
+/* Line 1238 of yacc.c.  */
+#line 501 "y.tab.h"
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1

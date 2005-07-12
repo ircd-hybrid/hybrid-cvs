@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.397 2005/07/12 11:20:03 db Exp $
+ *  $Id: ircd_parser.y,v 1.398 2005/07/12 17:29:43 adx Exp $
  */
 
 %{
@@ -480,26 +480,21 @@ serverinfo_ssl_certificate_file: SSL_CERTIFICATE_FILE '=' QSTRING ';'
   {
     if (!ServerInfo.rsa_private_key_file)
     {
-      yyerror("Ignoring config file entry ssl_certificate "
-              "-- no rsa_private_key");
+      yyerror("No rsa_private_key_file specified, SSL disabled");
       break;
     }
 
     if (SSL_CTX_use_certificate_file(ServerInfo.ctx,
       yylval.string, SSL_FILETYPE_PEM) <= 0)
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-            "Error using config file entry ssl_certificate -- %s",
-            ERR_error_string(ERR_get_error(), NULL));
+      yyerror(ERR_lib_error_string(ERR_get_error()));
       break;
     }
 
     if (SSL_CTX_use_PrivateKey_file(ServerInfo.ctx,
       ServerInfo.rsa_private_key_file, SSL_FILETYPE_PEM) <= 0)
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-            "Error using config file entry rsa_private_key -- %s",
-            ERR_error_string(ERR_get_error(), NULL));
+      yyerror(ERR_lib_error_string(ERR_get_error()));
       break;
     }
 
@@ -535,29 +530,29 @@ serverinfo_rsa_private_key_file: RSA_PRIVATE_KEY_FILE '=' QSTRING ';'
 
     if ((file = BIO_new_file(yylval.string, "r")) == NULL)
     {
-      yyerror("Ignoring config file entry rsa_private_key -- file open failed");
+      yyerror("File open failed, ignoring");
       break;
     }
 
-    ServerInfo.rsa_private_key = (RSA *)PEM_read_bio_RSAPrivateKey(file, NULL, 0, NULL);
+    ServerInfo.rsa_private_key = (RSA *)PEM_read_bio_RSAPrivateKey(file, NULL,
+      0, NULL);
 
     if (ServerInfo.rsa_private_key == NULL)
     {
-      yyerror("Ignoring config file entry rsa_private_key -- "
-              "couldn't extract key");
+      yyerror("Couldn't extract key, ignoring");
       break;
     }
 
     if (!RSA_check_key(ServerInfo.rsa_private_key))
     {
-      yyerror("Ignoring config file entry rsa_private_key -- invalid key");
+      yyerror("Invalid key, ignoring");
       break;
     }
 
     /* require 2048 bit (256 byte) key */
     if (RSA_size(ServerInfo.rsa_private_key) != 256)
     {
-      yyerror("Ignoring config file entry rsa_private_key -- not 2048 bit");
+      yyerror("Not a 2048 bit key, ignoring");
       break;
     }
 
