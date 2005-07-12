@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.120 2005/07/12 18:39:37 adx Exp $
+ *  $Id: packet.c,v 7.121 2005/07/12 22:50:39 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -525,7 +525,11 @@ read_packet(int fd, void *data)
       }
     }
   }
+#ifdef HAVE_LIBCRYPTO
+  while (length == sizeof(readBuf) || fd_table[fd].ssl);
+#else
   while (length == sizeof(readBuf));
+#endif
 
   /* If we get here, we need to register for another COMM_SELECT_READ */
   comm_setselect(fd_r, FDLIST_IDLECLIENT, COMM_SELECT_READ,
