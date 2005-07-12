@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.337 2005/07/11 20:13:45 adx Exp $
+ *  $Id: s_user.c,v 7.338 2005/07/12 22:57:28 adx Exp $
  */
 
 #include "stdinc.h"
@@ -84,24 +84,25 @@ static const struct flag_item
   const unsigned int mode;
   const unsigned char letter;
 } user_modes[] = {
-  { UMODE_ADMIN,      'a' },
-  { UMODE_BOTS,       'b' },
-  { UMODE_CCONN,      'c' },
-  { UMODE_DEBUG,      'd' },
-  { UMODE_FULL,       'f' },
-  { UMODE_CALLERID,   'g' },
-  { UMODE_INVISIBLE,  'i' },
-  { UMODE_SKILL,      'k' },
-  { UMODE_LOCOPS,     'l' },
-  { UMODE_NCHANGE,    'n' },
-  { UMODE_OPER,       'o' },
-  { UMODE_REJ,        'r' },
-  { UMODE_SERVNOTICE, 's' },
-  { UMODE_UNAUTH,     'u' },
-  { UMODE_WALLOP,     'w' },
-  { UMODE_EXTERNAL,   'x' },
-  { UMODE_SPY,        'y' },
-  { UMODE_OPERWALL,   'z' },
+  { UMODE_ADMIN,        'a' },
+  { UMODE_BOTS,         'b' },
+  { UMODE_CCONN,        'c' },
+  { UMODE_DEBUG,        'd' },
+  { UMODE_FULL,         'f' },
+  { UMODE_SOFTCALLERID, 'G' },
+  { UMODE_CALLERID,     'g' },
+  { UMODE_INVISIBLE,    'i' },
+  { UMODE_SKILL,        'k' },
+  { UMODE_LOCOPS,       'l' },
+  { UMODE_NCHANGE,      'n' },
+  { UMODE_OPER,         'o' },
+  { UMODE_REJ,          'r' },
+  { UMODE_SERVNOTICE,   's' },
+  { UMODE_UNAUTH,       'u' },
+  { UMODE_WALLOP,       'w' },
+  { UMODE_EXTERNAL,     'x' },
+  { UMODE_SPY,          'y' },
+  { UMODE_OPERWALL,     'z' },
   { 0, '\0' }
 };
 
@@ -112,62 +113,62 @@ const unsigned int user_modes_from_c_to_bitmask[] =
   /* 0x10 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x1F */
   /* 0x20 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x2F */
   /* 0x30 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x3F */
-  0,                /* @ */
-  0,                /* A */
-  0,                /* B */
-  0,                /* C */
-  0,                /* D */
-  0,                /* E */
-  0,                /* F */
-  0,                /* G */
-  0,                /* H */
-  0,                /* I */
-  0,                /* J */
-  0,                /* K */
-  0,                /* L */
-  0,                /* M */
-  0,                /* N */
-  0,                /* O */
-  0,                /* P */
-  0,                /* Q */
-  0,                /* R */
-  0,                /* S */
-  0,                /* T */
-  0,                /* U */
-  0,                /* V */
-  0,                /* W */
-  0,                /* X */
-  0,                /* Y */
-  0,                /* Z 0x5A */
-  0, 0, 0, 0, 0,    /* 0x5F   */ 
-  0,                /* 0x60   */
-  UMODE_ADMIN,      /* a */
-  UMODE_BOTS,       /* b */
-  UMODE_CCONN,      /* c */
-  UMODE_DEBUG,      /* d */
-  0,                /* e */
-  UMODE_FULL,       /* f */
-  UMODE_CALLERID,   /* g */
-  0,                /* h */
-  UMODE_INVISIBLE,  /* i */
-  0,                /* j */
-  UMODE_SKILL,      /* k */
-  UMODE_LOCOPS,     /* l */
-  0,                /* m */
-  UMODE_NCHANGE,    /* n */
-  UMODE_OPER,       /* o */
-  0,                /* p */
-  0,                /* q */
-  UMODE_REJ,        /* r */
-  UMODE_SERVNOTICE, /* s */
-  0,                /* t */
-  UMODE_UNAUTH,     /* u */
-  0,                /* v */
-  UMODE_WALLOP,     /* w */
-  UMODE_EXTERNAL,   /* x */
-  UMODE_SPY,        /* y */
-  UMODE_OPERWALL,   /* z      0x7A */
-  0,0,0,0,0,        /* 0x7B - 0x7F */
+  0,                  /* @ */
+  0,                  /* A */
+  0,                  /* B */
+  0,                  /* C */
+  0,                  /* D */
+  0,                  /* E */
+  0,                  /* F */
+  UMODE_SOFTCALLERID, /* G */
+  0,                  /* H */
+  0,                  /* I */
+  0,                  /* J */
+  0,                  /* K */
+  0,                  /* L */
+  0,                  /* M */
+  0,                  /* N */
+  0,                  /* O */
+  0,                  /* P */
+  0,                  /* Q */
+  0,                  /* R */
+  0,                  /* S */
+  0,                  /* T */
+  0,                  /* U */
+  0,                  /* V */
+  0,                  /* W */
+  0,                  /* X */
+  0,                  /* Y */
+  0,                  /* Z 0x5A */
+  0, 0, 0, 0, 0,      /* 0x5F   */ 
+  0,                  /* 0x60   */
+  UMODE_ADMIN,        /* a */
+  UMODE_BOTS,         /* b */
+  UMODE_CCONN,        /* c */
+  UMODE_DEBUG,        /* d */
+  0,                  /* e */
+  UMODE_FULL,         /* f */
+  UMODE_CALLERID,     /* g */
+  0,                  /* h */
+  UMODE_INVISIBLE,    /* i */
+  0,                  /* j */
+  UMODE_SKILL,        /* k */
+  UMODE_LOCOPS,       /* l */
+  0,                  /* m */
+  UMODE_NCHANGE,      /* n */
+  UMODE_OPER,         /* o */
+  0,                  /* p */
+  0,                  /* q */
+  UMODE_REJ,          /* r */
+  UMODE_SERVNOTICE,   /* s */
+  0,                  /* t */
+  UMODE_UNAUTH,       /* u */
+  0,                  /* v */
+  UMODE_WALLOP,       /* w */
+  UMODE_EXTERNAL,     /* x */
+  UMODE_SPY,          /* y */
+  UMODE_OPERWALL,     /* z      0x7A */
+  0,0,0,0,0,          /* 0x7B - 0x7F */
 
   /* 0x80 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x8F */
   /* 0x90 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x9F */
