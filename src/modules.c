@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.155 2005/06/22 22:37:48 michael Exp $
+ *  $Id: modules.c,v 7.155.2.1 2005/07/13 02:34:28 adx Exp $
  */
 
 #include "stdinc.h"
@@ -551,7 +551,7 @@ mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *
 
   modnum = num_mods;
 
-  DLINK_FOREACH_SAFE(ptr, tptr, mod_paths.head)
+  DLINK_FOREACH_SAFE(ptr, tptr, mod_list.head)
   {
     modp = ptr->data;
     unload_one_module(modp->name, 0);
