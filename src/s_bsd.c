@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.222 2005/07/13 02:26:23 adx Exp $
+ *  $Id: s_bsd.c,v 7.223 2005/07/13 02:39:13 adx Exp $
  */
 
 #include "stdinc.h"
@@ -314,8 +314,10 @@ close_connection(struct Client *client_p)
      */
     ClearSendqBlocked(client_p);
     send_queued_write(client_p);
+#ifdef HAVE_LIBCRYPTO
     if (fd_table[client_p->localClient->fd].ssl)
       SSL_shutdown(fd_table[client_p->localClient->fd].ssl);
+#endif
     fd_close(client_p->localClient->fd);
     client_p->localClient->fd = -1;
   }
