@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.57 2005/07/12 11:19:59 db Exp $
+ *  $Id: modules.h,v 7.58 2005/07/13 02:37:12 db Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -72,7 +72,7 @@ extern void load_core_modules(int);
 /* Add this module to list of modules to be loaded from conf */
 extern void add_conf_module(const char *);
 /* load all modules listed in conf */
-extern void load_conf_modules(int);
+extern void load_conf_modules(void);
 
 extern void _modinit(void);
 extern void _moddeinit(void);

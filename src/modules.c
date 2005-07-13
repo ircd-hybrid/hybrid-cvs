@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.158 2005/07/12 16:19:56 db Exp $
+ *  $Id: modules.c,v 7.159 2005/07/13 02:37:14 db Exp $
  */
 
 #include "stdinc.h"
@@ -324,12 +324,12 @@ load_all_modules(int warn)
 
 /* load_conf_modules()
  *
- * input        - int flag warn
+ * input        - NONE
  * output       - NONE
  * side effects - load modules given in ircd.conf
  */
 void
-load_conf_modules(int warn)
+load_conf_modules(void)
 {
   dlink_node *ptr;
   struct module_path *mpath;
@@ -339,7 +339,7 @@ load_conf_modules(int warn)
     mpath = ptr->data;
 
     if (findmodule_byname(mpath->path) == NULL)
-      load_one_module(mpath->path, warn);
+      load_one_module(mpath->path, 0);
   }
 }
 
@@ -606,15 +606,15 @@ mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *
 
   modnum = num_mods;
 
-  DLINK_FOREACH_SAFE(ptr, tptr, mod_paths.head)
+  DLINK_FOREACH_SAFE(ptr, tptr, mod_list.head)
   {
     modp = ptr->data;
     unload_one_module(modp->name, 0);
   }
 
   load_all_modules(0);
+  load_conf_modules();
   load_core_modules(0);
-  rehash(0);
 
   sendto_realops_flags(UMODE_ALL, L_ALL,
               "Module Restart: %d modules unloaded, %d modules loaded",

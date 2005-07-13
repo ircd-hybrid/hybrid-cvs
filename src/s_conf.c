@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.526 2005/07/11 20:13:45 adx Exp $
+ *  $Id: s_conf.c,v 7.527 2005/07/13 02:37:14 db Exp $
  */
 
 #include "stdinc.h"
@@ -1847,6 +1847,7 @@ rehash(int sig)
   if (ServerInfo.description != NULL)
     strlcpy(me.info, ServerInfo.description, sizeof(me.info));
 
+  load_conf_modules();
   flush_deleted_I_P();
 
   rehashed_klines = 1;
