@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.527 2005/07/13 02:37:14 db Exp $
+ *  $Id: s_conf.c,v 7.528 2005/07/13 02:51:11 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -2421,6 +2421,7 @@ read_conf_files(int cold)
 {
   const char *filename;
   char chanmodes[32];
+  char chanlimit[32];
 
   conf_fbfile_in = NULL;
 
@@ -2457,15 +2458,17 @@ read_conf_files(int cold)
   fbclose(conf_fbfile_in);
 
   add_isupport("NETWORK", ServerInfo.network_name, -1);
-  add_isupport("MAXCHANNELS", NULL, ConfigChannel.max_chans_per_user);
   ircsprintf(chanmodes, "b%s%s:%d", ConfigChannel.use_except ? "e" : "",
              ConfigChannel.use_invex ? "I" : "", ConfigChannel.max_bans);
   add_isupport("MAXLIST", chanmodes, -1);
   add_isupport("MAXTARGETS", NULL, ConfigFileEntry.max_targets);
-  if (ConfigChannel.disable_local_channels)
+  if(ConfigChannel.disable_local_channels)
     add_isupport("CHANTYPES", "#", -1);
   else
     add_isupport("CHANTYPES", "#&", -1);
+  ircsprintf(chanlimit, "%s:%d", ConfigChannel.disable_local_channels ? "#" : "#&",
+	     ConfigChannel.max_chans_per_user);
+  add_isupport("CHANLIMIT", chanlimit, -1);
   ircsprintf(chanmodes, "%s%s%s", ConfigChannel.use_except ? "e" : "",
 	     ConfigChannel.use_invex ? "I" : "", "b,k,l,imnpst");
   if (ConfigChannel.use_except)
