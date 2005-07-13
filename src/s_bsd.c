@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.223 2005/07/13 02:39:13 adx Exp $
+ *  $Id: s_bsd.c,v 7.224 2005/07/13 13:00:07 adx Exp $
  */
 
 #include "stdinc.h"
@@ -345,6 +345,39 @@ close_connection(struct Client *client_p)
   client_p->from = NULL; /* ...this should catch them! >:) --msa */
 }
 
+#ifdef HAVE_LIBCRYPTO
+/*
+ * ssl_handshake - let OpenSSL initialize the protocol. Register for
+ * read/write events if necessary.
+ */
+static void
+ssl_handshake(int fd, struct Client *client_p)
+{
+  int ret = SSL_accept(fd_table[fd].ssl);
+
+  if (ret <= 0)
+    switch (SSL_get_error(fd_table[fd].ssl, ret))
+    {
+      case SSL_ERROR_WANT_WRITE:
+        comm_setselect(fd, FDLIST_IDLECLIENT, COMM_SELECT_WRITE,
+	               (PF *) ssl_handshake, client_p, 0);
+        return;
+
+      case SSL_ERROR_WANT_READ:
+        comm_setselect(fd, FDLIST_IDLECLIENT, COMM_SELECT_READ,
+	               (PF *) ssl_handshake, client_p, 0);
+        return;
+
+      default:
+        exit_client(client_p, client_p, client_p,
+	            "Error during SSL handshake");
+	return;
+    }
+
+  start_auth(client_p);
+}
+#endif
+
 /*
  * add_connection - creates a client which has just connected to us on 
  * the given fd. The sockhost field is initialized with the ip# of the host.
@@ -414,10 +447,15 @@ add_connection(struct Listener* listener, int fd)
   ++listener->ref_count;
 
   set_no_delay(fd);
-  if (!disable_sock_options(new_client->localClient->fd))
+  if (!disable_sock_options(fd))
     report_error(L_ALL, OPT_ERROR_MSG, get_client_name(new_client, SHOW_IP), errno);
 
-  start_auth(new_client);
+#ifdef HAVE_LIBCRYPTO
+  if (fd_table[fd].ssl)
+    ssl_handshake(fd, new_client);
+  else
+#endif
+    start_auth(new_client);
 }
 
 /*
@@ -824,8 +862,6 @@ comm_accept(int fd, struct irc_ssaddr *pn, int is_ssl)
 #ifdef HAVE_LIBCRYPTO
   if (is_ssl && ServerInfo.ctx)
   {
-    int retval;
-
     if ((ssl = SSL_new(ServerInfo.ctx)) == NULL)
     {
       ilog(L_CRIT, "SSL_new() ERROR! -- %s",
@@ -834,34 +870,11 @@ comm_accept(int fd, struct irc_ssaddr *pn, int is_ssl)
       close(newfd);
       return -1;
     }
-
     SSL_set_fd(ssl, newfd);
 
-    /* Start an SSL handshake */
-    if ((retval = SSL_accept(ssl)) <= 0)
-      switch (SSL_get_error(ssl, retval))
-      {
-        case SSL_ERROR_WANT_READ:
-          fd_table[newfd].flags.accept_read = 1;
-          break;
-
-        case SSL_ERROR_WANT_WRITE:
-          fd_table[newfd].flags.accept_write = 1;
-          break;
-
-        default:
-          SSL_free(ssl);
-          close(newfd);
-          return -1;
-      }
-  }
-#endif
-
-  /* Next, tag the FD as an incoming connection */
-
-#ifdef HAVE_LIBCRYPTO
-  if (is_ssl && ServerInfo.ctx)
+    /* Next, tag the FD as an incoming connection */
     fd_open(newfd, FD_SOCKET, "Incoming SSL connection", ssl);
+  }
   else
 #endif
     fd_open(newfd, FD_SOCKET, "Incoming connection", NULL);

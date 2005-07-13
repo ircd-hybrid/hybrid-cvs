@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.145 2005/07/13 02:26:23 adx Exp $
+ *  $Id: s_auth.c,v 7.146 2005/07/13 13:00:07 adx Exp $
  */
 
 /*
@@ -76,6 +76,8 @@ enum {
   REPORT_HOST_TOOLONG
 };
 
+#define sendheader(c, i) sendto_one((c), HeaderMessages[(i)], me.name)
+
 /*
  * Ok, the original was confusing.
  * Now there are two lists, an auth request can be on both at the same time
@@ -89,23 +91,6 @@ static EVH timeout_auth_queries_event;
 
 static PF read_auth_reply;
 static CNCB auth_connect_callback;
-
-/* sendheader()
- *
- * Sends an auth header, unless we are connected through SSL.
- * With SSL, we shouldn't send anything until the handshake is complete.
- * And the handshake won't be complete before release_auth_client and
- * unblocking COMM_READ.
- */
-static void
-sendheader(struct Client *client_p, int idx)
-{
-#ifdef HAVE_LIBCRYPTO
-  if (!IsDefunct(client_p))
-    if (!fd_table[client_p->localClient->fd].ssl)
-#endif
-      sendto_one(client_p, HeaderMessages[idx], me.name);
-}
 
 /* init_auth()
  *

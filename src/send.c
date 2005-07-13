@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.291 2005/07/12 18:39:37 adx Exp $
+ *  $Id: send.c,v 7.292 2005/07/13 13:00:07 adx Exp $
  */
 
 #include "stdinc.h"
@@ -277,34 +277,6 @@ send_queued_write(struct Client *to)
     return;  /* no use calling send() now */
 
   /* Next, lets try to write some data */
-
-#ifdef HAVE_LIBCRYPTO
-  if (fd_table[to->localClient->fd].flags.accept_write)
-  {
-    fd_table[to->localClient->fd].flags.accept_read = 0;
-    fd_table[to->localClient->fd].flags.accept_write = 0;
-
-    if ((retlen = SSL_accept(fd_table[to->localClient->fd].ssl)) <= 0)
-      switch (SSL_get_error(fd_table[to->localClient->fd].ssl, retlen))
-      {
-        case SSL_ERROR_WANT_WRITE:
-          fd_table[to->localClient->fd].flags.accept_write = 1;
-
-          SetSendqBlocked(to);
-          comm_setselect(to->localClient->fd, FDLIST_IDLECLIENT,
-            COMM_SELECT_WRITE, (PF *) sendq_unblocked, (void *) to, 0);
-          return;
-
-        case SSL_ERROR_WANT_READ:
-          fd_table[to->localClient->fd].flags.accept_read = 1;
-          return;
-
-        default:
-          exit_client(to, to, &me, "Error during SSL handshake");
-	  return;
-      }
-  }
-#endif
 
   if (dbuf_length(&to->localClient->buf_sendq))
   {

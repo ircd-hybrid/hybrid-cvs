@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.122 2005/07/12 23:12:47 adx Exp $
+ *  $Id: packet.c,v 7.123 2005/07/13 13:00:07 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -417,34 +417,6 @@ read_packet(int fd, void *data)
     assert(client_p->localClient->fd_r > -1);
     fd_r = client_p->localClient->fd_r;
   }
-#endif
-
-#ifdef HAVE_LIBCRYPTO
-  if (fd_table[fd].flags.accept_read)
-  {
-    fd_table[fd].flags.accept_read = fd_table[fd].flags.accept_write = 0;
-
-    if ((length = SSL_accept(fd_table[fd].ssl)) <= 0)
-      switch (SSL_get_error(fd_table[fd].ssl, length))
-      {
-        case SSL_ERROR_WANT_WRITE:
-	  fd_table[fd].flags.accept_write = 1;
-
-	  SetSendqBlocked(client_p);
-	  comm_setselect(client_p->localClient->fd, FDLIST_IDLECLIENT,
-	    COMM_SELECT_WRITE, (PF *) sendq_unblocked, (void *) client_p, 0);
-	  break;
-
-        case SSL_ERROR_WANT_READ:
-          fd_table[fd].flags.accept_read = 1;
-          break;
-
-	default:
-	  exit_client(client_p, client_p, &me, "Error during SSL handshake");
-	  return;
-      }
-  }
-  else
 #endif
   /*
    * Read some data. We *used to* do anti-flood protection here, but

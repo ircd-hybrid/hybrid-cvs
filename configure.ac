@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.99 2005/07/11 23:19:35 metalrock Exp $
+dnl $Id: configure.ac,v 7.100 2005/07/13 12:59:59 adx Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.99 2005/07/11 23:19:35 metalrock Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.100 2005/07/13 12:59:59 adx Exp $])
 
 AC_INIT([ircd-hybrid],[7.1])
 
@@ -1104,7 +1104,7 @@ else
 	tmpresult=no
 fi
 
-echo "OpenSSL (Cryptlinks)..... $tmpresult"
+echo "OpenSSL ................. $tmpresult"
 
 if test "$shared_modules" = yes; then
 	tmpresult=shared

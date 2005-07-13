@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.h,v 7.31 2005/07/12 18:34:40 adx Exp $
+ *  $Id: fdlist.h,v 7.32 2005/07/13 13:00:06 adx Exp $
  */
 
 #ifndef INCLUDED_fdlist_h
@@ -106,8 +106,6 @@ struct _fde {
         unsigned int ipc:1;
         unsigned int called_connect:1;
 #ifdef HAVE_LIBCRYPTO
-        unsigned int accept_read:1;
-        unsigned int accept_write:1;
 	unsigned int pending_read:1;
 #endif
     } flags;
