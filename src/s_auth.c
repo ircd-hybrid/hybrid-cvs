@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.143 2005/06/24 05:51:39 michael Exp $
+ *  $Id: s_auth.c,v 7.144 2005/07/13 01:24:53 adx Exp $
  */
 
 /*
@@ -135,7 +135,6 @@ release_auth_client(struct Client *client)
    */
   client->localClient->allow_read = MAX_FLOOD;
   comm_setflush(client->localClient->fd, 1000, flood_recalc, client);
-  set_no_delay(client->localClient->fd);
   if ((client->node.prev != NULL) || (client->node.next != NULL))
   {
     sendto_realops_flags(UMODE_ALL, L_OPER,

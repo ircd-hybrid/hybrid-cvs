@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.95 2005/07/12 18:46:55 adx Exp $
+ *  $Id: listener.c,v 7.96 2005/07/13 01:24:53 adx Exp $
  */
 
 #include "stdinc.h"
@@ -142,7 +142,8 @@ inetport(struct Listener *listener)
   /*
    * At first, open a new socket
    */
-  fd = comm_open(listener->addr.ss.ss_family, SOCK_STREAM, 0, "Listener socket");
+  fd = comm_open(listener->addr.ss.ss_family, SOCK_STREAM, 0,
+                 "Listener socket");
   memset(&lsin, 0, sizeof(lsin));
   memcpy(&lsin, &listener->addr, sizeof(struct irc_ssaddr));
   
@@ -225,11 +226,11 @@ find_listener(int port, struct irc_ssaddr *addr)
       if (listener->fd == -1)
         last_closed = listener;
       else
-        return(listener);
+        return (listener);
     }
   }
 
-  return(last_closed);
+  return (last_closed);
 }
 
 /*
@@ -408,6 +409,8 @@ accept_connection(int pfd, void *data)
    */
   while ((fd = comm_accept(listener->fd, &sai, listener->is_ssl)) != -1)
   {
+    set_no_delay(fd);
+
     memcpy(&addr, &sai, sizeof(struct irc_ssaddr));
 
     /*

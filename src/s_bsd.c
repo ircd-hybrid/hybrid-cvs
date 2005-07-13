@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.220 2005/07/12 18:34:42 adx Exp $
+ *  $Id: s_bsd.c,v 7.221 2005/07/13 01:24:53 adx Exp $
  */
 
 #include "stdinc.h"
@@ -352,9 +352,9 @@ close_connection(struct Client *client_p)
 void
 add_connection(struct Listener* listener, int fd)
 {
-  struct Client*     new_client;
+  struct Client *new_client;
   socklen_t len = sizeof(struct irc_ssaddr);
-  struct irc_ssaddr   irn;
+  struct irc_ssaddr irn;
   assert(NULL != listener);
 
   /* 
@@ -394,11 +394,11 @@ add_connection(struct Listener* listener, int fd)
   
   *new_client->host = '\0';
 #ifdef IPV6
-  if(*new_client->sockhost == ':')
+  if (*new_client->sockhost == ':')
     strlcat(new_client->host, "0",HOSTLEN+1);
 
-  if(new_client->localClient->aftype == AF_INET6 && 
-        ConfigFileEntry.dot_in_ip6_addr == 1)
+  if (new_client->localClient->aftype == AF_INET6 && 
+      ConfigFileEntry.dot_in_ip6_addr == 1)
   {
     strlcat(new_client->host, new_client->sockhost,HOSTLEN+1);
     strlcat(new_client->host, ".",HOSTLEN+1);
@@ -452,12 +452,12 @@ ignoreErrno(int ierrno)
 void
 comm_settimeout(int fd, time_t timeout, PF *callback, void *cbdata)
 {
-    assert(fd > -1);
-    assert(fd_table[fd].flags.open);
+  assert(fd > -1);
+  assert(fd_table[fd].flags.open);
 
-    fd_table[fd].timeout = CurrentTime + (timeout / 1000);
-    fd_table[fd].timeout_handler = callback;
-    fd_table[fd].timeout_data = cbdata;
+  fd_table[fd].timeout = CurrentTime + (timeout / 1000);
+  fd_table[fd].timeout_handler = callback;
+  fd_table[fd].timeout_data = cbdata;
 }
 
 /*
@@ -473,12 +473,12 @@ comm_settimeout(int fd, time_t timeout, PF *callback, void *cbdata)
 void
 comm_setflush(int fd, time_t timeout, PF *callback, void *cbdata)
 {
-    assert(fd > -1);
-    assert(fd_table[fd].flags.open);
+  assert(fd > -1);
+  assert(fd_table[fd].flags.open);
 
-    fd_table[fd].flush_timeout = CurrentTime + (timeout / 1000);
-    fd_table[fd].flush_handler = callback;
-    fd_table[fd].flush_data = cbdata;
+  fd_table[fd].flush_timeout = CurrentTime + (timeout / 1000);
+  fd_table[fd].flush_handler = callback;
+  fd_table[fd].flush_data = cbdata;
 }
 
 /*
@@ -491,39 +491,39 @@ comm_setflush(int fd, time_t timeout, PF *callback, void *cbdata)
 void
 comm_checktimeouts(void *notused)
 {
-    int fd;
-    PF *hdl;
-    void *data;
+  int fd;
+  PF *hdl;
+  void *data;
 
-    for (fd = 0; fd <= highest_fd; fd++)
-      {
-        if (!fd_table[fd].flags.open)
-            continue;
-        if (fd_table[fd].flags.closing)
-            continue;
+  for (fd = 0; fd <= highest_fd; fd++)
+  {
+    if (!fd_table[fd].flags.open)
+      continue;
+    if (fd_table[fd].flags.closing)
+      continue;
 
-        /* check flush functions */
-        if (fd_table[fd].flush_handler &&
-            fd_table[fd].flush_timeout > 0 && fd_table[fd].flush_timeout 
-            < CurrentTime)
-	  {
-            hdl = fd_table[fd].flush_handler;
-            data = fd_table[fd].flush_data;
-            comm_setflush(fd, 0, NULL, NULL);
-            hdl(fd, data);
-	  }
+    /* check flush functions */
+    if (fd_table[fd].flush_handler &&
+        fd_table[fd].flush_timeout > 0 && fd_table[fd].flush_timeout 
+        < CurrentTime)
+    {
+      hdl = fd_table[fd].flush_handler;
+      data = fd_table[fd].flush_data;
+      comm_setflush(fd, 0, NULL, NULL);
+      hdl(fd, data);
+    }
 
-        /* check timeouts */
-        if (fd_table[fd].timeout_handler &&
-            fd_table[fd].timeout > 0 && fd_table[fd].timeout < CurrentTime)
-	  {
-            /* Call timeout handler */
-            hdl = fd_table[fd].timeout_handler;
-            data = fd_table[fd].timeout_data;
-            comm_settimeout(fd, 0, NULL, NULL);
-            hdl(fd, fd_table[fd].timeout_data);           
-	  }
-      }
+    /* check timeouts */
+    if (fd_table[fd].timeout_handler &&
+        fd_table[fd].timeout > 0 && fd_table[fd].timeout < CurrentTime)
+    {
+      /* Call timeout handler */
+      hdl = fd_table[fd].timeout_handler;
+      data = fd_table[fd].timeout_data;
+      comm_settimeout(fd, 0, NULL, NULL);
+      hdl(fd, fd_table[fd].timeout_data);           
+    }
+  }
 }
 
 /*
@@ -544,62 +544,62 @@ comm_connect_tcp(int fd, const char *host, unsigned short port,
                  struct sockaddr *clocal, int socklen, CNCB *callback,
                  void *data, int aftype, int timeout)
 {
- struct addrinfo hints, *res;
- char portname[PORTNAMELEN+1];
- 
- fd_table[fd].flags.called_connect = 1;
- assert(callback);
- fd_table[fd].connect.callback = callback;
- fd_table[fd].connect.data = data;
+  struct addrinfo hints, *res;
+  char portname[PORTNAMELEN+1];
 
- fd_table[fd].connect.hostaddr.ss.ss_family = aftype;
- fd_table[fd].connect.hostaddr.ss_port = htons(port);
- /* Note that we're using a passed sockaddr here. This is because
-  * generally you'll be bind()ing to a sockaddr grabbed from
-  * getsockname(), so this makes things easier.
-  * XXX If NULL is passed as local, we should later on bind() to the
-  * virtual host IP, for completeness.
-  *   -- adrian
-  */
- if ((clocal != NULL) && (bind(fd, clocal, socklen) < 0))
- { 
-  /* Failure, call the callback with COMM_ERR_BIND */
-  comm_connect_callback(fd, COMM_ERR_BIND);
-  /* ... and quit */
-  return;
- }
-  
- /* Next, if we have been given an IP, get the addr and skip the
-  * DNS check (and head direct to comm_connect_tryconnect().
-  */
+  fd_table[fd].flags.called_connect = 1;
+  assert(callback);
+  fd_table[fd].connect.callback = callback;
+  fd_table[fd].connect.data = data;
 
- memset(&hints, 0, sizeof(hints));
- hints.ai_family = AF_UNSPEC;
- hints.ai_socktype = SOCK_STREAM;
- hints.ai_flags = AI_PASSIVE | AI_NUMERICHOST;
- 
- snprintf(portname, PORTNAMELEN, "%d", port);
- 
- if (irc_getaddrinfo(host, portname, &hints, &res))
- {
-  /* Send the DNS request, for the next level */
-  fd_table[fd].dns_query = MyMalloc(sizeof(struct DNSQuery));
-  fd_table[fd].dns_query->ptr = &fd_table[fd];
-  fd_table[fd].dns_query->callback = comm_connect_dns_callback;
-  gethost_byname(host, fd_table[fd].dns_query);
- }
- else
- {
-  /* We have a valid IP, so we just call tryconnect */
-  /* Make sure we actually set the timeout here .. */
-  assert(res != NULL);
-  memcpy(&fd_table[fd].connect.hostaddr, res->ai_addr, res->ai_addrlen);
-  fd_table[fd].connect.hostaddr.ss_len = res->ai_addrlen;
-  fd_table[fd].connect.hostaddr.ss.ss_family = res->ai_family;
-  irc_freeaddrinfo(res);
-  comm_settimeout(fd, timeout*1000, comm_connect_timeout, NULL);
-  comm_connect_tryconnect(fd, NULL);
- }
+  fd_table[fd].connect.hostaddr.ss.ss_family = aftype;
+  fd_table[fd].connect.hostaddr.ss_port = htons(port);
+
+  /* Note that we're using a passed sockaddr here. This is because
+   * generally you'll be bind()ing to a sockaddr grabbed from
+   * getsockname(), so this makes things easier.
+   * XXX If NULL is passed as local, we should later on bind() to the
+   * virtual host IP, for completeness.
+   *   -- adrian
+   */
+  if ((clocal != NULL) && (bind(fd, clocal, socklen) < 0))
+  { 
+    /* Failure, call the callback with COMM_ERR_BIND */
+    comm_connect_callback(fd, COMM_ERR_BIND);
+    /* ... and quit */
+    return;
+  }
+
+  /* Next, if we have been given an IP, get the addr and skip the
+   * DNS check (and head direct to comm_connect_tryconnect().
+   */
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags = AI_PASSIVE | AI_NUMERICHOST;
+
+  snprintf(portname, PORTNAMELEN, "%d", port);
+
+  if (irc_getaddrinfo(host, portname, &hints, &res))
+  {
+    /* Send the DNS request, for the next level */
+    fd_table[fd].dns_query = MyMalloc(sizeof(struct DNSQuery));
+    fd_table[fd].dns_query->ptr = &fd_table[fd];
+    fd_table[fd].dns_query->callback = comm_connect_dns_callback;
+    gethost_byname(host, fd_table[fd].dns_query);
+  }
+  else
+  {
+    /* We have a valid IP, so we just call tryconnect */
+    /* Make sure we actually set the timeout here .. */
+    assert(res != NULL);
+    memcpy(&fd_table[fd].connect.hostaddr, res->ai_addr, res->ai_addrlen);
+    fd_table[fd].connect.hostaddr.ss_len = res->ai_addrlen;
+    fd_table[fd].connect.hostaddr.ss.ss_family = res->ai_family;
+    irc_freeaddrinfo(res);
+    comm_settimeout(fd, timeout*1000, comm_connect_timeout, NULL);
+    comm_connect_tryconnect(fd, NULL);
+  }
 }
 
 /*
@@ -608,20 +608,22 @@ comm_connect_tcp(int fd, const char *host, unsigned short port,
 static void
 comm_connect_callback(int fd, int status)
 {
- CNCB *hdl;
- /* This check is gross..but probably necessary */
- if(fd_table[fd].connect.callback == NULL)
- 	return;
- /* Clear the connect flag + handler */
- hdl = fd_table[fd].connect.callback;
- fd_table[fd].connect.callback = NULL;
- fd_table[fd].flags.called_connect = 0;
-  
- /* Clear the timeout handler */
- comm_settimeout(fd, 0, NULL, NULL);
-  
- /* Call the handler */
- hdl(fd, status, fd_table[fd].connect.data);
+  CNCB *hdl;
+
+  /* This check is gross..but probably necessary */
+  if (fd_table[fd].connect.callback == NULL)
+    return;
+
+  /* Clear the connect flag + handler */
+  hdl = fd_table[fd].connect.callback;
+  fd_table[fd].connect.callback = NULL;
+  fd_table[fd].flags.called_connect = 0;
+
+  /* Clear the timeout handler */
+  comm_settimeout(fd, 0, NULL, NULL);
+
+  /* Call the handler */
+  hdl(fd, status, fd_table[fd].connect.data);
 }
 
 /*
@@ -632,8 +634,8 @@ comm_connect_callback(int fd, int status)
 static void
 comm_connect_timeout(int fd, void *notused)
 {
-    /* error! */
-    comm_connect_callback(fd, COMM_ERR_TIMEOUT);
+  /* error! */
+  comm_connect_callback(fd, COMM_ERR_TIMEOUT);
 }
 
 /*
@@ -645,31 +647,31 @@ comm_connect_timeout(int fd, void *notused)
 static void
 comm_connect_dns_callback(void *vptr, struct DNSReply *reply)
 {
-    fde_t *F = vptr;
+  fde_t *F = vptr;
 
-    if (reply == NULL)
-    {
-      MyFree(F->dns_query);
-      F->dns_query = NULL;
-      comm_connect_callback(F->fd, COMM_ERR_DNS);
-      return;
-    }
-    
-    /* No error, set a 10 second timeout */
-    comm_settimeout(F->fd, 30*1000, comm_connect_timeout, NULL);
-
-    /* Copy over the DNS reply info so we can use it in the connect() */
-    /*
-     * Note we don't fudge the refcount here, because we aren't keeping
-     * the DNS record around, and the DNS cache is gone anyway.. 
-     *     -- adrian
-     */
-    memcpy(&F->connect.hostaddr, &reply->addr, 
-          sizeof(struct irc_ssaddr));
-    /* Now, call the tryconnect() routine to try a connect() */
+  if (reply == NULL)
+  {
     MyFree(F->dns_query);
     F->dns_query = NULL;
-    comm_connect_tryconnect(F->fd, NULL);
+    comm_connect_callback(F->fd, COMM_ERR_DNS);
+    return;
+  }
+
+  /* No error, set a 10 second timeout */
+  comm_settimeout(F->fd, 30*1000, comm_connect_timeout, NULL);
+
+  /* Copy over the DNS reply info so we can use it in the connect() */
+  /*
+   * Note we don't fudge the refcount here, because we aren't keeping
+   * the DNS record around, and the DNS cache is gone anyway.. 
+   *     -- adrian
+   */
+  memcpy(&F->connect.hostaddr, &reply->addr, 
+         sizeof(struct irc_ssaddr));
+  /* Now, call the tryconnect() routine to try a connect() */
+  MyFree(F->dns_query);
+  F->dns_query = NULL;
+  comm_connect_tryconnect(F->fd, NULL);
 }
 
 /* static void comm_connect_tryconnect(int fd, void *notused)
@@ -683,34 +685,38 @@ comm_connect_dns_callback(void *vptr, struct DNSReply *reply)
 static void
 comm_connect_tryconnect(int fd, void *notused)
 {
- int retval;
- /* This check is needed or re-entrant s_bsd_* like sigio break it. */
- if (fd_table[fd].connect.callback == NULL)
-   return;
- /* Try the connect() */
- retval = connect(fd, (struct sockaddr *) &fd_table[fd].connect.hostaddr, 
-        fd_table[fd].connect.hostaddr.ss_len);
- /* Error? */
- if (retval < 0)
- {
-  /*
-   * If we get EISCONN, then we've already connect()ed the socket,
-   * which is a good thing.
-   *   -- adrian
-   */
-  if (errno == EISCONN)
-   comm_connect_callback(fd, COMM_OK);
-  else if (ignoreErrno(errno))
-   /* Ignore error? Reschedule */
-   comm_setselect(fd, FDLIST_SERVER, COMM_SELECT_WRITE,
-                  comm_connect_tryconnect, NULL, 0);
-  else
-   /* Error? Fail with COMM_ERR_CONNECT */
-   comm_connect_callback(fd, COMM_ERR_CONNECT);
-  return;
- }
- /* If we get here, we've suceeded, so call with COMM_OK */
- comm_connect_callback(fd, COMM_OK);
+  int retval;
+
+  /* This check is needed or re-entrant s_bsd_* like sigio break it. */
+  if (fd_table[fd].connect.callback == NULL)
+    return;
+
+  /* Try the connect() */
+  retval = connect(fd, (struct sockaddr *) &fd_table[fd].connect.hostaddr, 
+    fd_table[fd].connect.hostaddr.ss_len);
+
+  /* Error? */
+  if (retval < 0)
+  {
+    /*
+     * If we get EISCONN, then we've already connect()ed the socket,
+     * which is a good thing.
+     *   -- adrian
+     */
+    if (errno == EISCONN)
+      comm_connect_callback(fd, COMM_OK);
+    else if (ignoreErrno(errno))
+      /* Ignore error? Reschedule */
+      comm_setselect(fd, FDLIST_SERVER, COMM_SELECT_WRITE,
+                     comm_connect_tryconnect, NULL, 0);
+    else
+      /* Error? Fail with COMM_ERR_CONNECT */
+      comm_connect_callback(fd, COMM_ERR_CONNECT);
+    return;
+  }
+
+  /* If we get here, we've suceeded, so call with COMM_OK */
+  comm_connect_callback(fd, COMM_OK);
 }
 
 /*
@@ -719,9 +725,9 @@ comm_connect_tryconnect(int fd, void *notused)
 const char *
 comm_errstr(int error)
 {
-    if (error < 0 || error >= COMM_ERR_MAX)
-        return "Invalid error number!";
-    return comm_err_str[error];
+  if (error < 0 || error >= COMM_ERR_MAX)
+    return "Invalid error number!";
+  return comm_err_str[error];
 }
 
 /*
