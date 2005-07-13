@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.338 2005/07/12 22:57:28 adx Exp $
+ *  $Id: s_user.c,v 7.339 2005/07/13 02:33:37 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1474,10 +1474,10 @@ init_isupport(void)
   add_isupport("NICKLEN", NULL, NICKLEN-1);
 #ifdef HALFOPS
   add_isupport("PREFIX", "(ohv)@%+", -1);
-  add_isupport("STATUSMSG", "(ohv)@%+", -1);
+  add_isupport("STATUSMSG", "@%+", -1);
 #else
   add_isupport("PREFIX", "(ov)@+", -1);
-  add_isupport("STATUSMSG", "(ov)@+", -1);
+  add_isupport("STATUSMSG", "@+", -1);
 #endif
   add_isupport("TOPICLEN", NULL, TOPICLEN);
 }
