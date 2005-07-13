@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.221 2005/07/13 01:24:53 adx Exp $
+ *  $Id: s_bsd.c,v 7.222 2005/07/13 02:26:23 adx Exp $
  */
 
 #include "stdinc.h"
@@ -386,12 +386,12 @@ add_connection(struct Listener* listener, int fd)
    */
   new_client->localClient->port = ntohs(irn.ss_port);
   memcpy(&new_client->localClient->ip, &irn, sizeof(struct irc_ssaddr));
-  
+
   irc_getnameinfo((struct sockaddr*)&new_client->localClient->ip,
         new_client->localClient->ip.ss_len,  new_client->sockhost, 
         HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
   new_client->localClient->aftype = new_client->localClient->ip.ss.ss_family;
-  
+
   *new_client->host = '\0';
 #ifdef IPV6
   if (*new_client->sockhost == ':')
@@ -407,10 +407,11 @@ add_connection(struct Listener* listener, int fd)
     strlcat(new_client->host, new_client->sockhost,HOSTLEN+1);
 
   new_client->localClient->fd        = fd;
-  
+
   new_client->localClient->listener  = listener;
   ++listener->ref_count;
 
+  set_no_delay(fd);
   if (!disable_sock_options(new_client->localClient->fd))
     report_error(L_ALL, OPT_ERROR_MSG, get_client_name(new_client, SHOW_IP), errno);
 
