@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.129 2005/07/13 04:11:06 metalrock Exp $
+ *  $Id: m_whois.c,v 1.130 2005/07/13 12:22:19 adx Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.129 $";
+const char *_version = "$Revision: 1.130 $";
 #endif
 
 /*
@@ -392,7 +392,7 @@ whois_person(struct Client *source_p, struct Client *target_p)
     sendto_one(source_p, form_str(RPL_ISCAPTURED),
                me.name, source_p->name, target_p->name);
 
-  if ((target_p->sockhost[0] != '\0') && MyConnect(target_p) &&
+  if ((target_p->sockhost[0] != '\0') &&
       !(ConfigFileEntry.hide_spoof_ips && IsIPSpoof(target_p)) &&
       !(target_p->sockhost[0] == '0' && target_p->sockhost[1] == '\0'))
   {

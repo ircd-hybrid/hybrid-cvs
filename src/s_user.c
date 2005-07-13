@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.339 2005/07/13 02:33:37 metalrock Exp $
+ *  $Id: s_user.c,v 7.340 2005/07/13 12:22:21 adx Exp $
  */
 
 #include "stdinc.h"
@@ -701,7 +701,8 @@ introduce_client(struct Client *client_p, struct Client *source_p)
                  source_p->name, source_p->hopcount+1,
 		 (unsigned long)source_p->tsinfo,
                  ubuf, source_p->username, source_p->host,
-		 ((MyClient(source_p)&&!IsIPSpoof(source_p))?source_p->sockhost:"0"),
+		 ((MyClient(source_p) && !IsIPSpoof(source_p)) ?
+		 source_p->sockhost : "0"),
                  source_p->id, source_p->info);
     }
     else
