@@ -2,12 +2,12 @@
 o) Fixed build with static modules
 o) Fixed BMASK
 o) Fixed bug in /modrestart
+o) Fixed ip leakage when hide_spoof_ips = yes.
 
 -- ircd-hybrid-7.1 RELNOTES
 o) Improved SAFELIST
 o) Added m_change.c
 o) Fixed m_capture
-
 
 -- ircd-hybrid-7.1rc4 RELNOTES
 o) Various cleanups and bugfixes: invite, max_global, who, whois, names
@@ -107,4 +107,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.105.2.5 2005/07/13 02:34:26 adx Exp $
+$Id: RELNOTES,v 1.105.2.6 2005/07/13 04:20:18 metalrock Exp $
