@@ -1,6 +1,5 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  balloc.c: A block allocator.
  *
  *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *  Original credit lines follow:
@@ -24,19 +23,20 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
- *
- *  $Id: balloc.c,v 7.55 2005/07/10 13:53:32 michael Exp $
  */
 
-/* 
+/*! \file balloc.c
+ * \brief A block allocator
+ * \version $Id: balloc.c,v 7.56 2005/07/14 17:00:52 michael Exp $
+ * 
  * About the block allocator
  *
  * Basically we have three ways of getting memory off of the operating
  * system. Below are this list of methods and the order of preference.
  *
- * 1. mmap() anonymous pages with the MMAP_ANON flag.
- * 2. mmap() via the /dev/zero trick.
- * 3. malloc() 
+ * 1. mmap() anonymous pages with the MMAP_ANON flag.\n
+ * 2. mmap() via the /dev/zero trick.\n
+ * 3. malloc()\n
  *
  * The advantages of 1 and 2 are this.  We can munmap() the pages which will
  * return the pages back to the operating system, thus reducing the size 
@@ -67,7 +67,7 @@
 
 static BlockHeap *heap_list = NULL;
 
-static int newblock(BlockHeap *);
+static int BlockHeapGarbageCollect(BlockHeap *bh);
 static void heap_garbage_collection(void *);
 
 #ifdef HAVE_MMAP /* We've got mmap() that is good */
@@ -79,142 +79,68 @@ static void heap_garbage_collection(void *);
 #  define MAP_ANON MAP_ANONYMOUS
 # endif
 #endif /* MAP_ANONYMOUS */
+#endif
 
-/*
- * static inline void free_block(void *ptr, size_t size)
- *
- * Inputs: The block and its size
- * Output: None
- * Side Effects: Returns memory for the block back to the OS
+/*! \brief Returns memory for the block back to either the malloc heap
+ *         in case of !HAVE_MMAP, or back to the OS otherwise.
+ * \param ptr  Pointer to memory to be freed
+ * \param size The size of the memory space
  */
 static inline void
 free_block(void *ptr, size_t size)
 {
+#ifdef HAVE_MMAP
   munmap(ptr, size);
+#else
+  free(ptr);
+#endif
 }
 
+#ifdef HAVE_MMAP
 #ifndef MAP_ANON /* But we cannot mmap() anonymous pages */
 		 /* So we mmap() /dev/zero, which is just as good */
 static int zero_fd = -1;
+#endif
+#endif
 
-/*
- * void initBlockHeap(void)
- * Note: This is the /dev/zero version of getting pages 
- * 
- * Inputs: None
- * Outputs: None
- * Side Effects: Opens /dev/zero and saves the file handle for
- *		 future allocations.
+/*! \brief Opens /dev/zero and saves the file handle for
+ * future allocations.
  */
- 
 void
 initBlockHeap(void)
 {
+#ifdef HAVE_MMAP
+#ifndef MAP_ANON
   zero_fd = open("/dev/zero", O_RDWR);
 
   if (zero_fd < 0)
     outofmemory();
   fd_open(zero_fd, FD_FILE, "Anonymous mmap()");
+#endif
   eventAdd("heap_garbage_collection", &heap_garbage_collection, NULL, 119);
+#endif
 }
 
-/*
- * static inline void *get_block(size_t size)
- * 
- * Note: This is the /dev/zero version
- * Input: Size of block to allocate
- * Output: Pointer to new block
- * Side Effects: None
+/*!
+ * \param size Size of block to allocate
+ * \return Address pointer to allocated data space
  */
 static inline void *
 get_block(size_t size)
 {
-  void *ptr;
+#ifdef HAVE_MMAP
+  void *ptr = NULL;
+
+#ifndef MAP_ANON
   ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, zero_fd, 0);
-
-  return(ptr == MAP_FAILED ? NULL : ptr);
-}
-#else /* MAP_ANON */ 
-
-/* 
- * void initBlockHeap(void)
- *
- * Note: This is the anonymous pages version: This is a placeholder
- * Input: None
- * Output: None
- */ 
-void
-initBlockHeap(void)
-{
-  eventAdd("heap_garbage_collection", &heap_garbage_collection, NULL, 119);
-}
-
-/*
- * static inline void *get_block(size_t size)
- * 
- * Note: This is the /dev/zero version
- * Input: Size of block to allocate
- * Output: Pointer to new block
- * Side Effects: None
- */
-
-static inline void *
-get_block(size_t size)
-{
-  void *ptr;
+#else
   ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
-
+#endif
   return(ptr == MAP_FAILED ? NULL : ptr);
-}
-
-#endif /* !MAP_ANON */
-
-#else  /* !HAVE_MMAP */
-/* Poor bastards don't even have mmap() */
-
-/* 
- * static inline void *get_block(size_t size)
- *
- * Note: This is the non-mmap() version
- * Input: Size of block
- * Output: Pointer to the memory
- */
-static inline void *
-get_block(size_t size)
-{
+#else
   return(malloc(size));
+#endif
 }
-
-/*
- * static inline void free_block(void *ptr, size_t size)
- *
- * Inputs: The block and its size
- * Output: None
- * Side Effects: Returns memory for the block back to the malloc heap
- */
-
-static inline void 
-free_block(void *ptr, size_t unused)
-{
-  free(ptr);
-}
-
-/* 
- * void initBlockHeap(void)
- *
- * Note: This is the malloc() version: This is a placeholder
- * Input: None
- * Output: None
- */ 
-
-void
-initBlockHeap(void)
-{
-  eventAdd("heap_garbage_collection", &heap_garbage_collection, NULL, 119);
-}
-#endif /* HAVE_MMAP */
-
-static int BlockHeapGarbageCollect(BlockHeap *bh);
 
 static void
 heap_garbage_collection(void *arg)
@@ -225,17 +151,10 @@ heap_garbage_collection(void *arg)
     BlockHeapGarbageCollect(bh);
 }
 
-/* ************************************************************************ */
-/* FUNCTION DOCUMENTATION:                                                  */
-/*    newblock                                                              */
-/* Description:                                                             */
-/*    Allocates a new block for addition to a blockheap                     */
-/* Parameters:                                                              */
-/*    bh (IN): Pointer to parent blockheap.                                 */
-/* Returns:                                                                 */
-/*    0 if successful, 1 if not                                             */
-/* ************************************************************************ */
-
+/*! \brief Allocates a new block for addition to a blockheap
+ * \param bh Pointer to parent blockheap
+ * \return 0 if successful, 1 if not
+ */
 static int
 newblock(BlockHeap *bh)
 {
@@ -245,11 +164,10 @@ newblock(BlockHeap *bh)
     void *offset = NULL;
 
     /* Setup the initial data structure. */
-    b = (Block *) calloc(1, sizeof(Block));
+    b = calloc(1, sizeof(Block));
     if (b == NULL)
-      {
-        return(1);
-      }
+      return(1);
+
     b->freeElems = bh->elemsPerBlock;
     b->free_list.head = b->free_list.tail = NULL;
     b->used_list.head = b->used_list.tail = NULL;
@@ -281,22 +199,19 @@ newblock(BlockHeap *bh)
     return(0);
 }
 
-
-/* ************************************************************************ */
-/* FUNCTION DOCUMENTATION:                                                  */
-/*    BlockHeapCreate                                                       */
-/* Description:                                                             */
-/*   Creates a new blockheap from which smaller blocks can be allocated.    */
-/*   Intended to be used instead of multiple calls to malloc() when         */
-/*   performance is an issue.                                               */
-/* Parameters:                                                              */
-/*   elemsize (IN):  Size of the basic element to be stored                 */
-/*   elemsperblock (IN):  Number of elements to be stored in a single block */
-/*         of memory.  When the blockheap runs out of free memory, it will  */
-/*         allocate elemsize * elemsperblock more.                          */
-/* Returns:                                                                 */
-/*   Pointer to new BlockHeap, or NULL if unsuccessful                      */
-/* ************************************************************************ */
+/*! \brief Creates a new blockheap
+ *
+ * Creates a new blockheap from which smaller blocks can be allocated.
+ * Intended to be used instead of multiple calls to malloc() when
+ * performance is an issue.
+ *
+ * \param name          Name of the blockheap
+ * \param elemsize      Size of the basic element to be stored
+ * \param elemsperblock Number of elements to be stored in a single block of
+ *                      memory.  When the blockheap runs out of free memory,
+ *                      it will allocate elemsize * elemsperblock more.
+ * \return Pointer to new BlockHeap, or NULL if unsuccessful
+ */
 BlockHeap *
 BlockHeapCreate(const char *const name, size_t elemsize, int elemsperblock)
 {
@@ -339,35 +254,26 @@ BlockHeapCreate(const char *const name, size_t elemsize, int elemsperblock)
   return(bh);
 }
 
-/* ************************************************************************ */
-/* FUNCTION DOCUMENTATION:                                                  */
-/*    BlockHeapAlloc                                                        */
-/* Description:                                                             */
-/*    Returns a pointer to a struct within our BlockHeap that's free for    */
-/*    the taking.                                                           */
-/* Parameters:                                                              */
-/*    bh (IN):  Pointer to the Blockheap.                                   */
-/* Returns:                                                                 */
-/*    Pointer to a structure (void *), or NULL if unsuccessful.             */
-/* ************************************************************************ */
-
+/*! \brief Returns a pointer to a struct within our BlockHeap that's free for
+ *         the taking.
+ * \param bh Pointer to the Blockheap
+ * \return Address pointer to allocated data space, or NULL if unsuccessful
+ */
 void *
 BlockHeapAlloc(BlockHeap *bh)
 {
-    Block *walker = NULL;
-    dlink_node *new_node = NULL;
+  Block *walker = NULL;
+  dlink_node *new_node = NULL;
 
-    assert(bh != NULL);
-    if (bh == NULL)
-      {
-	outofmemory();
-      }
+  assert(bh != NULL);
+
+  if (bh == NULL)
+    outofmemory();
 
     if (bh->freeElems == 0)
       {   
         /* Allocate new block and assign */
         /* newblock returns 1 if unsuccessful, 0 if not */
-
         if (newblock(bh))
 	  {
             /* That didn't work..try to garbage collect */
@@ -400,20 +306,13 @@ BlockHeapAlloc(BlockHeap *bh)
     return(NULL);
 }
 
-
-/* ************************************************************************ */
-/* FUNCTION DOCUMENTATION:                                                  */
-/*    BlockHeapFree                                                         */
-/* Description:                                                             */
-/*    Returns an element to the free pool, does not free()                  */
-/* Parameters:                                                              */
-/*    bh (IN): Pointer to BlockHeap containing element                      */
-/*    ptr (in):  Pointer to element to be "freed"                           */
-/* Returns:                                                                 */
-/*    0 if successful, 1 if element not contained within BlockHeap.         */
-/* ************************************************************************ */
+/*! \brief Returns an element to the free pool, does not free()
+ * \param bh  Pointer to BlockHeap containing element
+ * \param ptr Pointer to element to be "freed"
+ * \return 0 if successful, 1 if element not contained within BlockHeap
+ */
 int
-BlockHeapFree(BlockHeap * bh, void *ptr)
+BlockHeapFree(BlockHeap *bh, void *ptr)
 {
     Block *block;
     struct MemBlock *memblock;
@@ -452,18 +351,15 @@ BlockHeapFree(BlockHeap * bh, void *ptr)
     return(0);
 }
 
-/* ************************************************************************ */
-/* FUNCTION DOCUMENTATION:                                                  */
-/*    BlockHeapGarbageCollect                                               */
-/* Description:                                                             */
-/*    Performs garbage collection on the block heap.  Any blocks that are   */
-/*    completely unallocated are removed from the heap.  Garbage collection */
-/*    will never remove the root node of the heap.                          */
-/* Parameters:                                                              */
-/*    bh (IN):  Pointer to the BlockHeap to be cleaned up                   */
-/* Returns:                                                                 */
-/*   0 if successful, 1 if bh == NULL                                       */
-/* ************************************************************************ */
+/*! \brief Performs garbage collection on the block heap.
+ *
+ * Performs garbage collection on the block heap.  Any blocks that are
+ * completely unallocated are removed from the heap.  Garbage collection
+ * will \b never remove the root node of the heap.
+ *
+ * \param bh Pointer to the BlockHeap to be cleaned up
+ * \return 0 if successful, 1 if bh == NULL
+ */
 static int
 BlockHeapGarbageCollect(BlockHeap *bh)
 {
@@ -511,16 +407,10 @@ BlockHeapGarbageCollect(BlockHeap *bh)
     return(0);
 }
 
-/* ************************************************************************ */
-/* FUNCTION DOCUMENTATION:                                                  */
-/*    BlockHeapDestroy                                                      */
-/* Description:                                                             */
-/*    Completely free()s a BlockHeap.  Use for cleanup.                     */
-/* Parameters:                                                              */
-/*    bh (IN):  Pointer to the BlockHeap to be destroyed.                   */
-/* Returns:                                                                 */
-/*   0 if successful, 1 if bh == NULL                                       */
-/* ************************************************************************ */
+/*! \brief Completely free()s a BlockHeap.  Use for cleanup.
+ * \param bh Pointer to the BlockHeap to be destroyed
+ * \return 0 if successful, 1 if bh == NULL
+ */
 int
 BlockHeapDestroy(BlockHeap *bh)
 {
@@ -552,12 +442,9 @@ BlockHeapDestroy(BlockHeap *bh)
   return(0);
 }
 
-/*
- * block_heap_get_used_mem()
- *
- * inputs       - Pointer to a BlockHeap
- * output       - Number of bytes being used
- * side effects - NONE
+/*! \brief Returns the number of bytes being used
+ * \param bh Pointer to a BlockHeap
+ * \return Number of bytes being used
  */
 static size_t
 block_heap_get_used_mem(const BlockHeap *const bh)
@@ -567,12 +454,9 @@ block_heap_get_used_mem(const BlockHeap *const bh)
           (bh->elemSize + sizeof(MemBlock)));
 }
 
-/*
- * block_heap_get_free_mem()
- *
- * inputs       - Pointer to a BlockHeap
- * output       - Number of bytes being free for further allocations
- * side effects - NONE
+/*! \brief Returns the number of bytes being free for further allocations
+ * \param bh Pointer to a BlockHeap
+ * \return Number of bytes being free for further allocations
  */
 static size_t
 block_heap_get_free_mem(const BlockHeap *const bh)
@@ -580,12 +464,9 @@ block_heap_get_free_mem(const BlockHeap *const bh)
   return(bh->freeElems * (bh->elemSize + sizeof(MemBlock)));
 }
 
-/*
- * block_heap_get_size_mem()
- *
- * inputs       - Pointer to a BlockHeap
- * output       - Total number of bytes of memory belonging to a heap
- * side effects - NONE
+/*! \brief Returns the total number of bytes of memory belonging to a heap
+ * \param bh Pointer to a BlockHeap
+ * \return Total number of bytes of memory belonging to a heap
  */
 static size_t
 block_heap_get_size_mem(const BlockHeap *const bh)
@@ -595,12 +476,9 @@ block_heap_get_size_mem(const BlockHeap *const bh)
           (bh->elemSize + sizeof(MemBlock)));
 }
 
-/*
- * block_heap_get_used_elm()
- *
- * inputs       - Pointer to a BlockHeap
- * output       - Number of elements being used
- * side effects - NONE
+/*! \brief Returns the number of elements being used.
+ * \param bh Pointer to a BlockHeap
+ * \return Number of elements being free for further allocations
  */
 static unsigned int
 block_heap_get_used_elm(const BlockHeap *const bh)
@@ -609,12 +487,9 @@ block_heap_get_used_elm(const BlockHeap *const bh)
           bh->elemsPerBlock)-bh->freeElems);
 }
 
-/*
- * block_heap_get_free_elm()
- *
- * inputs       - Pointer to a BlockHeap
- * output       - Number of elements being free for further allocations
- * side effects - NONE
+/*! \brief Returns the number of elements being free for further allocations.
+ * \param bh Pointer to a BlockHeap
+ * \return Number of elements being free for further allocations
  */
 static unsigned int
 block_heap_get_free_elm(const BlockHeap *const bh)
@@ -622,12 +497,10 @@ block_heap_get_free_elm(const BlockHeap *const bh)
   return(bh->freeElems);
 }
 
-/*
- * block_heap_get_size_elm()
- *
- * inputs       - Pointer to a BlockHeap
- * output       - Total number of total elements belonging to a heap
- * side effects - NONE
+/*! \brief Returns the number of total elements belonging to a heap.
+ *         Includes \b free and \b used elements.
+ * \param bh Pointer to a BlockHeap
+ * \return Number of total elements belonging to a heap
  */
 static unsigned int
 block_heap_get_size_elm(const BlockHeap *const bh)
