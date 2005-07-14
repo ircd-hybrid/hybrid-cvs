@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.13 2005/06/23 09:33:52 michael Exp $
+ *  $Id: m_help.c,v 1.39 2005/07/14 06:44:52 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -40,9 +40,9 @@
 #define UHPATH IRCD_PREFIX "/help/users"
 #define HELPLEN 400
 
-static void m_help(struct Client*, struct Client*, int, char *[]);
-static void mo_help(struct Client*, struct Client*, int, char *[]);
-static void mo_uhelp(struct Client*, struct Client*, int, char *[]);
+static void m_help(struct Client *, struct Client *, int, char *[]);
+static void mo_help(struct Client *, struct Client *, int, char *[]);
+static void mo_uhelp(struct Client *, struct Client *, int, char *[]);
 static void dohelp(struct Client *, const char *, char *);
 static void sendhelpfile(struct Client *, const char *, const char *);
 
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-const char *_version = "$Revision: 1.13 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 
 /*
@@ -229,4 +229,3 @@ sendhelpfile(struct Client *source_p, const char *path, const char *topic)
   sendto_one(source_p, form_str(RPL_ENDOFHELP),
              me.name, source_p->name, topic);
 }
-

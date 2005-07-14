@@ -1,4 +1,4 @@
-# $Id: cmode,v 1.3 2004/03/10 08:19:23 metalrock Exp $
+# $Id: cmode,v 1.4 2005/07/14 06:44:39 metalrock Exp $
 MODE <channel> <+|-><modes> [parameters]
 
 =-=-=-=-=-=-=-=-=-=-=

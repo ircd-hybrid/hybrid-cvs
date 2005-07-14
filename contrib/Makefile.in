@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.65 2005/07/09 13:27:52 adx Exp $
+# $Id: Makefile.in,v 1.66 2005/07/14 06:44:23 metalrock Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -29,14 +29,6 @@ IRCDLIBS	= @LIBS@ $(SSL_LIBS)
 INCLUDES	= -I../include $(SSL_INCLUDES)
 CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
 
-uhelpdir	= ${prefix}/help/users
-ohelpdir	= ${prefix}/help/opers
-
-SYMLINKS	= topic accept cmode admin names links away whowas \
-		  version kick who invite quit join list nick oper part \
-		  time credits motd userhost users whois ison lusers \
-		  user help pass error challenge knock ping pong
-
 SRCS = \
   m_capture.c \
   m_change.c \
@@ -44,7 +36,6 @@ SRCS = \
   m_classlist.c \
   m_flags.c     \
   m_force.c	\
-  m_help.c      \
   m_jupe.c      \
   m_killhost.c	\
   m_mkpasswd.c  \
@@ -99,7 +90,7 @@ hpux_shared: $(OBJS) $(SLOBJS)
 ../modules/libmodules.a:
 	cd ../modules && ${MAKE}
 
-install: install_@MOD_TARGET@ all install_help
+install: install_@MOD_TARGET@ all
 
 install_shared_modules: $(OBJS)
 	mkdir -p $(AUTOMODULEDIR)
@@ -117,24 +108,6 @@ install_hpux_shared: $(SLOBJS)
 
 install_libmodules.a:
 # Ye olde noop.
-
-install_help:
-	@echo Installing help files...
-	mkdir -p $(ohelpdir) $(uhelpdir)
-	@for help in help/opers/*; do \
-	if [ -f $$help ]; then \
-		${INSTALL_DATA} $$help $(ohelpdir); \
-	fi \
-	done
-	@for help in help/users/*; do \
-	if [ -f $$help ]; then \
-		$(INSTALL_DATA) $$help $(uhelpdir); \
-	fi \
-	done
-	@for link in $(SYMLINKS); do \
-		${RM} -f $(uhelpdir)/$$link; \
-		${LN} -s ../opers/$$link $(uhelpdir); \
-	done
 
 .SUFFIXES: .so .sl .o
 
@@ -162,4 +135,4 @@ clean:
 distclean: clean
 	${RM} -f Makefile .depend
 
-.PHONY: depend clean distclean install_hpux_shared install_libmodules.a install_help shared_modules install hpux_shared build
+.PHONY: depend clean distclean install_hpux_shared install_libmodules.a shared_modules install hpux_shared build

@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.63 2003/07/18 00:41:39 joshk Exp $
+#*   $Id: Makefile.in,v 7.64 2005/07/14 06:44:20 metalrock Exp $
 #*/
 
 RM          = @RM@
@@ -25,10 +25,12 @@ RM          = @RM@
 #MFLAGS   = -j 4
 DEPEND_DIRS  = modules src servlink
 BUILD_DIRS   = ${DEPEND_DIRS} tools
-INSTALL_DIRS = ${BUILD_DIRS} etc doc include
+INSTALL_DIRS = ${BUILD_DIRS} etc doc include help
 CLEAN_DIRS   = ${BUILD_DIRS} contrib
 # Anywhere that we can make install, we obviously can rm -f Makefile
 DISTCLEAN_DIRS = ${INSTALL_DIRS} contrib messages
+
+prefix		= $(DESTDIR)@prefix@
 
 # The make used HAS to set $(MAKE). But then, if we don't do it this
 # way, people lose the option to use a 'make' called something other 
