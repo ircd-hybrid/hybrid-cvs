@@ -1,6 +1,5 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  balloc.h: The ircd block allocator header.
  *
  *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *
@@ -18,8 +17,12 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
- *
- *  $Id: balloc.h,v 1.19 2005/05/28 19:00:58 adx Exp $
+ */
+
+/*! \file balloc.h
+ * \brief A block allocator
+ * \version $Id: balloc.h,v 1.20 2005/07/14 20:21:43 michael Exp $
+ * \todo Get rid of all typedefs in this file
  */
 
 #ifndef INCLUDED_balloc_h
@@ -28,58 +31,53 @@
 #include "setup.h"
 
 #ifndef NOBALLOC
-
 #include "client.h"
 #include "tools.h"
 #include "memory.h"
 #include "ircd_defs.h"
 
 
-/* 
- * Block contains status information for an allocated block in our
- * heap.
+/*! \brief Block contains status information for
+ *         an allocated block in our heap.
  */
-
-
 struct Block {
-	int		freeElems;		/* Number of available elems */
-	size_t		alloc_size;
-	struct Block*	next;			/* Next in our chain of blocks */
-	void*		elems;			/* Points to allocated memory */
-	dlink_list	free_list;
-	dlink_list	used_list;					
+  int		freeElems;	/*!< Number of available elems */
+  size_t	alloc_size;	/*!< Size of data space for each block */
+  struct Block*	next;		/*!< Next in our chain of blocks */
+  void*		elems;		/*!< Points to allocated memory */
+  dlink_list	free_list;	/*!< Chain of free memory blocks */
+  dlink_list	used_list;	/*!< Chain of used memory blocks */
 };
 
 typedef struct Block Block;
 
 struct MemBlock {
-	dlink_node self;		
-	Block *block;				/* Which block we belong to */
+  dlink_node self;		/*!< Node for linking into free_list or used_list */
+  Block *block;			/*!< Which block we belong to */
 };
 typedef struct MemBlock MemBlock;
 
-/* 
- * BlockHeap contains the information for the root node of the
- * memory heap.
+/*! \brief BlockHeap contains the information for the root node of the
+ *         memory heap.
  */
 struct BlockHeap {
-   size_t  elemSize;                    /* Size of each element to be stored */
-   int     elemsPerBlock;               /* Number of elements per block */
-   int     blocksAllocated;             /* Number of blocks allocated */
-   int     freeElems;                   /* Number of free elements */
-   Block*  base;                        /* Pointer to first block */
-   const char *name;
-   struct BlockHeap *next;              /* Pointer to next heap */
+   size_t  elemSize;            /*!< Size of each element to be stored */
+   int     elemsPerBlock;       /*!< Number of elements per block */
+   int     blocksAllocated;     /*!< Number of blocks allocated */
+   int     freeElems;           /*!< Number of free elements */
+   Block*  base;                /*!< Pointer to first block */
+   const char *name;		/*!< Name of the heap */
+   struct BlockHeap *next;      /*!< Pointer to next heap */
 };
 
 typedef struct BlockHeap BlockHeap;
 
 
-extern int         BlockHeapFree(BlockHeap *bh, void *ptr);
-extern void *     BlockHeapAlloc(BlockHeap *bh);
+extern int         BlockHeapFree(BlockHeap *, void *);
+extern void *     BlockHeapAlloc(BlockHeap *);
 
 extern BlockHeap* BlockHeapCreate(const char *const, size_t, int);
-extern int        BlockHeapDestroy(BlockHeap *bh);
+extern int        BlockHeapDestroy(BlockHeap *);
 extern void	  initBlockHeap(void);
 extern void block_heap_report_stats(struct Client *);
 #else /* NOBALLOC */
@@ -89,7 +87,5 @@ typedef struct BlockHeap BlockHeap;
 #define BlockHeapCreate(blah, es, epb) ((BlockHeap*)(es))
 #define BlockHeapAlloc(x) MyMalloc((int)x)
 #define BlockHeapFree(x,y) MyFree(y)
-
-
 #endif /* NOBALLOC */
 #endif /* INCLUDED_balloc_h */
