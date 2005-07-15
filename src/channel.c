@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.433 2005/07/15 13:38:20 michael Exp $
+ * \version $Id: channel.c,v 7.434 2005/07/15 13:53:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -593,7 +593,9 @@ can_join(struct Client *source_p, struct Channel *chptr, const char *key)
 int
 has_member_flags(struct Membership *ms, unsigned int flags)
 {
-  return(ms && (ms->flags & flags));
+  if (ms != NULL)
+    return(ms->flags & flags);
+  return(0);
 }
 
 struct Membership *
@@ -810,7 +812,7 @@ void
 set_channel_topic(struct Channel *chptr, const char *topic,
                   const char *topic_info, time_t topicts)
 {
-  if (strlen(topic) > 0)
+  if (!EmptyString(topic))
   {
     if (chptr->topic == NULL)
       allocate_topic(chptr);
