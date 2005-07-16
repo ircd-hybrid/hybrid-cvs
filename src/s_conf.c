@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.528 2005/07/13 02:51:11 metalrock Exp $
+ *  $Id: s_conf.c,v 7.529 2005/07/16 13:29:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -1847,7 +1847,10 @@ rehash(int sig)
   if (ServerInfo.description != NULL)
     strlcpy(me.info, ServerInfo.description, sizeof(me.info));
 
+#ifndef STATIC_MODULES
   load_conf_modules();
+#endif
+
   flush_deleted_I_P();
 
   rehashed_klines = 1;
