@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.h,v 7.34 2005/07/05 21:05:07 michael Exp $
+ *  $Id: hash.h,v 7.35 2005/07/16 07:22:23 michael Exp $
  */
 
 #ifndef INCLUDED_hash_h
@@ -29,8 +29,6 @@ struct Client;
 struct Channel;
 struct ResvChannel;
 struct UserHost;
-
-extern struct Channel *get_or_create_channel(struct Client *, char *, int *);
 
 extern void init_hash(void);
 extern void hash_add_client(struct Client *);

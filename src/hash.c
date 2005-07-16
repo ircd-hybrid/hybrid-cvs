@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.96 2005/07/09 23:19:57 michael Exp $
+ *  $Id: hash.c,v 7.97 2005/07/16 07:22:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,6 @@
 #include "s_user.h"
 
 
-extern BlockHeap *channel_heap; /* XXX */
 static BlockHeap *userhost_heap = NULL;
 static BlockHeap *namehost_heap = NULL;
 static struct UserHost *find_or_add_userhost(const char *);
@@ -615,60 +614,6 @@ hash_find_userhost(const char *host)
   }
 
   return(userhost);
-}
-
-/* get_or_create_channel()
- *
- * inputs       - client pointer
- *              - channel name
- *              - pointer to int flag whether channel was newly created or not
- * output       - returns channel block or NULL if illegal name
- *		- also modifies *isnew
- * side effects - Get Channel block for chname (and allocate a new channel
- *                block, if it didn't exist before).
- */
-struct Channel *
-get_or_create_channel(struct Client *client_p, char *chname, int *isnew)
-{
-  struct Channel *chptr = NULL;
-  int len;
-
-  if (EmptyString(chname))
-    return(NULL);
-
-  len = strlen(chname);
-
-  if (len > CHANNELLEN)
-  {
-    if (IsServer(client_p))
-    {
-      sendto_realops_flags(UMODE_DEBUG, L_ALL,
-			   "*** Long channel name from %s (%d > %d): %s",
-                           client_p->name, len, CHANNELLEN, chname);
-    }
-    return(NULL);
-  }
-
-  if ((chptr = hash_find_channel(chname)) != NULL)
-  {
-    if (isnew != NULL)
-      *isnew = 0;
-
-    return(chptr);
-  }
-
-  if (isnew != NULL)
-    *isnew = 1;
-
-  chptr = BlockHeapAlloc(channel_heap);
-  chptr->channelts = CurrentTime; /* doesn't hurt to set it here */
-
-  strlcpy(chptr->chname, chname, sizeof(chptr->chname));
-  dlinkAdd(chptr, &chptr->node, &global_channel_list);
-
-  hash_add_channel(chptr);
-
-  return(chptr);
 }
 
 /* count_user_host()

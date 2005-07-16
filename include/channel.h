@@ -19,13 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.159 2005/07/10 02:01:58 db Exp $
+ *  $Id: channel.h,v 7.160 2005/07/16 07:22:23 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
 #define INCLUDED_channel_h
 
-#include "ircd_defs.h"        /* buffer sizes */
+#include "ircd_defs.h"        /* KEYLEN, CHANNELLEN */
 #include "tools.h"
 
 struct Client;
@@ -77,34 +77,46 @@ struct Membership
   unsigned int flags;
 };
 
+struct Ban          /* also used for exceptions -orabidoo */
+{
+  dlink_node node;
+  size_t len;
+  char *name;
+  char *username;
+  char *host;
+  char *who;
+  time_t when;
+};
+
 extern dlink_list global_channel_list;
 
-extern void init_channels(void);
-extern int can_send (struct Channel *chptr, struct Client *who);
+extern int check_channel_name(const char *);
+extern int can_send (struct Channel *, struct Client *);
 extern int can_send_part(struct Membership *, struct Channel *, struct Client *);
-extern int is_banned (struct Channel *chptr, struct Client *who);
-extern int can_join(struct Client *source_p, struct Channel *chptr,
-                    const char *key);
-extern int has_member_flags(struct Membership *ms, unsigned int flags);
-extern void add_user_to_channel(struct Channel *chptr, struct Client *who,
-                                unsigned int flags);
+extern int is_banned (struct Channel *, struct Client *);
+extern int can_join(struct Client *, struct Channel *, const char *);
+extern int has_member_flags(struct Membership *, unsigned int);
+
+extern void init_channels(void);
+extern void add_user_to_channel(struct Channel *, struct Client *, unsigned int);
 extern void remove_user_from_channel(struct Membership *);
-extern int check_channel_name(const char *name);
-extern void channel_member_names(struct Client *source_p, struct Channel *chptr,
-                                 int show_eon);
-extern const char *get_member_status(struct Membership *, int);
-extern void add_invite(struct Channel *chptr, struct Client *who);
-extern void del_invite(struct Channel *chptr, struct Client *who);
+extern void channel_member_names(struct Client *, struct Channel *, int);
+extern void add_invite(struct Channel *, struct Client *);
+extern void del_invite(struct Channel *, struct Client *);
 extern void send_channel_modes (struct Client *, struct Channel *);
 extern void channel_modes(struct Channel *, struct Client *, char *, char *);
-
-extern void check_spambot_warning(struct Client *source_p, const char *name);
+extern void check_spambot_warning(struct Client *, const char *);
 extern void check_splitmode(void *);
 extern void free_channel_list(dlink_list *);
+extern void free_topic(struct Channel *);
+extern void destroy_channel(struct Channel *);
+extern void set_channel_topic(struct Channel *, const char *,
+                              const char *, time_t);
 
-/*
-** Channel Related macros follow
-*/
+extern const char *get_member_status(struct Membership *, int);
+
+extern struct Channel *get_or_create_channel(struct Client *, const char *, int *);
+extern struct Membership *find_channel_link(struct Client *, struct Channel *);
 
 /* channel visible */
 #define ShowChannel(v,c)        (PubChannel(c) || IsMember((v),(c)))
@@ -113,23 +125,4 @@ extern void free_channel_list(dlink_list *);
                  find_channel_link(who, chan)) ? 1 : 0)
 #define AddMemberFlag(x, y) ((x)->flags |=  (y))
 #define DelMemberFlag(x, y) ((x)->flags &= ~(y))
-
-struct Ban          /* also used for exceptions -orabidoo */
-{
-  dlink_node node;
-  size_t  len;
-  char *name;
-  char *username;
-  char *host;
-  char *who;
-  time_t when;
-};
-
-extern struct Membership *find_channel_link(struct Client *client_p,
-                                            struct Channel *chptr);
-extern void set_channel_topic(struct Channel *chptr, const char *topic,
-                              const char *topic_info, time_t topicts); 
-extern void free_topic(struct Channel *);
-extern void destroy_channel(struct Channel *chptr);
-
 #endif  /* INCLUDED_channel_h */

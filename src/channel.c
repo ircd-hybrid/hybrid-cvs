@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.434 2005/07/15 13:53:13 michael Exp $
+ * \version $Id: channel.c,v 7.435 2005/07/16 07:22:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -48,11 +48,11 @@
 struct config_channel_entry ConfigChannel;
 dlink_list global_channel_list = { NULL, NULL, 0 };
 dlink_list lazylink_channels = { NULL, NULL, 0 };
-BlockHeap *channel_heap;    /*! \todo channel_heap shouldn't be a global var */
 BlockHeap *ban_heap;    /*! \todo ban_heap shouldn't be a global var */
 
 static BlockHeap *topic_heap = NULL;
 static BlockHeap *member_heap = NULL;
+static BlockHeap *channel_heap = NULL;
 
 static char buf[BUFSIZE];
 static char modebuf[MODEBUFLEN];
@@ -333,6 +333,53 @@ free_channel_list(dlink_list *list)
   }
 
   assert(list->tail == NULL && list->head == NULL);
+}
+
+/*! \brief Get Channel block for chname (and allocate a new channel
+ *         block, if it didn't exist before)
+ * \param client_p client pointer
+ * \param chname   channel name
+ * \param isnew    pointer to int flag whether channel was newly created or not
+ * \return channel block or NULL if illegal name
+ */
+struct Channel *
+get_or_create_channel(struct Client *client_p, const char *chname, int *isnew)
+{
+  struct Channel *chptr = NULL;
+  int len;
+
+  if (EmptyString(chname))
+    return(NULL);
+
+  if ((len = strlen(chname)) > CHANNELLEN)
+  {
+    if (IsServer(client_p))
+      sendto_realops_flags(UMODE_DEBUG, L_ALL,
+                           "*** Long channel name from %s (%d > %d): %s",
+                           client_p->name, len, CHANNELLEN, chname);
+    return(NULL);
+  }
+
+  if ((chptr = hash_find_channel(chname)) != NULL)
+  {
+    if (isnew != NULL)
+      *isnew = 0;
+
+    return(chptr);
+  }
+
+  if (isnew != NULL)
+    *isnew = 1;
+
+  chptr = BlockHeapAlloc(channel_heap);
+  chptr->channelts = CurrentTime;    /* doesn't hurt to set it here */
+
+  strlcpy(chptr->chname, chname, sizeof(chptr->chname));
+  dlinkAdd(chptr, &chptr->node, &global_channel_list);
+
+  hash_add_channel(chptr);
+
+  return(chptr);
 }
 
 /*! \brief walk through this channel, and destroy it.
