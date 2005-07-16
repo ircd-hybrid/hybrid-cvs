@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.71 2005/07/16 13:49:34 michael Exp $
+ *  $Id: list.c,v 7.72 2005/07/16 14:20:41 michael Exp $
  */
 
 #include "stdinc.h"
@@ -31,27 +31,6 @@
 
 static BlockHeap *dnode_heap;
 
-
-/* make_server()
- *
- * inputs       - pointer to client struct
- * output       - pointer to struct Server
- * side effects - add's an Server information block to a client
- *                if it was not previously allocated.
- */
-struct Server *
-make_server(struct Client *client_p)
-{
-  struct Server *serv = client_p->serv;
-
-  if (!serv)
-  {
-    serv = MyMalloc(sizeof(struct Server));
-    client_p->serv = serv;
-  }
-
-  return(client_p->serv);
-}
 
 /* init_dlink_nodes()
  *

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.416 2005/07/16 12:19:51 michael Exp $
+ *  $Id: s_serv.c,v 7.417 2005/07/16 14:20:41 michael Exp $
  */
 
 #include "stdinc.h"
@@ -941,6 +941,21 @@ show_capabilities(struct Client *target_p)
   *(t - 1) = '\0';
 
   return(msgbuf);
+}
+
+/* make_server()
+ *
+ * inputs       - pointer to client struct
+ * output       - pointer to struct Server
+ * side effects - add's an Server information block to a client
+ *                if it was not previously allocated.
+ */
+struct Server *
+make_server(struct Client *client_p)
+{
+  if (client_p->serv == NULL)
+    client_p->serv = MyMalloc(sizeof(struct Server));
+  return(client_p->serv);
 }
 
 /* server_estab()

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.92 2005/06/18 10:46:32 michael Exp $
+ *  $Id: s_serv.h,v 7.93 2005/07/16 14:20:39 michael Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -272,6 +272,8 @@ extern void client_burst_if_needed(struct Client *client_p, struct Client *targe
 extern struct EncCapability *check_cipher(struct Client *client_p,
                                    struct AccessItem *aconf);
 extern void add_lazylinkclient(struct Client *client_p, struct Client *source_p);
+
+extern struct Server *make_server(struct Client *);
 
 /* XXX don't belong in the now gone md5, but do these belong in s_serv.c ? */
 extern int base64_block(unsigned char **output, char *data, int len);
