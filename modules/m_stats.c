@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.172 2005/07/16 12:19:44 michael Exp $
+ *  $Id: m_stats.c,v 1.173 2005/07/16 13:49:32 michael Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.172 $";
+const char *_version = "$Revision: 1.173 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -443,9 +443,6 @@ count_memory(struct Client *source_p)
   unsigned int local_client_memory_used  = 0;
   unsigned int remote_client_memory_used = 0;
 
-  int links_count = 0;
-  unsigned long links_memory_used = 0;
-
   unsigned long total_memory = 0;
   unsigned int topic_count = 0;
 
@@ -676,12 +673,6 @@ count_memory(struct Client *source_p)
   sendto_one(source_p, ":%s %d %s z :Remote client Memory in use: %d(%d)",
              me.name, RPL_STATSDEBUG, source_p->name, remote_client_count,
              remote_client_memory_used);
-
-  count_links_memory(&links_count, &links_memory_used);
-  total_memory += links_memory_used;
-  sendto_one(source_p, ":%s %d %s z :Links Memory in use: %d(%d)",
-             me.name, RPL_STATSDEBUG, source_p->name, (int)links_count,
-             (int)links_memory_used);
 
   block_heap_report_stats(source_p);
 

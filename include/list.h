@@ -19,16 +19,15 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.h,v 7.21 2005/06/27 00:18:20 db Exp $
+ *  $Id: list.h,v 7.22 2005/07/16 13:49:30 michael Exp $
  */
 
 #ifndef INCLUDED_list_h
 #define INCLUDED_list_h
 
-struct _dlink_node;
+dlink_node;
 struct Client;
 
-extern void count_links_memory(int *, unsigned long *);
 extern void init_dlink_nodes(void);
 extern void free_dlink_node(dlink_node *);
 extern dlink_node *make_dlink_node(void);

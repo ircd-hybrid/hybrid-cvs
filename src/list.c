@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.70 2005/06/27 00:32:55 metalrock Exp $
+ *  $Id: list.c,v 7.71 2005/07/16 13:49:34 michael Exp $
  */
 
 #include "stdinc.h"
@@ -29,9 +29,8 @@
 #include "memory.h"
 #include "balloc.h"
 
-static int32_t dlinks_count = 0;
-
 static BlockHeap *dnode_heap;
+
 
 /* make_server()
  *
@@ -77,8 +76,6 @@ make_dlink_node(void)
 {
   dlink_node *lp = BlockHeapAlloc(dnode_heap);
 
-  ++dlinks_count;
-
   return(lp);
 }
 
@@ -92,20 +89,4 @@ void
 free_dlink_node(dlink_node *ptr)
 {
   BlockHeapFree(dnode_heap, ptr);
-  --dlinks_count;
-  assert(dlinks_count >= 0);
-}
-
-/* count_links_memory()
- *
- * inputs       - pointer to dlinks memory actually used
- *              - pointer to dlinks memory allocated total in block allocator
- * output       - NONE
- * side effects - NONE
- */
-void
-count_links_memory(int *count, unsigned long *links_memory_used)
-{
-  *count = dlinks_count;
-  *links_memory_used = dlinks_count * sizeof(dlink_node);
 }
