@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.42 2005/07/16 12:19:41 michael Exp $
+ *  $Id: s_user.h,v 7.43 2005/07/16 13:03:53 michael Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -29,7 +29,6 @@
 #define IRC_MAXUID 6
 #define TOTALSIDUID (IRC_MAXSID + IRC_MAXUID)
 
-struct User;
 struct Client;
 struct AccessItem;
 

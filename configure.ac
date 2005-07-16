@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.101 2005/07/14 06:44:21 metalrock Exp $
+dnl $Id: configure.ac,v 7.102 2005/07/16 13:03:51 michael Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.101 2005/07/14 06:44:21 metalrock Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.102 2005/07/16 13:03:51 michael Exp $])
 
 AC_INIT([ircd-hybrid],[7.1])
 
@@ -758,7 +758,6 @@ if test "$small_net" = yes; then
 	AC_DEFINE([BAN_HEAP_SIZE], 128, [Size of the ban heap.])
 	AC_DEFINE([CLIENT_HEAP_SIZE], 256, [Size of the client heap.])
 	AC_DEFINE([LCLIENT_HEAP_SIZE], 128, [Size of the local client heap.])
-	AC_DEFINE([USER_HEAP_SIZE], 128, [Size of the user heap.])
 	AC_DEFINE([DNODE_HEAP_SIZE], 256, [Size of the dlink_node heap.])
 	AC_DEFINE([TOPIC_HEAP_SIZE], 256, [Size of the topic heap.])
 	AC_DEFINE([DBUF_HEAP_SIZE], 64, [Size of the dbuf heap.])
@@ -769,7 +768,6 @@ else
 	AC_DEFINE([BAN_HEAP_SIZE], 1024, [Size of the ban heap.])
 	AC_DEFINE([CLIENT_HEAP_SIZE], 1024, [Size of the client heap.])
 	AC_DEFINE([LCLIENT_HEAP_SIZE], 512, [Size of the local client heap.])
-	AC_DEFINE([USER_HEAP_SIZE], 1024, [Size of the user heap.])
 	AC_DEFINE([DNODE_HEAP_SIZE], 2048, [Size of the dlink_node heap.])
 	AC_DEFINE([TOPIC_HEAP_SIZE], 1024, [Size of the topic heap.])
 	AC_DEFINE([DBUF_HEAP_SIZE], 512, [Size of the dbuf heap.])

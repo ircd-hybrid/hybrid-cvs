@@ -270,9 +270,6 @@
 /* If enabled, server links to your network must have a minimum of TS5. */
 #undef TS5_ONLY
 
-/* Size of the user heap. */
-#undef USER_HEAP_SIZE
-
 /* Use kqueue() for I/O loop */
 #undef USE_KQUEUE
 
@@ -286,10 +283,6 @@
 /* Define to 1 if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
 #undef WORDS_BIGENDIAN
-
-/* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
-   `char[]'. */
-#undef YYTEXT_POINTER
 
 /* Enable GNU extensions on systems that have them.  */
 #ifndef _GNU_SOURCE

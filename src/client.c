@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.452 2005/07/16 12:19:51 michael Exp $
+ *  $Id: client.c,v 7.453 2005/07/16 13:03:55 michael Exp $
  */
 
 #include "stdinc.h"
@@ -695,9 +695,15 @@ static void
 exit_one_client(struct Client *client_p, struct Client *source_p,
                 struct Client *from, const char *comment)
 {
-  struct Client *target_p;
-  dlink_node *m;
+  struct Client *target_p = NULL;
+  dlink_node *lp = NULL, *next_lp = NULL;
 
+  assert(!IsMe(source_p));
+
+  /*
+   * For a server or user quitting, propagate the information to
+   * other servers (except to the one where is came from (client_p))
+   */
   if (IsServer(source_p))
   {
     if (source_p->servptr != NULL && source_p->servptr->serv != NULL)
@@ -705,24 +711,9 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
     else
       ts_warn("server %s without servptr!", source_p->name);
 
-    if ((m = dlinkFindDelete(&global_serv_list, source_p)) != NULL)
-      free_dlink_node(m);
-  }
-  else if (source_p->servptr != NULL && source_p->servptr->serv != NULL)
-    dlinkDelete(&source_p->lnode, &source_p->servptr->serv->users);
+    if ((lp = dlinkFindDelete(&global_serv_list, source_p)) != NULL)
+      free_dlink_node(lp);
 
-  /* there are clients w/o a servptr: unregistered ones */
-
-  /* For a server or user quitting, propagate the information to
-  ** other servers (except to the one where is came from (client_p))
-  */
-  if (IsMe(source_p))
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL, "ERROR: tried to exit me! : %s", comment);
-    return; /* ...must *never* exit self!! */
-  }
-  else if (IsServer(source_p))
-  {
     /* Old sendto_serv_but_one() call removed because we now
     ** need to send different names to different servers
     ** (domain name matching)
@@ -752,10 +743,12 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
       sendto_one(target_p, ":%s SQUIT %s :%s",
                  ID_or_name(from, target_p), ID_or_name(source_p, target_p), comment);
   }
-  else if (IsClient(source_p)) /* ...just clean all others with QUIT... */
+  else if (IsClient(source_p))
   {
-    dlink_node *lp, *next_lp;
+    if (source_p->servptr->serv != NULL)
+      dlinkDelete(&source_p->lnode, &source_p->servptr->serv->users);
 
+    /* ...just clean all others with QUIT... */
     /* If this exit is generated from "m_kill", then there
      * is no sense in sending the QUIT--KILL's have been
      * sent instead.
@@ -1226,9 +1219,9 @@ exit_client(
                source_p->servptr->name, source_p->name);
     }
 
-    /* XXX Why does this happen */
-    if (source_p->serv != NULL)
-      remove_dependents(client_p, source_p, from, comment, comment1);
+    /* This shouldn't ever happen */
+    assert(source_p->serv != NULL);
+    remove_dependents(client_p, source_p, from, comment, comment1);
 
     if (source_p->servptr == &me)
     {

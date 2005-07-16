@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.h,v 7.14 2003/06/26 12:19:46 michael Exp $
+ *  $Id: whowas.h,v 7.15 2005/07/16 13:03:53 michael Exp $
  */
 #ifndef INCLUDED_whowas_h
 #define INCLUDED_whowas_h
@@ -34,7 +34,6 @@
  */
 #define WW_MAX 65536
 
-struct User;
 struct Client;
 
 /*
@@ -70,7 +69,7 @@ extern void init_whowas(void);
 **      Client must be a fully registered user (specifically,
 **      the user structure must have been allocated).
 */
-extern void add_history (struct Client *, int);
+extern void add_history(struct Client *, int);
 
 /*
 ** off_history
@@ -96,5 +95,5 @@ extern void count_whowas_memory(int *, unsigned long *);
 
 /* XXX m_whowas.c in modules needs these */
 extern struct Whowas *WHOWASHASH[];
-extern unsigned int hash_whowas_name(const char* name);
+extern unsigned int hash_whowas_name(const char *);
 #endif /* INCLUDED_whowas_h */
