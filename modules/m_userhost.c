@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_userhost.c,v 1.42 2005/06/07 22:49:45 db Exp $
+ *  $Id: m_userhost.c,v 1.43 2005/07/16 12:19:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&userhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 
 /*
@@ -105,7 +105,7 @@ m_userhost(struct Client *client_p, struct Client *source_p,
             rl = ircsprintf(response, "%s%s=%c%s@%s ",
 			    target_p->name,
 			    IsOper(target_p) ? "*" : "",
-			    (target_p->user->away) ? '-' : '+',
+			    (target_p->away) ? '-' : '+',
 			    target_p->username,
 			    target_p->sockhost);
 	  }
@@ -114,7 +114,7 @@ m_userhost(struct Client *client_p, struct Client *source_p,
             rl = ircsprintf(response, "%s%s=%c%s@%s ",
 			    target_p->name,
 			    IsOper(target_p) ? "*" : "",
-			    (target_p->user->away) ? '-' : '+',
+			    (target_p->away) ? '-' : '+',
 			    target_p->username,
 			    target_p->host);
 	  }

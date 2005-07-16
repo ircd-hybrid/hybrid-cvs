@@ -29,7 +29,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_testmask.c,v 1.3 2005/06/29 23:42:34 metalrock Exp $
+ *  $Id: m_testmask.c,v 1.4 2005/07/16 12:19:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&testmask_msgtab);
 }
  
-const char *_version = "$Revision: 1.3 $";
+const char *_version = "$Revision: 1.4 $";
 #endif
 
 /* mo_testmask()
@@ -104,11 +104,11 @@ mo_testmask(struct Client *client_p, struct Client *source_p,
   {
     target_p = ptr->data;
 
-    if (IsDead(target_p) || !IsPerson(target_p))
+    if (IsDead(target_p) || !IsClient(target_p))
       continue;
 
-    if (match(given_user, target_p->username)
-	&& match(given_host, target_p->host))
+    if (match(given_user, target_p->username) &&
+	match(given_host, target_p->host))
     {
       if (MyConnect(target_p))
 	local_count++;
@@ -116,6 +116,7 @@ mo_testmask(struct Client *client_p, struct Client *source_p,
 	remote_count++;
     }
   }
+
   sendto_one(source_p, form_str(RPL_TESTMASK), me.name, source_p->name,
 	     given_user, given_host, local_count, remote_count);
 }

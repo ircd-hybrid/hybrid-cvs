@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_accept.c,v 1.47 2005/07/11 19:40:27 adx Exp $
+ *  $Id: m_accept.c,v 1.48 2005/07/16 12:19:43 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&accept_msgtab);
 }
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 
 /*
@@ -94,7 +94,7 @@ m_accept(struct Client *client_p, struct Client *source_p,
        nick = strtoken(&p, NULL, ","))
   {
     /* shouldnt happen, but lets be paranoid */
-    if (((target_p = find_client(nick)) == NULL) || !IsPerson(target_p))
+    if (((target_p = find_client(nick)) == NULL) || !IsClient(target_p))
     {
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                  me.name, source_p->name, nick);
@@ -120,7 +120,7 @@ m_accept(struct Client *client_p, struct Client *source_p,
        nick = strtoken(&p, NULL, ","), accept_num++)
   {
     /* shouldnt happen, but lets be paranoid */
-    if (((target_p = find_client(nick)) == NULL) || !IsPerson(target_p)) 
+    if (((target_p = find_client(nick)) == NULL) || !IsClient(target_p)) 
     {
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                  me.name, source_p->name, nick);
@@ -175,7 +175,7 @@ build_nicklist(struct Client *source_p, char *addbuf,
     else
       buf_p = addbuf;
 
-    if (((target_p = find_client(name)) == NULL) || !IsPerson(target_p))
+    if (((target_p = find_client(name)) == NULL) || !IsClient(target_p))
     {
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                  me.name, source_p->name, name);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_locops.c,v 1.35 2004/07/08 00:27:22 erik Exp $
+ *  $Id: m_locops.c,v 1.36 2005/07/16 12:19:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&locops_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 
 /*
@@ -101,10 +101,10 @@ ms_locops(struct Client *client_p, struct Client *source_p,
   if (!match(parv[1], me.name))
     return;
 
-  if (!IsPerson(source_p))
+  if (!IsClient(source_p))
     return;
 
-  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->servptr->name,
                               NULL, NULL, CLUSTER_LOCOPS))
     sendto_wallops_flags(UMODE_LOCOPS, source_p, "SLOCOPS - %s", parv[2]);
 }

@@ -19,8 +19,9 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_links_notice.c,v 1.14 2003/05/31 23:42:11 metalrock Exp $
+ *  $Id: spy_links_notice.c,v 1.15 2005/07/16 12:19:38 michael Exp $
  */
+
 #include "stdinc.h"
 #include "tools.h"
 #include "modules.h"
@@ -29,8 +30,7 @@
 #include "ircd.h"
 #include "send.h"
 
-int
-show_links(struct hook_links_data *);
+static int show_links(struct hook_links_data *);
 
 void
 _modinit(void)
@@ -44,15 +44,15 @@ _moddeinit(void)
   hook_del_hook("doing_links", (hookfn *)show_links);
 }
 
-const char *_version = "$Revision: 1.14 $";
+const char *_version = "$Revision: 1.15 $";
 
-int
+static int
 show_links(struct hook_links_data *data)
 {
   sendto_realops_flags(UMODE_SPY, L_ALL,
-                         "LINKS '%s' requested by %s (%s@%s) [%s]",
-                         data->mask, data->source_p->name, data->source_p->username,
-                         data->source_p->host, data->source_p->user->server->name);
+                       "LINKS '%s' requested by %s (%s@%s) [%s]",
+                       data->mask, data->source_p->name, data->source_p->username,
+                       data->source_p->host, data->source_p->servptr->name);
 
   return 0;
 }

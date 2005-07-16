@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.196 2005/07/11 21:18:10 adx Exp $
+ *  $Id: m_sjoin.c,v 1.197 2005/07/16 12:19:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.196 $";
+const char *_version = "$Revision: 1.197 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -352,7 +352,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
      */
     if (target_p == NULL ||
         target_p->from != client_p ||
-        !IsPerson(target_p))
+        !IsClient(target_p))
     {
       goto nextnick;
     }

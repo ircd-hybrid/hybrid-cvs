@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.26 2005/06/23 09:33:58 michael Exp $
+ *  $Id: m_join.c,v 1.27 2005/07/16 12:19:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -88,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
 
 /* m_join()
@@ -391,7 +391,7 @@ ms_join(struct Client *client_p, struct Client *source_p,
                 ID(source_p), (unsigned long)chptr->channelts, chptr->chname);
   sendto_server(client_p, NULL, chptr, NOCAPS, CAP_TS6, NOFLAGS,
                 ":%s SJOIN %lu %s + :%s",
-                source_p->user->server->name, (unsigned long)chptr->channelts,
+                source_p->servptr->name, (unsigned long)chptr->channelts,
                 chptr->chname, source_p->name);
 }
 
@@ -410,11 +410,11 @@ do_join_0(struct Client *client_p, struct Client *source_p)
   struct Channel *chptr = NULL;
   dlink_node *ptr, *ptr_next;
 
-  if (source_p->user->channel.head != NULL &&
+  if (source_p->channel.head != NULL &&
       MyConnect(source_p) && !IsOper(source_p))
     check_spambot_warning(source_p, NULL);
 
-  DLINK_FOREACH_SAFE(ptr, ptr_next, source_p->user->channel.head)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, source_p->channel.head)
   {
     chptr = ((struct Membership *)ptr->data)->chptr;
 
@@ -508,8 +508,8 @@ build_target_list(struct Client *client_p, struct Client *source_p,
       continue;
     }
 
-    if ((dlink_list_length(&source_p->user->channel) >= ConfigChannel.max_chans_per_user) &&
-        (!IsOper(source_p) || (dlink_list_length(&source_p->user->channel) >=
+    if ((dlink_list_length(&source_p->channel) >= ConfigChannel.max_chans_per_user) &&
+        (!IsOper(source_p) || (dlink_list_length(&source_p->channel) >=
                                ConfigChannel.max_chans_per_user * 3)))
     {
       if (!error_reported++)

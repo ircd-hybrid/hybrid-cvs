@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lljoin.c,v 1.67 2005/05/22 17:20:28 michael Exp $
+ *  $Id: m_lljoin.c,v 1.68 2005/07/16 12:19:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&lljoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.67 $";
+const char *_version = "$Revision: 1.68 $";
 #endif
 /*
  * m_lljoin
@@ -157,8 +157,8 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if ((dlink_list_length(&target_p->user->channel) >= ConfigChannel.max_chans_per_user) &&
-      (!IsOper(target_p) || (dlink_list_length(&target_p->user->channel) >=
+  if ((dlink_list_length(&target_p->channel) >= ConfigChannel.max_chans_per_user) &&
+      (!IsOper(target_p) || (dlink_list_length(&target_p->channel) >=
                              ConfigChannel.max_chans_per_user*3)))
   {
       sendto_one(target_p, form_str(ERR_TOOMANYCHANNELS),

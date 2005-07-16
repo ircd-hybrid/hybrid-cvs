@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_away.c,v 1.39 2005/07/11 19:06:18 db Exp $
+ *  $Id: m_away.c,v 1.40 2005/07/16 12:19:43 michael Exp $
  */
 
 #include "stdinc.h"
@@ -37,9 +37,9 @@
 #include "packet.h"
 #include "s_user.h"
 
-static void m_away(struct Client *, struct Client *, int, char **);
-static void mo_away(struct Client *, struct Client *, int, char **);
-static void ms_away(struct Client *, struct Client *, int, char **);
+static void m_away(struct Client *, struct Client *, int, char *[]);
+static void mo_away(struct Client *, struct Client *, int, char *[]);
+static void ms_away(struct Client *, struct Client *, int, char *[]);
 
 struct Message away_msgtab = {
   "AWAY", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -60,7 +60,8 @@ _moddeinit(void)
   mod_del_cmd(&away_msgtab);
   delete_isupport("AWAYLEN");
 }
-const char *_version = "$Revision: 1.39 $";
+
+const char *_version = "$Revision: 1.40 $";
 #endif
 
 /***********************************************************************
@@ -83,7 +84,7 @@ static void
 m_away(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
-  char *cur_away_msg = source_p->user->away;
+  char *cur_away_msg = source_p->away;
   char *new_away_msg;
   size_t nbytes = 0;
 
@@ -102,24 +103,24 @@ m_away(struct Client *client_p, struct Client *source_p,
                     NOFLAGS, ":%s AWAY", source_p->name);
 
       MyFree(cur_away_msg);
-      source_p->user->away = NULL;
+      source_p->away = NULL;
     }
 
     sendto_one(source_p, form_str(RPL_UNAWAY),
-               me.name, parv[0]);
+               me.name, source_p->name);
     return;
   }
 
   /* Marking as away */
-  if ((CurrentTime - source_p->user->last_away) < ConfigFileEntry.pace_wait)
+  if ((CurrentTime - source_p->localClient->last_away) < ConfigFileEntry.pace_wait)
   {
     sendto_one(source_p, form_str(RPL_LOAD2HI),
-               me.name, parv[0]);
+               me.name, source_p->name);
     return;
   }
 
-  source_p->user->last_away = CurrentTime;
-  new_away_msg              = parv[1];
+  source_p->localClient->last_away = CurrentTime;
+  new_away_msg = parv[1];
 
   nbytes = strlen(new_away_msg);
   if (nbytes > (size_t)TOPICLEN) {
@@ -141,16 +142,16 @@ m_away(struct Client *client_p, struct Client *source_p,
 
   cur_away_msg = MyMalloc(nbytes + 1);
   strcpy(cur_away_msg, new_away_msg);
-  source_p->user->away = cur_away_msg;
+  source_p->away = cur_away_msg;
 
-  sendto_one(source_p, form_str(RPL_NOWAWAY), me.name, parv[0]);
+  sendto_one(source_p, form_str(RPL_NOWAWAY), me.name, source_p->name);
 }
 
 static void
 mo_away(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
-  char *cur_away_msg = source_p->user->away;
+  char *cur_away_msg = source_p->away;
   char *new_away_msg;
   size_t nbytes = 0;
 
@@ -169,16 +170,15 @@ mo_away(struct Client *client_p, struct Client *source_p,
                     NOFLAGS, ":%s AWAY", source_p->name);
 
       MyFree(cur_away_msg);
-      source_p->user->away = NULL;
+      source_p->away = NULL;
     }
 
     sendto_one(source_p, form_str(RPL_UNAWAY),
-               me.name, parv[0]);
+               me.name, source_p->name);
     return;
   }
 
-  source_p->user->last_away = CurrentTime;
-  new_away_msg              = parv[1];
+  new_away_msg = parv[1];
 
   nbytes = strlen(new_away_msg);
   if (nbytes > (size_t)TOPICLEN) {
@@ -200,9 +200,9 @@ mo_away(struct Client *client_p, struct Client *source_p,
 
   cur_away_msg = MyMalloc(nbytes + 1);
   strcpy(cur_away_msg, new_away_msg);
-  source_p->user->away = cur_away_msg;
+  source_p->away = cur_away_msg;
 
-  sendto_one(source_p, form_str(RPL_NOWAWAY), me.name, parv[0]);
+  sendto_one(source_p, form_str(RPL_NOWAWAY), me.name, source_p->name);
 }
 
 static void
@@ -216,7 +216,7 @@ ms_away(struct Client *client_p, struct Client *source_p,
   if (!IsClient(source_p))
     return;
 
-  cur_away_msg = source_p->user->away;
+  cur_away_msg = source_p->away;
 
   if (parc < 2 || EmptyString(parv[1]))
   {
@@ -230,14 +230,13 @@ ms_away(struct Client *client_p, struct Client *source_p,
                     NOFLAGS, ":%s AWAY", source_p->name);
 
       MyFree(cur_away_msg);
-      source_p->user->away = NULL;
+      source_p->away = NULL;
     }
 
     return;
   }
 
-  source_p->user->last_away = CurrentTime;
-  new_away_msg              = parv[1];
+  new_away_msg = parv[1];
 
   nbytes = strlen(new_away_msg);
   if (nbytes > (size_t)TOPICLEN) {
@@ -259,5 +258,5 @@ ms_away(struct Client *client_p, struct Client *source_p,
 
   cur_away_msg = MyMalloc(nbytes + 1);
   strcpy(cur_away_msg, new_away_msg);
-  source_p->user->away = cur_away_msg;
+  source_p->away = cur_away_msg;
 }

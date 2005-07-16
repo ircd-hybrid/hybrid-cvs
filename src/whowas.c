@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.c,v 7.28 2003/06/24 09:39:33 michael Exp $
+ *  $Id: whowas.c,v 7.29 2005/07/16 12:19:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ add_history(struct Client *client_p, int online)
    * (with a half registered client.)
    * and what is the correct action here? - Dianora
    */
-  if (client_p->user->server == NULL)
+  if (client_p->servptr == NULL)
     return;
 
   if (who->hashv != -1)
@@ -97,7 +97,7 @@ add_history(struct Client *client_p, int online)
   strcpy(who->hostname, client_p->host);
   strcpy(who->realname, client_p->info);
 
-  strlcpy(who->servername, client_p->user->server->name, sizeof(who->servername));
+  strlcpy(who->servername, client_p->servptr->name, sizeof(who->servername));
 
   if (online)
   {

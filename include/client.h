@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.237 2005/07/10 19:46:16 adx Exp $
+ *  $Id: client.h,v 7.238 2005/07/16 12:19:41 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -51,17 +51,6 @@ struct LocalUser;
 /*
  * Client structures
  */
-struct User
-{
-  dlink_list     channel;   /* chain of channel pointer blocks */
-  dlink_list     invited;   /* chain of invite pointer blocks */
-  char*          away;      /* pointer to away message */
-  time_t         last_away; /* Away since... */
-  time_t         last;
-  struct Client *server;    /* pointer to server */
-  char*          response;  /* expected response from client */
-  char*          auth_oper; /* Operator to become if they supply the response.*/
-};
 
 struct Server
 {
@@ -108,7 +97,6 @@ struct Client
   struct Client *hnext;		/* For client hash table lookups by name */
   struct Client *idhnext;	/* For SID hash table lookups by sid */
 
-  struct User*      user;       /* ...defined, if this is a User */
   struct Server*    serv;       /* ...defined, if this is a server */
   struct Client*    servptr;    /* Points to server this Client is on */
   struct Client*    from;       /* == self, if Local Client, *NEVER* NULL! */
@@ -129,6 +117,7 @@ struct Client
 					   * bit mapped lazylink servers 
 					   * mapped here
 					   */
+  char *away;
   /*
    * client->name is the unique name for a client nick or host
    */
@@ -177,6 +166,9 @@ struct Client
   dlink_list	allow_list;	/* clients I'll allow to talk to me */
   dlink_list	on_allow_list;	/* clients that have =me= on their allow list*/
 
+  dlink_list     channel;   /* chain of channel pointer blocks */
+  dlink_list     invited;   /* chain of invite pointer blocks */
+
   struct LocalUser *localClient;
 };
 
@@ -187,6 +179,7 @@ struct LocalUser
    * (directly connected to *this* server with a socket.
    */
   /* Anti flooding part, all because of lamers... */
+  time_t         last_away; /* Away since... */
   time_t            last_join_time;   /* when this client last 
                                          joined a channel */
   time_t            last_leave_time;  /* when this client last 
@@ -222,6 +215,7 @@ struct LocalUser
   int 		    aftype;	/* Makes life easier for DNS res in IPV6 */
   struct DNSQuery   *dns_query;  /* result returned from resolver query */
   unsigned long     serverMask; /* Only used for Lazy Links */
+  time_t last; /* Last time we got a PRIVMSG */
   time_t            last_nick_change;
   int               number_of_nick_changes;
 
@@ -264,6 +258,9 @@ struct LocalUser
   int sent_parsed;      /* how many messages we've parsed in this second */
   time_t last_knock;    /* time of last knock */
   unsigned long random_ping;
+
+  char*          response;  /* expected response from client */
+  char*          auth_oper; /* Operator to become if they supply the response.*/
 };
 
 /*
@@ -356,7 +353,7 @@ struct LocalUser
 #define FLAGS_USERHOST    0x04000000 /* client is in userhost hash               */
 #define FLAGS_BURSTED     0x08000000 /* user was already bursted                 */
 #define FLAGS_EXEMPTRESV  0x10000000 /* client is exempt from RESV               */
-/*                        0x20000000  */
+#define FLAGS_GOTUSER     0x20000000 /* if we received a USER command            */
 /*                        0x40000000  */
 /*                        0x80000000  */
 
@@ -416,7 +413,6 @@ struct LocalUser
 
 
 /* flags macros. */
-#define IsPerson(x)             (IsClient(x) && (x)->user)
 #define IsDead(x)               ((x)->flags & FLAGS_DEADSOCKET)
 #define SetDead(x)              ((x)->flags |= FLAGS_DEADSOCKET)
 #define IsClosing(x)		((x)->flags & FLAGS_CLOSING)

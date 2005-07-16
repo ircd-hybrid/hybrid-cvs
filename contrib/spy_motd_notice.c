@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_motd_notice.c,v 1.10 2003/09/23 03:53:22 db Exp $
+ *  $Id: spy_motd_notice.c,v 1.11 2005/07/16 12:19:38 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -29,7 +29,7 @@
 #include "ircd.h"
 #include "send.h"
 
-int show_motd(struct hook_spy_data *);
+static int show_motd(struct hook_spy_data *);
 
 void
 _modinit(void)
@@ -43,15 +43,15 @@ _moddeinit(void)
   hook_del_hook("doing_motd", (hookfn *)show_motd);
 }
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 
-int
+static int
 show_motd(struct hook_spy_data *data)
 {
   sendto_realops_flags(UMODE_SPY, L_ALL,
-                         "motd requested by %s (%s@%s) [%s]",
-                         data->source_p->name, data->source_p->username,
-                         data->source_p->host, data->source_p->user->server->name);
+                       "motd requested by %s (%s@%s) [%s]",
+                       data->source_p->name, data->source_p->username,
+                       data->source_p->host, data->source_p->servptr->name);
 
   return 0;
 }

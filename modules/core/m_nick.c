@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.145 2005/06/12 21:47:22 michael Exp $
+ *  $Id: m_nick.c,v 1.146 2005/07/16 12:19:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -93,7 +93,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.145 $";
+const char *_version = "$Revision: 1.146 $";
 #endif
 
 /* mr_nick()
@@ -362,7 +362,7 @@ ms_nick(struct Client *client_p, struct Client *source_p,
       return;
 
     if (check_clean_nick(client_p, source_p, nick, nnick,
-			 source_p->user->server))
+			 source_p->servptr))
       return;
     
     /*
@@ -722,7 +722,7 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
                                   parv[7], ngecos));
     }
   }
-  else if(source_p->name[0])
+  else if (source_p->name[0])
   {
     /* client changing their nick */
     if (irccmp(parv[0], nick))
@@ -732,16 +732,13 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
                                  source_p->name,source_p->username,
                                  source_p->host, nick);
 
-    if (source_p->user != NULL)
-    {
-      add_history(source_p,1);
-      sendto_server(client_p, source_p, NULL, CAP_TS6, NOCAPS, NOFLAGS,
-                    ":%s NICK %s :%lu",
-                    ID(source_p), nick, (unsigned long)source_p->tsinfo);
-      sendto_server(client_p, source_p, NULL, NOCAPS, CAP_TS6, NOFLAGS,
-                    ":%s NICK %s :%lu",
-		      parv[0], nick, (unsigned long)source_p->tsinfo);
-    }
+    add_history(source_p,1);
+    sendto_server(client_p, source_p, NULL, CAP_TS6, NOCAPS, NOFLAGS,
+                  ":%s NICK %s :%lu",
+                  ID(source_p), nick, (unsigned long)source_p->tsinfo);
+    sendto_server(client_p, source_p, NULL, NOCAPS, CAP_TS6, NOFLAGS,
+                  ":%s NICK %s :%lu",
+                  parv[0], nick, (unsigned long)source_p->tsinfo);
   }
 
   /* set the new nick name */
@@ -800,6 +797,7 @@ client_from_server(struct Client *client_p, struct Client *source_p, int parc,
     m++;
 
   }
+
   return(register_remote_user(client_p, source_p, parv[5], parv[6],
                               servername, ugecos));
 }
@@ -844,8 +842,8 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
     /* the timestamps are different */
     else
     {
-      sameuser = (target_p->user) && !irccmp(target_p->username, parv[5])
-                 && !irccmp(target_p->host, parv[6]);
+      sameuser = !irccmp(target_p->username, parv[5]) &&
+                 !irccmp(target_p->host, parv[6]);
    
       /* if the users are the same (loaded a client on a different server)
        * and the new users ts is older, or the users are different and the
@@ -899,8 +897,7 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
   }
 
   /* its a client changing nick and causing a collide */
-  if (!newts || !target_p->tsinfo || (newts == target_p->tsinfo) ||
-       !source_p->user)
+  if (!newts || !target_p->tsinfo || (newts == target_p->tsinfo))
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
                  "Nick change collision from %s to %s(%s <- %s)(both killed)",

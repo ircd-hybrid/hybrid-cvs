@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.415 2005/07/11 03:03:34 adx Exp $
+ *  $Id: s_serv.c,v 7.416 2005/07/16 12:19:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -851,7 +851,7 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
 {
   static char ubuf[12];
 
-  if (!IsPerson(target_p))
+  if (!IsClient(target_p))
     return;
 
   send_umode(NULL, target_p, 0, SEND_UMODES, ubuf);
@@ -865,7 +865,7 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
   /* XXX Both of these need to have a :me.name or :mySID!?!?! */
   if (HasID(target_p) && IsCapable(client_p, CAP_TS6))
     sendto_one(client_p, ":%s UID %s %d %lu %s %s %s %s %s :%s",
-               target_p->user->server->id,
+               target_p->servptr->id,
 	       target_p->name, target_p->hopcount + 1,
 	       (unsigned long) target_p->tsinfo,
 	       ubuf, target_p->username, target_p->host,
@@ -876,11 +876,11 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
 	       target_p->name, target_p->hopcount + 1,
 	       (unsigned long) target_p->tsinfo,
 	       ubuf, target_p->username, target_p->host,
-	       target_p->user->server->name, target_p->info);
+	       target_p->servptr->name, target_p->info);
   if (IsAwayBurst((struct AccessItem *)map_to_conf(client_p->serv->sconf)))
-    if (!EmptyString(target_p->user->away))
+    if (!EmptyString(target_p->away))
       sendto_one(client_p, ":%s AWAY :%s", target_p->name,
-                 target_p->user->away);
+                 target_p->away);
 
 }
 
@@ -1950,7 +1950,7 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
     sendto_realops_flags(UMODE_ALL, L_OPER,
 		         "Server %s already present from %s",
 		         conf->name, get_client_name(client_p, MASK_IP));
-    if (by && IsPerson(by) && !MyClient(by))
+    if (by && IsClient(by) && !MyClient(by))
       sendto_one(by, ":%s NOTICE %s :Server %s already present from %s",
 	         me.name, by->name, conf->name,
 	         get_client_name(client_p, MASK_IP));
@@ -1996,7 +1996,7 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
     sendto_realops_flags(UMODE_ALL, L_ALL,
 		         "Host %s is not enabled for connecting:no C/N-line",
 			 conf->name);
-    if (by && IsPerson(by) && !MyClient(by))  
+    if (by && IsClient(by) && !MyClient(by))  
       sendto_one(by, ":%s NOTICE %s :Connect to host %s failed.",
 	         me.name, by->name, client_p->name);
     detach_all_confs(client_p);
@@ -2010,7 +2010,7 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
    */
   make_server(client_p);
 
-  if (by && IsPerson(by))
+  if (by && IsClient(by))
     strlcpy(client_p->serv->by, by->name, sizeof(client_p->serv->by));
   else
     strlcpy(client_p->serv->by, "AutoConn.", sizeof(client_p->serv->by));

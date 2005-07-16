@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.54 2005/06/29 23:48:52 metalrock Exp $
+ *  $Id: m_xline.c,v 1.55 2005/07/16 12:19:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -86,7 +86,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.54 $";
+const char *_version = "$Revision: 1.55 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
@@ -224,7 +224,7 @@ ms_xline(struct Client *client_p, struct Client *source_p,
   if (parc != 5 || EmptyString(parv[4]))
     return;
 
-  if (!IsPerson(source_p))
+  if (!IsClient(source_p))
     return;
 
   if (!valid_xline(source_p, parv[2], parv[4], 0))
@@ -242,7 +242,7 @@ ms_xline(struct Client *client_p, struct Client *source_p,
   if (!match(parv[1], me.name))
     return;
 
-  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->servptr->name,
                               NULL, NULL, CLUSTER_XLINE))
   {
     if ((find_matching_name_conf(XLINE_TYPE, parv[2],
@@ -252,7 +252,7 @@ ms_xline(struct Client *client_p, struct Client *source_p,
     write_xline(source_p, parv[2], parv[4], t_sec);
   }
   else if (find_matching_name_conf(ULINE_TYPE,
-		       source_p->user->server->name,
+		       source_p->servptr->name,
                        source_p->username, source_p->host,
                        SHARED_XLINE))
   {
@@ -331,14 +331,14 @@ ms_unxline(struct Client *client_p, struct Client *source_p,
   if (!match(parv[1], me.name))
     return;
 
-  if (!IsPerson(source_p))
+  if (!IsClient(source_p))
     return;
 
-  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->servptr->name,
                               NULL, NULL, CLUSTER_UNXLINE))
     remove_xline(source_p, parv[2], 1);
   else if (find_matching_name_conf(ULINE_TYPE,
-		       source_p->user->server->name,
+		       source_p->servptr->name,
                        source_p->username, source_p->host,
                        SHARED_UNXLINE))
   {

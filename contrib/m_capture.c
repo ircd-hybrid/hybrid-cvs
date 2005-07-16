@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capture.c,v 1.14 2005/07/13 13:36:57 adx Exp $
+ *  $Id: m_capture.c,v 1.15 2005/07/16 12:19:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&capture_msgtab);
 }
 
-const char *_version = "$Revision: 1.14 $";
+const char *_version = "$Revision: 1.15 $";
 #endif
 
 /* mo_capture
@@ -166,7 +166,7 @@ mo_capture(struct Client *client_p, struct Client *source_p,
     {
       target_p = ptr->data;
 
-      if (!IsPerson(target_p) || (source_p == target_p) || IsOper(target_p) ||
+      if ((source_p == target_p) || IsOper(target_p) ||
           IsCaptured(target_p))
 	continue;
 
@@ -257,7 +257,7 @@ mo_uncapture(struct Client *client_p, struct Client *source_p,
     {
       target_p = ptr->data;
 
-      if (!IsPerson(target_p) || !IsCaptured(target_p))
+      if (!IsCaptured(target_p))
 	continue;
 
       if (match(nick, target_p->name) &&

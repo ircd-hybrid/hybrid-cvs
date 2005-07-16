@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.37 2004/07/08 00:27:23 erik Exp $
+ *  $Id: m_resv.c,v 1.38 2005/07/16 12:19:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.38 $";
 #endif
 
 /* mo_resv()
@@ -133,14 +133,14 @@ ms_resv(struct Client *client_p, struct Client *source_p,
   if (!match(parv[1], me.name))
     return;
 
-  if (!IsPerson(source_p))
+  if (!IsClient(source_p))
     return;
 
-  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->servptr->name,
                               NULL, NULL, CLUSTER_RESV))
     parse_resv(source_p, parv[2], parv[3], 1);
   else if (find_matching_name_conf(ULINE_TYPE,
-				   source_p->user->server->name,
+				   source_p->servptr->name,
 				   source_p->username, source_p->host,
 				   SHARED_RESV))
   parse_resv(source_p, parv[2], parv[3], 0);
@@ -190,14 +190,14 @@ ms_unresv(struct Client *client_p, struct Client *source_p,
   if (!match(me.name, parv[1]))
     return;
 
-  if (!IsPerson(source_p))
+  if (!IsClient(source_p))
     return;
 
-  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->servptr->name,
                               NULL, NULL, CLUSTER_UNRESV))
     remove_resv(source_p, parv[2], 1);
   else if (find_matching_name_conf(ULINE_TYPE,
-				   source_p->user->server->name,
+				   source_p->servptr->name,
 				   source_p->username, source_p->host,
 				   SHARED_UNRESV))
     remove_resv(source_p, parv[2], 0);

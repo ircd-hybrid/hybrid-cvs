@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.41 2005/07/11 19:06:16 db Exp $
+ *  $Id: s_user.h,v 7.42 2005/07/16 12:19:41 michael Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -36,8 +36,6 @@ struct AccessItem;
 extern int MaxClientCount;     /* GLOBAL - highest number of clients     */
 extern int MaxConnectionCount; /* GLOBAL - highest number of connections */
 
-extern void init_user(void);
-extern void free_user(struct User *, struct Client *);
 extern void set_user_mode(struct Client *, struct Client *, int, char **);
 extern void send_umode(struct Client *, struct Client *,
                        unsigned int, unsigned int, char *);

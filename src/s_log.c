@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.62 2005/05/30 13:19:13 michael Exp $
+ *  $Id: s_log.c,v 7.63 2005/07/16 12:19:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -201,7 +201,7 @@ log_user_exit(struct Client *source_p)
 {
   time_t on_for = CurrentTime - source_p->firsttime;
 #ifdef SYSLOG_USERS
-  if (IsPerson(source_p))
+  if (IsClient(source_p))
   {
     ilog(L_INFO, "%s (%3ld:%02ld:%02ld): %s!%s@%s %llu/%llu\n",
          myctime(source_p->firsttime),
@@ -222,7 +222,7 @@ log_user_exit(struct Client *source_p)
      * removing the file.
      * -Taner
      */
-    if (IsPerson(source_p))
+    if (IsClient(source_p))
     {
       if (user_log_fb == NULL)
       {
@@ -284,7 +284,7 @@ log_oper(struct Client *source_p, const char *name)
   if (ConfigLoggingEntry.operlog[0] == '\0')
     return;
 
-  if (IsPerson(source_p))
+  if (IsClient(source_p))
   {
     FBFILE *oper_fb;
 
@@ -320,7 +320,7 @@ log_failed_oper(struct Client *source_p, const char *name)
   if (ConfigLoggingEntry.failed_operlog[0] == '\0')
     return;
 
-  if (IsPerson(source_p))
+  if (IsClient(source_p))
   {
     FBFILE *oper_fb;
 

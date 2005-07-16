@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_names.c,v 1.60 2005/06/28 21:26:06 adx Exp $
+ *  $Id: m_names.c,v 1.61 2005/07/16 12:19:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-const char *_version = "$Revision: 1.60 $";
+const char *_version = "$Revision: 1.61 $";
 #endif
 
 /************************************************************************
@@ -171,14 +171,14 @@ names_non_public_non_secret(struct Client *source_p)
   {
     c2ptr = gc2ptr->data;
 
-    if (!IsPerson(c2ptr) || IsInvisible(c2ptr))
+    if (!IsClient(c2ptr) || IsInvisible(c2ptr))
       continue;
 
     shown_already = NO;
 
     /* We already know the user is not +i. If they are on no common
      * channels with source_p, they have not been shown yet. */
-    DLINK_FOREACH(lp, c2ptr->user->channel.head)
+    DLINK_FOREACH(lp, c2ptr->channel.head)
     {
       ch3ptr = ((struct Membership *) lp->data)->chptr;
 

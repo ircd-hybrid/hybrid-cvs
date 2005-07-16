@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_etrace.c,v 1.2 2005/07/11 00:36:46 metalrock Exp $
+ *  $Id: m_etrace.c,v 1.3 2005/07/16 12:19:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   hook_del_event("doing_etrace");
   mod_del_cmd(&etrace_msgtab);
 }
-const char *_version = "$Revision: 1.2 $";
+const char *_version = "$Revision: 1.3 $";
 #endif
 
 static void report_this_status(struct Client *, struct Client *);
@@ -107,7 +107,7 @@ mo_etrace(struct Client *client_p, struct Client *source_p,
   {
     target_p = find_client(tname);
 
-    if (target_p && IsPerson(target_p) && MyConnect(target_p))
+    if (target_p && MyClient(target_p))
       report_this_status(source_p, target_p);
       
     sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name, 

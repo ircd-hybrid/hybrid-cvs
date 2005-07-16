@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.340 2005/07/13 12:22:21 adx Exp $
+ *  $Id: s_user.c,v 7.341 2005/07/16 12:19:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -56,8 +56,6 @@
 
 int MaxClientCount     = 1;
 int MaxConnectionCount = 1;
-
-static BlockHeap *user_heap;
 
 static void user_welcome(struct Client *);
 static void report_and_set_user_flags(struct Client *, struct AccessItem *);
@@ -179,69 +177,6 @@ const unsigned int user_modes_from_c_to_bitmask[] =
   /* 0xE0 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0xEF */
   /* 0xF0 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0  /* 0xFF */
 };
-
-/* init_user()
- *
- * inputs       - NONE
- * output       - NONE
- * side effects - Creates a block heap for struct Users
- */
-void
-init_user(void)
-{
-  user_heap = BlockHeapCreate("user", sizeof(struct User), USER_HEAP_SIZE);
-}
-
-/* make_user()
- *
- * inputs       - pointer to Client struct
- * output       - pointer to struct User
- * side effects - add's an User information block to a client
- *                if it was not previously allocated.
- */
-static struct User *
-make_user(struct Client *client_p)
-{
-  if (client_p->user == NULL)
-    client_p->user = BlockHeapAlloc(user_heap);
-
-  return(client_p->user);
-}
-
-/* free_user()
- *
- * inputs       - pointer to User struct
- *              - pointer to Client struct
- * output       - NONE
- * side effects - free an User block
- */
-/* XXX - Client pointer is not really necessary */
-void
-free_user(struct User *user, struct Client *client_p)
-{
-
-  MyFree(user->away);
-  MyFree(user->response);
-  MyFree(user->auth_oper);
-
-  /* sanity check */
-  if (dlink_list_length(&user->channel) || user->invited.head || user->channel.head)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "* %#lx user (%s!%s@%s) %#lx %#lx %#lx %lu *",
-                         (unsigned long)client_p, client_p ? client_p->name : "<noname>",
-                         client_p->username, client_p->host, (unsigned long)user,
-                         (unsigned long)user->invited.head,
-                         (unsigned long)user->channel.head,
-                         dlink_list_length(&user->channel));
-    assert(user->invited.head == NULL);
-    assert(user->channel.head == NULL);
-    assert(dlink_list_length(&user->invited) == 0);
-    assert(dlink_list_length(&user->channel) == 0);
-  }
-
-  BlockHeapFree(user_heap, user);
-}
 
 /* show_lusers()
  *
@@ -391,7 +326,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
       return(-1);
   }
 
-  source_p->user->last = CurrentTime;
+  source_p->localClient->last = CurrentTime;
   /* Straight up the maximum rate of flooding... */
   source_p->localClient->allow_read = MAX_FLOOD_BURST;
 
@@ -499,10 +434,10 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   if (source_p->id[0] == '\0') 
   {
-    char *id;
+    const char *id = uid_get();
 
-    for (id = uid_get(); hash_find_id(id); id = uid_get())
-      ; /* nothing */
+    while (hash_find_id(id))
+      id = uid_get();
 
     strlcpy(source_p->id, id, sizeof(source_p->id));
     hash_add_id(source_p);
@@ -556,14 +491,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     free_dlink_node(m);
     dlinkAdd(source_p, &source_p->localClient->lclient_node, &local_client_list);
   }
-  else
-  {
-    sendto_realops_flags(UMODE_ALL, L_ADMIN, "Tried to register %s (%s@%s) "
-                         "but I couldn't find it?!?", 
-                         nick, source_p->username, source_p->host);
-    exit_client(client_p, source_p, &me, "Client exited");
-    return(CLIENT_EXITED);
-  }
+  else assert(0);
 
   user_welcome(source_p);
   add_user_host(source_p->username, source_p->host, 0);
@@ -592,23 +520,18 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   if (source_p == NULL)
     return(-1);
 
-  source_p->user = make_user(source_p);
-
-  /* coming from another server, take the servers word for it
-   */
-  source_p->user->server = find_server(server);
   strlcpy(source_p->host, host, sizeof(source_p->host)); 
   strlcpy(source_p->info, realname, sizeof(source_p->info));
   strlcpy(source_p->username, username, sizeof(source_p->username));
-
-  SetClient(source_p);
 
   /* Increment our total user count here */
   if (++Count.total > Count.max_tot)
     Count.max_tot = Count.total;
 
-  source_p->user->last = CurrentTime;
-  source_p->servptr    = source_p->user->server;
+  /*
+   * coming from another server, take the servers word for it
+   */
+  source_p->servptr = find_server(server);
 
   /* Super GhostDetect:
    * If we can't find the server the user is supposed to be on,
@@ -627,22 +550,22 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
     return(exit_client(NULL, source_p, &me, "Ghosted Client"));
   }
 
-  dlinkAdd(source_p, &source_p->lnode, &source_p->servptr->serv->users);
-
   if ((target_p = source_p->servptr) && target_p->from != source_p->from)
   {
     sendto_realops_flags(UMODE_DEBUG, L_ALL,
                          "Bad User [%s] :%s USER %s@%s %s, != %s[%s]",
                          client_p->name, source_p->name, source_p->username,
-                         source_p->host, source_p->user->server->name,
+                         source_p->host, source_p->servptr->name,
                          target_p->name, target_p->from->name);
     kill_client(client_p, source_p,
                 "%s (NICK from wrong direction (%s != %s))",
-                me.name, source_p->user->server->name, target_p->from->name);
+                me.name, source_p->servptr->name, target_p->from->name);
     SetKilled(source_p);
     return(exit_client(source_p, source_p, &me, "USER server wrong direction"));
   }
 
+  SetClient(source_p);
+  dlinkAdd(source_p, &source_p->lnode, &source_p->servptr->serv->users);
   add_user_host(source_p->username, source_p->host, 1);
   SetUserHost(source_p);
 
@@ -697,7 +620,7 @@ introduce_client(struct Client *client_p, struct Client *source_p)
     if (IsCapable(uplink, CAP_TS6) && HasID(source_p))
     {
       sendto_one(uplink, ":%s UID %s %d %lu %s %s %s %s %s :%s",
-                 source_p->user->server->id,
+                 source_p->servptr->id,
                  source_p->name, source_p->hopcount+1,
 		 (unsigned long)source_p->tsinfo,
                  ubuf, source_p->username, source_p->host,
@@ -711,7 +634,7 @@ introduce_client(struct Client *client_p, struct Client *source_p)
                  source_p->name, source_p->hopcount+1,
 		 (unsigned long)source_p->tsinfo,
                  ubuf, source_p->username, source_p->host,
-		 source_p->user->server->name,
+		 source_p->servptr->name,
                  source_p->info);
     }
   }
@@ -726,7 +649,7 @@ introduce_client(struct Client *client_p, struct Client *source_p)
 
       if (IsCapable(server, CAP_TS6) && HasID(source_p))
         sendto_one(server, ":%s UID %s %d %lu %s %s %s %s %s :%s",
-                   source_p->user->server->id,
+                   source_p->servptr->id,
                    source_p->name, source_p->hopcount+1,
 		   (unsigned long)source_p->tsinfo,
                    ubuf, source_p->username, source_p->host,
@@ -737,7 +660,7 @@ introduce_client(struct Client *client_p, struct Client *source_p)
                    source_p->name, source_p->hopcount+1,
 		   (unsigned long)source_p->tsinfo,
                    ubuf, source_p->username, source_p->host,
-		   source_p->user->server->name,
+		   source_p->servptr->name,
                    source_p->info);
     }
   }
@@ -917,11 +840,12 @@ do_local_user(const char *nick, struct Client *client_p, struct Client *source_p
     return(0);
   }
 
-  source_p->user = make_user(source_p);
+  source_p->flags |= FLAGS_GOTUSER;
 
-  /* don't take the clients word for it, ever
+  /*
+   * don't take the clients word for it, ever
    */
-  source_p->user->server = &me;
+  source_p->servptr = &me;
 
   strlcpy(source_p->info, realname, sizeof(source_p->info));
 

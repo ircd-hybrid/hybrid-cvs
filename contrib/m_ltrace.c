@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.16 2004/07/08 00:27:16 erik Exp $
+ *  $Id: m_ltrace.c,v 1.17 2005/07/16 12:19:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&ltrace_msgtab);
 }
 
-const char *_version = "$Revision: 1.16 $";
+const char *_version = "$Revision: 1.17 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
@@ -98,7 +98,7 @@ m_ltrace(struct Client *client_p, struct Client *source_p,
  */
 static void
 mo_ltrace(struct Client *client_p, struct Client *source_p,
-	  int parc, char *parv[])
+          int parc, char *parv[])
 {
   struct Client *target_p = NULL;
   char  *tname;
@@ -173,7 +173,7 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
 
       target_p = find_client(tname);
       
-      if(target_p && IsPerson(target_p)) 
+      if(target_p && IsClient(target_p)) 
       {
         name = get_client_name(target_p, HIDE_IP);
         /* Should this be sockhost? - stu */
@@ -189,13 +189,13 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
                        me.name, source_p->name, class_name, name, 
 		       (IsIPSpoof(target_p) ? "255.255.255.255" : ipaddr),
                        CurrentTime - target_p->lasttime,
-                       (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
+                       CurrentTime - target_p->localClient->last);
 	  else
             sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
                        me.name, source_p->name, class_name, name,
                        (IsIPSpoof(target_p) ? "255.255.255.255" : ipaddr),
                        CurrentTime - target_p->lasttime,
-                       (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
+                       CurrentTime - target_p->localClient->last);
         }
       }
       
@@ -215,7 +215,7 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
     DLINK_FOREACH(gcptr, global_client_list.head)
      {
        target_p = gcptr->data;
-       if (IsPerson(target_p))
+       if (IsClient(target_p))
 	 {
 	   link_u[target_p->from->localClient->fd]++;
 	 }
@@ -315,14 +315,14 @@ report_this_status(struct Client *source_p, struct Client *target_p,
                      me.name, source_p->name, class_name, name,
                      (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
                      CurrentTime - target_p->lasttime,
-                     (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
+                     CurrentTime - target_p->localClient->last);
 	else
           sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
                      me.name, source_p->name, class_name, name,
                      IsAdmin(source_p) ? ip :
                      (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
                      CurrentTime - target_p->lasttime,
-                     (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
+                     CurrentTime - target_p->localClient->last);
       }
       else if (IsOper(target_p))
       {
@@ -331,13 +331,13 @@ report_this_status(struct Client *source_p, struct Client *target_p,
                      me.name, source_p->name, class_name, name,
                      (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
                      CurrentTime - target_p->lasttime,
-                     (target_p->user)?(CurrentTime - target_p->user->last):0);
+                     CurrentTime - target_p->localClient->last);
 	else
 	  sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
 		     me.name, source_p->name, class_name, name, 
 		     (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
 		     CurrentTime - target_p->lasttime,
-		     (target_p->user)?(CurrentTime - target_p->user->last):0);
+		     CurrentTime - target_p->localClient->last);
       }
       break;
     case STAT_SERVER:

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.149 2005/07/11 21:00:25 adx Exp $
+ *  $Id: channel_mode.c,v 7.150 2005/07/16 12:19:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -222,12 +222,12 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
   DupString(actualBan->host, host);
   actualBan->len = strlen(name) + strlen(username) + strlen(host);
 
-  if (IsPerson(client_p))
+  if (IsClient(client_p))
   {
     actualBan->who =
-      (char *)MyMalloc(strlen(client_p->name) +
-                       strlen(client_p->username) +
-                       strlen(client_p->host) + 3);
+      MyMalloc(strlen(client_p->name) +
+               strlen(client_p->username) +
+               strlen(client_p->host) + 3);
     ircsprintf(actualBan->who, "%s!%s@%s",
                client_p->name, client_p->username, client_p->host);
   }
@@ -1537,8 +1537,7 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
   parabuf[0] = '\0';
   parptr = parabuf;
 
-  if ((cap & CAP_TS6) && source_p->user &&
-      (source_p->id[0] != '\0'))
+  if ((cap & CAP_TS6) && source_p->id[0] != '\0')
     mbl = ircsprintf(modebuf, ":%s TMODE %lu %s ", source_p->id,
                      (unsigned long)chptr->channelts, chptr->chname);
   else
@@ -1587,8 +1586,7 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
       nc = 0;
       mc = 0;
 
-      if ((cap & CAP_TS6) && source_p->user &&
-          (source_p->id[0] != '\0'))
+      if ((cap & CAP_TS6) && source_p->id[0] != '\0')
         mbl = ircsprintf(modebuf, ":%s MODE %s ", source_p->id,
                          chptr->chname);
       else

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.63 2005/06/22 23:39:24 adx Exp $
+ *   $Id: m_operspy.c,v 1.64 2005/07/16 12:19:38 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -140,7 +140,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.63 $";
+const char *_version = "$Revision: 1.64 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -384,17 +384,17 @@ operspy_who(struct Client *client_p, int parc, char *parv[])
 
     ircsprintf(nuh, "%s!%s@%s %s", target_p_who->name,
                target_p_who->username, target_p_who->host,
-               target_p_who->user->server->name);
+               target_p_who->servptr->name);
     operspy_log(client_p, "WHO", nuh);
 #endif
 
-    if (target_p_who->user->channel.head != NULL)
+    if (target_p_who->channel.head != NULL)
     {
       chptr_who =
-        ((struct Membership *)target_p_who->user->channel.head->data)->chptr;
+        ((struct Membership *)target_p_who->channel.head->data)->chptr;
 
       do_who(client_p, target_p_who, chptr_who->chname,
-             get_member_status(target_p_who->user->channel.head->data, NO));
+             get_member_status(target_p_who->channel.head->data, NO));
     }
     else
     {
@@ -455,11 +455,11 @@ operspy_whois(struct Client *client_p, int parc, char *parv[])
 #ifdef OPERSPY_LOG
   ircsprintf(nuh, "%s!%s@%s %s",
              target_p->name, target_p->username, target_p->host,
-             target_p->user->server->name);
+             target_p->servptr->name);
   operspy_log(client_p, "WHOIS", nuh);
 #endif
 
-  a2client_p = target_p->user->server;
+  a2client_p = target_p->servptr;
 
   sendto_one(client_p, form_str(RPL_WHOISUSER), me.name,
              client_p->name, target_p->name, target_p->username,
@@ -469,7 +469,7 @@ operspy_whois(struct Client *client_p, int parc, char *parv[])
   cur_len = mlen;
   t = buf + mlen;
 
-  DLINK_FOREACH(lp, target_p->user->channel.head)
+  DLINK_FOREACH(lp, target_p->channel.head)
   {
     chptr_whois = ((struct Membership *)lp->data)->chptr;
 
@@ -502,7 +502,7 @@ operspy_whois(struct Client *client_p, int parc, char *parv[])
 
   if (MyConnect(target_p))
     sendto_one(client_p, form_str(RPL_WHOISIDLE), me.name,
-               client_p->name, target_p->name, CurrentTime - target_p->user->last,
+               client_p->name, target_p->name, CurrentTime - target_p->localClient->last,
                target_p->firsttime);
   sendto_one(client_p, form_str(RPL_ENDOFWHOIS),
              me.name, client_p->name, parv[2]);
@@ -515,12 +515,12 @@ do_who(struct Client *source_p, struct Client *target_p,
 {
   char status[8];
 
-  ircsprintf(status, "%c%s%s", target_p->user->away ? 'G' : 'H',
+  ircsprintf(status, "%c%s%s", target_p->away ? 'G' : 'H',
              IsOper(target_p) ? "*" : "", op_flags);
   sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
              (chname) ? (chname) : "*",
              target_p->username,
-             target_p->host,  target_p->user->server->name, target_p->name,
+             target_p->host,  target_p->servptr->name, target_p->name,
              status, target_p->hopcount, target_p->info);
 }
 
@@ -536,7 +536,7 @@ who_global(struct Client *source_p, char *mask, int server_oper)
   {
     target_p = lp->data;
 
-    if (!IsPerson(target_p))
+    if (!IsClient(target_p))
       continue;
 
     if (server_oper && !IsOper(target_p))
@@ -544,18 +544,18 @@ who_global(struct Client *source_p, char *mask, int server_oper)
 
     if (!mask ||
         match(mask, target_p->name) || match(mask, target_p->username) ||
-        match(mask, target_p->host) || match(mask, target_p->user->server->name) ||
+        match(mask, target_p->host) || match(mask, target_p->servptr->name) ||
         match(mask, target_p->info) ||
         (MyClient(target_p) && match(mask, target_p->sockhost)))
     {
-      if (dlink_list_length(&target_p->user->channel))
+      if (dlink_list_length(&target_p->channel))
       {
         struct Channel *chptr;
         static char fl[5];
 
-        chptr = ((struct Membership *)(target_p->user->channel.head->data))->chptr;
+        chptr = ((struct Membership *)(target_p->channel.head->data))->chptr;
         snprintf(fl, sizeof(fl), "%s",
-                 get_member_status((struct Membership *)(target_p->user->channel.head->data), NO));
+                 get_member_status((struct Membership *)(target_p->channel.head->data), NO));
 
         do_who(source_p, target_p, chptr->chname, fl);
       }

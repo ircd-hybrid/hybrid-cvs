@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.134 2005/07/11 01:19:37 metalrock Exp $
+ *  $Id: m_gline.c,v 1.135 2005/07/16 12:19:43 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ static void add_new_majority_gline(const struct Client *,
 
 static int invalid_gline(struct Client *, const char *);
 
-static inline void do_sgline(struct Client *, struct Client *, int, char **, int);
+static void do_sgline(struct Client *, struct Client *, int, char **, int);
 
 static void me_gline(struct Client *, struct Client *, int, char **);
 static void ms_gline(struct Client *, struct Client *, int, char **);
@@ -101,7 +101,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.134 $";
+const char *_version = "$Revision: 1.135 $";
 #endif
 
 /* mo_gline()
@@ -232,12 +232,12 @@ mo_gline(struct Client *client_p, struct Client *source_p,
 		":%s GLINE %s %s %s %s %s %s :%s",
 		ID(&me),
                 ID(source_p), source_p->username,
-		source_p->host, source_p->user->server->name, user, host,
+		source_p->host, source_p->servptr->name, user, host,
 		reason);
   sendto_server(NULL, NULL, NULL, NOCAPS, CAP_GLN|CAP_TS6, NOFLAGS,
 		":%s GLINE %s %s %s %s %s %s :%s",
 		me.name, source_p->name, source_p->username,
-		source_p->host, source_p->user->server->name, user, host,
+		source_p->host, source_p->servptr->name, user, host,
 		reason);
 }
 
@@ -271,9 +271,9 @@ me_gline(struct Client *client_p, struct Client *source_p,
   do_sgline(client_p, source_p, parc, parv, 0);
 }
 
-static inline void
+static void
 do_sgline(struct Client *client_p, struct Client *source_p,
-         int parc, char *parv[], int prop)
+          int parc, char *parv[], int prop)
 {
   const char *reason = NULL;      /* reason for "victims" demise       */
   char *user = NULL;
@@ -284,7 +284,7 @@ do_sgline(struct Client *client_p, struct Client *source_p,
   struct AccessItem *aconf;
 
   /* hyb-7 style gline (post beta3) */
-  if (parc == 4 && IsPerson(source_p))
+  if (parc == 4 && IsClient(source_p))
     var_offset = 0;
   /* or it's a hyb-6 style */
   else if (parc == 8 && IsServer(source_p))
@@ -302,7 +302,7 @@ do_sgline(struct Client *client_p, struct Client *source_p,
 
     if (irccmp(parv[2], source_p->username) != 0 ||
         irccmp(parv[3], source_p->host) != 0 ||
-        irccmp(parv[4], source_p->user->server->name) != 0)
+        irccmp(parv[4], source_p->servptr->name) != 0)
     {
       /*
        * at this point we know one of the parameters provided by
@@ -315,8 +315,7 @@ do_sgline(struct Client *client_p, struct Client *source_p,
   else
     return;
 
-  assert(source_p->user != NULL);
-  assert(source_p->user->server != NULL);
+  assert(source_p->servptr != NULL);
 
   user = parv[++var_offset];
   host = parv[++var_offset];
@@ -332,7 +331,7 @@ do_sgline(struct Client *client_p, struct Client *source_p,
     conf = ptr->data;
     aconf = (struct AccessItem *)map_to_conf(conf);
 
-    if (match(conf->name, source_p->user->server->name) &&
+    if (match(conf->name, source_p->servptr->name) &&
         match(aconf->user, source_p->username) &&
         match(aconf->host, source_p->host))
     {
@@ -344,15 +343,15 @@ do_sgline(struct Client *client_p, struct Client *source_p,
 
   if (prop && !(var_offset & GDENY_BLOCK))
   {
-    sendto_server(client_p, source_p->user->server, NULL, CAP_GLN, NOCAPS, LL_ICLIENT,
+    sendto_server(client_p, source_p->servptr, NULL, CAP_GLN, NOCAPS, LL_ICLIENT,
                   ":%s GLINE %s %s :%s",
                   source_p->name, user, host, reason);
     /* hyb-6 version to the rest */
     sendto_server(client_p, NULL, NULL, NOCAPS, CAP_GLN, NOFLAGS,
                   ":%s GLINE %s %s %s %s %s %s :%s",
-                  source_p->user->server->name,
+                  source_p->servptr->name,
                   source_p->name, source_p->username, source_p->host,
-                  source_p->user->server->name,
+                  source_p->servptr->name,
                   user, host, reason);
   }
   else if (ConfigFileEntry.gline_logging & GDENY_BLOCK && ServerInfo.hub)
@@ -396,7 +395,7 @@ do_sgline(struct Client *client_p, struct Client *source_p,
           sendto_realops_flags(UMODE_ALL, L_ALL, "%s!%s@%s on %s is requesting "
                                "a GLINE with a CIDR mask < %d for [%s@%s] [%s]",
                                source_p->name, source_p->username, source_p->host,
-                               source_p->user->server->name, min_bitlen, user, host, reason);
+                               source_p->servptr->name, min_bitlen, user, host, reason);
           return;
         }
       }
@@ -508,7 +507,7 @@ add_new_majority_gline(const struct Client *source_p,
   strlcpy(pending->oper_user1, source_p->username, sizeof(pending->oper_user1));
   strlcpy(pending->oper_host1, source_p->host, sizeof(pending->oper_host1));
 
-  strlcpy(pending->oper_server1, source_p->user->server->name, sizeof(pending->oper_server1));
+  strlcpy(pending->oper_server1, source_p->servptr->name, sizeof(pending->oper_server1));
 
   strlcpy(pending->user, user, sizeof(pending->user));
   strlcpy(pending->host, host, sizeof(pending->host));
@@ -562,7 +561,7 @@ check_majority_gline(const struct Client *source_p,
     {
       if (((irccmp(gline_pending_ptr->oper_user1, source_p->username) == 0) ||
            (irccmp(gline_pending_ptr->oper_host1, source_p->host) == 0)) ||
-          (irccmp(gline_pending_ptr->oper_server1, source_p->user->server->name) == 0))
+          (irccmp(gline_pending_ptr->oper_server1, source_p->servptr->name) == 0))
       {
 	return(GLINE_ALREADY_VOTED);
       }
@@ -573,7 +572,7 @@ check_majority_gline(const struct Client *source_p,
 
 	if(((irccmp(gline_pending_ptr->oper_user2, source_p->username)==0) ||
 	    (irccmp(gline_pending_ptr->oper_host2, source_p->host)==0)) ||
-	   (irccmp(gline_pending_ptr->oper_server2, source_p->user->server->name)==0))
+	   (irccmp(gline_pending_ptr->oper_server2, source_p->servptr->name)==0))
 	{
 	  return(GLINE_ALREADY_VOTED);
 	}
@@ -593,7 +592,7 @@ check_majority_gline(const struct Client *source_p,
 	        sizeof(gline_pending_ptr->oper_host2));
         strlcpy(gline_pending_ptr->reason2, reason,
                 sizeof(gline_pending_ptr->reason2));
-        strlcpy(gline_pending_ptr->oper_server2, source_p->user->server->name,
+        strlcpy(gline_pending_ptr->oper_server2, source_p->servptr->name,
                 sizeof(gline_pending_ptr->oper_server2));
 	gline_pending_ptr->last_gline_time = CurrentTime;
 	gline_pending_ptr->time_request2 = CurrentTime;

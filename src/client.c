@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.451 2005/07/10 19:46:17 adx Exp $
+ *  $Id: client.c,v 7.452 2005/07/16 12:19:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -150,17 +150,26 @@ make_client(struct Client *from)
  *
  * Note, this is now global to be consistent with the API for make_client
  */
-
 void
 free_client(struct Client *client_p)
 {
   assert(client_p != NULL);
   assert(client_p != &me);
   assert(client_p->hnext == client_p);
+  assert(client_p->invited.head == NULL);
+  assert(client_p->channel.head == NULL);
+  assert(dlink_list_length(&client_p->invited) == 0);
+  assert(dlink_list_length(&client_p->channel) == 0);
+
+  MyFree(client_p->away);
+  MyFree(client_p->serv);
 
   if (MyConnect(client_p))
   {
     assert(IsClosing(client_p) && IsDead(client_p));
+
+    MyFree(client_p->localClient->response);
+    MyFree(client_p->localClient->auth_oper);
 
     /*
      * clean up extra sockets from P-lines which have been discarded.
@@ -247,11 +256,11 @@ check_pings_list(dlink_list *list)
       continue; 
     }
 
-    if (GlobalSetOptions.idletime && IsPerson(client_p))
+    if (GlobalSetOptions.idletime && IsClient(client_p))
     {
       if (!IsExemptKline(client_p) && !IsOper(client_p) &&
           !IsIdlelined(client_p) &&
-	  ((CurrentTime - client_p->user->last) > GlobalSetOptions.idletime))
+	  ((CurrentTime - client_p->localClient->last) > GlobalSetOptions.idletime))
       {
         struct ConfItem *conf;
         struct AccessItem *aconf;
@@ -535,22 +544,6 @@ update_client_exit_stats(struct Client *client_p)
     check_splitmode(NULL);
 }
 
-/* release_client_state()
- *
- * input	- pointer to client to release
- * output	- NONE
- * side effects	- 
- */
-static void
-release_client_state(struct Client *client_p)
-{
-  if (client_p->user != NULL)
-    free_user(client_p->user, client_p); /* try this here */
-
-  if (client_p->serv != NULL)
-    MyFree(client_p->serv);
-}
-
 /* find_person()
  *
  * inputs	- pointer to name
@@ -569,7 +562,7 @@ find_person(const struct Client *const client_p, const char *name)
   else
     c2ptr = find_client(name);
 
-  return ((c2ptr != NULL && IsPerson(c2ptr)) ? c2ptr : NULL);
+  return ((c2ptr != NULL && IsClient(c2ptr)) ? c2ptr : NULL);
 }
 
 /*
@@ -688,7 +681,6 @@ free_exited_clients(void)
       continue;
     }
 
-    release_client_state(target_p);
     free_client(target_p);
     dlinkDelete(ptr, &dead_list);
     free_dlink_node(ptr);
@@ -760,7 +752,7 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
       sendto_one(target_p, ":%s SQUIT %s :%s",
                  ID_or_name(from, target_p), ID_or_name(source_p, target_p), comment);
   }
-  else if (IsPerson(source_p)) /* ...just clean all others with QUIT... */
+  else if (IsClient(source_p)) /* ...just clean all others with QUIT... */
   {
     dlink_node *lp, *next_lp;
 
@@ -784,15 +776,15 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
     sendto_common_channels_local(source_p, 0, ":%s!%s@%s QUIT :%s",
                                  source_p->name, source_p->username,
                                  source_p->host, comment);
-    DLINK_FOREACH_SAFE(lp, next_lp, source_p->user->channel.head)
+    DLINK_FOREACH_SAFE(lp, next_lp, source_p->channel.head)
       remove_user_from_channel(lp->data);
 
     /* Should not be in any channels now */
-    assert(source_p->user->channel.head == NULL);
-    assert(dlink_list_length(&source_p->user->channel) == 0);
+    assert(source_p->channel.head == NULL);
+    assert(dlink_list_length(&source_p->channel) == 0);
 
     /* Clean up invitefield */
-    DLINK_FOREACH_SAFE(lp, next_lp, source_p->user->invited.head)
+    DLINK_FOREACH_SAFE(lp, next_lp, source_p->invited.head)
       del_invite(lp->data, source_p);
 
     /* Clean up allow lists */
@@ -810,7 +802,7 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
   if (source_p->name[0])
     hash_del_client(source_p);
 
-  if (IsPerson(source_p) && IsUserHostIp(source_p))
+  if (IsUserHostIp(source_p))
     delete_user_host(source_p->username, source_p->host, !MyConnect(source_p));
 
   /* remove from global client list
@@ -1152,11 +1144,14 @@ exit_client(
           free_dlink_node(m);
       }
 
-      /* a little extra paranoia */
-      if (IsPerson(source_p))
-        dlinkDelete(&source_p->localClient->lclient_node, &local_client_list);
+      dlinkDelete(&source_p->localClient->lclient_node, &local_client_list);
       if (source_p->localClient->list_task != NULL)
         free_list_task(source_p->localClient->list_task, source_p);
+
+      sendto_realops_flags(UMODE_CCONN, L_ALL, "Client exiting: %s (%s@%s) [%s] [%s]",
+                           source_p->name, source_p->username, source_p->host, comment,
+                           ConfigFileEntry.hide_spoof_ips && IsIPSpoof(source_p) ?
+                           "255.255.255.255" : source_p->sockhost);
     }
 
     /* As soon as a client is known to be a server of some sort
@@ -1184,12 +1179,6 @@ exit_client(
       else
         uplink = NULL;
     }
-
-    if (IsPerson(source_p))
-      sendto_realops_flags(UMODE_CCONN, L_ALL, "Client exiting: %s (%s@%s) [%s] [%s]",
-                           source_p->name, source_p->username, source_p->host, comment,
-                           ConfigFileEntry.hide_spoof_ips && IsIPSpoof(source_p) ?
-                           "255.255.255.255" : source_p->sockhost);
 
     log_user_exit(source_p);
 
@@ -1305,8 +1294,8 @@ accept_message(struct Client *source, struct Client *target)
 
   if (IsSoftCallerId(target))
   {
-    DLINK_FOREACH(ptr, target->user->channel.head)
-      if (IsMember(source, (struct Channel *) ptr->data))
+    DLINK_FOREACH(ptr, target->channel.head)
+      if (IsMember(source, ptr->data))
         return (1);
   }
 
@@ -1368,14 +1357,10 @@ del_all_accepts(struct Client *client_p)
   dlink_node *ptr, *next_ptr;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->allow_list.head)
-  {
-    del_from_accept((struct Client *)ptr->data, client_p);
-  }
+    del_from_accept(ptr->data, client_p);
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->on_allow_list.head)
-  {
-    del_from_accept(client_p, (struct Client *)ptr->data);
-  }
+    del_from_accept(client_p, ptr->data);
 }
 
 /* del_all_their_accepts()
@@ -1392,9 +1377,7 @@ del_all_their_accepts(struct Client *client_p)
   dlink_node *ptr, *next_ptr;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->on_allow_list.head)
-  {
-    del_from_accept(client_p, (struct Client *)ptr->data);
-  }
+    del_from_accept(client_p, ptr->data);
 }
 
 /* set_initial_nick()
@@ -1411,35 +1394,41 @@ set_initial_nick(struct Client *client_p, struct Client *source_p,
                  const char *nick)
 {
  char buf[USERLEN + 1];
- /* Client setting NICK the first time */
-  
- /* This had to be copied here to avoid problems.. */
- source_p->tsinfo = CurrentTime;
- if (source_p->name[0])
-  hash_del_client(source_p);
- strcpy(source_p->name, nick);
- hash_add_client(source_p);
- /* fd_desc is long enough */
- fd_note(client_p->localClient->fd, "Nick: %s", nick);
-  
- /* They have the nick they want now.. */
- client_p->llname[0] = '\0';
 
- if (source_p->user != NULL)
- {
-  strlcpy(buf, source_p->username, sizeof(buf));
-  /*
-   * USER already received, now we have NICK.
-   * *NOTE* For servers "NICK" *must* precede the
-   * user message (giving USER before NICK is possible
-   * only for local client connection!). register_user
-   * may reject the client and call exit_client for it
-   * --must test this and exit m_nick too!!!
-   */
-  if (register_local_user(client_p, source_p, nick, buf) == CLIENT_EXITED)
-   return CLIENT_EXITED;
- }
- return(0);
+  /* Client setting NICK the first time */
+  
+  /* This had to be copied here to avoid problems.. */
+  source_p->tsinfo = CurrentTime;
+
+  if (source_p->name[0])
+    hash_del_client(source_p);
+
+  strlcpy(source_p->name, nick, sizeof(source_p->name));
+  hash_add_client(source_p);
+
+  /* fd_desc is long enough */
+  fd_note(client_p->localClient->fd, "Nick: %s", nick);
+  
+  /* They have the nick they want now.. */
+  client_p->llname[0] = '\0';
+
+  if (source_p->flags & FLAGS_GOTUSER)
+  {
+    strlcpy(buf, source_p->username, sizeof(buf));
+
+    /*
+     * USER already received, now we have NICK.
+     * *NOTE* For servers "NICK" *must* precede the
+     * user message (giving USER before NICK is possible
+     * only for local client connection!). register_user
+     * may reject the client and call exit_client for it
+     * --must test this and exit m_nick too!!!
+     */
+    if (register_local_user(client_p, source_p, nick, buf) == CLIENT_EXITED)
+      return CLIENT_EXITED;
+  }
+
+  return(0);
 }
 
 /* change_local_nick()
@@ -1482,23 +1471,20 @@ change_local_nick(struct Client *client_p, struct Client *source_p, const char *
                                  source_p->name, source_p->username,
                                  source_p->host, nick);
 
-    if (source_p->user != NULL)
-    {
-      add_history(source_p, 1);
+    add_history(source_p, 1);
 	  
-	  /* Only hubs care about lazy link nicks not being sent on yet
+	 /* Only hubs care about lazy link nicks not being sent on yet
 	   * lazylink leafs/leafs always send their nicks up to hub,
 	   * hence must always propagate nick changes.
 	   * hubs might not propagate a nick change, if the leaf
 	   * does not know about that client yet.
 	   */
-      sendto_server(client_p, source_p, NULL, CAP_TS6, NOCAPS, NOFLAGS,
-                    ":%s NICK %s :%lu",
-                    ID(source_p), nick, (unsigned long)source_p->tsinfo);
-      sendto_server(client_p, source_p, NULL, NOCAPS, CAP_TS6, NOFLAGS,
-                    ":%s NICK %s :%lu",
-                    source_p->name, nick, (unsigned long)source_p->tsinfo);
-    }
+    sendto_server(client_p, source_p, NULL, CAP_TS6, NOCAPS, NOFLAGS,
+                  ":%s NICK %s :%lu",
+                  ID(source_p), nick, (unsigned long)source_p->tsinfo);
+    sendto_server(client_p, source_p, NULL, NOCAPS, CAP_TS6, NOFLAGS,
+                  ":%s NICK %s :%lu",
+                  source_p->name, nick, (unsigned long)source_p->tsinfo);
   }
   else
   {

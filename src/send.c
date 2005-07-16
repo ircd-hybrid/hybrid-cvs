@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.292 2005/07/13 13:00:07 adx Exp $
+ *  $Id: send.c,v 7.293 2005/07/16 12:19:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -184,7 +184,7 @@ send_message_remote(struct Client *to, struct Client *from,
   /* Optimize by checking if (from && to) before everything */
   /* we set to->from up there.. */
 
-  if (!MyClient(from) && IsPerson(to) && (to == from->from))
+  if (!MyClient(from) && IsClient(to) && (to == from->from))
   {
     if (IsServer(from))
     {
@@ -211,7 +211,7 @@ send_message_remote(struct Client *to, struct Client *from,
 
     SetKilled(to);
 
-    if (IsPerson(from))
+    if (IsClient(from))
       sendto_one(from, form_str(ERR_GHOSTEDCLIENT),
                  me.name, from->name, to->name, to->username,
                  to->host, to->from);
@@ -671,7 +671,7 @@ sendto_common_channels_local(struct Client *user, int touser,
 
   ++current_serial;
 
-  DLINK_FOREACH(cptr, user->user->channel.head)
+  DLINK_FOREACH(cptr, user->channel.head)
   {
     chptr = ((struct Membership *) cptr->data)->chptr;
     assert(chptr != NULL);
@@ -863,7 +863,7 @@ match_it(const struct Client *one, const char *mask, int what)
   if (what == MATCH_HOST)
     return(match(mask, one->host));
 
-  return(match(mask, one->user->server->name));
+  return(match(mask, one->servptr->name));
 }
 
 /* sendto_match_butone()
@@ -1091,7 +1091,7 @@ sendto_wallops_flags(unsigned int flags, struct Client *source_p,
   char buffer[IRCD_BUFSIZE];
   int len;
 
-  if (IsPerson(source_p))
+  if (IsClient(source_p))
     len = ircsprintf(buffer, ":%s!%s@%s WALLOPS :",
                      source_p->name, source_p->username, source_p->host);
   else

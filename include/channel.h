@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.160 2005/07/16 07:22:23 michael Exp $
+ *  $Id: channel.h,v 7.161 2005/07/16 12:19:41 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -69,9 +69,9 @@ struct Channel
 
 struct Membership
 {
-  dlink_node channode;    /* link to chptr->members          */
-  dlink_node locchannode; /* link to chptr->locmembers       */
-  dlink_node usernode;    /* link to source_p->user->channel */
+  dlink_node channode;    /* link to chptr->members    */
+  dlink_node locchannode; /* link to chptr->locmembers */
+  dlink_node usernode;    /* link to source_p->channel */
   struct Channel *chptr;
   struct Client *client_p;
   unsigned int flags;
@@ -121,8 +121,7 @@ extern struct Membership *find_channel_link(struct Client *, struct Channel *);
 /* channel visible */
 #define ShowChannel(v,c)        (PubChannel(c) || IsMember((v),(c)))
 
-#define IsMember(who, chan) ((who && who->user && \
-                 find_channel_link(who, chan)) ? 1 : 0)
+#define IsMember(who, chan) ((find_channel_link(who, chan)) ? 1 : 0)
 #define AddMemberFlag(x, y) ((x)->flags |=  (y))
 #define DelMemberFlag(x, y) ((x)->flags &= ~(y))
 #endif  /* INCLUDED_channel_h */

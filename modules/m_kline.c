@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.191 2005/07/07 20:36:29 michael Exp $
+ *  $Id: m_kline.c,v 1.192 2005/07/16 12:19:43 michael Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.191 $";
+const char *_version = "$Revision: 1.192 $";
 #endif
 
 /* Local function prototypes */
@@ -316,13 +316,13 @@ me_kline(struct Client *client_p, struct Client *source_p,
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
 
-  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->servptr->name,
                               NULL, NULL, CLUSTER_KLINE))
   {
     if (!valid_wild_card(source_p, NO, 2, kuser, khost) ||
         !valid_user_host(source_p, kuser, khost, NO) ||
         !valid_comment(source_p, kreason, NO) ||
-        !IsPerson(source_p) ||
+        !IsClient(source_p) ||
         already_placed_kline(source_p, kuser, khost, NO))
       return;
 
@@ -352,14 +352,14 @@ me_kline(struct Client *client_p, struct Client *source_p,
     }
   }
   else if (find_matching_name_conf(ULINE_TYPE,
-				  source_p->user->server->name,
+				  source_p->servptr->name,
 				  source_p->username, source_p->host,
 				  SHARED_KLINE))
   {
     if (!valid_wild_card(source_p, YES, 2, kuser, khost) ||
         !valid_user_host(source_p, kuser, khost, YES) ||
         !valid_comment(source_p, kreason, YES) ||
-        !IsPerson(source_p) ||
+        !IsClient(source_p) ||
         already_placed_kline(source_p, kuser, khost, YES))
       return;
 
@@ -830,9 +830,6 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
     if (!(target_p = find_chasing(source_p, source_p, user_host_or_nick, NULL)))
       return(0);
 
-    if (target_p->user == NULL)
-      return(0);
-
     if (IsServer(target_p))
     {
       sendto_one(source_p,
@@ -1124,9 +1121,9 @@ me_unkline(struct Client *client_p, struct Client *source_p,
   if (!match(parv[1], me.name))
     return;
 
-  if (!IsPerson(source_p))
+  if (!IsClient(source_p))
     return;
-  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->servptr->name,
                               NULL, NULL, CLUSTER_UNKLINE))
   {
     if (remove_tkline_match(khost, kuser))
@@ -1155,7 +1152,7 @@ me_unkline(struct Client *client_p, struct Client *source_p,
     }
   }
   else if (find_matching_name_conf(ULINE_TYPE,
-				   source_p->user->server->name,
+				   source_p->servptr->name,
 				   source_p->username, source_p->host,
 				   SHARED_UNKLINE))
   {

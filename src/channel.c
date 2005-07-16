@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.435 2005/07/16 07:22:25 michael Exp $
+ * \version $Id: channel.c,v 7.436 2005/07/16 12:19:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -102,7 +102,7 @@ add_user_to_channel(struct Channel *chptr, struct Client *who,
   if (MyConnect(who))
     dlinkAdd(ms, &ms->locchannode, &chptr->locmembers);
 
-  dlinkAdd(ms, &ms->usernode, &who->user->channel);
+  dlinkAdd(ms, &ms->usernode, &who->channel);
 }
 
 /*! \brief deletes an user from a channel by removing a link in the
@@ -120,7 +120,7 @@ remove_user_from_channel(struct Membership *member)
   if (MyConnect(client_p))
     dlinkDelete(&member->locchannode, &chptr->locmembers);
 
-  dlinkDelete(&member->usernode, &client_p->user->channel);
+  dlinkDelete(&member->usernode, &client_p->channel);
 
   BlockHeapFree(member_heap, member);
 
@@ -496,15 +496,15 @@ add_invite(struct Channel *chptr, struct Client *who)
   /*
    * delete last link in chain if the list is max length
    */
-  if (dlink_list_length(&who->user->invited) >=
+  if (dlink_list_length(&who->invited) >=
       ConfigChannel.max_chans_per_user)
-    del_invite(who->user->invited.tail->data, who);
+    del_invite(who->invited.tail->data, who);
 
   /* add client to channel invite list */
   dlinkAdd(who, make_dlink_node(), &chptr->invites);
 
   /* add channel to the end of the client invite list */
-  dlinkAdd(chptr, make_dlink_node(), &who->user->invited);
+  dlinkAdd(chptr, make_dlink_node(), &who->invited);
 }
 
 /*! \brief Delete Invite block from channel invite list
@@ -517,7 +517,7 @@ del_invite(struct Channel *chptr, struct Client *who)
 {
   dlink_node *ptr = NULL;
 
-  if ((ptr = dlinkFindDelete(&who->user->invited, chptr)))
+  if ((ptr = dlinkFindDelete(&who->invited, chptr)))
     free_dlink_node(ptr);
 
   if ((ptr = dlinkFindDelete(&chptr->invites, who)))
@@ -602,7 +602,7 @@ find_bmask(const struct Client *who, const dlink_list *const list)
 int
 is_banned(struct Channel *chptr, struct Client *who)
 {
-  assert(IsPerson(who));
+  assert(IsClient(who));
 
   return(find_bmask(who, &chptr->banlist) && (!ConfigChannel.use_except ||
          !find_bmask(who, &chptr->exceptlist)));
@@ -623,7 +623,7 @@ can_join(struct Client *source_p, struct Channel *chptr, const char *key)
       return(ERR_BANNEDFROMCHAN);
 
   if (chptr->mode.mode & MODE_INVITEONLY)
-    if (!dlinkFind(&source_p->user->invited, chptr))
+    if (!dlinkFind(&source_p->invited, chptr))
       if (!ConfigChannel.use_invex || !find_bmask(source_p, &chptr->invexlist))
         return(ERR_INVITEONLYCHAN);
 
@@ -653,7 +653,7 @@ find_channel_link(struct Client *client_p, struct Channel *chptr)
   if (!IsClient(client_p))
     return(NULL);
 
-  DLINK_FOREACH(ptr, client_p->user->channel.head)
+  DLINK_FOREACH(ptr, client_p->channel.head)
     if (((struct Membership *)ptr->data)->chptr == chptr)
       return((struct Membership *)ptr->data);
 

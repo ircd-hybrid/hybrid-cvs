@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.141 2005/05/29 20:33:24 db Exp $
+ *  $Id: m_message.c,v 1.142 2005/07/16 12:19:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -117,7 +117,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.141 $";
+const char *_version = "$Revision: 1.142 $";
 #endif
 
 /*
@@ -149,7 +149,7 @@ m_privmsg(struct Client *client_p, struct Client *source_p,
   /* servers have no reason to send privmsgs, yet sometimes there is cause
    * for a notice.. (for example remote kline replies) --fl_
    */
-  if (!IsPerson(source_p))
+  if (!IsClient(source_p))
     return;
 
   m_message(PRIVMSG, "PRIVMSG", client_p, source_p, parc, parv);
@@ -194,11 +194,17 @@ m_message(int p_or_n, const char *command, struct Client *client_p,
   }
 
   /* Finish the flood grace period... */
-  if(MyClient(source_p) && !IsFloodDone(source_p) &&
+  if (MyClient(source_p) && !IsFloodDone(source_p))
+#if 0
+ &&
         irccmp(source_p->name, parv[1]) != 0) /* some dumb clients msg/notice themself
                                                  to determine lag to the server BEFORE
                                                  sending JOIN commands, and then flood
                                                  off because they left gracemode. -wiz */
+	/*
+	 * Not our problem if they do this.    -Michael
+         */
+#endif
     flood_endgrace(source_p);
 
   if (build_target_list(p_or_n, command, client_p, source_p, parv[1],
@@ -474,8 +480,8 @@ msg_channel(int p_or_n, const char *command, struct Client *client_p,
   if (MyClient(source_p))
   {
     /* idle time shouldnt be reset by notices --fl */
-    if ((p_or_n != NOTICE) && source_p->user)
-      source_p->user->last = CurrentTime;
+    if (p_or_n != NOTICE)
+      source_p->localClient->last = CurrentTime;
   }
 
   /* chanops and voiced can flood their own channel with impunity */
@@ -538,8 +544,8 @@ msg_channel_flags(int p_or_n, const char *command, struct Client *client_p,
   if (MyClient(source_p))
   {
     /* idletime shouldnt be reset by notice --fl */
-    if ((p_or_n != NOTICE) && source_p->user)
-      source_p->user->last = CurrentTime;
+    if (p_or_n != NOTICE)
+      source_p->localClient->last = CurrentTime;
 
     sendto_channel_local_butone(source_p, type, chptr, ":%s!%s@%s %s %c%s :%s",
                                 source_p->name, source_p->username,
@@ -583,16 +589,21 @@ msg_client(int p_or_n, const char *command, struct Client *source_p,
 {
   if (MyClient(source_p))
   {
-    /* reset idle time for message only if its not to self 
-     * and its not a notice */
-    if ((p_or_n != NOTICE) && (source_p != target_p) && source_p->user)
-      source_p->user->last = CurrentTime;
+    /*
+     * reset idle time for message only if its not to self 
+     * and its not a notice
+     * NOTE: Normally we really should reset their idletime
+     * if the are messaging themselves, but we have to go
+     * this way in order to prevent them to trick out
+     * idle-klines.
+     */
+    if ((p_or_n != NOTICE) && (source_p != target_p))
+      source_p->localClient->last = CurrentTime;
   }
 
-  if (MyConnect(source_p) && (p_or_n != NOTICE) &&
-      target_p->user && target_p->user->away)
+  if (MyConnect(source_p) && (p_or_n != NOTICE) && target_p->away)
     sendto_one(source_p, form_str(RPL_AWAY), me.name,
-               source_p->name, target_p->name, target_p->user->away);
+               source_p->name, target_p->name, target_p->away);
 
   if (MyClient(target_p))
   {
@@ -695,11 +706,12 @@ flood_attack_client(int p_or_n, struct Client *source_p,
         sendto_realops_flags(UMODE_BOTS, L_ALL,
                              "Possible Flooder %s on %s target: %s",
                              get_client_name(source_p, HIDE_IP),
-                             source_p->user->server->name, target_p->name);
+                             source_p->servptr->name, target_p->name);
         target_p->localClient->flood_noticed = 1;
         /* add a bit of penalty */
         target_p->localClient->received_number_of_privmsgs += 2;
       }
+
       if (MyClient(source_p) && (p_or_n != NOTICE))
         sendto_one(source_p,
                    ":%s NOTICE %s :*** Message to %s throttled due to flooding",
@@ -750,7 +762,7 @@ flood_attack_channel(int p_or_n, struct Client *source_p,
         sendto_realops_flags(UMODE_BOTS, L_ALL,
                              "Possible Flooder %s on %s target: %s",
                              get_client_name(source_p, HIDE_IP),
-                             source_p->user->server->name, chptr->chname);
+                             source_p->servptr->name, chptr->chname);
         chptr->flood_noticed = 1;
 
         /* Add a bit of penalty */
@@ -825,8 +837,8 @@ handle_special(int p_or_n, const char *command, struct Client *client_p,
 	sendto_one(target_p, ":%s %s %s :%s",
                    ID_or_name(source_p, target_p->from),
 		   command, nick, text);
-	if ((p_or_n != NOTICE) && source_p->user)
-	  source_p->user->last = CurrentTime;
+	if ((p_or_n != NOTICE) && MyClient(source_p))
+	  source_p->localClient->last = CurrentTime;
 	return;
       }
 
@@ -867,8 +879,8 @@ handle_special(int p_or_n, const char *command, struct Client *client_p,
 	  sendto_one(target_p, ":%s!%s@%s %s %s :%s",
 		     source_p->name, source_p->username, source_p->host,
                      command, nick, text);
-	  if ((p_or_n != NOTICE) && source_p->user)
-	    source_p->user->last = CurrentTime;
+	  if ((p_or_n != NOTICE) && MyClient(source_p))
+	    source_p->localClient->last = CurrentTime;
 	}
 	else
 	  sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
@@ -937,8 +949,8 @@ handle_special(int p_or_n, const char *command, struct Client *client_p,
                         nick + 1, (*nick == '#') ? MATCH_HOST : MATCH_SERVER,
                         "%s $%s :%s", command, nick, text);
 
-    if ((p_or_n != NOTICE) && source_p->user)
-      source_p->user->last = CurrentTime;
+    if ((p_or_n != NOTICE) && MyClient(source_p))
+      source_p->localClient->last = CurrentTime;
 
     return;
   }

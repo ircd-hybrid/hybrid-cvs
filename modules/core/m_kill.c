@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.89 2005/05/22 17:20:31 michael Exp $
+ *  $Id: m_kill.c,v 1.90 2005/07/16 12:19:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.89 $";
+const char *_version = "$Revision: 1.90 $";
 #endif
 
 /* mo_kill()
@@ -284,7 +284,7 @@ ms_kill(struct Client *client_p, struct Client *source_p,
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "Received KILL message for %s. From %s Path: %s!%s!%s!%s %s",
-                         target_p->name, source_p->name, source_p->user->server->name, 
+                         target_p->name, source_p->name, source_p->servptr->name, 
                          source_p->host, source_p->username, source_p->name, reason);
   }
   else
@@ -358,7 +358,7 @@ relay_kill(struct Client *one, struct Client *source_p,
     }
     /* force introduction of killed client but check that
      * its not on the server we're bursting too.. */
-    else if (strcmp(target_p->user->server->name, client_p->name))
+    else if (strcmp(target_p->servptr->name, client_p->name))
       client_burst_if_needed(client_p, target_p);
 
     /* introduce source of kill */

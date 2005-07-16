@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.80 2005/06/29 23:59:57 metalrock Exp $
+ *  $Id: m_invite.c,v 1.81 2005/07/16 12:19:43 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.80 $";
+const char *_version = "$Revision: 1.81 $";
 #endif
 
 /*
@@ -149,10 +149,10 @@ m_invite(struct Client *client_p, struct Client *source_p,
     sendto_one(source_p, form_str(RPL_INVITING), me.name,
                source_p->name, target_p->name, chptr->chname);
 
-    if (target_p->user->away)
+    if (target_p->away)
       sendto_one(source_p, form_str(RPL_AWAY),
                  me.name, source_p->name, target_p->name,
-                 target_p->user->away);
+                 target_p->away);
   }
   else if (parc > 3 && IsDigit(*parv[3]))
     if (atoi(parv[3]) > chptr->channelts)
@@ -162,7 +162,7 @@ m_invite(struct Client *client_p, struct Client *source_p,
       IsCapable(target_p->from, CAP_LL))
   {
     /* target_p is connected to a LL leaf, connected to us */
-    if (IsPerson(source_p))
+    if (IsClient(source_p))
       client_burst_if_needed(target_p->from, source_p);
 
     if ((chptr->lazyLinkChannelExists &

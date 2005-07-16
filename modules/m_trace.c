@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.79 2005/06/12 20:44:52 db Exp $
+ *  $Id: m_trace.c,v 1.80 2005/07/16 12:19:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-const char *_version = "$Revision: 1.79 $";
+const char *_version = "$Revision: 1.80 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
@@ -210,7 +210,7 @@ do_actual_trace(const char *tname, struct Client *client_p,
 
     target_p = find_client(tname);
       
-    if(target_p && IsPerson(target_p)) 
+    if (target_p && IsClient(target_p)) 
     {
       name = get_client_name(target_p, HIDE_IP);
       /* should we not use sockhost here? - stu */
@@ -226,7 +226,7 @@ do_actual_trace(const char *tname, struct Client *client_p,
                    from, to, class_name, name, 
                    IsIPSpoof(target_p) ? "255.255.255.255" : ipaddr,
                    CurrentTime - target_p->lasttime,
-                   (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
+                   CurrentTime - target_p->localClient->last);
       }
       else
       {
@@ -234,7 +234,7 @@ do_actual_trace(const char *tname, struct Client *client_p,
                    from, to, class_name, name, 
 		   IsIPSpoof(target_p) ? "255.255.255.255" : ipaddr,
                    CurrentTime - target_p->lasttime,
-                   (target_p->user)?(CurrentTime - target_p->user->last):0);
+                   CurrentTime - target_p->localClient->last);
       }
     }
       
@@ -255,12 +255,14 @@ do_actual_trace(const char *tname, struct Client *client_p,
     {
       target_p = gcptr->data;
 
-      if (IsPerson(target_p))
+      if (IsClient(target_p))
       {
+        assert(target_p->from->localClient->fd>=0);
 	link_u[target_p->from->localClient->fd]++;
       }
       else if (IsServer(target_p))
       {
+        assert(target_p->from->localClient->fd>=0);
 	link_s[target_p->from->localClient->fd]++;
       }
     }
@@ -413,7 +415,7 @@ report_this_status(struct Client *source_p, struct Client *target_p,
                        from, to, class_name, name,
                        IsOperAdmin(source_p) ? ip : "255.255.255.255",
                        CurrentTime - target_p->lasttime,
-                       (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
+                       CurrentTime - target_p->localClient->last);
 		       
 	  else if (IsOper(target_p))
           {
@@ -422,14 +424,14 @@ report_this_status(struct Client *source_p, struct Client *target_p,
 		         from, to, class_name, name, 
 		         IsIPSpoof(target_p) ? "255.255.255.255" : ip,
 		         CurrentTime - target_p->lasttime,
-		         (target_p->user)?(CurrentTime - target_p->user->last):0);
+		         CurrentTime - target_p->localClient->last);
 	    else
               sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
                          from, to, class_name, name,
                          MyOper(source_p) ? ip :
                          (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
                          CurrentTime - target_p->lasttime,
-                         (target_p->user)?(CurrentTime - target_p->user->last):0);
+                         CurrentTime - target_p->localClient->last);
 	  }		       
 	  else
           {
@@ -444,14 +446,14 @@ report_this_status(struct Client *source_p, struct Client *target_p,
 		         from, to, class_name, name,
                          IsIPSpoof(target_p) ? "255.255.255.255" : ip,
 		         CurrentTime - target_p->lasttime,
-		         (target_p->user)?(CurrentTime - target_p->user->last):0);
+		         CurrentTime - target_p->localClient->last);
 	    else
               sendto_one(source_p, format_str,
                          from, to, class_name, name,
                          MyOper(source_p) ? ip :
                          (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
                          CurrentTime - target_p->lasttime,
-                         (target_p->user)?(CurrentTime - target_p->user->last):0);
+                         CurrentTime - target_p->localClient->last);
 	  }
 	  cnt++;
 	}

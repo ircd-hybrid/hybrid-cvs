@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.15 2005/07/11 01:19:35 metalrock Exp $
+ *  $Id: m_killhost.c,v 1.16 2005/07/16 12:19:38 michael Exp $
  *
  */
 
@@ -43,7 +43,7 @@
 
 static void mo_killhost(struct Client *, struct Client *, int, char *[]);
 static void kh_relay_kill(struct Client *, struct Client *, struct Client *,
-                const char *, const char *);
+                          const char *, const char *);
 
 struct Message killhost_msgtab = {
   "KILLHOST", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&killhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.15 $";
+const char *_version = "$Revision: 1.16 $";
 #endif
 
 /* mo_killhost()
@@ -113,7 +113,7 @@ mo_killhost(struct Client *client_p, struct Client *source_p,
   {
     target_p = ptr->data;
 
-    if (!IsPerson(target_p) || (source_p == target_p))
+    if (!IsClient(target_p) || (source_p == target_p))
       continue;
 
     if (!MyConnect(target_p) && !IsOperGlobalKill(source_p))
@@ -203,7 +203,7 @@ kh_relay_kill(struct Client *one, struct Client *source_p, struct Client *target
     }
     /* force introduction of killed client but check that
      * its not on the server we're bursting too.. */
-    else if (strcmp(target_p->user->server->name,client_p->name))
+    else if (strcmp(target_p->servptr->name,client_p->name))
       client_burst_if_needed(client_p, target_p);
 
     /* introduce source of kill */

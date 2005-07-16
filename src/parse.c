@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.198 2005/05/27 20:16:30 adx Exp $
+ *  $Id: parse.c,v 7.199 2005/07/16 12:19:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -309,7 +309,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
        */
       if (pbuffer[0] != '\0')
       {
-        if (IsPerson(from))
+        if (IsClient(from))
           sendto_one(from, form_str(ERR_UNKNOWNCOMMAND),
                      me.name, from->name, ch);
       }

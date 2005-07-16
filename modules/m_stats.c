@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.171 2005/07/10 12:45:11 michael Exp $
+ *  $Id: m_stats.c,v 1.172 2005/07/16 12:19:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.171 $";
+const char *_version = "$Revision: 1.172 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -463,15 +463,15 @@ count_memory(struct Client *source_p)
     else
       ++remote_client_count;
 
-    if (target_p->user != NULL)
+    if (IsClient(target_p))
     {
       ++users_counted;
-      users_invited_count += dlink_list_length(&target_p->user->invited);
+      users_invited_count += dlink_list_length(&target_p->invited);
 
-      if (target_p->user->away != NULL)
+      if (target_p->away != NULL)
       {
         ++aways_counted;
-        away_memory += strlen(target_p->user->away) + 1;
+        away_memory += strlen(target_p->away) + 1;
       }
     }
   }
@@ -563,9 +563,9 @@ count_memory(struct Client *source_p)
   /* count up all classes */
   class_count = dlink_list_length(&class_items);
 
-  sendto_one(source_p, ":%s %d %s z :Users %u(%lu) Invites %u(%lu)",
+  sendto_one(source_p, ":%s %d %s z :Clients %u(%lu) Invites %u(%lu)",
              me.name, RPL_STATSDEBUG, source_p->name, users_counted,
-             (unsigned long)(users_counted * sizeof(struct User)),
+             (unsigned long)(users_counted * sizeof(struct Client)),
              users_invited_count, (unsigned long)(users_invited_count * sizeof(dlink_node)));
 
   sendto_one(source_p, ":%s %d %s z :User aways %u(%d)",
@@ -629,13 +629,13 @@ count_memory(struct Client *source_p)
 
   sendto_one(source_p, ":%s %d %s z :Whowas users %u(%lu)",
              me.name, RPL_STATSDEBUG, source_p->name,
-             wwu, (unsigned long)(wwu * sizeof(struct User)));
+             wwu, (unsigned long)(wwu * sizeof(struct Client)));
 
   sendto_one(source_p, ":%s %d %s z :Whowas array %u(%d)",
              me.name, RPL_STATSDEBUG, source_p->name,
              NICKNAMEHISTORYLENGTH, (int)wwm);
 
-  totww = wwu * sizeof(struct User) + wwm;
+  totww = wwu * sizeof(struct Client) + wwm;
 /****
   client_hash_table_size  = hash_get_client_table_size();
   channel_hash_table_size = hash_get_channel_table_size();
@@ -676,8 +676,6 @@ count_memory(struct Client *source_p)
   sendto_one(source_p, ":%s %d %s z :Remote client Memory in use: %d(%d)",
              me.name, RPL_STATSDEBUG, source_p->name, remote_client_count,
              remote_client_memory_used);
-
-  total_memory += (users_counted * sizeof(struct User));
 
   count_links_memory(&links_count, &links_memory_used);
   total_memory += links_memory_used;
@@ -1096,14 +1094,14 @@ stats_operedup(struct Client *source_p)
 		 (IsOperHiddenAdmin(target_p) ? 'O' : 'A') : 'O',
 		 oper_privs_as_string(target_p->localClient->operflags),
 		 target_p->name, target_p->username, target_p->host,
-		 (int)(CurrentTime - target_p->user->last));
+		 (int)(CurrentTime - target_p->localClient->last));
     else
       sendto_one(source_p, ":%s %d %s p :[%c] %s (%s@%s) Idle: %d",
                  from, RPL_STATSDEBUG, to,
                  IsAdmin(target_p) ?
 		 (IsOperHiddenAdmin(target_p) ? 'O' : 'A') : 'O',
 		 target_p->name, target_p->username, target_p->host,
-		 (int)(CurrentTime - target_p->user->last));
+		 (int)(CurrentTime - target_p->localClient->last));
   }
 
   sendto_one(source_p, ":%s %d %s p :%lu OPER(s)",

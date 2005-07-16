@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.71 2005/07/11 19:06:18 db Exp $
+ *  $Id: m_knock.c,v 1.72 2005/07/16 12:19:43 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,6 +57,7 @@ struct Message knock_msgtab = {
   "KNOCK", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_knock, ms_knock, me_knock, m_knock, m_ignore}
 };
+
 struct Message knockll_msgtab = {
   "KNOCKLL", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_ignore, m_knock, m_ignore, m_ignore, m_ignore}
@@ -82,7 +83,7 @@ _moddeinit(void)
   delete_isupport("KNOCK");
 }
 
-const char *_version = "$Revision: 1.71 $";
+const char *_version = "$Revision: 1.72 $";
 #endif
 
 /* m_knock
@@ -346,24 +347,24 @@ send_knock(struct Client *client_p, struct Client *source_p,
     sendto_one(source_p, form_str(RPL_KNOCKDLVR),
                me.name, source_p->name, name);
 
-  if (source_p->user != NULL)
+  if (IsClient(source_p))
   {
-      if (ConfigChannel.use_knock)
-        sendto_channel_local(CHFL_CHANOP,
-  			     chptr, form_str(RPL_KNOCK),
+    if (ConfigChannel.use_knock)
+      sendto_channel_local(CHFL_CHANOP,
+		     chptr, form_str(RPL_KNOCK),
 			     me.name, name, name,
 			     source_p->name, source_p->username,
 			     source_p->host);
 
-      if (prop)
-      {
-        sendto_server(client_p, source_p, chptr, CAP_KNOCK|CAP_TS6, NOCAPS, LL_ICLIENT,
+    if (prop)
+    {
+      sendto_server(client_p, source_p, chptr, CAP_KNOCK|CAP_TS6, NOCAPS, LL_ICLIENT,
                     ":%s KNOCK %s %s",
                     ID(source_p), name, key != NULL ? key : "");
-        sendto_server(client_p, source_p, chptr, CAP_KNOCK, CAP_TS6, LL_ICLIENT,
+      sendto_server(client_p, source_p, chptr, CAP_KNOCK, CAP_TS6, LL_ICLIENT,
                     ":%s KNOCK %s %s",
 		    source_p->name, name, key != NULL ? key : "");
-      }
+    }
   }
 }
 

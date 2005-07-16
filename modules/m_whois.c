@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.130 2005/07/13 12:22:19 adx Exp $
+ *  $Id: m_whois.c,v 1.131 2005/07/16 12:19:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.130 $";
+const char *_version = "$Revision: 1.131 $";
 #endif
 
 /*
@@ -184,7 +184,7 @@ do_whois(struct Client *client_p, struct Client *source_p,
       if (IsServer(client_p))
 	client_burst_if_needed(client_p, target_p);
 
-      if (IsPerson(target_p))
+      if (IsClient(target_p))
       {
 	whois_person(source_p, target_p);
 	found = 1;
@@ -244,13 +244,13 @@ global_whois(struct Client *source_p, const char *nick)
   {
     target_p = ptr->data;
 
-    if (!IsPerson(target_p))
+    if (!IsClient(target_p))
       continue;
 
     if (!match(nick, target_p->name))
       continue;
 
-    assert(target_p->user->server != NULL);
+    assert(target_p->servptr != NULL);
 
     /* 'Rules' established for sending a WHOIS reply:
      *
@@ -294,7 +294,7 @@ single_whois(struct Client *source_p, struct Client *target_p)
   }
 
   /* target_p is +i. Check if it is on any common channels with source_p */
-  DLINK_FOREACH(ptr, target_p->user->channel.head)
+  DLINK_FOREACH(ptr, target_p->channel.head)
   {
     chptr = ((struct Membership *) ptr->data)->chptr;
     if (IsMember(source_p, chptr))
@@ -331,7 +331,7 @@ whois_person(struct Client *source_p, struct Client *target_p)
 
   assert(target_p->user != NULL);
 
-  server_p = target_p->user->server;
+  server_p = target_p->servptr;
 
   sendto_one(source_p, form_str(RPL_WHOISUSER),
              me.name, source_p->name, target_p->name,
@@ -341,7 +341,7 @@ whois_person(struct Client *source_p, struct Client *target_p)
              me.name, source_p->name, target_p->name, "");
   t = buf + mlen;
 
-  DLINK_FOREACH(lp, target_p->user->channel.head)
+  DLINK_FOREACH(lp, target_p->channel.head)
   {
     ms    = lp->data;
     chptr = ms->chptr;
@@ -379,10 +379,10 @@ whois_person(struct Client *source_p, struct Client *target_p)
                ServerInfo.network_name,
 	       ServerInfo.network_desc);
 
-  if (target_p->user->away != NULL)
+  if (target_p->away != NULL)
     sendto_one(source_p, form_str(RPL_AWAY),
                me.name, source_p->name, target_p->name,
-               target_p->user->away);
+               target_p->away);
 
   if (IsOper(target_p))
     sendto_one(source_p, form_str(IsAdmin(target_p) ? RPL_WHOISADMIN :
@@ -413,11 +413,11 @@ whois_person(struct Client *source_p, struct Client *target_p)
 
     if (fd > -1 && fd_table[fd].ssl)
       sendto_one(source_p, form_str(RPL_WHOISSSL),
-                      me.name, source_p->name, target_p->name);
+                 me.name, source_p->name, target_p->name);
 #endif
     sendto_one(source_p, form_str(RPL_WHOISIDLE),
                me.name, source_p->name, target_p->name,
-               CurrentTime - target_p->user->last,
+               CurrentTime - target_p->localClient->last,
                target_p->firsttime);
   }
 
