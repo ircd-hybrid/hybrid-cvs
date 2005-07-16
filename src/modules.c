@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.159 2005/07/13 02:37:14 db Exp $
+ *  $Id: modules.c,v 7.160 2005/07/16 08:12:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,6 @@ struct Message modrestart_msgtab = {
 };
 
 
-extern struct Message hash_msgtab; /* XXX */
 extern struct Message error_msgtab;
 
 /*
@@ -127,7 +126,6 @@ modules_init(void)
   mod_add_cmd(&modlist_msgtab);
   mod_add_cmd(&modrestart_msgtab);
   mod_add_cmd(&error_msgtab);
-  mod_add_cmd(&hash_msgtab);
 }
 
 /* mod_find_path()
@@ -652,6 +650,7 @@ load_all_modules(int warn)
   mod_add_cmd(&eob_msgtab);
   mod_add_cmd(&gline_msgtab);
   add_capability("GLN", CAP_GLN, 1);
+  mod_add_cmd(&hash_msgtab);
   mod_add_cmd(&ungline_msgtab);
   mod_add_cmd(&info_msgtab);
   mod_add_cmd(&invite_msgtab);

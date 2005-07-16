@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.97 2005/07/16 07:22:25 michael Exp $
+ *  $Id: hash.c,v 7.98 2005/07/16 08:12:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -534,7 +534,7 @@ hash_find_channel(const char *name)
 
 /* hash_get_chptr(unsigned int hashv)
  *
- * inputs       - hash value (should be between 0 and HASHSIZE - 1)
+ * inputs       - hash value (must be between 0 and HASHSIZE - 1)
  * output       - NONE
  * returns      - pointer to first channel in channelTable[hashv]
  *                if that exists;
@@ -542,14 +542,35 @@ hash_find_channel(const char *name)
  *                NULL if hashv is an invalid number.
  * side effects - NONE
  */
-struct Channel *
-hash_get_chptr(unsigned int hashv)
+void *
+hash_get_bucket(int type, unsigned int hashv)
 {
   assert(hashv < HASHSIZE);
   if (hashv >= HASHSIZE)
       return NULL;
 
-  return channelTable[hashv];
+  switch (type)
+  {
+    case HASH_TYPE_ID:
+      return idTable[hashv];
+      break;
+    case HASH_TYPE_CHANNEL:
+      return channelTable[hashv];
+      break;
+    case HASH_TYPE_CLIENT:
+      return channelTable[hashv];
+      break;
+    case HASH_TYPE_USERHOST:
+      return channelTable[hashv];
+      break;
+    case HASH_TYPE_RESERVED:
+      return channelTable[hashv];
+      break;
+    default:
+      assert(0);
+  }
+
+  return NULL;
 }
 
 /* hash_find_resv()
@@ -791,142 +812,6 @@ find_or_add_userhost(const char *host)
   hash_add_userhost(userhost);
 
   return(userhost);
-}
-
-struct Message hash_msgtab = {
- "HASH", 0, 0, 0, 0, MFLG_SLOW, 0,
-  { m_unregistered, m_not_oper, m_ignore, m_ignore, mo_hash, m_ignore }
-};
-
-/* I will add some useful(?) statistics here one of these days,
- * but not for DEBUGMODE: just to let the admins play with it,
- * coders are able to SIGCORE the server and look into what goes
- * on themselves :-)
- */
-void
-mo_hash(struct Client *client_p, struct Client *source_p,
-        int parc, char *parv[])
-{
-  int i;
-  int max_chain = 0;
-  int buckets   = 0;
-  int count     = 0;
-  struct Client *cl;
-  struct Client *icl;
-  struct Channel *ch;
-  struct UserHost *ush;
-  struct ResvChannel *rch;
-
-  for (i = 0; i < HASHSIZE; ++i)
-  {
-    if ((cl = clientTable[i]) != NULL)
-    {
-      int len = 0;
-
-      ++buckets;
-      for (; cl != NULL; cl = cl->hnext)
-        ++len; 
-      if (len > max_chain)
-        max_chain = len;
-      count += len;
-    }
-  }
-
-  sendto_one(source_p, ":%s NOTICE %s :Client: entries: %d buckets: %d "
-             "max chain: %d", me.name, source_p->name, count, buckets,
-             max_chain);
-
-  count     = 0;
-  buckets   = 0;
-  max_chain = 0;
-
-  for (i = 0; i < HASHSIZE; ++i)
-  {
-    if ((ch = channelTable[i]) != NULL)
-    {
-      int len = 0;
-
-      ++buckets;
-      for (; ch != NULL; ch = ch->hnextch)
-        ++len; 
-      if (len > max_chain)
-        max_chain = len;
-      count += len;
-    }
-  }
-
-  sendto_one(source_p, ":%s NOTICE %s :Channel: entries: %d buckets: %d "
-             "max chain: %d", me.name, source_p->name, count, buckets,
-             max_chain);
-
-  count     = 0;
-  buckets   = 0;
-  max_chain = 0;
-
-  for (i = 0; i < HASHSIZE; ++i)
-  {
-    if ((rch = resvchannelTable[i]) != NULL)
-    {
-      int len = 0;
-
-      ++buckets;
-      for (; rch != NULL; rch = rch->hnext)
-        ++len;
-      if (len > max_chain)
-        max_chain = len;
-      count += len;
-    }
-  }
-
-  sendto_one(source_p, ":%s NOTICE %s :Resv: entries: %d buckets: %d "
-             "max chain: %d", me.name, source_p->name, count, buckets,
-             max_chain);
-
-  count     = 0;
-  buckets   = 0;
-  max_chain = 0;
-
-  for (i = 0; i < HASHSIZE; ++i)
-  {
-    if ((icl = idTable[i]) != NULL)
-    {
-      int len = 0;
-
-      ++buckets;
-      for (; icl != NULL; icl = icl->idhnext)
-        ++len;
-      if (len > max_chain)
-        max_chain = len;
-      count += len;
-    }
-  }
-
-  sendto_one(source_p, ":%s NOTICE %s :Id: entries: %d buckets: %d "
-             "max chain: %d", me.name, source_p->name, count, buckets,
-             max_chain);
-
-  count     = 0;
-  buckets   = 0;
-  max_chain = 0;
-
-  for (i = 0; i < HASHSIZE; ++i)
-  {
-    if ((ush = userhostTable[i]) != NULL)
-    {
-      int len = 0;
-
-      ++buckets;
-      for (; ush != NULL; ush = ush->next)
-        ++len;
-      if (len > max_chain)
-        max_chain = len;
-      count += len;
-    }
-  }
-
-  sendto_one(source_p, ":%s NOTICE %s :UserHost: entries: %d buckets: %d "
-             "max chain: %d", me.name, source_p->name, count, buckets,
-             max_chain);
 }
 
 /*

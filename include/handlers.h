@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: handlers.h,v 7.41 2003/07/02 17:32:22 michael Exp $
+ *  $Id: handlers.h,v 7.42 2005/07/16 08:12:43 michael Exp $
  */
 
 #ifndef INCLUDED_handlers_h
@@ -89,7 +89,6 @@ struct Client;
 /* generic handlers */
 extern void ms_error(struct Client *,struct Client *,int,char **);
 extern void m_error(struct Client *,struct Client *,int,char **);
-extern void mo_hash(struct Client *,struct Client *,int,char **); /* XXX */
 extern void m_ignore(struct Client*, struct Client*, int, char**);
 extern void m_not_oper(struct Client*, struct Client*, int, char**);
 extern void m_registered(struct Client*, struct Client*, int, char**);
