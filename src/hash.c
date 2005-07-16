@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.98 2005/07/16 08:12:47 michael Exp $
+ *  $Id: hash.c,v 7.99 2005/07/16 08:19:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -558,13 +558,13 @@ hash_get_bucket(int type, unsigned int hashv)
       return channelTable[hashv];
       break;
     case HASH_TYPE_CLIENT:
-      return channelTable[hashv];
+      return clientTable[hashv];
       break;
     case HASH_TYPE_USERHOST:
-      return channelTable[hashv];
+      return userhostTable[hashv];
       break;
     case HASH_TYPE_RESERVED:
-      return channelTable[hashv];
+      return resvchannelTable[hashv];
       break;
     default:
       assert(0);
