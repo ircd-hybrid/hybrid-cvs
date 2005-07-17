@@ -27,7 +27,7 @@
 
 /*! \file balloc.c
  * \brief A block allocator
- * \version $Id: balloc.c,v 7.56 2005/07/14 17:00:52 michael Exp $
+ * \version $Id: balloc.c,v 7.57 2005/07/17 12:19:18 michael Exp $
  * 
  * About the block allocator
  *
@@ -164,13 +164,10 @@ newblock(BlockHeap *bh)
     void *offset = NULL;
 
     /* Setup the initial data structure. */
-    b = calloc(1, sizeof(Block));
-    if (b == NULL)
+    if ((b = calloc(1, sizeof(Block))) == NULL)
       return(1);
 
     b->freeElems = bh->elemsPerBlock;
-    b->free_list.head = b->free_list.tail = NULL;
-    b->used_list.head = b->used_list.tail = NULL;
     b->next = bh->base;
 
     b->alloc_size = bh->elemsPerBlock * (bh->elemSize + sizeof(MemBlock));
@@ -267,11 +264,8 @@ BlockHeapAlloc(BlockHeap *bh)
 
   assert(bh != NULL);
 
-  if (bh == NULL)
-    outofmemory();
-
-    if (bh->freeElems == 0)
-      {   
+  if (bh->freeElems == 0)
+  {   
         /* Allocate new block and assign */
         /* newblock returns 1 if unsuccessful, 0 if not */
         if (newblock(bh))
@@ -283,9 +277,9 @@ BlockHeapAlloc(BlockHeap *bh)
                  outofmemory(); /* Well that didn't work either...bail */
               }
 	  }
-       }
+   }
       
-    for (walker = bh->base; walker != NULL; walker = walker->next)
+  for (walker = bh->base; walker != NULL; walker = walker->next)
       {
         if (walker->freeElems > 0)
 	  {
@@ -295,15 +289,15 @@ BlockHeapAlloc(BlockHeap *bh)
             dlinkDelete(new_node, &walker->free_list);
             dlinkAdd(new_node->data, new_node, &walker->used_list);
             assert(new_node->data != NULL);
-            if (new_node->data == NULL)
-              outofmemory();
+
             memset(new_node->data, 0, bh->elemSize);
             return(new_node->data);
 	  }
-      }
-    assert(0 == 1);
-    outofmemory();
-    return(NULL);
+  }
+
+  assert(0 == 1);
+  outofmemory();
+  return(NULL);
 }
 
 /*! \brief Returns an element to the free pool, does not free()
