@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.80.2.1 2005/07/17 01:09:20 db Exp $
+ *  $Id: m_invite.c,v 1.80.2.2 2005/07/17 09:48:55 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.80.2.1 $";
+const char *_version = "$Revision: 1.80.2.2 $";
 #endif
 
 /*
@@ -177,18 +177,23 @@ m_invite(struct Client *client_p, struct Client *source_p,
                source_p->host,
                target_p->name, chptr->chname);
 
-    if (chptr->mode.mode & (MODE_INVITEONLY|MODE_PRIVATE))
+    if (chptr->mode.mode & MODE_INVITEONLY)
     {
-      /* Only do this if channel is set +i and +p */
-      sendto_channel_local(CHFL_CHANOP|CHFL_HALFOP, chptr,
-                           ":%s NOTICE %s :%s is inviting %s to %s.",
-                           me.name, chptr->chname, source_p->name,
-                           target_p->name, chptr->chname);
-      sendto_channel_remote(source_p, client_p, CHFL_CHANOP|CHFL_HALFOP,
-                            NOCAPS, NOCAPS, chptr,
-                            ":%s NOTICE %s :%s is inviting %s to %s.",
-                            source_p->name, chptr->chname, source_p->name,
-                            target_p->name, chptr->chname);
+      if (chptr->mode.mode & MODE_PRIVATE)
+      {
+        /* Only do this if channel is set +i AND +p */
+        sendto_channel_local(CHFL_CHANOP|CHFL_HALFOP, chptr,
+                             ":%s NOTICE %s :%s is inviting %s to %s.",
+                             me.name, chptr->chname, source_p->name,
+                             target_p->name, chptr->chname);
+        sendto_channel_remote(source_p, client_p, CHFL_CHANOP|CHFL_HALFOP,
+                              NOCAPS, NOCAPS, chptr,
+                              ":%s NOTICE %s :%s is inviting %s to %s.",
+                              source_p->name, chptr->chname, source_p->name,
+                              target_p->name, chptr->chname);
+      }
+
+      /* Add the invite if channel is +i */
       add_invite(chptr, target_p);
     }
   }
