@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.197 2005/07/16 12:19:48 michael Exp $
+ *  $Id: m_sjoin.c,v 1.198 2005/07/17 11:46:32 db Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.197 $";
+const char *_version = "$Revision: 1.198 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -658,72 +658,58 @@ static const struct mode_letter
   { 0, '\0' }
 };
 
+/* set_final_mode
+ *
+ * inputs	- channel mode
+ *		- old channel mode
+ * output	- NONE
+ * side effects	- walk through all the channel modes turning off modes
+ *		  that were on in oldmode but aren't on in mode.
+ *		  Then walk through turning on modes that are on in mode
+ *		  but were not set in oldmode.
+ */
+
 static void
 set_final_mode(struct Mode *mode, struct Mode *oldmode)
 {
   char *pbuf = parabuf;
-  int what   = 0;
   int len;
   int i;
 
-  for (i = 0; flags[i].letter; i++)
-  {
-    if ((flags[i].mode & mode->mode) &&
-        !(flags[i].mode & oldmode->mode))
-    {
-      if (what != 1)
-      {
-        *mbuf++ = '+';
-        what = 1;
-      }
-      *mbuf++ = flags[i].letter;
-    }
-  }
+  *mbuf++ = '-';
 
   for (i = 0; flags[i].letter; i++)
   {
     if ((flags[i].mode & oldmode->mode) &&
         !(flags[i].mode & mode->mode))
-    {
-      if (what != -1)
-      {
-        *mbuf++ = '-';
-        what = -1;
-      }
       *mbuf++ = flags[i].letter;
-    }
   }
 
   if (oldmode->limit != 0 && mode->limit == 0)
-  {
-    if (what != -1)
-    {
-      *mbuf++ = '-';
-      what = -1;
-    }
     *mbuf++ = 'l';
-  }
 
   if (oldmode->key[0] && !mode->key[0])
   {
-    if (what != -1)
-    {
-      *mbuf++ = '-';
-      what = -1;
-    }
     *mbuf++ = 'k';
     len = ircsprintf(pbuf, "%s ", oldmode->key);
     pbuf += len;
     pargs++;
   }
 
+  if (*(mbuf-1) == '-')
+    *(mbuf-1) = '+';
+  else
+    *mbuf++ = '+';
+
+  for (i = 0; flags[i].letter; i++)
+  {
+    if ((flags[i].mode & mode->mode) &&
+        !(flags[i].mode & oldmode->mode))
+      *mbuf++ = flags[i].letter;
+  }
+
   if (mode->limit != 0 && oldmode->limit != mode->limit)
   {
-    if (what != 1)
-    {
-      *mbuf++ = '+';
-      what = 1;
-    }
     *mbuf++ = 'l';
     len = ircsprintf(pbuf, "%d ", mode->limit);
     pbuf += len;
@@ -732,17 +718,15 @@ set_final_mode(struct Mode *mode, struct Mode *oldmode)
 
   if (mode->key[0] && strcmp(oldmode->key, mode->key))
   {
-    if (what != 1)
-    {
-      *mbuf++ = '+';
-      what = 1;
-    }
     *mbuf++ = 'k';
     len = ircsprintf(pbuf, "%s ", mode->key);
     pbuf += len;
     pargs++;
   }
-  *mbuf = '\0';
+  if (*(mbuf-1) == '+')
+    *(mbuf-1) = '\0';
+  else
+    *mbuf = '\0';
 }
 
 /* remove_our_modes()
@@ -765,9 +749,12 @@ remove_our_modes(struct Channel *chptr, struct Client *source_p)
 
 /* remove_a_mode()
  *
- * inputs	-
+ * inputs	- pointer to channel
+ *		- server or client removing the mode
+ *		- mask o/h/v mask to be removed
+ *		- flag o/h/v to be removed
  * output	- NONE
- * side effects	- remove ONE mode from a channel
+ * side effects	- remove ONE mode from all members of a channel
  */
 static void
 remove_a_mode(struct Channel *chptr, struct Client *source_p,
@@ -776,16 +763,15 @@ remove_a_mode(struct Channel *chptr, struct Client *source_p,
   dlink_node *ptr;
   struct Membership *ms;
   char lmodebuf[MODEBUFLEN];
+  char *sp=sendbuf;
   const char *lpara[MAXMODEPARAMS];
   int count = 0;
-  int lcount;
+  int i;
+  int l;
 
   mbuf = lmodebuf;
   *mbuf++ = '-';
-
-  for (lcount = 0; lcount < MAXMODEPARAMS; lcount++)
-    lpara[lcount] = "";
-  sendbuf[0] = '\0';
+  *sp = '\0';
 
   DLINK_FOREACH(ptr, chptr->members.head)
   {
@@ -802,14 +788,10 @@ remove_a_mode(struct Channel *chptr, struct Client *source_p,
 
     if (count >= MAXMODEPARAMS)
     {
-      for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+      for(i = 0; i < MAXMODEPARAMS; i++)
       {
-        if (*lpara[lcount] == '\0')
-          break;
-
-        strlcat(sendbuf, " ", sizeof(sendbuf));
-        strlcat(sendbuf, lpara[lcount], sizeof(sendbuf));
-        lpara[lcount] = "";
+        l = ircsprintf(sp, " %s", lpara[i]);
+	sp += l;
       }
 
       *mbuf = '\0';
@@ -822,20 +804,18 @@ remove_a_mode(struct Channel *chptr, struct Client *source_p,
       mbuf = lmodebuf;
       *mbuf++ = '-';
       count = 0;
-      sendbuf[0] = '\0';
+      sp = sendbuf;
+      *sp = '\0';
     }
   }
 
   if (count != 0)
   {
     *mbuf = '\0';
-    for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+    for(i = 0; i < count; i++)
     {
-      if (*lpara[lcount] == '\0')
-        break;
-
-      strlcat(sendbuf, " ", sizeof(sendbuf));
-      strlcat(sendbuf, lpara[lcount], sizeof(sendbuf));
+      l = ircsprintf(sp, " %s", lpara[i]);
+      sp += l;
     }
     sendto_channel_local(ALL_MEMBERS, chptr,
 			 ":%s MODE %s %s%s",
