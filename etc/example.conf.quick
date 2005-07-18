@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.33 2005/07/11 13:15:04 adx Exp $
+ * $Id: example.conf.quick,v 1.34 2005/07/18 13:30:13 michael Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -102,9 +102,13 @@ class {
 /* listen {}: contain information about the ports ircd listens on (OLD P:) */
 listen {
 	port = 6665 .. 6669;
-	sslport = 9999;
+
+	flags = ssl;
+	port = 6697;
+
 	host = "1.2.3.4";
 	port = 7000, 7001;
+
 	host = "3ffe:1234:a:b:c::d";
         port = 7002;
 };

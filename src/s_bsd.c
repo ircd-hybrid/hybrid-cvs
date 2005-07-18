@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.224 2005/07/13 13:00:07 adx Exp $
+ *  $Id: s_bsd.c,v 7.225 2005/07/18 13:30:18 michael Exp $
  */
 
 #include "stdinc.h"
@@ -821,7 +821,7 @@ comm_open(int family, int sock_type, int proto, const char *note)
  * comm_open() does.
  */
 int
-comm_accept(int fd, struct irc_ssaddr *pn, int is_ssl)
+comm_accept(struct Listener *lptr, struct irc_ssaddr *pn)
 {
   int newfd;
   socklen_t addrlen = sizeof(struct irc_ssaddr);
@@ -840,7 +840,7 @@ comm_accept(int fd, struct irc_ssaddr *pn, int is_ssl)
    * reserved fd limit, but we can deal with that when comm_open()
    * also does it. XXX -- adrian
    */
-  newfd = accept(fd, (struct sockaddr *)pn, (socklen_t *)&addrlen);
+  newfd = accept(lptr->fd, (struct sockaddr *)pn, (socklen_t *)&addrlen);
   if (newfd < 0)
     return -1;
 
@@ -860,7 +860,7 @@ comm_accept(int fd, struct irc_ssaddr *pn, int is_ssl)
   }
 
 #ifdef HAVE_LIBCRYPTO
-  if (is_ssl && ServerInfo.ctx)
+  if ((lptr->flags & LISTENER_SSL) && ServerInfo.ctx)
   {
     if ((ssl = SSL_new(ServerInfo.ctx)) == NULL)
     {
@@ -870,6 +870,7 @@ comm_accept(int fd, struct irc_ssaddr *pn, int is_ssl)
       close(newfd);
       return -1;
     }
+
     SSL_set_fd(ssl, newfd);
 
     /* Next, tag the FD as an incoming connection */

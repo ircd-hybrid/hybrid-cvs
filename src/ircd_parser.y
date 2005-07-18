@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.399 2005/07/12 17:38:52 adx Exp $
+ *  $Id: ircd_parser.y,v 1.400 2005/07/18 13:30:17 michael Exp $
  */
 
 %{
@@ -66,6 +66,7 @@ static struct ClassItem *yy_class = NULL;
 static dlink_list col_conf_list  = { NULL, NULL, 0 };
 static dlink_list hub_conf_list  = { NULL, NULL, 0 };
 static dlink_list leaf_conf_list = { NULL, NULL, 0 };
+static unsigned int listener_flags = 0;
 
 extern dlink_list gdeny_items;
 
@@ -263,7 +264,6 @@ unhook_hub_leaf_confs(void)
 %token  PING_COOKIE
 %token  PING_TIME
 %token  PORT
-%token  SSLPORT
 %token  QSTRING
 %token  QUIET_ON_BAN
 %token  REASON
@@ -332,6 +332,7 @@ unhook_hub_leaf_confs(void)
 %token  T_SERVNOTICE
 %token  T_SKILL
 %token  T_SPY
+%token  T_SSL
 %token  T_UNAUTH
 %token  T_UNRESV
 %token  T_UNXLINE
@@ -1518,7 +1519,10 @@ class_sendq: SENDQ '=' sizespec ';'
 listen_entry: LISTEN
 {
   if (ypass == 2)
+  {
     listener_address = NULL;
+    listener_flags = 0;
+  }
 } '{' listen_items '}' ';'
 {
   if (ypass == 2)
@@ -1528,8 +1532,23 @@ listen_entry: LISTEN
   }
 };
 
+listen_flags: IRCD_FLAGS
+{
+} '='  listen_flags_items ';';
+
+listen_flags_items: listen_flags_items ',' listen_flags_item | listen_flags_item;
+listen_flags_item: T_SSL
+{
+  if (ypass == 2)
+    listener_flags |= LISTENER_SSL;
+} | HIDDEN
+{
+  if (ypass == 2)
+    listener_flags |= LISTENER_HIDDEN;
+};
+
 listen_items:   listen_items listen_item | listen_item;
-listen_item:    listen_port | listen_sslport | listen_address | listen_host | error;
+listen_item:    listen_port | listen_flags | listen_address | listen_host | error;
 
 listen_port: PORT '=' port_items ';' ;
 
@@ -1538,37 +1557,16 @@ port_items: port_items ',' port_item | port_item;
 port_item: NUMBER
 {
   if (ypass == 2)
-    add_listener($1, listener_address, 0);
+    add_listener($1, listener_address, listener_flags);
 } | NUMBER TWODOTS NUMBER
 {
   if (ypass == 2)
   {
     int i;
 
-    for (i = $1; i <= $3; i++)
+    for (i = $1; i <= $3; ++i)
     {
-      add_listener(i, listener_address, 0);
-    }
-  }
-};
-
-listen_sslport: SSLPORT '=' sslport_items ';';
-
-sslport_items: sslport_items ',' sslport_item | sslport_item;
-
-sslport_item: NUMBER
-{
-  if (ypass == 2)
-    add_listener($1, listener_address, 1);
-} | NUMBER TWODOTS NUMBER
-{
-  if (ypass == 2)
-  {
-    int i;
-
-    for (i = $1; i <= $3; i++)
-    {
-      add_listener(i, listener_address, 1);
+      add_listener(i, listener_address, listener_flags);
     }
   }
 };

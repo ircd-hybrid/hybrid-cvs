@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.97 2005/07/13 02:26:22 adx Exp $
+ *  $Id: listener.c,v 7.98 2005/07/18 13:30:17 michael Exp $
  */
 
 #include "stdinc.h"
@@ -52,8 +52,7 @@ static void close_listener(struct Listener *listener);
 static struct Listener *
 make_listener(int port, struct irc_ssaddr *addr)
 {
-  struct Listener *listener =
-    (struct Listener *)MyMalloc(sizeof(struct Listener));
+  struct Listener *listener = MyMalloc(sizeof(struct Listener));
   assert(listener != 0);
 
   listener->name = me.name;
@@ -81,7 +80,7 @@ free_listener(struct Listener *listener)
  * returns "host.foo.org:6667" for a given listener
  */
 const char *
-get_listener_name(const struct Listener* listener)
+get_listener_name(const struct Listener *listener)
 {
   static char buf[HOSTLEN + HOSTLEN + PORTNAMELEN + 4];
 
@@ -104,18 +103,29 @@ get_listener_name(const struct Listener* listener)
 void 
 show_ports(struct Client *source_p)
 {
+  char buf[4];
+  char *p = NULL;
   dlink_node *ptr;
-  struct Listener *listener;
 
   DLINK_FOREACH(ptr, ListenerPollList.head)
   {
-    listener = ptr->data;
+    const struct Listener *listener = ptr->data;
+    p = buf;
+
+    if (listener->flags & LISTENER_HIDDEN) {
+      if (!IsAdmin(source_p))
+        continue;
+      *p++ = 'H';
+    }
+
+    if (listener->flags & LISTENER_SSL)
+      *p++ = 's';
+    *p = '\0';
     sendto_one(source_p, form_str(RPL_STATSPLINE),
-               me.name, source_p->name,
-               listener->is_ssl? 'S' : 'P', listener->port,
-               IsAdmin(source_p) ? listener->name : me.name,
-               listener->ref_count,
-               (listener->active)?"active":"disabled");
+               me.name, source_p->name, 'P', listener->port,
+               listener->name,
+               listener->ref_count, buf,
+               listener->active ? "active" : "disabled");
   }
 }
 
@@ -240,7 +250,7 @@ find_listener(int port, struct irc_ssaddr *addr)
  * the format "255.255.255.255"
  */
 void 
-add_listener(int port, const char* vhost_ip, int is_ssl)
+add_listener(int port, const char *vhost_ip, unsigned int flags)
 {
   struct Listener *listener;
   struct irc_ssaddr vaddr;
@@ -308,13 +318,14 @@ add_listener(int port, const char* vhost_ip, int is_ssl)
   {
     /* add the ipv4 listener if we havent already */
     pass = 1;
-    add_listener(port, "0.0.0.0", is_ssl);
+    add_listener(port, "0.0.0.0", flags);
   }
   pass = 0;
 #endif
 
   if ((listener = find_listener(port, &vaddr)))
   {
+    listener->flags = flags;
     if (listener->fd > -1)
       return;
   }
@@ -322,7 +333,7 @@ add_listener(int port, const char* vhost_ip, int is_ssl)
   {
     listener = make_listener(port, &vaddr);
     dlinkAdd(listener, &listener->listener_node, &ListenerPollList);
-    listener->is_ssl = is_ssl;
+    listener->flags = flags;
   }
 
   listener->fd = -1;
@@ -366,15 +377,10 @@ close_listeners(void)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
-  struct Listener *listener;
 
-  /* close all 'extra' listening ports we have
-   */
+  /* close all 'extra' listening ports we have */
   DLINK_FOREACH_SAFE(ptr, next_ptr, ListenerPollList.head)
-  {
-    listener = ptr->data;
-    close_listener(listener);
-  }
+    close_listener(ptr->data);
 }
 
 #define TOOFAST_WARNING "ERROR :Trying to reconnect too fast.\r\n"
@@ -407,7 +413,7 @@ accept_connection(int pfd, void *data)
    * point, just assume that connections cannot
    * be accepted until some old is closed first.
    */
-  while ((fd = comm_accept(listener->fd, &sai, listener->is_ssl)) != -1)
+  while ((fd = comm_accept(listener, &sai)) != -1)
   {
     memcpy(&addr, &sai, sizeof(struct irc_ssaddr));
 

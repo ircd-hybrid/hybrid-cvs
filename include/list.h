@@ -19,13 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.h,v 7.23 2005/07/16 14:20:39 michael Exp $
+ *  $Id: list.h,v 7.24 2005/07/18 13:30:15 michael Exp $
  */
 
 #ifndef INCLUDED_list_h
 #define INCLUDED_list_h
-
-dlink_node;
 
 extern void init_dlink_nodes(void);
 extern void free_dlink_node(dlink_node *);
