@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.99 2005/07/16 08:19:47 michael Exp $
+ *  $Id: hash.c,v 7.100 2005/07/18 22:49:57 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -532,7 +532,7 @@ hash_find_channel(const char *name)
   return(chptr);
 }
 
-/* hash_get_chptr(unsigned int hashv)
+/* hash_get_bucket(int type, unsigned int hashv)
  *
  * inputs       - hash value (must be between 0 and HASHSIZE - 1)
  * output       - NONE
