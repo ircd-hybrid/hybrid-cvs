@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.200 2005/07/18 15:40:44 db Exp $
+ *  $Id: m_sjoin.c,v 1.201 2005/07/18 21:05:12 db Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.200 $";
+const char *_version = "$Revision: 1.201 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -109,7 +109,8 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   char           nick_prefix[4];
   char           uid_prefix[4];
   char           *np, *up;
-  int            num_prefix = 0;
+  int            len_nick = 0;
+  int            len_uid = 0;
   int            isnew;
   int            buflen = 0;
   int	         slen;
@@ -314,7 +315,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
     fl = 0;
 
-
     do
     {
       switch (*s)
@@ -354,7 +354,8 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       continue;
     }
 
-    num_prefix = 0;
+    len_nick = strlen(target_p->name);
+    len_uid = strlen(ID(target_p));
 
     np = nick_prefix;
     up = uid_prefix;
@@ -365,21 +366,24 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       {
         *np++ = '@';
         *up++  = '@';
-        num_prefix++;
+        len_nick++;
+	len_uid++;
       }
 #ifdef HALFOPS
       if (fl & CHFL_HALFOP)
       {
         *np++ = '%';
         *up++  = '%';
-        num_prefix++;
+        len_nick++;
+	len_uid++;
       }
 #endif
       if (fl & CHFL_VOICE)
       {
         *np++ = '+';
         *up++  = '+';
-        num_prefix++;
+        len_nick++;
+	len_uid++;
       }
     }
     else
@@ -391,7 +395,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     }
     *np = *up = '\0';
 
-    if ((nick_ptr - nick_buf + strlen(target_p->name) + num_prefix) > (BUFSIZE  - 2))
+    if ((nick_ptr - nick_buf + len_nick) > (BUFSIZE  - 2))
     {
       sendto_server(client_p, NULL, chptr, 0, CAP_TS6, 0, "%s", nick_buf);
       
@@ -402,7 +406,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     }
     nick_ptr += ircsprintf(nick_ptr, "%s%s ", nick_prefix, target_p->name);
     
-    if ((uid_ptr - uid_buf + strlen(ID(target_p)) + num_prefix) > (BUFSIZE - 2))
+    if ((uid_ptr - uid_buf + len_uid) > (BUFSIZE - 2))
     {
       sendto_server(client_p, NULL, chptr, CAP_TS6, 0, 0, "%s", uid_buf);
       
