@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.199 2005/07/18 14:28:50 db Exp $
+ *  $Id: m_sjoin.c,v 1.200 2005/07/18 15:40:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.199 $";
+const char *_version = "$Revision: 1.200 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -106,12 +106,14 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   int            keep_our_modes = 1;
   int            keep_new_modes = 1;
   int            lcount;
-  int		 i;
+  char           nick_prefix[4];
+  char           uid_prefix[4];
+  char           *np, *up;
   int            num_prefix = 0;
   int            isnew;
   int            buflen = 0;
-  int		 slen;
-  unsigned int fl;
+  int	         slen;
+  unsigned       int fl;
   char           *s;
   char		 *sptr;
   static         char nick_buf[BUFSIZE]; /* buffer for modes and prefix */
@@ -311,7 +313,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       *p++ = '\0';
 
     fl = 0;
-    num_prefix = 0;
+
 
     do
     {
@@ -352,29 +354,32 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       continue;
     }
 
-    i = 0;
+    num_prefix = 0;
+
+    np = nick_prefix;
+    up = uid_prefix;
 
     if (keep_new_modes)
     {
       if (fl & CHFL_CHANOP)
       {
-        *nick_ptr++ = '@';
-        *uid_ptr++  = '@';
-	i++;
+        *np++ = '@';
+        *up++  = '@';
+        num_prefix++;
       }
 #ifdef HALFOPS
       if (fl & CHFL_HALFOP)
       {
-        *nick_ptr++ = '%';
-        *uid_ptr++  = '%';
-	i++;
+        *np++ = '%';
+        *up++  = '%';
+        num_prefix++;
       }
 #endif
       if (fl & CHFL_VOICE)
       {
-        *nick_ptr++ = '+';
-        *uid_ptr++  = '+';
-	i++;
+        *np++ = '+';
+        *up++  = '+';
+        num_prefix++;
       }
     }
     else
@@ -384,8 +389,9 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       else
         fl = 0;
     }
+    *np = *up = '\0';
 
-    if ((nick_ptr - nick_buf + strlen(target_p->name) + i) > (BUFSIZE  - 2))
+    if ((nick_ptr - nick_buf + strlen(target_p->name) + num_prefix) > (BUFSIZE  - 2))
     {
       sendto_server(client_p, NULL, chptr, 0, CAP_TS6, 0, "%s", nick_buf);
       
@@ -394,9 +400,9 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
                           chptr->chname, modebuf, parabuf);
       nick_ptr = nick_buf + buflen;
     }
-    nick_ptr += ircsprintf(nick_ptr, "%s ", target_p->name);
+    nick_ptr += ircsprintf(nick_ptr, "%s%s ", nick_prefix, target_p->name);
     
-    if ((uid_ptr - uid_buf + strlen(ID(target_p)) + i) > (BUFSIZE - 2))
+    if ((uid_ptr - uid_buf + strlen(ID(target_p)) + num_prefix) > (BUFSIZE - 2))
     {
       sendto_server(client_p, NULL, chptr, CAP_TS6, 0, 0, "%s", uid_buf);
       
@@ -406,7 +412,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       uid_ptr = uid_buf + buflen;
     }
 
-    uid_ptr  += ircsprintf(uid_ptr,  "%s ", ID(target_p));
+    uid_ptr  += ircsprintf(uid_ptr,  "%s%s ", uid_prefix, ID(target_p));
 	
     /* LazyLinks - Introduce unknown clients before sending the sjoin */
     if (ServerInfo.hub)
@@ -575,13 +581,17 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   }               
 }
 
-/* set_final_mode()
+/* set_final_mode
  *
- * inputs	- pointer to mode to setup
- *		- pointer to old mode
+ * inputs	- channel mode
+ *		- old channel mode
  * output	- NONE
- * side effects	- 
+ * side effects	- walk through all the channel modes turning off modes
+ *		  that were on in oldmode but aren't on in mode.
+ *		  Then walk through turning on modes that are on in mode
+ *		  but were not set in oldmode.
  */
+
 static const struct mode_letter
 {
   unsigned int mode;
@@ -595,17 +605,6 @@ static const struct mode_letter
   { MODE_PRIVATE,    'p' },
   { 0, '\0' }
 };
-
-/* set_final_mode
- *
- * inputs	- channel mode
- *		- old channel mode
- * output	- NONE
- * side effects	- walk through all the channel modes turning off modes
- *		  that were on in oldmode but aren't on in mode.
- *		  Then walk through turning on modes that are on in mode
- *		  but were not set in oldmode.
- */
 
 static void
 set_final_mode(struct Mode *mode, struct Mode *oldmode)
