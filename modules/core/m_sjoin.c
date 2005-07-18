@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.198 2005/07/17 11:46:32 db Exp $
+ *  $Id: m_sjoin.c,v 1.199 2005/07/18 14:28:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.198 $";
+const char *_version = "$Revision: 1.199 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -77,6 +77,8 @@ static void set_final_mode(struct Mode *, struct Mode *);
 static void remove_our_modes(struct Channel *, struct Client *);
 static void remove_a_mode(struct Channel *, struct Client *, int, char);
 static void remove_ban_list(struct Channel *, struct Client *, dlink_list *, char, int);
+static void introduce_lazy_link_clients(struct Client *,struct Client *,
+					struct Channel *);
 
 /* ms_sjoin()
  *
@@ -95,7 +97,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
   struct Channel *chptr;
-  struct Client  *target_p, *lclient_p;
+  struct Client  *target_p;
   time_t         newts;
   time_t         oldts;
   time_t         tstosend;
@@ -104,7 +106,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   int            keep_our_modes = 1;
   int            keep_new_modes = 1;
   int            lcount;
-  int            people = 0;
+  int		 i;
   int            num_prefix = 0;
   int            isnew;
   int            buflen = 0;
@@ -112,11 +114,10 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   unsigned int fl;
   char           *s;
   char		 *sptr;
-  static         char nick_buf[2*BUFSIZE]; /* buffer for modes and prefix */
-  static         char uid_buf[2*BUFSIZE];  /* buffer for modes/prefixes for CAP_TS6 servers */
+  static         char nick_buf[BUFSIZE]; /* buffer for modes and prefix */
+  static         char uid_buf[BUFSIZE];  /* buffer for modes/prefixes for CAP_TS6 servers */
   char           *nick_ptr, *uid_ptr;      /* pointers used for making the two mode/prefix buffers */
   char           *p; /* pointer used making sjbuf */
-  int            i;
   dlink_node     *m;
   const char *servername = (ConfigServerHide.hide_servers || IsHidden(source_p)) ?
 			    me.name : source_p->name;  
@@ -259,7 +260,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 	                 servername, chptr->chname, modebuf, parabuf);
   }
 
-  modebuf[0] = parabuf[0] = '\0';
   if (parv[3][0] != '0' && keep_new_modes)
   {
     channel_modes(chptr, source_p, modebuf, parabuf);
@@ -292,55 +292,50 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   }
 
   mbuf = modebuf;
-  for (lcount = 0; lcount < MAXMODEPARAMS; lcount++)
-    para[lcount] = "";
   sendbuf[0] = '\0';
   pargs = 0;
 
   *mbuf++ = '+';
 
   s = parv[args + 4];
-
-  /* remove any leading spaces */
-  while (*s == ' ')
-    s++;
-   
-  /* if theres a space, theres going to be more than one nick, change the
-   * first space to \0, so s is just the first nick, and point p to the
-   * second nick
-   */
-  if ((p = strchr(s, ' ')) != NULL)
-    *p++ = '\0';
-
-  while (s != NULL)
+  
+  do 
   {
+    int valid_mode = 1;
+
+    while (*s == ' ')
+      s++;
+    if (*s == '\0')
+      break;
+    if ((p = strchr(s, ' ')) != NULL)
+      *p++ = '\0';
+
     fl = 0;
     num_prefix = 0;
 
-#ifdef HALFOPS
-    for (i = 0; i < 3; i++)
-#else
-    for (i = 0; i < 2; i++)
-#endif
+    do
     {
-      if (*s == '@')
+      switch (*s)
       {
-        fl |= CHFL_CHANOP;
-        s++;
-      }
+      case '@':
+	fl |= CHFL_CHANOP;
+	s++;
+	break;
 #ifdef HALFOPS
-      if (*s == '%')
-      {
-        fl |= CHFL_HALFOP;
-        s++;
-      }
+      case '%':
+	fl |= CHFL_HALFOP;
+	s++;
+	break;
 #endif
-      else if (*s == '+')
-      {
+      case '+':
         fl |= CHFL_VOICE;
         s++;
+	break;
+      default:
+	valid_mode = 0;
+	break;
       }
-    }
+    } while(valid_mode);
 
     target_p = find_chasing(client_p, source_p, s, NULL);
 
@@ -354,23 +349,43 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         target_p->from != client_p ||
         !IsClient(target_p))
     {
-      goto nextnick;
+      continue;
     }
 
-    i = 1;
+    i = 0;
+
     if (keep_new_modes)
     {
       if (fl & CHFL_CHANOP)
-        i++;
+      {
+        *nick_ptr++ = '@';
+        *uid_ptr++  = '@';
+	i++;
+      }
 #ifdef HALFOPS
       if (fl & CHFL_HALFOP)
-        i++;
+      {
+        *nick_ptr++ = '%';
+        *uid_ptr++  = '%';
+	i++;
+      }
 #endif
       if (fl & CHFL_VOICE)
-        i++;
+      {
+        *nick_ptr++ = '+';
+        *uid_ptr++  = '+';
+	i++;
+      }
     }
-    
-    if (nick_ptr - nick_buf + i + strlen(target_p->name) > BUFSIZE - 2)
+    else
+    {
+      if (fl & (CHFL_CHANOP|CHFL_HALFOP))
+        fl = CHFL_DEOPPED;
+      else
+        fl = 0;
+    }
+
+    if ((nick_ptr - nick_buf + strlen(target_p->name) + i) > (BUFSIZE  - 2))
     {
       sendto_server(client_p, NULL, chptr, 0, CAP_TS6, 0, "%s", nick_buf);
       
@@ -379,8 +394,9 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
                           chptr->chname, modebuf, parabuf);
       nick_ptr = nick_buf + buflen;
     }
+    nick_ptr += ircsprintf(nick_ptr, "%s ", target_p->name);
     
-    if (uid_ptr - uid_buf + i + strlen(ID(target_p)) > BUFSIZE - 2)
+    if ((uid_ptr - uid_buf + strlen(ID(target_p)) + i) > (BUFSIZE - 2))
     {
       sendto_server(client_p, NULL, chptr, CAP_TS6, 0, 0, "%s", uid_buf);
       
@@ -389,72 +405,12 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
                           chptr->chname, modebuf, parabuf);
       uid_ptr = uid_buf + buflen;
     }
-    
-    if (keep_new_modes)
-    {
-      if (fl & CHFL_CHANOP)
-      {
-        *nick_ptr++ = '@';
-        *uid_ptr++  = '@';
-      }
-#ifdef HALFOPS
-      if (fl & CHFL_HALFOP)
-      {
-        *nick_ptr++ = '%';
-        *uid_ptr++  = '%';
-      }
-#endif
-      if (fl & CHFL_VOICE)
-      {
-        *nick_ptr++ = '+';
-        *uid_ptr++  = '+';
-      }
-    }
 
-    /* copy the nick to the two buffers */
-    nick_ptr += ircsprintf(nick_ptr, "%s ", target_p->name);
     uid_ptr  += ircsprintf(uid_ptr,  "%s ", ID(target_p));
-
-    if (!keep_new_modes)
-    {
-      if (fl & (CHFL_CHANOP|CHFL_HALFOP))
-        fl = CHFL_DEOPPED;
-      else
-        fl = 0;
-    }
-    people++;
-
+	
     /* LazyLinks - Introduce unknown clients before sending the sjoin */
     if (ServerInfo.hub)
-    {
-      DLINK_FOREACH(m, serv_list.head)
-      {
-        lclient_p = m->data;
-
-        /* Hopefully, the server knows about it's own clients. */
-        if (client_p == lclient_p)
-	  continue;
-
-        /* Ignore non lazylinks */
-        if (!IsCapable(lclient_p,CAP_LL))
-	  continue;
-
-        /* Ignore servers we won't tell anyway */
-        if (!chptr->lazyLinkChannelExists &
-            (lclient_p->localClient->serverMask))
-          continue;
-
-        /* Ignore servers that already know target_p */
-        if (!(target_p->lazyLinkClientExists &
-	    lclient_p->localClient->serverMask))
-        {
-	  /* Tell LazyLink Leaf about client_p,
-	   * as the leaf is about to get a SJOIN */
-	  sendnick_TS(lclient_p, target_p);
-          add_lazylinkclient(lclient_p,target_p);
-        }
-      }
-    }
+      introduce_lazy_link_clients(client_p, target_p, chptr);
 
     if (!IsMember(target_p, chptr))
     {
@@ -546,25 +502,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         pargs = 0;
       }
     }
-
-nextnick:
-    /* p points to the next nick */
-    s = p;
-
-    /* if there was a trailing space and p was pointing to it, then we
-     * need to exit.. this has the side effect of breaking double spaces
-     * in an sjoin.. but that shouldnt happen anyway
-     */
-    if (s && (*s == '\0'))
-      s = p = NULL;
-
-    /* if p was NULL due to no spaces, s wont exist due to the above, so
-     * we cant check it for spaces.. if there are no spaces, then when
-     * we next get here, s will be NULL
-     */
-    if (s != NULL && ((p = strchr(s, ' ')) != NULL))
-      *p++ = '\0';
-  }
+  } while((s = p) != NULL);
 
   *mbuf = '\0';
   *(nick_ptr - 1) = '\0';
@@ -598,7 +536,7 @@ nextnick:
    * - Dianora
    */
 
-  if ((people == 0) && isnew)
+  if ((dlink_list_length(&chptr->members) == 0) && isnew)
   {
     destroy_channel(chptr);
     return;
@@ -890,4 +828,50 @@ remove_ban_list(struct Channel *chptr, struct Client *source_p,
 
   list->head = list->tail = NULL;
   list->length = 0;
+}
+
+
+/*
+ * introduce_lazy_link_clients
+ *
+ * inputs	- pointer to client 
+ *		- pointer to server having clients introduce -to-
+ *		- pointer to channel being introduced
+ * output	- NONE
+ * side effects	-
+ */
+static void
+introduce_lazy_link_clients(struct Client *client_p, 
+			    struct Client *target_p, struct Channel *chptr)
+{
+  struct Client  *lclient_p;
+  dlink_node     *m;
+
+  DLINK_FOREACH(m, serv_list.head)
+  {
+    lclient_p = m->data;
+    
+    /* Hopefully, the server knows about it's own clients. */
+    if (client_p == lclient_p)
+      continue;
+
+    /* Ignore non lazylinks */
+    if (!IsCapable(lclient_p,CAP_LL))
+      continue;
+
+    /* Ignore servers we won't tell anyway */
+    if (!chptr->lazyLinkChannelExists &
+	(lclient_p->localClient->serverMask))
+      continue;
+
+    /* Ignore servers that already know target_p */
+    if (!(target_p->lazyLinkClientExists &
+	  lclient_p->localClient->serverMask))
+    {
+      /* Tell LazyLink Leaf about client_p,
+       * as the leaf is about to get a SJOIN */
+      sendnick_TS(lclient_p, target_p);
+      add_lazylinkclient(lclient_p,target_p);
+    }
+  }
 }
