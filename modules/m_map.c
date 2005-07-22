@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_map.c,v 1.22 2005/06/03 21:00:57 db Exp $
+ *  $Id: m_map.c,v 1.23 2005/07/22 03:15:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -31,10 +31,11 @@
 #include "s_conf.h"
 #include "ircd.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 
 static void m_map(struct Client *, struct Client *, int, char *[]);
 static void mo_map(struct Client *, struct Client *, int, char *[]);
-static void dump_map(struct Client *, struct Client *, char *);
+static void dump_map(struct Client *, struct Client *, int, char *);
 
 struct Message map_msgtab = {
   "MAP", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -52,7 +53,7 @@ void _moddeinit(void)
   mod_del_cmd(&map_msgtab);
 }
 
-const char *_version = "$Revision: 1.22 $";
+const char *_version = "$Revision: 1.23 $";
 #endif
 
 static char buf[BUFSIZE];
@@ -66,7 +67,7 @@ m_map(struct Client *client_p, struct Client *source_p,
 {
   if (!ConfigServerHide.flatten_links)
   {
-    dump_map(client_p, &me, buf);
+    dump_map(client_p, &me, 0, buf);
     sendto_one(client_p, form_str(RPL_MAPEND), me.name, client_p->name);
     return;
   }
@@ -81,7 +82,7 @@ static void
 mo_map(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
-  dump_map(client_p, &me, buf);
+  dump_map(client_p, &me, 0, buf);
   sendto_one(client_p, form_str(RPL_MAPEND), me.name, client_p->name);
 }
 
@@ -89,36 +90,47 @@ mo_map(struct Client *client_p, struct Client *source_p,
  *   dumps server map, called recursively.
  */
 static void
-dump_map(struct Client *client_p, struct Client *root_p, char *pbuf)
+dump_map(struct Client *client_p, struct Client *root_p, int start_len,
+	 char *pbuf)
 {
-  int cnt = 0, i = 0, len;
-  int users;
+  int cnt = 0, i = 0, l = 0, len = start_len;
+  int users, dashes;
   dlink_node *ptr;
   struct Client *server_p;
+  char *pb;
 
   *pbuf= '\0';
+  pb = pbuf;
 
-  strlcat(pbuf, root_p->name, BUFSIZE);
+  l = ircsprintf(pb, "%s", root_p->name);
+  pb += l;
+  len += l;
 
   /* IsOper isn't called *that* often. */
   if (IsOper(client_p))
   {
     if (root_p->id[0] != '\0')
     {
-      char idbuf[IDLEN + 3];  /* [ID]\0 */
-
-      snprintf(idbuf, sizeof(idbuf), "[%s]", root_p->id);
-      strlcat(pbuf, idbuf, BUFSIZE);
+      l = ircsprintf(pb, "[%s]", root_p->id);
+      pb += l;
+      len += l;
     }
   }
 
-  len = strlen(buf);
-  buf[len] = ' ';
+  *pb++ = ' ';
+  len++;
+  dashes = 50 - len;
+  for(i = 0; i < dashes; i++)
+  {
+    *pb++ = '-';
+  }
+  *pb++ = ' ';
+  *pb++ = '|';
 
   users = dlink_list_length(&root_p->serv->users);
 
-  snprintf(buf + len, BUFSIZE - len, " [Users: %d (%1.1f%%)]", users,
-           100 * (float)users / (float)Count.total);
+  sprintf(pb, " Users: %5d (%1.1f%%)", users,
+	  100 * (float)users / (float)Count.total);
 
   sendto_one(client_p, form_str(RPL_MAP), me.name, client_p->name, buf);
         
@@ -152,7 +164,7 @@ dump_map(struct Client *client_p, struct Client *root_p, char *pbuf)
       
     *(pbuf + 2) = '-';
     *(pbuf + 3) = ' ';
-    dump_map(client_p, server_p, pbuf+4);
+    dump_map(client_p, server_p, start_len+4, pbuf+4);
  
     ++i;
   }
