@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.155.2.1 2005/07/13 02:34:28 adx Exp $
+ *  $Id: modules.c,v 7.155.2.2 2005/07/22 17:21:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -74,6 +74,7 @@ static const char *core_module_table[] =
 int num_mods = 0;
 
 static dlink_list mod_paths = { NULL, NULL, 0 };
+static dlink_list conf_modules = { NULL, NULL, 0 };
 
 static void mo_modload(struct Client *, struct Client *, int, char **);
 static void mo_modlist(struct Client *, struct Client *, int, char **);
@@ -189,6 +190,22 @@ mod_add_path(const char *path)
   dlinkAdd(pathst, &pathst->node, &mod_paths);
 }
 
+/* add_conf_module
+ *
+ * input	- module name
+ * output	- NONE
+ * side effects - adds module to conf_mod
+ */
+void
+add_conf_module(const char *name)
+{
+  struct module_path *pathst;
+
+  pathst = MyMalloc(sizeof(struct module_path));
+  DupString(pathst->path, name);
+  dlinkAdd(pathst, &pathst->node, &conf_modules);
+}
+
 /* mod_clear_paths()
  *
  * input	-
@@ -207,6 +224,15 @@ mod_clear_paths(void)
     pathst = ptr->data;
 
     dlinkDelete(&pathst->node, &mod_paths);
+    MyFree(pathst->path);
+    MyFree(pathst);
+  }
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, conf_modules.head)
+  {
+    pathst = ptr->data;
+
+    dlinkDelete(&pathst->node, &conf_modules);
     MyFree(pathst->path);
     MyFree(pathst);
   }
