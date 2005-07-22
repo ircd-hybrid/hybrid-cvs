@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.191 2005/06/23 09:33:58 michael Exp $
+ *  $Id: m_sjoin.c,v 1.191.2.1 2005/07/22 15:36:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.191 $";
+const char *_version = "$Revision: 1.191.2.1 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -900,6 +900,10 @@ remove_ban_list(struct Channel *chptr, struct Client *source_p,
     pbuf += ircsprintf(pbuf, "%s ", banptr->banstr);
     count++;
 
+    dlinkDelete(&banptr->node, list);
+
+    MyFree(banptr->banstr);
+    MyFree(banptr->who);
     BlockHeapFree(ban_heap, banptr);
   }
 
