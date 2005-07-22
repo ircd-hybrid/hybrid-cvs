@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.436 2005/07/16 12:19:50 michael Exp $
+ * \version $Id: channel.c,v 7.437 2005/07/22 15:28:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -309,6 +309,19 @@ check_channel_name(const char *name)
   return(1);
 }
 
+void
+remove_ban(struct Ban *bptr, dlink_list *list)
+{
+  dlinkDelete(&bptr->node, list);
+
+  MyFree(bptr->name);
+  MyFree(bptr->username);
+  MyFree(bptr->host);
+  MyFree(bptr->who);
+
+  BlockHeapFree(ban_heap, bptr);
+}
+
 /* free_channel_list()
  *
  * inputs       - pointer to dlink_list
@@ -321,16 +334,7 @@ free_channel_list(dlink_list *list)
   dlink_node *ptr = NULL, *next_ptr = NULL;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, list->head)
-  {
-    struct Ban *actualBan = ptr->data;
-
-    MyFree(actualBan->name);
-    MyFree(actualBan->username);
-    MyFree(actualBan->host);
-    MyFree(actualBan->who);
-    dlinkDelete(&actualBan->node, list);
-    BlockHeapFree(ban_heap, actualBan);
-  }
+    remove_ban(ptr->data, list);
 
   assert(list->tail == NULL && list->head == NULL);
 }

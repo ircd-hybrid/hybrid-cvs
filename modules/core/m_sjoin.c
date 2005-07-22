@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.201 2005/07/18 21:05:12 db Exp $
+ *  $Id: m_sjoin.c,v 1.202 2005/07/22 15:28:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -42,8 +42,7 @@
 #include "s_serv.h"
 #include "s_conf.h"
 
-extern BlockHeap *ban_heap;
-static void ms_sjoin(struct Client *, struct Client *, int, char **);
+static void ms_sjoin(struct Client *, struct Client *, int, char *[]);
 
 struct Message sjoin_msgtab = {
   "SJOIN", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -63,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.201 $";
+const char *_version = "$Revision: 1.202 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -777,25 +776,25 @@ static void
 remove_ban_list(struct Channel *chptr, struct Client *source_p,
                 dlink_list *list, char c, int cap)
 {
-  static char lmodebuf[MODEBUFLEN];
-  static char lparabuf[BUFSIZE];
-  struct Ban *banptr;    
-  dlink_node *ptr;
-  dlink_node *next_ptr;
-  char *pbuf;
+  char lmodebuf[MODEBUFLEN];
+  char lparabuf[BUFSIZE];
+  struct Ban *banptr = NULL;
+  dlink_node *ptr = NULL;
+  dlink_node *next_ptr = NULL;
+  char *pbuf = NULL;
   int count = 0;      
   int cur_len, mlen, plen;
 
   pbuf = lparabuf;
   
   cur_len = mlen = ircsprintf(lmodebuf, ":%s MODE %s -",
-            source_p->name, chptr->chname);
+                              source_p->name, chptr->chname);
   mbuf = lmodebuf + mlen;
- 
+
   DLINK_FOREACH_SAFE(ptr, next_ptr, list->head)
   {
     banptr = ptr->data;
- 
+
     plen = banptr->len + 4;  /* another +b and "!@ " */
     if (count >= MAXMODEPARAMS ||
         (cur_len + 1 /* space between */ + (plen - 1)) > BUFSIZE - 2)
@@ -819,20 +818,16 @@ remove_ban_list(struct Channel *chptr, struct Client *source_p,
     cur_len += plen;
     pbuf += ircsprintf(pbuf, "%s!%s@%s ", banptr->name, banptr->username,
 		       banptr->host);
-    count++;
+    ++count;
 
-    BlockHeapFree(ban_heap, banptr);
+    remove_ban(banptr, list);
   }
 
   *(pbuf - 1) = *mbuf = '\0';
   sendto_channel_local(ALL_MEMBERS, chptr, "%s %s", lmodebuf, lparabuf);
   sendto_server(source_p, NULL, chptr, cap, CAP_TS6, NOFLAGS,
 		"%s %s", lmodebuf, lparabuf);
-
-  list->head = list->tail = NULL;
-  list->length = 0;
 }
-
 
 /*
  * introduce_lazy_link_clients

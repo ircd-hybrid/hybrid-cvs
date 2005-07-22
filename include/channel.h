@@ -21,7 +21,7 @@
 
 /*! \file channel.h
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.h,v 7.162 2005/07/20 11:36:09 michael Exp $
+ * \version $Id: channel.h,v 7.163 2005/07/22 15:28:49 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -101,6 +101,7 @@ extern int is_banned(struct Channel *, struct Client *);
 extern int can_join(struct Client *, struct Channel *, const char *);
 extern int has_member_flags(struct Membership *, unsigned int);
 
+extern void remove_ban(struct Ban *, dlink_list *);
 extern void init_channels(void);
 extern void add_user_to_channel(struct Channel *, struct Client *, unsigned int);
 extern void remove_user_from_channel(struct Membership *);

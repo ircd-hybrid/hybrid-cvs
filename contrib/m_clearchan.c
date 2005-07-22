@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_clearchan.c,v 1.53 2005/07/09 13:27:52 adx Exp $
+ *  $Id: m_clearchan.c,v 1.54 2005/07/22 15:28:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -42,8 +42,6 @@
 #include "list.h"
 #include "s_conf.h"
 
-
-extern BlockHeap *ban_heap;
 
 static void mo_clearchan(struct Client *, struct Client *, int, char *[]);
 static void kick_list(struct Client *, struct Client *, struct Channel *);
@@ -68,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.54 $";
 #endif
 
 /*
@@ -207,14 +205,6 @@ remove_our_modes(struct Channel *chptr)
   free_channel_list(&chptr->banlist);
   free_channel_list(&chptr->exceptlist);
   free_channel_list(&chptr->invexlist);
-#if 1
-  assert(!chptr->banlist.head);
-  assert(!chptr->banlist.tail);
-  assert(!chptr->exceptlist.head);
-  assert(!chptr->exceptlist.tail);
-  assert(!chptr->invexlist.head);
-  assert(!chptr->invexlist.tail);
-#endif
 }
 
 /* remove_a_mode()

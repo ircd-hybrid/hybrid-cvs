@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.150 2005/07/16 12:19:50 michael Exp $
+ *  $Id: channel_mode.c,v 7.151 2005/07/22 15:28:53 michael Exp $
  */
 
 #include "stdinc.h"
@@ -289,12 +289,7 @@ del_id(struct Channel *chptr, const char *banid, int type)
 	(irccmp(username, banptr->username) == 0) &&
 	(irccmp(host, banptr->host) == 0))
     {
-      MyFree(banptr->name);
-      MyFree(banptr->username);
-      MyFree(banptr->host);
-      MyFree(banptr->who);
-      dlinkDelete(&banptr->node, list);
-      BlockHeapFree(ban_heap, banptr);
+      remove_ban(banptr, list);
       return(1);
     }
   }
