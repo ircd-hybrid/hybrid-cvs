@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.37 2005/06/22 22:45:05 michael Exp $
+ *  $Id: supported.h,v 1.37.2.1 2005/07/22 16:21:27 db Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -35,20 +35,23 @@
                  "%s%s%s"          \
                  " MODES=%i"       \
                  " MAXCHANNELS=%i" \
+		 " CHANNELLEN=%d" \
                  " MAXBANS=%i"     \
                  " MAXTARGETS=%i"  \
                  " NICKLEN=%i"     \
-                 " TOPICLEN=%i"    \
-                 " KICKLEN=%i"
+                 " TOPICLEN=%i"    
+
 
 #define FEATURESVALUES ConfigChannel.use_knock ? " KNOCK" : "", \
         ConfigChannel.use_except ? " EXCEPTS" : "", \
         ConfigChannel.use_invex ? " INVEX" : "", \
         MAXMODEPARAMS,ConfigChannel.max_chans_per_user, \
+	CHANNELLEN, \
         ConfigChannel.max_bans, \
-        ConfigFileEntry.max_targets,NICKLEN-1,TOPICLEN,TOPICLEN
+        ConfigFileEntry.max_targets,NICKLEN-1,TOPICLEN
 
-#define FEATURES2 "CHANTYPES=%s"      \
+#define FEATURES2 "KICKLEN=%i"	      \
+		  " CHANTYPES=%s"      \
                   " PREFIX=%s"        \
 		  " CHANMODES=%s%s%s" \
 		  " NETWORK=%s"       \
@@ -57,7 +60,8 @@
                   " ELIST=CMNTU"
 
 #ifdef HALFOPS
-#define FEATURES2VALUES ConfigChannel.disable_local_channels ? "#" : "#&", \
+#define FEATURES2VALUES TOPICLEN\
+		        ConfigChannel.disable_local_channels ? "#" : "#&", \
                         "(ohv)@%+", \
                         ConfigChannel.use_except ? "e" : "", \
                         ConfigChannel.use_invex ? "I" : "", \
@@ -65,7 +69,8 @@
                         ServerInfo.network_name, CASEMAP, \
 			(uplink && IsCapable(uplink, CAP_LL)) ? "" : " SAFELIST"
 #else
-#define FEATURES2VALUES ConfigChannel.disable_local_channels ? "#" : "#&", \
+#define FEATURES2VALUES TOPICLEN, \
+			ConfigChannel.disable_local_channels ? "#" : "#&", \
                         "(ov)@+", \
                         ConfigChannel.use_except ? "e" : "", \
                         ConfigChannel.use_invex ? "I" : "", \
