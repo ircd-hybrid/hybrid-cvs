@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.529 2005/07/16 13:29:50 db Exp $
+ *  $Id: s_conf.c,v 7.530 2005/07/22 00:23:34 db Exp $
  */
 
 #include "stdinc.h"
@@ -2474,6 +2474,7 @@ read_conf_files(int cold)
   add_isupport("CHANLIMIT", chanlimit, -1);
   ircsprintf(chanmodes, "%s%s%s", ConfigChannel.use_except ? "e" : "",
 	     ConfigChannel.use_invex ? "I" : "", "b,k,l,imnpst");
+  add_isupport("CHANNELLEN", NULL, CHANNELLEN);
   if (ConfigChannel.use_except)
     add_isupport("EXCEPTS", "e", -1);
   if (ConfigChannel.use_invex)
