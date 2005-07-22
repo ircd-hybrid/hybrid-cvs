@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.102 2005/07/16 13:03:51 michael Exp $
+dnl $Id: configure.ac,v 7.103 2005/07/22 02:19:55 metalrock Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.102 2005/07/16 13:03:51 michael Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.103 2005/07/22 02:19:55 metalrock Exp $])
 
 AC_INIT([ircd-hybrid],[7.1])
 
@@ -869,7 +869,7 @@ AC_HELP_STRING([--with-nicklen=LENGTH],[Set the nick length to LENGTH (default 9
 	NICKLEN="$withval", NICKLEN="9")
 
 AC_ARG_WITH(topiclen,           
-AC_HELP_STRING([--with-topiclen=NUMBER],[Set the max topic length to NUMBER (default 120, max 390)]),
+AC_HELP_STRING([--with-topiclen=NUMBER],[Set the max topic length to NUMBER (default 160, max 390)]),
 [
  if test $withval -ge 390; then
 	TOPICLEN=390
@@ -877,7 +877,7 @@ AC_HELP_STRING([--with-topiclen=NUMBER],[Set the max topic length to NUMBER (def
  else
  	TOPICLEN=$withval
  fi
-], [TOPICLEN=120])
+], [TOPICLEN=160])
 
 AC_ARG_WITH(maxconn,
 AC_HELP_STRING([--with-maxconn=NUMBER],[Maximum number of connections the ircd can handle]),
