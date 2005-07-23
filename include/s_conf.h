@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.294 2005/07/23 18:21:26 michael Exp $
+ *  $Id: s_conf.h,v 7.295 2005/07/23 23:12:28 adx Exp $
  */
 
 #include <regex.h>
@@ -308,6 +308,7 @@ struct config_file_entry
   int gline_logging;
   int hide_spoof_ips;
   int burst_away;
+  int use_whois_actually;
   int tkline_expire_notices;
   int idletime;
   int ignore_bogus_ts;

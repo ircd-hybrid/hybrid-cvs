@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.401 2005/07/18 14:06:58 michael Exp $
+ *  $Id: ircd_parser.y,v 1.402 2005/07/23 23:12:32 adx Exp $
  */
 
 %{
@@ -346,6 +346,7 @@ unhook_hub_leaf_confs(void)
 %token  USE_INVEX
 %token  USE_KNOCK
 %token  USE_LOGGING
+%token  USE_WHOIS_ACTUALLY
 %token  VHOST
 %token  VHOST6
 %token  XLINE
@@ -2788,7 +2789,7 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
                     general_dot_in_ip6_addr | general_ping_cookie |
                     general_disable_auth | general_burst_away |
 		    general_tkline_expire_notices | general_gline_min_cidr |
-                    general_gline_min_cidr6 |
+                    general_gline_min_cidr6 | general_use_whois_actually |
 		    error;
 
 
@@ -2809,6 +2810,11 @@ general_burst_away: BURST_AWAY '=' TBOOL ';'
 {
   if (ypass == 1) /* must be set in the 1st pass */
     ConfigFileEntry.burst_away = yylval.number;
+};
+
+general_use_whois_actually: USE_WHOIS_ACTUALLY '=' TBOOL ';'
+{
+  ConfigFileEntry.use_whois_actually = yylval.number;
 };
 
 general_tkline_expire_notices: TKLINE_EXPIRE_NOTICES '=' TBOOL ';'

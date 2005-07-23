@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.532 2005/07/23 18:34:59 michael Exp $
+ *  $Id: s_conf.c,v 7.533 2005/07/23 23:12:32 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1966,7 +1966,12 @@ set_default_conf(void)
 
   ConfigFileEntry.gline_min_cidr = 16;
   ConfigFileEntry.gline_min_cidr6 = 48;
-  ConfigFileEntry.burst_away = 0;
+  ConfigFileEntry.burst_away = NO;
+#ifdef EFNET
+  ConfigFileEntry.use_whois_actually = NO;
+#else
+  ConfigFileEntry.use_whois_actually = YES;
+#endif
   ConfigFileEntry.tkline_expire_notices = YES;
   ConfigFileEntry.hide_spoof_ips = YES;
   ConfigFileEntry.ignore_bogus_ts = NO;

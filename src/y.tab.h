@@ -1,7 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.0.  */
+/* A Bison parser, made from ircd_parser.y, by GNU bison 1.75.  */
+/* $Id: y.tab.h,v 7.23 2005/07/23 23:12:33 adx Exp $ */
 
 /* Skeleton parser for Yacc-like parsing with Bison,
-   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -22,7 +23,10 @@
    Bison output file, you may use that output file without restriction.
    This special exception was added by the Free Software Foundation
    in version 1.24 of Bison.  */
-/*  $Id: y.tab.h,v 7.22 2005/07/18 14:12:27 michael Exp $ */
+
+#ifndef BISON_Y_TAB_H
+# define BISON_Y_TAB_H
+
 /* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
@@ -252,11 +256,12 @@
      USE_INVEX = 478,
      USE_KNOCK = 479,
      USE_LOGGING = 480,
-     VHOST = 481,
-     VHOST6 = 482,
-     XLINE = 483,
-     WARN = 484,
-     WARN_NO_NLINE = 485
+     USE_WHOIS_ACTUALLY = 481,
+     VHOST = 482,
+     VHOST6 = 483,
+     XLINE = 484,
+     WARN = 485,
+     WARN_NO_NLINE = 486
    };
 #endif
 #define ACCEPT_PASSWORD 258
@@ -482,29 +487,29 @@
 #define USE_INVEX 478
 #define USE_KNOCK 479
 #define USE_LOGGING 480
-#define VHOST 481
-#define VHOST6 482
-#define XLINE 483
-#define WARN 484
-#define WARN_NO_NLINE 485
+#define USE_WHOIS_ACTUALLY 481
+#define VHOST 482
+#define VHOST6 483
+#define XLINE 484
+#define WARN 485
+#define WARN_NO_NLINE 486
 
 
 
 
-#if ! defined (YYSTYPE) && ! defined (YYSTYPE_IS_DECLARED)
+#ifndef YYSTYPE
 #line 129 "ircd_parser.y"
-typedef union YYSTYPE {
+typedef union {
   int number;
   char *string;
-} YYSTYPE;
-/* Line 1318 of yacc.c.  */
-#line 502 "y.tab.h"
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
-# define YYSTYPE_IS_DECLARED 1
-# define YYSTYPE_IS_TRIVIAL 1
+} yystype;
+/* Line 1281 of /usr/local/share/bison/yacc.c.  */
+#line 507 "y.tab.h"
+# define YYSTYPE yystype
 #endif
 
 extern YYSTYPE yylval;
 
 
+#endif /* not BISON_Y_TAB_H */
 
