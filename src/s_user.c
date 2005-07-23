@@ -19,8 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.341 2005/07/16 12:19:51 michael Exp $
+ *  $Id: s_user.c,v 7.342 2005/07/23 18:21:30 michael Exp $
  */
+
+#include <regex.h>
 
 #include "stdinc.h"
 #include "tools.h"
@@ -59,7 +61,8 @@ int MaxConnectionCount = 1;
 
 static void user_welcome(struct Client *);
 static void report_and_set_user_flags(struct Client *, struct AccessItem *);
-static int check_xline(struct Client *, struct Client *);
+static int check_xline(struct Client *);
+static int check_regexp_xline(struct Client *);
 static int introduce_client(struct Client *, struct Client *);
 
 struct Isupport 
@@ -425,8 +428,10 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     return(CLIENT_EXITED);
   }
 
+  assert(source_p == client_p);
+
   /* end of valid user name check */
-  if ((status = check_xline(client_p, source_p)) != 0)
+  if ((status = check_xline(source_p)|check_regexp_xline(source_p)))
     return(status);
 
   if (IsDead(client_p))
@@ -591,7 +596,7 @@ introduce_client(struct Client *client_p, struct Client *source_p)
   else
     send_umode(NULL, source_p, 0, SEND_UMODES, ubuf);
 
-  if (!*ubuf)
+  if (*ubuf == '\0')
   {
     ubuf[0] = '+';
     ubuf[1] = '\0';
@@ -1163,21 +1168,6 @@ user_welcome(struct Client *source_p)
   sendto_one(source_p, form_str(RPL_YOURHOST), me.name, source_p->name,
 	     get_listener_name(source_p->localClient->listener), ircd_version);
 
-#if 0
-  /*
-  ** Don't mess with this one - IRCII needs it! -Avalon
-  */
-  /* No one has needed this in years, but I remember when IRCII did!
-   * It sure confused me why my IRCII client hung at start up
-   * when I was writing my first ircd from scratch. ;-)
-   * - Dianora
-   */
-  sendto_one(source_p,
-	     "NOTICE %s :*** Your host is %s, running version %s",
-	     source_p->name, get_listener_name(source_p->localClient->listener),
-	     ircd_version);
-#endif
-
   sendto_one(source_p, form_str(RPL_CREATED),
              me.name,source_p->name, creation);
   sendto_one(source_p, form_str(RPL_MYINFO),
@@ -1212,7 +1202,7 @@ user_welcome(struct Client *source_p)
  * side effects -
  */
 static int
-check_xline(struct Client *client_p, struct Client *source_p)
+check_xline(struct Client *source_p)
 {
   struct ConfItem *conf;
   struct MatchItem *xconf;
@@ -1232,12 +1222,47 @@ check_xline(struct Client *client_p, struct Client *source_p)
     sendto_realops_flags(UMODE_REJ, L_ALL,
 			 "X-line Rejecting [%s] [%s], user %s [%s]",
 			 source_p->info, reason,
-			 get_client_name(client_p, HIDE_IP),
+			 get_client_name(source_p, HIDE_IP),
 			 source_p->sockhost);
 
     ServerStats->is_ref++;      
-    exit_client(client_p, source_p, &me, "Bad user info");
+    exit_client(source_p, source_p, &me, "Bad user info");
     return(CLIENT_EXITED);
+  }
+
+  return(0);
+}
+
+static int
+check_regexp_xline(struct Client *source_p)
+{
+  const dlink_node *ptr = NULL;
+  const char *reason = NULL;
+
+  DLINK_FOREACH(ptr, rxconf_items.head)
+  {
+    struct ConfItem *conf = ptr->data;
+    struct MatchItem *reg = map_to_conf(conf);
+
+    if (!regexec(conf->regexpname, source_p->info, 0, NULL, 0))
+    {
+      ++reg->count;
+
+      if (reg->reason != NULL)
+        reason = reg->reason;
+      else
+        reason = "No Reason";
+
+      sendto_realops_flags(UMODE_REJ, L_ALL,
+                           "X-line (REGEX) Rejecting [%s] [%s], user %s [%s]",
+                           source_p->info, reason,
+                           get_client_name(source_p, HIDE_IP),
+                           source_p->sockhost);
+
+      ServerStats->is_ref++;
+      exit_client(source_p, source_p, &me, "Bad user info");
+      return(CLIENT_EXITED);
+    }
   }
 
   return(0);

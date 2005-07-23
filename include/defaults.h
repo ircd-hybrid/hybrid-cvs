@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.17 2003/10/04 19:31:17 metalrock Exp $
+ *  $Id: defaults.h,v 7.18 2005/07/23 18:21:26 michael Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -63,6 +63,7 @@
 #define DLPATH  ETCPATH "/dline.conf"           /* dline file */
 #define GPATH   ETCPATH "/gline.conf"           /* gline conffile */
 #define XPATH   ETCPATH "/xline.conf"           /* xline file */
+#define RXPATH  ETCPATH "/rxline.conf"
 #define MPATH   ETCPATH "/ircd.motd"            /* MOTD file */
 #define LPATH   LOGPATH "/ircd.log"             /* ircd logfile */
 #define PPATH   ETCPATH "/ircd.pid"             /* pid file */

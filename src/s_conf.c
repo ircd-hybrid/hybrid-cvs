@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.530 2005/07/22 00:23:34 db Exp $
+ *  $Id: s_conf.c,v 7.531 2005/07/23 18:21:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,14 +67,16 @@ dlink_list leaf_items    = { NULL, NULL, 0 };
 dlink_list oconf_items   = { NULL, NULL, 0 };
 dlink_list uconf_items   = { NULL, NULL, 0 };
 dlink_list xconf_items   = { NULL, NULL, 0 };
+dlink_list rxconf_items  = { NULL, NULL, 0 };
 dlink_list nresv_items   = { NULL, NULL, 0 };
 dlink_list class_items   = { NULL, NULL, 0 };
 dlink_list gdeny_items	 = { NULL, NULL, 0 };
 
-dlink_list temporary_klines = { NULL, NULL, 0 };
-dlink_list temporary_dlines = { NULL, NULL, 0 };
-dlink_list temporary_xlines = { NULL, NULL, 0 };
-dlink_list temporary_glines = { NULL, NULL, 0 };
+dlink_list temporary_klines  = { NULL, NULL, 0 };
+dlink_list temporary_dlines  = { NULL, NULL, 0 };
+dlink_list temporary_xlines  = { NULL, NULL, 0 };
+dlink_list temporary_glines  = { NULL, NULL, 0 };
+dlink_list temporary_rxlines = { NULL, NULL, 0 };
 
 extern unsigned int lineno;
 extern char linebuf[];
@@ -290,6 +292,12 @@ make_conf_item(ConfType type)
     dlinkAdd(conf, &conf->node, &xconf_items);
     break;
 
+  case RXLINE_TYPE:
+    conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
+                                       sizeof(struct MatchItem));
+    dlinkAdd(conf, &conf->node, &rxconf_items);
+    break;
+
   case CLUSTER_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
                                        sizeof(struct MatchItem));
@@ -448,13 +456,15 @@ delete_conf_item(struct ConfItem *conf)
     MyFree(conf);
     break;
 
-  case NRESV_TYPE:
+  case RXLINE_TYPE:
+    regfree(conf->regexpname);
+    MyFree(conf->regexpname);
     match_item = (struct MatchItem *)map_to_conf(conf);
     MyFree(match_item->user);
     MyFree(match_item->host);
     MyFree(match_item->reason);
     MyFree(match_item->oper_reason);
-    dlinkDelete(&conf->node, &nresv_items);
+    dlinkDelete(&conf->node, &rxconf_items);
     MyFree(conf);
     break;
 
@@ -563,6 +573,19 @@ report_confitem_types(struct Client *source_p, ConfType type)
 		 me.name, source_p->name, 
 		 matchitem->hold ? 'x': 'X', matchitem->count,
 		 conf->name, matchitem->reason);
+    }
+    break;
+
+  case RXLINE_TYPE:
+    DLINK_FOREACH(ptr, rxconf_items.head)
+    {
+      conf = ptr->data;
+      matchitem = (struct MatchItem *)map_to_conf(conf);
+
+      sendto_one(source_p, form_str(RPL_STATSXLINE),
+                 me.name, source_p->name,
+                 matchitem->hold ? 'x': 'X', matchitem->count,
+                 conf->name, matchitem->reason);
     }
     break;
 
@@ -2245,6 +2268,10 @@ add_temp_line(struct ConfItem *conf)
   {
     dlinkAdd(conf, make_dlink_node(), &temporary_xlines);
   }
+  else if (conf->type == RXLINE_TYPE)
+  {
+    dlinkAdd(conf, make_dlink_node(), &temporary_rxlines);
+  }
 }
 
 /* cleanup_tklines()
@@ -2261,6 +2288,7 @@ cleanup_tklines(void *notused)
   expire_tklines(&temporary_klines);
   expire_tklines(&temporary_dlines);
   expire_tklines(&temporary_xlines);
+  expire_tklines(&temporary_rxlines);
 }
 
 /* expire_tklines()
@@ -2290,8 +2318,9 @@ expire_tklines(dlink_list *tklist)
       {
         /* XXX - Do we want GLINE expiry notices?? */
 	/* Alert opers that a TKline expired - Hwy */
-	if (aconf->status & CONF_KILL 
-	    && ConfigFileEntry.tkline_expire_notices)
+        if (ConfigFileEntry.tkline_expire_notices)
+        {
+	if (aconf->status & CONF_KILL)
 	{
 	  sendto_realops_flags(UMODE_ALL, L_ALL,
 			       "Temporary K-line for [%s@%s] expired",
@@ -2304,19 +2333,22 @@ expire_tklines(dlink_list *tklist)
 			       "Temporary D-line for [%s] expired",
 			       (aconf->host) ? aconf->host : "*");
 	}
+        }
 
 	delete_one_address_conf(aconf->host, aconf);
 	dlinkDelete(ptr, tklist);
       }
     }
-    else if (conf->type == XLINE_TYPE
-	    && ConfigFileEntry.tkline_expire_notices)
+    else if (conf->type == XLINE_TYPE ||
+	     conf->type == RXLINE_TYPE)
     {
       xconf = (struct MatchItem *)map_to_conf(conf);
       if (xconf->hold <= CurrentTime)
       {
-	sendto_realops_flags(UMODE_ALL, L_ALL,
-			     "Temporary X-line for [%s] expired", conf->name);
+        if (ConfigFileEntry.tkline_expire_notices)
+	  sendto_realops_flags(UMODE_ALL, L_ALL,
+                               "Temporary X-line for [%s] %sexpired", conf->name,
+                               conf->type == RXLINE_TYPE ? "(REGEX) " : "");
 	dlinkDelete(ptr, tklist);
         free_dlink_node(ptr);
 	delete_conf_item(conf);
@@ -2484,6 +2516,7 @@ read_conf_files(int cold)
   parse_conf_file(KLINE_TYPE, cold);
   parse_conf_file(DLINE_TYPE, cold);
   parse_conf_file(XLINE_TYPE, cold);
+  parse_conf_file(RXLINE_TYPE, cold);
   parse_conf_file(NRESV_TYPE, cold);
   parse_conf_file(CRESV_TYPE, cold);
 }
@@ -2531,9 +2564,9 @@ clear_out_old_conf(void)
   struct AccessItem *aconf;
   struct ClassItem *cltmp;
   struct MatchItem *match_item;
-  dlink_list * free_items [] = {
+  dlink_list *free_items [] = {
     &server_items, &oconf_items, &hub_items, &leaf_items, &uconf_items,
-    &xconf_items, &nresv_items, &cluster_items, &gdeny_items, NULL
+    &xconf_items, &rxconf_items, &nresv_items, &cluster_items, &gdeny_items, NULL
   };
 
   dlink_list ** iterator = free_items; /* C is dumb */
@@ -2731,6 +2764,9 @@ get_conf_name(ConfType type)
       break;
     case XLINE_TYPE:
       return(ConfigFileEntry.xlinefile);
+      break;
+    case RXLINE_TYPE:
+      return(ConfigFileEntry.rxlinefile);
       break;
     case CRESV_TYPE:
       return(ConfigFileEntry.cresvfile);

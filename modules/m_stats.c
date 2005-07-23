@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.173 2005/07/16 13:49:32 michael Exp $
+ *  $Id: m_stats.c,v 1.174 2005/07/23 18:21:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.173 $";
+const char *_version = "$Revision: 1.174 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -1179,6 +1179,7 @@ static void
 stats_gecos(struct Client *source_p)
 {
   report_confitem_types(source_p, XLINE_TYPE);
+  report_confitem_types(source_p, RXLINE_TYPE);
 }
 
 static void

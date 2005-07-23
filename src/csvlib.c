@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.40 2005/07/12 10:37:35 michael Exp $
+ *  $Id: csvlib.c,v 7.41 2005/07/23 18:21:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -265,6 +265,24 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
 		   conf->name, xconf->reason, xconf->oper_reason,
 		   xconf->action,
 		   current_date, get_oper_name(source_p), (long)cur_time);
+    break;
+
+  case RXLINE_TYPE:
+    xconf = (struct MatchItem *)map_to_conf(conf);
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "%s added X-Line for [%s] [%d] [%s]",
+                         get_oper_name(source_p), conf->name,
+                         xconf->action, xconf->reason);
+    sendto_one(source_p,
+               ":%s NOTICE %s :Added X-Line [%s] [%d] [%s] to %s",
+               from, to, conf->name,
+               xconf->action, xconf->reason, filename);
+    ilog(L_TRACE, "%s added X-Line for [%s] [%d] [%s]",
+         get_oper_name(source_p), conf->name, xconf->action, xconf->reason);
+    write_csv_line(out, "%s%s%s%d%s%s%ld",
+                   conf->name, xconf->reason, xconf->oper_reason,
+                   xconf->action,
+                   current_date, get_oper_name(source_p), (long)cur_time);
     break;
 
   case CRESV_TYPE:

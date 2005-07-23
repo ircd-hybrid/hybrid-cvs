@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.293 2005/07/12 10:37:33 michael Exp $
+ *  $Id: s_conf.h,v 7.294 2005/07/23 18:21:26 michael Exp $
  */
 
+#include <regex.h>
 #ifndef INCLUDED_s_conf_h
 #define INCLUDED_s_conf_h
 #include "setup.h"
@@ -51,6 +52,7 @@ typedef enum {
   DLINE_TYPE,
   EXEMPTDLINE_TYPE,
   CLUSTER_TYPE,
+  RXLINE_TYPE,
   XLINE_TYPE,    
   ULINE_TYPE,
   GLINE_TYPE,
@@ -62,6 +64,7 @@ typedef enum {
 struct ConfItem
 {
   char *name;		/* Primary key */
+  regex_t *regexpname;
   dlink_node node;	/* link into known ConfItems of this type */
   ConfType type;
 };
@@ -258,6 +261,7 @@ struct config_file_entry
   const char *configfile;
   const char *klinefile;
   const char *xlinefile;
+  const char *rxlinefile;
   const char *dlinefile;
   const char *glinefile;
   const char *cresvfile;
@@ -403,10 +407,12 @@ extern dlink_list class_items;
 extern dlink_list server_items;
 extern dlink_list cluster_items;
 extern dlink_list hub_items;
+extern dlink_list rxconf_items;
 extern dlink_list leaf_items;
 extern dlink_list temporary_klines;
 extern dlink_list temporary_dlines;
 extern dlink_list temporary_glines;
+extern dlink_list temporary_rxlines;
 extern struct logging_entry ConfigLoggingEntry;
 extern struct config_file_entry ConfigFileEntry;/* defined in ircd.c*/
 extern struct config_channel_entry ConfigChannel;/* defined in channel.c*/
