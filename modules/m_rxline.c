@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rxline.c,v 1.2 2005/07/23 19:07:01 michael Exp $
+ *  $Id: m_rxline.c,v 1.3 2005/07/23 19:55:08 michael Exp $
  */
 
 #include <regex.h>
@@ -85,7 +85,7 @@ _moddeinit(void)
   mod_del_cmd(&unrxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.2 $";
+const char *_version = "$Revision: 1.3 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
@@ -230,6 +230,7 @@ write_xline(struct Client *source_p, char *gecos, char *reason,
 
     regerror(ecode, NULL, errbuf, sizeof(errbuf));
 
+    MyFree(exp_p);
     sendto_realops_flags(UMODE_ALL, L_ALL,
            "Failed to add regular expression based X-Line: %s", errbuf);
     return;
@@ -313,22 +314,20 @@ remove_xline(struct Client *source_p, char *gecos, int cluster)
 static int
 remove_txline_match(const char *gecos)
 {
-  dlink_node *ptr;
-  dlink_node *next_ptr;
-  struct ConfItem *conf;
+  dlink_node *ptr = NULL, *next_ptr = NULL;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, temporary_rxlines.head)
   {
-    conf = ptr->data;
+    struct ConfItem *conf = ptr->data;
 
     if (!irccmp(gecos, conf->name))
     {
       dlinkDelete(ptr, &temporary_rxlines);
       free_dlink_node(ptr);
       delete_conf_item(conf);
-      return(YES);
+      return(1);
     }
   }
 
-  return(NO);
+  return(0);
 }
