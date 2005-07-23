@@ -22,7 +22,7 @@
    Bison output file, you may use that output file without restriction.
    This special exception was added by the Free Software Foundation
    in version 1.24 of Bison.  */
-/* $Id: y.tab.h,v 7.24 2005/07/23 23:36:45 michael Exp $ */
+/* *  $Id: y.tab.h,v 7.25 2005/07/23 23:43:50 michael Exp $ */
 /* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE

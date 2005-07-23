@@ -32,7 +32,7 @@
    There are some unavoidable exceptions within include files to
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
-/* $Id: y.tab.c,v 7.31 2005/07/23 23:36:45 michael Exp $ */
+/* *  $Id: y.tab.c,v 7.32 2005/07/23 23:43:49 michael Exp $ */
 /* Identify Bison output.  */
 #define YYBISON 1
 
@@ -5605,7 +5605,7 @@ yyreduce:
   {
     if (gecos_name[0])
     {
-      yy_conf = make_conf_item(gecos_flags & 1 ? XLINE_TYPE : RXLINE_TYPE);
+      yy_conf = make_conf_item(gecos_flags & 1 ? RXLINE_TYPE : XLINE_TYPE);
       yy_match_item = map_to_conf(yy_conf);
       DupString(yy_conf->name, gecos_name);
       if (gecos_reason[0])
