@@ -1,6 +1,6 @@
 ; ircd-hybrid-7 standard message file - for reference only
 ; Copyright (C) 2003 Joshua Kwan <joshk@triplehelix.org>
-; $Id: ircd-standard.example.lang,v 1.10 2005/07/11 12:00:20 michael Exp $
+; $Id: ircd-standard.example.lang,v 1.11 2005/07/23 04:44:53 metalrock Exp $
 
 ; Use this file as a starting point for translating everything into the
 ; language you need. This file contains all of the defined events in 
@@ -29,7 +29,7 @@ RPL_TRACESERVER:	 :%s 206 %s Serv %s %dS %dC %s %s!%s@%s %lu
 RPL_TRACENEWTYPE:	 :%s 208 %s <newtype> 0 %s
 RPL_TRACECLASS:		 :%s 209 %s Class %s %d
 RPL_ENDOFSTATS:		 :%s 219 %s %c :End of /STATS report
-RPL_STATSUPTIME:	 :%s 242 %s :Server Up %d days, %d
+RPL_STATSUPTIME:	 :%s 242 %s :Server Up %d days, %d:%02d:%02d
 RPL_STATSCONN:		 :%s 250 %s :Highest connection count: %d (%d clients) (%d connections received)
 RPL_LUSERCLIENT:	 :%s 251 %s :There are %d users and %d invisible on %d servers
 RPL_LUSEROP:		 :%s 252 %s %d :IRC Operators online
