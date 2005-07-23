@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.531 2005/07/23 18:21:30 michael Exp $
+ *  $Id: s_conf.c,v 7.532 2005/07/23 18:34:59 michael Exp $
  */
 
 #include "stdinc.h"
@@ -465,6 +465,16 @@ delete_conf_item(struct ConfItem *conf)
     MyFree(match_item->reason);
     MyFree(match_item->oper_reason);
     dlinkDelete(&conf->node, &rxconf_items);
+    MyFree(conf);
+    break;
+
+  case NRESV_TYPE:
+    match_item = (struct MatchItem *)map_to_conf(conf);
+    MyFree(match_item->user);
+    MyFree(match_item->host);
+    MyFree(match_item->reason);
+    MyFree(match_item->oper_reason);
+    dlinkDelete(&conf->node, &nresv_items);
     MyFree(conf);
     break;
 
