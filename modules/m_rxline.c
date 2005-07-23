@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rxline.c,v 1.1 2005/07/23 18:24:25 michael Exp $
+ *  $Id: m_rxline.c,v 1.2 2005/07/23 19:07:01 michael Exp $
  */
 
 #include <regex.h>
@@ -85,7 +85,7 @@ _moddeinit(void)
   mod_del_cmd(&unrxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.1 $";
+const char *_version = "$Revision: 1.2 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
@@ -218,14 +218,27 @@ write_xline(struct Client *source_p, char *gecos, char *reason,
   struct ConfItem *conf;
   struct MatchItem *match_item;
   const char *current_date;
+  regex_t *exp_p = NULL;
   time_t cur_time;
+  int ecode = 0;
+
+  exp_p = MyMalloc(sizeof(regex_t));
+
+  if ((ecode = regcomp(exp_p, gecos, REG_EXTENDED|REG_NOSUB)))
+  {
+    char errbuf[BUFSIZE];
+
+    regerror(ecode, NULL, errbuf, sizeof(errbuf));
+
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+           "Failed to add regular expression based X-Line: %s", errbuf);
+    return;
+  }
 
   conf = make_conf_item(RXLINE_TYPE);
-  conf->regexpname = MyMalloc(sizeof(regex_t));
+  conf->regexpname = exp_p;
 
-  regcomp(conf->regexpname, gecos, REG_EXTENDED|REG_NOSUB);
-
-  match_item = (struct MatchItem *)map_to_conf(conf);
+  match_item = map_to_conf(conf);
   match_item->action = tkline_time;
 
   DupString(conf->name, gecos);
