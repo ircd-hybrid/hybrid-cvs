@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.41 2005/07/23 18:21:30 michael Exp $
+ *  $Id: csvlib.c,v 7.42 2005/07/23 23:36:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -102,6 +102,19 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
 	DupString(match_item->reason, reason_field);
       if (port != NULL)
 	match_item->action = atoi(port);
+      break;
+
+    case RXLINE_TYPE:
+      parse_csv_line(line, &name_field, &reason_field, &oper_reason, &port,
+                     NULL);
+      conf = make_conf_item(RXLINE_TYPE);
+      match_item = (struct MatchItem *)map_to_conf(conf);
+      if (name_field != NULL)
+        DupString(conf->name, name_field);
+      if (reason_field != NULL)
+        DupString(match_item->reason, reason_field);
+      if (port != NULL)
+        match_item->action = atoi(port);
       break;
 
     case CRESV_TYPE:
@@ -661,5 +674,6 @@ flush_write(struct Client *source_p, FBFILE *in, FBFILE* out,
     fbclose(in);
     fbclose(out);
   }
+
   return(error_on_write);
 }

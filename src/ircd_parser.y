@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.402 2005/07/23 23:12:32 adx Exp $
+ *  $Id: ircd_parser.y,v 1.403 2005/07/23 23:36:44 michael Exp $
  */
 
 %{
@@ -67,6 +67,9 @@ static dlink_list col_conf_list  = { NULL, NULL, 0 };
 static dlink_list hub_conf_list  = { NULL, NULL, 0 };
 static dlink_list leaf_conf_list = { NULL, NULL, 0 };
 static unsigned int listener_flags = 0;
+static unsigned int gecos_flags = 0;
+static char gecos_reason[REASONLEN + 1];
+static char gecos_name[REALLEN * 4];
 
 extern dlink_list gdeny_items;
 
@@ -269,6 +272,7 @@ unhook_hub_leaf_confs(void)
 %token  REASON
 %token  REDIRPORT
 %token  REDIRSERV
+%token  REGEX_T
 %token  REHASH
 %token  REMOTE
 %token  REMOTEBAN
@@ -2724,25 +2728,46 @@ gecos_entry: GECOS
 {
   if (ypass == 2)
   {
-    yy_conf = make_conf_item(XLINE_TYPE);
-    yy_match_item = (struct MatchItem *)map_to_conf(yy_conf);
-    /* default reason */
-    DupString(yy_match_item->reason,"Something about your name");
+    gecos_flags = 0;
+    gecos_reason[0] = gecos_name[0] = '\0';
   }
 } '{' gecos_items '}' ';'
 {
-  /* XXX */
-}; 
+  if (ypass == 2)
+  {
+    if (gecos_name[0])
+    {
+      yy_conf = make_conf_item(gecos_flags & 1 ? XLINE_TYPE : RXLINE_TYPE);
+      yy_match_item = map_to_conf(yy_conf);
+      DupString(yy_conf->name, gecos_name);
+      if (gecos_reason[0])
+        DupString(yy_match_item->reason, gecos_reason);
+      else
+        DupString(yy_match_item->reason, "<No reason specified>");
+    }
+  }
+};
+
+gecos_flags: IRCD_FLAGS
+{
+} '='  gecos_flags_items ';';
+
+gecos_flags_items: gecos_flags_items ',' gecos_flags_item | gecos_flags_item;
+gecos_flags_item: REGEX_T
+{
+  if (ypass == 2)
+    gecos_flags |= 1;
+};
 
 gecos_items: gecos_items gecos_item | gecos_item;
-gecos_item:  gecos_name | gecos_reason | error;
+gecos_item:  gecos_name | gecos_reason | gecos_flags | error;
 
 gecos_name: NAME '=' QSTRING ';' 
 {
   if (ypass == 2)
   {
-    DupString(yy_conf->name, yylval.string);
-    collapse(yy_conf->name);
+    gecos_name[0] = '\0';
+    strlcpy(gecos_name, yylval.string, sizeof(gecos_reason));
   }
 };
 
@@ -2750,8 +2775,8 @@ gecos_reason: REASON '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    MyFree(yy_match_item->reason);
-    DupString(yy_match_item->reason, yylval.string);
+    gecos_name[0] = '\0';
+    strlcpy(gecos_reason, yylval.string, sizeof(gecos_name));
   }
 };
 
