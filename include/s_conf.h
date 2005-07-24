@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.296 2005/07/24 05:49:53 db Exp $
+ *  $Id: s_conf.h,v 7.297 2005/07/24 08:25:27 michael Exp $
  */
 
 #include <regex.h>
@@ -66,6 +66,7 @@ struct ConfItem
   char *name;		/* Primary key */
   regex_t *regexpname;
   dlink_node node;	/* link into known ConfItems of this type */
+  unsigned int flags;
   ConfType type;
 };
 
@@ -78,7 +79,7 @@ struct MatchItem
   char *host;		/* Used for ULINE only */
   char *reason;
   char *oper_reason;
-  int action;		/* used for xline and uline */
+  int action;		/* used for uline */
   int count;		/* How many times this matchitem has been matched */
   int ref_count;	/* How many times is this matchitem in use */
   int illegal;		/* Should it be deleted when possible? */

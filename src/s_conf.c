@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.535 2005/07/24 05:49:57 db Exp $
+ *  $Id: s_conf.c,v 7.536 2005/07/24 08:25:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2284,10 +2284,12 @@ add_temp_line(struct ConfItem *conf)
   }
   else if (conf->type == XLINE_TYPE)
   {
+    conf->flags |= CONF_FLAGS_TEMPORARY;
     dlinkAdd(conf, make_dlink_node(), &temporary_xlines);
   }
   else if (conf->type == RXLINE_TYPE)
   {
+    conf->flags |= CONF_FLAGS_TEMPORARY;
     dlinkAdd(conf, make_dlink_node(), &temporary_rxlines);
   }
 }
@@ -2636,6 +2638,13 @@ clear_out_old_conf(void)
 	{
 	  delete_conf_item(conf);
 	}
+      }
+      else if (conf->type == XLINE_TYPE || conf->type == RXLINE_TYPE)
+      {
+        /* temporary (r)xlines are also on
+         * the temporary_(r)xlines items list */
+        if (conf->flags & CONF_FLAGS_TEMPORARY)
+          continue;
       }
       else
       {
