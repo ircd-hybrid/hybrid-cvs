@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.522.2.1 2005/07/23 23:27:13 adx Exp $
+ *  $Id: s_conf.c,v 7.522.2.2 2005/07/24 01:57:40 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2289,36 +2289,35 @@ expire_tklines(dlink_list *tklist)
       {
         /* XXX - Do we want GLINE expiry notices?? */
 	/* Alert opers that a TKline expired - Hwy */
-	if (aconf->status & CONF_KILL 
-	    && ConfigFileEntry.tkline_expire_notices)
-	{
-	  sendto_realops_flags(UMODE_ALL, L_ALL,
-			       "Temporary K-line for [%s@%s] expired",
-			       (aconf->user) ? aconf->user : "*",
-			       (aconf->host) ? aconf->host : "*");
-	}
-	else if (conf->type == DLINE_TYPE)
-	{
-	  sendto_realops_flags(UMODE_ALL, L_ALL,
-			       "Temporary D-line for [%s] expired",
-			       (aconf->host) ? aconf->host : "*");
-	}
+        if (ConfigFileEntry.tkline_expire_notices)
+        {
+          if (aconf->status & CONF_KILL)
+            sendto_realops_flags(UMODE_ALL, L_ALL,
+                                 "Temporary K-line for [%s@%s] expired",
+			         (aconf->user) ? aconf->user : "*",
+			         (aconf->host) ? aconf->host : "*");
+	  else if (conf->type == DLINE_TYPE)
+	    sendto_realops_flags(UMODE_ALL, L_ALL,
+			         "Temporary D-line for [%s] expired",
+			         (aconf->host) ? aconf->host : "*");
+        }
 
-	delete_one_address_conf(aconf->host, aconf);
-	dlinkDelete(ptr, tklist);
+        delete_one_address_conf(aconf->host, aconf);
+        dlinkDelete(ptr, tklist);
       }
     }
-    else if (conf->type == XLINE_TYPE
-	    && ConfigFileEntry.tkline_expire_notices)
+    else if (conf->type == XLINE_TYPE)
     {
       xconf = (struct MatchItem *)map_to_conf(conf);
       if (xconf->hold <= CurrentTime)
       {
-	sendto_realops_flags(UMODE_ALL, L_ALL,
-			     "Temporary X-line for [%s] expired", conf->name);
-	dlinkDelete(ptr, tklist);
+        if (ConfigFileEntry.tkline_expire_notices)
+          sendto_realops_flags(UMODE_ALL, L_ALL,
+                               "Temporary X-line for [%s] expired", conf->name);
+
+        dlinkDelete(ptr, tklist);
         free_dlink_node(ptr);
-	delete_conf_item(conf);
+        delete_conf_item(conf);
       }
     }
   }
