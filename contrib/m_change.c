@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_change.c,v 1.2 2005/07/11 00:36:46 metalrock Exp $
+ *  $Id: m_change.c,v 1.3 2005/07/24 01:58:59 adx Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -47,17 +47,17 @@ static void mo_chghost(struct Client *, struct Client *, int, char *[]);
 static void mo_chgname(struct Client *, struct Client *, int, char *[]);
 
 struct Message chgident_msgtab = {
-  "CHGIDENT", 0, 0, 3, 0, MFLG_SLOW, 0,
+  "CHGIDENT", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_chgident, mo_chgident, m_ignore}
 };
 
 struct Message chghost_msgtab = {
-  "CHGHOST", 0, 0, 3, 0, MFLG_SLOW, 0,
+  "CHGHOST", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_chghost, mo_chghost, m_ignore}
 };
 
 struct Message chgname_msgtab = {
-  "CHGNAME", 0, 0, 3, 0, MFLG_SLOW, 0,
+  "CHGNAME", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_chgname, mo_chgname, m_ignore}
 };
 
@@ -91,11 +91,21 @@ static void mo_chgident(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  target_p = find_client(parv[1]);
-  if (target_p == NULL || !IsClient(target_p))
+  if (EmptyString(parv[2]))
   {
-    sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name, parv[0], parv[1]);
-    return;
+    parv[2] = parv[1];
+
+    target_p = source_p;
+    if (!IsClient(target_p))
+      return;
+  }
+  else {
+    target_p = find_client(parv[1]);
+    if (target_p == NULL || !IsClient(target_p))
+    {
+      sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name, parv[0], parv[1]);
+      return;
+    }
   }
 
   if (strlen(parv[2]) > USERLEN || !*parv[2] || !valid_username(parv[2]))
@@ -109,7 +119,8 @@ static void mo_chgident(struct Client *client_p, struct Client *source_p,
   if (MyClient(source_p))
   {
     sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
-                  ":%s ENCAP * CHGIDENT %s %s", parv[0], parv[1], parv[2]);
+                  ":%s ENCAP * CHGIDENT %s %s",
+		  parv[0], target_p->name, parv[2]);
     sendto_one(source_p, ":%s NOTICE %s :%s changed to %s@%s",
                me.name, parv[0], target_p->name, target_p->username,
                target_p->host);
@@ -132,11 +143,21 @@ static void mo_chghost(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  target_p = find_client(parv[1]);
-  if (target_p == NULL || !IsClient(target_p))
+  if (EmptyString(parv[2]))
   {
-    sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name, parv[0], parv[1]);
-    return;
+    parv[2] = parv[1];
+
+    target_p = source_p;
+    if (!IsClient(target_p))
+      return;
+  }
+  else {
+    target_p = find_client(parv[1]);
+    if (target_p == NULL || !IsClient(target_p))
+    {
+      sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name, parv[0], parv[1]);
+      return;
+    }
   }
 
   if (strlen(parv[2]) > HOSTLEN || !*parv[2] || !valid_hostname(parv[2]))
@@ -150,7 +171,8 @@ static void mo_chghost(struct Client *client_p, struct Client *source_p,
   if (MyClient(source_p))
   {
     sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
-                  ":%s ENCAP * CHGHOST %s %s", parv[0], parv[1], parv[2]);
+                  ":%s ENCAP * CHGHOST %s %s",
+		  parv[0], target_p->name, parv[2]);
     sendto_one(source_p, ":%s NOTICE %s :%s changed to %s@%s",
                me.name, parv[0], target_p->name, target_p->username,
                target_p->host);
@@ -173,7 +195,12 @@ static void mo_chgname(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if ((target_p = find_client(parv[1])) == NULL)
+  if (EmptyString(parv[2]))
+  {
+    parv[2] = parv[1];
+    target_p = source_p;
+  }
+  else if ((target_p = find_client(parv[1])) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name, parv[0], parv[1]);
     return;
@@ -185,12 +212,18 @@ static void mo_chgname(struct Client *client_p, struct Client *source_p,
     return;
   }
 
+  if (parc > 3 && MyClient(source_p))
+    sendto_one(source_p, ":%s NOTICE %s :Warning -- too many parameters "
+               "for CHGNAME. You are probably missing a : before the new "
+               "IRC name.", me.name, parv[0]);
+
   strcpy(target_p->info, parv[2]);
   
   if (MyClient(source_p))
   {
     sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
-                  ":%s ENCAP * CHGNAME %s :%s", parv[0], parv[1], parv[2]);
+                  ":%s ENCAP * CHGNAME %s :%s",
+		  parv[0], target_p->name, parv[2]);
     sendto_one(source_p, ":%s NOTICE %s :%s realname changed to [%s]",
                me.name, parv[0], target_p->name, target_p->info);
   }
