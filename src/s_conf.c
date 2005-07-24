@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.534 2005/07/23 23:42:03 adx Exp $
+ *  $Id: s_conf.c,v 7.535 2005/07/24 05:49:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -100,6 +100,13 @@ static int attach_iline(struct Client *, struct ConfItem *);
 static struct ip_entry *find_or_add_ip(struct irc_ssaddr *);
 static void parse_conf_file(int, int);
 static dlink_list *map_to_list(ConfType);
+
+static int find_user_host(struct Client *source_p,
+                          char *user_host_or_nick, char *user, char *host);
+
+/* XXX Should the parse_aline() stuff go into separate file ? - Dianora */
+static char *cluster(char *);
+/* XXX */
 
 FBFILE *conf_fbfile_in;
 extern char yytext[];
@@ -3271,4 +3278,326 @@ valid_wild_card(struct Client *source_p, int warn, int count, ...)
     sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the mask",
                me.name, source_p->name, ConfigFileEntry.min_nonwildcard);
   return(0);
+}
+
+/* XXX should this go into a separate file ? -Dianora */
+/* parse_aline
+ *
+ * input        - pointer to cmd name being used
+ *              - pointer to client using cmd
+ *		- user name to check
+ *              - host name to check
+ *		- int flag, 0 for no warning oper 1 for warning oper
+ * output       - 1 if valid, -1 if not valid
+ * side effects -
+ */
+int
+parse_aline(const char *cmd, struct Client *source_p,
+	    char *user, char *host,
+	    int parc, char **parv, time_t *tkline_time, 
+	    char **target_server, char **reason)
+{
+  parv++;
+  parc--;
+
+  *tkline_time = valid_tkline(*parv, TK_MINUTES);
+
+  if (*tkline_time != 0)
+  {
+    parv++;
+    parc--;
+  }
+
+  if (parc == 0)
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, source_p->name, cmd);
+    return(-1);
+  }
+
+  if (find_user_host(source_p, *parv, user, host) == 0)
+    return(-1);
+
+  parc--;
+  parv++;
+
+  if (parc != 0)
+  {
+    if (irccmp(*parv, "ON") == 0)
+    {
+      parc--;
+      parv++;
+
+      if (!IsOperRemoteBan(source_p))
+      {
+        sendto_one(source_p, form_str(ERR_NOPRIVS),
+                 me.name, source_p->name, "remoteban");
+        return(-1);
+      }
+
+      if (parc == 0)
+      {
+	sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+		   me.name, source_p->name, "KLINE");
+	return(-1);
+      }
+
+      *target_server = *parv;
+      parc--;
+      parv++;
+    }
+  }
+
+  if (parc != 0)
+    *reason = *parv;
+
+  if (!valid_user_host(source_p, user, host, YES))
+    return(-1);
+
+  if (!valid_wild_card(source_p, YES, 2, user, host))
+    return(-1);
+
+  if (!valid_comment(source_p, *reason, YES))
+    return(-1);
+
+  return(1);
+}
+
+/* find_user_host()
+ *
+ * inputs	- pointer to client placing kline
+ *              - pointer to user_host_or_nick
+ *              - pointer to user buffer
+ *              - pointer to host buffer
+ * output	- 0 if not ok to kline, 1 to kline i.e. if valid user host
+ * side effects -
+ */
+static int
+find_user_host(struct Client *source_p, char *user_host_or_nick,
+               char *luser, char *lhost)
+{
+  struct Client *target_p;
+  char *hostp;
+
+  if ((hostp = strchr(user_host_or_nick, '@')) || *user_host_or_nick == '*')
+  {
+    /* Explicit user@host mask given */
+
+    if(hostp != NULL)                            /* I'm a little user@host */
+    {
+      *(hostp++) = '\0';                       /* short and squat */
+      if (*user_host_or_nick)
+	strlcpy(luser,user_host_or_nick,USERLEN + 1); /* here is my user */
+      else
+	strcpy(luser, "*");
+      if (*hostp)
+	strlcpy(lhost, hostp, HOSTLEN + 1);    /* here is my host */
+      else
+	strcpy(lhost, "*");
+    }
+    else
+    {
+      luser[0] = '*';             /* no @ found, assume its *@somehost */
+      luser[1] = '\0';	  
+      strlcpy(lhost, user_host_or_nick, HOSTLEN + 1);
+    }
+    
+    return(1);
+  }
+  else
+  {
+    /* Try to find user@host mask from nick */
+    /* Okay to use source_p as the first param, because source_p == client_p */
+    if (!(target_p = find_chasing(source_p, source_p, user_host_or_nick, NULL)))
+      return(0);
+
+    if (IsServer(target_p))
+    {
+      sendto_one(source_p,
+	   ":%s NOTICE %s :Can't KLINE a server, use @'s where appropriate",
+		 me.name, source_p->name);
+      return(0);
+    }
+
+    if (IsExemptKline(target_p))
+    {
+      if (!IsServer(source_p))
+	sendto_one(source_p,
+		   ":%s NOTICE %s :%s is E-lined",
+		   me.name, source_p->name, target_p->name);
+      return(0);
+    }
+
+    /* turn the "user" bit into "*user", blow away '~'
+     * if found in original user name (non-idented)
+     */
+
+    strlcpy(luser, target_p->username, USERLEN + 1);
+    if (*target_p->username == '~')
+      luser[0] = '*';
+
+    strlcpy(lhost,cluster(target_p->host), HOSTLEN + 1);
+  }
+
+  return(1);
+}
+
+/* valid_user_host()
+ *
+ * inputs       - pointer to source
+ *              - pointer to user buffer
+ *              - pointer to host buffer
+ * output	- 1 if valid user or host, 0 if invalid
+ * side effects -
+ */
+int
+valid_user_host(struct Client *source_p, const char *luser,
+		const char *lhost, int warn)
+{
+  const char *p = NULL;
+  /*
+   * Check for # in user@host
+   * Dont let people kline *!ident@host, as the ! is invalid..
+   */
+  if ((p = strpbrk(lhost, "#\"")) || (p = strpbrk(luser, "!#\"")))
+    if (warn)
+      sendto_one(source_p, ":%s NOTICE %s :Invalid character '%c' in kline",
+                 me.name, source_p->name, *p);		    
+  return(p == NULL);
+}
+
+/* valid_comment()
+ *
+ * inputs	- pointer to client
+ *              - pointer to comment
+ * output       - 0 if no valid comment,
+ *              - 1 if valid
+ * side effects - truncates reason where necessary
+ */
+int
+valid_comment(struct Client *source_p, char *comment, int warn)
+{
+  if (strchr(comment, '"'))
+  {
+    if (warn)
+      sendto_one(source_p, ":%s NOTICE %s :Invalid character '\"' in comment",
+                 me.name, source_p->name);
+    return(0);
+  }
+
+  if (strlen(comment) > REASONLEN)
+    comment[REASONLEN-1] = '\0';
+
+  return(1);
+}
+
+/*
+ * cluster()
+ *
+ * inputs       - pointer to a hostname
+ * output       - pointer to a static of the hostname masked
+ *                for use in a kline.
+ * side effects - NONE
+ *
+ */
+static char *
+cluster(char *hostname)
+{
+  static char result[HOSTLEN + 1];      /* result to return */
+  char        temphost[HOSTLEN + 1];    /* work place */
+  char        *ipp;             /* used to find if host is ip # only */
+  char        *host_mask;       /* used to find host mask portion to '*' */
+  char        *zap_point = NULL; /* used to zap last nnn portion of an ip # */
+  char        *tld;             /* Top Level Domain */
+  int         is_ip_number;     /* flag if its an ip # */             
+  int         number_of_dots;   /* count number of dots for both ip# and
+                                   domain klines */
+  if (hostname == NULL)
+    return(NULL);       /* EEK! */
+
+  /* If a '@' is found in the hostname, this is bogus
+   * and must have been introduced by server that doesn't
+   * check for bogus domains (dns spoof) very well. *sigh* just return it...
+   * I could also legitimately return (char *)NULL as above.
+   */
+
+  if(strchr(hostname,'@'))      
+    {
+      strlcpy(result, hostname, sizeof(result));
+      return(result);
+    }
+
+  strlcpy(temphost, hostname, sizeof(temphost));
+
+  is_ip_number = YES;   /* assume its an IP# */
+  ipp = temphost;
+  number_of_dots = 0;
+
+  while (*ipp)
+    {
+      if(*ipp == '.')
+        {
+          number_of_dots++;
+
+          if(number_of_dots == 3)
+            zap_point = ipp;
+          ipp++;
+        }
+      else if(!IsDigit(*ipp))
+        {
+          is_ip_number = NO;
+          break;
+        }
+      ipp++;
+    }
+
+  if (is_ip_number && (number_of_dots == 3))
+    {
+      zap_point++;
+      *zap_point++ = '*';               /* turn 111.222.333.444 into */
+      *zap_point = '\0';                /*      111.222.333.*        */
+      strlcpy(result, temphost, sizeof(result));
+      return(result);
+    }
+  else
+    {
+      tld = strrchr(temphost, '.');
+      if(tld)
+        {
+          number_of_dots = 2;
+          if(tld[3])                     /* its at least a 3 letter tld
+                                            i.e. ".com" tld[3] = 'm' not 
+                                            '\0' */
+                                         /* 4 letter tld's are coming */
+            number_of_dots = 1;
+
+          if(tld != temphost)           /* in these days of dns spoofers ...*/
+            host_mask = tld - 1;        /* Look for host portion to '*' */
+          else
+            host_mask = tld;            /* degenerate case hostname is
+                                           '.com' etc. */
+
+          while (host_mask != temphost)
+            {
+              if(*host_mask == '.')
+                number_of_dots--;
+              if(number_of_dots == 0)
+                {
+                  result[0] = '*';
+                  strlcpy(result + 1, host_mask, sizeof(result) - 1);
+                  return(result);
+                }
+              host_mask--;
+            }
+          result[0] = '*';                      /* foo.com => *foo.com */
+          strlcpy(result + 1, temphost, sizeof(result) - 1);
+        }
+      else      /* no tld found oops. just return it as is */
+        {
+          strlcpy(result, temphost, sizeof(result));
+          return(result);
+        }
+    }
+
+  return(result);
 }

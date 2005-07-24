@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.406 2005/07/24 01:47:53 michael Exp $
+ *  $Id: ircd_parser.y,v 1.407 2005/07/24 05:49:57 db Exp $
  */
 
 %{
@@ -28,6 +28,7 @@
 #define WE_ARE_MEMORY_C
 
 #define YY_NO_UNPUT
+#include <sys/types.h>
 #include <regex.h>
 
 #include "stdinc.h"
