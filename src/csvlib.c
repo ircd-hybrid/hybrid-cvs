@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.43 2005/07/23 23:56:24 adx Exp $
+ *  $Id: csvlib.c,v 7.44 2005/07/24 08:08:45 michael Exp $
  */
 
 #include "stdinc.h"
@@ -100,8 +100,6 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
 	DupString(conf->name, name_field);
       if (reason_field != NULL)
 	DupString(match_item->reason, reason_field);
-      if (port != NULL)
-	match_item->action = atoi(port);
       break;
 
     case RXLINE_TYPE:
@@ -113,8 +111,6 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
         DupString(conf->name, name_field);
       if (reason_field != NULL)
         DupString(match_item->reason, reason_field);
-      if (port != NULL)
-        match_item->action = atoi(port);
       break;
 
     case CRESV_TYPE:
@@ -265,36 +261,34 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
   case XLINE_TYPE:
     xconf = (struct MatchItem *)map_to_conf(conf);
     sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "%s added X-Line for [%s] [%d] [%s]",
+                         "%s added X-Line for [%s] [%s]",
                          get_oper_name(source_p), conf->name,
-			 xconf->action, xconf->reason);
+			 xconf->reason);
     sendto_one(source_p,
 	       ":%s NOTICE %s :Added X-Line [%s] [%d] [%s] to %s",
                from, to, conf->name, 
 	       xconf->action, xconf->reason, filename);
-    ilog(L_TRACE, "%s added X-Line for [%s] [%d] [%s]",
-         get_oper_name(source_p), conf->name, xconf->action, xconf->reason);
-    write_csv_line(out, "%s%s%s%d%s%s%ld",
+    ilog(L_TRACE, "%s added X-Line for [%s] [%s]",
+         get_oper_name(source_p), conf->name, xconf->reason);
+    write_csv_line(out, "%s%s%s%s%s%ld",
 		   conf->name, xconf->reason, xconf->oper_reason,
-		   xconf->action,
 		   current_date, get_oper_name(source_p), (long)cur_time);
     break;
 
   case RXLINE_TYPE:
     xconf = (struct MatchItem *)map_to_conf(conf);
     sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "%s added RX-Line for [%s] [%d] [%s]",
+                         "%s added RX-Line for [%s] [%s]",
                          get_oper_name(source_p), conf->name,
-                         xconf->action, xconf->reason);
+                         xconf->reason);
     sendto_one(source_p,
-               ":%s NOTICE %s :Added RX-Line [%s] [%d] [%s] to %s",
+               ":%s NOTICE %s :Added RX-Line [%s] [%s] to %s",
                from, to, conf->name,
-               xconf->action, xconf->reason, filename);
-    ilog(L_TRACE, "%s added X-Line for [%s] [%d] [%s]",
-         get_oper_name(source_p), conf->name, xconf->action, xconf->reason);
+               xconf->reason, filename);
+    ilog(L_TRACE, "%s added X-Line for [%s] [%s]",
+         get_oper_name(source_p), conf->name, xconf->reason);
     write_csv_line(out, "%s%s%s%d%s%s%ld",
                    conf->name, xconf->reason, xconf->oper_reason,
-                   xconf->action,
                    current_date, get_oper_name(source_p), (long)cur_time);
     break;
 

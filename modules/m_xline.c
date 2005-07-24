@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.55 2005/07/16 12:19:44 michael Exp $
+ *  $Id: m_xline.c,v 1.56 2005/07/24 08:08:43 michael Exp $
  */
 
 #include "stdinc.h"
@@ -86,7 +86,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
@@ -421,7 +421,6 @@ write_xline(struct Client *source_p, char *gecos, char *reason,
 
   conf = make_conf_item(XLINE_TYPE);
   match_item = (struct MatchItem *)map_to_conf(conf);
-  match_item->action = tkline_time;
 
   collapse(gecos);
   DupString(conf->name, gecos);

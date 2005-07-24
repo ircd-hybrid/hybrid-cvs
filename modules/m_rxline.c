@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rxline.c,v 1.5 2005/07/24 04:26:38 db Exp $
+ *  $Id: m_rxline.c,v 1.6 2005/07/24 08:08:43 michael Exp $
  */
 
 #include <sys/types.h>
@@ -86,7 +86,7 @@ _moddeinit(void)
   mod_del_cmd(&unrxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.5 $";
+const char *_version = "$Revision: 1.6 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
@@ -241,7 +241,6 @@ write_xline(struct Client *source_p, char *gecos, char *reason,
   conf->regexpname = exp_p;
 
   match_item = map_to_conf(conf);
-  match_item->action = tkline_time;
 
   DupString(conf->name, gecos);
   DupString(match_item->reason, reason);
