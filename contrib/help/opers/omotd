@@ -1,0 +1,6 @@
+# $Id: omotd,v 1.1 2005/07/24 01:36:26 metalrock Exp $
+OMOTD [servername]
+
+OMOTD will display the operator message of the day for the
+server name specified, or the local server if no servername
+was given.
