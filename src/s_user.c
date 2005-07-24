@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.342 2005/07/23 18:21:30 michael Exp $
+ *  $Id: s_user.c,v 7.343 2005/07/24 01:47:53 michael Exp $
  */
 
 #include <regex.h>
@@ -345,11 +345,11 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   }
 
   ptr   = source_p->localClient->confs.head;
-  aconf = map_to_conf((struct ConfItem *)ptr->data);
+  aconf = map_to_conf(ptr->data);
 
   if (!IsGotId(source_p))
   {
-    const char *p;
+    const char *p = NULL;
     unsigned int i = 0;
 
     if (IsNeedIdentd(aconf))
@@ -431,8 +431,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   assert(source_p == client_p);
 
   /* end of valid user name check */
-  if ((status = check_xline(source_p)|check_regexp_xline(source_p)))
-    return(status);
+  if (check_xline(source_p) || check_regexp_xline(source_p))
+    return(CLIENT_EXITED);
 
   if (IsDead(client_p))
     return(CLIENT_EXITED);
@@ -1198,7 +1198,7 @@ user_welcome(struct Client *source_p)
 /* check_xline()
  *
  * inputs       - pointer to client to test
- * outupt       - -1 if exiting 0 if ok
+ * outupt       - 1 if exiting 0 if ok
  * side effects -
  */
 static int
@@ -1227,7 +1227,7 @@ check_xline(struct Client *source_p)
 
     ServerStats->is_ref++;      
     exit_client(source_p, source_p, &me, "Bad user info");
-    return(CLIENT_EXITED);
+    return(1);
   }
 
   return(0);
@@ -1261,7 +1261,7 @@ check_regexp_xline(struct Client *source_p)
 
       ServerStats->is_ref++;
       exit_client(source_p, source_p, &me, "Bad user info");
-      return(CLIENT_EXITED);
+      return(1);
     }
   }
 

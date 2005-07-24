@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rxline.c,v 1.3 2005/07/23 19:55:08 michael Exp $
+ *  $Id: m_rxline.c,v 1.4 2005/07/24 01:47:51 michael Exp $
  */
 
 #include <regex.h>
@@ -85,7 +85,7 @@ _moddeinit(void)
   mod_del_cmd(&unrxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.3 $";
+const char *_version = "$Revision: 1.4 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
@@ -224,7 +224,7 @@ write_xline(struct Client *source_p, char *gecos, char *reason,
 
   exp_p = MyMalloc(sizeof(regex_t));
 
-  if ((ecode = regcomp(exp_p, gecos, REG_EXTENDED|REG_NOSUB)))
+  if ((ecode = regcomp(exp_p, gecos, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
   {
     char errbuf[BUFSIZE];
 
