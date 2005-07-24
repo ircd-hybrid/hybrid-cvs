@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.343 2005/07/24 01:47:53 michael Exp $
+ *  $Id: s_user.c,v 7.344 2005/07/24 04:36:10 db Exp $
  */
 
+#include <sys/types.h>
 #include <regex.h>
 
 #include "stdinc.h"
