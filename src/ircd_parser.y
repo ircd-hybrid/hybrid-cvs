@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.404 2005/07/23 23:43:49 michael Exp $
+ *  $Id: ircd_parser.y,v 1.405 2005/07/24 00:05:44 michael Exp $
  */
 
 %{
@@ -28,6 +28,8 @@
 #define WE_ARE_MEMORY_C
 
 #define YY_NO_UNPUT
+#include <regex.h>
+
 #include "stdinc.h"
 #include "dalloca.h"
 #include "ircd.h"
@@ -2737,7 +2739,30 @@ gecos_entry: GECOS
   {
     if (gecos_name[0])
     {
-      yy_conf = make_conf_item(gecos_flags & 1 ? RXLINE_TYPE : XLINE_TYPE);
+      regex_t *exp_p = NULL;
+      int ecode = 0;
+
+      if (gecos_flags & 1)
+      {
+        exp_p = MyMalloc(sizeof(regex_t));
+
+        if ((ecode = regcomp(exp_p, gecos_name, REG_EXTENDED|REG_NOSUB)))
+        {
+          char errbuf[BUFSIZE];
+
+          regerror(ecode, NULL, errbuf, sizeof(errbuf));
+
+          MyFree(exp_p);
+          ilog(L_ERROR, "Failed to add regular expression based X-Line: %s", errbuf);
+          break;
+        }
+
+        yy_conf = make_conf_item(RXLINE_TYPE);
+        yy_conf->regexpname = exp_p;
+      }
+      else
+        yy_conf = make_conf_item(XLINE_TYPE);
+
       yy_match_item = map_to_conf(yy_conf);
       DupString(yy_conf->name, gecos_name);
       if (gecos_reason[0])
