@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.417 2005/07/16 14:20:41 michael Exp $
+ *  $Id: s_serv.c,v 7.418 2005/07/25 04:52:42 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1525,9 +1525,9 @@ fork_error:
   close(slink_fds[1][0][1]);
   close(slink_fds[1][1][0]);
   close(slink_fds[1][1][1]);
+#endif
   return(-1);
 }
-#endif
 
 /* server_burst()
  *

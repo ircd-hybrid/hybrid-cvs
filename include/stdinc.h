@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.18 2005/07/11 03:03:28 adx Exp $
+ * $Id: stdinc.h,v 1.19 2005/07/25 04:52:36 adx Exp $
  *
  */
 
@@ -96,10 +96,14 @@
 #include <dirent.h>
 #include <ctype.h>
 
+#ifdef _WIN32
+#include <winsock.h>
+#else
 #include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#endif
 
 #include <limits.h>
 
@@ -107,15 +111,23 @@
 #include <unistd.h>
 #endif
 
+#ifdef _WIN32
+#define PATH_MAX (MAX_PATH - 1)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#else
 #include <sys/time.h>
 #include <sys/file.h>
+#endif
 
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #endif
 
 #include <sys/stat.h>
+#ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
+#endif
 
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
@@ -125,6 +137,10 @@
 #include <errno.h>
 #else
 extern int errno;
+#endif
+
+#ifdef HAVE_REGEX_H
+#include <regex.h>
 #endif
 
 #include "inet_misc.h"

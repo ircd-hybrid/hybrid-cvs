@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.345 2005/07/23 18:21:30 michael Exp $
+ *  $Id: ircd.c,v 7.346 2005/07/25 04:52:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -125,6 +125,7 @@ int rehashed_klines = 0;
 /*
  * get_vm_top - get the operating systems notion of the resident set size
  */
+#ifndef _WIN32
 static unsigned long
 get_vm_top(void)
 {
@@ -144,15 +145,6 @@ get_vm_top(void)
 }
 
 /*
- * get_maxrss - get the operating systems notion of the resident set size
- */
-unsigned long
-get_maxrss(void)
-{
-  return(get_vm_top() - initialVMTop);
-}
-
-/*
  * print_startup - print startup information
  */
 static void
@@ -162,6 +154,39 @@ print_startup(int pid)
   printf("ircd: pid %d\n", pid);
   printf("ircd: running in %s mode from %s\n", !server_state.foreground ? "background"
          : "foreground", ConfigFileEntry.dpath);
+}
+
+static void
+make_daemon(void)
+{
+  int pid;
+
+  if ((pid = fork()) < 0)
+  {
+    perror("fork");
+    exit(EXIT_FAILURE);
+  }
+  else if (pid > 0)
+  {
+    print_startup(pid);
+    exit(EXIT_SUCCESS);
+  }
+
+  setsid();
+}
+#endif
+
+/*
+ * get_maxrss - get the operating systems notion of the resident set size
+ */
+unsigned long
+get_maxrss(void)
+{
+#ifdef _WIN32
+  return (0);   /* FIXME */
+#else
+  return (get_vm_top() - initialVMTop);
+#endif
 }
 
 /* init_sys()
@@ -199,25 +224,6 @@ init_sys(void)
 #endif
 }
 
-static void
-make_daemon(void)
-{
-  int pid;
-
-  if ((pid = fork()) < 0)
-  {
-    perror("fork");
-    exit(EXIT_FAILURE);
-  }
-  else if (pid > 0)
-  {
-    print_startup(pid);
-    exit(EXIT_SUCCESS);
-  }
-
-  setsid();
-}
-
 static int printVersion = 0;
 
 struct lgetopt myopts[] = {
@@ -246,10 +252,30 @@ set_time(void)
 {
   static char to_send[200];
   struct timeval newtime;
+#ifdef _WIN32
+  SYSTEMTIME st;
+  FILETIME ft;
+
+  /* do a conversion to unix ts. Is it fast? I doubt.. -adx */
+
+  GetSystemTime(&st);
+  if (SystemTimeToFileTime(&st, &ft))
+  {
+    if (ft.dwLowDateTime < 0xd53e8000)
+      ft.dwHighDateTime--;
+    ft.dwLowDateTime -= 0xd53e8000;
+    ft.dwHighDateTime -= 0x19db1de;
+
+    newtime.tv_sec  = (*(uint64_t *) &ft) / 10000000;
+    newtime.tv_usec = (*(uint64_t *) &ft) / 10 % 1000000;
+  }
+  else
+#else
   newtime.tv_sec  = 0;
   newtime.tv_usec = 0;
 
   if (gettimeofday(&newtime, NULL) == -1)
+#endif
   {
     ilog(L_ERROR, "Clock Failure (%d)", errno);
     sendto_realops_flags(UMODE_ALL, L_ALL,
@@ -444,6 +470,7 @@ write_pidfile(const char *filename)
 static void
 check_pidfile(const char *filename)
 {
+#ifndef _WIN32
   FBFILE *fb;
   char buff[32];
   pid_t pidfromfile;
@@ -475,6 +502,7 @@ check_pidfile(const char *filename)
   {
     /* log(L_ERROR, "Error opening pid file %s", filename); */
   }
+#endif
 }
 
 /* setup_corefile()
@@ -536,11 +564,13 @@ main(int argc, char *argv[])
   /* Check to see if the user is running
    * us as root, which is a nono
    */
+#ifndef _WIN32
   if (geteuid() == 0)
   {
     fprintf(stderr, "Don't run ircd as root!!!\n");
     return(-1);
   }
+#endif
 
   /* save server boot time right away, so getrusage works correctly */
   set_time();
@@ -548,8 +578,10 @@ main(int argc, char *argv[])
   /* Setup corefile size immediately after boot -kre */
   setup_corefile();
 
+#ifndef _WIN32
   /* set initialVMTop before we allocate any memory */
   initialVMTop = get_vm_top();
+#endif
 
   ServerRunning = 0;
 
@@ -592,12 +624,14 @@ main(int argc, char *argv[])
     exit(EXIT_FAILURE);
   }
 
+#ifndef _WIN32
   if (!server_state.foreground)
     make_daemon();
   else
     print_startup(getpid());
 
   setup_signals();
+#endif
   /* We need this to initialise the fd array before anything else */
   fdlist_init();
 

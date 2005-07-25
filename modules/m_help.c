@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.39 2005/07/14 06:44:52 metalrock Exp $
+ *  $Id: m_help.c,v 1.40 2005/07/25 04:52:38 adx Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-const char *_version = "$Revision: 1.39 $";
+const char *_version = "$Revision: 1.40 $";
 #endif
 
 /*
@@ -124,7 +124,7 @@ mo_uhelp(struct Client *client_p, struct Client *source_p,
 static void
 dohelp(struct Client *source_p, const char *hpath, char *topic)
 {
-  char path[MAXPATHLEN + 1];
+  char path[PATH_MAX + 1];
   struct stat sb;
   int i;
 
@@ -149,7 +149,7 @@ dohelp(struct Client *source_p, const char *hpath, char *topic)
     return;
   }
 
-  if (strlen(hpath) + strlen(topic) + 1 > MAXPATHLEN)
+  if (strlen(hpath) + strlen(topic) + 1 > PATH_MAX)
   {
     sendto_one(source_p, form_str(ERR_HELPNOTFOUND),
                me.name, source_p->name, topic);

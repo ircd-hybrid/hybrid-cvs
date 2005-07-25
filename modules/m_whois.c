@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.132 2005/07/23 23:12:30 adx Exp $
+ *  $Id: m_whois.c,v 1.133 2005/07/25 04:52:38 adx Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.132 $";
+const char *_version = "$Revision: 1.133 $";
 #endif
 
 /*
@@ -284,8 +284,6 @@ single_whois(struct Client *source_p, struct Client *target_p)
   dlink_node *ptr;
   struct Channel *chptr;
 
-  assert(target_p->user != NULL);
-
   if (!IsInvisible(target_p) || target_p == source_p)
   {
     /* always show user if they are visible (no +i) */
@@ -328,8 +326,6 @@ whois_person(struct Client *source_p, struct Client *target_p)
   int tlen;
   int reply_to_send = NO;
   struct hook_mfunc_data hd;
-
-  assert(target_p->user != NULL);
 
   server_p = target_p->servptr;
 

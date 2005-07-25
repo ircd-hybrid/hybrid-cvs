@@ -19,11 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.225 2005/07/18 13:30:18 michael Exp $
+ *  $Id: s_bsd.c,v 7.226 2005/07/25 04:52:42 adx Exp $
  */
 
 #include "stdinc.h"
+#ifndef _WIN32
 #include <netinet/tcp.h>
+#endif
 #include "fdlist.h"
 #include "s_bsd.h"
 #include "client.h"
@@ -216,17 +218,24 @@ defined(IP_OPTIONS) && defined(IPPROTO_IP) && !defined(IPV6)
 int
 set_non_blocking(int fd)
 {
-  int nonb = 0;
   int res;
+#ifdef _WIN32
+  u_long nonb = 1;
 
-#ifdef USE_SIGIO
-  setup_sigio_fd(fd);
-#endif
+  res = ioctlsocket(fd, FIONBIO, &nonb);
+  if (res != 0)
+    return 0;
+#else
+  int nonb = O_NONBLOCK;
 
-  nonb |= O_NONBLOCK;
+  #ifdef USE_SIGIO
+    setup_sigio_fd(fd);
+  #endif
+
   res = fcntl(fd, F_GETFL, 0);
   if (-1 == res || fcntl(fd, F_SETFL, res | nonb) == -1)
     return 0;
+#endif
 
   fd_table[fd].flags.nonblocking = 1;
   return 1;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.146 2005/07/13 13:00:07 adx Exp $
+ *  $Id: s_auth.c,v 7.147 2005/07/25 04:52:42 adx Exp $
  */
 
 /*
@@ -483,7 +483,7 @@ auth_connect_callback(int fd, int error, void *data)
   char authbuf[32];
   socklen_t ulen = sizeof(struct irc_ssaddr);
   socklen_t tlen = sizeof(struct irc_ssaddr);
-  uint16_t uport, tport;
+  u_int16_t uport, tport;
 #ifdef IPV6
   struct sockaddr_in6 *v6;
 #else

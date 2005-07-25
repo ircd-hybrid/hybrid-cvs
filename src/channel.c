@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.437 2005/07/22 15:28:52 michael Exp $
+ * \version $Id: channel.c,v 7.438 2005/07/25 04:52:40 adx Exp $
  */
 
 #include "stdinc.h"
@@ -89,8 +89,6 @@ add_user_to_channel(struct Channel *chptr, struct Client *who,
                     unsigned int flags)
 {
   struct Membership *ms;
-
-  assert(who->user != NULL);
 
   ms = BlockHeapAlloc(member_heap);
   ms->client_p = who;

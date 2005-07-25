@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.407 2005/07/24 05:49:57 db Exp $
+ *  $Id: ircd_parser.y,v 1.408 2005/07/25 04:52:41 adx Exp $
  */
 
 %{
@@ -29,7 +29,6 @@
 
 #define YY_NO_UNPUT
 #include <sys/types.h>
-#include <regex.h>
 
 #include "stdinc.h"
 #include "dalloca.h"
@@ -291,7 +290,7 @@ unhook_hub_leaf_confs(void)
 %token  SERVERHIDE
 %token  SERVERINFO
 %token  SERVLINK_PATH
-%token  SID
+%token  IRCD_SID
 %token	TKLINE_EXPIRE_NOTICES
 %token  T_SHARED
 %token  T_CLUSTER
@@ -590,7 +589,7 @@ serverinfo_name: NAME '=' QSTRING ';'
   }
 };
 
-serverinfo_sid: SID '=' QSTRING ';' 
+serverinfo_sid: IRCD_SID '=' QSTRING ';' 
 {
   /* this isn't rehashable */
   if (ypass == 2 && !ServerInfo.sid)
@@ -2740,12 +2739,12 @@ gecos_entry: GECOS
   {
     if (gecos_name[0])
     {
-      regex_t *exp_p = NULL;
       int ecode = 0;
 
       if (gecos_flags & 1)
       {
-        exp_p = MyMalloc(sizeof(regex_t));
+#ifdef HAVE_REGEX_H
+        regex_t *exp_p = MyMalloc(sizeof(regex_t));
 
         if ((ecode = regcomp(exp_p, gecos_name, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
         {
@@ -2760,6 +2759,9 @@ gecos_entry: GECOS
 
         yy_conf = make_conf_item(RXLINE_TYPE);
         yy_conf->regexpname = exp_p;
+#else
+        yyerror("Your system doesn't support regex");
+#endif
       }
       else
         yy_conf = make_conf_item(XLINE_TYPE);

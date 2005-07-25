@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.40 2005/07/22 00:23:33 db Exp $
+ *  $Id: ircd_defs.h,v 7.41 2005/07/25 04:52:36 adx Exp $
  */
 
 /*
@@ -61,6 +61,16 @@
  * message return values 
  */
 #define CLIENT_EXITED -2
+
+#ifdef _WIN32
+#define EAFNOSUPPORT WSAEAFNOSUPPORT
+#define EALREADY     WSAEALREADY
+#define EINPROGRESS  WSAEINPROGRESS
+#define EISCONN      WSAEISCONN
+#define EMSGSIZE     WSAEMSGSIZE
+#define EWOULDBLOCK  WSAEWOULDBLOCK
+#define FD_SETSIZE   (HARD_FDLIMIT + 10)
+#endif
 
 /* This is to get around the fact that some implementations have ss_len and
  * others do not

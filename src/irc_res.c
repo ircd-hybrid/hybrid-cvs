@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.41 2005/07/03 19:32:41 db Exp $
+ * $Id: irc_res.c,v 7.42 2005/07/25 04:52:41 adx Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -553,6 +553,10 @@ query_name(const char *name, int query_class, int type,
     HEADER *header = (HEADER *)buf;
 #ifndef HAVE_LRAND48
     int k = 0;
+  #ifdef _WIN32
+    SYSTEMTIME st;
+    FILETIME ft;
+  #endif
     struct timeval tv;
 #endif
     /*
@@ -567,8 +571,13 @@ query_name(const char *name, int query_class, int type,
       header->id = (header->id + lrand48()) & 0xffff;
     } while (find_id(header->id));
 #else
+  #ifdef WIN32
+    GetSystemTime(&st);
+    SystemTimeToFileTime(&st, &ft);
+    tv.tv_usec = ft.dwLowDateTime;
+  #else
     gettimeofday(&tv, NULL);
-
+  #endif
     do
     {
       header->id = (header->id + k + tv.tv_usec) & 0xffff;

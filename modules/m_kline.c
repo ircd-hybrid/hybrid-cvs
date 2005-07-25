@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.193 2005/07/24 05:49:55 db Exp $
+ *  $Id: m_kline.c,v 1.194 2005/07/25 04:52:38 adx Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.193 $";
+const char *_version = "$Revision: 1.194 $";
 #endif
 
 /* Local function prototypes */
@@ -485,8 +485,6 @@ mo_dline(struct Client *client_p, struct Client *source_p,
    if ((target_p = find_chasing(client_p, source_p, dlhost, NULL)) == NULL)
      return;
 
-   if(target_p->user == NULL)
-     return;
    t = HM_IPV4;
    if (IsServer(target_p))
    {

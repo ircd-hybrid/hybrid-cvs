@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.200 2005/07/23 23:36:44 michael Exp $
+ *  $Id: ircd_lexer.l,v 1.201 2005/07/25 04:52:41 adx Exp $
  */
 
 %option case-insensitive
@@ -276,7 +276,7 @@ serverinfo	{ return SERVERINFO; }
 servlink_path   { return SERVLINK_PATH; }
 shared          { return T_SHARED; }
 short_motd      { return SHORT_MOTD; }
-sid		{ return SID; }
+sid		{ return IRCD_SID; }
 silent          { return SILENT; }
 spoof		{ return SPOOF; }
 spoof_notice	{ return SPOOF_NOTICE; }
@@ -435,7 +435,7 @@ hashcomment(void)
   if (strlen(yytext) < strlen(INCLUDE))
     return;
 
-  if (!strncasecmp(yytext, INCLUDE, strlen(INCLUDE))) 
+  if (!ircncmp(yytext, INCLUDE, strlen(INCLUDE))) 
     yyerror("You probably meant '.include', skipping");
 }
 

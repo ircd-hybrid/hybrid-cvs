@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.100 2005/07/18 22:49:57 metalrock Exp $
+ *  $Id: hash.c,v 7.101 2005/07/25 04:52:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -87,7 +87,11 @@ init_hash(void)
   userhost_heap = BlockHeapCreate("userhost", sizeof(struct UserHost), CLIENT_HEAP_SIZE);
   namehost_heap = BlockHeapCreate("namehost", sizeof(struct NameHost), CLIENT_HEAP_SIZE);
 
+#ifndef _WIN32
   random_key = random() % 256;  /* better than nothing --adx */
+#else
+  random_key = random(256);
+#endif
 
   /* Clear the hash tables first */
   for (i = 0; i < HASHSIZE; ++i)

@@ -19,11 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.344 2005/07/24 04:36:10 db Exp $
+ *  $Id: s_user.c,v 7.345 2005/07/25 04:52:42 adx Exp $
  */
 
 #include <sys/types.h>
-#include <regex.h>
 
 #include "stdinc.h"
 #include "tools.h"
@@ -1240,6 +1239,7 @@ check_regexp_xline(struct Client *source_p)
   const dlink_node *ptr = NULL;
   const char *reason = NULL;
 
+#ifdef HAVE_REGEX_H
   DLINK_FOREACH(ptr, rxconf_items.head)
   {
     struct ConfItem *conf = ptr->data;
@@ -1265,6 +1265,7 @@ check_regexp_xline(struct Client *source_p)
       return(1);
     }
   }
+#endif
 
   return(0);
 }

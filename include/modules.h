@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.59 2005/07/16 08:12:43 michael Exp $
+ *  $Id: modules.h,v 7.60 2005/07/25 04:52:36 adx Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -167,6 +167,9 @@ extern struct Message whowas_msgtab;
 extern struct Message xline_msgtab;
 extern struct Message get_msgtab;
 extern struct Message put_msgtab;
+#ifdef HAVE_REGEX_H
+extern struct Message rxline_msgtab;
+#endif
 
 #ifdef BUILD_CONTRIB
 extern struct Message test_msgtab;

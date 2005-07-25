@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.151 2005/07/22 15:28:53 michael Exp $
+ *  $Id: channel_mode.c,v 7.152 2005/07/25 04:52:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -167,7 +167,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
   dlink_list *list;
   dlink_node *ban;
   struct Ban *actualBan;
-  unsigned int num_mask = 0;
+  unsigned int num_mask;
   char *name, *username, *host;
 
   /* dont let local clients overflow the b/e/I lists */

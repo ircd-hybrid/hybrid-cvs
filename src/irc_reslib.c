@@ -92,7 +92,7 @@
 #define DNS_LABELTYPE_BITSTRING 0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.24 2004/11/09 03:59:57 db Exp $ */
+/* $Id: irc_reslib.c,v 7.25 2005/07/25 04:52:41 adx Exp $ */
 
 struct irc_ssaddr irc_nsaddr_list[IRCD_MAXNS];
 int irc_nscount = 0;
@@ -202,9 +202,9 @@ parse_resvconf(void)
     if ((p = strpbrk(arg, " \t")) != NULL)
       *p = '\0';  /* take the first word */
 
-    if (strcasecmp(opt, "domain") == 0)
+    if (irccmp(opt, "domain") == 0)
       strlcpy(irc_domain, arg, HOSTLEN);
-    else if (strcasecmp(opt, "nameserver") == 0)
+    else if (irccmp(opt, "nameserver") == 0)
       add_nameserver(arg);
   }
 

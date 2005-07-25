@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.536 2005/07/24 08:25:30 michael Exp $
+ *  $Id: s_conf.c,v 7.537 2005/07/25 04:52:42 adx Exp $
  */
 
 #include "stdinc.h"
@@ -464,8 +464,10 @@ delete_conf_item(struct ConfItem *conf)
     break;
 
   case RXLINE_TYPE:
+#ifdef HAVE_REGEX_H
     regfree(conf->regexpname);
     MyFree(conf->regexpname);
+#endif
     match_item = (struct MatchItem *)map_to_conf(conf);
     MyFree(match_item->user);
     MyFree(match_item->host);

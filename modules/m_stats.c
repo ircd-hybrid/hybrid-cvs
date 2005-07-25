@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.174 2005/07/23 18:21:28 michael Exp $
+ *  $Id: m_stats.c,v 1.175 2005/07/25 04:52:38 adx Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.174 $";
+const char *_version = "$Revision: 1.175 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -343,6 +343,7 @@ mo_stats(struct Client *client_p, struct Client *source_p,
 static void
 send_usage(struct Client *source_p)
 {
+#ifndef _WIN32
   struct rusage rus;
   time_t secs;
   time_t rup;
@@ -394,6 +395,7 @@ send_usage(struct Client *source_p)
   sendto_one(source_p, ":%s %d %s R :Signals %d Context Vol. %d Invol %d",
              me.name, RPL_STATSDEBUG, source_p->name, (int)rus.ru_nsignals,
              (int)rus.ru_nvcsw, (int)rus.ru_nivcsw);
+#endif
 }
 
 static void

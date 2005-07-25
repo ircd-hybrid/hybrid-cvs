@@ -19,10 +19,9 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.297 2005/07/24 08:25:27 michael Exp $
+ *  $Id: s_conf.h,v 7.298 2005/07/25 04:52:36 adx Exp $
  */
 
-#include <regex.h>
 #ifndef INCLUDED_s_conf_h
 #define INCLUDED_s_conf_h
 #include "setup.h"
@@ -64,7 +63,9 @@ typedef enum {
 struct ConfItem
 {
   char *name;		/* Primary key */
+#ifdef HAVE_REGEX_H
   regex_t *regexpname;
+#endif
   dlink_node node;	/* link into known ConfItems of this type */
   unsigned int flags;
   ConfType type;
@@ -395,9 +396,9 @@ struct admin_info
 struct logging_entry
 {
   unsigned int use_logging;
-  char operlog[MAXPATHLEN + 1];
-  char userlog[MAXPATHLEN + 1];
-  char failed_operlog[MAXPATHLEN + 1];
+  char operlog[PATH_MAX + 1];
+  char userlog[PATH_MAX + 1];
+  char failed_operlog[PATH_MAX + 1];
 };
 
 

@@ -4,12 +4,13 @@
  *
  *  This code is in the public domain.
  *
- *  $Id: rlimits.h,v 7.1 2003/05/29 04:06:41 joshk Exp $
+ *  $Id: rlimits.h,v 7.2 2005/07/25 04:52:36 adx Exp $
  */
 
 #ifndef INCLUDED_rlimits_h
 #define INCLUDED_rlimits_h
 
+#ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 
 /* This nest of #ifdefs is because not all 'cpp's support #elif */
@@ -27,5 +28,7 @@
 #  endif
 # endif
 #endif
+
+#endif /* HAVE_SYS_RESOURCE_H */
 
 #endif /* INCLUDED_rlimits_h */

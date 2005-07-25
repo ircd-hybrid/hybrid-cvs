@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.160 2005/07/16 08:12:47 michael Exp $
+ *  $Id: modules.c,v 7.161 2005/07/25 04:52:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -717,6 +717,9 @@ load_all_modules(int warn)
   mod_add_cmd(&whois_msgtab);
   mod_add_cmd(&whowas_msgtab);
   mod_add_cmd(&xline_msgtab);
+#ifdef HAVE_REGEX_H
+  mod_add_cmd(&rxline_msgtab);
+#endif
 #ifdef BUILD_CONTRIB
   mod_add_cmd(&classlist_msgtab);
   mod_add_cmd(&clearchan_msgtab);
@@ -732,6 +735,7 @@ load_all_modules(int warn)
   mod_add_cmd(&operspy_msgtab);
   mod_add_cmd(&opme_msgtab);
   mod_add_cmd(&tburst_msgtab);
+  /* FIXME: what about spy*? */
   add_capability("TBURST", CAP_TBURST, 1);
 #endif
 }

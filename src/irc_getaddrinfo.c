@@ -31,8 +31,9 @@
 
 #include <stdarg.h>
 #include "irc_getaddrinfo.h"
+#include "ircd_defs.h"
 
-/*  $Id: irc_getaddrinfo.c,v 7.8 2003/05/15 21:34:37 joshk Exp $ */
+/*  $Id: irc_getaddrinfo.c,v 7.9 2005/07/25 04:52:41 adx Exp $ */
 
 static const char in_addrany[]  = { 0, 0, 0, 0 };
 static const char in_loopback[] = { 127, 0, 0, 1 };

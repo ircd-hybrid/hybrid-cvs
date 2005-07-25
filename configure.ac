@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.103 2005/07/22 02:19:55 metalrock Exp $
+dnl $Id: configure.ac,v 7.104 2005/07/25 04:52:33 adx Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.103 2005/07/22 02:19:55 metalrock Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.104 2005/07/25 04:52:33 adx Exp $])
 
 AC_INIT([ircd-hybrid],[7.1])
 
@@ -214,7 +214,7 @@ fi
 dnl Checks for header files.
 AC_HEADER_STDC
 
-AC_CHECK_HEADERS([crypt.h inttypes.h stdint.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h libgen.h sys/wait.h wait.h])
+AC_CHECK_HEADERS([crypt.h inttypes.h stdint.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h libgen.h sys/wait.h wait.h regex.h])
 
 dnl Networking Functions
 dnl ====================
@@ -427,11 +427,6 @@ AC_CHECK_TYPE([sa_family_t], [],
 [AC_DEFINE(sa_family_t, [u_int16_t], [If system does not define sa_family_t, define it here.])],
 [[#include <sys/types.h>
 #include <sys/socket.h>]])
-
-AC_CHECK_TYPES([uintptr_t])
-
-
-
 
 dnl check for various functions...
 AC_CHECK_FUNCS([socketpair basename mmap snprintf vsnprintf lrand48 srand48 strtok_r])
