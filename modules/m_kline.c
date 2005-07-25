@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.194 2005/07/25 04:52:38 adx Exp $
+ *  $Id: m_kline.c,v 1.195 2005/07/25 18:25:32 db Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.194 $";
+const char *_version = "$Revision: 1.195 $";
 #endif
 
 /* Local function prototypes */
@@ -133,11 +133,10 @@ static void
 mo_kline(struct Client *client_p, struct Client *source_p,
 	 int parc, char **parv)
 {
-  char def_reason[] = "No Reason";
-  char *reason = def_reason;
+  char *reason=NULL;
   char *oper_reason;
-  char user[USERLEN+2];
-  char host[HOSTLEN+2];
+  char *user=NULL;
+  char *host=NULL;
   const char *current_date;
   char *target_server=NULL;
   struct ConfItem *conf;
@@ -152,7 +151,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (parse_aline("KLINE", source_p, user, host,
+  if (parse_aline("KLINE", source_p, &user, &host,
 		  parc, parv, &tkline_time, &target_server, &reason) < 0)
     return;
 
@@ -175,7 +174,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
                     source_p->name, target_server, (unsigned long)tkline_time,
                     user, host, reason);
 
-    /* If we are sending it somewhere that doesnt include us, we stop
+    /* If we are sending it somewhere that doesn't include us, we stop
      * else we apply it locally too
      */
     if (!match(target_server, me.name))
@@ -254,10 +253,7 @@ me_kline(struct Client *client_p, struct Client *source_p,
   if (find_matching_name_conf(CLUSTER_TYPE, source_p->servptr->name,
                               NULL, NULL, CLUSTER_KLINE))
   {
-    if (!valid_wild_card(source_p, NO, 2, kuser, khost) ||
-        !valid_user_host(source_p, kuser, khost, NO) ||
-        !valid_comment(source_p, kreason, NO) ||
-        !IsClient(source_p) ||
+    if (!IsClient(source_p) ||
         already_placed_kline(source_p, kuser, khost, NO))
       return;
 
@@ -291,10 +287,7 @@ me_kline(struct Client *client_p, struct Client *source_p,
 				  source_p->username, source_p->host,
 				  SHARED_KLINE))
   {
-    if (!valid_wild_card(source_p, YES, 2, kuser, khost) ||
-        !valid_user_host(source_p, kuser, khost, YES) ||
-        !valid_comment(source_p, kreason, YES) ||
-        !IsClient(source_p) ||
+    if (!IsClient(source_p) ||
         already_placed_kline(source_p, kuser, khost, YES))
       return;
 

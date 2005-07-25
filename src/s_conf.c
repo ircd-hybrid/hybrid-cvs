@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.537 2005/07/25 04:52:42 adx Exp $
+ *  $Id: s_conf.c,v 7.538 2005/07/25 18:25:34 db Exp $
  */
 
 #include "stdinc.h"
@@ -3270,6 +3270,8 @@ valid_wild_card(struct Client *source_p, int warn, int count, ...)
   while (count--)
   {
     p = va_arg(args, char *);
+    if (p == NULL)
+      continue;
 
     while ((tmpch = *p++))
     {
@@ -3304,10 +3306,14 @@ valid_wild_card(struct Client *source_p, int warn, int count, ...)
  */
 int
 parse_aline(const char *cmd, struct Client *source_p,
-	    char *user, char *host,
+	    char **up_p, char **h_p,
 	    int parc, char **parv, time_t *tkline_time, 
 	    char **target_server, char **reason)
 {
+  static char def_reason[] = "No Reason";
+  static char user[USERLEN+2];
+  static char host[HOSTLEN+2];
+
   parv++;
   parc--;
 
@@ -3326,9 +3332,18 @@ parse_aline(const char *cmd, struct Client *source_p,
     return(-1);
   }
 
-  if (find_user_host(source_p, *parv, user, host) == 0)
-    return(-1);
-
+  if (h_p == NULL)
+  {
+    *up_p = *parv;
+  }
+  else
+  {
+    if (find_user_host(source_p, *parv, user, host) == 0)
+      return(-1);
+    *up_p = user;
+    *h_p = host;
+  }
+ 
   parc--;
   parv++;
 
@@ -3361,12 +3376,23 @@ parse_aline(const char *cmd, struct Client *source_p,
 
   if (parc != 0)
     *reason = *parv;
+  else
+    *reason = def_reason;
 
-  if (!valid_user_host(source_p, user, host, YES))
-    return(-1);
-
-  if (!valid_wild_card(source_p, YES, 2, user, host))
-    return(-1);
+  if (h_p != NULL)
+  {
+    if (strchr(user, '!') != NULL)
+    {
+      sendto_one(source_p, ":%s NOTICE %s :Invalid character '!' in kline",
+                 me.name, source_p->name);
+      return(-1);
+    }
+    if (!valid_wild_card(source_p, YES, 2, *up_p, *h_p))
+      return(-1);
+  }
+  else
+    if (!valid_wild_card(source_p, YES, 2, *up_p, NULL))
+      return(-1);
 
   if (!valid_comment(source_p, *reason, YES))
     return(-1);
@@ -3390,6 +3416,12 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
   struct Client *target_p;
   char *hostp;
 
+  if (lhost == NULL)
+  {
+    strlcpy(luser, user_host_or_nick, USERLEN + 1);
+    return(1);
+  }
+
   if ((hostp = strchr(user_host_or_nick, '@')) || *user_host_or_nick == '*')
   {
     /* Explicit user@host mask given */
@@ -3398,7 +3430,7 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
     {
       *(hostp++) = '\0';                       /* short and squat */
       if (*user_host_or_nick)
-	strlcpy(luser,user_host_or_nick,USERLEN + 1); /* here is my user */
+	strlcpy(luser, user_host_or_nick, USERLEN + 1); /* here is my user */
       else
 	strcpy(luser, "*");
       if (*hostp)
@@ -3447,34 +3479,10 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
     if (*target_p->username == '~')
       luser[0] = '*';
 
-    strlcpy(lhost,cluster(target_p->host), HOSTLEN + 1);
+    strlcpy(lhost, cluster(target_p->host), HOSTLEN + 1);
   }
 
   return(1);
-}
-
-/* valid_user_host()
- *
- * inputs       - pointer to source
- *              - pointer to user buffer
- *              - pointer to host buffer
- * output	- 1 if valid user or host, 0 if invalid
- * side effects -
- */
-int
-valid_user_host(struct Client *source_p, const char *luser,
-		const char *lhost, int warn)
-{
-  const char *p = NULL;
-  /*
-   * Check for # in user@host
-   * Dont let people kline *!ident@host, as the ! is invalid..
-   */
-  if ((p = strpbrk(lhost, "#\"")) || (p = strpbrk(luser, "!#\"")))
-    if (warn)
-      sendto_one(source_p, ":%s NOTICE %s :Invalid character '%c' in kline",
-                 me.name, source_p->name, *p);		    
-  return(p == NULL);
 }
 
 /* valid_comment()

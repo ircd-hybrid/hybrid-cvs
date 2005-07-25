@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.56 2005/07/24 08:08:43 michael Exp $
+ *  $Id: m_xline.c,v 1.57 2005/07/25 18:25:33 db Exp $
  */
 
 #include "stdinc.h"
@@ -86,7 +86,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
@@ -105,8 +105,7 @@ static void
 mo_xline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  char def_reason[] = "No Reason";
-  char *reason = def_reason;
+  char *reason;
   char *gecos=NULL;
   struct ConfItem *conf;
   struct MatchItem *match_item;
@@ -124,58 +123,9 @@ mo_xline(struct Client *client_p, struct Client *source_p,
    * XLINE <gecos> ON <mask> :<reason>
    */
 
-  parv++;
-  parc--;
-
-  tkline_time = valid_tkline(*parv, TK_MINUTES);
-
-  if (tkline_time != 0)
-  {
-    parv++;
-    parc--;
-  }
-
-  if (parc == 0)
-  {
-    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-	       me.name, source_p->name, "XLINE");
+  if (parse_aline("XLINE", source_p, &gecos, NULL,
+		  parc, parv, &tkline_time, &target_server, &reason) < 0)
     return;
-  }
-
-  gecos = *parv;
-
-  parc--;
-  parv++;
-
-  if (parc != 0)
-  {
-    if (irccmp(*parv, "ON") == 0)
-    {
-      if (!IsOperRemoteBan(source_p))
-      {
-        sendto_one(source_p, form_str(ERR_NOPRIVS),
-                 me.name, source_p->name, "remoteban");
-        return;
-      }
-
-      parc--;
-      parv++;
-
-      if (parc == 0)
-      {
-	sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-		   me.name, source_p->name, "XLINE");
-	return;
-      }
-
-      target_server = *parv;
-      parc--;
-      parv++;
-    }
-  }
-
-  if (parc != 0)
-    reason = *parv;
 
   if (target_server != NULL)
   {
