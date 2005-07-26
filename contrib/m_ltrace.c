@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.17 2005/07/16 12:19:38 michael Exp $
+ *  $Id: m_ltrace.c,v 1.18 2005/07/26 13:07:28 adx Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&ltrace_msgtab);
 }
 
-const char *_version = "$Revision: 1.17 $";
+const char *_version = "$Revision: 1.18 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
@@ -102,10 +102,9 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
 {
   struct Client *target_p = NULL;
   char  *tname;
-  int   doall, link_s[HARD_FDLIMIT], link_u[HARD_FDLIMIT];
+  int   doall;
   int   wilds, dow;
   dlink_node *ptr;
-  dlink_node *gcptr;	/* global_client_list ptr */
   char *looking_for = parv[0];
 
   if (parc > 1)
@@ -113,7 +112,7 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
   else
     tname = me.name;
 
-  if(!IsOper(source_p))
+  if (!IsOper(source_p))
   {
     sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name, parv[0], tname);
     return;
@@ -124,37 +123,35 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
       return;
 
   switch (hunt_server(client_p, source_p, ":%s LTRACE :%s", 1, parc, parv))
-    {
+  {
     case HUNTED_PASS: /* note: gets here only if parv[1] exists */
-      {
-        struct Client *ac2ptr = NULL;
+    {
+      struct Client *ac2ptr = NULL;
 
-        if ((ac2ptr = find_client(tname)) == NULL)
+      if ((ac2ptr = find_client(tname)) == NULL)
+        DLINK_FOREACH(ptr, global_client_list.head)
         {
-          DLINK_FOREACH(ptr, global_client_list.head)
-          {
-            ac2ptr = ptr->data;
+          ac2ptr = ptr->data;
 
-            if (match(tname, ac2ptr->name) || match(ac2ptr->name, tname))
-              break;
-            else
-              ac2ptr = NULL;
-          }
+          if (match(tname, ac2ptr->name) || match(ac2ptr->name, tname))
+            break;
+          else
+            ac2ptr = NULL;
         }
 
-	if (ac2ptr != NULL)
-          sendto_one(source_p, form_str(RPL_TRACELINK), me.name, looking_for,
-                     ircd_version, tname, ac2ptr->from->name);
-        else
-          sendto_one(source_p, form_str(RPL_TRACELINK), me.name, looking_for,
-                     ircd_version, tname, "ac2ptr_is_NULL!!");
-        return;
-      }
+      if (ac2ptr != NULL)
+        sendto_one(source_p, form_str(RPL_TRACELINK), me.name, looking_for,
+                   ircd_version, tname, ac2ptr->from->name);
+      else
+        sendto_one(source_p, form_str(RPL_TRACELINK), me.name, looking_for,
+                   ircd_version, tname, "ac2ptr_is_NULL!!");
+      return;
+    }
     case HUNTED_ISME:
       break;
     default:
       return;
-    }
+  }
 
   ltrace_spy(source_p);
 
@@ -162,103 +159,78 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
   wilds = !parv[1] || strchr(tname, '*') || strchr(tname, '?');
   dow = wilds || doall;
   
-  set_time();
-
   /* lusers cant issue ltrace.. */
-  if(!IsOper(source_p) || !dow)
+  if (!dow)
+  {
+    const char* name;
+    const char* class_name;
+    char ipaddr[HOSTIPLEN];
+
+    target_p = find_client(tname);
+
+    if (target_p && IsClient(target_p)) 
     {
-      const char* name;
-      const char* class_name;
-      char ipaddr[HOSTIPLEN];
+      name = get_client_name(target_p, HIDE_IP);
+      /* Should this be sockhost? - stu */
+      getnameinfo((struct sockaddr*)&target_p->localClient->ip,
+                  target_p->localClient->ip.ss_len, ipaddr,
+                  HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
+      class_name = get_client_class(target_p);
 
-      target_p = find_client(tname);
-      
-      if(target_p && IsClient(target_p)) 
+      if (IsOper(target_p))
       {
-        name = get_client_name(target_p, HIDE_IP);
-        /* Should this be sockhost? - stu */
-        getnameinfo((struct sockaddr*)&target_p->localClient->ip,
-                    target_p->localClient->ip.ss_len, ipaddr,
-                    HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
-        class_name = get_client_class(target_p);
-
-        if (IsOper(target_p))
-	{
-	  if (ConfigFileEntry.hide_spoof_ips)
-            sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
-                       me.name, source_p->name, class_name, name, 
-		       (IsIPSpoof(target_p) ? "255.255.255.255" : ipaddr),
-                       CurrentTime - target_p->lasttime,
-                       CurrentTime - target_p->localClient->last);
-	  else
-            sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
-                       me.name, source_p->name, class_name, name,
-                       (IsIPSpoof(target_p) ? "255.255.255.255" : ipaddr),
-                       CurrentTime - target_p->lasttime,
-                       CurrentTime - target_p->localClient->last);
-        }
+        if (ConfigFileEntry.hide_spoof_ips)
+          sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
+                     me.name, source_p->name, class_name, name, 
+                     (IsIPSpoof(target_p) ? "255.255.255.255" : ipaddr),
+                     CurrentTime - target_p->lasttime,
+                     CurrentTime - target_p->localClient->last);
+        else
+          sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
+                     me.name, source_p->name, class_name, name,
+                     (IsIPSpoof(target_p) ? "255.255.255.255" : ipaddr),
+                     CurrentTime - target_p->lasttime,
+                     CurrentTime - target_p->localClient->last);
       }
-      
-      sendto_one(source_p, form_str(RPL_ENDOFTRACE),
-                 me.name, source_p->name, tname);
-      return;
     }
 
-  memset((void *)link_s,0,sizeof(link_s));
-  memset((void *)link_u,0,sizeof(link_u));
+    sendto_one(source_p, form_str(RPL_ENDOFTRACE),
+               me.name, source_p->name, tname);
+    return;
+  }
 
-  /*
-   * Count up all the servers and clients in a downlink.
-   */
-  if (doall)
-   {
-    DLINK_FOREACH(gcptr, global_client_list.head)
-     {
-       target_p = gcptr->data;
-       if (IsClient(target_p))
-	 {
-	   link_u[target_p->from->localClient->fd]++;
-	 }
-       else if (IsServer(target_p))
-	 {
-	   link_s[target_p->from->localClient->fd]++;
-	 }
-     }
-   }
-   
   /* report all opers */
   DLINK_FOREACH(ptr, local_client_list.head)
-    {
-      target_p = ptr->data;
+  {
+    target_p = ptr->data;
 
-      if(!IsOper(target_p))
-	continue;
+    if (!IsOper(target_p))
+      continue;
 
-      if (!doall && wilds && !match(tname, target_p->name))
-        continue;
+    if (!doall && wilds && !match(tname, target_p->name))
+      continue;
 
-      if (!dow && irccmp(tname, target_p->name))
-        continue;
+    if (!dow && irccmp(tname, target_p->name))
+      continue;
 
-      report_this_status(source_p,target_p,dow,0,0);
-    }
+    report_this_status(source_p, target_p, dow, 0, 0);
+  }
 
   /* report all servers */
   DLINK_FOREACH(ptr, serv_list.head)
-    {
-      target_p = ptr->data;
+  {
+    target_p = ptr->data;
 
-      if (!doall && wilds && !match(tname, target_p->name))
-        continue;
-      if (!dow && irccmp(tname, target_p->name))
-        continue;
+    if (!doall && wilds && !match(tname, target_p->name))
+      continue;
+    if (!dow && irccmp(tname, target_p->name))
+      continue;
 
-      report_this_status(source_p, target_p, dow,
-                               link_u[target_p->localClient->fd],
-                               link_s[target_p->localClient->fd]);
-    }
+    report_this_status(source_p, target_p, dow, target_p->serv->dep_users,
+                       target_p->serv->dep_servers);
+  }
 
-  sendto_one(source_p, form_str(RPL_ENDOFTRACE),me.name, parv[0],tname);
+  sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name, parv[0], tname);
 }
 
 /*
