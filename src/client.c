@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.455 2005/07/26 14:13:10 adx Exp $
+ *  $Id: client.c,v 7.456 2005/07/26 21:24:52 adx Exp $
  */
 
 #include "stdinc.h"
@@ -721,8 +721,8 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
       {
         fd_close(&source_p->localClient->ctrlfd);
 #ifndef HAVE_SOCKETPAIR
-        fd_close(source_p->localClient->ctrlfd_r);
-        fd_close(source_p->localClient->fd_r);
+        fd_close(&source_p->localClient->ctrlfd_r);
+        fd_close(&source_p->localClient->fd_r);
 #endif
       }
     }
