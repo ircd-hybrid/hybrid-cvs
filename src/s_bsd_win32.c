@@ -19,12 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.2 2005/07/26 21:07:55 adx Exp $
+ *  $Id: s_bsd_win32.c,v 7.3 2005/07/26 21:34:25 adx Exp $
  */
 
 #include "stdinc.h"
 #include "fdlist.h"
 #include "ircd.h"
+#include "s_bsd.h"
+#include "common.h"
 
 #define WM_SOCKET  (WM_USER + 0)
 #define WM_REHASH  (WM_USER + 1)
@@ -71,7 +73,7 @@ update_winsock_events(fde_t *F)
  * Handler for Win32 messages.
  */
 static LRESULT CALLBACK
-WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+hybrid_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   switch (uMsg)
   {
@@ -153,13 +155,13 @@ setup_netio(void)
 
   wndclass.lpfnWndProc = hybrid_wndproc;
   wndclass.hInstance = GetModuleHandle(NULL);
-  wndclass.lpszClassName = PROJECT_NAME;
+  wndclass.lpszClassName = PACKAGE_NAME;
 
   RegisterClass(&wndclass);
 
   /* Now, initialize the window */
 
-  wndhandle = CreateWindow(PROJECT_NAME, NULL, 0,
+  wndhandle = CreateWindow(PACKAGE_NAME, NULL, 0,
     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
     NULL, NULL, wndclass.hInstance, NULL);
 
@@ -190,7 +192,7 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
 
   switch (type)
   {
-    case COMM_READ:
+    case COMM_SELECT_READ:
       if (!F->read_handler != !handler)
         do_update = YES;
 
@@ -198,7 +200,7 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
       F->read_data = client_data;
       break;
 
-    case COMM_WRITE:
+    case COMM_SELECT_WRITE:
       if (!F->write_handler != !handler)
         do_update = YES;
 
