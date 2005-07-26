@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_poll.c,v 7.64 2003/07/05 06:21:03 db Exp $
+ *  $Id: s_bsd_poll.c,v 7.65 2005/07/26 03:33:05 adx Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ struct _pollfd_list {
     int maxindex; /* highest FD number */
 } pollfd_list;
 
-static void poll_update_pollfds(int, short, PF *);
+static void poll_update_pollfds(fde_t *, short, PF *);
 
 /* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
 /* Private functions */
@@ -89,9 +89,8 @@ poll_findslot(void)
  * set and clear entries in the pollfds[] array.
  */ 
 static void
-poll_update_pollfds(int fd, short event, PF * handler)
+poll_update_pollfds(fde_t *F, short event, PF *handler)
 {  
-  fde_t *F = &fd_table[fd];
   int comm_index;
 
   if (F->comm_index < 0)
@@ -101,9 +100,8 @@ poll_update_pollfds(int fd, short event, PF * handler)
   /* Update the events */
   if (handler != NULL)
   {
-    F->list = FDLIST_IDLECLIENT;
     pollfd_list.pollfds[comm_index].events |= event;
-    pollfd_list.pollfds[comm_index].fd = fd;
+    pollfd_list.pollfds[comm_index].fd = F->fd;
     /* update maxindex here */
     if (comm_index > pollfd_list.maxindex)
       pollfd_list.maxindex = comm_index;
@@ -115,7 +113,6 @@ poll_update_pollfds(int fd, short event, PF * handler)
       pollfd_list.pollfds[comm_index].fd = -1;
       pollfd_list.pollfds[comm_index].revents = 0;
       F->comm_index = -1;
-      F->list = FDLIST_NONE;
 
       /* update pollfd_list.maxindex here */
       if (comm_index == pollfd_list.maxindex)
@@ -152,25 +149,22 @@ init_netio(void)
  * and deregister interest in a pending IO state for a given FD.
  */
 void
-comm_setselect(int fd, fdlist_t list, unsigned int type, PF *handler,
+comm_setselect(fde_t *F, unsigned int type, PF *handler,
                void *client_data, time_t timeout)
 {  
-  fde_t *F = &fd_table[fd];
-
-  assert(fd >= 0);
   assert(F->flags.open);
 
   if (type & COMM_SELECT_READ)
   {
     F->read_handler = handler;
     F->read_data = client_data;
-    poll_update_pollfds(fd, POLLRDNORM, handler);
+    poll_update_pollfds(F, POLLRDNORM, handler);
   }
   if (type & COMM_SELECT_WRITE)
   {
     F->write_handler = handler;
     F->write_data = client_data;
-    poll_update_pollfds(fd, POLLWRNORM, handler);
+    poll_update_pollfds(F, POLLWRNORM, handler);
   }
   if (timeout)
     F->timeout = CurrentTime + (timeout / 1000);
@@ -192,7 +186,7 @@ comm_setselect(int fd, fdlist_t list, unsigned int type, PF *handler,
 void
 comm_select(unsigned long delay)
 {
-  int num, fd, ci, revents;
+  int num, ci, revents;
   PF *hdl;
   fde_t *F;
   
@@ -216,24 +210,25 @@ comm_select(unsigned long delay)
         (pollfd_list.pollfds[ci].fd) == -1)
       continue;
 
-    fd = pollfd_list.pollfds[ci].fd;
-    F = &fd_table[fd];
+    F = lookup_fd(pollfd_list.pollfds[ci].fd);
+    if (F == NULL)
+      continue;
 
     if (revents & (POLLRDNORM | POLLIN | POLLHUP | POLLERR))
     {
       hdl = F->read_handler;
       F->read_handler = NULL;
-      poll_update_pollfds(fd, POLLRDNORM, NULL);
+      poll_update_pollfds(F, POLLRDNORM, NULL);
       if (hdl)
-       hdl(fd, F->read_data);
+       hdl(F, F->read_data);
     }
     if (revents & (POLLWRNORM | POLLOUT | POLLHUP | POLLERR))
     {
       hdl = F->write_handler;
       F->write_handler = NULL;
-      poll_update_pollfds(fd, POLLWRNORM, NULL);
+      poll_update_pollfds(F, POLLWRNORM, NULL);
       if (hdl)
-        hdl(fd, F->write_data);
+        hdl(F, F->write_data);
     }
   }
 }

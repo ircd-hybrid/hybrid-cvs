@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_kqueue.c,v 1.37 2003/07/05 06:21:03 db Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.38 2005/07/26 03:33:05 adx Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@
 } while(0)
 #endif
 
-static void kq_update_events(int, short, PF *);
+static void kq_update_events(fde_t *, short, PF *);
 static int kq;
 static struct timespec zero_timespec;
 
@@ -74,7 +74,7 @@ static int kqoff;		/* offset into the buffer */
 /* Private functions */
 
 void
-kq_update_events(int fd, short filter, PF * handler)
+kq_update_events(fde_t *fd, short filter, PF *handler)
 {
   PF *cur_handler;
   int kep_flags;
@@ -82,10 +82,10 @@ kq_update_events(int fd, short filter, PF * handler)
   switch (filter)
   {
     case EVFILT_READ:
-      cur_handler = fd_table[fd].read_handler;
+      cur_handler = fd->read_handler;
       break;
     case EVFILT_WRITE:
-      cur_handler = fd_table[fd].write_handler;
+      cur_handler = fd->write_handler;
       break;
     default:
       /* XXX bad! -- adrian */
@@ -109,7 +109,7 @@ kq_update_events(int fd, short filter, PF * handler)
     }
     else kep_flags = EV_DELETE;
 
-    EV_SET(kep, (uintptr_t) fd, filter, kep_flags, 0, 0, 0);
+    EV_SET(kep, (uintptr_t) fd->fd, filter, kep_flags, 0, 0, fd);
 
     if (kqoff == kqmax)
     {
@@ -150,26 +150,20 @@ init_netio(void)
  * and deregister interest in a pending IO state for a given FD.
  */
 void
-comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
+comm_setselect(fde_t *F, unsigned int type, PF *handler,
                void *client_data, time_t timeout)
 {  
-  fde_t *F = &fd_table[fd];
-
-  assert(fd >= 0);
   assert(F->flags.open);
-
-  /* Update the list, even though we're not using it .. */
-  F->list = list;
 
   if (type & COMM_SELECT_READ)
   {
-    kq_update_events(fd, EVFILT_READ, handler);
+    kq_update_events(F, EVFILT_READ, handler);
     F->read_handler = handler;
     F->read_data = client_data;
   }
   if (type & COMM_SELECT_WRITE)
   {
-    kq_update_events(fd, EVFILT_WRITE, handler);
+    kq_update_events(F, EVFILT_WRITE, handler);
     F->write_handler = handler;
     F->write_data = client_data;
   }
@@ -196,7 +190,7 @@ comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
 void
 comm_select(unsigned long delay)
 {
-  int num, i, fd;
+  int num, i;
   static struct kevent ke[KE_LENGTH];
   struct timespec poll_time;
   PF *hdl;
@@ -219,13 +213,11 @@ comm_select(unsigned long delay)
 
   for (i = 0; i < num; i++)
   {
-    fd = (int) ke[i].ident;
+    F = ke[i].udata;
     hdl = NULL;
-    F = &fd_table[fd];
 
     if (ke[i].flags & EV_ERROR)
     {
-      errno = ke[i].data;
       /* XXX error == bad! -- adrian */
       continue; /* XXX! */
     }
@@ -236,13 +228,13 @@ comm_select(unsigned long delay)
         if ((hdl = F->read_handler) != NULL)
         {
           F->read_handler = NULL;
-          hdl(fd, F->read_data);
+          hdl(F, F->read_data);
         }
       case EVFILT_WRITE:
         if ((hdl = F->write_handler) != NULL)
         {
           F->write_handler = NULL;
-          hdl(fd, F->write_data);
+          hdl(F, F->write_data);
         }
       default:
         /* Bad! -- adrian */

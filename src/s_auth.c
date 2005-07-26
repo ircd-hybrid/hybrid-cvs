@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.147 2005/07/25 04:52:42 adx Exp $
+ *  $Id: s_auth.c,v 7.148 2005/07/26 03:33:05 adx Exp $
  */
 
 /*
@@ -110,7 +110,6 @@ make_auth_request(struct Client *client)
 {
   struct AuthRequest *request = MyMalloc(sizeof(struct AuthRequest));
 
-  request->fd      = -1;
   request->client  = client;
   request->timeout = CurrentTime + CONNECTTIMEOUT;
 
@@ -125,16 +124,13 @@ make_auth_request(struct Client *client)
 static void
 release_auth_client(struct Client *client)
 {
-  if (client->localClient->fd > highest_fd)
-    highest_fd = client->localClient->fd;
-
   /*
    * When a client has auth'ed, we want to start reading what it sends
    * us. This is what read_packet() does.
    *     -- adrian
    */
   client->localClient->allow_read = MAX_FLOOD;
-  comm_setflush(client->localClient->fd, 1000, flood_recalc, client);
+  comm_setflush(&client->localClient->fd, 1000, flood_recalc, client);
   if ((client->node.prev != NULL) || (client->node.next != NULL))
   {
     sendto_realops_flags(UMODE_ALL, L_OPER,
@@ -146,7 +142,7 @@ release_auth_client(struct Client *client)
   }
   else
     dlinkAdd(client, &client->node, &global_client_list);
-  read_packet(client->localClient->fd, client);
+  read_packet(&client->localClient->fd, client);
 }
  
 /*
@@ -226,8 +222,7 @@ auth_error(struct AuthRequest *auth)
 {
   ++ServerStats->is_abad;
 
-  fd_close(auth->fd);
-  auth->fd = -1;
+  fd_close(&auth->fd);
 
   if (IsAuthPending(auth))
     dlinkDelete(&auth->ident_node, &auth_doing_ident_list);
@@ -255,7 +250,6 @@ start_auth_query(struct AuthRequest *auth)
 {
   struct irc_ssaddr localaddr;
   socklen_t locallen = sizeof(struct irc_ssaddr);
-  int fd;
 #ifdef IPV6
   struct sockaddr_in6 *v6;
 #else
@@ -263,8 +257,8 @@ start_auth_query(struct AuthRequest *auth)
 #endif
 
   /* open a socket of the same type as the client socket */
-  if ((fd = comm_open(auth->client->localClient->ip.ss.ss_family, SOCK_STREAM,
-          0, "ident")) == -1)
+  if (comm_open(&auth->fd, auth->client->localClient->ip.ss.ss_family,
+                SOCK_STREAM, 0, "ident") == -1)
   {
     report_error(L_ALL, "creating auth stream socket %s:%s", 
         get_client_name(auth->client, SHOW_IP), errno);
@@ -274,11 +268,11 @@ start_auth_query(struct AuthRequest *auth)
     return 0;
   }
 
-  if ((HARD_FDLIMIT - 10) < fd)
+  if ((HARD_FDLIMIT - 10) < auth->fd.fd)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,"Can't allocate fd for auth on %s",
         get_client_name(auth->client, SHOW_IP));
-    fd_close(fd);
+    fd_close(&auth->fd);
     return 0;
   }
 
@@ -292,7 +286,7 @@ start_auth_query(struct AuthRequest *auth)
    * and machines with multiple IP addresses are common now
    */
   memset(&localaddr, 0, locallen);
-  getsockname(auth->client->localClient->fd, (struct sockaddr*)&localaddr,
+  getsockname(auth->client->localClient->fd.fd, (struct sockaddr*)&localaddr,
       &locallen);
 
 #ifdef IPV6
@@ -306,10 +300,9 @@ start_auth_query(struct AuthRequest *auth)
 #endif
   localaddr.ss_port = htons(0);
 
-  auth->fd = fd;
   SetAuthConnect(auth);
 
-  comm_connect_tcp(fd, auth->client->sockhost, 113, 
+  comm_connect_tcp(&auth->fd, auth->client->sockhost, 113, 
       (struct sockaddr *)&localaddr, localaddr.ss_len, auth_connect_callback, 
       auth, auth->client->localClient->ip.ss.ss_family, 
       GlobalSetOptions.ident_timeout);
@@ -431,15 +424,15 @@ timeout_auth_queries_event(void *notused)
 
     if (auth->timeout < CurrentTime)
     {
-      if (auth->fd >= 0)
-	fd_close(auth->fd);
+      if (auth->fd.flags.open)
+	fd_close(&auth->fd);
 
       if (IsDoingAuth(auth))
 	sendheader(auth->client, REPORT_FAIL_ID);
 
       if (IsDNSPending(auth))
       {
-	struct Client *client_p=auth->client;
+	struct Client *client_p = auth->client;
 
 	ClearDNSPending(auth);
 	dlinkDelete(&auth->dns_node, &auth_doing_dns_list);
@@ -475,7 +468,7 @@ timeout_auth_queries_event(void *notused)
  * problems arise. -avalon
  */
 static void
-auth_connect_callback(int fd, int error, void *data)
+auth_connect_callback(fde_t *fd, int error, void *data)
 {
   struct AuthRequest *auth = data;
   struct irc_ssaddr us;
@@ -496,8 +489,10 @@ auth_connect_callback(int fd, int error, void *data)
     return;
   }
 
-  if (getsockname(auth->client->localClient->fd, (struct sockaddr *)&us,   (socklen_t*)&ulen) ||
-      getpeername(auth->client->localClient->fd, (struct sockaddr *)&them, (socklen_t*)&tlen))
+  if (getsockname(auth->client->localClient->fd.fd, (struct sockaddr *) &us,
+      (socklen_t *) &ulen) ||
+      getpeername(auth->client->localClient->fd.fd, (struct sockaddr *) &them,
+      (socklen_t *) &tlen))
   {
     ilog(L_INFO, "auth get{sock,peer}name error for %s",
         get_client_name(auth->client, SHOW_IP));
@@ -523,7 +518,7 @@ auth_connect_callback(int fd, int error, void *data)
   
   ircsprintf(authbuf, "%u , %u\r\n", tport, uport); 
 
-  if (send(auth->fd, authbuf, strlen(authbuf), 0) == -1)
+  if (send(fd->fd, authbuf, strlen(authbuf), 0) == -1)
   {
     auth_error(auth);
     return;
@@ -531,7 +526,7 @@ auth_connect_callback(int fd, int error, void *data)
   ClearAuthConnect(auth);
   SetAuthPending(auth);
   dlinkAdd(auth, &auth->ident_node, &auth_doing_ident_list);
-  read_auth_reply(auth->fd, auth);
+  read_auth_reply(&auth->fd, auth);
 }
 
 /*
@@ -543,7 +538,7 @@ auth_connect_callback(int fd, int error, void *data)
 #define AUTH_BUFSIZ 128
 
 static void
-read_auth_reply(int fd, void *data)
+read_auth_reply(fde_t *fd, void *data)
 {
   struct AuthRequest *auth = data;
   char *s = NULL;
@@ -552,12 +547,11 @@ read_auth_reply(int fd, void *data)
   int count;
   char buf[AUTH_BUFSIZ + 1]; /* buffer to read auth reply into */
 
-  len = recv(auth->fd, buf, AUTH_BUFSIZ, 0);
+  len = recv(fd->fd, buf, AUTH_BUFSIZ, 0);
   
   if (len < 0 && ignoreErrno(errno))
   {
-    comm_setselect(fd, FDLIST_IDLECLIENT, COMM_SELECT_READ,
-                   read_auth_reply, auth, 0);
+    comm_setselect(fd, COMM_SELECT_READ, read_auth_reply, auth, 0);
     return;
   }
 
@@ -587,8 +581,7 @@ read_auth_reply(int fd, void *data)
     }
   }
 
-  fd_close(auth->fd);
-  auth->fd = -1;
+  fd_close(fd);
 
   if (IsAuthPending(auth))
     dlinkDelete(&auth->ident_node, &auth_doing_ident_list);  
@@ -630,11 +623,8 @@ delete_identd_queries(struct Client *target_p)
 
     if (auth->client == target_p)
     {
-      if (auth->fd >= 0)
-      {
-        fd_close(auth->fd);
-	auth->fd = -1;
-      }
+      if (auth->fd.flags.open)
+        fd_close(&auth->fd);
 
       if (IsAuthPending(auth))
 	dlinkDelete(&auth->ident_node, &auth_doing_ident_list);

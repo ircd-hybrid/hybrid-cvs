@@ -1,7 +1,7 @@
 /*
  * include/irc_res.h for referencing functions in src/irc_res.c
  *
- * $Id: irc_res.h,v 7.8 2003/11/25 05:08:03 db Exp $
+ * $Id: irc_res.h,v 7.9 2005/07/26 03:32:57 adx Exp $
  */
 
 #ifndef INCLUDED_irc_res_h
@@ -82,7 +82,7 @@ typedef struct
 	unsigned	arcount :16;	/* number of resource entries */
 } HEADER;
 
-extern int init_resolver(void);
+extern void init_resolver(void);
 extern void restart_resolver(void);
 extern void add_local_domain(char *hname, size_t size);
 extern void timeout_resolver(void *notused);

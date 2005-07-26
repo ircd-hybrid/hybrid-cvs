@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: rsa.c,v 7.33 2003/09/04 00:57:05 joshk Exp $
+ *  $Id: rsa.c,v 7.34 2005/07/26 03:33:05 adx Exp $
  */
 
 #include "stdinc.h"
@@ -74,14 +74,14 @@ verify_private_key(void)
   if (ServerInfo.rsa_private_key == NULL)
   {
     ilog(L_NOTICE, "rsa_private_key in serverinfo{} is not defined.");
-    return(-1);
+    return -1;
   }
 
   /* If rsa_private_key_file isn't available, error out. */
   if (ServerInfo.rsa_private_key_file == NULL)
   {
     ilog(L_NOTICE, "Internal error: rsa_private_key_file isn't defined.");
-    return(-1);
+    return -1;
   }
 
   if (bio_spare_fd > -1)
@@ -95,9 +95,9 @@ verify_private_key(void)
    */
   if (file == NULL)
   {
-    bio_spare_fd=save_spare_fd("SSL private key validation");
+    bio_spare_fd = save_spare_fd("SSL private key validation");
     ilog(L_NOTICE, "Failed to open private key file - can't validate it");
-    return(-1);
+    return -1;
   }
 
   /*
@@ -117,12 +117,12 @@ verify_private_key(void)
   {
     ilog(L_NOTICE, "PEM_read_bio_RSAPrivateKey() failed; possibly not RSA?");
     report_crypto_errors();
-    return(-1);
+    return -1;
   }
 
   BIO_set_close(file, BIO_CLOSE);
   BIO_free(file);
-  bio_spare_fd=save_spare_fd("SSL private key validation");
+  bio_spare_fd = save_spare_fd("SSL private key validation");
 
   mkey = ServerInfo.rsa_private_key;
 
@@ -164,7 +164,7 @@ verify_private_key(void)
     ilog(L_CRIT, "Private key corrupted: iqmp differs");
 
   RSA_free(key);
-  return(0);
+  return 0;
 }
 
 
@@ -195,9 +195,9 @@ get_randomness(unsigned char *buf, int length)
     }
 
   if (RAND_status())
-    return(RAND_bytes(buf, length));
+    return (RAND_bytes(buf, length));
   else /* XXX - abort? */
-    return(RAND_pseudo_bytes(buf, length));
+    return (RAND_pseudo_bytes(buf, length));
 }
 
 int
@@ -225,7 +225,7 @@ generate_challenge(char **r_challenge, char **r_response, RSA *rsa)
   if (ret < 0)
   {
     report_crypto_errors();
-    return(-1);
+    return -1;
   }
-  return(0);
+  return 0;
 }

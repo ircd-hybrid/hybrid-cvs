@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.58 2005/06/01 18:23:35 db Exp $
+ *  $Id: m_set.c,v 1.59 2005/07/26 03:33:00 adx Exp $
  */
 
 /* rewritten by jdc */
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.58 $";
+const char *_version = "$Revision: 1.59 $";
 #endif
 
 /* Structure used for the SET table itself */
@@ -305,8 +305,8 @@ quote_max( struct Client *source_p, int newval )
     if (newval < 32)
     {
       sendto_one(source_p,
-	":%s NOTICE %s :You cannot set MAXCLIENTS to < 32 (%d:%d)",
-	me.name, source_p->name, GlobalSetOptions.maxclients, highest_fd);
+	":%s NOTICE %s :You cannot set MAXCLIENTS to < 32, restoring to %d",
+	me.name, source_p->name, GlobalSetOptions.maxclients);
       return;
     }
 

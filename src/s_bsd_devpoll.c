@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_devpoll.c,v 7.25 2003/09/19 20:23:38 joshk Exp $
+ *  $Id: s_bsd_devpoll.c,v 7.26 2005/07/26 03:33:05 adx Exp $
  */
 
 #include "stdinc.h"
@@ -96,54 +96,28 @@ devpoll_write_update(int fd, int events)
 static void
 devpoll_update_events(int fd, short filter, PF *handler)
 {
-  int update_required = 0;
-  int cur_mask = fdmask[fd];
-  PF *cur_handler = NULL;
-
-  fdmask[fd] = 0;         
-
   switch (filter) 
   {
     case COMM_SELECT_READ:
-      cur_handler = fd_table[fd].read_handler;
-      if (handler != NULL)
-        fdmask[fd] |= POLLRDNORM;
-      else
-        fdmask[fd] &= ~POLLRDNORM;
-      if (fd_table[fd].write_handler != NULL)
-        fdmask[fd] |= POLLWRNORM;
+      if (!!handler == !!(fdmask[fd] & POLLRDNORM))
+        return;
+      fdmask[fd] |= POLLRDNORM;
       break;
+
     case COMM_SELECT_WRITE:
-      cur_handler = fd_table[fd].write_handler;
-      if (handler != NULL)
-        fdmask[fd] |= POLLWRNORM;
-      else
-        fdmask[fd] &= ~POLLWRNORM;
-      if (fd_table[fd].read_handler != NULL)
-        fdmask[fd] |= POLLRDNORM;
+      if (!!handler == !!(fdmask[fd] & POLLWRNORM))
+        return;
+      fdmask[fd] |= POLLWRNORM;
   }
 
-  if (cur_handler == NULL && handler != NULL)
-    update_required++;
-  else if (cur_handler != NULL && handler == NULL)
-    update_required++;
-  if (cur_mask != fdmask[fd])
-    update_required++;
-
-  if (update_required) 
-  {
-    /*
-     * Ok, we can call devpoll_write_update() here now to re-build the
-     * fd struct. If we end up with nothing on this fd, it won't write
-     * anything.
-     */
-    if (fdmask[fd]) 
-    {
-      devpoll_write_update(fd, POLLREMOVE);
-      devpoll_write_update(fd, fdmask[fd]);
-    }
-    else devpoll_write_update(fd, POLLREMOVE);
-  }
+  /*
+   * Ok, we can call devpoll_write_update() here now to re-build the
+   * fd struct. If we end up with nothing on this fd, it won't write
+   * anything.
+   */
+  devpoll_write_update(fd, POLLREMOVE);
+  if (fdmask[fd]) 
+    devpoll_write_update(fd, fdmask[fd]);
 }
 
 /* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
@@ -175,26 +149,20 @@ init_netio(void)
  * and deregister interest in a pending IO state for a given FD.
  */
 void
-comm_setselect(int fd, fdlist_t list, unsigned int type, PF *handler,
+comm_setselect(fde_t *F, unsigned int type, PF *handler,
                void *client_data, time_t timeout)
 {  
-  fde_t *F = &fd_table[fd];
-
-  assert(fd >= 0);
   assert(F->flags.open);
 
-  /* Update the list, even though we're not using it .. */
-  F->list = list;
-	
   if (type & COMM_SELECT_READ) 
   {
-    devpoll_update_events(fd, COMM_SELECT_READ, handler);
+    devpoll_update_events(F->fd, COMM_SELECT_READ, handler);
     F->read_handler = handler;
     F->read_data = client_data;
   }
   if (type & COMM_SELECT_WRITE) 
   {
-    devpoll_update_events(fd, COMM_SELECT_WRITE, handler);
+    devpoll_update_events(F->fd, COMM_SELECT_WRITE, handler);
     F->write_handler = handler;
     F->write_data = client_data;
   }
@@ -221,7 +189,7 @@ comm_setselect(int fd, fdlist_t list, unsigned int type, PF *handler,
 void
 comm_select(unsigned long delay)
 {
-  int num, i, fd;
+  int num, i;
   struct pollfd pollfds[POLL_LENGTH];
   struct dvpoll dopoll;
   PF *hdl;
@@ -237,9 +205,8 @@ comm_select(unsigned long delay)
 
   for (i = 0; i < num; i++) 
   {
-    fd = dopoll.dp_fds[i].fd;
+    F = lookup_fd(dopoll.dp_fds[i].fd);
     hdl = NULL;
-    F = &fd_table[fd];
 
     if ((dopoll.dp_fds[i].revents & (POLLRDNORM | POLLIN | POLLHUP | POLLERR))
         && (dopoll.dp_fds[i].events & (POLLRDNORM | POLLIN)))
@@ -247,17 +214,17 @@ comm_select(unsigned long delay)
       if ((hdl = F->read_handler) != NULL) 
       {
         F->read_handler = NULL;
-        hdl(fd, F->read_data);
+        hdl(F, F->read_data);
         /*
          * this call used to be with a NULL pointer, BUT
          * in the devpoll case we only want to update the
          * poll set *if* the handler changes state (active ->
          * NULL or vice versa.)
          */
-        devpoll_update_events(fd, COMM_SELECT_READ, F->read_handler);
+        devpoll_update_events(F->fd, COMM_SELECT_READ, F->read_handler);
       }
       else ilog(L_NOTICE, "comm_select: Unhandled read event: fdmask: %x",
-                fdmask[fd]);
+                fdmask[F->fd]);
     }
     if ((dopoll.dp_fds[i].revents & (POLLWRNORM | POLLOUT | POLLHUP | POLLERR))
         && (dopoll.dp_fds[i].events & (POLLWRNORM | POLLOUT))) 
@@ -265,14 +232,14 @@ comm_select(unsigned long delay)
       if ((hdl = F->write_handler) != NULL) 
       {
         F->write_handler = NULL;
-        hdl(fd, F->write_data);
+        hdl(F, F->write_data);
         /* See above similar code in the read case */
-        devpoll_update_events(fd, COMM_SELECT_WRITE, F->write_handler);
+        devpoll_update_events(F->fd, COMM_SELECT_WRITE, F->write_handler);
       } 
       else ilog(L_NOTICE, "comm_select: Unhandled write event: fdmask: %x",
-                fdmask[fd]);
+                fdmask[F->fd]);
     }
     if (dopoll.dp_fds[i].revents & POLLNVAL) 
-      ilog(L_NOTICE, "revents was Invalid for %d", fd);
+      ilog(L_NOTICE, "revents was Invalid for %d", F->fd);
   }
 }

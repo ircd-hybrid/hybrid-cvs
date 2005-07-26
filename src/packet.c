@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.123 2005/07/13 13:00:07 adx Exp $
+ *  $Id: packet.c,v 7.124 2005/07/26 03:33:04 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -243,7 +243,7 @@ flood_endgrace(struct Client *client_p)
  * once a second on any given client. We then attempt to flush some data.
  */
 void
-flood_recalc(int fd, void *data)
+flood_recalc(fde_t *fd, void *data)
 {
   struct Client *client_p = data;
   struct LocalUser *lclient_p = client_p->localClient;
@@ -274,7 +274,7 @@ flood_recalc(int fd, void *data)
  *                    link and process it.
  */
 void
-read_ctrl_packet(int fd, void *data)
+read_ctrl_packet(fde_t *fd, void *data)
 {
   struct Client *server = data;
   struct LocalUser *lserver = server->localClient;
@@ -299,7 +299,7 @@ read_ctrl_packet(int fd, void *data)
     reply->readdata = 0;
     reply->data = NULL;
 
-    length = recv(fd, tmp, 1, 0);
+    length = recv(fd->fd, tmp, 1, 0);
 
     if (length <= 0)
     {
@@ -324,10 +324,10 @@ read_ctrl_packet(int fd, void *data)
   if ((replydef->flags & SLINKRPL_FLAG_DATA) && (reply->gotdatalen < 2))
   {
     /* we need a datalen u16 which we don't have yet... */
-    length = recv(fd, len, (2 - reply->gotdatalen), 0);
+    length = recv(fd->fd, len, (2 - reply->gotdatalen), 0);
     if (length <= 0)
     {
-      if((length == -1) && ignoreErrno(errno))
+      if ((length == -1) && ignoreErrno(errno))
         goto nodata;
       dead_link_on_read(server, length);
       return;
@@ -354,11 +354,11 @@ read_ctrl_packet(int fd, void *data)
 
   if (reply->readdata < reply->datalen) /* try to get any remaining data */
   {
-    length = recv(fd, (reply->data + reply->readdata),
+    length = recv(fd->fd, (reply->data + reply->readdata),
                   (reply->datalen - reply->readdata), 0);
     if (length <= 0)
     {
-      if((length == -1) && ignoreErrno(errno))
+      if ((length == -1) && ignoreErrno(errno))
         goto nodata;
       dead_link_on_read(server, length);
       return;
@@ -375,7 +375,7 @@ read_ctrl_packet(int fd, void *data)
   hdata.data = NULL;
   hook_call_event("iorecvctrl", &hdata);
 #endif
-  
+
   /* we now have the command and any data, pass it off to the handler */
   (*replydef->handler)(reply->command, reply->datalen, reply->data, server);
 
@@ -389,19 +389,17 @@ read_ctrl_packet(int fd, void *data)
 
 nodata:
   /* If we get here, we need to register for another COMM_SELECT_READ */
-  comm_setselect(fd, FDLIST_SERVER, COMM_SELECT_READ,
-                 read_ctrl_packet, server, 0);
+  comm_setselect(fd, COMM_SELECT_READ, read_ctrl_packet, server, 0);
 }
 
 /*
  * read_packet - Read a 'packet' of data from a connection and process it.
  */
 void
-read_packet(int fd, void *data)
+read_packet(fde_t *fd, void *data)
 {
   struct Client *client_p = data;
   int length = 0;
-  int fd_r = 0;
 #ifndef NDEBUG
   struct hook_io_data hdata;
 #endif
@@ -409,15 +407,6 @@ read_packet(int fd, void *data)
   if (IsDefunct(client_p))
     return;
 
-  fd_r = client_p->localClient->fd;
-
-#ifndef HAVE_SOCKETPAIR
-  if (HasServlink(client_p))
-  {
-    assert(client_p->localClient->fd_r > -1);
-    fd_r = client_p->localClient->fd_r;
-  }
-#endif
   /*
    * Read some data. We *used to* do anti-flood protection here, but
    * I personally think it makes the code too hairy to make sane.
@@ -425,19 +414,19 @@ read_packet(int fd, void *data)
    */
   do {
 #ifdef HAVE_LIBCRYPTO
-    if (fd_table[fd].ssl)
+    if (fd->ssl)
     {
-      length = SSL_read(fd_table[fd].ssl, readBuf, READBUF_SIZE);
+      length = SSL_read(fd->ssl, readBuf, READBUF_SIZE);
 
       /* translate openssl error codes, sigh */
       if (length < 0)
-        switch (SSL_get_error(fd_table[fd].ssl, length))
+        switch (SSL_get_error(fd->ssl, length))
 	{
           case SSL_ERROR_WANT_WRITE:
-            fd_table[fd].flags.pending_read = 1;
+            fd->flags.pending_read = 1;
 	    SetSendqBlocked(client_p);
-	    comm_setselect(fd, FDLIST_IDLECLIENT, COMM_SELECT_WRITE,
-	                   (PF *) sendq_unblocked, client_p, 0);
+	    comm_setselect(fd, COMM_SELECT_WRITE, (PF *) sendq_unblocked,
+	                   client_p, 0);
 	    return;
 	  case SSL_ERROR_WANT_READ:
 	    errno = EWOULDBLOCK;
@@ -449,7 +438,7 @@ read_packet(int fd, void *data)
     }
     else
 #endif
-      length = recv(fd_r, readBuf, READBUF_SIZE, 0);
+      length = recv(fd->fd, readBuf, READBUF_SIZE, 0);
 
     if (length <= 0)
     {
@@ -499,14 +488,13 @@ read_packet(int fd, void *data)
     }
   }
 #ifdef HAVE_LIBCRYPTO
-  while (length == sizeof(readBuf) || fd_table[fd].ssl);
+  while (length == sizeof(readBuf) || fd->ssl);
 #else
   while (length == sizeof(readBuf));
 #endif
 
   /* If we get here, we need to register for another COMM_SELECT_READ */
-  comm_setselect(fd_r, FDLIST_IDLECLIENT, COMM_SELECT_READ,
-                 read_packet, client_p, 0);
+  comm_setselect(fd, COMM_SELECT_READ, read_packet, client_p, 0);
 }
 
 /*

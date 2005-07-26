@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.34 2005/07/11 03:03:34 adx Exp $
+ *  $Id: fileio.c,v 7.35 2005/07/26 03:33:04 adx Exp $
  */
 
 #include "stdinc.h"
@@ -39,149 +39,95 @@
  */
 
 int
-file_open(const char *filename, int mode, int fmode)
+file_open(fde_t *F, const char *filename, int mode, int fmode)
 {
   int fd = open(filename, mode, fmode);
 
+  if (fd < 0)
+    return (-1);
+
   if (fd == MASTER_MAX)
   {
-    fd_close(fd); /* Too many FDs! */
+    close(fd);  /* Too many FDs! */
     errno = ENFILE;
-    fd = -1;
+    return (-1);
   }
-  else if (fd >= 0)
-    fd_open(fd, FD_FILE, filename, NULL);
 
-  return(fd);
+  fd_open(F, fd, filename, NULL);
+  return (0);
 }
 
 void
-file_close(int fd)
+file_close(fde_t *F)
 {
-    /*
-     * Debug - we set type to FD_FILECLOSE so we can get trapped
-     * in fd_close() with type == FD_FILE. This will allow us to
-     * convert all abusers of fd_close() of a FD_FILE fd over
-     * to file_close() .. mwahaha!
-     */
-    assert(fd_table[fd].type == FD_FILE);
-    fd_table[fd].type = FD_FILECLOSE;
-    fd_close(fd);
+  fd_close(F);
 }
 
 FBFILE *
 fbopen(const char *filename, const char *mode)
 {
-  int fd;
+  FBFILE *fb = MyMalloc(sizeof(FBFILE));
   int openmode = 0;
   int pmode = 0;
-  FBFILE *fb = NULL;
-  assert(filename);
-  assert(mode);
-
-  if (filename == NULL || mode == NULL)
-  {
-     errno = EINVAL;
-     return NULL;
-  }
 
   while (*mode)
-  {
-    switch (*mode)
+    switch (*mode++)
     {
-    case 'r':
-      openmode = O_RDONLY;
-      break;
-    case 'w':
-      openmode = O_WRONLY | O_CREAT | O_TRUNC;
-      pmode = 0644;
-      break;
-    case 'a':
-      openmode = O_WRONLY | O_CREAT | O_APPEND;
-      pmode = 0644;
-      break;
-    case '+':
-      openmode &= ~(O_RDONLY | O_WRONLY);
-      openmode |= O_RDWR;
-      break;
-    default:
-      break;
+      case 'r':
+        openmode = O_RDONLY;
+        break;
+      case 'w':
+        openmode = O_WRONLY | O_CREAT | O_TRUNC;
+        pmode = 0644;
+        break;
+      case 'a':
+        openmode = O_WRONLY | O_CREAT | O_APPEND;
+        pmode = 0644;
+        break;
+      case '+':
+        openmode &= ~(O_RDONLY | O_WRONLY);
+        openmode |= O_RDWR;
     }
-    ++mode;
+
+  if (file_open(&fb->F, filename, openmode, pmode) < 0)
+  {
+    MyFree(fb);
+    return NULL;
   }
 
-  if ((fd = file_open(filename, openmode, pmode)) == -1)
-    return(fb);
-
-  if (NULL == (fb = fdbopen(fd, NULL)))
-    file_close(fd);
-
-  return(fb);
-}
-
-FBFILE *
-fdbopen(int fd, const char *mode)
-{
-  /*
-   * ignore mode, if file descriptor hasn't been opened with the
-   * correct mode, the first use will fail
-   */
-  FBFILE *fb = MyMalloc(sizeof(FBFILE));
-
   fb->ptr = fb->endp = fb->buf;
-  fb->fd = fd;
   fb->flags = 0;
   fb->pbptr = NULL;
-
-  return(fb);
+  return fb;
 }
 
-/*
- */
 int
 fbrewind(FBFILE *fb)
 {
-  if (fb != NULL)
-  {
-    fb->ptr   = fb->endp = fb->buf;
-    fb->flags = 0;
-    fb->pbptr = NULL;
-  }
+  fb->ptr   = fb->endp = fb->buf;
+  fb->flags = 0;
+  fb->pbptr = NULL;
 
-  lseek(fb->fd, 0l, SEEK_SET);
-  return(0);
+  lseek(fb->F.fd, 0, SEEK_SET);
+  return 0;
 }
 
 void
-fbclose(FBFILE* fb)
+fbclose(FBFILE *fb)
 {
-  assert(fb);
-
-  if (fb != NULL)
-  {
-    file_close(fb->fd);
-    MyFree(fb);
-  }
-  else
-    errno = EINVAL;
+  file_close(&fb->F);
+  MyFree(fb);
 }
 
 static int
 fbfill(FBFILE *fb)
 {
   int n;
-  assert(fb);
-
-  if (fb == NULL)
-  {
-    errno = EINVAL;
-    return(-1);
-  }
 
   if (fb->flags)
-    return(-1);
+    return -1;
 
-  n = read(fb->fd, fb->buf, BUFSIZ);
+  n = read(fb->F.fd, fb->buf, BUFSIZ);
 
   if (n > 0)
   {
@@ -193,79 +139,47 @@ fbfill(FBFILE *fb)
   else
     fb->flags |= FB_EOF;
 
-  return(n);
+  return n;
 }
 
 int
 fbgetc(FBFILE *fb)
 {
-  assert(fb);
-
-  if (fb == NULL)
-  {
-    errno = EINVAL;
-    return(-1);
-  }
-
   if (fb->pbptr != NULL)
-  {
-    if ((fb->pbptr == (fb->pbuf + BUFSIZ)) ||
-        (!*fb->pbptr))
+    if ((fb->pbptr == (fb->pbuf + BUFSIZ)) || !*fb->pbptr)
       fb->pbptr = NULL;
-  }
 
   if (fb->ptr < fb->endp || fbfill(fb) > 0)
-    return(*fb->ptr++);
+    return *fb->ptr++;
 
-  return(EOF);
+  return EOF;
 }
 
 void
 fbungetc(char c, FBFILE *fb)
 {
-  assert(fb);
-
-  if (fb == NULL)
-  {
-    errno = EINVAL;
-    return;
-  }
-
-  if (!fb->pbptr)
-  {
-    fb->pbptr = fb->pbuf+BUFSIZ;
-  }
+  if (fb->pbptr == NULL)
+    fb->pbptr = fb->pbuf + BUFSIZ;
 
   if (fb->pbptr != fb->pbuf)
-  {
-    fb->pbptr--;
-    *fb->pbptr = c;
-  }
+    *--fb->pbptr = c;
 }
 
 char *
 fbgets(char *buf, size_t len, FBFILE *fb)
 {
   char *p = buf;
-  assert(buf);
-  assert(fb);
   assert(0 < len);
 
-  if (fb == NULL || buf == NULL)
+  if (fb->pbptr != NULL)
   {
-    errno = EINVAL;
-    return(NULL);
-  }
-
-  if(fb->pbptr != NULL)
-  {
-    strlcpy(buf,fb->pbptr,len);
+    strlcpy(buf, fb->pbptr, len);
     fb->pbptr = NULL;
-    return(buf);
+    return buf;
   }
 
   if (fb->ptr == fb->endp && fbfill(fb) < 1)
-    return(NULL);
+    return NULL;
 
   --len;
 
@@ -299,46 +213,29 @@ fbgets(char *buf, size_t len, FBFILE *fb)
   }
 
   *p = '\0';
-  return(buf);
+  return buf;
 }
- 
+
 int
 fbputs(const char *str, FBFILE *fb, size_t nbytes)
 {
   int n = -1;
-  assert(str);
-  assert(fb);
-  
-  if (str == NULL || fb == NULL)
-  {
-    errno = EINVAL;
-    return(-1);
-  }
 
   if (0 == fb->flags)
   {
     assert(strlen(str) == nbytes);
-    n = write(fb->fd, str, nbytes);
+    n = write(fb->F.fd, str, nbytes);
     if (n == -1)
       fb->flags |= FB_FAIL;
   }
 
-  return(n);
+  return n;
 }
 
 int
 fbstat(struct stat *sb, FBFILE *fb)
 {
-  assert(sb);
-  assert(fb);
-
-  if (sb == NULL || fb == NULL)
-  {
-    errno = EINVAL;
-    return(-1);
-  }
-
-  return(fstat(fb->fd, sb));
+  return fstat(fb->F.fd, sb);
 }
 
 int
@@ -349,15 +246,15 @@ save_spare_fd(const char *spare_purpose)
   if (spare_fd < 0)
   {
     ilog(L_NOTICE, "Failed to reserve low fd for %s - open failed", spare_purpose);
-    return(-1);
+    return -1;
   }
   else if (spare_fd > 255)
   {
     ilog(L_NOTICE, "Failed to reserve low fd for %s - too high", spare_purpose);
     close(spare_fd);
-    return(-1);
+    return -1;
   }
 
-  return(spare_fd);
+  return spare_fd;
 }
 

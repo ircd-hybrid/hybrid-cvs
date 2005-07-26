@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.453 2005/07/16 13:03:55 michael Exp $
+ *  $Id: client.c,v 7.454 2005/07/26 03:33:04 adx Exp $
  */
 
 #include "stdinc.h"
@@ -122,12 +122,6 @@ make_client(struct Client *from)
     client_p->since = client_p->lasttime = client_p->firsttime = CurrentTime;
 
     client_p->localClient = BlockHeapAlloc(lclient_heap);
-    client_p->localClient->fd       = -1;
-    client_p->localClient->ctrlfd   = -1;
-#ifndef HAVE_SOCKETPAIR
-    client_p->localClient->fd_r     = -1;
-    client_p->localClient->ctrlfd_r = -1;
-#endif      
     /* as good a place as any... */
     dlinkAdd(client_p, make_dlink_node(), &unknown_list);
   }
@@ -138,7 +132,7 @@ make_client(struct Client *from)
   client_p->status = STAT_UNKNOWN;
   strcpy(client_p->username, "unknown");
 
-  return(client_p);
+  return client_p;
 }
 
 /*
@@ -182,8 +176,8 @@ free_client(struct Client *client_p)
         free_listener(client_p->localClient->listener);
     }
 
-    if (client_p->localClient->fd >= 0)
-      fd_close(client_p->localClient->fd);
+    if (client_p->localClient->fd.flags.open)
+      fd_close(&client_p->localClient->fd);
 
     dbuf_clear(&client_p->localClient->buf_recvq);
     dbuf_clear(&client_p->localClient->buf_sendq);
@@ -723,17 +717,18 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
     */
     if (MyConnect(source_p))
     {
-      if (source_p->localClient->ctrlfd > -1)
+      if (source_p->localClient->ctrlfd.flags.open)
       {
-        fd_close(source_p->localClient->ctrlfd);
-        source_p->localClient->ctrlfd   = -1;
+        fd_close(&source_p->localClient->ctrlfd);
 #ifndef HAVE_SOCKETPAIR
         fd_close(source_p->localClient->ctrlfd_r);
         fd_close(source_p->localClient->fd_r);
-        source_p->localClient->ctrlfd_r = -1;
-        source_p->localClient->fd_r     = -1;
 #endif
       }
+    }
+    else {
+      source_p->from->serv->dep_servers--;
+      assert(source_p->from->serv->dep_servers > 0);
     }
 
     target_p = source_p->from;
@@ -745,6 +740,9 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
   }
   else if (IsClient(source_p))
   {
+    source_p->from->serv->dep_users--;
+    assert(source_p->from->serv->dep_users >= 0);
+
     if (source_p->servptr->serv != NULL)
       dlinkDelete(&source_p->lnode, &source_p->servptr->serv->users);
 
@@ -894,6 +892,9 @@ recurse_remove_clients(struct Client *source_p, const char *comment)
     SetKilled(target_p);
     exit_one_client(NULL, target_p, &me, me.name);
   }
+
+  assert(source_p->serv->dep_servers == 1);
+  assert(source_p->serv->dep_users == 0);
 }
 
 /*
@@ -978,7 +979,7 @@ dead_link_on_read(struct Client *client_p, int error)
   dbuf_clear(&client_p->localClient->buf_recvq);
   dbuf_clear(&client_p->localClient->buf_sendq);
 
-  current_error = get_sockerr(client_p->localClient->fd);
+  current_error = get_sockerr(client_p->localClient->fd.fd);
 
   if (IsServer(client_p) || IsHandshake(client_p))
   {
@@ -1244,7 +1245,7 @@ exit_client(
   assert(dlinkFind(&oper_list, source_p) == NULL);
 
   exit_one_client(client_p, source_p, from, comment);
-  return(client_p == source_p ? CLIENT_EXITED : 0);
+  return (client_p == source_p ? CLIENT_EXITED : 0);
 }
 
 /*
@@ -1400,7 +1401,7 @@ set_initial_nick(struct Client *client_p, struct Client *source_p,
   hash_add_client(source_p);
 
   /* fd_desc is long enough */
-  fd_note(client_p->localClient->fd, "Nick: %s", nick);
+  fd_note(&client_p->localClient->fd, "Nick: %s", nick);
   
   /* They have the nick they want now.. */
   client_p->llname[0] = '\0';
@@ -1421,7 +1422,7 @@ set_initial_nick(struct Client *client_p, struct Client *source_p,
       return CLIENT_EXITED;
   }
 
-  return(0);
+  return 0;
 }
 
 /* change_local_nick()
@@ -1500,5 +1501,5 @@ change_local_nick(struct Client *client_p, struct Client *source_p, const char *
   del_all_their_accepts(source_p);
 
   /* fd_desc is long enough */
-  fd_note(client_p->localClient->fd, "Nick: %s", nick);
+  fd_note(&client_p->localClient->fd, "Nick: %s", nick);
 }

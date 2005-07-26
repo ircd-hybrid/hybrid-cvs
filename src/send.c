@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.293 2005/07/16 12:19:51 michael Exp $
+ *  $Id: send.c,v 7.294 2005/07/26 03:33:05 adx Exp $
  */
 
 #include "stdinc.h"
@@ -229,15 +229,15 @@ send_message_remote(struct Client *to, struct Client *from,
  **      Called when a socket is ready for writing.
  */
 void
-sendq_unblocked(int fd, struct Client *client_p)
+sendq_unblocked(fde_t *fd, struct Client *client_p)
 {
   ClearSendqBlocked(client_p);
   /* let send_queued_write be executed by send_queued_all */
 
 #ifdef HAVE_LIBCRYPTO
-  if (fd_table[fd].flags.pending_read)
+  if (fd->flags.pending_read)
   {
-    fd_table[fd].flags.pending_read = 0;
+    fd->flags.pending_read = 0;
     read_packet(fd, client_p);
   }
 #endif
@@ -248,7 +248,7 @@ sendq_unblocked(int fd, struct Client *client_p)
  **      Called when a server control socket is ready for writing.
  */
 static void
-slinkq_unblocked(int fd, struct Client *client_p)
+slinkq_unblocked(fde_t *fd, struct Client *client_p)
 {
   ClearSlinkqBlocked(client_p);
   send_queued_slink_write(client_p);
@@ -287,14 +287,13 @@ send_queued_write(struct Client *to)
       first = to->localClient->buf_sendq.blocks.head->data;
 
 #ifdef HAVE_LIBCRYPTO
-      if (fd_table[to->localClient->fd].ssl)
+      if (to->localClient->fd.ssl)
       {
-        retlen = SSL_write(fd_table[to->localClient->fd].ssl, first->data,
-	  first->size);
+        retlen = SSL_write(to->localClient->fd.ssl, first->data, first->size);
 
         /* translate openssl error codes, sigh */
 	if (retlen < 0)
-	  switch (SSL_get_error(fd_table[to->localClient->fd].ssl, retlen))
+	  switch (SSL_get_error(to->localClient->fd.ssl, retlen))
 	  {
             case SSL_ERROR_WANT_READ:
 	      return;  /* retry later, don't register for write events */
@@ -310,7 +309,7 @@ send_queued_write(struct Client *to)
       }
       else
 #endif
-        retlen = send(to->localClient->fd, first->data, first->size, 0);
+        retlen = send(to->localClient->fd.fd, first->data, first->size, 0);
 
       if (retlen <= 0)
         break;
@@ -332,7 +331,7 @@ send_queued_write(struct Client *to)
     {
       /* we have a non-fatal error, reschedule a write */
       SetSendqBlocked(to);
-      comm_setselect(to->localClient->fd, FDLIST_IDLECLIENT, COMM_SELECT_WRITE,
+      comm_setselect(&to->localClient->fd, COMM_SELECT_WRITE,
                      (PF *)sendq_unblocked, (void *)to, 0);
     }
     else if (retlen <= 0)
@@ -364,7 +363,7 @@ send_queued_slink_write(struct Client *to)
   /* Next, lets try to write some data */
   if (to->localClient->slinkq != NULL)
   {
-    retlen = send(to->localClient->ctrlfd,
+    retlen = send(to->localClient->ctrlfd.fd,
                    to->localClient->slinkq + to->localClient->slinkq_ofs,
                    to->localClient->slinkq_len, 0);
     if (retlen < 0)
@@ -401,9 +400,8 @@ send_queued_slink_write(struct Client *to)
     if (to->localClient->slinkq_len)
     {
       SetSlinkqBlocked(to);
-      comm_setselect(to->localClient->ctrlfd, FDLIST_IDLECLIENT,
-                     COMM_SELECT_WRITE, (PF *)slinkq_unblocked,
-                     (void *)to, 0);
+      comm_setselect(&to->localClient->ctrlfd, COMM_SELECT_WRITE,
+                     (PF *)slinkq_unblocked, (void *)to, 0);
     }
   }
 }

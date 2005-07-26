@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.80 2005/07/16 12:19:44 michael Exp $
+ *  $Id: m_trace.c,v 1.81 2005/07/26 03:33:00 adx Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-const char *_version = "$Revision: 1.80 $";
+const char *_version = "$Revision: 1.81 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
@@ -170,9 +170,8 @@ do_actual_trace(const char *tname, struct Client *client_p,
   struct Client *target_p = NULL;
   struct ConfItem *conf;
   struct ClassItem *cltmp;
-  int doall = 0, link_s[HARD_FDLIMIT], link_u[HARD_FDLIMIT];
+  int doall = 0;
   int cnt = 0, wilds, dow;
-  dlink_node *gcptr;	/* global_client_list ptr */
   dlink_node *ptr;
   const char *from, *to;
 
@@ -243,31 +242,6 @@ do_actual_trace(const char *tname, struct Client *client_p,
     return;
   }
 
-  memset((void *)link_s,0,sizeof(link_s));
-  memset((void *)link_u,0,sizeof(link_u));
-
-  /*
-   * Count up all the servers and clients in a downlink.
-   */
-  if (doall)
-  {
-    DLINK_FOREACH(gcptr, global_client_list.head)
-    {
-      target_p = gcptr->data;
-
-      if (IsClient(target_p))
-      {
-        assert(target_p->from->localClient->fd>=0);
-	link_u[target_p->from->localClient->fd]++;
-      }
-      else if (IsServer(target_p))
-      {
-        assert(target_p->from->localClient->fd>=0);
-	link_s[target_p->from->localClient->fd]++;
-      }
-    }
-  }
-   
   /* report all direct connections */
   DLINK_FOREACH(ptr, local_client_list.head)
   {
@@ -295,8 +269,7 @@ do_actual_trace(const char *tname, struct Client *client_p,
       continue;
 
     cnt = report_this_status(source_p, target_p, dow,
-			     link_u[target_p->localClient->fd],
-			     link_s[target_p->localClient->fd]);
+      target_p->serv->dep_users, target_p->serv->dep_servers);
   }
 
   /* This section is to report the unknowns */
@@ -477,7 +450,7 @@ report_this_status(struct Client *source_p, struct Client *target_p,
       break;
   }
 
-  return(cnt);
+  return cnt;
 }
 
 /* trace_spy()

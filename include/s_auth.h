@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.h,v 7.22 2003/06/12 03:40:29 joshk Exp $
+ *  $Id: s_auth.h,v 7.23 2005/07/26 03:32:57 adx Exp $
  */
 
 #ifndef INCLUDED_s_auth_h
@@ -42,7 +42,7 @@ struct AuthRequest
   dlink_node	      ident_node; /* auth_doing_ident_list */
   int 		      flags;
   struct Client*      client;    /* pointer to client struct for request */
-  int                 fd;        /* file descriptor for auth queries */
+  fde_t               fd;        /* file descriptor for auth queries */
   time_t              timeout;   /* time when query expires */
   unsigned int	      ip6_int;
 };

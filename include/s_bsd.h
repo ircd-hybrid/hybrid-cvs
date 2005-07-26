@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.49 2005/07/18 13:30:15 michael Exp $
+ *  $Id: s_bsd.h,v 7.50 2005/07/26 03:32:57 adx Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -45,39 +45,38 @@ extern int readcalls;
 extern const char* const NONB_ERROR_MSG; 
 extern const char* const SETBUF_ERROR_MSG;
 
-extern void add_connection(struct Listener*, int);
-extern void close_connection(struct Client*);
-extern void close_all_connections(void);
-extern int  connect_server(struct AccessItem*, struct Client*, 
-                            struct DNSReply*);
-extern void report_error(int, const char*, const char*, int);
+extern void add_connection(struct Listener *, int, void *);
+extern void close_connection(struct Client *);
+extern void close_standard_fds(void);
+extern int  connect_server(struct AccessItem *, struct Client *,
+                           struct DNSReply *);
+extern void report_error(int, const char *, const char *, int);
 extern int set_non_blocking(int);
 extern int set_sock_buffers(int, int);
 extern void set_no_delay(int);
 
 extern int get_sockerr(int);
-extern int ignoreErrno(int ierrno);
+extern int ignoreErrno(int);
 
-extern void comm_settimeout(int, time_t, PF *, void *);
-extern void comm_setflush(int, time_t, PF *, void *);
+extern void comm_settimeout(fde_t *, time_t, PF *, void *);
+extern void comm_setflush(fde_t *, time_t, PF *, void *);
 extern void comm_checktimeouts(void *);
-extern void comm_connect_tcp(int, const char *, u_short,
+extern void comm_connect_tcp(fde_t *, const char *, u_short,
            		     struct sockaddr *, int, CNCB *, void *, int, int);
 extern const char * comm_errstr(int status);
-extern int comm_open(int family, int sock_type, int proto,
+extern int comm_open(fde_t *F, int family, int sock_type, int proto,
            	     const char *note);
-extern int comm_accept(struct Listener *, struct irc_ssaddr *pn);
+extern int comm_accept(struct Listener *, struct irc_ssaddr *pn, void **ssl);
 
 /* These must be defined in the network IO loop code of your choice */
-extern void comm_setselect(int fd, fdlist_t list, unsigned int type,
-           		   PF *handler, void *client_data, time_t timeout);
+extern void comm_setselect(fde_t *, unsigned int, PF *, void *, time_t);
 extern void init_netio(void);
 extern int read_message (time_t, unsigned char);
 extern void comm_select(unsigned long);
 extern int disable_sock_options(int);
 extern void check_can_use_v6(void);
 #ifdef IPV6
-extern void remove_ipv6_mapping(struct irc_ssaddr *addr);
+extern void remove_ipv6_mapping(struct irc_ssaddr *);
 #endif
 
 #ifdef USE_SIGIO

@@ -19,12 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.238 2005/07/16 12:19:41 michael Exp $
+ *  $Id: client.h,v 7.239 2005/07/26 03:32:57 adx Exp $
  */
 
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
 
+#include "fdlist.h"
 #include "setup.h"
 #include "ircd_defs.h"
 #include "ircd_handler.h"
@@ -58,6 +59,8 @@ struct Server
   struct ConfItem *sconf; /* ConfItem connect{} pointer for this server */
   dlink_list servers;     /* Servers on this server            */
   dlink_list users;       /* Users on this server              */
+  int dep_servers;        /* Total number of dependent servers on all levels */
+  int dep_users;          /* Total number of dependent users on all levels */
 };
 
 struct SlinkRpl
@@ -179,7 +182,7 @@ struct LocalUser
    * (directly connected to *this* server with a socket.
    */
   /* Anti flooding part, all because of lamers... */
-  time_t         last_away; /* Away since... */
+  time_t            last_away; /* Away since... */
   time_t            last_join_time;   /* when this client last 
                                          joined a channel */
   time_t            last_leave_time;  /* when this client last 
@@ -231,15 +234,15 @@ struct LocalUser
   char              out_key[CIPHERKEYLEN];
 #endif
 
-  int               fd;         /* >= 0, for local clients */
+  fde_t             fd;
 #ifndef HAVE_SOCKETPAIR
-  int               fd_r;       /* fd for reading */
+  fde_t             fd_r;       /* fd for reading */
 #endif
 
-  int               ctrlfd;     /* For servers: control fd used for sending commands
+  fde_t             ctrlfd;     /* For servers: control fd used for sending commands
                                    to servlink */
 #ifndef HAVE_SOCKETPAIR
-  int              ctrlfd_r;    /* control fd for reading */
+  fde_t             ctrlfd_r;    /* control fd for reading */
 #endif
 
   struct SlinkRpl  slinkrpl;    /* slink reply being parsed */

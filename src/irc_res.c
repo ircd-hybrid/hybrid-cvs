@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.42 2005/07/25 04:52:41 adx Exp $
+ * $Id: irc_res.c,v 7.43 2005/07/26 03:33:04 adx Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -91,7 +91,7 @@ struct reslist
   const struct DNSQuery *query;  /* query callback for this request */
 };
 
-static int ResolverFileDescriptor = -1;
+static fde_t ResolverFileDescriptor;
 static dlink_list request_list    = { NULL, NULL, 0 };
 
 static void rem_request(struct reslist *request);
@@ -185,14 +185,14 @@ start_resolver(void)
 {
   irc_res_init();
 
-  if (ResolverFileDescriptor < 0)
+  if (!ResolverFileDescriptor.flags.open)
   {
-    if ((ResolverFileDescriptor = comm_open(irc_nsaddr_list[0].ss.ss_family, 
-        SOCK_DGRAM, 0, "Resolver socket")) == -1)
+    if (comm_open(&ResolverFileDescriptor, irc_nsaddr_list[0].ss.ss_family,
+                  SOCK_DGRAM, 0, "Resolver socket") == -1)
       return;
 
     /* At the moment, the resolver FD data is global .. */
-    comm_setselect(ResolverFileDescriptor, FDLIST_SERVICE, COMM_SELECT_READ,
+    comm_setselect(&ResolverFileDescriptor, COMM_SELECT_READ,
         res_readreply, NULL, 0);
     eventAdd("timeout_resolver", timeout_resolver, NULL, 1);
   }
@@ -201,14 +201,14 @@ start_resolver(void)
 /*
  * init_resolver - initialize resolver and resolver library
  */
-int
+void
 init_resolver(void)
 {
 #ifdef HAVE_SRAND48
   srand48(CurrentTime);
 #endif
+  memset(&ResolverFileDescriptor, 0, sizeof(fde_t));
   start_resolver();
-  return(ResolverFileDescriptor);
 }
 
 /*
@@ -217,8 +217,7 @@ init_resolver(void)
 void
 restart_resolver(void)
 {
-  fd_close(ResolverFileDescriptor);
-  ResolverFileDescriptor = -1;
+  fd_close(&ResolverFileDescriptor);
   eventDelete(timeout_resolver, NULL); /* -ddosen */
   start_resolver();
 }
@@ -378,7 +377,7 @@ send_res_msg(const char *msg, int len, int rcount)
 
   for (i = 0; i < max_queries; i++)
   {
-    if (sendto(ResolverFileDescriptor, msg, len, 0, 
+    if (sendto(ResolverFileDescriptor.fd, msg, len, 0, 
         (struct sockaddr*)&(irc_nsaddr_list[i]), 
         irc_nsaddr_list[i].ss_len) == len) 
       ++sent;
@@ -773,7 +772,7 @@ proc_answer(struct reslist *request, HEADER* header, char* buf, char* eob)
  * res_readreply - read a dns reply from the nameserver and process it.
  */
 static void
-res_readreply(int fd, void *data)
+res_readreply(fde_t *fd, void *data)
 {
   char buf[sizeof(HEADER) + MAXPACKET];
   HEADER *header;
@@ -784,16 +783,12 @@ res_readreply(int fd, void *data)
   socklen_t len = sizeof(struct irc_ssaddr);
   struct irc_ssaddr lsin;
 
-  assert(fd == ResolverFileDescriptor);
-
-  rc = recvfrom(ResolverFileDescriptor, buf, sizeof(buf), 0, 
-                (struct sockaddr *)&lsin, &len);
+  rc = recvfrom(fd->fd, buf, sizeof(buf), 0, (struct sockaddr *)&lsin, &len);
 
   /* Re-schedule a read *after* recvfrom, or we'll be registering
    * interest where it'll instantly be ready for read :-) -- adrian
    */
-  comm_setselect(ResolverFileDescriptor, FDLIST_SERVICE, COMM_SELECT_READ,
-                 res_readreply, NULL, 0);
+  comm_setselect(fd, COMM_SELECT_READ, res_readreply, NULL, 0);
   /* Better to cast the sizeof instead of rc */
   if (rc <= (int)(sizeof(HEADER)))
     return;

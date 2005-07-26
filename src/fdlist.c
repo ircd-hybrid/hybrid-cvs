@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.40 2005/07/12 18:34:42 adx Exp $
+ *  $Id: fdlist.c,v 7.41 2005/07/26 03:33:04 adx Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -27,140 +27,104 @@
 #include "event.h"
 #include "ircd.h"    /* GlobalSetOptions */
 #include "irc_string.h"
-#include "s_bsd.h"   /* highest_fd */
+#include "s_bsd.h"   /* comm_setselect */
 #include "send.h"
 #include "memory.h"
 #include "numeric.h"
 
-fde_t *fd_table = NULL;
-
-static void fdlist_update_biggest(int fd, int opening);
-
-/* Highest FD and number of open FDs .. */
-int highest_fd = -1; /* Its -1 because we haven't started yet -- adrian */
+fde_t *fd_hash[HARD_FDLIMIT];
 int number_fd = 0;
-
-static void
-fdlist_update_biggest(int fd, int opening)
-{ 
-  if (fd < highest_fd)
-    return;
-  assert(fd < HARD_FDLIMIT);
-
-  if (fd > highest_fd)
-  {
-    /*  
-     * assert that we are not closing a FD bigger than
-     * our known biggest FD
-     */
-    assert(opening);
-    highest_fd = fd;
-    return;
-  }
-
-  /* if we are here, then fd == Biggest_FD */
-  /*
-   * assert that we are closing the biggest FD; we can't be
-   * re-opening it
-   */
-  assert(!opening);
-  while (highest_fd >= 0 && !fd_table[highest_fd].flags.open)
-    highest_fd--;
-}
 
 void
 fdlist_init(void)
 {
-  static int initialized = 0;
+  memset(&fd_hash, 0, sizeof(fd_hash));
+}
 
-  if (!initialized)
+static inline unsigned int
+hash_fd(int fd)
+{
+#ifdef _WIN32
+  return ((((unsigned) fd) >> 2) % HARD_FDLIMIT);
+#else
+  return (((unsigned) fd) % HARD_FDLIMIT);
+#endif
+}
+
+fde_t *
+lookup_fd(int fd)
+{
+  fde_t *F = fd_hash[hash_fd(fd)];
+
+  while (F)
   {
-      /* Since we're doing this once .. */
-      fd_table = MyMalloc((HARD_FDLIMIT + 1) * sizeof(fde_t));
-      initialized = 1;
+    if (F->fd == fd)
+      return (F);
+    F = F->hnext;
   }
+
+  return (NULL);
 }
 
 /* Called to open a given filedescriptor */
 void
-fd_open(int fd, unsigned int type, const char *desc, void *ssl)
+fd_open(fde_t *F, int fd, const char *desc, void *ssl)
 {
-  fde_t *F = &fd_table[fd];
+  unsigned int hashv = hash_fd(fd);
   assert(fd >= 0);
-  
-  if (F->flags.open)
-    {
-#ifdef NOTYET
-      debug(51, 1) ("WARNING: Closing open FD %4d\n", fd);
-#endif
-      fd_close(fd);
-    }
-  assert(!F->flags.open);
-#ifdef NOTYET
-  debug(51, 3) ("fd_open FD %d %s\n", fd, desc);
-#endif
+
   F->fd = fd;
-  F->type = type;
-  F->flags.open = 1;
-#ifdef NOTYET
-  F->defer.until = 0;
-  F->defer.n = 0;
-  F->defer.handler = NULL;
-#endif
-  fdlist_update_biggest(fd, 1);
   F->comm_index = -1;
-  F->list = FDLIST_NONE;
   if (desc)
     strlcpy(F->desc, desc, sizeof(F->desc));
-  number_fd++;
 #ifdef HAVE_LIBCRYPTO
   F->ssl = (SSL *)ssl;
 #endif
+  /* Note: normally we'd have to clear the other flags,
+   * but currently F is always cleared before calling us.. */
+  F->flags.open = 1;
+  F->hnext = fd_hash[hashv];
+  fd_hash[hashv] = F;
+
+  number_fd++;
 }
 
 /* Called to close a given filedescriptor */
 void
-fd_close(int fd)
+fd_close(fde_t *F)
 {
-  fde_t *F = &fd_table[fd];
-  assert(F->flags.open);
+  unsigned int hashv = hash_fd(F->fd);
 
-  /* All disk fd's MUST go through file_close() ! */
-  assert(F->type != FD_FILE);
-  if (F->type == FD_FILE)
-    {
-      assert(F->read_handler == NULL);
-      assert(F->write_handler == NULL);
-    }
-#ifdef NOTYET
-  debug(51, 3) ("fd_close FD %d %s\n", fd, F->desc);
-#endif
-  comm_setselect(fd, FDLIST_NONE, COMM_SELECT_WRITE|COMM_SELECT_READ,
-		 NULL, NULL, 0);
+  comm_setselect(F, COMM_SELECT_WRITE | COMM_SELECT_READ, NULL, NULL, 0);
 
   if (F->dns_query != NULL)
   {
     delete_resolver_queries(F->dns_query);
     MyFree(F->dns_query);
-    F->dns_query = NULL;
   }
 
 #ifdef HAVE_LIBCRYPTO
   if (F->ssl)
-  {
     SSL_free(F->ssl);
-    F->ssl = NULL;
-  }
 #endif
 
-  F->flags.open = 0;
-  fdlist_update_biggest(fd, 0);
+  if (fd_hash[hashv] == F)
+    fd_hash[hashv] = F->hnext;
+  else {
+    fde_t *prev;
 
-  number_fd--;
-  memset(F, '\0', sizeof(fde_t));
+    /* let it core if not found */
+    for (prev = fd_hash[hashv]; prev->hnext != F; prev = prev->hnext)
+      ;
+    prev->hnext = F->hnext;
+  }
 
   /* Unlike squid, we're actually closing the FD here! -- adrian */
-  close(fd);
+  close(F->fd);
+  number_fd--;
+#ifdef INVARIANTS
+  memset(F, '\0', sizeof(fde_t));
+#endif
 }
 
 /*
@@ -170,16 +134,13 @@ void
 fd_dump(struct Client *source_p)
 {
   int i;
+  fde_t *F;
 
-  for (i = 0; i <= highest_fd; i++)
-  {
-    if (!fd_table[i].flags.open)
-      continue;
-
-    sendto_one(source_p, ":%s %d %s :fd %-5d desc '%s'",
-               me.name, RPL_STATSDEBUG, source_p->name,
-               i, fd_table[i].desc);
-  }
+  for (i = 0; i <= HARD_FDLIMIT; i++)
+    for (F = fd_hash[i]; F != NULL; F = F->hnext)
+      sendto_one(source_p, ":%s %d %s :fd %-5d desc '%s'",
+                 me.name, RPL_STATSDEBUG, source_p->name,
+                 F->fd, F->desc);
 }
 
 /*
@@ -189,17 +150,16 @@ fd_dump(struct Client *source_p)
  *       calling.
  */
 void
-fd_note(int fd, const char *format, ...)
+fd_note(fde_t *F, const char *format, ...)
 {
   va_list args;
-  
-  if (format)
-    {
-      va_start(args, format);
-      vsnprintf(fd_table[fd].desc, FD_DESC_SZ, format, args);
-      va_end(args);
-    }
-  else
-    fd_table[fd].desc[0] = '\0';
-}
 
+  if (format != NULL)
+  {
+    va_start(args, format);
+    vsnprintf(F->desc, sizeof(F->desc), format, args);
+    va_end(args);
+  }
+  else
+    F->desc[0] = '\0';
+}

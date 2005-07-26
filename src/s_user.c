@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.345 2005/07/25 04:52:42 adx Exp $
+ *  $Id: s_user.c,v 7.346 2005/07/26 03:33:05 adx Exp $
  */
 
 #include <sys/types.h>
@@ -308,10 +308,10 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   assert(source_p->username != username);
 
   if (source_p == NULL)
-    return(-1);
+    return -1;
 
   if (!MyConnect(source_p))
-    return(-1);
+    return -1;
 
   if (ConfigFileEntry.ping_cookie)
   {
@@ -322,11 +322,11 @@ register_local_user(struct Client *client_p, struct Client *source_p,
       sendto_one(source_p, "PING :%lu",
                  source_p->localClient->random_ping);
       SetPingSent(source_p);
-      return(-1);
+      return -1;
     }
 
     if (!HasPingCookie(source_p))
-      return(-1);
+      return -1;
   }
 
   source_p->localClient->last = CurrentTime;
@@ -358,7 +358,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
       sendto_one(source_p, ":%s NOTICE %s :*** Notice -- You need to install "
                  "identd to use this server", me.name, source_p->name);
       exit_client(client_p, source_p, &me, "Install identd");
-      return(CLIENT_EXITED);
+      return CLIENT_EXITED;
     }
 
     p = username;
@@ -385,7 +385,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     sendto_one(source_p, form_str(ERR_PASSWDMISMATCH),
                me.name, source_p->name);
     exit_client(client_p, source_p, &me, "Bad Password");
-    return(CLIENT_EXITED);
+    return CLIENT_EXITED;
   }
 
   /* don't free source_p->localClient->passwd here - it can be required
@@ -412,7 +412,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
                          nick, source_p->host);
     ServerStats->is_ref++;
     exit_client(client_p, source_p, &me, "Sorry, server is full - try later");
-    return(CLIENT_EXITED);
+    return CLIENT_EXITED;
   }
 
   /* valid user name check */
@@ -425,17 +425,17 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     ServerStats->is_ref++;
     ircsprintf(tmpstr2, "Invalid username [%s]", source_p->username);
     exit_client(client_p, source_p, &me, tmpstr2);
-    return(CLIENT_EXITED);
+    return CLIENT_EXITED;
   }
 
   assert(source_p == client_p);
 
   /* end of valid user name check */
   if (check_xline(source_p) || check_regexp_xline(source_p))
-    return(CLIENT_EXITED);
+    return CLIENT_EXITED;
 
   if (IsDead(client_p))
-    return(CLIENT_EXITED);
+    return CLIENT_EXITED;
 
   if (source_p->id[0] == '\0') 
   {
@@ -465,7 +465,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   /* If they have died in send_* don't do anything. */
   if (IsDead(source_p))
-    return(CLIENT_EXITED);
+    return CLIENT_EXITED;
 
   source_p->umodes |= UMODE_INVISIBLE;
   Count.invisi++;
@@ -502,7 +502,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   add_user_host(source_p->username, source_p->host, 0);
   SetUserHost(source_p);
 
-  return(introduce_client(client_p, source_p));
+  return introduce_client(client_p, source_p);
 }
 
 /* register_remote_user()
@@ -522,9 +522,6 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   assert(source_p != NULL);
   assert(source_p->username != username);
 
-  if (source_p == NULL)
-    return(-1);
-
   strlcpy(source_p->host, host, sizeof(source_p->host)); 
   strlcpy(source_p->info, realname, sizeof(source_p->info));
   strlcpy(source_p->username, username, sizeof(source_p->username));
@@ -532,6 +529,8 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   /* Increment our total user count here */
   if (++Count.total > Count.max_tot)
     Count.max_tot = Count.total;
+
+  source_p->from->serv->dep_users++;
 
   /*
    * coming from another server, take the servers word for it
@@ -552,7 +551,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
 
     /* XXX */
     SetKilled(source_p);
-    return(exit_client(NULL, source_p, &me, "Ghosted Client"));
+    return exit_client(NULL, source_p, &me, "Ghosted Client");
   }
 
   if ((target_p = source_p->servptr) && target_p->from != source_p->from)
@@ -566,7 +565,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
                 "%s (NICK from wrong direction (%s != %s))",
                 me.name, source_p->servptr->name, target_p->from->name);
     SetKilled(source_p);
-    return(exit_client(source_p, source_p, &me, "USER server wrong direction"));
+    return exit_client(source_p, source_p, &me, "USER server wrong direction");
   }
 
   SetClient(source_p);
@@ -574,7 +573,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   add_user_host(source_p->username, source_p->host, 1);
   SetUserHost(source_p);
 
-  return(introduce_client(client_p, source_p));
+  return introduce_client(client_p, source_p);
 }
 
 /* introduce_client()
@@ -1155,11 +1154,10 @@ static void
 user_welcome(struct Client *source_p)
 {
 #ifdef HAVE_LIBCRYPTO
-  if (source_p->localClient->fd > -1)
-    if (fd_table[source_p->localClient->fd].ssl != NULL)
-      sendto_one(source_p, ":%s NOTICE %s :*** Connected securely via %s",
-                 me.name, source_p->name,
-		 ssl_get_cipher(fd_table[source_p->localClient->fd].ssl));
+  if (source_p->localClient->fd.ssl != NULL)
+    sendto_one(source_p, ":%s NOTICE %s :*** Connected securely via %s",
+               me.name, source_p->name,
+               ssl_get_cipher(source_p->localClient->fd.ssl));
 #endif
 
   sendto_one(source_p, form_str(RPL_WELCOME), me.name, source_p->name, 

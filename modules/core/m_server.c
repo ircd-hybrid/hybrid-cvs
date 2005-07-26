@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.131 2005/06/11 07:41:45 db Exp $
+ *  $Id: m_server.c,v 1.132 2005/07/26 03:33:02 adx Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.131 $";
+const char *_version = "$Revision: 1.132 $";
 #endif
 
 
@@ -482,7 +482,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
 
   SetServer(target_p);
 
-  if((target_p->node.prev != NULL) || (target_p->node.next != NULL))
+  if ((target_p->node.prev != NULL) || (target_p->node.next != NULL))
   {
     sendto_realops_flags(UMODE_ALL, L_OPER,
 			 "already linked %s at %s:%d", target_p->name,
@@ -499,7 +499,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
 
   hash_add_client(target_p);
   /* XXX test that target_p->lnode.prev and .next are NULL as well? */
-  if((target_p->lnode.prev != NULL) || (target_p->lnode.next != NULL))
+  if ((target_p->lnode.prev != NULL) || (target_p->lnode.next != NULL))
   {
     sendto_realops_flags(UMODE_ALL, L_OPER,
 			 "already lnode linked %s at %s:%d", target_p->name,
@@ -510,6 +510,8 @@ ms_server(struct Client *client_p, struct Client *source_p,
   }
   else
     dlinkAdd(target_p, &target_p->lnode, &target_p->servptr->serv->servers);
+
+  client_p->serv->dep_servers++;
 
   /* Old sendto_serv_but_one() call removed because we now
    * need to send different names to different servers
@@ -743,7 +745,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
 
   SetServer(target_p);
 
-  if((target_p->node.prev != NULL) || (target_p->node.next != NULL))
+  if ((target_p->node.prev != NULL) || (target_p->node.next != NULL))
   {
     sendto_realops_flags(UMODE_ALL, L_ADMIN,
 			 "already linked %s at %s:%d", target_p->name,
@@ -760,7 +762,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
 
   hash_add_client(target_p);
   /* XXX test that target_p->lnode.prev and next are NULL as well? */
-  if((target_p->lnode.prev != NULL) || (target_p->lnode.next != NULL))
+  if ((target_p->lnode.prev != NULL) || (target_p->lnode.next != NULL))
   {
     sendto_realops_flags(UMODE_ALL, L_OPER,
 			 "already lnode linked %s at %s:%d", target_p->name,
@@ -773,6 +775,8 @@ ms_sid(struct Client *client_p, struct Client *source_p,
     dlinkAdd(target_p, &target_p->lnode, &target_p->servptr->serv->servers);
 
   hash_add_id(target_p);
+
+  client_p->serv->dep_servers++;
 
   DLINK_FOREACH_SAFE(ptr, ptr_next, serv_list.head)
   {
@@ -930,4 +934,3 @@ server_exists(char *servername)
 
   return(NULL);
 }
-

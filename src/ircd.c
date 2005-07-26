@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.346 2005/07/25 04:52:41 adx Exp $
+ *  $Id: ircd.c,v 7.347 2005/07/26 03:33:04 adx Exp $
  */
 
 #include "stdinc.h"
@@ -83,7 +83,6 @@ struct ServerState_t server_state = { 0 };
 struct logging_entry ConfigLoggingEntry = { 1, {0}, {0}, {0} };
 
 struct timeval SystemTime;
-int ServerRunning;            /* GLOBAL - server execution state */
 struct Client me;             /* That's me */
 struct LocalUser meLocalUser; /* That's also part of me */
 
@@ -298,7 +297,7 @@ set_time(void)
 static void
 io_loop(void)
 {
-  while (ServerRunning)
+  while (1 == 1)
   {
     /*
      * Maybe we want a flags word?
@@ -570,20 +569,16 @@ main(int argc, char *argv[])
     fprintf(stderr, "Don't run ircd as root!!!\n");
     return(-1);
   }
-#endif
-
-  /* save server boot time right away, so getrusage works correctly */
-  set_time();
 
   /* Setup corefile size immediately after boot -kre */
   setup_corefile();
 
-#ifndef _WIN32
   /* set initialVMTop before we allocate any memory */
   initialVMTop = get_vm_top();
 #endif
 
-  ServerRunning = 0;
+  /* save server boot time right away, so getrusage works correctly */
+  set_time();
 
   /* It ain't random, but it ought to be a little harder to guess */
   srand(SystemTime.tv_sec ^ (SystemTime.tv_usec | (getpid() << 20)));
@@ -626,21 +621,20 @@ main(int argc, char *argv[])
 
 #ifndef _WIN32
   if (!server_state.foreground)
+  {
     make_daemon();
+    close_standard_fds(); /* this needs to be before init_netio()! */
+  }
   else
     print_startup(getpid());
 
   setup_signals();
 #endif
+
   /* We need this to initialise the fd array before anything else */
   fdlist_init();
-
-  if (!server_state.foreground)
-    close_all_connections(); /* this needs to be before init_netio()! */
-  else
-    check_can_use_v6(); /* Done in close_all_connections normally */
-
   init_log(logFileName);
+  check_can_use_v6();
   init_netio();         /* This needs to be setup early ! -- adrian */
   /* Check if there is pidfile and daemon already running */
   check_pidfile(pidFileName);
@@ -748,7 +742,6 @@ main(int argc, char *argv[])
   if (splitmode)
     eventAddIsh("check_splitmode", check_splitmode, NULL, 60);
 
-  ServerRunning = 1;
   io_loop();
   return(0);
 }

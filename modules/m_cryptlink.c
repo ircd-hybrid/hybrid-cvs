@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.60 2004/07/08 00:27:22 erik Exp $
+ *  $Id: m_cryptlink.c,v 1.61 2005/07/26 03:33:00 adx Exp $
  */
 
 /*
@@ -95,7 +95,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.60 $";
+const char *_version = "$Revision: 1.61 $";
 #endif
 
 
@@ -453,7 +453,7 @@ cryptlink_serv(struct Client *client_p, struct Client *source_p,
 
   if (!IsWaitAuth(client_p))
   {
-    cryptlink_init(client_p, conf, -1);
+    cryptlink_init(client_p, conf, NULL);
   }
 
   sendto_one(client_p, "CRYPTLINK AUTH %s %s",

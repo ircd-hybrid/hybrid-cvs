@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.h,v 7.17 2005/07/18 13:30:15 michael Exp $
+ *  $Id: listener.h,v 7.18 2005/07/26 03:32:57 adx Exp $
  */
 
 #ifndef INCLUDED_listener_h
@@ -30,13 +30,15 @@
 
 #include "ircd_defs.h"  
 #include "tools.h"
+#include "fdlist.h"
+
 struct Client;
 
 struct Listener
 {
   dlink_node	   listener_node;      /* list node pointer */
   const char*      name;               /* listener name */
-  int              fd;                 /* file descriptor */
+  fde_t            fd;                 /* file descriptor */
   int              port;               /* listener IP port */
   int              ref_count;          /* number of connection references */
   int              active;             /* current state of listener */

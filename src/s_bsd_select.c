@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_select.c,v 7.36 2003/07/05 06:21:03 db Exp $
+ *  $Id: s_bsd_select.c,v 7.37 2005/07/26 03:33:05 adx Exp $
  */
 
 #include "stdinc.h"
@@ -57,6 +57,7 @@
 
 static fd_set select_readfds;
 static fd_set select_writefds;
+static int highest_fd = -1;
 
 /*
  * You know, I'd rather have these local to comm_select but for some
@@ -66,7 +67,7 @@ static fd_set select_writefds;
 static fd_set tmpreadfds;
 static fd_set tmpwritefds;
 
-static void select_update_selectfds(int, short, PF *);
+static void select_update_selectfds(int fd, short, PF *);
 
 /* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
 /* Private functions */
@@ -76,7 +77,7 @@ static void select_update_selectfds(int, short, PF *);
  */ 
 static void
 select_update_selectfds(int fd, short event, PF *handler)
-{  
+{
   /* Update the read / write set */
   if (event & COMM_SELECT_READ)
   {
@@ -117,26 +118,34 @@ init_netio(void)
  * and deregister interest in a pending IO state for a given FD.
  */
 void
-comm_setselect(int fd, fdlist_t list, unsigned int type, PF *handler,
+comm_setselect(fde_t *F, unsigned int type, PF *handler,
                void *client_data, time_t timeout)
 {
-  fde_t *F = &fd_table[fd];
-
-  assert(fd >= 0);
   assert(F->flags.open);
 
   if (type & COMM_SELECT_READ)
   {
     F->read_handler = handler;
     F->read_data = client_data;
-    select_update_selectfds(fd, COMM_SELECT_READ, handler);
+    select_update_selectfds(F->fd, COMM_SELECT_READ, handler);
   }
   if (type & COMM_SELECT_WRITE)
   {
     F->write_handler = handler;
     F->write_data = client_data;
-    select_update_selectfds(fd, COMM_SELECT_WRITE, handler);
+    select_update_selectfds(F->fd, COMM_SELECT_WRITE, handler);
   }
+
+  if (F->read_handler == NULL && F->write_handler == NULL)
+  {
+    if (F->fd == highest_fd)
+      do {
+        --highest_fd;
+      }
+      while (highest_fd > -1 && lookup_fd(highest_fd) == NULL);
+  }
+  else if (F->fd > highest_fd)
+    highest_fd = F->fd;
 
   if (timeout)
     F->timeout = CurrentTime + (timeout / 1000);
@@ -155,7 +164,6 @@ comm_select(unsigned long delay)
 {
   int num, fd;
   PF *hdl;
-  fde_t *F;
   struct timeval to;
 
   /* Copy over the read/write sets so we don't have to rebuild em */
@@ -171,25 +179,27 @@ comm_select(unsigned long delay)
 
   set_time();
 
-  for (fd = 0; num > 0 && fd < highest_fd + 1; fd++)
-  {
-    F = &fd_table[fd];
+  if (num > 0)
+    for (fd = 0; fd <= highest_fd; fd++)
+      if (FD_ISSET(fd, &tmpreadfds) || FD_ISSET(fd, &tmpwritefds))
+      {
+        fde_t *F = lookup_fd(fd);
 
-    if (FD_ISSET(fd, &tmpreadfds))
-    {
-      hdl = F->read_handler;
-      F->read_handler = NULL;
-      select_update_selectfds(fd, COMM_SELECT_READ, NULL);
-      if (hdl != NULL)
-        hdl(fd, F->read_data);
-    }
-    if (FD_ISSET(fd, &tmpwritefds))
-    {
-      hdl = F->write_handler;
-      F->write_handler = NULL;
-      select_update_selectfds(fd, COMM_SELECT_WRITE, NULL);
-      if (hdl != NULL)
-        hdl(fd, F->write_data);
-    }
-  }
+        if (FD_ISSET(fd, &tmpreadfds))
+        {
+          hdl = F->read_handler;
+          F->read_handler = NULL;
+          select_update_selectfds(fd, COMM_SELECT_READ, NULL);
+          if (hdl != NULL)
+            hdl(F, F->read_data);
+        }
+        if (FD_ISSET(fd, &tmpwritefds))
+        {
+          hdl = F->write_handler;
+          F->write_handler = NULL;
+          select_update_selectfds(fd, COMM_SELECT_WRITE, NULL);
+          if (hdl != NULL)
+            hdl(F, F->write_data);
+        }
+      }
 }

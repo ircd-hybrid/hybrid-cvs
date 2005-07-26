@@ -19,13 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.h,v 7.74 2005/07/11 03:03:28 adx Exp $
+ *  $Id: send.h,v 7.75 2005/07/26 03:32:58 adx Exp $
  */
 
 #ifndef INCLUDED_send_h
 #define INCLUDED_send_h
 
-#include "setup.h"       /* HAVE_STDARG_H */
+#include "fdlist.h"
 
 /* For those unfamiliar with GNU format attributes, a is the 1 based
  * argument number of the format string, and b is the 1 based argument
@@ -45,7 +45,7 @@ struct dlink_list;
 
 /* send.c prototypes */
 
-extern void sendq_unblocked(int fd, struct Client *client_p);
+extern void sendq_unblocked(fde_t *fd, struct Client *client_p);
 
 extern void send_queued_write(struct Client *to);
 

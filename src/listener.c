@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.98 2005/07/18 13:30:17 michael Exp $
+ *  $Id: listener.c,v 7.99 2005/07/26 03:33:04 adx Exp $
  */
 
 #include "stdinc.h"
@@ -57,10 +57,9 @@ make_listener(int port, struct irc_ssaddr *addr)
 
   listener->name = me.name;
   listener->port = port;
-  listener->fd   = -1;
   memcpy(&listener->addr, addr, sizeof(struct irc_ssaddr));
 
-  return(listener);
+  return listener;
 }
 
 void
@@ -146,14 +145,19 @@ static int
 inetport(struct Listener *listener)
 {
   struct irc_ssaddr lsin;
-  int fd;
   socklen_t opt = 1;
 
   /*
    * At first, open a new socket
    */
-  fd = comm_open(listener->addr.ss.ss_family, SOCK_STREAM, 0,
-                 "Listener socket");
+  if (comm_open(&listener->fd, listener->addr.ss.ss_family, SOCK_STREAM, 0,
+                "Listener socket") == -1)
+  {
+    report_error(L_ALL, "opening listener socket %s:%s",
+                 get_listener_name(listener), errno);
+    return 0;
+  }
+
   memset(&lsin, 0, sizeof(lsin));
   memcpy(&lsin, &listener->addr, sizeof(struct irc_ssaddr));
   
@@ -161,30 +165,23 @@ inetport(struct Listener *listener)
         HOSTLEN, NULL, 0, NI_NUMERICHOST);
   listener->name = listener->vhost;
 
-  if (fd == -1)
-  {
-    report_error(L_ALL, "opening listener socket %s:%s",
-                 get_listener_name(listener), errno);
-    return(0);
-  }
-
-  if ((HARD_FDLIMIT - 10) < fd)
+  if ((HARD_FDLIMIT - 10) < listener->fd.fd)
   {
     report_error(L_ALL, "no more connections left for listener %s:%s",
                  get_listener_name(listener), errno);
-    fd_close(fd);
-    return(0);
+    fd_close(&listener->fd);
+    return 0;
   }
 
   /*
    * XXX - we don't want to do all this crap for a listener
    * set_sock_opts(listener);
    */
-  if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
+  if (setsockopt(listener->fd.fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
   {
     report_error(L_ALL, "setting SO_REUSEADDR for listener %s:%s",
                  get_listener_name(listener), errno);
-    fd_close(fd);
+    fd_close(&listener->fd);
     return(0);
   }
 
@@ -194,28 +191,26 @@ inetport(struct Listener *listener)
    */
   lsin.ss_port = htons(listener->port);
 
-  if (bind(fd, (struct sockaddr *)&lsin, lsin.ss_len))
+  if (bind(listener->fd.fd, (struct sockaddr *)&lsin, lsin.ss_len))
   {
     report_error(L_ALL, "binding listener socket %s:%s",
                  get_listener_name(listener), errno);
-    fd_close(fd);
+    fd_close(&listener->fd);
     return(0);
   }
 
-  if (listen(fd, HYBRID_SOMAXCONN))
+  if (listen(listener->fd.fd, HYBRID_SOMAXCONN))
   {
     report_error(L_ALL, "listen failed for %s:%s",
                  get_listener_name(listener), errno);
-    fd_close(fd);
+    fd_close(&listener->fd);
     return(0);
   }
 
-  listener->fd = fd;
-
   /* Listen completion events are READ events .. */
 
-  accept_connection(fd, listener);
-  return(1);
+  accept_connection(&listener->fd, listener);
+  return 1;
 }
 
 static struct Listener *
@@ -233,7 +228,7 @@ find_listener(int port, struct irc_ssaddr *addr)
         (!memcmp(addr, &listener->addr, sizeof(struct irc_ssaddr))))
     {
       /* Try to return an open listener, otherwise reuse a closed one */
-      if (listener->fd == -1)
+      if (!listener->fd.flags.open)
         last_closed = listener;
       else
         return (listener);
@@ -326,7 +321,7 @@ add_listener(int port, const char *vhost_ip, unsigned int flags)
   if ((listener = find_listener(port, &vaddr)))
   {
     listener->flags = flags;
-    if (listener->fd > -1)
+    if (listener->fd.flags.open)
       return;
   }
   else
@@ -335,8 +330,6 @@ add_listener(int port, const char *vhost_ip, unsigned int flags)
     dlinkAdd(listener, &listener->listener_node, &ListenerPollList);
     listener->flags = flags;
   }
-
-  listener->fd = -1;
 
   if (inetport(listener))
     listener->active = 1;
@@ -355,11 +348,8 @@ close_listener(struct Listener *listener)
   if (listener == NULL)
     return;
 
-  if (listener->fd >= 0)
-  {
-    fd_close(listener->fd);
-    listener->fd = -1;
-  }
+  if (listener->fd.flags.open)
+    fd_close(&listener->fd);
 
   listener->active = 0;
 
@@ -387,7 +377,7 @@ close_listeners(void)
 #define DLINE_WARNING "ERROR :You have been D-lined.\r\n"
 
 static void 
-accept_connection(int pfd, void *data)
+accept_connection(fde_t *pfd, void *data)
 {
   static time_t last_oper_notice = 0;
   struct irc_ssaddr sai;
@@ -395,6 +385,7 @@ accept_connection(int pfd, void *data)
   int fd;
   int pe;
   struct Listener *listener = data;
+  void *ssl;
 
   memset(&sai, 0, sizeof(sai));
   memset(&addr, 0, sizeof(addr));
@@ -413,7 +404,7 @@ accept_connection(int pfd, void *data)
    * point, just assume that connections cannot
    * be accepted until some old is closed first.
    */
-  while ((fd = comm_accept(listener, &sai)) != -1)
+  while ((fd = comm_accept(listener, &sai, &ssl)) != -1)
   {
     memcpy(&addr, &sai, sizeof(struct irc_ssaddr));
 
@@ -433,8 +424,9 @@ accept_connection(int pfd, void *data)
         last_oper_notice = CurrentTime;
       }
 
-      send(fd, "ERROR :All connections in use\r\n", 32, 0);
-      fd_close(fd);
+      if (!ssl)
+        send(fd, "ERROR :All connections in use\r\n", 32, 0);
+      close(fd);
       break;    /* jump out and re-register a new io request */
     }
 
@@ -443,25 +435,26 @@ accept_connection(int pfd, void *data)
     if ((pe = conf_connect_allowed(&addr, sai.ss.ss_family)) != 0)
     {
       ServerStats->is_ref++;
-      switch (pe)
-      {
-        case BANNED_CLIENT:
-          send(fd, DLINE_WARNING, sizeof(DLINE_WARNING)-1, 0);
-          break;
-        case TOO_FAST:
-          send(fd, TOOFAST_WARNING, sizeof(TOOFAST_WARNING)-1, 0);
-          break;
-      }
+      if (!ssl)
+        switch (pe)
+        {
+          case BANNED_CLIENT:
+            send(fd, DLINE_WARNING, sizeof(DLINE_WARNING)-1, 0);
+            break;
+          case TOO_FAST:
+            send(fd, TOOFAST_WARNING, sizeof(TOOFAST_WARNING)-1, 0);
+            break;
+        }
 
-      fd_close(fd);
+      close(fd);
       continue;    /* drop the one and keep on clearing the queue */
     }
 
     ServerStats->is_ac++;
-    add_connection(listener, fd);
+    add_connection(listener, fd, ssl);
   }
 
   /* Re-register a new IO request for the next accept .. */
-  comm_setselect(listener->fd, FDLIST_SERVICE, COMM_SELECT_READ,
-                 accept_connection, listener, 0);
+  comm_setselect(&listener->fd, COMM_SELECT_READ, accept_connection,
+                 listener, 0);
 }
