@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.46 2005/07/26 15:29:10 michael Exp $
+ *  $Id: csvlib.c,v 7.47 2005/07/26 16:08:36 michael Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,6 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
   char  *reason_field=NULL;
   char  *oper_reason=NULL;
   char  *host_field=NULL;
-  char  *port=NULL;
   char  line[BUFSIZE];
   char  *p;
 
@@ -92,8 +91,7 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
       break;
 
     case XLINE_TYPE:
-      parse_csv_line(line, &name_field, &reason_field, &oper_reason, &port,
-		     NULL);
+      parse_csv_line(line, &name_field, &reason_field, &oper_reason, NULL);
       conf = make_conf_item(XLINE_TYPE);
       match_item = (struct MatchItem *)map_to_conf(conf);
       if (name_field != NULL)
@@ -108,8 +106,7 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
       int ecode = 0;
       regex_t *exp_p = NULL;
 
-      parse_csv_line(line, &name_field, &reason_field, &oper_reason, &port,
-                     NULL);
+      parse_csv_line(line, &name_field, &reason_field, &oper_reason, NULL);
       exp_p = MyMalloc(sizeof(regex_t));
 
       if ((ecode = regcomp(exp_p, name_field, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
@@ -179,22 +176,14 @@ parse_csv_line(char *line, ...)
 {
   va_list args;
   char **dest;
-  char *field;
+  char *field = NULL;
 
   va_start(args, line);
-  dest = va_arg(args, char **);
-  if ((dest == NULL) || ((field = getfield(line)) == NULL))
-  {
-    va_end(args);
-    return;
-  }
 
-  *dest = field;
-    
-  for(;;)
+  for (; ;)
   {
     dest = va_arg(args, char **);
-    if ((dest == NULL) || ((field = getfield(NULL)) == NULL))
+    if ((dest == NULL) || ((field = getfield(field ? NULL : line)) == NULL))
     {
       va_end(args);
       return;
@@ -202,7 +191,6 @@ parse_csv_line(char *line, ...)
     *dest = field;
   }
 }
-
 
 /* write_conf_line()
  *
