@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.195 2005/07/25 18:25:32 db Exp $
+ *  $Id: m_kline.c,v 1.196 2005/07/26 20:49:25 db Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.195 $";
+const char *_version = "$Revision: 1.196 $";
 #endif
 
 /* Local function prototypes */
@@ -429,6 +429,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 {
   char def_reason[] = "No Reason";
   char *dlhost, *oper_reason, *reason;
+  char *target_server=NULL;
   const char *creason;
 #ifndef IPV6
   struct Client *target_p;
@@ -448,25 +449,9 @@ mo_dline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  parv++;
-  parc--;
-
-  tkline_time = valid_tkline(*parv, TK_MINUTES);
-
-  if (tkline_time > 0)
-  {
-    parv++;
-    parc--;
-  }
-
-  if (parc == 0)
-  {
-    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, source_p->name, "DLINE");
+  if (parse_aline("DLINE", source_p, &dlhost, NULL,
+		  parc, parv, &tkline_time, &target_server, &reason) < 0)
     return;
-  }
-
-  dlhost = *parv;
 
   if ((t=parse_netmask(dlhost, NULL, &bits)) == HM_HOST)
   {
@@ -509,22 +494,6 @@ mo_dline(struct Client *client_p, struct Client *source_p,
    bits = 0xFFFFFF00UL;
 #endif
     }
-
-  parc--;
-  parv++;
-
-  if (parc != 0) /* host :reason */
-  {
-    if (valid_comment(source_p, *parv, YES) == 0)
-      return;
-
-    if (*parv[0] != '\0')
-      reason = *parv;
-    else
-      reason = def_reason;
-  }
-  else
-    reason = def_reason;
 
   if (bits < 8)
   {
