@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.51 2005/07/26 21:01:13 adx Exp $
+ *  $Id: s_bsd.h,v 7.52 2005/07/26 21:26:37 adx Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -75,7 +75,7 @@ extern int comm_accept(struct Listener *, struct irc_ssaddr *pn, void **ssl);
 extern void comm_setselect(fde_t *, unsigned int, PF *, void *, time_t);
 extern void init_netio(void);
 extern int read_message (time_t, unsigned char);
-extern void comm_select(unsigned long);
+extern void comm_select(void);
 extern int disable_sock_options(int);
 extern void check_can_use_v6(void);
 #ifdef IPV6
