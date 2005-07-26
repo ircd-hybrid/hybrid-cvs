@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.h,v 7.37 2005/07/26 11:48:02 michael Exp $
+ *  $Id: hash.h,v 7.38 2005/07/26 13:13:23 michael Exp $
  */
 
 #ifndef INCLUDED_hash_h
@@ -28,7 +28,6 @@
 #define FNV1_32_INIT 0x811c9dc5
 #define FNV1_32_BITS 16
 #define FNV1_32_SIZE (1 << FNV1_32_BITS)  /* 2^16 = 65536 */
-#undef HASHSIZE
 #define HASHSIZE FNV1_32_SIZE
 
 struct Client;

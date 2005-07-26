@@ -21,9 +21,6 @@
 /* Define if you want halfops support. */
 #undef HALFOPS
 
-/* Max number of buckets in hash tables. */
-#undef HASHSIZE
-
 /* Define to 1 if you have the `basename' function. */
 #undef HAVE_BASENAME
 
@@ -152,9 +149,6 @@
 
 /* Define to 1 if you have the <sys/wait.h> header file. */
 #undef HAVE_SYS_WAIT_H
-
-/* Define to 1 if the system has the type `uintptr_t'. */
-#undef HAVE_UINTPTR_T
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
