@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.16 2005/07/16 12:19:38 michael Exp $
+ *  $Id: m_killhost.c,v 1.17 2005/07/26 23:30:29 db Exp $
  *
  */
 
@@ -39,6 +39,7 @@
 #include "sprintf_irc.h"
 #include "msg.h"
 #include "parse.h"
+#include "channel_mode.h"	/* needed only for split_nuh() */
 #include "modules.h"
 
 static void mo_killhost(struct Client *, struct Client *, int, char *[]);
@@ -63,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&killhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.16 $";
+const char *_version = "$Revision: 1.17 $";
 #endif
 
 /* mo_killhost()
@@ -82,9 +83,12 @@ mo_killhost(struct Client *client_p, struct Client *source_p,
   dlink_node *ptr_next;
   struct Client *target_p;
   const char *inpath = client_p->name;
-  const char *host = NULL;
+  char *nick = NULL;
+  char *user = NULL;
+  char *host = NULL;
   char *reason;
   char bufhost[BUFSIZE];
+  char buf_nuh[NICKLEN + USERLEN + HOSTLEN + 1];
   char def_reason[] = "No reason specified";
   unsigned int count = 0;
 
@@ -95,7 +99,8 @@ mo_killhost(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  host = parv[1];
+  strlcpy(buf_nuh, parv[1], sizeof(buf_nuh));
+  split_nuh(buf_nuh, &nick, &user, &host);
 
   if (!valid_wild_card(source_p, YES, 1, host))
     return;
@@ -119,7 +124,9 @@ mo_killhost(struct Client *client_p, struct Client *source_p,
     if (!MyConnect(target_p) && !IsOperGlobalKill(source_p))
       continue;
       
-    if (!strcmp(host, target_p->host))
+    if (match(nick, target_p->name) &&
+	match(user, target_p->username) &&
+	match(host, target_p->host))
     {
       if (MyConnect(target_p))
         sendto_one(target_p, ":%s!%s@%s KILL %s :%s",
