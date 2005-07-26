@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.227 2005/07/26 03:33:05 adx Exp $
+ *  $Id: s_bsd.c,v 7.228 2005/07/26 14:24:28 adx Exp $
  */
 
 #include "stdinc.h"
@@ -858,7 +858,9 @@ comm_accept(struct Listener *lptr, struct irc_ssaddr *pn, void **ssl)
 
     SSL_set_fd(*ssl, newfd);
   }
+  else
 #endif
+    *ssl = NULL;
 
   /* .. and return */
   return newfd;
