@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.1 2005/07/26 21:01:15 adx Exp $
+ *  $Id: s_bsd_win32.c,v 7.2 2005/07/26 21:07:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -129,7 +129,7 @@ WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 /*
- * Create a window handle, initialize WSAAsyncSelect on it.
+ * Initialize Winsock, create a window handle.
  */
 void
 setup_netio(void)
@@ -200,7 +200,7 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
 
     case COMM_WRITE:
       if (!F->write_handler != !handler)
-        do_update = NO;
+        do_update = YES;
 
       F->write_handler = handler;
       F->write_data = client_data;
