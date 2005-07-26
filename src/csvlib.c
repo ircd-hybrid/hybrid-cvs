@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.45 2005/07/26 14:56:10 michael Exp $
+ *  $Id: csvlib.c,v 7.46 2005/07/26 15:29:10 michael Exp $
  */
 
 #include "stdinc.h"
@@ -263,10 +263,10 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
                from, to, aconf->user, aconf->host);
     ilog(L_TRACE, "%s added K-Line for [%s@%s] [%s]",
          source_p->name, aconf->user, aconf->host, aconf->reason);
-    write_csv_line(out, "%s%s%s%s%s%s%ld",
+    write_csv_line(out, "%s%s%s%s%s%s%d",
 		   aconf->user, aconf->host,
 		   aconf->reason, aconf->oper_reason, current_date,
-		   get_oper_name(source_p), (long)cur_time);
+		   get_oper_name(source_p), cur_time);
     break;
 
   case DLINE_TYPE:
@@ -278,10 +278,10 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
                from, to, aconf->host, filename);
     ilog(L_TRACE, "%s added D-Line for [%s] [%s]",
          get_oper_name(source_p), aconf->host, aconf->reason);
-    write_csv_line(out, "%s%s%s%s%s%ld",
+    write_csv_line(out, "%s%s%s%s%s%d",
 		   aconf->host, aconf->reason, aconf->oper_reason, 
 		   current_date,
-		   get_oper_name(source_p), (long)cur_time);
+		   get_oper_name(source_p), cur_time);
     break;
 
   case XLINE_TYPE:
@@ -296,9 +296,9 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
 	       xconf->action, xconf->reason, filename);
     ilog(L_TRACE, "%s added X-Line for [%s] [%s]",
          get_oper_name(source_p), conf->name, xconf->reason);
-    write_csv_line(out, "%s%s%s%s%s%ld",
+    write_csv_line(out, "%s%s%s%s%s%d",
 		   conf->name, xconf->reason, xconf->oper_reason,
-		   current_date, get_oper_name(source_p), (long)cur_time);
+		   current_date, get_oper_name(source_p), cur_time);
     break;
 
   case RXLINE_TYPE:
@@ -313,9 +313,9 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
                xconf->reason, filename);
     ilog(L_TRACE, "%s added X-Line for [%s] [%s]",
          get_oper_name(source_p), conf->name, xconf->reason);
-    write_csv_line(out, "%s%s%s%d%s%s%ld",
+    write_csv_line(out, "%s%s%s%s%s%d",
                    conf->name, xconf->reason, xconf->oper_reason,
-                   current_date, get_oper_name(source_p), (long)cur_time);
+                   current_date, get_oper_name(source_p), cur_time);
     break;
 
   case CRESV_TYPE:
@@ -412,14 +412,17 @@ write_csv_line(FBFILE *out, const char *format, ...)
 	}
 	*p++ = (v % 10) + '0';
 
+        *str++ = '\"';
+        ++bytes;
 	while (p != t)
 	{
 	  *str++ = *--p;
 	  ++bytes;
 	}
 
+        *str++ = '\"';
 	*str++ = ',';
-	++bytes;
+	bytes += 2;
 	continue;
       }
       if (c != '%')
@@ -470,7 +473,7 @@ static char *
 getfield(char *newline)
 {
   static char *line = NULL;
-  char  *end, *field;
+  char *end, *field;
         
   if (newline != NULL)
     line = newline;
@@ -480,14 +483,11 @@ getfield(char *newline)
 
   field = line;
 
-  while (IsSpace(*field) || *field == ',')	/* skip to start */
+  while (*field != '"')	/* skip everything that's not a starting quote */
     ++field;
 
-  /* skip over any beginning " */
-  if (*field == '"')
-    ++field;
-
-  end = field;
+  /* skip over the beginning " */
+  end = ++field;
   
   for (;;)
   {
@@ -501,15 +501,9 @@ getfield(char *newline)
     {
       end++;
     }
-    else if(*end == '"')	/* found terminating " */
+    else if (*end == '"')	/* found terminating " */
     {
       *end++ = '\0';
-      while (IsSpace(*end))	/* skip to start of next " (or '\0') */
-	end++;
-      while (*end == ',')
-	end++;
-      while (IsSpace(*end))
-	end++;
       line = end;
       return(field);
     }
