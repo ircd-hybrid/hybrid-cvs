@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.44 2005/07/24 08:08:45 michael Exp $
+ *  $Id: csvlib.c,v 7.45 2005/07/26 14:56:10 michael Exp $
  */
 
 #include "stdinc.h"
@@ -103,14 +103,40 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
       break;
 
     case RXLINE_TYPE:
+#ifdef HAVE_REGEX_H
+    {
+      int ecode = 0;
+      regex_t *exp_p = NULL;
+
       parse_csv_line(line, &name_field, &reason_field, &oper_reason, &port,
                      NULL);
+      exp_p = MyMalloc(sizeof(regex_t));
+
+      if ((ecode = regcomp(exp_p, name_field, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
+      {
+        char errbuf[BUFSIZE];
+
+        regerror(ecode, NULL, errbuf, sizeof(errbuf));
+
+        MyFree(exp_p);
+        sendto_realops_flags(UMODE_ALL, L_ALL,
+                            "Failed to add regular expression based X-Line: %s", errbuf);
+        break;
+      }
+
+      if (name_field == NULL)
+        break;
+
       conf = make_conf_item(RXLINE_TYPE);
-      match_item = (struct MatchItem *)map_to_conf(conf);
-      if (name_field != NULL)
-        DupString(conf->name, name_field);
+      conf->regexpname = exp_p;
+      match_item = map_to_conf(conf);
+      DupString(conf->name, name_field);
       if (reason_field != NULL)
         DupString(match_item->reason, reason_field);
+      else
+        DupString(match_item->reason, "<No reason specified>");
+    }
+#endif
       break;
 
     case CRESV_TYPE:
@@ -454,13 +480,13 @@ getfield(char *newline)
 
   field = line;
 
-  while (IsSpace(*field))	/* skip to start */
-    field++;
+  while (IsSpace(*field) || *field == ',')	/* skip to start */
+    ++field;
 
   /* skip over any beginning " */
-  if(*field == '"') {
-    field++;
-  }
+  if (*field == '"')
+    ++field;
+
   end = field;
   
   for (;;)
@@ -487,20 +513,10 @@ getfield(char *newline)
       line = end;
       return(field);
     }
-    else if(*end == ',')	/* found terminating , */
-    {
-      *end++ = '\0';
-      while (IsSpace(*end))	/* skip to start of next " (or '\0') */
-	end++;
-      while (*end == ',')
-	end++;
-      while (IsSpace(*end))
-	end++;
-      line = end;
-      return(field);
-    }
+
     end++;
   }
+
   return (NULL);
 }
 

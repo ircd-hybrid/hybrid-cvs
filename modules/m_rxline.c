@@ -19,11 +19,8 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rxline.c,v 1.6 2005/07/24 08:08:43 michael Exp $
+ *  $Id: m_rxline.c,v 1.7 2005/07/26 14:56:08 michael Exp $
  */
-
-#include <sys/types.h>
-#include <regex.h>
 
 #include "stdinc.h"
 #include "tools.h"
@@ -86,7 +83,7 @@ _moddeinit(void)
   mod_del_cmd(&unrxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.6 $";
+const char *_version = "$Revision: 1.7 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
