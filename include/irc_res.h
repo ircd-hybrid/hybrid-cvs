@@ -1,7 +1,7 @@
 /*
  * include/irc_res.h for referencing functions in src/irc_res.c
  *
- * $Id: irc_res.h,v 7.9 2005/07/26 03:32:57 adx Exp $
+ * $Id: irc_res.h,v 7.10 2005/07/26 21:01:13 adx Exp $
  */
 
 #ifndef INCLUDED_irc_res_h
@@ -91,4 +91,5 @@ extern void report_dns_servers(struct Client *source_p);
 extern void gethost_byname_type(const char *name, const struct DNSQuery *query, int type);
 extern void gethost_byname(const char *name, const struct DNSQuery *query);
 extern void gethost_byaddr(const struct irc_ssaddr *addr, const struct DNSQuery *query);
+
 #endif

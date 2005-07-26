@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.347 2005/07/26 03:33:04 adx Exp $
+ *  $Id: ircd.c,v 7.348 2005/07/26 21:01:15 adx Exp $
  */
 
 #include "stdinc.h"
@@ -330,7 +330,7 @@ io_loop(void)
     while (eventNextTime() <= CurrentTime)
       eventRun();
 
-    comm_select(500);
+    comm_select();
     exit_aborted_clients();
     free_exited_clients();
     send_queued_all();

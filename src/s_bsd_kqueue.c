@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_kqueue.c,v 1.38 2005/07/26 03:33:05 adx Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.39 2005/07/26 21:01:15 adx Exp $
  */
 
 #include "stdinc.h"
@@ -188,7 +188,7 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
  */
 
 void
-comm_select(unsigned long delay)
+comm_select(void)
 {
   int num, i;
   static struct kevent ke[KE_LENGTH];
@@ -202,7 +202,7 @@ comm_select(unsigned long delay)
    *   -- Adrian
    */
   poll_time.tv_sec = 0;
-  poll_time.tv_nsec = delay * 1000000;
+  poll_time.tv_nsec = SELECT_DELAY * 1000000;
 
   num = kevent(kq, kqlst, kqoff, ke, KE_LENGTH, &poll_time);
   kqoff = 0;

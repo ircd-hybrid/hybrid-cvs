@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_sigio.c,v 7.33 2005/07/26 03:33:05 adx Exp $
+ *  $Id: s_bsd_sigio.c,v 7.34 2005/07/26 21:01:15 adx Exp $
  */
 
 #ifndef _GNU_SOURCE
@@ -209,7 +209,7 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
     F->timeout = CurrentTime + (timeout / 1000);
 }
 
-/* void comm_select(unsigned long delay)
+/* void comm_select(void)
  * Input: The maximum time to delay.
  * Output: None
  * Side-effects: Deregisters future interest in IO and calls the handlers
@@ -223,7 +223,7 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
  * events.
  */
 void
-comm_select(unsigned long delay)
+comm_select(void)
 {
   int revents = 0, sig, fd;
   PF *hdl;
@@ -232,7 +232,7 @@ comm_select(unsigned long delay)
   struct timespec timeout;
 
   timeout.tv_sec = 0;
-  timeout.tv_nsec = 1000000 * delay;
+  timeout.tv_nsec = 1000000 * SELECT_DELAY;
   sig = sigtimedwait(&our_sigset, &si, &timeout);
   set_time();
   if (sig != SIGIO)

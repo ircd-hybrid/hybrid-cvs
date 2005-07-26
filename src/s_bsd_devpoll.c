@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_devpoll.c,v 7.26 2005/07/26 03:33:05 adx Exp $
+ *  $Id: s_bsd_devpoll.c,v 7.27 2005/07/26 21:01:15 adx Exp $
  */
 
 #include "stdinc.h"
@@ -187,7 +187,7 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
  */
 
 void
-comm_select(unsigned long delay)
+comm_select(void)
 {
   int num, i;
   struct pollfd pollfds[POLL_LENGTH];
@@ -196,7 +196,7 @@ comm_select(unsigned long delay)
   fde_t *F;
 
   do {
-    dopoll.dp_timeout = delay;
+    dopoll.dp_timeout = SELECT_DELAY;
     dopoll.dp_nfds = POLL_LENGTH;
     dopoll.dp_fds = &pollfds[0];
   } while ((num = ioctl(dpfd, DP_POLL, &dopoll)) < 0 && ignoreErrno(errno));

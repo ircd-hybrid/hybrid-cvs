@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_poll.c,v 7.65 2005/07/26 03:33:05 adx Exp $
+ *  $Id: s_bsd_poll.c,v 7.66 2005/07/26 21:01:15 adx Exp $
  */
 
 #include "stdinc.h"
@@ -170,8 +170,8 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
     F->timeout = CurrentTime + (timeout / 1000);
 }
  
-/* void comm_select_fdlist(unsigned long delay)
- * Input: The maximum time to delay.
+/* void comm_select_fdlist(void)
+ * Input: None
  * Output: None
  * Side-effects: Deregisters future interest in IO and calls the handlers
  *               if an event occurs for an FD.
@@ -184,15 +184,15 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
  * events.
  */
 void
-comm_select(unsigned long delay)
+comm_select(void)
 {
   int num, ci, revents;
   PF *hdl;
   fde_t *F;
   
   /* XXX kill that +1 later ! -- adrian */
-  while ((num = poll(pollfd_list.pollfds, pollfd_list.maxindex + 1, delay)) < 0
-         && ignoreErrno(errno))
+  while ((num = poll(pollfd_list.pollfds, pollfd_list.maxindex + 1,
+         SELECT_DELAY)) < 0 && ignoreErrno(errno))
     ;
 
   set_time();

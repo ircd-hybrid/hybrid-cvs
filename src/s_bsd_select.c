@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_select.c,v 7.37 2005/07/26 03:33:05 adx Exp $
+ *  $Id: s_bsd_select.c,v 7.38 2005/07/26 21:01:15 adx Exp $
  */
 
 #include "stdinc.h"
@@ -152,7 +152,7 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
 }
  
 /*
- * void comm_select(unsigned long delay)
+ * void comm_select(void)
  *
  * Check all connections for new connections and input data that is to be
  * processed. Also check for connections with data queued and whether we can
@@ -160,7 +160,7 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
  *
  */
 void
-comm_select(unsigned long delay)
+comm_select(void)
 {
   int num, fd;
   PF *hdl;
@@ -172,7 +172,7 @@ comm_select(unsigned long delay)
 
   do {
     to.tv_sec = 0;
-    to.tv_usec = delay * 1000;
+    to.tv_usec = SELECT_DELAY * 1000;
   }
   while ((num = select(highest_fd + 1, &tmpreadfds, &tmpwritefds, NULL, &to)) < 0
          && ignoreErrno(errno));

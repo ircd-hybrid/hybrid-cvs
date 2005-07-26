@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.50 2005/07/26 03:32:57 adx Exp $
+ *  $Id: s_bsd.h,v 7.51 2005/07/26 21:01:13 adx Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -34,6 +34,9 @@
 /* Type of IO */
 #define	COMM_SELECT_READ		1
 #define	COMM_SELECT_WRITE		2
+
+/* How long can comm_select() wait for network events [milliseconds] */
+#define SELECT_DELAY    500
 
 struct Client;
 struct AccessItem;
