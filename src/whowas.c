@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.c,v 7.29 2005/07/16 12:19:51 michael Exp $
+ *  $Id: whowas.c,v 7.30 2005/07/26 11:48:05 michael Exp $
  */
 
 #include "stdinc.h"
@@ -45,22 +45,9 @@ static void add_whowas_to_list(struct Whowas **, struct Whowas *);
 static void del_whowas_from_list(struct Whowas **, struct Whowas *);
 
 struct Whowas WHOWAS[NICKNAMEHISTORYLENGTH];
-struct Whowas *WHOWASHASH[WW_MAX];
+struct Whowas *WHOWASHASH[HASHSIZE];
 
 static unsigned int whowas_next = 0;
-
-unsigned int
-hash_whowas_name(const char *name)
-{
-  unsigned int h = 0;
-
-  while (*name)
-  {
-    h = (h << 4) - (h + (unsigned char)ToLower(*name++));
-  }
-
-  return(h & (WW_MAX - 1));
-}
 
 void
 add_history(struct Client *client_p, int online)
@@ -86,7 +73,7 @@ add_history(struct Client *client_p, int online)
     del_whowas_from_list(&WHOWASHASH[who->hashv], who);
   }
 
-  who->hashv  = hash_whowas_name(client_p->name);
+  who->hashv  = strhash(client_p->name);
   who->logoff = CurrentTime;
 
   /* NOTE: strcpy ok here, the sizes in the client struct MUST
@@ -133,7 +120,7 @@ get_history(const char *nick, time_t timelimit)
   struct Whowas *temp;
 
   timelimit = CurrentTime - timelimit;
-  temp = WHOWASHASH[hash_whowas_name(nick)];
+  temp = WHOWASHASH[strhash(nick)];
 
   for (; temp; temp = temp->next)
   {
@@ -181,7 +168,7 @@ init_whowas(void)
     WHOWAS[i].hashv = -1;
   }
 
-  for (i = 0; i < WW_MAX; i++)
+  for (i = 0; i < HASHSIZE; ++i)
     WHOWASHASH[i] = NULL;        
 }
 

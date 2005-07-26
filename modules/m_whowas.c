@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whowas.c,v 1.35 2004/07/08 00:27:23 erik Exp $
+ *  $Id: m_whowas.c,v 1.36 2005/07/26 11:48:03 michael Exp $
  */
 
 #include "stdinc.h"
@@ -41,13 +41,12 @@
 #include "modules.h"
 
 
-static void m_whowas(struct Client *, struct Client *, int, char **);
-static void mo_whowas(struct Client *, struct Client *, int, char **);
-static void whowas_do(struct Client *client_p, struct Client *source_p,
-                      int parc, char *parv[]);
+static void m_whowas(struct Client *, struct Client *, int, char *[]);
+static void mo_whowas(struct Client *, struct Client *, int, char *[]);
+static void whowas_do(struct Client *, struct Client *, int, char *[]);
 
 struct Message whowas_msgtab = {
-  "WHOWAS", 0, 0, 0, 0, MFLG_SLOW, 0L,
+  "WHOWAS", 0, 0, 0, 0, MFLG_SLOW, 0,
   { m_unregistered, m_whowas, m_error, m_ignore, mo_whowas, m_ignore }
 };
 
@@ -64,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&whowas_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 
 /*
@@ -78,7 +77,7 @@ m_whowas(struct Client *client_p, struct Client *source_p,
 {
   static time_t last_used = 0;
 
-  if (parc < 2 || parv[1][0] == '\0')
+  if (parc < 2 || *parv[1] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
                me.name, source_p->name);
@@ -101,7 +100,7 @@ static void
 mo_whowas(struct Client *client_p, struct Client *source_p,
           int parc, char *parv[])
 {
-  if (parc < 2 || parv[1][0] == '\0')
+  if (parc < 2 || *parv[1] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
                me.name, source_p->name);
@@ -115,10 +114,9 @@ static void
 whowas_do(struct Client *client_p, struct Client *source_p,
           int parc, char *parv[])
 {
-  struct Whowas *temp;
+  struct Whowas *temp = NULL;
   int cur = 0;
   int max = -1;
-  int found = 0;
   char *p, *nick;
 
   if (parc > 2)
@@ -132,10 +130,10 @@ whowas_do(struct Client *client_p, struct Client *source_p,
     nick++;
   if ((p = strchr(nick,',')) != NULL)
     *p = '\0';
-  if (!*nick)
+  if (*nick == '\0')
     return;
 
-  temp  = WHOWASHASH[hash_whowas_name(nick)];
+  temp  = WHOWASHASH[strhash(nick)];
 
   for (; temp; temp = temp->next)
   {
@@ -155,14 +153,13 @@ whowas_do(struct Client *client_p, struct Client *source_p,
                    me.name, source_p->name, temp->name,
                    temp->servername, myctime(temp->logoff));
       cur++;
-      found++;
     }
 
     if (max > 0 && cur >= max)
       break;
   }
 
-  if (!found)
+  if (!cur)
     sendto_one(source_p, form_str(ERR_WASNOSUCHNICK),
                me.name, source_p->name, nick);
 

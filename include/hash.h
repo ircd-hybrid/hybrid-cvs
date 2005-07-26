@@ -19,11 +19,17 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.h,v 7.36 2005/07/16 08:12:43 michael Exp $
+ *  $Id: hash.h,v 7.37 2005/07/26 11:48:02 michael Exp $
  */
 
 #ifndef INCLUDED_hash_h
 #define INCLUDED_hash_h
+
+#define FNV1_32_INIT 0x811c9dc5
+#define FNV1_32_BITS 16
+#define FNV1_32_SIZE (1 << FNV1_32_BITS)  /* 2^16 = 65536 */
+#undef HASHSIZE
+#define HASHSIZE FNV1_32_SIZE
 
 struct Client;
 struct Channel;
@@ -60,4 +66,6 @@ extern struct ResvChannel *hash_find_resv(const char *);
 
 extern void free_list_task(struct ListTask *, struct Client *);
 extern void safe_list_channels(struct Client *, struct ListTask *, int, int);
+
+extern unsigned int strhash(const char *);
 #endif  /* INCLUDED_hash_h */

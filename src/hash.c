@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.101 2005/07/25 04:52:41 adx Exp $
+ *  $Id: hash.c,v 7.102 2005/07/26 11:48:05 michael Exp $
  */
 
 #include "stdinc.h"
@@ -49,12 +49,6 @@ static BlockHeap *namehost_heap = NULL;
 static struct UserHost *find_or_add_userhost(const char *);
 
 static unsigned int random_key = 0;
-
-#define FNV1_32_INIT 0x811c9dc5
-#define FNV1_32_BITS 16
-#define FNV1_32_SIZE (1 << FNV1_32_BITS)  /* 2^16 = 65536 */
-#undef HASHSIZE
-#define HASHSIZE FNV1_32_SIZE
 
 /* The actual hash tables, both MUST be of the same HASHSIZE, variable
  * size tables could be supported but the rehash routine should also
@@ -111,7 +105,7 @@ init_hash(void)
  * Here, we use the FNV-1 method, which gives slightly better results
  * than FNV-1a.   -Michael
  */
-static unsigned int
+unsigned int
 strhash(const char *p)
 {
   unsigned int hval = FNV1_32_INIT;
