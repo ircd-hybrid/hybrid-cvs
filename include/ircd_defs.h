@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.41 2005/07/25 04:52:36 adx Exp $
+ *  $Id: ircd_defs.h,v 7.42 2005/07/26 23:44:12 adx Exp $
  */
 
 /*
@@ -69,7 +69,6 @@
 #define EISCONN      WSAEISCONN
 #define EMSGSIZE     WSAEMSGSIZE
 #define EWOULDBLOCK  WSAEWOULDBLOCK
-#define FD_SETSIZE   (HARD_FDLIMIT + 10)
 #endif
 
 /* This is to get around the fact that some implementations have ss_len and

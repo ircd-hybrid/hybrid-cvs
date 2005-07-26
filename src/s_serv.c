@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.419 2005/07/26 03:33:05 adx Exp $
+ *  $Id: s_serv.c,v 7.420 2005/07/26 23:44:17 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1371,6 +1371,7 @@ start_io(struct Client *server)
 static int
 fork_server(struct Client *server)
 {
+#ifndef _WIN32
   int i, ret;
   int fd_temp[2];
   int slink_fds[2][2][2] = { { { 0, 0 }, { 0, 0 } }, 
@@ -1525,6 +1526,7 @@ fork_error:
     if (slink_fds[i >> 1][i & 1][1] != slink_fds[i >> 1][i & 1][0])
       close(slink_fds[i >> 1][i & 1][1]);
   }
+#endif
   return -1;
 }
 

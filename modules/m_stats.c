@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.175 2005/07/25 04:52:38 adx Exp $
+ *  $Id: m_stats.c,v 1.176 2005/07/26 23:44:14 adx Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.175 $";
+const char *_version = "$Revision: 1.176 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -1271,23 +1271,25 @@ stats_servlinks(struct Client *source_p)
              from, RPL_STATSDEBUG, to, j);
   sendto_one(source_p, ":%s %d %s ? :Sent total : %7.2f %s",
              from, RPL_STATSDEBUG, to,
-	     _GMKv(sendB), _GMKs(sendB));
+	     _GMKv((signed)sendB), _GMKs((signed)sendB));
   sendto_one(source_p, ":%s %d %s ? :Recv total : %7.2f %s",
              from, RPL_STATSDEBUG, to,
-	     _GMKv(recvB), _GMKs(recvB));
+	     _GMKv((signed)recvB), _GMKs((signed)recvB));
 
   uptime = (CurrentTime - me.since);
 
   sendto_one(source_p, ":%s %d %s ? :Server send: %7.2f %s (%4.1f K/s)",
              from, RPL_STATSDEBUG, to,
-	     _GMKv((me.localClient->send.bytes>>10)),
-             _GMKs((me.localClient->send.bytes>>10)),
-	     (float)((float)(me.localClient->send.bytes>>10) / (float)uptime));
+	     _GMKv((signed)(me.localClient->send.bytes>>10)),
+             _GMKs((signed)(me.localClient->send.bytes>>10)),
+	     (float)((float)(((signed)me.localClient->send.bytes) >> 10) /
+	     (float)uptime));
   sendto_one(source_p, ":%s %d %s ? :Server recv: %7.2f %s (%4.1f K/s)",
              from, RPL_STATSDEBUG, to,
-	     _GMKv((me.localClient->recv.bytes>>10)),
-	     _GMKs((me.localClient->recv.bytes>>10)),
-	     (float)((float)(me.localClient->recv.bytes>>10) / (float)uptime));
+	     _GMKv((signed)(me.localClient->recv.bytes>>10)),
+	     _GMKs((signed)(me.localClient->recv.bytes>>10)),
+	     (float)((float)(((signed)me.localClient->recv.bytes) >> 10) /
+	     (float)uptime));
 }
 
 static void

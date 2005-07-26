@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.199 2005/07/16 12:19:51 michael Exp $
+ *  $Id: parse.c,v 7.200 2005/07/26 23:44:16 adx Exp $
  */
 
 #include "stdinc.h"
@@ -192,7 +192,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
   if (IsDefunct(client_p))
     return;
 
-  assert(client_p->localClient->fd >= 0);
+  assert(client_p->localClient->fd.flags.open);
   assert((bufend - pbuffer) < 512);
 
   for (ch = pbuffer; *ch == ' '; ch++) /* skip spaces */

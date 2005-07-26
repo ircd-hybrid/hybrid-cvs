@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.99 2005/07/26 03:33:04 adx Exp $
+ *  $Id: listener.c,v 7.100 2005/07/26 23:44:16 adx Exp $
  */
 
 #include "stdinc.h"
@@ -165,7 +165,7 @@ inetport(struct Listener *listener)
         HOSTLEN, NULL, 0, NI_NUMERICHOST);
   listener->name = listener->vhost;
 
-  if ((HARD_FDLIMIT - 10) < listener->fd.fd)
+  if (number_fd >= HARD_FDLIMIT - 10)
   {
     report_error(L_ALL, "no more connections left for listener %s:%s",
                  get_listener_name(listener), errno);
@@ -411,7 +411,7 @@ accept_connection(fde_t *pfd, void *data)
     /*
      * check for connection limit
      */
-    if ((HARD_FDLIMIT - 10) < fd)
+    if (number_fd >= HARD_FDLIMIT - 10)
     {
       ++ServerStats->is_ref;
         /*

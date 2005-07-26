@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.19 2005/07/25 04:52:36 adx Exp $
+ * $Id: stdinc.h,v 1.20 2005/07/26 23:44:12 adx Exp $
  *
  */
 
@@ -93,31 +93,27 @@
 
 #include <stdarg.h>
 #include <signal.h>
-#include <dirent.h>
 #include <ctype.h>
 
 #ifdef _WIN32
+#define PATH_MAX (MAX_PATH - 1)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #include <winsock.h>
 #else
+#include <dirent.h>
 #include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <sys/time.h>
+#include <sys/file.h>
 #endif
 
 #include <limits.h>
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-
-#ifdef _WIN32
-#define PATH_MAX (MAX_PATH - 1)
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#else
-#include <sys/time.h>
-#include <sys/file.h>
 #endif
 
 #ifdef HAVE_SYS_RESOURCE_H

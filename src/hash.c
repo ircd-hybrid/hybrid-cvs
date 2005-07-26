@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.102 2005/07/26 11:48:05 michael Exp $
+ *  $Id: hash.c,v 7.103 2005/07/26 23:44:16 adx Exp $
  */
 
 #include "stdinc.h"
@@ -84,7 +84,7 @@ init_hash(void)
 #ifndef _WIN32
   random_key = random() % 256;  /* better than nothing --adx */
 #else
-  random_key = random(256);
+  random_key = rand() % 256;
 #endif
 
   /* Clear the hash tables first */

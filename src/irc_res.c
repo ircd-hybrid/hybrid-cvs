@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.43 2005/07/26 03:33:04 adx Exp $
+ * $Id: irc_res.c,v 7.44 2005/07/26 23:44:16 adx Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -570,7 +570,7 @@ query_name(const char *name, int query_class, int type,
       header->id = (header->id + lrand48()) & 0xffff;
     } while (find_id(header->id));
 #else
-  #ifdef WIN32
+  #ifdef _WIN32
     GetSystemTime(&st);
     SystemTimeToFileTime(&st, &ft);
     tv.tv_usec = ft.dwLowDateTime;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.40 2005/07/25 04:52:38 adx Exp $
+ *  $Id: m_help.c,v 1.41 2005/07/26 23:44:14 adx Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
 
 /*
@@ -142,7 +142,7 @@ dohelp(struct Client *source_p, const char *hpath, char *topic)
   else
     topic = "index"; /* list available help topics */
 
-  if (strchr(topic, '/'))
+  if (strpbrk(topic, "/\\"))
   {
     sendto_one(source_p, form_str(ERR_HELPNOTFOUND),
                me.name, source_p->name, topic);
@@ -166,6 +166,7 @@ dohelp(struct Client *source_p, const char *hpath, char *topic)
     return;
   }
 
+#ifndef _WIN32
   if (!S_ISREG(sb.st_mode))
   {
     ilog(L_NOTICE, "help file %s not found", path);
@@ -173,6 +174,7 @@ dohelp(struct Client *source_p, const char *hpath, char *topic)
                me.name, source_p->name, topic);
     return;
   }
+#endif
 
   sendhelpfile(source_p, path, topic);
 }

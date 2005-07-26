@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_misc.h,v 7.11 2005/07/11 04:13:46 db Exp $
+ *  $Id: s_misc.h,v 7.12 2005/07/26 23:44:12 adx Exp $
  */
 
 #ifndef INCLUDED_s_misc_h
@@ -35,8 +35,9 @@ char *ssl_get_cipher(SSL *ssl);
 #define _1MEG     (1024.0)
 #define _1GIG     (1024.0*1024.0)
 #define _1TER     (1024.0*1024.0*1024.0)
-#define _GMKs(x)  ((x > _1TER) ? "Terabytes" : ((x > _1GIG) ? "Gigabytes" : \
-                  ((x > _1MEG) ? "Megabytes" : "Kilobytes")))
-#define _GMKv(x)  ((x > _1TER) ? (float)(x/_1TER) : ((x > _1GIG) ? \
-                   (float)(x/_1GIG) : ((x > _1MEG) ? (float)(x/_1MEG) : (float)x)))
+#define _GMKs(x)  (((x) > _1TER) ? "Terabytes" : (((x) > _1GIG) ? "Gigabytes" :\
+                  (((x) > _1MEG) ? "Megabytes" : "Kilobytes")))
+#define _GMKv(x)  (((x) > _1TER) ? (float)((x)/_1TER) : (((x) > _1GIG) ? \
+                   (float)((x)/_1GIG) : (((x) > _1MEG) ? (float)((x)/_1MEG) : \
+		   (float)(x))))
 #endif

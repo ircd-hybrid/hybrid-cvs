@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.3 2005/07/26 21:34:25 adx Exp $
+ *  $Id: s_bsd_win32.c,v 7.4 2005/07/26 23:44:17 adx Exp $
  */
 
 #include "stdinc.h"
@@ -33,6 +33,8 @@
 #define WM_REMOTD  (WM_USER + 2)
 
 static HWND wndhandle;
+
+extern int main(int, char *[]);
 
 /*
  * Initial entry point for Win32 GUI applications, called by the C runtime.
@@ -79,11 +81,11 @@ hybrid_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
   {
     case WM_SOCKET:
     {
-      fde_t *F = fd_lookup((int) wParam);
+      fde_t *F = lookup_fd((int) wParam);
       PF *hdl;
 
       if (F != NULL)
-        switch (WSAGetSelectEvent(lParam))
+        switch (WSAGETSELECTEVENT(lParam))
 	{
 	  case FD_ACCEPT:
 	  case FD_CLOSE:
@@ -134,7 +136,7 @@ hybrid_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
  * Initialize Winsock, create a window handle.
  */
 void
-setup_netio(void)
+init_netio(void)
 {
   WNDCLASS wndclass;
   WSADATA wsa;

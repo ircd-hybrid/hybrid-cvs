@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.47 2005/07/26 16:08:36 michael Exp $
+ *  $Id: csvlib.c,v 7.48 2005/07/26 23:44:16 adx Exp $
  */
 
 #include "stdinc.h"
@@ -519,7 +519,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
   char buf[BUFSIZE], buff[BUFSIZE], temppath[BUFSIZE];
   char *found1;
   char *found2;
-  mode_t oldumask;
+  int oldumask;
 
   filename = get_conf_name(type);
 
@@ -527,7 +527,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
   {
     sendto_one(source_p, ":%s NOTICE %s :Cannot open %s", me.name,
 	       source_p->name, filename);
-    return(-1);
+    return -1;
   }
 
   ircsprintf(temppath, "%s.tmp", filename);
@@ -538,7 +538,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
 	       source_p->name, temppath);
     fbclose(in);
     umask(oldumask);
-    return(-1);
+    return -1;
   }
   umask(oldumask);
   oldumask = umask(0);
@@ -548,7 +548,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
     if ((*buf == '\0') || (*buf == '#'))
     {
       if(flush_write(source_p, in, out, buf, temppath) < 0)
-	return(-1);
+	return -1;
     }
     
     /* Keep copy of original line, getfield trashes line as it goes */
@@ -557,7 +557,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
     if ((found1 = getfield(buff)) == NULL)
     {
       if(flush_write(source_p, in, out, buf, temppath) < 0)
-	return(-1);
+	return -1;
       continue;
     }
 
@@ -566,7 +566,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
       if ((found2 = getfield(NULL)) == NULL)
       {
 	if(flush_write(source_p, in, out, buf, temppath) < 0)
-	  return(-1);
+	  return -1;
 	continue;
       }
       
@@ -578,7 +578,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
       else
       {
 	if(flush_write(source_p, in, out, buf, temppath) < 0)
-	  return(-1);
+	  return -1;
 	continue;
       }
     }
@@ -592,7 +592,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
       else
       {
 	if(flush_write(source_p, in, out, buf, temppath) < 0)
-	  return(-1);
+	  return -1;
 	continue;
       }
     }
@@ -610,7 +610,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
   {
     if(temppath != NULL)
       (void)unlink(temppath);
-    return(0);
+    return 0;
   }
   else
   {
@@ -627,7 +627,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
      */
 
     rehash(0);
-    return(1);
+    return 1;
   }
 }
 
@@ -667,5 +667,5 @@ flush_write(struct Client *source_p, FBFILE *in, FBFILE* out,
     fbclose(out);
   }
 
-  return(error_on_write);
+  return (error_on_write);
 }
