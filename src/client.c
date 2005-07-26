@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.454 2005/07/26 03:33:04 adx Exp $
+ *  $Id: client.c,v 7.455 2005/07/26 14:13:10 adx Exp $
  */
 
 #include "stdinc.h"
@@ -740,8 +740,11 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
   }
   else if (IsClient(source_p))
   {
-    source_p->from->serv->dep_users--;
-    assert(source_p->from->serv->dep_users >= 0);
+    if (!MyConnect(source_p))
+    {
+      source_p->from->serv->dep_users--;
+      assert(source_p->from->serv->dep_users >= 0);
+    }
 
     if (source_p->servptr->serv != NULL)
       dlinkDelete(&source_p->lnode, &source_p->servptr->serv->users);
