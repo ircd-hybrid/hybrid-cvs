@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.540 2005/07/27 04:37:17 adx Exp $
+ *  $Id: s_conf.c,v 7.541 2005/07/27 05:08:35 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1292,7 +1292,8 @@ garbage_collect_ip_entries(void)
     {
       next_ptr = ptr->next;
 
-      if (ptr->count == 0)
+      if (ptr->count == 0 &&
+          (CurrentTime - ptr->last_attempt) >= ConfigFileEntry.throttle_time)
       {
 	if (last_ptr != NULL)
 	  last_ptr->next = ptr->next;
