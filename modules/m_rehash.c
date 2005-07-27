@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rehash.c,v 1.52 2005/06/07 22:49:45 db Exp $
+ *  $Id: m_rehash.c,v 1.53 2005/07/27 04:37:15 adx Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&rehash_msgtab);
 }
 
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 
 /*
@@ -80,6 +80,7 @@ mo_rehash(struct Client *client_p, struct Client *source_p,
 
   if (parc > 1)
   {
+#ifndef _WIN32
     if (irccmp(parv[1], "DNS") == 0)
     {
       sendto_one(source_p, form_str(RPL_REHASHING), me.name, parv[0], "DNS");
@@ -89,7 +90,9 @@ mo_rehash(struct Client *client_p, struct Client *source_p,
                                and close/re-open res socket */
       found = 1;
     }
-    else if (irccmp(parv[1], "MOTD") == 0)
+    else
+#endif
+    if (irccmp(parv[1], "MOTD") == 0)
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "%s is forcing re-reading of MOTD file",
@@ -114,7 +117,11 @@ mo_rehash(struct Client *client_p, struct Client *source_p,
     }
     else
     {
+#ifdef _WIN32
+      sendto_one(source_p, ":%s NOTICE %s :rehash one of :MOTD OMOTD",
+#else
       sendto_one(source_p, ":%s NOTICE %s :rehash one of :DNS MOTD OMOTD",
+#endif
                  me.name, source_p->name);
       return;
     }

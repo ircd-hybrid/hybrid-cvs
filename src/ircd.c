@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.348 2005/07/26 21:01:15 adx Exp $
+ *  $Id: ircd.c,v 7.349 2005/07/27 04:37:17 adx Exp $
  */
 
 #include "stdinc.h"
@@ -663,15 +663,15 @@ main(int argc, char *argv[])
   me.id[0] = '\0';
   init_uid();
   init_auth();          /* Initialise the auth code */
+#ifndef _WIN32
   init_resolver();      /* Needs to be setup before the io loop */
+#endif
   initialize_server_capabs();   /* Set up default_server_capabs */
   initialize_global_set_options();
   init_channels();
 
   if (ServerInfo.name == NULL)
   {
-    fprintf(stderr,
-      "ERROR: No server name specified in serverinfo block.\n");
     ilog(L_CRIT, "No server name specified in serverinfo block.");
     exit(EXIT_FAILURE);
   }
@@ -680,8 +680,6 @@ main(int argc, char *argv[])
   /* serverinfo{} description must exist.  If not, error out.*/
   if (ServerInfo.description == NULL)
   {
-    fprintf(stderr,
-      "ERROR: No server description specified in serverinfo block.\n");
     ilog(L_CRIT,
       "ERROR: No server description specified in serverinfo block.");
     exit(EXIT_FAILURE);
@@ -745,4 +743,3 @@ main(int argc, char *argv[])
   io_loop();
   return(0);
 }
-

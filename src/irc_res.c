@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.44 2005/07/26 23:44:16 adx Exp $
+ * $Id: irc_res.c,v 7.45 2005/07/27 04:37:17 adx Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -88,17 +88,17 @@ struct reslist
   time_t timeout;
   struct irc_ssaddr addr;
   char *name;
-  const struct DNSQuery *query;  /* query callback for this request */
+  struct DNSQuery *query;  /* query callback for this request */
 };
 
 static fde_t ResolverFileDescriptor;
 static dlink_list request_list    = { NULL, NULL, 0 };
 
 static void rem_request(struct reslist *request);
-static struct reslist *make_request(const struct DNSQuery *query);
-static void do_query_name(const struct DNSQuery *query,
+static struct reslist *make_request(struct DNSQuery *query);
+static void do_query_name(struct DNSQuery *query,
                           const char* name, struct reslist *request, int);
-static void do_query_number(const struct DNSQuery *query,
+static void do_query_number(struct DNSQuery *query,
                             const struct irc_ssaddr *,
                             struct reslist *request);
 static void query_name(const char *name, int query_class, int query_type, 
@@ -174,6 +174,58 @@ res_ourserver(const struct irc_ssaddr *inp)
   }
 
   return(0);
+}
+
+/*
+ * timeout_query_list - Remove queries from the list which have been 
+ * there too long without being resolved.
+ */
+static time_t
+timeout_query_list(time_t now)
+{
+  dlink_node *ptr;
+  dlink_node *next_ptr;
+  struct reslist *request;
+  time_t next_time = 0;
+  time_t timeout   = 0;
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, request_list.head)
+  {
+    request = ptr->data;
+    timeout = request->sentat + request->timeout;
+
+    if (now >= timeout)
+    {
+      if (--request->retries <= 0)
+      {
+        (*request->query->callback)(request->query->ptr, NULL);
+        rem_request(request);
+        continue;
+      }
+      else
+      {
+        request->sentat = now;
+        request->timeout += request->timeout;
+        resend_query(request);
+      }
+    }
+
+    if ((next_time == 0) || timeout < next_time)
+    {
+      next_time = timeout;
+    }
+  }
+
+  return((next_time > now) ? next_time : (now + AR_TTL));
+}
+
+/*
+ * timeout_resolver - check request list
+ */
+static void
+timeout_resolver(void *notused)
+{
+  timeout_query_list(CurrentTime);
 }
 
 /*
@@ -263,7 +315,7 @@ rem_request(struct reslist *request)
  * make_request - Create a DNS request record for the server.
  */
 static struct reslist *
-make_request(const struct DNSQuery* query)
+make_request(struct DNSQuery* query)
 {
   struct reslist *request;
 
@@ -280,58 +332,6 @@ make_request(const struct DNSQuery* query)
 
   dlinkAdd(request, &request->node, &request_list);
   return(request);
-}
-
-/*
- * timeout_query_list - Remove queries from the list which have been 
- * there too long without being resolved.
- */
-static time_t
-timeout_query_list(time_t now)
-{
-  dlink_node *ptr;
-  dlink_node *next_ptr;
-  struct reslist *request;
-  time_t next_time = 0;
-  time_t timeout   = 0;
-
-  DLINK_FOREACH_SAFE(ptr, next_ptr, request_list.head)
-  {
-    request = ptr->data;
-    timeout = request->sentat + request->timeout;
-
-    if (now >= timeout)
-    {
-      if (--request->retries <= 0)
-      {
-        (*request->query->callback)(request->query->ptr, NULL);
-        rem_request(request);
-        continue;
-      }
-      else
-      {
-        request->sentat = now;
-        request->timeout += request->timeout;
-        resend_query(request);
-      }
-    }
-
-    if ((next_time == 0) || timeout < next_time)
-    {
-      next_time = timeout;
-    }
-  }
-
-  return((next_time > now) ? next_time : (now + AR_TTL));
-}
-
-/*
- * timeout_resolver - check request list
- */
-void
-timeout_resolver(void *notused)
-{
-  timeout_query_list(CurrentTime);
 }
 
 /*
@@ -411,7 +411,7 @@ find_id(int id)
  *
  */
 void
-gethost_byname_type(const char *name, const struct DNSQuery *query, int type)
+gethost_byname_type(const char *name, struct DNSQuery *query, int type)
 {
   assert(name != 0);
   do_query_name(query, name, NULL, type);
@@ -421,7 +421,7 @@ gethost_byname_type(const char *name, const struct DNSQuery *query, int type)
  * gethost_byname - wrapper for _type - send T_AAAA first if IPV6 supported
  */
 void
-gethost_byname(const char *name, const struct DNSQuery *query)
+gethost_byname(const char *name, struct DNSQuery *query)
 {
 #ifdef IPV6
   gethost_byname_type(name, query, T_AAAA);
@@ -434,7 +434,7 @@ gethost_byname(const char *name, const struct DNSQuery *query)
  * gethost_byaddr - get host name from address
  */
 void
-gethost_byaddr(const struct irc_ssaddr *addr, const struct DNSQuery *query)
+gethost_byaddr(const struct irc_ssaddr *addr, struct DNSQuery *query)
 {
   do_query_number(query, addr, NULL);
 }
@@ -443,7 +443,7 @@ gethost_byaddr(const struct irc_ssaddr *addr, const struct DNSQuery *query)
  * do_query_name - nameserver lookup name
  */
 static void
-do_query_name(const struct DNSQuery *query, const char *name,
+do_query_name(struct DNSQuery *query, const char *name,
               struct reslist *request, int type)
 {
   char host_name[HOSTLEN + 1];
@@ -475,7 +475,7 @@ do_query_name(const struct DNSQuery *query, const char *name,
  * do_query_number - Use this to do reverse IP# lookups.
  */
 static void
-do_query_number(const struct DNSQuery *query, const struct irc_ssaddr *addr,
+do_query_number(struct DNSQuery *query, const struct irc_ssaddr *addr,
                 struct reslist *request)
 {
   char ipbuf[128];
@@ -552,10 +552,6 @@ query_name(const char *name, int query_class, int type,
     HEADER *header = (HEADER *)buf;
 #ifndef HAVE_LRAND48
     int k = 0;
-  #ifdef _WIN32
-    SYSTEMTIME st;
-    FILETIME ft;
-  #endif
     struct timeval tv;
 #endif
     /*
@@ -570,13 +566,7 @@ query_name(const char *name, int query_class, int type,
       header->id = (header->id + lrand48()) & 0xffff;
     } while (find_id(header->id));
 #else
-  #ifdef _WIN32
-    GetSystemTime(&st);
-    SystemTimeToFileTime(&st, &ft);
-    tv.tv_usec = ft.dwLowDateTime;
-  #else
     gettimeofday(&tv, NULL);
-  #endif
     do
     {
       header->id = (header->id + k + tv.tv_usec) & 0xffff;

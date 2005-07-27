@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.4 2005/07/26 23:44:17 adx Exp $
+ *  $Id: s_bsd_win32.c,v 7.5 2005/07/27 04:37:17 adx Exp $
  */
 
 #include "stdinc.h"
@@ -27,12 +27,15 @@
 #include "ircd.h"
 #include "s_bsd.h"
 #include "common.h"
+#include "client.h"
 
 #define WM_SOCKET  (WM_USER + 0)
-#define WM_REHASH  (WM_USER + 1)
-#define WM_REMOTD  (WM_USER + 2)
+#define WM_DNS     (WM_USER + 1)
+#define WM_REHASH  (WM_USER + 0x100)
+#define WM_REMOTD  (WM_USER + 0x101)
 
 static HWND wndhandle;
+static dlink_list dns_queries = {NULL, NULL, 0};
 
 extern int main(int, char *[]);
 
@@ -111,6 +114,53 @@ hybrid_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             if (hdl == NULL)
 	      update_winsock_events(F);
         }
+
+      return 0;
+    }
+
+    case WM_DNS:
+    {
+      dlink_node *ptr;
+
+      DLINK_FOREACH(ptr, dns_queries.head)
+        if (((struct DNSQuery *) ptr->data)->handle == wParam)
+	{
+	  struct DNSQuery *query = ptr->data;
+	  struct DNSReply *reply = NULL;
+
+          dlinkDelete(&query->node, &dns_queries);
+
+          if (WSAGETASYNCERROR(lParam) == 0)
+	  {
+	    struct hostent *h = (struct hostent *) &query->reply;
+	    static struct DNSReply _reply;
+	    reply = &_reply;
+
+            reply->h_name = h->h_name;
+	    reply->addr.ss.ss_family = h->h_addrtype;
+
+	    switch (h->h_addrtype)
+	    {
+	      case AF_INET:
+	        memcpy(&((struct sockaddr_in *) &reply->addr)->sin_addr,
+		       h->h_addr_list[0], h->h_length);
+		break;
+
+#ifdef IPV6
+              case AF_INET6:
+	        memcpy(&((struct sockaddr_in6 *) &reply->addr)->sin6_addr,
+		       h->h_addr_list[0], h->h_length);
+		break;
+#endif
+
+              default:  /* shouldn't happen */
+	        reply = NULL;
+	    }
+	  }
+
+          query->callback(query->ptr, reply);
+	  return 0;
+	}
 
       return 0;
     }
@@ -226,4 +276,59 @@ comm_select(void)
     exit(1);
 
   DispatchMessage(&msg);
+}
+
+/* This is our win32 super-light resolver ;) */
+
+void
+delete_resolver_queries(const struct DNSQuery *query)
+{
+  WSACancelAsyncRequest(query->handle);
+  dlinkDelete(&query->node, &dns_queries);
+}
+
+void
+gethost_byname_type(const char *name, struct DNSQuery *query, int type)
+{
+  gethost_byname(name, query);
+}
+
+void
+gethost_byname(const char *name, struct DNSQuery *query)
+{
+  query->handle = WSAAsyncGetHostByName(wndhandle, WM_DNS, name, query->reply,
+    sizeof(query->reply));
+
+  if (!query->handle)
+    query->callback(query->ptr, NULL);
+  else
+    dlink_add(&query->node, &dns_queries);
+}
+
+void
+gethost_byaddr(const struct irc_ssaddr *addr, struct DNSQuery *query)
+{
+  query->handle = WSAAsyncGetHostByAddr(
+    wndhandle, WM_DNS,
+#ifdef IPV6
+    addr.ss.ss_family == AF_INET6 ? &((struct sockaddr_in6*)addr)->sin6_addr) :
+#endif
+    &((struct sockaddr_in *) addr)->sin_addr,
+#ifdef IPV6
+    addr.ss.ss_family == AF_INET6 ? sizeof(struct in6_addr) :
+#endif
+    sizeof(struct in_addr),
+    addr->ss.ss_family, query->reply, sizeof(query->reply)
+  );
+
+  if (!query->handle)
+    query->callback(query->ptr, NULL);
+  else
+    dlinkAdd(&query->node, &dns_queries);
+}
+
+void
+report_dns_servers(struct Client *source_p)
+{
+  /* todo */
 }

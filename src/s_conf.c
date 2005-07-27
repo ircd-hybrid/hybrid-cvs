@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.539 2005/07/26 23:40:29 db Exp $
+ *  $Id: s_conf.c,v 7.540 2005/07/27 04:37:17 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1878,7 +1878,9 @@ rehash(int sig)
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "Got signal SIGHUP, reloading ircd.conf file");
 
+#ifndef _WIN32
   restart_resolver();
+#endif
   /* don't close listeners until we know we can go ahead with the rehash */
 
   /* Check to see if we magically got(or lost) IPv6 support */
