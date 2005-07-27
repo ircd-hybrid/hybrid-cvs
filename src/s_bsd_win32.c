@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.7 2005/07/27 05:05:04 adx Exp $
+ *  $Id: s_bsd_win32.c,v 7.8 2005/07/27 16:56:30 adx Exp $
  */
 
 #include "stdinc.h"
@@ -29,12 +29,7 @@
 #include "common.h"
 #include "client.h"
 
-#define WM_SOCKET  (WM_USER + 0)
-#define WM_DNS     (WM_USER + 1)
-#define WM_REHASH  (WM_USER + 0x100)
-#define WM_REMOTD  (WM_USER + 0x101)
-
-static HWND wndhandle;
+HWND wndhandle;
 static dlink_list dns_queries = {NULL, NULL, 0};
 
 extern int main(int, char *[]);

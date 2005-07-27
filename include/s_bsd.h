@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.53 2005/07/27 01:11:08 adx Exp $
+ *  $Id: s_bsd.h,v 7.54 2005/07/27 16:56:28 adx Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -85,6 +85,14 @@ extern void remove_ipv6_mapping(struct irc_ssaddr *);
 #ifdef USE_SIGIO
 void do_sigio(int);
 void setup_sigio_fd(int);
+#endif
+
+#ifdef _WIN32
+#define WM_SOCKET  (WM_USER + 0)
+#define WM_DNS     (WM_USER + 1)
+#define WM_REHASH  (WM_USER + 0x100)
+#define WM_REMOTD  (WM_USER + 0x101)
+extern HWND wndhandle;
 #endif
 
 #endif /* INCLUDED_s_bsd_h */

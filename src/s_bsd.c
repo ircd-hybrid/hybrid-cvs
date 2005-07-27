@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.230 2005/07/27 01:11:10 adx Exp $
+ *  $Id: s_bsd.c,v 7.231 2005/07/27 16:56:29 adx Exp $
  */
 
 #include "stdinc.h"
@@ -209,6 +209,8 @@ set_non_blocking(int fd)
   int res;
 #ifdef _WIN32
   u_long nonb = 1;
+
+  WSAAsyncSelect(fd, wndhandle, WM_SOCKET, 0);
 
   res = ioctlsocket(fd, FIONBIO, &nonb);
   if (res != 0)
