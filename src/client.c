@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.456 2005/07/26 21:24:52 adx Exp $
+ *  $Id: client.c,v 7.457 2005/07/27 01:11:10 adx Exp $
  */
 
 #include "stdinc.h"
@@ -141,10 +141,8 @@ make_client(struct Client *from)
  * inputs	- pointer to client
  * output	- NONE
  * side effects	- client pointed to has its memory freed
- *
- * Note, this is now global to be consistent with the API for make_client
  */
-void
+static void
 free_client(struct Client *client_p)
 {
   assert(client_p != NULL);
@@ -1105,7 +1103,7 @@ exit_client(
      * read/write.
      */
     if (IsClosing(source_p))
-      return(0);
+      return (0);
 
     SetClosing(source_p);
 

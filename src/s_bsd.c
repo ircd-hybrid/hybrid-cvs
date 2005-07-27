@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.229 2005/07/27 00:24:05 adx Exp $
+ *  $Id: s_bsd.c,v 7.230 2005/07/27 01:11:10 adx Exp $
  */
 
 #include "stdinc.h"
@@ -377,7 +377,7 @@ ssl_handshake(int fd, struct Client *client_p)
  * any client list yet.
  */
 void
-add_connection(struct Listener* listener, int fd, void *ssl)
+add_connection(struct Listener* listener, int fd)
 {
   struct Client *new_client;
   socklen_t len = sizeof(struct irc_ssaddr);
@@ -395,7 +395,11 @@ add_connection(struct Listener* listener, int fd, void *ssl)
     report_error(L_ALL, "Failed in adding new connection %s :%s", 
             get_listener_name(listener), errno);
     ServerStats->is_ref++;
+#ifdef _WIN32
+    closesocket(fd);
+#else
     close(fd);
+#endif
     return;
   }
 
@@ -406,7 +410,8 @@ add_connection(struct Listener* listener, int fd, void *ssl)
 #endif
   new_client = make_client(NULL);
   fd_open(&new_client->localClient->fd, fd, 1,
-          ssl ? "Incoming SSL connection" : "Incoming connection", ssl);
+          (listener->flags & LISTENER_SSL) ?
+	  "Incoming SSL connection" : "Incoming connection");
   memset(&new_client->localClient->ip, 0, sizeof(struct irc_ssaddr));
 
   /* 
@@ -424,13 +429,13 @@ add_connection(struct Listener* listener, int fd, void *ssl)
   *new_client->host = '\0';
 #ifdef IPV6
   if (*new_client->sockhost == ':')
-    strlcat(new_client->host, "0",HOSTLEN+1);
+    strlcat(new_client->host, "0", HOSTLEN+1);
 
   if (new_client->localClient->aftype == AF_INET6 && 
       ConfigFileEntry.dot_in_ip6_addr == 1)
   {
     strlcat(new_client->host, new_client->sockhost,HOSTLEN+1);
-    strlcat(new_client->host, ".",HOSTLEN+1);
+    strlcat(new_client->host, ".", HOSTLEN+1);
   } else
 #endif
     strlcat(new_client->host, new_client->sockhost,HOSTLEN+1);
@@ -443,8 +448,20 @@ add_connection(struct Listener* listener, int fd, void *ssl)
     report_error(L_ALL, OPT_ERROR_MSG, get_client_name(new_client, SHOW_IP), errno);
 
 #ifdef HAVE_LIBCRYPTO
-  if (ssl)
-    ssl_handshake(fd, new_client);
+  if ((listener->flags & LISTENER_SSL))
+  {
+    if ((new_client->localClient->fd.ssl = SSL_new(ServerInfo.ctx)) == NULL)
+    {
+      ilog(L_CRIT, "SSL_new() ERROR! -- %s",
+           ERR_error_string(ERR_get_error(), NULL));
+
+      SetDead(new_client);
+      exit_client(new_client, new_client, new_client, "SSL_new failed");
+      return;
+    }
+
+    SSL_set_fd(new_client->localClient->fd.ssl, fd);
+  }
   else
 #endif
     start_auth(new_client);
@@ -797,7 +814,7 @@ comm_open(fde_t *F, int family, int sock_type, int proto, const char *note)
   }
 
   /* Next, update things in our fd tracking */
-  fd_open(F, fd, 1, note, NULL);
+  fd_open(F, fd, 1, note);
   return 0;
 }
 
@@ -809,7 +826,7 @@ comm_open(fde_t *F, int family, int sock_type, int proto, const char *note)
  * fd_open (this function no longer does it).
  */
 int
-comm_accept(struct Listener *lptr, struct irc_ssaddr *pn, void **ssl)
+comm_accept(struct Listener *lptr, struct irc_ssaddr *pn)
 {
   int newfd;
   socklen_t addrlen = sizeof(struct irc_ssaddr);
@@ -843,24 +860,6 @@ comm_accept(struct Listener *lptr, struct irc_ssaddr *pn, void **ssl)
     close(newfd);
     return -1;
   }
-
-#ifdef HAVE_LIBCRYPTO
-  if ((lptr->flags & LISTENER_SSL) && ServerInfo.ctx)
-  {
-    if ((*ssl = SSL_new(ServerInfo.ctx)) == NULL)
-    {
-      ilog(L_CRIT, "SSL_new() ERROR! -- %s",
-           ERR_error_string(ERR_get_error(), NULL));
-
-      close(newfd);
-      return -1;
-    }
-
-    SSL_set_fd(*ssl, newfd);
-  }
-  else
-#endif
-    *ssl = NULL;
 
   /* .. and return */
   return newfd;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.52 2005/07/26 21:26:37 adx Exp $
+ *  $Id: s_bsd.h,v 7.53 2005/07/27 01:11:08 adx Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -48,7 +48,7 @@ extern int readcalls;
 extern const char* const NONB_ERROR_MSG; 
 extern const char* const SETBUF_ERROR_MSG;
 
-extern void add_connection(struct Listener *, int, void *);
+extern void add_connection(struct Listener *, int);
 extern void close_connection(struct Client *);
 extern void close_standard_fds(void);
 extern int  connect_server(struct AccessItem *, struct Client *,
@@ -69,7 +69,7 @@ extern void comm_connect_tcp(fde_t *, const char *, u_short,
 extern const char * comm_errstr(int status);
 extern int comm_open(fde_t *F, int family, int sock_type, int proto,
            	     const char *note);
-extern int comm_accept(struct Listener *, struct irc_ssaddr *pn, void **ssl);
+extern int comm_accept(struct Listener *, struct irc_ssaddr *pn);
 
 /* These must be defined in the network IO loop code of your choice */
 extern void comm_setselect(fde_t *, unsigned int, PF *, void *, time_t);

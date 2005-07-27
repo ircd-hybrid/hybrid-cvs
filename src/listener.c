@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.100 2005/07/26 23:44:16 adx Exp $
+ *  $Id: listener.c,v 7.101 2005/07/27 01:11:10 adx Exp $
  */
 
 #include "stdinc.h"
@@ -385,7 +385,6 @@ accept_connection(fde_t *pfd, void *data)
   int fd;
   int pe;
   struct Listener *listener = data;
-  void *ssl;
 
   memset(&sai, 0, sizeof(sai));
   memset(&addr, 0, sizeof(addr));
@@ -404,7 +403,7 @@ accept_connection(fde_t *pfd, void *data)
    * point, just assume that connections cannot
    * be accepted until some old is closed first.
    */
-  while ((fd = comm_accept(listener, &sai, &ssl)) != -1)
+  while ((fd = comm_accept(listener, &sai)) != -1)
   {
     memcpy(&addr, &sai, sizeof(struct irc_ssaddr));
 
@@ -424,9 +423,13 @@ accept_connection(fde_t *pfd, void *data)
         last_oper_notice = CurrentTime;
       }
 
-      if (!ssl)
+      if (!(listener->flags & LISTENER_SSL))
         send(fd, "ERROR :All connections in use\r\n", 32, 0);
+#ifdef _WIN32
+      closesocket(fd);
+#else
       close(fd);
+#endif
       break;    /* jump out and re-register a new io request */
     }
 
@@ -435,7 +438,7 @@ accept_connection(fde_t *pfd, void *data)
     if ((pe = conf_connect_allowed(&addr, sai.ss.ss_family)) != 0)
     {
       ServerStats->is_ref++;
-      if (!ssl)
+      if (!(listener->flags & LISTENER_SSL))
         switch (pe)
         {
           case BANNED_CLIENT:
@@ -446,12 +449,16 @@ accept_connection(fde_t *pfd, void *data)
             break;
         }
 
+#ifdef _WIN32
+      closesocket(fd);
+#else
       close(fd);
+#endif
       continue;    /* drop the one and keep on clearing the queue */
     }
 
     ServerStats->is_ac++;
-    add_connection(listener, fd, ssl);
+    add_connection(listener, fd);
   }
 
   /* Re-register a new IO request for the next accept .. */

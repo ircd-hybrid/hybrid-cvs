@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.421 2005/07/27 00:24:05 adx Exp $
+ *  $Id: s_serv.c,v 7.422 2005/07/27 01:11:10 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1472,11 +1472,11 @@ fork_server(struct Client *server)
     close(slink_fds[1][0][1]);
 
     assert(server->localClient);
-    fd_open(&server->localClient->ctrlfd, slink_fds[0][1][1], 1, NULL, NULL);
-    fd_open(&server->localClient->fd, slink_fds[1][1][1], 1, NULL, NULL);
+    fd_open(&server->localClient->ctrlfd, slink_fds[0][1][1], 1, NULL);
+    fd_open(&server->localClient->fd, slink_fds[1][1][1], 1, NULL);
 #ifndef HAVE_SOCKETPAIR
-    fd_open(&server->localClient->ctrlfd_r, slink_fds[0][1][0], 1, NULL, NULL);
-    fd_open(&server->localClient->fd_r, slink_fds[1][1][0], 1, NULL, NULL);
+    fd_open(&server->localClient->ctrlfd_r, slink_fds[0][1][0], 1, NULL);
+    fd_open(&server->localClient->fd_r, slink_fds[1][1][0], 1, NULL);
 #endif
 
     if (!set_non_blocking(server->localClient->fd.fd))
@@ -1989,7 +1989,8 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
     /* Eek, failure to create the socket */
     report_error(L_ALL,
 		 "opening stream socket to %s: %s", conf->name, errno);
-    free_client(client_p);
+    SetDead(client_p);
+    exit_client(client_p, client_p, client_p, "Connection failed");
     return (0);
   }
 
@@ -2015,7 +2016,8 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
     if (by && IsClient(by) && !MyClient(by))  
       sendto_one(by, ":%s NOTICE %s :Connect to host %s failed.",
 	         me.name, by->name, client_p->name);
-    free_client(client_p);
+    SetDead(client_p);
+    exit_client(client_p, client_p, client_p, "Connection failed");
     return (0);
   }
 

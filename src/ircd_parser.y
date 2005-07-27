@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.408 2005/07/25 04:52:41 adx Exp $
+ *  $Id: ircd_parser.y,v 1.409 2005/07/27 01:11:10 adx Exp $
  */
 
 %{
@@ -1565,6 +1565,14 @@ port_item: NUMBER
 {
   if (ypass == 2)
   {
+    if ((listener_flags & LISTENER_SSL))
+#ifdef HAVE_LIBCRYPTO
+      if (!ServerInfo.ctx)
+#endif
+      {
+        yyerror("SSL not available - port closed");
+	break;
+      }
     add_listener($1, listener_address, listener_flags);
     listener_flags = 0;
   }
@@ -1573,6 +1581,15 @@ port_item: NUMBER
   if (ypass == 2)
   {
     int i;
+
+    if ((listener_flags & LISTENER_SSL))
+#ifdef HAVE_LIBCRYPTO
+      if (!ServerInfo.ctx)
+#endif
+      {
+        yyerror("SSL not available - port closed");
+	break;
+      }
 
     for (i = $1; i <= $3; ++i)
       add_listener(i, listener_address, listener_flags);
