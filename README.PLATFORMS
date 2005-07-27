@@ -17,11 +17,12 @@ x86          gcc              OpenBSD       Joshua Kwan <joshk@triplehelix.org>
 x86          TenDRA           FreeBSD       Stuart Walsh <stu@ipng.org.uk>
 SPARC        Forte C v6,v7    Solaris       Joan Touzet <joant@ieee.org>
 SPARC        gcc              Solaris       Joan Touzet <joant@ieee.org>
-x86          Cygwin gcc       Windows       James LaPlant <slowking50@aol.com> 
 x86          gcc              Linux         Joshua Kwan <joshk@triplehelix.org>
+x86          MS Visual C++    Windows       Piotr Nizynski <adx@irc7.pl>
+x86          Borland C++ 5.5  Windows       Piotr Nizynski <adx@irc7.pl>
 SPARC        gcc              Linux         Aaron Sethman <androsyn@ratbox.org>
 Alpha        cc               Tru64 5.2b    Joshua Kwan <joshk@triplehelix.org>
 PA-RISC 2.0  cc		      HP-UX B.11    Yusuf Iskenderoglu 
 						<uhc0@stud.uni-karlsruhe.de>
 
-$Id: README.PLATFORMS,v 7.27 2004/07/19 00:32:48 michael Exp $
+$Id: README.PLATFORMS,v 7.28 2005/07/27 00:24:01 adx Exp $

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.420 2005/07/26 23:44:17 adx Exp $
+ *  $Id: s_serv.c,v 7.421 2005/07/27 00:24:05 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1472,11 +1472,11 @@ fork_server(struct Client *server)
     close(slink_fds[1][0][1]);
 
     assert(server->localClient);
-    fd_open(&server->localClient->ctrlfd, slink_fds[0][1][1], NULL, NULL);
-    fd_open(&server->localClient->fd, slink_fds[1][1][1], NULL, NULL);
+    fd_open(&server->localClient->ctrlfd, slink_fds[0][1][1], 1, NULL, NULL);
+    fd_open(&server->localClient->fd, slink_fds[1][1][1], 1, NULL, NULL);
 #ifndef HAVE_SOCKETPAIR
-    fd_open(&server->localClient->ctrlfd_r, slink_fds[0][1][0], NULL, NULL);
-    fd_open(&server->localClient->fd_r, slink_fds[1][1][0], NULL, NULL);
+    fd_open(&server->localClient->ctrlfd_r, slink_fds[0][1][0], 1, NULL, NULL);
+    fd_open(&server->localClient->fd_r, slink_fds[1][1][0], 1, NULL, NULL);
 #endif
 
     if (!set_non_blocking(server->localClient->fd.fd))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.41 2005/07/26 03:33:04 adx Exp $
+ *  $Id: fdlist.c,v 7.42 2005/07/27 00:24:05 adx Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -68,7 +68,7 @@ lookup_fd(int fd)
 
 /* Called to open a given filedescriptor */
 void
-fd_open(fde_t *F, int fd, const char *desc, void *ssl)
+fd_open(fde_t *F, int fd, int is_socket, const char *desc, void *ssl)
 {
   unsigned int hashv = hash_fd(fd);
   assert(fd >= 0);
@@ -83,6 +83,7 @@ fd_open(fde_t *F, int fd, const char *desc, void *ssl)
   /* Note: normally we'd have to clear the other flags,
    * but currently F is always cleared before calling us.. */
   F->flags.open = 1;
+  F->flags.is_socket = is_socket;
   F->hnext = fd_hash[hashv];
   fd_hash[hashv] = F;
 
@@ -120,7 +121,12 @@ fd_close(fde_t *F)
   }
 
   /* Unlike squid, we're actually closing the FD here! -- adrian */
-  close(F->fd);
+#ifdef _WIN32
+  if (F->flags.is_socket)
+    closesocket(F->fd);
+  else
+#endif
+    close(F->fd);
   number_fd--;
 #ifdef INVARIANTS
   memset(F, '\0', sizeof(fde_t));

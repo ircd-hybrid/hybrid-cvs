@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.228 2005/07/26 14:24:28 adx Exp $
+ *  $Id: s_bsd.c,v 7.229 2005/07/27 00:24:05 adx Exp $
  */
 
 #include "stdinc.h"
@@ -405,7 +405,7 @@ add_connection(struct Listener* listener, int fd, void *ssl)
   irn.ss_len = len;
 #endif
   new_client = make_client(NULL);
-  fd_open(&new_client->localClient->fd, fd,
+  fd_open(&new_client->localClient->fd, fd, 1,
           ssl ? "Incoming SSL connection" : "Incoming connection", ssl);
   memset(&new_client->localClient->ip, 0, sizeof(struct irc_ssaddr));
 
@@ -797,7 +797,7 @@ comm_open(fde_t *F, int family, int sock_type, int proto, const char *note)
   }
 
   /* Next, update things in our fd tracking */
-  fd_open(F, fd, note, NULL);
+  fd_open(F, fd, 1, note, NULL);
   return 0;
 }
 
