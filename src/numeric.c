@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.c,v 7.26 2003/06/04 06:25:54 michael Exp $
+ *  $Id: numeric.c,v 7.27 2005/07/27 20:43:09 adx Exp $
  */
 
 #include "stdinc.h"
@@ -105,19 +105,6 @@ change_reply(const char *locale, int linecnt, int reply, char *new_reply)
           ilog(L_ERROR, "Too many format symbols (%s.lang, %d)", locale, linecnt);
           return(0);
         }
-      }
-    }
-  }
-
-  for (; *old; old++)
-  {
-    if (*old == '%')
-    {
-      if (!*++old) break;  /* shouldn't happen */
-      if (*old != '%')
-      {
-        ilog(L_ERROR, "Too few format symbols (%s.lang, %d)", locale, linecnt);
-        return(0);
       }
     }
   }
