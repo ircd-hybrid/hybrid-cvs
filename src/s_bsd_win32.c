@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.5 2005/07/27 04:37:17 adx Exp $
+ *  $Id: s_bsd_win32.c,v 7.6 2005/07/27 04:38:52 adx Exp $
  */
 
 #include "stdinc.h"
@@ -302,7 +302,7 @@ gethost_byname(const char *name, struct DNSQuery *query)
   if (!query->handle)
     query->callback(query->ptr, NULL);
   else
-    dlink_add(&query->node, &dns_queries);
+    dlink_add(query, &query->node, &dns_queries);
 }
 
 void
@@ -324,7 +324,7 @@ gethost_byaddr(const struct irc_ssaddr *addr, struct DNSQuery *query)
   if (!query->handle)
     query->callback(query->ptr, NULL);
   else
-    dlinkAdd(&query->node, &dns_queries);
+    dlinkAdd(query, &query->node, &dns_queries);
 }
 
 void
