@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.101 2005/07/27 01:11:10 adx Exp $
+ *  $Id: listener.c,v 7.102 2005/07/27 05:05:04 adx Exp $
  */
 
 #include "stdinc.h"
@@ -413,9 +413,9 @@ accept_connection(fde_t *pfd, void *data)
     if (number_fd >= HARD_FDLIMIT - 10)
     {
       ++ServerStats->is_ref;
-        /*
-         * slow down the whining to opers bit
-         */
+      /*
+       * slow down the whining to opers bit
+       */
       if ((last_oper_notice + 20) <= CurrentTime)
       {
         sendto_realops_flags(UMODE_ALL, L_ALL, "All connections in use. (%s)",

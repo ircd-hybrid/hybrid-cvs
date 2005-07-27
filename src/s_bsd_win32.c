@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.6 2005/07/27 04:38:52 adx Exp $
+ *  $Id: s_bsd_win32.c,v 7.7 2005/07/27 05:05:04 adx Exp $
  */
 
 #include "stdinc.h"
@@ -274,6 +274,8 @@ comm_select(void)
 
   if (!GetMessage(&msg, NULL, 0, 0))
     exit(1);
+
+  set_time();
 
   DispatchMessage(&msg);
 }
