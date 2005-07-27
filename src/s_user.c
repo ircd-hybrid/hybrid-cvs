@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.346 2005/07/26 03:33:05 adx Exp $
+ *  $Id: s_user.c,v 7.347 2005/07/27 20:00:46 michael Exp $
  */
 
 #include <sys/types.h>
@@ -297,6 +297,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
                     const char *nick, const char *username)
 {
   struct AccessItem *aconf;
+  const char *id = NULL;
   char ipaddr[HOSTIPLEN];
   int status;
   dlink_node *ptr;
@@ -306,12 +307,6 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   assert(source_p != NULL);
   assert(MyConnect(source_p));
   assert(source_p->username != username);
-
-  if (source_p == NULL)
-    return -1;
-
-  if (!MyConnect(source_p))
-    return -1;
 
   if (ConfigFileEntry.ping_cookie)
   {
@@ -334,7 +329,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   source_p->localClient->allow_read = MAX_FLOOD_BURST;
 
   if ((status = check_client(client_p, source_p, username)) < 0)
-    return(CLIENT_EXITED);
+    return CLIENT_EXITED;
 
   if (valid_hostname(source_p->host) == 0)
   {
@@ -437,16 +432,11 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   if (IsDead(client_p))
     return CLIENT_EXITED;
 
-  if (source_p->id[0] == '\0') 
-  {
-    const char *id = uid_get();
+  while (hash_find_id((id = uid_get())))
+    ;
 
-    while (hash_find_id(id))
-      id = uid_get();
-
-    strlcpy(source_p->id, id, sizeof(source_p->id));
-    hash_add_id(source_p);
-  }
+  strlcpy(source_p->id, id, sizeof(source_p->id));
+  hash_add_id(source_p);
 
   hd.client_p = client_p;
   hd.source_p = source_p;
