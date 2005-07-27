@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.347 2005/07/27 20:00:46 michael Exp $
+ *  $Id: s_user.c,v 7.348 2005/07/27 20:35:45 adx Exp $
  */
 
 #include <sys/types.h>
@@ -1058,6 +1058,9 @@ send_umode(struct Client *client_p, struct Client *source_p,
   unsigned int i;
   unsigned int flag;
   char *m = umode_buf;
+
+  if (client_p != source_p && IsOperHiddenAdmin(source_p))
+    sendmask &= ~UMODE_ADMIN;
 
   /* build a string in umode_buf to represent the change in the user's
    * mode between the new (source_p->umodes) and 'old'.
