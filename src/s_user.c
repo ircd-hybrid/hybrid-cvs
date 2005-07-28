@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.331 2005/07/09 13:55:08 michael Exp $
+ *  $Id: s_user.c,v 7.331.2.1 2005/07/28 04:14:09 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1192,7 +1192,8 @@ send_umode_out(struct Client *client_p, struct Client *source_p,
   char buf[BUFSIZE];
   dlink_node *ptr;
 
-  send_umode(NULL, source_p, old, SEND_UMODES, buf);
+  send_umode(NULL, source_p, old, IsOperHiddenAdmin(source_p) ?
+             SEND_UMODES & ~UMODE_ADMIN : SEND_UMODES, buf);
 
   DLINK_FOREACH(ptr, serv_list.head)
   {
@@ -1204,7 +1205,8 @@ send_umode_out(struct Client *client_p, struct Client *source_p,
           (target_p->localClient->serverMask &
            source_p->lazyLinkClientExists))
         sendto_one(target_p, ":%s MODE %s :%s",
-                   ID_or_name(source_p, target_p), ID_or_name(source_p, target_p), buf);
+                   ID_or_name(source_p, target_p),
+		   ID_or_name(source_p, target_p), buf);
     }
   }
 
