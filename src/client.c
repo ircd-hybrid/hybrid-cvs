@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.457 2005/07/27 01:11:10 adx Exp $
+ *  $Id: client.c,v 7.458 2005/07/28 16:26:39 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1110,13 +1110,7 @@ exit_client(
     if (IsIpHash(source_p))
       remove_one_ip(&source_p->localClient->ip);
 
-    if (source_p->localClient->dns_query != NULL)
-    {
-      delete_resolver_queries(source_p->localClient->dns_query);
-      source_p->localClient->dns_query = NULL;
-    }
-
-    delete_identd_queries(source_p);
+    delete_auth(source_p);
 
     /* This source_p could have status of one of STAT_UNKNOWN, STAT_CONNECTING
      * STAT_HANDSHAKE or STAT_UNKNOWN

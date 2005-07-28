@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.149 2005/07/27 04:54:58 adx Exp $
+ *  $Id: s_auth.c,v 7.150 2005/07/28 16:26:39 adx Exp $
  */
 
 /*
@@ -157,8 +157,7 @@ auth_dns_callback(void *vptr, struct DNSReply *reply)
 {
   struct AuthRequest *auth = (struct AuthRequest *)vptr;
 
-  if (IsDNSPending(auth))
-    dlinkDelete(&auth->dns_node, &auth_doing_dns_list);
+  dlinkDelete(&auth->dns_node, &auth_doing_dns_list);
   ClearDNSPending(auth);
 
   if (reply != NULL)
@@ -224,8 +223,7 @@ auth_error(struct AuthRequest *auth)
 
   fd_close(&auth->fd);
 
-  if (IsAuthPending(auth))
-    dlinkDelete(&auth->ident_node, &auth_doing_ident_list);
+  dlinkDelete(&auth->ident_node, &auth_doing_ident_list);
   ClearAuth(auth);
 
   sendheader(auth->client, REPORT_FAIL_ID);
@@ -273,6 +271,7 @@ start_auth_query(struct AuthRequest *auth)
     sendto_realops_flags(UMODE_ALL, L_ALL,"Can't allocate fd for auth on %s",
         get_client_name(auth->client, SHOW_IP));
     fd_close(&auth->fd);
+    ++ServerStats->is_abad;
     return 0;
   }
 
@@ -300,7 +299,8 @@ start_auth_query(struct AuthRequest *auth)
 #endif
   localaddr.ss_port = htons(0);
 
-  SetAuthConnect(auth);
+  SetDoingAuth(auth);
+  dlinkAdd(auth, &auth->ident_node, &auth_doing_ident_list);
 
   comm_connect_tcp(&auth->fd, auth->client->sockhost, 113, 
       (struct sockaddr *)&localaddr, localaddr.ss_len, auth_connect_callback, 
@@ -387,9 +387,6 @@ start_auth(struct Client *client)
 
   assert(client != NULL);
 
-  if (client == NULL)
-    return;
-
   auth = make_auth_request(client);
 
   client->localClient->dns_query = MyMalloc(sizeof(struct DNSQuery));
@@ -422,19 +419,17 @@ timeout_auth_queries_event(void *notused)
   {
     auth = ptr->data;
 
-    if (auth->timeout < CurrentTime)
+    if (auth->timeout <= CurrentTime)
     {
-      if (auth->fd.flags.open)
-	fd_close(&auth->fd);
+      fd_close(&auth->fd);
 
-      if (IsDoingAuth(auth))
-	sendheader(auth->client, REPORT_FAIL_ID);
+      ++ServerStats->is_abad;
+      sendheader(auth->client, REPORT_FAIL_ID);
 
       if (IsDNSPending(auth))
       {
 	struct Client *client_p = auth->client;
 
-	ClearDNSPending(auth);
 	dlinkDelete(&auth->dns_node, &auth_doing_dns_list);
 	if (client_p->localClient->dns_query != NULL)
         {
@@ -444,12 +439,11 @@ timeout_auth_queries_event(void *notused)
 	auth->client->localClient->dns_query = NULL;
 	sendheader(client_p, REPORT_FAIL_DNS);
       }
+
       ilog(L_INFO, "DNS/AUTH timeout %s",
 	   get_client_name(auth->client, SHOW_IP));
 
-      auth->client->since = CurrentTime;
-      if (IsAuthPending(auth))
-	dlinkDelete(&auth->ident_node, &auth_doing_ident_list);
+      dlinkDelete(&auth->ident_node, &auth_doing_ident_list);
       release_auth_client(auth->client);
       MyFree(auth);
     }
@@ -523,9 +517,6 @@ auth_connect_callback(fde_t *fd, int error, void *data)
     auth_error(auth);
     return;
   }
-  ClearAuthConnect(auth);
-  SetAuthPending(auth);
-  dlinkAdd(auth, &auth->ident_node, &auth_doing_ident_list);
   read_auth_reply(&auth->fd, auth);
 }
 
@@ -583,8 +574,7 @@ read_auth_reply(fde_t *fd, void *data)
 
   fd_close(fd);
 
-  if (IsAuthPending(auth))
-    dlinkDelete(&auth->ident_node, &auth_doing_ident_list);  
+  dlinkDelete(&auth->ident_node, &auth_doing_ident_list);  
   ClearAuth(auth);
 
   if (s == NULL)
@@ -607,15 +597,35 @@ read_auth_reply(fde_t *fd, void *data)
 }
 
 /*
- * delete_identd_queries()
- *
+ * delete_auth()
  */
 void 
-delete_identd_queries(struct Client *target_p)
+delete_auth(struct Client *target_p)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
   struct AuthRequest *auth;
+
+  if (!IsUnknown(target_p))
+    return;
+
+  if (target_p->localClient->dns_query != NULL)
+    DLINK_FOREACH_SAFE(ptr, next_ptr, auth_doing_dns_list.head)
+    {
+      auth = ptr->data;
+
+      if (auth->client == target_p)
+      {
+        delete_resolver_queries(target_p->localClient->dns_query);
+
+        dlinkDelete(&auth->dns_node, &auth_doing_dns_list);
+        if (!IsDoingAuth(auth))
+        {
+          MyFree(auth);
+          return;
+        }
+      }
+    }
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, auth_doing_ident_list.head)
   {
@@ -623,15 +633,10 @@ delete_identd_queries(struct Client *target_p)
 
     if (auth->client == target_p)
     {
-      if (auth->fd.flags.open)
-        fd_close(&auth->fd);
+      fd_close(&auth->fd);
 
-      if (IsAuthPending(auth))
-	dlinkDelete(&auth->ident_node, &auth_doing_ident_list);
-#ifdef XXX
-      if (!IsDNSPending(auth))
-#endif
-	MyFree(auth);
+      dlinkDelete(&auth->ident_node, &auth_doing_ident_list);
+      MyFree(auth);
     }
   }
 }
