@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.439 2005/07/28 02:03:45 adx Exp $
+ * \version $Id: channel.c,v 7.440 2005/07/28 02:23:14 adx Exp $
  */
 
 #include "stdinc.h"
@@ -217,7 +217,7 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
   else
     mp = buf + ircsprintf(buf, ":%s MODE %s +", me.name, chptr->chname);
 
-  /* MODE needs additional one byte for space between mbuf and pbuf */
+  /* MODE needs additional one byte for space between buf and pbuf */
   cur_len = mlen = strlen(buf) + !IsCapable(client_p, CAP_TS6);
 
   DLINK_FOREACH(lp, top->head)
@@ -249,8 +249,12 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
     }
 
     count++;
-    *mp++ = flag;
-    *mp = '\0';
+    if (!IsCapable(client_p, CAP_TS6)
+    {
+      *mp++ = flag;
+      *mp = '\0';
+    }
+
     pp += ircsprintf(pp, "%s!%s@%s ", banptr->name, banptr->username,
                      banptr->host);
     cur_len += tlen;
