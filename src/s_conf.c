@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.542 2005/07/28 03:31:55 db Exp $
+ *  $Id: s_conf.c,v 7.543 2005/07/28 03:43:06 db Exp $
  */
 
 #include "stdinc.h"
@@ -3242,11 +3242,10 @@ valid_tkline(char *p, int minutes)
 /* valid_wild_card()
  *
  * input        - pointer to client
- *              - pointer to user to check
- *              - pointer to host to check
  *		- int flag, 0 for no warning oper 1 for warning oper
+ *		- count of following varargs to check
  * output       - 0 if not valid, 1 if valid
- * side effects -
+ * side effects - NOTICE is given to source_p if warn is 1
  */
 int
 valid_wild_card(struct Client *source_p, int warn, int count, ...)

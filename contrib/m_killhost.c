@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.18 2005/07/26 23:39:15 db Exp $
+ *  $Id: m_killhost.c,v 1.19 2005/07/28 03:43:04 db Exp $
  *
  */
 
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&killhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.18 $";
+const char *_version = "$Revision: 1.19 $";
 #endif
 
 /* mo_killhost()
@@ -102,7 +102,7 @@ mo_killhost(struct Client *client_p, struct Client *source_p,
   strlcpy(buf_nuh, parv[1], sizeof(buf_nuh));
   split_nuh(buf_nuh, &nick, &user, &host);
 
-  if (!valid_wild_card(source_p, YES, 1, nick, user, host))
+  if (!valid_wild_card(source_p, YES, 3, nick, user, host))
     return;
 
   if (!EmptyString(parv[2]))
