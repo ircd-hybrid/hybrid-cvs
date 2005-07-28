@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.231 2005/07/27 16:56:29 adx Exp $
+ *  $Id: s_bsd.c,v 7.232 2005/07/28 03:29:00 adx Exp $
  */
 
 #include "stdinc.h"
@@ -713,8 +713,12 @@ comm_connect_dns_callback(void *vptr, struct DNSReply *reply)
    * the DNS record around, and the DNS cache is gone anyway.. 
    *     -- adrian
    */
-  memcpy(&F->connect.hostaddr, &reply->addr, 
-         sizeof(struct irc_ssaddr));
+  memcpy(&F->connect.hostaddr, &reply->addr, reply->addr.ss_len);
+  /* The cast is hacky, but safe - port offset is same on v4 and v6 */
+  ((struct sockaddr_in *) &F->connect.hostaddr)->sin_port =
+    F->connect.hostaddr.ss_port;
+  F->connect.hostaddr.ss_len = reply->addr.ss_len;
+
   /* Now, call the tryconnect() routine to try a connect() */
   MyFree(F->dns_query);
   F->dns_query = NULL;
