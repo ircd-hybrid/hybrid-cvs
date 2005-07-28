@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.144.2.1 2005/07/12 11:32:53 michael Exp $
+ *  $Id: channel_mode.c,v 7.144.2.2 2005/07/28 02:21:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -183,11 +183,14 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
     {
       sendto_one(client_p, form_str(ERR_BANLISTFULL),
                  me.name, client_p->name, chptr->chname, banid);
-      return(0);
+      return 0;
     }
 
     collapse(banid);
   }
+
+  if (!*banid || strlen(banid) > MODEBUFLEN)
+    return 0;
 
   switch (type)
   {
@@ -201,9 +204,8 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
       list = &chptr->invexlist;
       break;
     default:
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "add_id() called with unknown ban type %d!", type);
-      return(0);
+      assert(0);
+      return 0;
   }
 
   DLINK_FOREACH(ban, list->head)
@@ -211,7 +213,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
     actualBan = ban->data;
 
     if (!irccmp(actualBan->banstr, banid))
-      return(0);
+      return 0;
   }
 
   actualBan = (struct Ban *)BlockHeapAlloc(ban_heap);
@@ -236,7 +238,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
 
   dlinkAdd(actualBan, &actualBan->node, list);
 
-  return(1);
+  return 1;
 }
 
 /*

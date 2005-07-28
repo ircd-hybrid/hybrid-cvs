@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.427 2005/07/01 13:39:59 michael Exp $
+ *  $Id: channel.c,v 7.427.2.1 2005/07/28 02:21:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -243,24 +243,22 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
 {
   dlink_node *lp;
   struct Ban *banptr;
-  char mbuf[MODEBUFLEN];
-  char pbuf[MODEBUFLEN];
+  char pbuf[BUFSIZE];
   int tlen, mlen, cur_len;
   int count = 0;
-  char *mp = mbuf;
-  char *pp = pbuf;
+  char *mp, *pp = pbuf;
 
   if (top == NULL || top->length == 0)
     return;
 
   if (IsCapable(client_p, CAP_TS6))
-    ircsprintf(buf, ":%s BMASK %lu %s ", me.id,
-               (unsigned long)chptr->channelts, chptr->chname);
+    ircsprintf(buf, ":%s BMASK %lu %s %c :", me.id,
+               (unsigned long)chptr->channelts, chptr->chname, flag);
   else
-    ircsprintf(buf, ":%s MODE %s +", me.name, chptr->chname);
+    mp = buf + ircsprintf(buf, ":%s MODE %s +", me.name, chptr->chname);
 
-  cur_len = mlen = (strlen(buf) + 2);
-  *mp = *pp = '\0';
+  /* MODE needs additional one byte for space between buf and pbuf */
+  cur_len = mlen = strlen(buf) + !IsCapable(client_p, CAP_TS6);
 
   DLINK_FOREACH(lp, top->head)
   {
@@ -274,35 +272,39 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
      * or if the target is non-ts6 and we have too many modes in
      * in this line.
      */
-    if ((cur_len + tlen + 2) > MODEBUFLEN || (!IsCapable(client_p, CAP_TS6) && count >= MAXMODEPARAMS))
+    if (cur_len + (tlen - 1) > BUFSIZE - 2 || (!IsCapable(client_p, CAP_TS6)
+        && (count >= MAXMODEPARAMS || pp - pbuf >= MODEBUFLEN)))
     {
       *(pp-1) = '\0'; /* get rid of trailing space on buffer */
    
-      if(IsCapable(client_p, CAP_TS6))
-        sendto_one(client_p, "%s%c :%s", buf, flag, pbuf);
+      if (IsCapable(client_p, CAP_TS6))
+        sendto_one(client_p, "%s%s", buf, pbuf);
       else
-        sendto_one(client_p, "%s%s %s", buf, mbuf, pbuf);
+        sendto_one(client_p, "%s %s", buf, pbuf);
 
-      mp = mbuf;
-      pp = pbuf;
       cur_len = mlen;
       count = 0;
+      mp = buf + mlen;
+      pp = pbuf;
     }
 
     count++;
-    *mp++ = flag;
-    *mp = *pp = '\0';
-    ircsprintf(pp, "%s ", banptr->banstr);
-    pp += tlen;
+    if (!IsCapable(client_p, CAP_TS6))
+    {
+      *mp++ = flag;
+      *mp = '\0';
+    }
+
+    pp += ircsprintf(pp, "%s ", banptr->banstr);
     cur_len += tlen;
   }
 
   *(pp-1) = '\0'; /* get rid of trailing space on buffer */
 
-  if(IsCapable(client_p, CAP_TS6))
-    sendto_one(client_p, "%s%c :%s", buf, flag, pbuf);
+  if (IsCapable(client_p, CAP_TS6))
+    sendto_one(client_p, "%s%s", buf, pbuf);
   else
-    sendto_one(client_p, "%s%s %s", buf, mbuf, pbuf);
+    sendto_one(client_p, "%s %s", buf, pbuf);
 }
 
 /* check_channel_name()
