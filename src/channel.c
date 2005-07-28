@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.438 2005/07/25 04:52:40 adx Exp $
+ * \version $Id: channel.c,v 7.439 2005/07/28 02:03:45 adx Exp $
  */
 
 #include "stdinc.h"
@@ -203,12 +203,10 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
 {
   dlink_node *lp;
   struct Ban *banptr;
-  char mbuf[MODEBUFLEN];
-  char pbuf[MODEBUFLEN];
+  char pbuf[BUFSIZE];
   int tlen, mlen, cur_len;
   int count = 0;
-  char *mp = mbuf;
-  char *pp = pbuf;
+  char *mp, *pp = pbuf;
 
   if (top == NULL || top->length == 0)
     return;
@@ -217,11 +215,10 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
     ircsprintf(buf, ":%s BMASK %lu %s %c :", me.id,
                (unsigned long)chptr->channelts, chptr->chname, flag);
   else
-    ircsprintf(buf, ":%s MODE %s +", me.name, chptr->chname);
+    mp = buf + ircsprintf(buf, ":%s MODE %s +", me.name, chptr->chname);
 
   /* MODE needs additional one byte for space between mbuf and pbuf */
   cur_len = mlen = strlen(buf) + !IsCapable(client_p, CAP_TS6);
-  *mp = *pp = '\0';
 
   DLINK_FOREACH(lp, top->head)
   {
@@ -235,19 +232,19 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
      * or if the target is non-ts6 and we have too many modes in
      * in this line.
      */
-    if (cur_len + (tlen - 1) > BUFSIZE - 2 ||
-        (!IsCapable(client_p, CAP_TS6) && count >= MAXMODEPARAMS))
+    if (cur_len + (tlen - 1) > BUFSIZE - 2 || (!IsCapable(client_p, CAP_TS6)
+        && (count >= MAXMODEPARAMS || pp - pbuf >= MODEBUFLEN)))
     {
       *(pp-1) = '\0'; /* get rid of trailing space on buffer */
    
-      if(IsCapable(client_p, CAP_TS6))
+      if (IsCapable(client_p, CAP_TS6))
         sendto_one(client_p, "%s%s", buf, pbuf);
       else
-        sendto_one(client_p, "%s%s %s", buf, mbuf, pbuf);
+        sendto_one(client_p, "%s %s", buf, pbuf);
 
-      mp = mbuf;
-      pp = pbuf;
       cur_len = mlen;
+      mp = buf + mlen;
+      pp = pbuf;
       count = 0;
     }
 
@@ -264,7 +261,7 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
   if (IsCapable(client_p, CAP_TS6))
     sendto_one(client_p, "%s%s", buf, pbuf);
   else
-    sendto_one(client_p, "%s%s %s", buf, mbuf, pbuf);
+    sendto_one(client_p, "%s %s", buf, pbuf);
 }
 
 /*! \brief send "client_p" a full list of the modes for channel chptr
