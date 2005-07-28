@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.217.2.1 2005/07/28 03:34:20 adx Exp $
+ *  $Id: s_bsd.c,v 7.217.2.2 2005/07/28 16:57:54 db Exp $
  */
 
 #include "stdinc.h"
@@ -467,6 +467,8 @@ comm_settimeout(int fd, time_t timeout, PF *callback, void *cbdata)
  * its kinda nice to have it seperate, since this is designed for
  * flush functions, and when comm_close() is implemented correctly
  * with close functions, we _actually_ don't call comm_close() here ..
+ * -- originally Adrian's notes
+ * comm_close() is replaced with fd_close() in fdlist.c 
  */
 void
 comm_setflush(int fd, time_t timeout, PF *callback, void *cbdata)
