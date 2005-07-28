@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.409 2005/07/27 01:11:10 adx Exp $
+ *  $Id: ircd_parser.y,v 1.410 2005/07/28 21:17:28 db Exp $
  */
 
 %{
@@ -344,6 +344,7 @@ unhook_hub_leaf_confs(void)
 %token  T_UNXLINE
 %token  T_WALLOP
 %token  THROTTLE_TIME
+%token  TOPICBURST
 %token  TRUE_NO_OPER_FLOOD
 %token  UNKLINE
 %token  USER
@@ -438,7 +439,7 @@ modules_entry: MODULES
   '{' modules_items '}' ';';
 
 modules_items:  modules_items modules_item | modules_item;
-modules_item:   modules_module | modules_path | error;
+modules_item:   modules_module | modules_path | error ';' ;
 
 modules_module: MODULE '=' QSTRING ';'
 {
@@ -479,7 +480,7 @@ serverinfo_item:        serverinfo_name | serverinfo_vhost |
                         serverinfo_max_clients | 
                         serverinfo_rsa_private_key_file | serverinfo_vhost6 |
                         serverinfo_sid | serverinfo_ssl_certificate_file |
-			error;
+			error ';' ;
 
 serverinfo_ssl_certificate_file: SSL_CERTIFICATE_FILE '=' QSTRING ';'
 {
@@ -767,7 +768,7 @@ admin_entry: ADMIN  '{' admin_items '}' ';' ;
 
 admin_items: admin_items admin_item | admin_item;
 admin_item:  admin_name | admin_description |
-             admin_email | error;
+             admin_email | error ';' ;
 
 admin_name: NAME '=' QSTRING ';' 
 {
@@ -808,7 +809,7 @@ logging_item:           logging_path | logging_oper_log |
                         logging_gline_log | logging_log_level |
 			logging_use_logging | logging_fuserlog |
 			logging_foperlog | logging_ffailed_operlog |
-			error;
+			error ';' ;
 
 logging_path:           T_LOGPATH '=' QSTRING ';' 
                         {
@@ -983,7 +984,7 @@ oper_item:      oper_name | oper_user | oper_password | oper_hidden_admin |
 		oper_gline | oper_nick_changes |
                 oper_die | oper_rehash | oper_admin |
 		oper_encrypted | oper_rsa_public_key_file |
-                oper_flags | error;
+                oper_flags | error ';' ;
 
 oper_name: NAME '=' QSTRING ';'
 {
@@ -1340,7 +1341,7 @@ oper_flags_item_atom: GLOBAL_KILL
     if (not_atom) yy_aconf->port &= ~OPER_FLAG_REMOTEBAN;
     else yy_aconf->port |= OPER_FLAG_REMOTEBAN;
   }
-};
+} | error ',' | error ';' ;
 
 
 /***************************************************************************
@@ -1378,7 +1379,7 @@ class_item:     class_name |
 		class_max_local |
 		class_max_ident |
                 class_sendq |
-		error;
+		error ';' ;
 
 class_name: NAME '=' QSTRING ';' 
 {
@@ -1555,7 +1556,7 @@ listen_flags_item: T_SSL
 };
 
 listen_items:   listen_items listen_item | listen_item;
-listen_item:    listen_port | listen_flags | listen_address | listen_host | error;
+listen_item:    listen_port | listen_flags | listen_address | listen_host | error ';' ;
 
 listen_port: PORT '=' port_items ';' ;
 
@@ -1699,7 +1700,7 @@ auth_item:      auth_user | auth_passwd | auth_class | auth_flags |
                 auth_exceed_limit | auth_no_tilde | auth_gline_exempt |
 		auth_spoof | auth_spoof_notice |
                 auth_redir_serv | auth_redir_port | auth_can_flood |
-                auth_need_password | error;
+                auth_need_password | error ';' ;
 
 auth_user: USER '=' QSTRING ';'
 {
@@ -1978,7 +1979,7 @@ resv_entry: RESV
 };
 
 resv_items:	resv_items resv_item | resv_item;
-resv_item:	resv_creason | resv_channel | resv_nick | error;
+resv_item:	resv_creason | resv_channel | resv_nick | error ';' ;
 
 resv_creason: REASON '=' QSTRING ';'
 {
@@ -2039,7 +2040,7 @@ shared_entry: T_SHARED
 };
 
 shared_items: shared_items shared_item | shared_item;
-shared_item:  shared_name | shared_user | shared_type | error;
+shared_item:  shared_name | shared_user | shared_type | error ';' ;
 
 shared_name: NAME '=' QSTRING ';'
 {
@@ -2128,7 +2129,7 @@ cluster_entry: T_CLUSTER
 };
 
 cluster_items:	cluster_items cluster_item | cluster_item;
-cluster_item:	cluster_name | cluster_type | error;
+cluster_item:	cluster_name | cluster_type | error ';' ;
 
 cluster_name: NAME '=' QSTRING ';'
 {
@@ -2338,7 +2339,7 @@ connect_item:   connect_name | connect_host | connect_send_password |
 		connect_leaf_mask | connect_class | connect_auto |
 		connect_encrypted | connect_compressed | connect_cryptlink |
 		connect_rsa_public_key_file | connect_cipher_preference |
-                error;
+                error ';' ;
 
 connect_name: NAME '=' QSTRING ';'
 {
@@ -2432,28 +2433,33 @@ connect_flags_items: connect_flags_items ',' connect_flags_item | connect_flags_
 connect_flags_item: LAZYLINK
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_LAZY_LINK;
+    SetConfLazyLink(yy_aconf);
 } | COMPRESSED
 {
   if (ypass == 2)
 #ifndef HAVE_LIBZ
     yyerror("Ignoring flags = compressed; -- no zlib support");
 #else
-    yy_aconf->flags |= CONF_FLAGS_COMPRESSED;
+    SetConfCompressed(yy_aconf);
 #endif
 } | CRYPTLINK
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_CRYPTLINK;
+    SetConfCryptLink(yy_aconf);
 } | AUTOCONN
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_ALLOW_AUTO_CONN;
+    SetConfAllowAutoConn(yy_aconf);
 } | BURST_AWAY
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_BURST_AWAY;
-};
+    SetAwayBurst(yy_aconf);
+} | TOPICBURST
+{
+  if (ypass == 2)
+    SetTopicBurst(yy_aconf);
+}
+;
 
 connect_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
 {

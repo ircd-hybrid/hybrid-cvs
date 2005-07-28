@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.423 2005/07/28 04:08:29 adx Exp $
+ *  $Id: s_serv.c,v 7.424 2005/07/28 21:17:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -68,6 +68,7 @@ static void server_burst(struct Client *);
 static int fork_server(struct Client *);
 static void burst_all(struct Client *);
 static void cjoin_all(struct Client *);
+static void send_tb(struct Client *client_p, struct Channel *chptr);
 
 static CNCB serv_connect_callback;
 
@@ -1598,11 +1599,8 @@ burst_all(struct Client *client_p)
     if (dlink_list_length(&chptr->members) != 0)
     {
       burst_members(client_p, chptr);
-
       send_channel_modes(client_p, chptr);
-      hinfo.chptr  = chptr;
-      hinfo.client = client_p;
-      hook_call_event("burst_channel", &hinfo);
+      send_tb(client_p, chptr);
     }
   }
 
@@ -1624,6 +1622,25 @@ burst_all(struct Client *client_p)
   /* Its simpler to just send EOB and use the time its been connected.. --fl_ */
   if (IsCapable(client_p, CAP_EOB))
     sendto_one(client_p, ":%s EOB", ID_or_name(&me, client_p));
+}
+
+/*
+ * send_tb
+ *
+ * inputs	- pointer to Client
+ *		- pointer to channel
+ * output	- NONE
+ * side effects	- called when hooked by a burst_channel
+ */
+static void
+send_tb(struct Client *client_p, struct Channel *chptr)
+{
+  if (chptr->topic != NULL && IsCapable(client_p, CAP_TB))
+    sendto_one(client_p, ":%s TB %s %lu %s :%s",
+               me.name, chptr->chname,
+	       (unsigned long)chptr->topic_time,
+	       chptr->topic_info, 
+	       chptr->topic);
 }
 
 /* cjoin_all()

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.299 2005/07/25 18:25:31 db Exp $
+ *  $Id: s_conf.h,v 7.300 2005/07/28 21:17:25 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -214,6 +214,7 @@ struct ClassItem
 #define CONF_FLAGS_CRYPTLINK            0x00080000
 #define CONF_FLAGS_BURST_AWAY           0x00400000
 #define CONF_FLAGS_EXEMPTRESV           0x00800000
+#define CONF_FLAGS_TOPICBURST           0x01000000
 
 /* Macros for struct AccessItem */
 #define IsLimitIp(x)            ((x)->flags & CONF_FLAGS_LIMIT_IP)
@@ -233,8 +234,11 @@ struct ClassItem
 #define IsConfRestricted(x)     ((x)->flags & CONF_FLAGS_RESTRICTED)
 #define IsConfEncrypted(x)      ((x)->flags & CONF_FLAGS_ENCRYPTED)
 #define IsConfCompressed(x)     ((x)->flags & CONF_FLAGS_COMPRESSED)
+#define SetConfCompressed(x)    ((x)->flags |= CONF_FLAGS_COMPRESSED)
 #define IsConfCryptLink(x)      ((x)->flags & CONF_FLAGS_CRYPTLINK)
+#define SetConfCryptLink(x)     ((x)->flags |= CONF_FLAGS_CRYPTLINK)
 #define IsConfLazyLink(x)       ((x)->flags & CONF_FLAGS_LAZY_LINK)
+#define SetConfLazyLink(x)      ((x)->flags = CONF_FLAGS_LAZY_LINK)
 #define IsConfAllowAutoConn(x)  ((x)->flags & CONF_FLAGS_ALLOW_AUTO_CONN)
 #define SetConfAllowAutoConn(x)	((x)->flags |= CONF_FLAGS_ALLOW_AUTO_CONN)
 #define ClearConfAllowAutoConn(x) ((x)->flags &= ~CONF_FLAGS_ALLOW_AUTO_CONN)
@@ -242,6 +246,9 @@ struct ClassItem
 #define SetConfTemporary(x)     ((x)->flags |= CONF_FLAGS_TEMPORARY)
 #define IsConfRedir(x)          ((x)->flags & CONF_FLAGS_REDIR)
 #define IsAwayBurst(x)          ((x)->flags & CONF_FLAGS_BURST_AWAY)
+#define SetAwayBurst(x)         ((x)->flags |= CONF_FLAGS_BURST_AWAY)
+#define IsTopicBurst(x)         ((x)->flags & CONF_FLAGS_TOPICBURST)
+#define SetTopicBurst(x)        ((x)->flags |= CONF_FLAGS_TOPICBURST)
 
 /* shared server entry types */
 #define SHARED_KLINE		0x0001
