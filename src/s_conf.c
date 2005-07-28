@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.543 2005/07/28 03:43:06 db Exp $
+ *  $Id: s_conf.c,v 7.544 2005/07/28 14:46:31 db Exp $
  */
 
 #include "stdinc.h"
@@ -3400,7 +3400,7 @@ parse_aline(const char *cmd, struct Client *source_p,
       return(-1);
   }
   else
-    if (!valid_wild_card(source_p, YES, 2, *up_p))
+    if (!valid_wild_card(source_p, YES, 1, *up_p))
       return(-1);
 
   if (!valid_comment(source_p, *reason, YES))
