@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.440 2005/07/28 02:23:14 adx Exp $
+ * \version $Id: channel.c,v 7.441 2005/07/28 03:07:42 adx Exp $
  */
 
 #include "stdinc.h"
@@ -249,7 +249,7 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
     }
 
     count++;
-    if (!IsCapable(client_p, CAP_TS6)
+    if (!IsCapable(client_p, CAP_TS6))
     {
       *mp++ = flag;
       *mp = '\0';
