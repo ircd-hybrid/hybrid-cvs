@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.h,v 7.22 2003/06/12 03:40:29 joshk Exp $
+ *  $Id: s_auth.h,v 7.22.4.1 2005/07/28 16:40:46 adx Exp $
  */
 
 #ifndef INCLUDED_s_auth_h
@@ -51,42 +51,22 @@ struct AuthRequest
  * flag values for AuthRequest
  * NAMESPACE: AM_xxx - Authentication Module
  */
-#define AM_AUTH_CONNECTING   (1 << 0)
-#define AM_AUTH_PENDING      (1 << 1)
-#define AM_DNS_PENDING       (1 << 2)
+#define AM_DOING_AUTH        1
+#define AM_DNS_PENDING       2
 
 #define SetDNSPending(x)     ((x)->flags |= AM_DNS_PENDING)
 #define ClearDNSPending(x)   ((x)->flags &= ~AM_DNS_PENDING)
 #define IsDNSPending(x)      ((x)->flags &  AM_DNS_PENDING)
 
-#define SetAuthConnect(x)    ((x)->flags |= AM_AUTH_CONNECTING)
-#define ClearAuthConnect(x)  ((x)->flags &= ~AM_AUTH_CONNECTING)
-#define IsAuthConnect(x)     ((x)->flags &  AM_AUTH_CONNECTING)
-
-#define SetAuthPending(x)    ((x)->flags |= AM_AUTH_PENDING)
-#define ClearAuthPending(x)  ((x)->flags &= AM_AUTH_PENDING)
-#define IsAuthPending(x)     ((x)->flags &  AM_AUTH_PENDING)
-
-#define ClearAuth(x)         ((x)->flags &= ~(AM_AUTH_PENDING | AM_AUTH_CONNECTING))
-#define IsDoingAuth(x)       ((x)->flags &  (AM_AUTH_PENDING | AM_AUTH_CONNECTING))
-/* #define SetGotId(x)       ((x)->flags |= FLAGS_GOTID) */
-
+#define SetDoingAuth(x)      ((x)->flags |= AM_DOING_AUTH)
+#define ClearAuth(x)         ((x)->flags &= ~AM_DOING_AUTH)
+#define IsDoingAuth(x)       ((x)->flags &  AM_DOING_AUTH)
 
 extern void start_auth(struct Client *);
 extern void send_auth_query(struct AuthRequest* req);
 extern void remove_auth_request(struct AuthRequest *req);
 extern struct AuthRequest *FindAuthClient(long id);
 extern void init_auth(void);
-extern void delete_identd_queries(struct Client *);
+extern void delete_auth(struct Client *);
 
 #endif /* INCLUDED_s_auth_h */
-
-
-
-
-
-
-
-
-
-
