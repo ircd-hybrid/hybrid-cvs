@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.410 2005/07/28 21:17:28 db Exp $
+ *  $Id: ircd_parser.y,v 1.411 2005/07/28 22:30:24 db Exp $
  */
 
 %{
@@ -147,6 +147,7 @@ unhook_hub_leaf_confs(void)
 %token  AUTOCONN
 %token	T_BLOCK
 %token  BURST_AWAY
+%token  BURST_TOPICWHO
 %token  BYTES KBYTES MBYTES GBYTES TBYTES
 %token  CALLER_ID_WAIT
 %token  CAN_FLOOD
@@ -3559,6 +3560,7 @@ channel_item:       channel_disable_local_channels |
 		    channel_default_split_server_count |
 		    channel_no_create_on_split | 
 		    channel_no_join_on_split |
+		    channel_burst_topicwho |
 		    error;
 
 channel_disable_local_channels: DISABLE_LOCAL_CHANNELS '=' TBOOL ';'
@@ -3643,6 +3645,12 @@ channel_no_join_on_split: NO_JOIN_ON_SPLIT '=' TBOOL ';'
 {
   if (ypass == 2)
     ConfigChannel.no_join_on_split = yylval.number;
+};
+
+channel_burst_topicwho: BURST_TOPICWHO '=' TBOOL ';'
+{
+  if (ypass == 2)
+    ConfigChannel.burst_topicwho = yylval.number;
 };
 
 /***************************************************************************

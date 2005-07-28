@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.544 2005/07/28 14:46:31 db Exp $
+ *  $Id: s_conf.c,v 7.545 2005/07/28 22:30:25 db Exp $
  */
 
 #include "stdinc.h"
@@ -1968,6 +1968,7 @@ set_default_conf(void)
   ConfigChannel.default_split_server_count = 0;
   ConfigChannel.no_join_on_split = NO;
   ConfigChannel.no_create_on_split = NO;
+  ConfigChannel.burst_topicwho = YES;
 
   ConfigServerHide.flatten_links = NO;
   ConfigServerHide.links_delay = 300;

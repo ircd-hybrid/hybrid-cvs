@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.424 2005/07/28 21:17:29 db Exp $
+ *  $Id: s_serv.c,v 7.425 2005/07/28 22:30:25 db Exp $
  */
 
 #include "stdinc.h"
@@ -1600,7 +1600,8 @@ burst_all(struct Client *client_p)
     {
       burst_members(client_p, chptr);
       send_channel_modes(client_p, chptr);
-      send_tb(client_p, chptr);
+      if (IsCapable(client_p, CAP_TB))
+	send_tb(client_p, chptr);
     }
   }
 
@@ -1636,11 +1637,21 @@ static void
 send_tb(struct Client *client_p, struct Channel *chptr)
 {
   if (chptr->topic != NULL && IsCapable(client_p, CAP_TB))
-    sendto_one(client_p, ":%s TB %s %lu %s :%s",
-               me.name, chptr->chname,
-	       (unsigned long)chptr->topic_time,
-	       chptr->topic_info, 
-	       chptr->topic);
+  {
+    if (ConfigChannel.burst_topicwho)
+    {
+      sendto_one(client_p, ":%s TB %s %lu %s :%s",
+		 me.name, chptr->chname,
+		 (unsigned long)chptr->topic_time,
+		 chptr->topic_info, chptr->topic);
+    }
+    else
+    {
+      sendto_one(client_p, ":%s TB %s %lu %s",
+		 me.name, chptr->chname,
+		 (unsigned long)chptr->topic_time, chptr->topic);
+    }
+  }
 }
 
 /* cjoin_all()
@@ -2207,10 +2218,14 @@ serv_connect_callback(fde_t *fd, int status, void *data)
    *
    * If trying to negotiate LazyLinks, pass on CAP_LL
    * If this is a HUB, pass on CAP_HUB
+   * Pass on ZIP if supported and topicburst 
+   * XXX might want to check if "TB" has been added to capability list
+   * - Dianora
    */
   send_capabilities(client_p, aconf,
- 		    ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
-		    | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0)
+ 		    (IsConfLazyLink(aconf) ? CAP_LL : 0)
+		    | (IsConfCompressed(aconf) ? CAP_ZIP_SUPPORTED : 0)
+		    | (IsConfTopicBurst(aconf) ? CAP_TB : 0)
 		    , 0);
 
   sendto_one(client_p, "SERVER %s 1 :%s%s",

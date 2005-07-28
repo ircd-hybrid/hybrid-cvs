@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.26 2005/07/28 21:17:27 db Exp $
+ *  $Id: m_tb.c,v 1.27 2005/07/28 22:30:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   delete_capability("TB");
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 
 #endif /* !STATIC_MODULES */
 
@@ -76,6 +76,10 @@ const char *_version = "$Revision: 1.26 $";
  *      parv[2] = topic timestamp
  *      parv[3] = topic setter OR topic itself if parc == 4
  *      parv[4] = topic itself if parc == 5
+ *
+ * Rewritten from original m_tburst 
+ * set_topic() is from original m_tburst.c rewritten to use TB not TBURST
+ * - Dianora July 28 2005
  */
 #define tb_channel      parv[1]
 #define tb_topicts_str  parv[2]
