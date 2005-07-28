@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.541 2005/07/27 05:08:35 adx Exp $
+ *  $Id: s_conf.c,v 7.542 2005/07/28 03:31:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -3356,6 +3356,13 @@ parse_aline(const char *cmd, struct Client *source_p,
     {
       parc--;
       parv++;
+
+      if (target_server == NULL)
+      {
+	sendto_one(source_p, ":%s NOTICE %s :ON server not supported by %s",
+		   me.name, source_p->name, cmd);
+	return(-1);
+      }
 
       if (!IsOperRemoteBan(source_p))
       {

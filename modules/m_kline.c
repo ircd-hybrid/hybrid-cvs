@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.196 2005/07/26 20:49:25 db Exp $
+ *  $Id: m_kline.c,v 1.197 2005/07/28 03:31:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.196 $";
+const char *_version = "$Revision: 1.197 $";
 #endif
 
 /* Local function prototypes */
@@ -429,7 +429,6 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 {
   char def_reason[] = "No Reason";
   char *dlhost, *oper_reason, *reason;
-  char *target_server=NULL;
   const char *creason;
 #ifndef IPV6
   struct Client *target_p;
@@ -450,7 +449,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   }
 
   if (parse_aline("DLINE", source_p, &dlhost, NULL,
-		  parc, parv, &tkline_time, &target_server, &reason) < 0)
+		  parc, parv, &tkline_time, NULL, &reason) < 0)
     return;
 
   if ((t=parse_netmask(dlhost, NULL, &bits)) == HM_HOST)

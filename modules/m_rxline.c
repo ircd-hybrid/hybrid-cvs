@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rxline.c,v 1.7 2005/07/26 14:56:08 michael Exp $
+ *  $Id: m_rxline.c,v 1.8 2005/07/28 03:31:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,7 @@ static void mo_rxline(struct Client *, struct Client *, int, char **);
 static void mo_unrxline(struct Client *, struct Client *, int, char **);
 
 static int valid_xline(struct Client *, char *, char *, int);
-static void write_xline(struct Client *, char *, char *, time_t);
+static void write_rxline(struct Client *, char *, char *, time_t);
 static void remove_xline(struct Client *, char *, int);
 static int remove_txline_match(const char *gecos);
 
@@ -83,17 +83,26 @@ _moddeinit(void)
   mod_del_cmd(&unrxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
 
+/* mo_rxline()
+ *
+ * inputs	- pointer to server
+ *		- pointer to client
+ *		- parameter count
+ *		- parameter list
+ * output	-
+ * side effects - regular expression x line is added
+ *
+ */
 static void
 mo_rxline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  char def_reason[] = "No Reason";
-  char *reason = def_reason;
+  char *reason;
   char *gecos=NULL;
   struct ConfItem *conf;
   struct MatchItem *match_item;
@@ -106,28 +115,9 @@ mo_rxline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  parv++;
-  parc--;
-
-  tkline_time = valid_tkline(*parv, TK_MINUTES);
-
-  if (tkline_time != 0)
-  {
-    parv++;
-    parc--;
-  }
-
-  if (parc == 0)
-  {
-    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-	       me.name, source_p->name, "RXLINE");
+  if (parse_aline("RXLINE", source_p, &gecos, NULL,
+		  parc, parv, &tkline_time, NULL, &reason) < 0)
     return;
-  }
-
-  gecos = *parv;
-
-  if (--parc != 0)
-    reason = *++parv;
 
   if (!valid_xline(source_p, gecos, reason, 0))
     return;
@@ -142,7 +132,7 @@ mo_rxline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  write_xline(source_p, gecos, reason, tkline_time);
+  write_rxline(source_p, gecos, reason, tkline_time);
 }
 
 static void
@@ -203,14 +193,14 @@ valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
   return(1);
 }
 
-/* write_xline()
+/* write_rxline()
  *
- * inputs	- client taking credit for xline, gecos, reason, xline type
+ * inputs	- client taking credit for rxline
  * outputs	- none
- * side effects	- when successful, adds an xline to the conf
+ * side effects	- when successful, adds an rxline to the conf
  */
 static void
-write_xline(struct Client *source_p, char *gecos, char *reason,
+write_rxline(struct Client *source_p, char *gecos, char *reason,
 	    time_t tkline_time)
 {
   struct ConfItem *conf;
