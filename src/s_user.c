@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.348 2005/07/27 20:35:45 adx Exp $
+ *  $Id: s_user.c,v 7.349 2005/07/28 04:08:30 adx Exp $
  */
 
 #include <sys/types.h>
@@ -1059,9 +1059,6 @@ send_umode(struct Client *client_p, struct Client *source_p,
   unsigned int flag;
   char *m = umode_buf;
 
-  if (client_p != source_p && IsOperHiddenAdmin(source_p))
-    sendmask &= ~UMODE_ADMIN;
-
   /* build a string in umode_buf to represent the change in the user's
    * mode between the new (source_p->umodes) and 'old'.
    */
@@ -1117,7 +1114,8 @@ send_umode_out(struct Client *client_p, struct Client *source_p,
   char buf[BUFSIZE];
   dlink_node *ptr;
 
-  send_umode(NULL, source_p, old, SEND_UMODES, buf);
+  send_umode(NULL, source_p, old, IsOperHiddenAdmin(source_p) ?
+    SEND_UMODES & ~UMODE_ADMIN : SEND_UMODES, buf);
 
   DLINK_FOREACH(ptr, serv_list.head)
   {
@@ -1129,7 +1127,8 @@ send_umode_out(struct Client *client_p, struct Client *source_p,
           (target_p->localClient->serverMask &
            source_p->lazyLinkClientExists))
         sendto_one(target_p, ":%s MODE %s :%s",
-                   ID_or_name(source_p, target_p), ID_or_name(source_p, target_p), buf);
+                   ID_or_name(source_p, target_p),
+		   ID_or_name(source_p, target_p), buf);
     }
   }
 
@@ -1218,10 +1217,10 @@ check_xline(struct Client *source_p)
 
     ServerStats->is_ref++;      
     exit_client(source_p, source_p, &me, "Bad user info");
-    return(1);
+    return 1;
   }
 
-  return(0);
+  return 0;
 }
 
 static int
@@ -1253,12 +1252,12 @@ check_regexp_xline(struct Client *source_p)
 
       ServerStats->is_ref++;
       exit_client(source_p, source_p, &me, "Bad user info");
-      return(1);
+      return 1;
     }
   }
 #endif
 
-  return(0);
+  return 0;
 }
 
 /* oper_up()

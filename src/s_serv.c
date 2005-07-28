@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.422 2005/07/27 01:11:10 adx Exp $
+ *  $Id: s_serv.c,v 7.423 2005/07/28 04:08:29 adx Exp $
  */
 
 #include "stdinc.h"
@@ -854,7 +854,8 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
   if (!IsClient(target_p))
     return;
 
-  send_umode(NULL, target_p, 0, SEND_UMODES, ubuf);
+  send_umode(NULL, target_p, 0, IsOperHiddenAdmin(target_p) ?
+    SEND_UMODES & ~UMODE_ADMIN : SEND_UMODES, ubuf);
 
   if (ubuf[0] == '\0')
   {
