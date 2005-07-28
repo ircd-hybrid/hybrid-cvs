@@ -4,6 +4,8 @@ o) Fixed BMASK
 o) Fixed bug in /modrestart
 o) Fixed ip leakage when hide_spoof_ips = yes.
 o) Fixed remote /uncapture
+o) Fixed severe race condition and memleak in auth
+o) Allow changing localized numerics to have less %'s
 
 -- ircd-hybrid-7.1 RELNOTES
 o) Improved SAFELIST
@@ -108,4 +110,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.105.2.7 2005/07/13 13:39:09 adx Exp $
+$Id: RELNOTES,v 1.105.2.8 2005/07/28 16:52:11 adx Exp $
