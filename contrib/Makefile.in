@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.66 2005/07/14 06:44:23 metalrock Exp $
+# $Id: Makefile.in,v 1.67 2005/07/28 03:57:55 db Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -43,8 +43,7 @@ SRCS = \
   m_omotd.c     \
   m_operspy.c   \
   m_opme.c      \
-  m_spoof.c     \
-  m_tburst.c
+  m_spoof.c     
 
 SHARED_ONLY_SRCS = \
   m_ctrace.c \
