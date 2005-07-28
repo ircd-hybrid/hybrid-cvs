@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.155.2.2 2005/07/22 17:21:02 db Exp $
+ *  $Id: modules.c,v 7.155.2.3 2005/07/28 04:02:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -674,6 +674,8 @@ load_all_modules(int warn)
   mod_add_cmd(&squit_msgtab);
   mod_add_cmd(&stats_msgtab);
   mod_add_cmd(&svinfo_msgtab);
+  mod_add_cmd(&tburst_msgtab);
+  add_capability("TBURST", CAP_TBURST, 1);
   mod_add_cmd(&testline_msgtab);
   mod_add_cmd(&testgecos_msgtab);
   mod_add_cmd(&testmask_msgtab);
@@ -706,8 +708,6 @@ load_all_modules(int warn)
   mod_add_cmd(&omotd_msgtab);
   mod_add_cmd(&operspy_msgtab);
   mod_add_cmd(&opme_msgtab);
-  mod_add_cmd(&tburst_msgtab);
-  add_capability("TBURST", CAP_TBURST, 1);
 #endif
 }
 #endif /* STATIC_MODULES */
