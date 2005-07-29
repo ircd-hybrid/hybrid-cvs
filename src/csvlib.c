@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.49 2005/07/29 03:41:10 db Exp $
+ *  $Id: csvlib.c,v 7.50 2005/07/29 21:08:16 michael Exp $
  */
 
 #include "stdinc.h"
@@ -114,16 +114,14 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
         char errbuf[BUFSIZE];
 
         regerror(ecode, NULL, errbuf, sizeof(errbuf));
-
         MyFree(exp_p);
-	exp_p = NULL;
 
         sendto_realops_flags(UMODE_ALL, L_ALL,
-                            "Failed to add regular expression based X-Line: %s", errbuf);
+                             "Failed to add regular expression based X-Line: %s", errbuf);
         break;
       }
 
-      if ((name_field == NULL) || (exp_p == NULL))
+      if (name_field == NULL)
         break;
 
       conf = make_conf_item(RXLINE_TYPE);

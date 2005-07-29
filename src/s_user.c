@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.350 2005/07/29 03:34:19 db Exp $
+ *  $Id: s_user.c,v 7.351 2005/07/29 21:08:17 michael Exp $
  */
 
 #include <sys/types.h>
@@ -1226,17 +1226,16 @@ check_xline(struct Client *source_p)
 static int
 check_regexp_xline(struct Client *source_p)
 {
+#ifdef HAVE_REGEX_H
   const dlink_node *ptr = NULL;
   const char *reason = NULL;
 
-#ifdef HAVE_REGEX_H
   DLINK_FOREACH(ptr, rxconf_items.head)
   {
     struct ConfItem *conf = ptr->data;
     struct MatchItem *reg = map_to_conf(conf);
 
-    if (conf->regexpname == NULL)
-       continue;
+    assert(conf->regexpname);
 
     if (!regexec(conf->regexpname, source_p->info, 0, NULL, 0))
     {
