@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.303 2005/07/29 18:27:16 db Exp $
+ *  $Id: s_conf.h,v 7.304 2005/07/29 19:11:47 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -233,6 +233,8 @@ struct ClassItem
 #define IsConfSpoofNotice(x)    ((x)->flags & CONF_FLAGS_SPOOF_NOTICE)
 #define IsConfRestricted(x)     ((x)->flags & CONF_FLAGS_RESTRICTED)
 #define IsConfEncrypted(x)      ((x)->flags & CONF_FLAGS_ENCRYPTED)
+#define SetConfEncrypted(x)	((x)->flags |= CONF_FLAGS_ENCRYPTED)
+#define ClearConfEncrypted(x)	((x)->flags &= ~CONF_FLAGS_ENCRYPTED)
 #define IsConfCompressed(x)     ((x)->flags & CONF_FLAGS_COMPRESSED)
 #define SetConfCompressed(x)    ((x)->flags |= CONF_FLAGS_COMPRESSED)
 #define ClearConfCompressed(x)  ((x)->flags &= ~CONF_FLAGS_COMPRESSED)

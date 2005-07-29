@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.413 2005/07/29 18:27:17 db Exp $
+ *  $Id: ircd_parser.y,v 1.414 2005/07/29 19:11:48 db Exp $
  */
 
 %{
@@ -1051,9 +1051,9 @@ oper_encrypted: ENCRYPTED '=' TBOOL ';'
   if (ypass == 2)
   {
     if (yylval.number)
-      yy_aconf->flags |= CONF_FLAGS_ENCRYPTED;
+      SetConfEncrypted(yy_aconf);
     else
-      yy_aconf->flags &= ~CONF_FLAGS_ENCRYPTED;
+      ClearConfEncrypted(yy_aconf);
   }
 };
 
@@ -1342,7 +1342,14 @@ oper_flags_item_atom: GLOBAL_KILL
     if (not_atom) yy_aconf->port &= ~OPER_FLAG_REMOTEBAN;
     else yy_aconf->port |= OPER_FLAG_REMOTEBAN;
   }
-} | error ',' | error ';' ;
+} | ENCRYPTED
+{
+  if (ypass == 2)
+  {
+    if (not_atom) ClearConfEncrypted(yy_aconf);
+    else SetConfEncrypted(yy_aconf);
+  }
+};
 
 
 /***************************************************************************

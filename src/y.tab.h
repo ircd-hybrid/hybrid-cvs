@@ -1,4 +1,4 @@
-/* $Id: y.tab.h,v 7.33 2005/07/29 18:27:18 db Exp $ */
+/* $Id: y.tab.h,v 7.34 2005/07/29 19:11:49 db Exp $ */
 #ifndef YYERRCODE
 #define YYERRCODE 256
 #endif
