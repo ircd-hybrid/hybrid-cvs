@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.427 2005/07/29 14:58:06 adx Exp $
+ *  $Id: s_serv.c,v 7.428 2005/07/29 16:11:24 db Exp $
  */
 
 #include "stdinc.h"
@@ -264,6 +264,11 @@ my_name_for_link(struct ConfItem *conf)
 
 /*
  * write_links_file
+ *
+ * inputs	- void pointer which is not used
+ * output	- NONE
+ * side effects	- called from an event, write out list of linked servers
+ *		  but in no particular order.
  */
 void
 write_links_file(void* notused)
@@ -474,6 +479,10 @@ hunt_server(struct Client *client_p, struct Client *source_p, const char *comman
 }
 
 /* try_connections()
+ *
+ * inputs	- void pointer which is not used
+ * output	- NONE
+ * side effects	-
  * scan through configuration and try new connections.
  * Returns the calendar time when the next call to this
  * function should be made latest. (No harm done if this
@@ -653,14 +662,16 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
 
   server_aconf = (struct AccessItem *)map_to_conf(server_conf);
 
-  if (!(server_aconf->flags & CONF_FLAGS_LAZY_LINK))
-    ClearCap(client_p,CAP_LL);
+  if (!IsConfLazyLink(server_aconf))
+    ClearCap(client_p, CAP_LL);
 #ifdef HAVE_LIBZ /* otherwise, clear it unconditionally */
-  if (!(server_aconf->flags & CONF_FLAGS_COMPRESSED))
+  if (!IsConfCompressed(server_aconf))
 #endif
-    ClearCap(client_p,CAP_ZIP);
-  if (!(server_aconf->flags & CONF_FLAGS_CRYPTLINK))
-    ClearCap(client_p,CAP_ENC);
+    ClearCap(client_p, CAP_ZIP);
+  if (!IsConfCryptLink(server_aconf))
+    ClearCap(client_p, CAP_ENC);
+  if (!IsConfTopicBurst(server_aconf))
+    ClearCap(client_p, CAP_TB);
 
   /* Don't unset CAP_HUB here even if the server isn't a hub,
    * it only indicates if the server thinks it's lazylinks are
@@ -699,8 +710,9 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
  * inputs	- string name of CAPAB
  *		- int flag of capability
  * output	- NONE
- * side effects	- 
- *
+ * side effects	- Adds given capability name and bit mask to
+ *		  current supported capabilities. This allows
+ *		  modules to dynamically add or subtract their capability.
  */
 void
 add_capability(const char *capab_name, int cap_flag, int add_to_default)
@@ -719,8 +731,7 @@ add_capability(const char *capab_name, int cap_flag, int add_to_default)
  *
  * inputs	- string name of CAPAB
  * output	- NONE
- * side effects	- 
- *
+ * side effects	- delete given capability from ones known.
  */
 int
 delete_capability(const char *capab_name)
@@ -778,7 +789,9 @@ find_capability(const char *capab)
 /* send_capabilities()
  *
  * inputs	- Client pointer to send to
- *		- int flag of capabilities that this server has
+ *		- Pointer to AccessItem (for crypt)
+ *		- int flag of capabilities that this server can send
+ *		- int flag of encryption capabilities
  * output	- NONE
  * side effects	- send the CAPAB line to a server  -orabidoo
  *
@@ -1041,11 +1054,16 @@ server_estab(struct Client *client_p)
      *
      * If trying to negotiate LazyLinks, pass on CAP_LL
      * If this is a HUB, pass on CAP_HUB
+     * Pass on ZIP if supported
+     * Pass on TB if supported.
+     * - Dianora
      */
 
      send_capabilities(client_p, aconf,
-       ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
-       | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0) , 0);
+       (IsConfLazyLink(aconf) ? find_capability("LL") : 0)
+       | (IsConfCompressed(aconf) ? find_capability("ZIP") : 0)
+       | (IsConfTopicBurst(aconf) ? find_capability("TB") : 0)
+       , 0);
 
     /* SERVER is the last command sent before switching to ziplinks.
      * We set TCPNODELAY on the socket to make sure it gets sent out
@@ -2213,14 +2231,14 @@ serv_connect_callback(fde_t *fd, int status, void *data)
    *
    * If trying to negotiate LazyLinks, pass on CAP_LL
    * If this is a HUB, pass on CAP_HUB
-   * Pass on ZIP if supported and topicburst 
-   * XXX might want to check if "TB" has been added to capability list
+   * Pass on ZIP if supported
+   * Pass on TB if supported.
    * - Dianora
    */
   send_capabilities(client_p, aconf,
- 		    (IsConfLazyLink(aconf) ? CAP_LL : 0)
-		    | (IsConfCompressed(aconf) ? CAP_ZIP_SUPPORTED : 0)
-		    | (IsConfTopicBurst(aconf) ? CAP_TB : 0)
+ 		    (IsConfLazyLink(aconf) ? find_capability("LL") : 0)
+		    | (IsConfCompressed(aconf) ? find_capability("ZIP") : 0)
+		    | (IsConfTopicBurst(aconf) ? find_capability("TB") : 0)
 		    , 0);
 
   sendto_one(client_p, "SERVER %s 1 :%s%s",
@@ -2330,9 +2348,10 @@ cryptlink_init(struct Client *client_p, struct ConfItem *conf, fde_t *fd)
   }
 
   send_capabilities(client_p, aconf,
-		    ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
-    		    | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0) ,
-         	    CAP_ENC_MASK);
+ 		    (IsConfLazyLink(aconf) ? find_capability("LL") : 0)
+		    | (IsConfCompressed(aconf) ? find_capability("ZIP") : 0)
+		    | (IsConfTopicBurst(aconf) ? find_capability("TB") : 0)
+		    , CAP_ENC_MASK);
 
   sendto_one(client_p, "CRYPTLINK SERV %s %s :%s%s",
              my_name_for_link(conf), key_to_send,
