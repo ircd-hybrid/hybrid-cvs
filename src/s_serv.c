@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.425 2005/07/28 22:30:25 db Exp $
+ *  $Id: s_serv.c,v 7.426 2005/07/29 03:34:19 db Exp $
  */
 
 #include "stdinc.h"
@@ -1588,7 +1588,6 @@ burst_all(struct Client *client_p)
 {
   struct Client *target_p;
   struct Channel *chptr;
-  struct hook_burst_channel hinfo; 
   dlink_node *gptr;
   dlink_node *ptr;
 

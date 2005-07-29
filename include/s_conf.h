@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.301 2005/07/28 22:30:21 db Exp $
+ *  $Id: s_conf.h,v 7.302 2005/07/29 03:34:17 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -247,8 +247,8 @@ struct ClassItem
 #define IsConfRedir(x)          ((x)->flags & CONF_FLAGS_REDIR)
 #define IsAwayBurst(x)          ((x)->flags & CONF_FLAGS_BURST_AWAY)
 #define SetAwayBurst(x)         ((x)->flags |= CONF_FLAGS_BURST_AWAY)
-#define IsTopicBurst(x)         ((x)->flags & CONF_FLAGS_TOPICBURST)
-#define SetTopicBurst(x)        ((x)->flags |= CONF_FLAGS_TOPICBURST)
+#define IsConfTopicBurst(x)     ((x)->flags & CONF_FLAGS_TOPICBURST)
+#define SetConfTopicBurst(x)    ((x)->flags |= CONF_FLAGS_TOPICBURST)
 
 /* shared server entry types */
 #define SHARED_KLINE		0x0001
@@ -356,7 +356,7 @@ struct config_channel_entry
   int no_create_on_split;
   int no_join_on_split;
   int quiet_on_ban;
-  int burst_topic_who;
+  int burst_topicwho;
   int default_split_server_count;
   int default_split_user_count;
 };

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.411 2005/07/28 22:30:24 db Exp $
+ *  $Id: ircd_parser.y,v 1.412 2005/07/29 03:34:19 db Exp $
  */
 
 %{
@@ -2458,7 +2458,7 @@ connect_flags_item: LAZYLINK
 } | TOPICBURST
 {
   if (ypass == 2)
-    SetTopicBurst(yy_aconf);
+    SetConfTopicBurst(yy_aconf);
 }
 ;
 

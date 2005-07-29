@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.349 2005/07/28 04:08:30 adx Exp $
+ *  $Id: s_user.c,v 7.350 2005/07/29 03:34:19 db Exp $
  */
 
 #include <sys/types.h>
@@ -1234,6 +1234,9 @@ check_regexp_xline(struct Client *source_p)
   {
     struct ConfItem *conf = ptr->data;
     struct MatchItem *reg = map_to_conf(conf);
+
+    if (conf->regexpname == NULL)
+       continue;
 
     if (!regexec(conf->regexpname, source_p->info, 0, NULL, 0))
     {

@@ -1,4 +1,4 @@
-/* $Id: y.tab.c,v 7.38 2005/07/28 22:30:25 db Exp $ */
+/* $Id: y.tab.c,v 7.39 2005/07/29 03:34:19 db Exp $ */
 #include <stdlib.h>
 #ifndef lint
 #ifdef __unused
@@ -4385,7 +4385,7 @@ case 367:
 #line 2459 "ircd_parser.y"
 {
   if (ypass == 2)
-    SetTopicBurst(yy_aconf);
+    SetConfTopicBurst(yy_aconf);
 }
 break;
 case 368:
