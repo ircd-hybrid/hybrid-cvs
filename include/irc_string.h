@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.h,v 7.48 2005/06/22 23:39:27 adx Exp $
+ *  $Id: irc_string.h,v 7.49 2005/07/29 21:14:15 michael Exp $
  */
 
 #ifndef INCLUDED_irc_string_h
@@ -105,7 +105,7 @@ char* clean_string(char* dest, const unsigned char* src, size_t len);
  * strip_tabs - convert tabs to spaces
  * - jdc
  */
-char *strip_tabs(char *dest, const unsigned char *src, size_t len);
+extern void strip_tabs(char *, const char *, size_t);
 
 const char* myctime(time_t);
 
