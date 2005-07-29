@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.426 2005/07/29 03:34:19 db Exp $
+ *  $Id: s_serv.c,v 7.427 2005/07/29 14:58:06 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1414,12 +1414,11 @@ fork_server(struct Client *server)
   }
   else if (ret == 0)
   {
-    fde_t *pF, *F;
+    fde_t *F;
 
     /* set our fds as non blocking and close everything else */
     for (i = 0; i < HARD_FDLIMIT; i++)
-      for (pF = NULL, F = fd_hash[i]; F != NULL;
-           F = (pF ? pF->hnext : fd_hash[i]))
+      for (F = fd_hash[i]; F != NULL; F = F->hnext)
 	if (F->fd >= LOWEST_SAFE_FD)
         {
           if ((F->fd == slink_fds[0][0][0]) || (F->fd == slink_fds[0][0][1]) ||
@@ -1435,13 +1434,10 @@ fork_server(struct Client *server)
               fcntl(F->fd, F_SETFL, flags);
             }
 #endif
-            pF = F;
           }
           else
             close(F->fd);
 	}
-	else
-	  pF = F;
 
     sprintf(fd_str[0], "%d", slink_fds[0][0][0]); /* ctrl read */
     sprintf(fd_str[1], "%d", slink_fds[0][0][1]); /* ctrl write */
