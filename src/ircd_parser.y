@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.412 2005/07/29 03:34:19 db Exp $
+ *  $Id: ircd_parser.y,v 1.413 2005/07/29 18:27:17 db Exp $
  */
 
 %{
@@ -2431,34 +2431,55 @@ connect_flags: IRCD_FLAGS
 } '='  connect_flags_items ';';
 
 connect_flags_items: connect_flags_items ',' connect_flags_item | connect_flags_item;
-connect_flags_item: LAZYLINK
+connect_flags_item: NOT connect_flags_item_atom { not_atom = 1; }
+			| connect_flags_item_atom { not_atom = 0; };
+
+connect_flags_item_atom: LAZYLINK
 {
   if (ypass == 2)
-    SetConfLazyLink(yy_aconf);
+  {
+    if (not_atom)ClearConfLazyLink(yy_aconf);
+    else SetConfLazyLink(yy_aconf);
+  }
 } | COMPRESSED
 {
   if (ypass == 2)
 #ifndef HAVE_LIBZ
     yyerror("Ignoring flags = compressed; -- no zlib support");
 #else
-    SetConfCompressed(yy_aconf);
+ {
+   if (not_atom)ClearConfCompressed(yy_aconf);
+   else SetConfCompressed(yy_aconf);
+ }
 #endif
 } | CRYPTLINK
 {
   if (ypass == 2)
-    SetConfCryptLink(yy_aconf);
+  {
+    if (not_atom)ClearConfCryptLink(yy_aconf);
+    else SetConfCryptLink(yy_aconf);
+  }
 } | AUTOCONN
 {
   if (ypass == 2)
-    SetConfAllowAutoConn(yy_aconf);
+  {
+    if (not_atom)ClearConfAllowAutoConn(yy_aconf);
+    else SetConfAllowAutoConn(yy_aconf);
+  }
 } | BURST_AWAY
 {
   if (ypass == 2)
-    SetAwayBurst(yy_aconf);
+  {
+    if (not_atom)ClearConfAwayBurst(yy_aconf);
+    else SetConfAwayBurst(yy_aconf);
+  }
 } | TOPICBURST
 {
   if (ypass == 2)
-    SetConfTopicBurst(yy_aconf);
+  {
+    if (not_atom)ClearConfTopicBurst(yy_aconf);
+    else SetConfTopicBurst(yy_aconf);
+  }
 }
 ;
 
