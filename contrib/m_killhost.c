@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.19 2005/07/28 03:43:04 db Exp $
+ *  $Id: m_killhost.c,v 1.20 2005/07/30 22:37:03 metalrock Exp $
  *
  */
 
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&killhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.19 $";
+const char *_version = "$Revision: 1.20 $";
 #endif
 
 /* mo_killhost()
@@ -149,7 +149,7 @@ mo_killhost(struct Client *client_p, struct Client *source_p,
       if (!count++)
         ircsprintf(bufhost, "Killed (%s (%s))", source_p->name, reason);
 
-      exit_client(client_p, target_p, source_p, bufhost);
+      exit_client(target_p, source_p, bufhost);
     }
   }
 
