@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.45 2005/07/27 04:37:17 adx Exp $
+ * $Id: irc_res.c,v 7.46 2005/07/30 03:35:18 metalrock Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -279,7 +279,7 @@ restart_resolver(void)
  * (as suggested by eps@TOASTER.SFSU.EDU)
  */
 void
-add_local_domain(char* hname, size_t size)
+add_local_domain(char *hname, size_t size)
 {
   /* try to fix up unqualified names 
    */

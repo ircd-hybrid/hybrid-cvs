@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rxline.c,v 1.8 2005/07/28 03:31:53 db Exp $
+ *  $Id: m_rxline.c,v 1.9 2005/07/30 03:35:16 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -66,8 +66,6 @@ struct Message unrxline_msgtab = {
   {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_unrxline, m_ignore}
 };
 
-extern dlink_list temporary_rxlines;
-
 #ifndef STATIC_MODULES
 void
 _modinit(void)
@@ -83,7 +81,7 @@ _moddeinit(void)
   mod_del_cmd(&unrxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 #endif
 
 static char buffer[IRCD_BUFSIZE];
