@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.27 2005/07/28 22:30:23 db Exp $
+ *  $Id: m_tb.c,v 1.28 2005/07/30 20:07:14 db Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,7 @@
 static void ms_tb(struct Client *, struct Client *, int, char *[]);
 static void set_topic(struct Client *, struct Channel *, time_t, char *, char *);
 
-struct Message tburst_msgtab = {
+struct Message tb_msgtab = {
   "TB", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_ignore, m_ignore, ms_tb, m_ignore, m_ignore, m_ignore}
 };
@@ -54,18 +54,18 @@ struct Message tburst_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(&tburst_msgtab);
+  mod_add_cmd(&tb_msgtab);
   add_capability("TB", CAP_TB, 1);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(&tburst_msgtab);
+  mod_del_cmd(&tb_msgtab);
   delete_capability("TB");
 }
 
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 
 #endif /* !STATIC_MODULES */
 
