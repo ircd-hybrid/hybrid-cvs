@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.25 2005/06/23 16:04:39 michael Exp $
+ *  $Id: m_tb.c,v 1.25.2.1 2005/07/30 20:13:38 db Exp $
  */
 
 #include "stdinc.h"
@@ -41,22 +41,12 @@
 #include "s_serv.h"
 #include "s_conf.h"
 
-
-/* TBURST_PROPAGATE
- *
- * If this is defined, when we receive a TBURST thats successful
- * (ie: our topic changes), the TBURST will be propagated to other
- * servers that support TBURST
- */
-#define TBURST_PROPAGATE
-
-static void ms_tburst(struct Client *, struct Client *, int, char *[]);
+static void ms_tb(struct Client *, struct Client *, int, char *[]);
 static void set_topic(struct Client *, struct Channel *, time_t, char *, char *);
-int send_tburst(struct hook_burst_channel *);
 
 struct Message tburst_msgtab = {
-  "TBURST", 0, 0, 6, 0, MFLG_SLOW, 0,
-  {m_ignore, m_ignore, ms_tburst, m_ignore, m_ignore, m_ignore}
+  "TB", 0, 0, 0, 0, MFLG_SLOW, 0,
+  {m_ignore, m_ignore, ms_tb, m_ignore, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -65,82 +55,98 @@ void
 _modinit(void)
 {
   mod_add_cmd(&tburst_msgtab);
-  hook_add_hook("burst_channel", (hookfn *)send_tburst);
-  add_capability("TBURST", CAP_TBURST, 1);
+  add_capability("TB", CAP_TB, 1);
 }
 
 void
 _moddeinit(void)
 {
   mod_del_cmd(&tburst_msgtab);
-  hook_del_hook("burst_channel", (hookfn *)send_tburst);
-  delete_capability("TBURST");
+  delete_capability("TB");
 }
 
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.25.2.1 $";
 
 #endif /* !STATIC_MODULES */
 
-/* ms_tburst()
+/* ms_tb()
  * 
  *      parv[0] = sender prefix
- *      parv[1] = channel timestamp
- *      parv[2] = channel
- *      parv[3] = topic timestamp
- *      parv[4] = topic setter
- *      parv[5] = topic
+ *      parv[1] = channel name
+ *      parv[2] = topic timestamp
+ *      parv[3] = topic setter OR topic itself if parc == 4
+ *      parv[4] = topic itself if parc == 5
+ *
+ * Rewritten from original m_tburst 
+ * set_topic() is from original m_tburst.c rewritten to use TB not TBURST
+ * - Dianora July 28 2005
  */
+#define tb_channel      parv[1]
+#define tb_topicts_str  parv[2]
+
 static void
-ms_tburst(struct Client *client_p, struct Client *source_p,
+ms_tb(struct Client *client_p, struct Client *source_p,
           int parc, char *parv[])
 {
   struct Channel *chptr;
-  time_t oldchannelts = atol(parv[1]);
-  time_t oldtopicts = atol(parv[3]);
+  time_t tb_topicts = atol(tb_topicts_str);
+  char *tb_whoset=NULL;
+  char *tb_topic=NULL;
 
-  if ((chptr = hash_find_channel(parv[2])) == NULL)
+  if ((chptr = hash_find_channel(tb_channel)) == NULL)
     return;
 
-  /* If the topics are the same (due to lag) ignore it */
-  if ((chptr->topic != NULL) && !strcmp(chptr->topic, parv[5]))
-    return;
+  if (parc == 5)
+  {
+    tb_whoset = parv[3];
+    tb_topic = parv[4];
+  }
+  else
+  {
+    tb_whoset = source_p->name;
+    tb_topic = parv[3];
+  }
 
-  /* Only allow topic change if we are the newer TS and server
-   * sending TBURST has older TS and topicTS on older TS is
-   * newer than current topicTS. -metalrock
-   */
-  if ((oldchannelts <= chptr->channelts) &&
-      ((chptr->topic == NULL) || (oldtopicts > chptr->topic_time)))
-    set_topic(source_p, chptr, oldtopicts, parv[4], parv[5]);
+  if (chptr->topic != NULL)
+  {
+    if (tb_topicts < chptr->topic_time)
+    {
+      /* If the topics are the same (due to lag) ignore it */
+      if (strcmp(chptr->topic, tb_topic) == 0)
+        return;
+    }
+    else
+      return;
+  }
+  set_topic(source_p, chptr, tb_topicts, tb_whoset, tb_topic);
 }
 
+/*
+ * set_topic
+ *
+ * inputs	- source_p pointer
+ *		- channel pointer
+ *		- topicts to set
+ *		- who to set as who doing the topic
+ *		- topic
+ * output	- none
+ * Side effects	- simply propagates topic as needed
+ * little helper function, could be removed
+ */
 static void
 set_topic(struct Client *source_p, struct Channel *chptr, 
-          time_t oldtopicts, char *topicwho, char *topic)
+          time_t topicts, char *topicwho, char *topic)
 {
-  set_channel_topic(chptr, topic, topicwho, oldtopicts);
+  set_channel_topic(chptr, topic, topicwho, topicts);
 
   sendto_channel_local(ALL_MEMBERS, chptr, ":%s TOPIC %s :%s",
 		       ConfigServerHide.hide_servers ? me.name : source_p->name,
 		       chptr->chname, chptr->topic == NULL ? "" : chptr->topic);
 
-#ifdef TBURST_PROPAGATE
-  sendto_server(source_p, NULL, chptr, CAP_TBURST, NOCAPS, NOFLAGS,
-		":%s TBURST %lu %s %lu %s :%s",
-		me.name, (unsigned long)chptr->channelts, chptr->chname,
+  sendto_server(source_p, NULL, chptr, CAP_TB, NOCAPS, NOFLAGS,
+		":%s TB %s %lu %s :%s",
+		me.name, chptr->chname,
 		(unsigned long)chptr->topic_time, 
                 chptr->topic_info == NULL ? "" : chptr->topic_info,
                 chptr->topic == NULL ? "" : chptr->topic);
-#endif
-}
-
-int
-send_tburst(struct hook_burst_channel *data)
-{
-  if (data->chptr->topic != NULL && IsCapable(data->client, CAP_TBURST))
-    sendto_one(data->client, ":%s TBURST %lu %s %lu %s :%s",
-               me.name, (unsigned long)data->chptr->channelts, data->chptr->chname,
-	       (unsigned long)data->chptr->topic_time, data->chptr->topic_info, 
-	       data->chptr->topic);
-  return(0);
 }

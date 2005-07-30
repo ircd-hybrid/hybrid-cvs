@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.393.2.2 2005/07/23 23:27:12 adx Exp $
+ *  $Id: ircd_parser.y,v 1.393.2.3 2005/07/30 20:13:39 db Exp $
  */
 
 %{
@@ -334,6 +334,7 @@ unhook_hub_leaf_confs(void)
 %token  T_UNXLINE
 %token  T_WALLOP
 %token  THROTTLE_TIME
+%token  TOPICBURST
 %token  TRUE_NO_OPER_FLOOD
 %token  UNKLINE
 %token  USER
@@ -1290,6 +1291,13 @@ oper_flags_item_atom: GLOBAL_KILL
   {
     if (not_atom) yy_aconf->port &= ~OPER_FLAG_REMOTEBAN;
     else yy_aconf->port |= OPER_FLAG_REMOTEBAN;
+  }
+} | ENCRYPTED
+{
+  if (ypass == 2)
+  {
+    if (not_atom) ClearConfEncrypted(yy_aconf);
+    else SetConfEncrypted(yy_aconf);
   }
 };
 
@@ -2342,31 +2350,56 @@ connect_flags: IRCD_FLAGS
 } '='  connect_flags_items ';';
 
 connect_flags_items: connect_flags_items ',' connect_flags_item | connect_flags_item;
-connect_flags_item: LAZYLINK
+connect_flags_item: NOT connect_flags_item_atom { not_atom = 1; }
+			| connect_flags_item_atom { not_atom = 0; };
+
+connect_flags_item_atom: LAZYLINK
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_LAZY_LINK;
+  {
+    if (not_atom)ClearConfLazyLink(yy_aconf);
+    else SetConfLazyLink(yy_aconf);
+  }
 } | COMPRESSED
 {
   if (ypass == 2)
 #ifndef HAVE_LIBZ
     yyerror("Ignoring flags = compressed; -- no zlib support");
 #else
-    yy_aconf->flags |= CONF_FLAGS_COMPRESSED;
+ {
+   if (not_atom)ClearConfCompressed(yy_aconf);
+   else SetConfCompressed(yy_aconf);
+ }
 #endif
 } | CRYPTLINK
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_CRYPTLINK;
+  {
+    if (not_atom)ClearConfCryptLink(yy_aconf);
+    else SetConfCryptLink(yy_aconf);
+  }
 } | AUTOCONN
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_ALLOW_AUTO_CONN;
+  {
+    if (not_atom)ClearConfAllowAutoConn(yy_aconf);
+    else SetConfAllowAutoConn(yy_aconf);
+  }
 } | BURST_AWAY
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_BURST_AWAY;
-};
+  {
+    if (not_atom)ClearConfAwayBurst(yy_aconf);
+    else SetConfAwayBurst(yy_aconf);
+  }
+} | TOPICBURST
+{
+  if (ypass == 2)
+  {
+    if (not_atom)ClearConfTopicBurst(yy_aconf);
+    else SetConfTopicBurst(yy_aconf);
+  }
+} ;
 
 connect_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
 {
@@ -3411,6 +3444,7 @@ channel_item:       channel_disable_local_channels |
 		    channel_default_split_server_count |
 		    channel_no_create_on_split | 
 		    channel_no_join_on_split |
+		    channel_burst_topicwho |
 		    error;
 
 channel_disable_local_channels: DISABLE_LOCAL_CHANNELS '=' TBOOL ';'
@@ -3495,6 +3529,12 @@ channel_no_join_on_split: NO_JOIN_ON_SPLIT '=' TBOOL ';'
 {
   if (ypass == 2)
     ConfigChannel.no_join_on_split = yylval.number;
+};
+
+channel_burst_topicwho: BURST_TOPICWHO '=' TBOOL ';'
+{
+  if (ypass == 2)
+    ConfigChannel.burst_topicwho = yylval.number;
 };
 
 /***************************************************************************

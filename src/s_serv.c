@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.414.2.1 2005/07/28 04:14:09 adx Exp $
+ *  $Id: s_serv.c,v 7.414.2.2 2005/07/30 20:13:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -68,6 +68,7 @@ static void server_burst(struct Client *);
 static int fork_server(struct Client *);
 static void burst_all(struct Client *);
 static void cjoin_all(struct Client *);
+static void send_tb(struct Client *client_p, struct Channel *chptr);
 
 static CNCB serv_connect_callback;
 
@@ -878,7 +879,7 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
 	       (unsigned long) target_p->tsinfo,
 	       ubuf, target_p->username, target_p->host,
 	       target_p->user->server->name, target_p->info);
-  if (IsAwayBurst((struct AccessItem *)map_to_conf(client_p->serv->sconf)))
+  if (IsConfAwayBurst((struct AccessItem *)map_to_conf(client_p->serv->sconf)))
     if (!EmptyString(target_p->user->away))
       sendto_one(client_p, ":%s AWAY :%s", target_p->name,
                  target_p->user->away);
@@ -1026,8 +1027,10 @@ server_estab(struct Client *client_p)
      */
 
      send_capabilities(client_p, aconf,
-       ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
-       | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0) , 0);
+       (IsConfLazyLink(aconf) ? find_capability("LL") : 0)
+       | (IsConfCompressed(aconf) ? find_capability("ZIP") : 0)
+       | (IsConfTopicBurst(aconf) ? find_capability("TB") : 0)
+       , 0);
 
     /* SERVER is the last command sent before switching to ziplinks.
      * We set TCPNODELAY on the socket to make sure it gets sent out
@@ -1571,7 +1574,6 @@ burst_all(struct Client *client_p)
 {
   struct Client *target_p;
   struct Channel *chptr;
-  struct hook_burst_channel hinfo; 
   dlink_node *gptr;
   dlink_node *ptr;
 
@@ -1582,11 +1584,9 @@ burst_all(struct Client *client_p)
     if (dlink_list_length(&chptr->members) != 0)
     {
       burst_members(client_p, chptr);
-
       send_channel_modes(client_p, chptr);
-      hinfo.chptr  = chptr;
-      hinfo.client = client_p;
-      hook_call_event("burst_channel", &hinfo);
+      if (IsCapable(client_p, CAP_TB))
+	send_tb(client_p, chptr);
     }
   }
 
@@ -1608,6 +1608,35 @@ burst_all(struct Client *client_p)
   /* Its simpler to just send EOB and use the time its been connected.. --fl_ */
   if (IsCapable(client_p, CAP_EOB))
     sendto_one(client_p, ":%s EOB", ID_or_name(&me, client_p));
+}
+
+/*
+ * send_tb
+ *
+ * inputs	- pointer to Client
+ *		- pointer to channel
+ * output	- NONE
+ * side effects	- called when hooked by a burst_channel
+ */
+static void
+send_tb(struct Client *client_p, struct Channel *chptr)
+{
+  if (chptr->topic != NULL && IsCapable(client_p, CAP_TB))
+  {
+    if (ConfigChannel.burst_topicwho)
+    {
+      sendto_one(client_p, ":%s TB %s %lu %s :%s",
+		 me.name, chptr->chname,
+		 (unsigned long)chptr->topic_time,
+		 chptr->topic_info, chptr->topic);
+    }
+    else
+    {
+      sendto_one(client_p, ":%s TB %s %lu %s",
+		 me.name, chptr->chname,
+		 (unsigned long)chptr->topic_time, chptr->topic);
+    }
+  }
 }
 
 /* cjoin_all()
@@ -2171,8 +2200,9 @@ serv_connect_callback(int fd, int status, void *data)
    * If this is a HUB, pass on CAP_HUB
    */
   send_capabilities(client_p, aconf,
- 		    ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
-		    | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0)
+ 		    (IsConfLazyLink(aconf) ? find_capability("LL") : 0)
+		    | (IsConfCompressed(aconf) ? find_capability("ZIP") : 0)
+		    | (IsConfTopicBurst(aconf) ? find_capability("TB") : 0)
 		    , 0);
 
   sendto_one(client_p, "SERVER %s 1 :%s%s",
@@ -2283,9 +2313,10 @@ cryptlink_init(struct Client *client_p, struct ConfItem *conf, int fd)
   }
 
   send_capabilities(client_p, aconf,
-		    ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
-    		    | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0) ,
-         	    CAP_ENC_MASK);
+ 		    (IsConfLazyLink(aconf) ? find_capability("LL") : 0)
+		    | (IsConfCompressed(aconf) ? find_capability("ZIP") : 0)
+		    | (IsConfTopicBurst(aconf) ? find_capability("TB") : 0)
+		    , CAP_ENC_MASK);
 
   sendto_one(client_p, "CRYPTLINK SERV %s %s :%s%s",
              my_name_for_link(conf), key_to_send,
