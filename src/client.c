@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.458 2005/07/28 16:26:39 adx Exp $
+ *  $Id: client.c,v 7.459 2005/07/30 16:39:03 adx Exp $
  */
 
 #include "stdinc.h"
@@ -921,9 +921,6 @@ remove_dependents(struct Client *client_p, struct Client *source_p,
                                              IsCapable(to, CAP_QS)))
       continue;
 
-      /* MyConnect(source_p) is rotten at this point: if source_p
-       * was mine, ->from is NULL. 
-       */
       /* The WALLOPS isn't needed here as pointed out by
        * comstud, since m_squit already does the notification.
        */
