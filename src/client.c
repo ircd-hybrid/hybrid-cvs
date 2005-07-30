@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.459 2005/07/30 16:39:03 adx Exp $
+ *  $Id: client.c,v 7.460 2005/07/30 17:14:47 adx Exp $
  */
 
 #include "stdinc.h"
@@ -173,9 +173,6 @@ free_client(struct Client *client_p)
           !client_p->localClient->listener->active) 
         free_listener(client_p->localClient->listener);
     }
-
-    if (client_p->localClient->fd.flags.open)
-      fd_close(&client_p->localClient->fd);
 
     dbuf_clear(&client_p->localClient->buf_recvq);
     dbuf_clear(&client_p->localClient->buf_sendq);
@@ -713,18 +710,8 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
     /* The bulk of this is done in remove_dependents now, all
     ** we have left to do is send the SQUIT upstream.  -orabidoo
     */
-    if (MyConnect(source_p))
+    if (!MyConnect(source_p))
     {
-      if (source_p->localClient->ctrlfd.flags.open)
-      {
-        fd_close(&source_p->localClient->ctrlfd);
-#ifndef HAVE_SOCKETPAIR
-        fd_close(&source_p->localClient->ctrlfd_r);
-        fd_close(&source_p->localClient->fd_r);
-#endif
-      }
-    }
-    else {
       source_p->from->serv->dep_servers--;
       assert(source_p->from->serv->dep_servers > 0);
     }
