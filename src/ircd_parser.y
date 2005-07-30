@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.414 2005/07/29 19:11:48 db Exp $
+ *  $Id: ircd_parser.y,v 1.415 2005/07/30 09:38:47 michael Exp $
  */
 
 %{
@@ -643,7 +643,7 @@ serverinfo_network_desc: NETWORK_DESC '=' QSTRING ';'
 
 serverinfo_vhost: VHOST '=' QSTRING ';'
 {
-  if (ypass == 2)
+  if (ypass == 2 && *yylval.string != '*')
   {
     struct addrinfo hints, *res;
 
@@ -672,7 +672,7 @@ serverinfo_vhost: VHOST '=' QSTRING ';'
 serverinfo_vhost6: VHOST6 '=' QSTRING ';'
 {
 #ifdef IPV6
-  if (ypass == 2)
+  if (ypass == 2 && *yylval.string != '*')
   {
     struct addrinfo hints, *res;
 
