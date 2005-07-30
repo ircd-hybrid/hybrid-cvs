@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.450.2.1 2005/07/28 16:40:48 adx Exp $
+ *  $Id: client.c,v 7.450.2.2 2005/07/30 21:17:10 db Exp $
  */
 
 #include "stdinc.h"
@@ -752,13 +752,6 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
 #endif
       }
     }
-
-    target_p = source_p->from;
-
-    if (target_p && IsServer(target_p) && target_p != client_p &&
-        !IsMe(target_p) && !IsKilled(source_p))
-      sendto_one(target_p, ":%s SQUIT %s :%s",
-                 ID_or_name(from, target_p), ID_or_name(source_p, target_p), comment);
   }
   else if (IsPerson(source_p)) /* ...just clean all others with QUIT... */
   {
@@ -865,7 +858,8 @@ recurse_send_quits(struct Client *original_source_p, struct Client *source_p,
     target_p = ptr->data;
     recurse_send_quits(original_source_p, target_p, to, comment, myname);
   }
-
+    /* don't use a prefix here - we have to be 100% sure the message
+     * will be accepted without Unknown prefix etc.. */
   if (!hidden && (!IsCapable(to, CAP_QS) || source_p == original_source_p))
     sendto_one(to, "SQUIT %s :%s", ID_or_name(source_p, to), me.name);
 }
@@ -1189,6 +1183,13 @@ exit_client(
 
     if (!IsDead(source_p))
     {
+      if (IsServer(source_p))
+      {
+        /* for them, we are exiting the network */
+        sendto_one(source_p, ":%s SQUIT %s :%s",
+	           ID_or_name(from, source_p), me.name, comment);
+      }
+
       if (client_p != NULL && source_p != client_p)
         sendto_one(source_p, "ERROR :Closing Link: %s %s (%s)",
                    source_p->host, source_p->name, comment);
