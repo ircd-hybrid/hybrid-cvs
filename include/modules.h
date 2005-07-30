@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.60 2005/07/25 04:52:36 adx Exp $
+ *  $Id: modules.h,v 7.61 2005/07/30 22:16:08 metalrock Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -98,7 +98,6 @@ extern struct Message cjoin_msgtab;
 extern struct Message close_msgtab;
 extern struct Message connect_msgtab;
 extern struct Message die_msgtab;
-extern struct Message dmem_msgtab;
 extern struct Message drop_msgtab;
 extern struct Message eob_msgtab;
 extern struct Message error_msgtab;
