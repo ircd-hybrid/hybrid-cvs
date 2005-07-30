@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.304 2005/07/29 19:11:47 db Exp $
+ *  $Id: s_conf.h,v 7.305 2005/07/30 18:57:39 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -250,7 +250,7 @@ struct ClassItem
 #define IsConfTemporary(x)      ((x)->flags & CONF_FLAGS_TEMPORARY)
 #define SetConfTemporary(x)     ((x)->flags |= CONF_FLAGS_TEMPORARY)
 #define IsConfRedir(x)          ((x)->flags & CONF_FLAGS_REDIR)
-#define IsAwayBurst(x)          ((x)->flags & CONF_FLAGS_BURST_AWAY)
+#define IsConfAwayBurst(x)      ((x)->flags & CONF_FLAGS_BURST_AWAY)
 #define SetConfAwayBurst(x)     ((x)->flags |= CONF_FLAGS_BURST_AWAY)
 #define ClearConfAwayBurst(x)   ((x)->flags &= ~CONF_FLAGS_BURST_AWAY)
 #define IsConfTopicBurst(x)     ((x)->flags & CONF_FLAGS_TOPICBURST)
