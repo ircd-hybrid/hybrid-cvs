@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_post.c,v 1.18 2004/07/08 00:27:22 erik Exp $
+ *  $Id: m_post.c,v 1.19 2005/07/30 20:44:14 adx Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,7 @@ _moddeinit(void)
   mod_del_cmd(&put_msgtab);
 }
 
-const char *_version = "$Revision: 1.18 $";
+const char *_version = "$Revision: 1.19 $";
 #endif
 
 /*
@@ -84,5 +84,5 @@ mr_dumb_proxy(struct Client *client_p, struct Client *source_p,
   sendto_realops_flags(UMODE_REJ, L_ALL,
                        "HTTP Proxy disconnected: [%s@%s]",
                        client_p->username, client_p->host);
-  exit_client(client_p, source_p, source_p, "Client Exit");
+  exit_client(source_p, source_p, "Client Exit");
 }

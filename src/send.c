@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.294 2005/07/26 03:33:05 adx Exp $
+ *  $Id: send.c,v 7.295 2005/07/30 20:44:20 adx Exp $
  */
 
 #include "stdinc.h"
@@ -216,7 +216,7 @@ send_message_remote(struct Client *to, struct Client *from,
                  me.name, from->name, to->name, to->username,
                  to->host, to->from);
 
-    exit_client(NULL, to, &me, "Ghosted client");
+    exit_client(to, &me, "Ghosted client");
 
     return;
   } 

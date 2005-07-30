@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.351 2005/07/29 21:08:17 michael Exp $
+ *  $Id: s_user.c,v 7.352 2005/07/30 20:44:20 adx Exp $
  */
 
 #include <sys/types.h>
@@ -63,7 +63,7 @@ static void user_welcome(struct Client *);
 static void report_and_set_user_flags(struct Client *, struct AccessItem *);
 static int check_xline(struct Client *);
 static int check_regexp_xline(struct Client *);
-static int introduce_client(struct Client *, struct Client *);
+static void introduce_client(struct Client *, struct Client *);
 
 struct Isupport 
 {
@@ -292,7 +292,7 @@ show_isupport(struct Client *source_p)
 **         this is not fair. It should actually request another
 **         nick from local user or kill him/her...
 */
-int
+void
 register_local_user(struct Client *client_p, struct Client *source_p, 
                     const char *nick, const char *username)
 {
@@ -317,11 +317,11 @@ register_local_user(struct Client *client_p, struct Client *source_p,
       sendto_one(source_p, "PING :%lu",
                  source_p->localClient->random_ping);
       SetPingSent(source_p);
-      return -1;
+      return;
     }
 
     if (!HasPingCookie(source_p))
-      return -1;
+      return;
   }
 
   source_p->localClient->last = CurrentTime;
@@ -329,7 +329,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   source_p->localClient->allow_read = MAX_FLOOD_BURST;
 
   if ((status = check_client(client_p, source_p, username)) < 0)
-    return CLIENT_EXITED;
+    return;
 
   if (valid_hostname(source_p->host) == 0)
   {
@@ -352,8 +352,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
       ServerStats->is_ref++;
       sendto_one(source_p, ":%s NOTICE %s :*** Notice -- You need to install "
                  "identd to use this server", me.name, source_p->name);
-      exit_client(client_p, source_p, &me, "Install identd");
-      return CLIENT_EXITED;
+      exit_client(source_p, &me, "Install identd");
+      return;
     }
 
     p = username;
@@ -379,8 +379,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     ServerStats->is_ref++;
     sendto_one(source_p, form_str(ERR_PASSWDMISMATCH),
                me.name, source_p->name);
-    exit_client(client_p, source_p, &me, "Bad Password");
-    return CLIENT_EXITED;
+    exit_client(source_p, &me, "Bad Password");
+    return;
   }
 
   /* don't free source_p->localClient->passwd here - it can be required
@@ -406,8 +406,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
                          "Too many clients, rejecting %s[%s].",
                          nick, source_p->host);
     ServerStats->is_ref++;
-    exit_client(client_p, source_p, &me, "Sorry, server is full - try later");
-    return CLIENT_EXITED;
+    exit_client(source_p, &me, "Sorry, server is full - try later");
+    return;
   }
 
   /* valid user name check */
@@ -419,18 +419,18 @@ register_local_user(struct Client *client_p, struct Client *source_p,
                          nick, source_p->username, source_p->host);
     ServerStats->is_ref++;
     ircsprintf(tmpstr2, "Invalid username [%s]", source_p->username);
-    exit_client(client_p, source_p, &me, tmpstr2);
-    return CLIENT_EXITED;
+    exit_client(source_p, &me, tmpstr2);
+    return;
   }
 
   assert(source_p == client_p);
 
   /* end of valid user name check */
   if (check_xline(source_p) || check_regexp_xline(source_p))
-    return CLIENT_EXITED;
+    return;
 
   if (IsDead(client_p))
-    return CLIENT_EXITED;
+    return;
 
   while (hash_find_id((id = uid_get())))
     ;
@@ -455,7 +455,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   /* If they have died in send_* don't do anything. */
   if (IsDead(source_p))
-    return CLIENT_EXITED;
+    return;
 
   source_p->umodes |= UMODE_INVISIBLE;
   Count.invisi++;
@@ -492,7 +492,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   add_user_host(source_p->username, source_p->host, 0);
   SetUserHost(source_p);
 
-  return introduce_client(client_p, source_p);
+  introduce_client(client_p, source_p);
 }
 
 /* register_remote_user()
@@ -502,7 +502,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
  * side effects	- This function is called when a remote client
  *		  is introduced by a server.
  */
-int
+void
 register_remote_user(struct Client *client_p, struct Client *source_p,
 		     const char *username, const char *host, const char *server,
 		     const char *realname)
@@ -541,7 +541,8 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
 
     /* XXX */
     SetKilled(source_p);
-    return exit_client(NULL, source_p, &me, "Ghosted Client");
+    exit_client(source_p, &me, "Ghosted Client");
+    return;
   }
 
   if ((target_p = source_p->servptr) && target_p->from != source_p->from)
@@ -555,7 +556,8 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
                 "%s (NICK from wrong direction (%s != %s))",
                 me.name, source_p->servptr->name, target_p->from->name);
     SetKilled(source_p);
-    return exit_client(source_p, source_p, &me, "USER server wrong direction");
+    exit_client(source_p, &me, "USER server wrong direction");
+    return;
   }
 
   SetClient(source_p);
@@ -563,7 +565,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   add_user_host(source_p->username, source_p->host, 1);
   SetUserHost(source_p);
 
-  return introduce_client(client_p, source_p);
+  introduce_client(client_p, source_p);
 }
 
 /* introduce_client()
@@ -574,7 +576,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
  *		  of the net, either from a local client connect or
  *		  from a remote connect.
  */
-static int
+static void
 introduce_client(struct Client *client_p, struct Client *source_p)
 {
   dlink_node *server_node;
@@ -658,8 +660,6 @@ introduce_client(struct Client *client_p, struct Client *source_p)
                    source_p->info);
     }
   }
-
-  return(0);
 }
 
 /* valid_hostname()
@@ -816,7 +816,7 @@ report_and_set_user_flags(struct Client *source_p, struct AccessItem *aconf)
  * output	-
  * side effects -
  */
-int
+void
 do_local_user(const char *nick, struct Client *client_p, struct Client *source_p,
               const char *username, const char *host, const char *server,
               const char *realname)
@@ -825,13 +825,13 @@ do_local_user(const char *nick, struct Client *client_p, struct Client *source_p
   assert(source_p->username != username);
 
   if (source_p == NULL)
-    return(0);
+    return;
 
   if (!IsUnknown(source_p))
   {
     sendto_one(source_p, form_str(ERR_ALREADYREGISTRED),
                me.name, nick);
-    return(0);
+    return;
   }
 
   source_p->flags |= FLAGS_GOTUSER;
@@ -852,12 +852,10 @@ do_local_user(const char *nick, struct Client *client_p, struct Client *source_p
   }
 
   if (source_p->name[0])
-  { 
+  {
     /* NICK already received, now I have USER... */
-    return(register_local_user(client_p, source_p, source_p->name, username));
+    register_local_user(client_p, source_p, source_p->name, username);
   }
-
-  return(0);
 }
 
 /* set_user_mode()
@@ -1216,7 +1214,7 @@ check_xline(struct Client *source_p)
 			 source_p->sockhost);
 
     ServerStats->is_ref++;      
-    exit_client(source_p, source_p, &me, "Bad user info");
+    exit_client(source_p, &me, "Bad user info");
     return 1;
   }
 
@@ -1253,7 +1251,7 @@ check_regexp_xline(struct Client *source_p)
                            source_p->sockhost);
 
       ServerStats->is_ref++;
-      exit_client(source_p, source_p, &me, "Bad user info");
+      exit_client(source_p, &me, "Bad user info");
       return 1;
     }
   }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_svinfo.c,v 1.39 2004/07/08 00:27:23 erik Exp $
+ *  $Id: m_svinfo.c,v 1.40 2005/07/30 20:44:14 adx Exp $
  */
 #include "stdinc.h"
 #include "handlers.h"
@@ -56,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&svinfo_msgtab);
 }
 
-const char *_version = "$Revision: 1.39 $";
+const char *_version = "$Revision: 1.40 $";
 #endif
 /*
  * ms_svinfo - SVINFO message handler
@@ -75,7 +75,7 @@ ms_svinfo(struct Client *client_p, struct Client *source_p,
 
   if (MyConnect(source_p) && IsUnknown(source_p))
   {
-    exit_client(source_p, source_p, source_p, "Need SERVER before SVINFO");
+    exit_client(source_p, source_p, "Need SERVER before SVINFO");
     return;
   }
 
@@ -95,7 +95,7 @@ ms_svinfo(struct Client *client_p, struct Client *source_p,
       sendto_realops_flags(UMODE_ALL, L_OPER,
                  "Link %s dropped, wrong TS protocol version (%s,%s)",
                  get_client_name(source_p, MASK_IP), parv[1], parv[2]);
-      exit_client(source_p, source_p, source_p, "Incompatible TS version");
+      exit_client(source_p, source_p, "Incompatible TS version");
       return;
     }
 
@@ -126,7 +126,7 @@ ms_svinfo(struct Client *client_p, struct Client *source_p,
           (unsigned long) CurrentTime,
           (unsigned long) theirtime,
           (int) deltat);
-      exit_client(source_p, source_p, source_p, "Excessive TS delta");
+      exit_client(source_p, source_p, "Excessive TS delta");
       return;
     }
 

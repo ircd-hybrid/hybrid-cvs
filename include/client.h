@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.240 2005/07/27 01:11:08 adx Exp $
+ *  $Id: client.h,v 7.241 2005/07/30 20:44:12 adx Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -549,8 +549,8 @@ extern dlink_list listing_client_list;
 extern dlink_list global_client_list;
 
 extern int accept_message(struct Client *, struct Client *);
-extern int set_initial_nick(struct Client *, struct Client *, const char *);
-extern int exit_client(struct Client *, struct Client *, struct Client *, const char *);
+extern void set_initial_nick(struct Client *, struct Client *, const char *);
+extern void exit_client(struct Client *, struct Client *, const char *);
 extern void check_conf_klines(void);
 extern void init_client(void);
 extern void del_from_accept(struct Client *, struct Client *);

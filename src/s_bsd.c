@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.234 2005/07/30 17:14:47 adx Exp $
+ *  $Id: s_bsd.c,v 7.235 2005/07/30 20:44:19 adx Exp $
  */
 
 #include "stdinc.h"
@@ -364,8 +364,7 @@ ssl_handshake(int fd, struct Client *client_p)
         return;
 
       default:
-        exit_client(client_p, client_p, client_p,
-	            "Error during SSL handshake");
+        exit_client(client_p, client_p, "Error during SSL handshake");
 	return;
     }
 
@@ -459,7 +458,7 @@ add_connection(struct Listener* listener, int fd)
            ERR_error_string(ERR_get_error(), NULL));
 
       SetDead(new_client);
-      exit_client(new_client, new_client, new_client, "SSL_new failed");
+      exit_client(new_client, new_client, "SSL_new failed");
       return;
     }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.61 2005/07/26 03:33:00 adx Exp $
+ *  $Id: m_cryptlink.c,v 1.62 2005/07/30 20:44:14 adx Exp $
  */
 
 /*
@@ -95,7 +95,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.61 $";
+const char *_version = "$Revision: 1.62 $";
 #endif
 
 
@@ -301,7 +301,7 @@ cryptlink_serv(struct Client *client_p, struct Client *source_p,
 
   if (bogus_host(name))
   {
-    exit_client(client_p, client_p, client_p, "Bogus server name");
+    exit_client(client_p, client_p, "Bogus server name");
     return;
   }
 
@@ -316,7 +316,7 @@ cryptlink_serv(struct Client *client_p, struct Client *source_p,
           "Unauthorized server connection attempt: No entry for server",
           NULL);
       }
-      exit_client(client_p, client_p, client_p, "Invalid server name");
+      exit_client(client_p, client_p, "Invalid server name");
       return;
       break;
     case -2:

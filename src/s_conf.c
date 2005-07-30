@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.546 2005/07/29 21:14:17 michael Exp $
+ *  $Id: s_conf.c,v 7.547 2005/07/30 20:44:19 adx Exp $
  */
 
 #include "stdinc.h"
@@ -856,7 +856,7 @@ check_client(struct Client *client_p, struct Client *source_p, const char *usern
   switch (i)
   {
     case IRCD_SOCKET_ERROR:
-      exit_client(client_p, source_p, &me, "Socket Error");
+      exit_client(source_p, &me, "Socket Error");
       break;
 
     case TOO_MANY:
@@ -867,8 +867,7 @@ check_client(struct Client *client_p, struct Client *source_p, const char *usern
       ilog(L_INFO,"Too many connections on IP from %s.",
 	   get_client_name(source_p, SHOW_IP));
       ServerStats->is_ref++;
-      exit_client(client_p, source_p, &me, 
-			"No more connections allowed on that IP");
+      exit_client(source_p, &me, "No more connections allowed on that IP");
       break;
 
     case I_LINE_FULL:
@@ -879,7 +878,7 @@ check_client(struct Client *client_p, struct Client *source_p, const char *usern
       ilog(L_INFO,"Too many connections from %s.",
 	   get_client_name(source_p, SHOW_IP));
        ServerStats->is_ref++;
-      exit_client(client_p, source_p, &me, 
+      exit_client(source_p, &me, 
 		"No more connections allowed in your connection class");
       break;
 
@@ -903,13 +902,12 @@ check_client(struct Client *client_p, struct Client *source_p, const char *usern
 	  get_client_name(source_p, SHOW_IP),
 	  source_p->localClient->listener->name,
 	  source_p->localClient->listener->port);
-      exit_client(client_p, source_p, &me,
-		  "You are not authorized to use this server");
+      exit_client(source_p, &me, "You are not authorized to use this server");
       break;
     }
  
    case BANNED_CLIENT:
-      exit_client(client_p, source_p, &me, "*** Banned ");
+      exit_client(source_p, &me, "Banned");
       ServerStats->is_ref++;
       break;
 

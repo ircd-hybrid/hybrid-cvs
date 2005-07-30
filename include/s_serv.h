@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.95 2005/07/28 21:17:25 db Exp $
+ *  $Id: s_serv.h,v 7.96 2005/07/30 20:44:12 adx Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -248,7 +248,7 @@ extern int delete_capability(const char *capab_name);
 extern int find_capability(const char *capab);
 extern void send_capabilities(struct Client *, struct AccessItem *conf, int, int);
 extern void write_links_file(void *);
-extern int server_estab(struct Client *client_p);
+extern void server_estab(struct Client *client_p);
 extern void set_autoconn(struct Client *, const char *, int);
 extern const char *show_capabilities(struct Client* client);
 extern void try_connections(void *unused);

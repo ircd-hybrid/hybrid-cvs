@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.124 2005/07/26 03:33:04 adx Exp $
+ *  $Id: packet.c,v 7.125 2005/07/30 20:44:19 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -482,7 +482,7 @@ read_packet(fde_t *fd, void *data)
     {
       if (!(ConfigFileEntry.no_oper_flood && IsOper(client_p)))
       {
-        exit_client(client_p, client_p, client_p, "Excess Flood");
+        exit_client(client_p, client_p, "Excess Flood");
         return;
       }
     }

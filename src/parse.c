@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.200 2005/07/26 23:44:16 adx Exp $
+ *  $Id: parse.c,v 7.201 2005/07/30 20:44:19 adx Exp $
  */
 
 #include "stdinc.h"
@@ -392,7 +392,7 @@ handle_command(struct Message *mptr, struct Client *client_p,
                            client_p->name, mptr->cmd, i, mptr->parameters);
       ilog(L_CRIT, "Insufficient parameters (%d) for command '%s' from %s.",
            i, mptr->cmd, client_p->name);
-      exit_client(client_p, client_p, client_p,
+      exit_client(client_p, client_p,
                   "Not enough arguments to server command.");
     }
   }

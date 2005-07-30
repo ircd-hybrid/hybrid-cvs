@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_quit.c,v 1.40 2004/07/08 00:27:30 erik Exp $
+ *  $Id: m_quit.c,v 1.41 2005/07/30 20:44:17 adx Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&quit_msgtab);
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
 
 /*
@@ -79,7 +79,7 @@ m_quit(struct Client *client_p, struct Client *source_p,
   else
     strlcpy(reason, "Client Quit", sizeof(reason));
 
-  exit_client(client_p, source_p, source_p, reason);
+  exit_client(source_p, source_p, reason);
 }
 
 /*
@@ -96,5 +96,5 @@ ms_quit(struct Client *client_p, struct Client *source_p,
   if (strlen(comment) > (size_t)TOPICLEN)
     comment[TOPICLEN] = '\0';
 
-  exit_client(client_p, source_p, source_p, comment);
+  exit_client(source_p, source_p, comment);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_squit.c,v 1.58 2004/07/08 00:27:30 erik Exp $
+ *  $Id: m_squit.c,v 1.59 2005/07/30 20:44:17 adx Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&squit_msgtab);
 }
 
-const char *_version = "$Revision: 1.58 $";
+const char *_version = "$Revision: 1.59 $";
 #endif
 
 /* mo_squit - SQUIT message handler
@@ -132,7 +132,7 @@ mo_squit(struct Client *client_p, struct Client *source_p,
          target_p->name, get_client_name(source_p, HIDE_IP), comment);
   }
 
-  exit_client(client_p, target_p, source_p, comment);
+  exit_client(target_p, source_p, comment);
 }
 
 /** NOTE: I removed wildcard lookups here, because a wildcarded
@@ -153,14 +153,6 @@ ms_squit(struct Client *client_p, struct Client *source_p,
   const char *server;
   char def_reason[] = "No reason specified";
 
-#if 0
-  /* XXX - How can this happen? -Michael */
-  if (parc < 2 || EmptyString(parv[1]))
-  {
-    exit_client(client_p, client_p, source_p, comment);
-    return;
-  }
-#endif
   if (parc < 2 || EmptyString(parv[1]))
     return;
 
@@ -192,6 +184,6 @@ ms_squit(struct Client *client_p, struct Client *source_p,
 
    }
 
-   exit_client(client_p, target_p, source_p, comment);
+   exit_client(target_p, source_p, comment);
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.429 2005/07/30 18:57:41 db Exp $
+ *  $Id: s_serv.c,v 7.430 2005/07/30 20:44:20 adx Exp $
  */
 
 #include "stdinc.h"
@@ -128,7 +128,7 @@ slink_error(unsigned int rpl, unsigned int len, unsigned char *data,
   sendto_realops_flags(UMODE_ALL, L_ALL, "SlinkError for %s: %s",
                        server_p->name, data);
   /* XXX should this be exit_client? */
-  exit_client(server_p, server_p, &me, "servlink error -- terminating link");
+  exit_client(server_p, &me, "servlink error -- terminating link");
 }
 
 void
@@ -982,7 +982,7 @@ make_server(struct Client *client_p)
  * output       -
  * side effects -
  */
-int
+void
 server_estab(struct Client *client_p)
 {
   struct Client *target_p;
@@ -996,9 +996,6 @@ server_estab(struct Client *client_p)
 
   assert(client_p != NULL);
 
-  if (client_p == NULL)
-    return -1;
-
   strlcpy(inpath_ip, get_client_name(client_p, SHOW_IP), sizeof(inpath_ip));
 
   inpath = get_client_name(client_p, MASK_IP); /* "refresh" inpath with host */
@@ -1010,7 +1007,8 @@ server_estab(struct Client *client_p)
     /* This shouldn't happen, better tell the ops... -A1kmm */
     sendto_realops_flags(UMODE_ALL, L_ALL, "Warning: Lost connect{} block "
                          "for server %s(this shouldn't happen)!", host);
-    return exit_client(client_p, client_p, client_p, "Lost connect{} block!");
+    exit_client(client_p, &me, "Lost connect{} block!");
+    return;
   }
 
   MyFree(client_p->localClient->passwd);
@@ -1028,7 +1026,8 @@ server_estab(struct Client *client_p)
     {
       ServerStats->is_ref++;
       sendto_one(client_p, "ERROR :I'm a leaf not a hub");
-      return(exit_client(client_p, client_p, client_p, "I'm a leaf"));
+      exit_client(client_p, &me, "I'm a leaf");
+      return;
     }
   }
 
@@ -1098,7 +1097,8 @@ server_estab(struct Client *client_p)
                            "%s -- check servlink_path (%s)",
                            get_client_name(client_p, MASK_IP),
                            ConfigFileEntry.servlink_path);
-      return(exit_client(client_p, client_p, client_p, "Fork failed"));
+      exit_client(client_p, &me, "fork failed");
+      return;
     }
 
     start_io(client_p);
@@ -1131,7 +1131,7 @@ server_estab(struct Client *client_p)
   client_p->servptr = &me;
 
   if (IsClosing(client_p))
-    return CLIENT_EXITED;
+    return;
 
   SetServer(client_p);
 
@@ -1144,19 +1144,8 @@ server_estab(struct Client *client_p)
   m = dlinkFind(&unknown_list, client_p);
   assert(NULL != m);
 
-  if (m != NULL)
-  {
-    dlinkDelete(m, &unknown_list);
-    dlinkAdd(client_p, m, &serv_list);
-  }
-  else
-  {
-    sendto_realops_flags(UMODE_ALL, L_ADMIN,
-                         "Tried to register (%s) server but it was already registered!?!",
-                         host);
-    exit_client(client_p, client_p, client_p,
-                "Tried to register server but it was already registered?!?");
-  }
+  dlinkDelete(m, &unknown_list);
+  dlinkAdd(client_p, m, &serv_list);
 
   Count.myserver++;
 
@@ -1284,7 +1273,6 @@ server_estab(struct Client *client_p)
     uplink = client_p;
 
   server_burst(client_p);
-  return(0);
 }
 
 static void
@@ -2032,7 +2020,7 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
     report_error(L_ALL,
 		 "opening stream socket to %s: %s", conf->name, errno);
     SetDead(client_p);
-    exit_client(client_p, client_p, client_p, "Connection failed");
+    exit_client(client_p, &me, "Connection failed");
     return (0);
   }
 
@@ -2059,7 +2047,7 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
       sendto_one(by, ":%s NOTICE %s :Connect to host %s failed.",
 	         me.name, by->name, client_p->name);
     SetDead(client_p);
-    exit_client(client_p, client_p, client_p, "Connection failed");
+    exit_client(client_p, client_p, "Connection failed");
     return (0);
   }
 
@@ -2201,7 +2189,7 @@ serv_connect_callback(fde_t *fd, int status, void *data)
     sendto_realops_flags(UMODE_ALL, L_OPER,
 		         "Lost connect{} block for %s", get_client_name(client_p, MASK_IP));
 
-    exit_client(client_p, client_p, &me, "Lost connect{} block");
+    exit_client(client_p, &me, "Lost connect{} block");
     return;
   }
 
@@ -2386,7 +2374,7 @@ cryptlink_error(struct Client *client_p, const char *type,
    * defined in the call.
    */
   if ((client_reason != NULL) && (!IsDead(client_p)))
-    exit_client(client_p, client_p, &me, client_reason);
+    exit_client(client_p, &me, client_reason);
 }
 
 static char base64_chars[] =

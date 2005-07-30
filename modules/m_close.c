@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_close.c,v 1.28 2004/07/08 00:27:21 erik Exp $
+ *  $Id: m_close.c,v 1.29 2005/07/30 20:44:14 adx Exp $
  */
 
 #include "stdinc.h"
@@ -54,7 +54,7 @@ _moddeinit(void)
   mod_del_cmd(&close_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 
 /*
@@ -85,7 +85,7 @@ mo_close(struct Client *client_p, struct Client *source_p,
     /* exit here is safe, because it is guaranteed not to be source_p
      * because it is unregistered and source_p is an oper.
      */
-    exit_client(target_p, target_p, target_p, "Oper Closing");
+    exit_client(target_p, target_p, "Oper Closing");
     closed++;
   }
 

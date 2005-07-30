@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.132 2005/07/26 03:33:02 adx Exp $
+ *  $Id: m_server.c,v 1.133 2005/07/30 20:44:17 adx Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.132 $";
+const char *_version = "$Revision: 1.133 $";
 #endif
 
 
@@ -99,7 +99,7 @@ mr_server(struct Client *client_p, struct Client *source_p,
   if (parc < 4)
   {
     sendto_one(client_p, "ERROR :No servername");
-    exit_client(client_p, client_p, client_p, "Wrong number of args");
+    exit_client(client_p, client_p, "Wrong number of args");
     return;
   }
 
@@ -115,13 +115,13 @@ mr_server(struct Client *client_p, struct Client *source_p,
                          get_client_name(client_p, HIDE_IP));
     sendto_realops_flags(UMODE_ALL, L_OPER,  "Link %s dropped, non-TS server",
                          get_client_name(client_p, MASK_IP));
-    exit_client(client_p, client_p, client_p, "Non-TS server");
+    exit_client(client_p, client_p, "Non-TS server");
     return;
   }
 
   if (bogus_host(name))
   {
-    exit_client(client_p, client_p, client_p, "Bogus server name");
+    exit_client(client_p, client_p, "Bogus server name");
     return;
   }
 
@@ -142,7 +142,7 @@ mr_server(struct Client *client_p, struct Client *source_p,
            "servername %s", get_client_name(client_p, MASK_IP), name);
       }
 
-      exit_client(client_p, client_p, client_p, "Invalid servername.");
+      exit_client(client_p, client_p, "Invalid servername.");
       return;
       /* NOT REACHED */
       break;
@@ -156,7 +156,7 @@ mr_server(struct Client *client_p, struct Client *source_p,
            "Unauthorized server connection attempt from %s: Bad password "
            "for server %s", get_client_name(client_p, MASK_IP), name);
 
-      exit_client(client_p, client_p, client_p, "Invalid password.");
+      exit_client(client_p, client_p, "Invalid password.");
       return;
       /* NOT REACHED */
       break;
@@ -170,7 +170,7 @@ mr_server(struct Client *client_p, struct Client *source_p,
            "Unauthorized server connection attempt from %s: Invalid host "
            "for server %s", get_client_name(client_p, MASK_IP), name);
 
-      exit_client(client_p, client_p, client_p, "Invalid host.");
+      exit_client(client_p, client_p, "Invalid host.");
       return;
       /* NOT REACHED */
       break;
@@ -184,7 +184,7 @@ mr_server(struct Client *client_p, struct Client *source_p,
 		           "Invalid servername %s from %s",
 			   name, get_client_name(client_p, MASK_IP));
 
-      exit_client(client_p, client_p, client_p, "Invalid servername.");
+      exit_client(client_p, client_p, "Invalid servername.");
       return;
       /* NOT REACHED */
       break;
@@ -212,7 +212,7 @@ mr_server(struct Client *client_p, struct Client *source_p,
                          name, client_p->id,
 			 get_client_name(client_p, MASK_IP));
     sendto_one(client_p, "ERROR :Server ID already exists.");
-    exit_client(client_p, client_p, client_p, "Server ID Exists");
+    exit_client(client_p, client_p, "Server ID Exists");
     return;
   }
 
@@ -222,7 +222,7 @@ mr_server(struct Client *client_p, struct Client *source_p,
    */
   if ((target_p = find_servconn_in_progress(name)))
     if (target_p != client_p)
-      exit_client(target_p, target_p, &me, "Overridden");
+      exit_client(target_p, &me, "Overridden");
 
   if (ServerInfo.hub && IsCapable(client_p, CAP_LL))
   {
@@ -331,7 +331,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
     sendto_realops_flags(UMODE_ALL, L_OPER,
 			 "Link %s cancelled, server %s already exists",
                          client_p->name, name);
-    exit_client(client_p, client_p, &me, "Server Exists");
+    exit_client(client_p, &me, "Server Exists");
     return;
   }
 
@@ -341,7 +341,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
    */
   if ((target_p = find_servconn_in_progress(name)))
     if (target_p != client_p)
-      exit_client(target_p, target_p, &me, "Overridden");
+      exit_client(target_p, &me, "Overridden");
 
   /* User nicks never have '.' in them and server names
    * must always have '.' in them.
@@ -359,7 +359,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
     sendto_realops_flags(UMODE_ALL, L_OPER,
           "Link %s cancelled: Server/nick collision on %s",
 	  get_client_name(client_p, MASK_IP), name);
-    exit_client(client_p, client_p, client_p, "Nick as Server");
+    exit_client(client_p, client_p, "Nick as Server");
     return;
   }
 
@@ -371,7 +371,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
     sendto_realops_flags(UMODE_ALL, L_OPER,
                          "Link %s introduced server with invalid servername %s",
                          client_p->name, name);
-    exit_client(NULL, client_p, &me, "Invalid servername introduced.");
+    exit_client(client_p, &me, "Invalid servername introduced.");
     return;
   }
 
@@ -445,7 +445,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
                          get_client_name(client_p, HIDE_IP), name);
     sendto_realops_flags(UMODE_ALL, L_OPER,  "Non-Hub link %s introduced %s.",
                          get_client_name(client_p, MASK_IP), name);
-    exit_client(NULL, source_p, &me, "No matching hub_mask.");
+    exit_client(source_p, &me, "No matching hub_mask.");
     return;
   }
 
@@ -466,7 +466,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
       /* wastes too much bandwidth, generates too many errors on
        * larger networks, dont bother. --fl_
        */
-      exit_client(NULL, client_p, &me, "Leafed Server.");
+      exit_client(client_p, &me, "Leafed Server.");
       return;
   }
 
@@ -532,7 +532,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
       sendto_realops_flags(UMODE_ALL, L_OPER,
 			   "Lost connect{} block for %s on %s. Closing",
                            get_client_name(client_p, MASK_IP), name);
-      exit_client(client_p, client_p, client_p, "Lost connect{} block");
+      exit_client(client_p, client_p, "Lost connect{} block");
       continue;
     }
 
@@ -597,7 +597,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
     sendto_realops_flags(UMODE_ALL, L_OPER,
 			 "Link %s cancelled, SID %s already exists",
                          client_p->name, SID_SID);
-    exit_client(client_p, client_p, &me, "Server Exists");
+    exit_client(client_p, &me, "Server Exists");
     return;
   }
 
@@ -611,7 +611,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
     sendto_realops_flags(UMODE_ALL, L_OPER,
                          "Link %s cancelled, server %s already exists",   
                          client_p->name, SID_NAME);       
-    exit_client(client_p, client_p, &me, "Server Exists");
+    exit_client(client_p, &me, "Server Exists");
     return;
   }
 
@@ -621,7 +621,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
    */
   if ((target_p = find_servconn_in_progress(name)))
     if (target_p != client_p)
-      exit_client(target_p, target_p, &me, "Overridden");
+      exit_client(target_p, &me, "Overridden");
 
   /* User nicks never have '.' in them and server names
    * must always have '.' in them.
@@ -640,7 +640,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
     sendto_realops_flags(UMODE_ALL, L_OPER,
                          "Link %s cancelled: servername name %s invalid",
 	                 get_client_name(client_p, MASK_IP), SID_NAME);
-    exit_client(client_p, client_p, client_p, "Nick as Server");
+    exit_client(client_p, client_p, "Nick as Server");
     return;
   }
 
@@ -714,7 +714,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
                          get_client_name(client_p, SHOW_IP), SID_NAME);
     sendto_realops_flags(UMODE_ALL, L_OPER,  "Non-Hub link %s introduced %s.",
                          get_client_name(client_p, MASK_IP), SID_NAME);
-    exit_client(NULL, source_p, &me, "No matching hub_mask.");
+    exit_client(source_p, &me, "No matching hub_mask.");
     return;
   }
 
@@ -728,7 +728,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
     sendto_realops_flags(UMODE_ALL, L_OPER,  
 			 "Link %s introduced leafed server %s.",
                          client_p->name, SID_NAME);
-    exit_client(NULL, client_p, &me, "Leafed Server.");
+    exit_client(client_p, &me, "Leafed Server.");
     return;
   }
 
@@ -793,7 +793,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
       sendto_realops_flags(UMODE_ALL, L_OPER,
                            "Lost connect{} block for %s on %s. Closing",
                            get_client_name(client_p, MASK_IP), name);
-      exit_client(client_p, client_p, client_p, "Lost connect{} block");
+      exit_client(client_p, client_p, "Lost connect{} block");
       continue;
     }
 

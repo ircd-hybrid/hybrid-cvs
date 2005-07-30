@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_error.c,v 7.33 2004/07/08 00:27:33 erik Exp $
+ *  $Id: m_error.c,v 7.34 2005/07/30 20:44:19 adx Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ m_error(struct Client *client_p, struct Client *source_p,
   }
 
   if (MyClient(source_p))
-    exit_client(client_p, source_p, source_p, "ERROR");
+    exit_client(source_p, source_p, "ERROR");
 }
 
 void

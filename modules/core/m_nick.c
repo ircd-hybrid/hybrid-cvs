@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.146 2005/07/16 12:19:48 michael Exp $
+ *  $Id: m_nick.c,v 1.147 2005/07/30 20:44:17 adx Exp $
  */
 
 #include "stdinc.h"
@@ -51,10 +51,10 @@ static void mr_nick(struct Client *, struct Client *, int, char **);
 static void ms_nick(struct Client *, struct Client *, int, char **);
 static void ms_uid(struct Client *, struct Client *, int, char **);
 
-static int nick_from_server(struct Client *, struct Client *, int, char **,
-                            time_t, char *, char *);
-static int client_from_server(struct Client *, struct Client *, int, char **,
-                              time_t, char *, char *);
+static void nick_from_server(struct Client *, struct Client *, int, char **,
+                             time_t, char *, char *);
+static void client_from_server(struct Client *, struct Client *, int, char **,
+                               time_t, char *, char *);
 static int check_clean_nick(struct Client *client_p, struct Client *source_p, 
                             char *nick, char *newnick,
 			    struct Client *server_p);
@@ -93,7 +93,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.146 $";
+const char *_version = "$Revision: 1.147 $";
 #endif
 
 /* mr_nick()
@@ -256,7 +256,7 @@ m_nick(struct Client *client_p, struct Client *source_p,
       /* the old code had an if(MyConnect(target_p)) here.. but I cant see
        * how that can happen, m_nick() is local only --fl_
        */
-      exit_client(NULL, target_p, &me, "Overridden");
+      exit_client(target_p, &me, "Overridden");
       change_local_nick(client_p, source_p, nick);
       return;
     }
@@ -381,7 +381,7 @@ ms_nick(struct Client *client_p, struct Client *source_p,
   /* we're not living in the past anymore, an unknown client is local only. */
   if (IsUnknown(target_p))
   {
-    exit_client(NULL, target_p, &me, "Overridden");
+    exit_client(target_p, &me, "Overridden");
     nick_from_server(client_p, source_p, parc, parv, newts, nick, ngecos);
     return;
   }
@@ -468,7 +468,7 @@ ms_uid(struct Client *client_p, struct Client *source_p,
     ServerStats->is_kill++;
 	    
     SetKilled(target_p);
-    exit_client(client_p, target_p, &me, "ID Collision");
+    exit_client(target_p, &me, "ID Collision");
     return;
   }
     
@@ -476,7 +476,7 @@ ms_uid(struct Client *client_p, struct Client *source_p,
     client_from_server(client_p, source_p, parc, parv, newts, nick, ugecos);
   else if (IsUnknown(target_p))
   {
-    exit_client(NULL, target_p, &me, "Overridden");
+    exit_client(target_p, &me, "Overridden");
     client_from_server(client_p, source_p, parc, parv, newts, nick, ugecos);
   }
   else
@@ -520,7 +520,7 @@ check_clean_nick(struct Client *client_p, struct Client *source_p,
                                  "%s (Bad Nickname)",
 				 me.name);
       SetKilled(source_p);
-      exit_client(client_p, source_p, &me, "Bad Nickname");
+      exit_client(source_p, &me, "Bad Nickname");
     }
 
     return (1);
@@ -670,7 +670,7 @@ clean_host_name(char *host)
 /*
  * nick_from_server()
  */
-static int
+static void
 nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
                  char *parv[], time_t newts, char *nick, char *ngecos)
 {
@@ -718,9 +718,10 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
         m++;
       }
 
-      return(register_remote_user(client_p, source_p, parv[5], parv[6],
-                                  parv[7], ngecos));
+      register_remote_user(client_p, source_p, parv[5], parv[6],
+                           parv[7], ngecos);
     }
+    
   }
   else if (source_p->name[0])
   {
@@ -747,17 +748,12 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
 
   strcpy(source_p->name, nick);
   hash_add_client(source_p);
-
-  /* remove all accepts pointing to the client */
-  del_all_accepts(source_p);
-
-  return(0);
 }
 
 /*
  * client_from_server()
  */
-static int
+static void
 client_from_server(struct Client *client_p, struct Client *source_p, int parc,
                    char *parv[], time_t newts, char *nick, char *ugecos)
 {
@@ -795,11 +791,10 @@ client_from_server(struct Client *client_p, struct Client *source_p, int parc,
 
     source_p->umodes |= flag & SEND_UMODES;
     m++;
-
   }
 
-  return(register_remote_user(client_p, source_p, parv[5], parv[6],
-                              servername, ugecos));
+  register_remote_user(client_p, source_p, parv[5], parv[6],
+                       servername, ugecos);
 }
 
 static void
@@ -836,7 +831,7 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
                  me.name, target_p->name, target_p->name);
 
       SetKilled(target_p);
-      exit_client(client_p, target_p, &me, "Nick collision (new)");
+      exit_client(target_p, &me, "Nick collision (new)");
       return;
     }
     /* the timestamps are different */
@@ -884,7 +879,7 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
 				   me.name);
 
         SetKilled(target_p);
-	exit_client(client_p, target_p, &me, "Nick collision");
+	exit_client(target_p, &me, "Nick collision");
 	
 	if (parc == 9)
 	  nick_from_server(client_p, source_p, parc, parv, newts, nick, gecos);
@@ -923,9 +918,9 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
 				 me.name);
 
       SetKilled(target_p);
-      exit_client(NULL, target_p, &me, "Nick collision(new)");
+      exit_client(target_p, &me, "Nick collision (new)");
       SetKilled(source_p);
-      exit_client(client_p, source_p, &me, "Nick collision(old)");
+      exit_client(source_p, &me, "Nick collision (old)");
       return;
     }
     else
@@ -957,9 +952,9 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
         SetKilled(source_p);
 	
 	if (sameuser)
-	  exit_client(client_p, source_p, &me, "Nick collision(old)");
+	  exit_client(source_p, &me, "Nick collision (old)");
 	else
-	  exit_client(client_p, source_p, &me, "Nick collision(new)");
+	  exit_client(source_p, &me, "Nick collision (new)");
 	return;
      }
      else
@@ -984,7 +979,7 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
                   me.name, target_p->name, target_p->name);
 
        SetKilled(target_p);
-       exit_client(client_p, target_p, &me, "Nick collision");
+       exit_client(target_p, &me, "Nick collision");
      }
    }
 
