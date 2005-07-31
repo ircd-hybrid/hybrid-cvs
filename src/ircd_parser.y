@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.393.2.4 2005/07/31 04:15:37 adx Exp $
+ *  $Id: ircd_parser.y,v 1.393.2.5 2005/07/31 04:35:46 db Exp $
  */
 
 %{
@@ -141,6 +141,7 @@ unhook_hub_leaf_confs(void)
 %token  AUTOCONN
 %token	T_BLOCK
 %token  BURST_AWAY
+%token  BURST_TOPICWHO
 %token  BYTES KBYTES MBYTES GBYTES TBYTES
 %token  CALLER_ID_WAIT
 %token  CAN_FLOOD
