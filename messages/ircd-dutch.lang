@@ -1,6 +1,6 @@
 ; dutch language
 ; No idea who did this. (db)
-; $Id: ircd-dutch.lang,v 1.7 2005/07/05 15:58:25 michael Exp $
+; $Id: ircd-dutch.lang,v 1.8 2005/07/31 03:32:12 adx Exp $
 
 RPL_WELCOME:             :%s 001 %s :Welkom op het %s Internet Relay Netwerk %s
 RPL_YOURHOST:            :%s 002 %s :Je host is %s, werkend met versie %s
@@ -20,8 +20,8 @@ RPL_LUSERME:             :%s 255 %s :Ik heb %d gebruikers en %d servers
 RPL_ADMINME:             :%s 256 %s :Administratieve informatie over %s
 RPL_ENDOFTRACE:          :%s 262 %s %s :Einde van TRACE
 RPL_LOAD2HI:             :%s 263 %s :Server is tijdelijk te zwaar belast. Wacht even enprobeer het opnieuw.
-RPL_LOCALUSERS:          :%s 265 %s %d %d :Huidige lokale gebruikers %d, max %d
-RPL_GLOBALUSERS:         :%s 266 %s %d %d :Huidige globale gebruikers %d, max %d
+RPL_LOCALUSERS:          :%s 265 %s :Huidige lokale gebruikers: %d  Max: %d
+RPL_GLOBALUSERS:         :%s 266 %s :Huidige globale gebruikers: %d  Max: %d
 RPL_UNAWAY:              :%s 305 %s :Je bent niet langer gemarkeerd als afwezig
 RPL_NOWAWAY:             :%s 306 %s :Je bent nu gemarkeerd als afwezig
 RPL_ENDOFWHO:            :%s 315 %s %s :Einde van /WHO lijst.
