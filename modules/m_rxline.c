@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rxline.c,v 1.9 2005/07/30 03:35:16 metalrock Exp $
+ *  $Id: m_rxline.c,v 1.10 2005/07/31 10:11:01 michael Exp $
  */
 
 #include "stdinc.h"
@@ -48,22 +48,24 @@
 #include "resv.h"
 #include "list.h"
 
-static void mo_rxline(struct Client *, struct Client *, int, char **);
-static void mo_unrxline(struct Client *, struct Client *, int, char **);
+static void mo_rxline(struct Client *, struct Client *, int, char *[]);
+static void ms_rxline(struct Client *, struct Client *, int, char *[]);
+static void mo_unrxline(struct Client *, struct Client *, int, char *[]);
+static void ms_unrxline(struct Client *, struct Client *, int, char *[]);
 
 static int valid_xline(struct Client *, char *, char *, int);
 static void write_rxline(struct Client *, char *, char *, time_t);
 static void remove_xline(struct Client *, char *, int);
-static int remove_txline_match(const char *gecos);
+static int remove_txline_match(const char *);
 
 struct Message rxline_msgtab = {
   "RXLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_rxline, m_ignore}
+  {m_unregistered, m_not_oper, ms_rxline, m_ignore, mo_rxline, m_ignore}
 };
 
 struct Message unrxline_msgtab = {
   "UNRXLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_unrxline, m_ignore}
+  {m_unregistered, m_not_oper, ms_unrxline, m_ignore, mo_unrxline, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -81,10 +83,9 @@ _moddeinit(void)
   mod_del_cmd(&unrxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.10 $";
 #endif
 
-static char buffer[IRCD_BUFSIZE];
 
 /* mo_rxline()
  *
@@ -101,9 +102,10 @@ mo_rxline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
   char *reason;
-  char *gecos=NULL;
+  char *gecos = NULL;
   struct ConfItem *conf;
   struct MatchItem *match_item;
+  char *target_server = NULL;
   time_t tkline_time = 0;
 
   if (!IsOperX(source_p))
@@ -113,16 +115,27 @@ mo_rxline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (parse_aline("RXLINE", source_p, &gecos, NULL,
-		  parc, parv, &tkline_time, NULL, &reason) < 0)
+  if (parse_aline("RXLINE", source_p, &gecos, NULL, parc, parv,
+                  &tkline_time, NULL, &reason) < 0)
     return;
+
+  if (target_server != NULL)
+  {
+    sendto_match_servs(source_p, target_server, CAP_CLUSTER,
+                       "RXLINE %s %s %d :%s",
+                       target_server, gecos, (int)tkline_time, reason);
+    if (!match(target_server, me.name))
+      return;
+  }
+  else if (dlink_list_length(&cluster_items) != 0)
+    cluster_xline(source_p, gecos, 0, reason);
 
   if (!valid_xline(source_p, gecos, reason, 0))
     return;
 
   if ((conf = find_conf_name(&rxconf_items, gecos, RXLINE_TYPE)) != NULL)
   {
-    match_item = (struct MatchItem *)map_to_conf(conf);
+    match_item = map_to_conf(conf);
 
     sendto_one(source_p, ":%s NOTICE %s :[%s] already RX-Lined by [%s] - %s",
                me.name, source_p->name, gecos,
@@ -131,6 +144,72 @@ mo_rxline(struct Client *client_p, struct Client *source_p,
   }
 
   write_rxline(source_p, gecos, reason, tkline_time);
+}
+
+/* ms_rxline()
+ *
+ * inputs       - oper, target server, rxline, {type}, reason
+ *                deprecate {type} reserve for temp xlines later? XXX
+ *
+ * outputs      - none
+ * side effects - propagates rxline, applies it if we are a target
+ */
+static void
+ms_rxline(struct Client *client_p, struct Client *source_p,
+         int parc, char *parv[])
+{
+  struct ConfItem *conf;
+  struct MatchItem *match_item;
+  int t_sec;
+
+  if (parc != 5 || EmptyString(parv[4]))
+    return;
+
+  if (!IsClient(source_p))
+    return;
+
+  if (!valid_xline(source_p, parv[2], parv[4], 0))
+    return;
+
+  t_sec = atoi(parv[3]);
+  /* XXX kludge! */
+  if (t_sec < 3)
+    t_sec = 0;
+
+  sendto_match_servs(source_p, parv[1], CAP_CLUSTER,
+                     "RXLINE %s %s %s :%s",
+                     parv[1], parv[2], parv[3], parv[4]);
+
+  if (!match(parv[1], me.name))
+    return;
+
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->servptr->name,
+                              NULL, NULL, CLUSTER_XLINE))
+  {
+    if ((find_matching_name_conf(XLINE_TYPE, parv[2],
+                                NULL, NULL, 0)) != NULL)
+      return;
+
+    write_rxline(source_p, parv[2], parv[4], t_sec);
+  }
+  else if (find_matching_name_conf(ULINE_TYPE,
+                       source_p->servptr->name,
+                       source_p->username, source_p->host,
+                       SHARED_XLINE))
+  {
+    if ((conf = find_matching_name_conf(RXLINE_TYPE, parv[2],
+                                        NULL, NULL, 0)) != NULL)
+    {
+      match_item = map_to_conf(conf);
+      sendto_one(source_p, ":%s NOTICE %s :[%s] already RX-Lined by [%s] - %s",
+                 ID_or_name(&me, source_p->from),
+                 ID_or_name(source_p, source_p->from),
+                 parv[2], conf->name, match_item->reason);
+      return;
+    }
+
+    write_rxline(source_p, parv[2], parv[4], t_sec);
+  }
 }
 
 static void
@@ -144,7 +223,77 @@ mo_unrxline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
+  if ((parc > 3) && !irccmp(parv[2], "ON"))
+  {
+    if (!IsOperRemoteBan(source_p))
+    {
+      sendto_one(source_p, form_str(ERR_NOPRIVS),
+                 me.name, source_p->name, "remoteban");
+      return;
+    }
+
+    sendto_match_servs(source_p, parv[3], CAP_CLUSTER,
+                       "UNXLINE %s %s", parv[3], parv[1]);
+
+    if (!match(parv[3], me.name))
+      return;
+  }
+  else if (dlink_list_length(&cluster_items))
+    cluster_unxline(source_p, parv[1]);
+
   remove_xline(source_p, parv[1], 0);
+}
+
+/* ms_unrxline()
+ *
+ * inputs       - oper, target server, gecos
+ * outputs      - none
+ * side effects - propagates unrxline, applies it if we are a target
+ */
+static void
+ms_unrxline(struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
+{
+  if (parc != 3)
+    return;
+
+  if (EmptyString(parv[2]))
+    return;
+
+  sendto_match_servs(source_p, parv[1], CAP_CLUSTER,
+                     "UNRXLINE %s %s",
+                     parv[1], parv[2]);
+
+  if (!match(parv[1], me.name))
+    return;
+
+  if (!IsClient(source_p))
+    return;
+
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->servptr->name,
+                              NULL, NULL, CLUSTER_UNXLINE))
+    remove_xline(source_p, parv[2], 1);
+  else if (find_matching_name_conf(ULINE_TYPE,
+                       source_p->servptr->name,
+                       source_p->username, source_p->host,
+                       SHARED_UNXLINE))
+  {
+    if (remove_conf_line(RXLINE_TYPE, source_p, parv[2], NULL) > 0)
+    {
+      sendto_one(source_p, ":%s NOTICE %s :RX-Line for [%s] is removed",
+                 ID_or_name(&me, source_p->from),
+                 ID_or_name(source_p, source_p->from), parv[2]);
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+                           "%s has removed the RX-Line for: [%s]",
+                           get_oper_name(source_p), parv[2]);
+      ilog(L_NOTICE, "%s removed RX-Line for [%s]", get_oper_name(source_p),
+           parv[2]);
+    }
+    else
+      sendto_one(source_p, ":%s NOTICE %s :No RX-Line for %s",
+                 ID_or_name(&me, source_p->from),
+                 ID_or_name(source_p, source_p->from), parv[2]);
+  }
 }
 
 /* valid_xline()
@@ -236,9 +385,6 @@ write_rxline(struct Client *source_p, char *gecos, char *reason,
 
   if (tkline_time != 0)
   {
-    ircsprintf(buffer, "Temporary RX-line %d min. - %s (%s)",
-	       (int)(tkline_time/60), reason, current_date);
-
     sendto_realops_flags(UMODE_ALL, L_ALL,
 			 "%s added temporary %d min. RX-Line for [%s] [%s]",
 			 get_oper_name(source_p), (int)tkline_time/60,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.102 2005/07/27 05:05:04 adx Exp $
+ *  $Id: listener.c,v 7.103 2005/07/31 10:11:03 michael Exp $
  */
 
 #include "stdinc.h"
@@ -257,9 +257,9 @@ add_listener(int port, const char *vhost_ip, unsigned int flags)
 #endif
 
   /*
-   * if no port in conf line, don't bother
+   * if no or invalid port in conf line, don't bother
    */
-  if (port == 0)
+  if (!(port > 0 && port <= 0xFFFF))
     return;
 
   memset(&vaddr, 0, sizeof(vaddr));

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.57 2005/07/25 18:25:33 db Exp $
+ *  $Id: m_xline.c,v 1.58 2005/07/31 10:11:01 michael Exp $
  */
 
 #include "stdinc.h"
@@ -48,11 +48,11 @@
 #include "resv.h"
 #include "list.h"
 
-static void mo_xline(struct Client *, struct Client *, int, char **);
-static void ms_xline(struct Client *, struct Client *, int, char **);
+static void mo_xline(struct Client *, struct Client *, int, char *[]);
+static void ms_xline(struct Client *, struct Client *, int, char *[]);
 
-static void mo_unxline(struct Client *, struct Client *, int, char **);
-static void ms_unxline(struct Client *, struct Client *, int, char **);
+static void mo_unxline(struct Client *, struct Client *, int, char *[]);
+static void ms_unxline(struct Client *, struct Client *, int, char *[]);
 
 static int valid_xline(struct Client *, char *, char *, int);
 static void write_xline(struct Client *, char *, char *, time_t);
@@ -86,10 +86,9 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.57 $";
+const char *_version = "$Revision: 1.58 $";
 #endif
 
-static char buffer[IRCD_BUFSIZE];
 
 /* mo_xline()
  *
@@ -244,6 +243,13 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
   /* UNXLINE bill ON irc.server.com */
   if ((parc > 3) && (irccmp(parv[2], "ON") == 0))
   {
+    if (!IsOperRemoteBan(source_p))
+    {
+      sendto_one(source_p, form_str(ERR_NOPRIVS),
+                 me.name, source_p->name, "remoteban");
+      return;
+    }
+
     sendto_match_servs(source_p, parv[3], CAP_CLUSTER,
                        "UNXLINE %s %s",
                        parv[3], parv[1]);
@@ -382,9 +388,6 @@ write_xline(struct Client *source_p, char *gecos, char *reason,
 
   if (tkline_time != 0)
   {
-    ircsprintf(buffer, "Temporary X-line %d min. - %s (%s)",
-	       (int)(tkline_time/60), reason, current_date);
-
     sendto_realops_flags(UMODE_ALL, L_ALL,
 			 "%s added temporary %d min. X-Line for [%s] [%s]",
 			 get_oper_name(source_p), (int)tkline_time/60,
