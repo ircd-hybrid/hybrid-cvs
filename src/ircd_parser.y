@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.393.2.3 2005/07/30 20:13:39 db Exp $
+ *  $Id: ircd_parser.y,v 1.393.2.4 2005/07/31 04:15:37 adx Exp $
  */
 
 %{
@@ -303,6 +303,7 @@ unhook_hub_leaf_confs(void)
 %token  TWODOTS
 %token  T_ALL
 %token  T_BOTS
+%token  T_SOFTCALLERID
 %token  T_CALLERID
 %token  T_CCONN
 %token  T_CLIENT_FLOOD
@@ -3158,6 +3159,10 @@ umode_oitem:     T_BOTS
 {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_WALLOP;
+} | T_SOFTCALLERID
+{
+  if (ypass == 2)
+    ConfigFileEntry.oper_umodes |= UMODE_SOFTCALLERID;
 } | T_CALLERID
 {
   if (ypass == 2)
@@ -3231,6 +3236,10 @@ umode_item:	T_BOTS
 {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_WALLOP;
+} | T_SOFTCALLERID
+{
+  if (ypass == 2)
+    ConfigFileEntry.oper_umodes |= UMODE_SOFTCALLERID;
 } | T_CALLERID
 {
   if (ypass == 2)

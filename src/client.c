@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.450.2.2 2005/07/30 21:17:10 db Exp $
+ *  $Id: client.c,v 7.450.2.3 2005/07/31 04:15:37 adx Exp $
  */
 
 #include "stdinc.h"
@@ -703,7 +703,6 @@ static void
 exit_one_client(struct Client *client_p, struct Client *source_p,
                 struct Client *from, const char *comment)
 {
-  struct Client *target_p;
   dlink_node *m;
 
   if (IsServer(source_p))
@@ -1296,6 +1295,13 @@ accept_message(struct Client *source, struct Client *target)
 
     if (source == target_p)
       return(1);
+  }
+
+  if (IsSoftCallerId(target))
+  {
+    DLINK_FOREACH(ptr, target->user->channel.head)
+      if (IsMember(source, (struct Channel *) ptr->data))
+        return (1);
   }
 
   return(0);

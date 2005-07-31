@@ -18,6 +18,10 @@ There are numerous benefits for both opers and regular users, including the
 ability to stop spambot messages from ever reaching your client, stopping
 private message and CTCP floods, and being able to sit on IRC in privacy.
 
+There is also a softer variation of +g named +G, which allows people you see
+on your channels talk to you. In other words, messages from users/spambots
+sitting on no common channels with you are automagically blocked.
+
 One question that arises is how to message specific users, while blocking
 out everyone else.  The command ACCEPT is your answer.  To add a user to
 your accept list, issue the raw command ACCEPT <nick>,<nick>,<nick>,...
@@ -137,4 +141,4 @@ We hope that these goals are obtained.
 
 --
 W. Campbell
-$Id: modeg.txt,v 1.6 2005/06/29 23:46:55 metalrock Exp $
+$Id: modeg.txt,v 1.6.2.1 2005/07/31 04:15:31 adx Exp $
