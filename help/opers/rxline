@@ -1,0 +1,9 @@
+# $Id: rxline,v 1.1 2005/07/31 03:48:39 db Exp $
+RXLINE <time> <regular expression gecos>  :[reason]
+
+Adds a regular expression XLINE to the rxline.conf file which
+will ban the specified gecos from that server.
+The banned client will receive a message saying he/she
+is banned with reason [reason]
+
+- Requires Oper Priv: X
