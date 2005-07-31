@@ -1,4 +1,4 @@
-# $Id: kline,v 1.5 2005/07/31 03:48:39 db Exp $
+# $Id: kline,v 1.6 2005/07/31 04:05:16 db Exp $
 KLINE <nick|user@host> :[reason] [| oper reason]
 
 Adds a KLINE to the kline.conf file which
@@ -7,7 +7,7 @@ The banned client will receive a message saying he/she
 is banned with reason [reason]
 
 If an oper reason is added (the pipe must be specified
-to seperate the fields) this will be added into the
+to separate the fields) this will be added into the
 kline.conf but will not be shown to the user when they
 are given the kline reason.
 
