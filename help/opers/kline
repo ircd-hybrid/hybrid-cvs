@@ -1,7 +1,7 @@
-# $Id: kline,v 1.7 2005/07/31 14:35:19 db Exp $
-KLINE <time> <nick|user@host> :[reason] [| oper reason]
+# $Id: kline,v 1.8 2005/07/31 14:39:24 db Exp $
+KLINE [time] <nick|user@host> :[reason] [| oper reason]
 
-<time> if present, gives number of minutes for KLINE
+[time] if present, gives number of minutes for KLINE
 
 Adds a KLINE to the kline.conf file which
 will ban the specified user from using that server.
@@ -19,7 +19,7 @@ ip.ip.ip.ip can be in CIDR form i.e. 192.168.0.0/24
 or 192.168.0.* (which is converted to CIDR form internally)
 
 For a temporary KLINE, length of kline is given in
-minutes as the first parameter <time> i.e.
+minutes as the first parameter [time] i.e.
 KLINE 10 <nick|user@host> :cool off for 10 minutes
 
 KLINE <user@host> ON irc.server :[reason] [| oper reason]
