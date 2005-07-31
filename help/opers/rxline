@@ -1,9 +1,19 @@
-# $Id: rxline,v 1.1 2005/07/31 03:48:39 db Exp $
-RXLINE <time> <regular expression gecos>  :[reason]
+# $Id: rxline,v 1.2 2005/07/31 14:35:19 db Exp $
+RXLINE <time> <regular expression gecos> [ON server] :[reason]
+
+<time> if present, gives number of minutes for temporary RXLINE
 
 Adds a regular expression XLINE to the rxline.conf file which
 will ban the specified gecos from that server.
 The banned client will receive a message saying he/she
 is banned with reason [reason]
+
+regular expression examples:
+rxline ^bot*bot$
+To rxline with a space:
+rxline ^bot[:space:]bot$ Where "space" is the written word "space".
+See  http://en.wikipedia.org/wiki/Regular_expression
+
+If ON server is present, the RXLINE is propagated to given server.
 
 - Requires Oper Priv: X
