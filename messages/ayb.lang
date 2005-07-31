@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2000
 ; David Taylor <davidt@yadt.co.uk>, 2000.
-; $Id: ayb.lang,v 1.6 2005/07/05 15:58:25 michael Exp $
+; $Id: ayb.lang,v 1.6.2.1 2005/07/31 03:38:03 adx Exp $
 
 RPL_WELCOME:             :%s 001 %s :ALL YOUR BASE ARE BELONG TO %s, %s!!!
 RPL_CREATED:             :%s 003 %s :Someone set up us the server %s
@@ -12,8 +12,8 @@ RPL_LUSERCLIENT:         :%s 251 %s :There are %d minor Zigs and %d invisible on
 RPL_LUSEROP:             :%s 252 %s %d :Zigs online
 RPL_LUSERME:             :%s 255 %s :%d clients and %d servers are belong to me
 RPL_LOAD2HI:             :%s 263 %s :What you say!?? The server is moving too many zigs..
-RPL_LOCALUSERS:          :%s 265 %s %d %d :%d users (max %d) are belong to me
-RPL_GLOBALUSERS:         :%s 266 %s %d %d :%d users (max %d) are belong to the network
+RPL_LOCALUSERS:          :%s 265 %s :%d users (max %d) are belong to me
+RPL_GLOBALUSERS:         :%s 266 %s :%d users (max %d) are belong to the network
 RPL_UNAWAY:              :%s 305 %s :OK, you're not /away anymore. Did you move Zig for great justice?
 RPL_NOWAWAY:             :%s 306 %s :OK, you're /away now. Hurry back!
 RPL_YOUREOPER:           :%s 381 %s :SOMEONE SET YOU UP THE /KILL FOR GREAT JUSTICE!
