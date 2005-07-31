@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.73 2005/05/29 02:54:05 adx Exp $
+ *  $Id: m_kick.c,v 1.74 2005/07/31 05:32:38 adx Exp $
  */
 
 #include "stdinc.h"
@@ -27,6 +27,7 @@
 #include "handlers.h"
 #include "channel.h"
 #include "channel_mode.h"
+#include "common.h"
 #include "client.h"
 #include "irc_string.h"
 #include "ircd.h"
@@ -60,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.73 $";
+const char *_version = "$Revision: 1.74 $";
 #endif
 
 /* m_kick()
@@ -216,10 +217,10 @@ m_kick(struct Client *client_p, struct Client *source_p,
      *   be sent anyways.  Just waiting for some oper to abuse it...
      */
     if (IsServer(source_p))
-      sendto_channel_local(ALL_MEMBERS, chptr, ":%s KICK %s %s :%s",
+      sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s KICK %s %s :%s",
                            source_p->name, name, who->name, comment);
     else
-      sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s KICK %s %s :%s",
+      sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s!%s@%s KICK %s %s :%s",
                            source_p->name, source_p->username,
                            source_p->host, name, who->name, comment);
 

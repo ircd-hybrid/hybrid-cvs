@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.h,v 7.75 2005/07/26 03:32:58 adx Exp $
+ *  $Id: send.h,v 7.76 2005/07/31 05:32:34 adx Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -62,11 +62,11 @@ extern void sendto_channel_butone(struct Client *one, struct Client *from,
 extern void sendto_common_channels_local(struct Client *, int,
                                          const char *, ...) AFP(3, 4);
 
-extern  void sendto_channel_local(int type, struct Channel *,
-                                  const char *, ...) AFP(3, 4);
+extern  void sendto_channel_local(int type, int nodeaf, struct Channel *,
+                                  const char *, ...) AFP(4, 5);
 
 extern  void sendto_channel_local_butone(struct Client *, int, struct Channel *,
-                                         const char *, ...) AFP(4,5);
+                                         const char *, ...) AFP(4, 5);
 
 extern void sendto_channel_remote(struct Client *one,
 		   struct Client *from, int type,

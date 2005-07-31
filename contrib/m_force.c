@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.40 2005/06/23 11:33:06 adx Exp $
+ * $Id: m_force.c,v 1.41 2005/07/31 05:32:25 adx Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
 
 /* m_forcejoin()
@@ -166,12 +166,12 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
 
     add_user_to_channel(chptr, target_p, type);
 
-    sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
+    sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s!%s@%s JOIN :%s",
                          target_p->name, target_p->username,
                          target_p->host, chptr->chname);
 
     if (sjmode)
-      sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +%c %s",
+      sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s MODE %s +%c %s",
                            me.name, chptr->chname, mode, target_p->name);
 
     if (chptr->chname[0] == '#')
@@ -269,13 +269,13 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
                     chptr->chname, target_p->name);
     }
 
-    sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
+    sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s!%s@%s JOIN :%s",
                          target_p->name, target_p->username,
                          target_p->host, chptr->chname);
 
     chptr->mode.mode |= MODE_TOPICLIMIT | MODE_NOPRIVMSGS;
 
-    sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +nt",
+    sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s MODE %s +nt",
                          me.name, chptr->chname);
 
     target_p->localClient->last_join_time = CurrentTime;
@@ -352,7 +352,7 @@ mo_forcepart(struct Client *client_p, struct Client *source_p,
                   chptr->chname, target_p->name);
   }
 
-  sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s PART %s :%s",
+  sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s!%s@%s PART %s :%s",
                        target_p->name, target_p->username,
  	               target_p->host,chptr->chname,
 		       target_p->name);

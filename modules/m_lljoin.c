@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lljoin.c,v 1.68 2005/07/16 12:19:44 michael Exp $
+ *  $Id: m_lljoin.c,v 1.69 2005/07/31 05:32:36 adx Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&lljoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.68 $";
+const char *_version = "$Revision: 1.69 $";
 #endif
 /*
  * m_lljoin
@@ -187,7 +187,7 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
 
   add_user_to_channel(chptr, target_p, flags);
 
-  sendto_channel_local(ALL_MEMBERS, chptr,
+  sendto_channel_local(ALL_MEMBERS, NO, chptr,
 		       ":%s!%s@%s JOIN :%s",
 		       target_p->name,
 		       target_p->username,
@@ -199,7 +199,7 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
     chptr->mode.mode |= MODE_TOPICLIMIT;
     chptr->mode.mode |= MODE_NOPRIVMSGS;
       
-    sendto_channel_local(ALL_MEMBERS,chptr,
+    sendto_channel_local(ALL_MEMBERS, NO, chptr,
                          ":%s MODE %s +nt",
                          me.name, chptr->chname);
     sendto_one(uplink, 

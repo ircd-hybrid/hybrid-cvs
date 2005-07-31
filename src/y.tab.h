@@ -1,7 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.0.  */
+/* A Bison parser, made from ircd_parser.y, by GNU bison 1.75.  */
+/* $Id: y.tab.h,v 7.36 2005/07/31 05:32:42 adx Exp $ */
 
 /* Skeleton parser for Yacc-like parsing with Bison,
-   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -22,7 +23,10 @@
    Bison output file, you may use that output file without restriction.
    This special exception was added by the Free Software Foundation
    in version 1.24 of Bison.  */
-/* $Id: y.tab.h,v 7.35 2005/07/30 09:38:48 michael Exp $ */
+
+#ifndef BISON_Y_TAB_H
+# define BISON_Y_TAB_H
+
 /* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
@@ -217,50 +221,51 @@
      T_CALLERID = 443,
      T_CCONN = 444,
      T_CLIENT_FLOOD = 445,
-     T_DEBUG = 446,
-     T_DRONE = 447,
-     T_EXTERNAL = 448,
-     T_FULL = 449,
-     T_INVISIBLE = 450,
-     T_IPV4 = 451,
-     T_IPV6 = 452,
-     T_LOCOPS = 453,
-     T_LOGPATH = 454,
-     T_L_CRIT = 455,
-     T_L_DEBUG = 456,
-     T_L_ERROR = 457,
-     T_L_INFO = 458,
-     T_L_NOTICE = 459,
-     T_L_TRACE = 460,
-     T_L_WARN = 461,
-     T_MAX_CLIENTS = 462,
-     T_NCHANGE = 463,
-     T_OPERWALL = 464,
-     T_REJ = 465,
-     T_SERVNOTICE = 466,
-     T_SKILL = 467,
-     T_SPY = 468,
-     T_SSL = 469,
-     T_UNAUTH = 470,
-     T_UNRESV = 471,
-     T_UNXLINE = 472,
-     T_WALLOP = 473,
-     THROTTLE_TIME = 474,
-     TOPICBURST = 475,
-     TRUE_NO_OPER_FLOOD = 476,
-     UNKLINE = 477,
-     USER = 478,
-     USE_EGD = 479,
-     USE_EXCEPT = 480,
-     USE_INVEX = 481,
-     USE_KNOCK = 482,
-     USE_LOGGING = 483,
-     USE_WHOIS_ACTUALLY = 484,
-     VHOST = 485,
-     VHOST6 = 486,
-     XLINE = 487,
-     WARN = 488,
-     WARN_NO_NLINE = 489
+     T_DEAF = 446,
+     T_DEBUG = 447,
+     T_DRONE = 448,
+     T_EXTERNAL = 449,
+     T_FULL = 450,
+     T_INVISIBLE = 451,
+     T_IPV4 = 452,
+     T_IPV6 = 453,
+     T_LOCOPS = 454,
+     T_LOGPATH = 455,
+     T_L_CRIT = 456,
+     T_L_DEBUG = 457,
+     T_L_ERROR = 458,
+     T_L_INFO = 459,
+     T_L_NOTICE = 460,
+     T_L_TRACE = 461,
+     T_L_WARN = 462,
+     T_MAX_CLIENTS = 463,
+     T_NCHANGE = 464,
+     T_OPERWALL = 465,
+     T_REJ = 466,
+     T_SERVNOTICE = 467,
+     T_SKILL = 468,
+     T_SPY = 469,
+     T_SSL = 470,
+     T_UNAUTH = 471,
+     T_UNRESV = 472,
+     T_UNXLINE = 473,
+     T_WALLOP = 474,
+     THROTTLE_TIME = 475,
+     TOPICBURST = 476,
+     TRUE_NO_OPER_FLOOD = 477,
+     UNKLINE = 478,
+     USER = 479,
+     USE_EGD = 480,
+     USE_EXCEPT = 481,
+     USE_INVEX = 482,
+     USE_KNOCK = 483,
+     USE_LOGGING = 484,
+     USE_WHOIS_ACTUALLY = 485,
+     VHOST = 486,
+     VHOST6 = 487,
+     XLINE = 488,
+     WARN = 489,
+     WARN_NO_NLINE = 490
    };
 #endif
 #define ACCEPT_PASSWORD 258
@@ -451,68 +456,68 @@
 #define T_CALLERID 443
 #define T_CCONN 444
 #define T_CLIENT_FLOOD 445
-#define T_DEBUG 446
-#define T_DRONE 447
-#define T_EXTERNAL 448
-#define T_FULL 449
-#define T_INVISIBLE 450
-#define T_IPV4 451
-#define T_IPV6 452
-#define T_LOCOPS 453
-#define T_LOGPATH 454
-#define T_L_CRIT 455
-#define T_L_DEBUG 456
-#define T_L_ERROR 457
-#define T_L_INFO 458
-#define T_L_NOTICE 459
-#define T_L_TRACE 460
-#define T_L_WARN 461
-#define T_MAX_CLIENTS 462
-#define T_NCHANGE 463
-#define T_OPERWALL 464
-#define T_REJ 465
-#define T_SERVNOTICE 466
-#define T_SKILL 467
-#define T_SPY 468
-#define T_SSL 469
-#define T_UNAUTH 470
-#define T_UNRESV 471
-#define T_UNXLINE 472
-#define T_WALLOP 473
-#define THROTTLE_TIME 474
-#define TOPICBURST 475
-#define TRUE_NO_OPER_FLOOD 476
-#define UNKLINE 477
-#define USER 478
-#define USE_EGD 479
-#define USE_EXCEPT 480
-#define USE_INVEX 481
-#define USE_KNOCK 482
-#define USE_LOGGING 483
-#define USE_WHOIS_ACTUALLY 484
-#define VHOST 485
-#define VHOST6 486
-#define XLINE 487
-#define WARN 488
-#define WARN_NO_NLINE 489
+#define T_DEAF 446
+#define T_DEBUG 447
+#define T_DRONE 448
+#define T_EXTERNAL 449
+#define T_FULL 450
+#define T_INVISIBLE 451
+#define T_IPV4 452
+#define T_IPV6 453
+#define T_LOCOPS 454
+#define T_LOGPATH 455
+#define T_L_CRIT 456
+#define T_L_DEBUG 457
+#define T_L_ERROR 458
+#define T_L_INFO 459
+#define T_L_NOTICE 460
+#define T_L_TRACE 461
+#define T_L_WARN 462
+#define T_MAX_CLIENTS 463
+#define T_NCHANGE 464
+#define T_OPERWALL 465
+#define T_REJ 466
+#define T_SERVNOTICE 467
+#define T_SKILL 468
+#define T_SPY 469
+#define T_SSL 470
+#define T_UNAUTH 471
+#define T_UNRESV 472
+#define T_UNXLINE 473
+#define T_WALLOP 474
+#define THROTTLE_TIME 475
+#define TOPICBURST 476
+#define TRUE_NO_OPER_FLOOD 477
+#define UNKLINE 478
+#define USER 479
+#define USE_EGD 480
+#define USE_EXCEPT 481
+#define USE_INVEX 482
+#define USE_KNOCK 483
+#define USE_LOGGING 484
+#define USE_WHOIS_ACTUALLY 485
+#define VHOST 486
+#define VHOST6 487
+#define XLINE 488
+#define WARN 489
+#define WARN_NO_NLINE 490
 
 
 
 
-#if ! defined (YYSTYPE) && ! defined (YYSTYPE_IS_DECLARED)
+#ifndef YYSTYPE
 #line 134 "ircd_parser.y"
-typedef union YYSTYPE {
+typedef union {
   int number;
   char *string;
-} YYSTYPE;
-/* Line 1318 of yacc.c.  */
-#line 510 "y.tab.h"
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
-# define YYSTYPE_IS_DECLARED 1
-# define YYSTYPE_IS_TRIVIAL 1
+} yystype;
+/* Line 1281 of /usr/local/share/bison/yacc.c.  */
+#line 515 "y.tab.h"
+# define YYSTYPE yystype
 #endif
 
 extern YYSTYPE yylval;
 
 
+#endif /* not BISON_Y_TAB_H */
 

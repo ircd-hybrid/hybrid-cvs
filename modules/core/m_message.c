@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.142 2005/07/16 12:19:48 michael Exp $
+ *  $Id: m_message.c,v 1.143 2005/07/31 05:32:38 adx Exp $
  */
 
 #include "stdinc.h"
@@ -117,7 +117,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.142 $";
+const char *_version = "$Revision: 1.143 $";
 #endif
 
 /*
@@ -557,7 +557,7 @@ msg_channel_flags(int p_or_n, const char *command, struct Client *client_p,
      * another good catch, lee.  we never would echo to remote clients anyway,
      * so use slightly less intensive sendto_channel_local()
      */
-    sendto_channel_local(type, chptr, ":%s!%s@%s %s %c%s :%s",
+    sendto_channel_local(type, YES, chptr, ":%s!%s@%s %s %c%s :%s",
                          source_p->name, source_p->username,
                          source_p->host, command, c, chptr->chname, text);
   }

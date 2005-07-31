@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.72 2005/07/16 12:19:43 michael Exp $
+ *  $Id: m_knock.c,v 1.73 2005/07/31 05:32:36 adx Exp $
  */
 
 #include "stdinc.h"
@@ -40,6 +40,7 @@
 #include "modules.h"
 #include "s_serv.h"
 #include "s_user.h"
+#include "common.h"
 
 static void m_knock(struct Client*, struct Client*, int, char**);
 static void ms_knock(struct Client *, struct Client *, int, char**);
@@ -83,7 +84,7 @@ _moddeinit(void)
   delete_isupport("KNOCK");
 }
 
-const char *_version = "$Revision: 1.72 $";
+const char *_version = "$Revision: 1.73 $";
 #endif
 
 /* m_knock
@@ -350,7 +351,7 @@ send_knock(struct Client *client_p, struct Client *source_p,
   if (IsClient(source_p))
   {
     if (ConfigChannel.use_knock)
-      sendto_channel_local(CHFL_CHANOP,
+      sendto_channel_local(CHFL_CHANOP, NO,
 		     chptr, form_str(RPL_KNOCK),
 			     me.name, name, name,
 			     source_p->name, source_p->username,

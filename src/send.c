@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.295 2005/07/30 20:44:20 adx Exp $
+ *  $Id: send.c,v 7.296 2005/07/31 05:32:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -471,6 +471,8 @@ sendto_one(struct Client *to, const char *pattern, ...)
  *		- vargs message
  * output	- NONE
  * side effects	- message as given is sent to given channel members.
+ *
+ * WARNING - +D clients are ignored
  */
 void
 sendto_channel_butone(struct Client *one, struct Client *from,
@@ -514,7 +516,7 @@ sendto_channel_butone(struct Client *one, struct Client *from,
     target_p = ((struct Membership *)ptr->data)->client_p;
     assert(target_p != NULL);
 
-    if (IsDefunct(target_p) || target_p->from == one)
+    if (IsDefunct(target_p) || IsDeaf(target_p) || target_p->from == one)
       continue;
 
     if (MyClient(target_p))
@@ -697,6 +699,7 @@ sendto_common_channels_local(struct Client *user, int touser,
 /* sendto_channel_local()
  *
  * inputs	- member status mask, e.g. CHFL_CHANOP | CHFL_VOICE
+ *              - whether to ignore +D clients (YES/NO)
  *              - pointer to channel to send to
  *              - var args pattern
  * output	- NONE
@@ -704,7 +707,8 @@ sendto_common_channels_local(struct Client *user, int touser,
  *		  locally connected to this server.
  */
 void
-sendto_channel_local(int type, struct Channel *chptr, const char *pattern, ...)
+sendto_channel_local(int type, int nodeaf, struct Channel *chptr,
+                     const char *pattern, ...)
 {
   va_list args;
   char buffer[IRCD_BUFSIZE];
@@ -728,7 +732,8 @@ sendto_channel_local(int type, struct Channel *chptr, const char *pattern, ...)
     if (type != 0 && (ms->flags & type) == 0)
       continue;
 
-    if (IsDefunct(target_p) || target_p->serial == current_serial)
+    if (IsDefunct(target_p) || (nodeaf && IsDeaf(target_p)) ||
+        target_p->serial == current_serial)
       continue;
 
     target_p->serial = current_serial;
@@ -746,6 +751,8 @@ sendto_channel_local(int type, struct Channel *chptr, const char *pattern, ...)
  * output       - NONE
  * side effects - Send a message to all members of a channel that are
  *                locally connected to this server except one.
+ *
+ * WARNING - +D clients are omitted
  */
 void       
 sendto_channel_local_butone(struct Client *one, int type,
@@ -773,7 +780,7 @@ sendto_channel_local_butone(struct Client *one, int type,
     if (type != 0 && (ms->flags & type) == 0)
       continue;
 
-    if (target_p == one || IsDefunct(target_p) ||
+    if (target_p == one || IsDefunct(target_p) || IsDeaf(target_p) ||
         target_p->serial == current_serial)
       continue;
 

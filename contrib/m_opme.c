@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_opme.c,v 1.55 2005/07/09 13:27:52 adx Exp $
+ *  $Id: m_opme.c,v 1.56 2005/07/31 05:32:25 adx Exp $
  */
 
 #include "stdinc.h"
@@ -39,7 +39,7 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-
+#include "common.h"
 
 static void mo_opme(struct Client *, struct Client *, int, char *[]);
 
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif
 
 static int
@@ -156,6 +156,6 @@ mo_opme(struct Client *client_p, struct Client *source_p,
                 me.name, (unsigned long)chptr->channelts,
                 chptr->chname, source_p->name);
 
-  sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +o %s",
+  sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s MODE %s +o %s",
                        me.name, chptr->chname, source_p->name);
 }

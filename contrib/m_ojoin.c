@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ojoin.c,v 1.34 2005/07/09 13:27:52 adx Exp $
+ *  $Id: m_ojoin.c,v 1.35 2005/07/31 05:32:25 adx Exp $
  */
 
 #include "stdinc.h"
@@ -37,6 +37,7 @@
 #include "modules.h"
 #include "list.h"
 #include "channel_mode.h"
+#include "common.h"
 
 static void mo_ojoin(struct Client *, struct Client *, int, char *[]);
 
@@ -58,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 
 /* mo_ojoin()
@@ -149,13 +150,13 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
                       prefix, source_p->name);
       }
 
-      sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
+      sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s!%s@%s JOIN %s",
                            source_p->name, source_p->username,
                            source_p->host,
                            chptr->chname);
 
       if (modeletter != '\0')
-        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +%c %s",
+        sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s MODE %s +%c %s",
                              me.name, chptr->chname, modeletter, source_p->name);
 
       /* send the topic... */

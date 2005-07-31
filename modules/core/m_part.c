@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.78 2004/07/08 00:27:30 erik Exp $
+ *  $Id: m_part.c,v 1.79 2005/07/31 05:32:38 adx Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&part_msgtab);
 }
 
-const char *_version = "$Revision: 1.78 $";
+const char *_version = "$Revision: 1.79 $";
 #endif
 
 static void part_one_client(struct Client *client_p,
@@ -157,7 +157,7 @@ part_one_client(struct Client *client_p, struct Client *source_p,
     sendto_server(client_p, NULL, chptr, NOCAPS, CAP_TS6, NOFLAGS,
                   ":%s PART %s :%s", source_p->name, chptr->chname,
                   reason);
-    sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s PART %s :%s",
+    sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s!%s@%s PART %s :%s",
                          source_p->name, source_p->username,
                          source_p->host, chptr->chname, reason);
   }
@@ -167,7 +167,7 @@ part_one_client(struct Client *client_p, struct Client *source_p,
                   ":%s PART %s", ID(source_p), chptr->chname);
     sendto_server(client_p, NULL, chptr, NOCAPS, CAP_TS6, NOFLAGS,
                   ":%s PART %s", source_p->name, chptr->chname);
-    sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s PART %s",
+    sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s!%s@%s PART %s",
                          source_p->name, source_p->username,
                          source_p->host, chptr->chname);
   }

@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.28 2005/07/30 20:07:14 db Exp $
+ *  $Id: m_tb.c,v 1.29 2005/07/31 05:32:36 adx Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   delete_capability("TB");
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 
 #endif /* !STATIC_MODULES */
 
@@ -139,7 +139,7 @@ set_topic(struct Client *source_p, struct Channel *chptr,
 {
   set_channel_topic(chptr, topic, topicwho, topicts);
 
-  sendto_channel_local(ALL_MEMBERS, chptr, ":%s TOPIC %s :%s",
+  sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s TOPIC %s :%s",
 		       ConfigServerHide.hide_servers ? me.name : source_p->name,
 		       chptr->chname, chptr->topic == NULL ? "" : chptr->topic);
 

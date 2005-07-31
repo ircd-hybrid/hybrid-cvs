@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.352 2005/07/30 20:44:20 adx Exp $
+ *  $Id: s_user.c,v 7.353 2005/07/31 05:32:41 adx Exp $
  */
 
 #include <sys/types.h>
@@ -88,6 +88,7 @@ static const struct flag_item
   { UMODE_ADMIN,        'a' },
   { UMODE_BOTS,         'b' },
   { UMODE_CCONN,        'c' },
+  { UMODE_DEAF,         'D' },
   { UMODE_DEBUG,        'd' },
   { UMODE_FULL,         'f' },
   { UMODE_SOFTCALLERID, 'G' },
@@ -118,7 +119,7 @@ const unsigned int user_modes_from_c_to_bitmask[] =
   0,                  /* A */
   0,                  /* B */
   0,                  /* C */
-  0,                  /* D */
+  UMODE_DEAF,         /* D */
   0,                  /* E */
   0,                  /* F */
   UMODE_SOFTCALLERID, /* G */
