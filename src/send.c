@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.296 2005/07/31 05:32:41 adx Exp $
+ *  $Id: send.c,v 7.297 2005/08/01 22:06:27 db Exp $
  */
 
 #include "stdinc.h"
@@ -721,9 +721,6 @@ sendto_channel_local(int type, int nodeaf, struct Channel *chptr,
   len = send_format(buffer, IRCD_BUFSIZE, pattern, args);
   va_end(args);
 
-  /* Serial number checking isn't strictly necessary, but won't hurt */
-  ++current_serial;
-
   DLINK_FOREACH(ptr, chptr->locmembers.head)
   {
     ms = ptr->data;
@@ -732,11 +729,8 @@ sendto_channel_local(int type, int nodeaf, struct Channel *chptr,
     if (type != 0 && (ms->flags & type) == 0)
       continue;
 
-    if (IsDefunct(target_p) || (nodeaf && IsDeaf(target_p)) ||
-        target_p->serial == current_serial)
+    if (IsDefunct(target_p) || (nodeaf && IsDeaf(target_p)))
       continue;
-
-    target_p->serial = current_serial;
 
     send_message(target_p, buffer, len);
   }
