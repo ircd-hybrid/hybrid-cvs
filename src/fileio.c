@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.33 2003/10/24 11:08:21 michael Exp $
+ *  $Id: fileio.c,v 7.33.4.1 2005/08/01 14:23:08 db Exp $
  */
 
 #include "stdinc.h"
@@ -157,13 +157,10 @@ fbclose(FBFILE* fb)
 {
   assert(fb);
 
-  if (fb != NULL)
-  {
-    file_close(fb->fd);
-    MyFree(fb);
-  }
-  else
-    errno = EINVAL;
+  if (fb == NULL)
+    return;
+  file_close(fb->fd);
+  MyFree(fb);
 }
 
 static int
