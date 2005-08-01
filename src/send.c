@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.297 2005/08/01 22:06:27 db Exp $
+ *  $Id: send.c,v 7.298 2005/08/01 22:46:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -763,9 +763,6 @@ sendto_channel_local_butone(struct Client *one, int type,
   len = send_format(buffer, IRCD_BUFSIZE, pattern, args);
   va_end(args);
 
-  /* Serial number checking isn't strictly necessary, but won't hurt */
-  ++current_serial;
-
   DLINK_FOREACH(ptr, chptr->locmembers.head)       
   {   
     ms = ptr->data;
@@ -774,12 +771,8 @@ sendto_channel_local_butone(struct Client *one, int type,
     if (type != 0 && (ms->flags & type) == 0)
       continue;
 
-    if (target_p == one || IsDefunct(target_p) || IsDeaf(target_p) ||
-        target_p->serial == current_serial)
+    if (target_p == one || IsDefunct(target_p) || IsDeaf(target_p))
       continue;
-
-    target_p->serial = current_serial;
-
     send_message(target_p, buffer, len);
   }
 }
@@ -807,13 +800,9 @@ sendto_channel_remote(struct Client *one, struct Client *from, int type, int cap
   struct Client *target_p;
   struct Membership *ms;
 
-
   va_start(args, pattern);
   len = send_format(buffer, IRCD_BUFSIZE, pattern, args);
   va_end(args);
-
-  /* Serial number checking isn't strictly necessary, but won't hurt */
-  ++current_serial;
 
   DLINK_FOREACH(ptr, chptr->members.head)
   {
@@ -829,11 +818,8 @@ sendto_channel_remote(struct Client *one, struct Client *from, int type, int cap
 
     if (target_p == one->from ||
         ((target_p->from->localClient->caps & caps) != caps) ||
-        ((target_p->from->localClient->caps & nocaps) != 0) ||
-        target_p->from->serial == current_serial)
+        ((target_p->from->localClient->caps & nocaps) != 0))
       continue;
-
-    target_p->serial = current_serial;
 
     send_message(target_p, buffer, len);
   } 
