@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.64 2005/08/01 14:18:05 db Exp $
+ *  $Id: s_log.c,v 7.65 2005/08/01 22:10:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -96,6 +96,11 @@ open_log(const char *filename)
 
   if (logFile == NULL)
   {
+#ifndef  _WIN32
+    /* fbopen failed above, last ditch effort to snag fd 2 to catch stderr */
+    (void)open("/dev/null", O_RDONLY);
+#endif
+
 #ifdef USE_SYSLOG
     syslog(LOG_ERR, "Unable to open log file: %s: %s",
            filename, strerror(errno));
