@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.63 2005/07/16 12:19:51 michael Exp $
+ *  $Id: s_log.c,v 7.64 2005/08/01 14:18:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -161,7 +161,8 @@ init_log(const char *filename)
 void
 reopen_log(const char *filename)
 {
-  fbclose(logFile);
+  if (logFile != NULL)
+    fbclose(logFile);
   open_log(filename);
 }
 
