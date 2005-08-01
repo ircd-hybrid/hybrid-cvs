@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.22 2005/07/09 01:52:45 michael Exp $
+# $Id: Makefile.in,v 1.23 2005/08/01 23:01:14 adx Exp $
 #
 RM            = @RM@
 MV            = @MV@
@@ -10,6 +10,7 @@ messagedir    = $(prefix)/messages
 CLOBBER=@CLOBBER@
 
 LANGFILES     = ayb.lang            \
+                custom.lang         \
                 ircd-croatian.lang  \
                 ircd-danish.lang    \
                 ircd-dutch.lang     \
