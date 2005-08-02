@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.37.2.1 2005/07/22 16:21:27 db Exp $
+ *  $Id: supported.h,v 1.37.2.2 2005/08/02 22:27:24 adx Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -60,7 +60,7 @@
                   " ELIST=CMNTU"
 
 #ifdef HALFOPS
-#define FEATURES2VALUES TOPICLEN\
+#define FEATURES2VALUES TOPICLEN, \
 		        ConfigChannel.disable_local_channels ? "#" : "#&", \
                         "(ohv)@%+", \
                         ConfigChannel.use_except ? "e" : "", \
