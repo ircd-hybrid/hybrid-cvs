@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.235 2005/07/30 20:44:19 adx Exp $
+ *  $Id: s_bsd.c,v 7.236 2005/08/02 06:12:51 adx Exp $
  */
 
 #include "stdinc.h"
@@ -68,22 +68,6 @@ static void comm_connect_callback(fde_t *fd, int status);
 static PF comm_connect_timeout;
 static void comm_connect_dns_callback(void *vptr, struct DNSReply *reply);
 static PF comm_connect_tryconnect;
-
-/* Make sure stdio descriptors (0-2) and profiler descriptor (3)
-   always go somewhere harmless.  Use -foreground for profiling
-   or executing from gdb */
-void
-close_standard_fds(void)
-{
-  int i, fd;
-
-  for (i = 0; i < LOWEST_SAFE_FD; i++)
-  {
-    close(fd);
-    if ((fd = open(PATH_DEVNULL, O_RDWR)) < 0)
-      exit(-1); /* we're hosed if we can't even open /dev/null */
-  }
-}
 
 /* check_can_use_v6()
  *  Check if the system can open AF_INET6 sockets

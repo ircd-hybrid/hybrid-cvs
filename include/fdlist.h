@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.h,v 7.35 2005/07/27 01:11:08 adx Exp $
+ *  $Id: fdlist.h,v 7.36 2005/08/02 06:12:49 adx Exp $
  */
 
 #ifndef INCLUDED_fdlist_h
@@ -104,5 +104,6 @@ void fd_note(fde_t *, const char *format, ...);
 void  fd_note(fde_t *, const char *format, ...)
   __attribute__((format (printf, 2, 3)));
 #endif
+void close_standard_fds(void);
 
 #endif /* INCLUDED_fdlist_h */

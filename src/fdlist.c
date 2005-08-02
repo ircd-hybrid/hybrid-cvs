@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.43 2005/07/27 01:11:10 adx Exp $
+ *  $Id: fdlist.c,v 7.44 2005/08/02 06:12:51 adx Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -166,3 +166,21 @@ fd_note(fde_t *F, const char *format, ...)
   else
     F->desc[0] = '\0';
 }
+
+/* Make sure stdio descriptors (0-2) and profiler descriptor (3)
+ * always go somewhere harmless.  Use -foreground for profiling
+ * or executing from gdb */
+#ifndef _WIN32
+void
+close_standard_fds(void)
+{
+  int i, fd;
+
+  for (i = 0; i < LOWEST_SAFE_FD; i++)
+  {
+    close(fd);
+    if ((fd = open(PATH_DEVNULL, O_RDWR)) < 0)
+      exit(-1); /* we're hosed if we can't even open /dev/null */
+  }
+}
+#endif

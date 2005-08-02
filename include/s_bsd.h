@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.54 2005/07/27 16:56:28 adx Exp $
+ *  $Id: s_bsd.h,v 7.55 2005/08/02 06:12:49 adx Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -50,7 +50,6 @@ extern const char* const SETBUF_ERROR_MSG;
 
 extern void add_connection(struct Listener *, int);
 extern void close_connection(struct Client *);
-extern void close_standard_fds(void);
 extern int  connect_server(struct AccessItem *, struct Client *,
                            struct DNSReply *);
 extern void report_error(int, const char *, const char *, int);
