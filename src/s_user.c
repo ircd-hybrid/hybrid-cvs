@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.353 2005/07/31 05:32:41 adx Exp $
+ *  $Id: s_user.c,v 7.354 2005/08/02 14:19:08 michael Exp $
  */
 
 #include <sys/types.h>
@@ -1453,7 +1453,7 @@ add_isupport(const char *name, const char *options, int n)
 
   if (ptr == NULL)
   {
-    support = (struct Isupport *)MyMalloc (sizeof(*support));
+    support = MyMalloc(sizeof(*support));
     dlinkAddTail(support, &support->node, &support_list);
   }
 
@@ -1476,10 +1476,9 @@ void
 delete_isupport(const char *name)
 {
   dlink_node *ptr;
-  dlink_node *next_ptr;
   struct Isupport *support;
 
-  DLINK_FOREACH_SAFE(ptr, next_ptr, support_list.head)
+  DLINK_FOREACH(ptr, support_list.head)
   {
     support = ptr->data;
     if (irccmp(support->name, name) == 0)
@@ -1488,8 +1487,10 @@ delete_isupport(const char *name)
       MyFree(support->name);
       MyFree(support->options);
       MyFree(support);
+      break;
     }
   }
+
   rebuild_isupport_message_line();
 }
 
@@ -1503,61 +1504,54 @@ delete_isupport(const char *name)
 static void
 rebuild_isupport_message_line(void)
 {
-  char isupportbuffer[512];
-  char *p;
-  dlink_node *ptr;
-  int len = 0;
+  char isupportbuffer[IRCD_BUFSIZE];
+  char *p = isupportbuffer;
+  dlink_node *ptr = NULL;
   int n = 0;
   int tokens = 0;
+  size_t len = 0;
+  size_t reserve = strlen(me.name) + HOSTLEN + strlen(form_str(RPL_ISUPPORT));
 
   destroy_MessageLine(isupportFile);
-  p = isupportbuffer;
 
   DLINK_FOREACH(ptr, support_list.head)
   {
     struct Isupport *support = ptr->data;
 
-    n = ircsprintf(p, "%s", support->name);
+    p += (n = ircsprintf(p, "%s", support->name));
     len += n;
-    p += n;
 
     if (support->options != NULL)
     {
-      *p++ = '=';
-      n = ircsprintf(p, "%s", support->options);
+      p += (n = ircsprintf(p, "=%s", support->options));
       len += n;
-      p += n;
     }
 
     if (support->number > 0)
     {
-      *p++ = '=';
-      n = ircsprintf(p, "%d", support->number);
+      p += (n = ircsprintf(p, "=%d", support->number));
       len += n;
-      p += n;
     }
 
     *p++ = ' ';
     len++;
     *p = '\0';
-    tokens++;
 
-    if ((tokens > 8) || (len > 400))
+    if (++tokens == (MAXPARA-2) || len >= (sizeof(isupportbuffer)-reserve))
     { /* arbritrary for now */
-      --p;
-      if (*p == ' ')
+      if (*--p == ' ')
 	*p = '\0';
+
       addto_MessageLine(isupportFile, isupportbuffer);
       p = isupportbuffer;
-      n = len = 0;
-      tokens = 0;
+      len = 0;
+      n = tokens = 0;
     }
   }
 
   if (len != 0)
   {
-    --p;
-    if (*p == ' ')
+    if (*--p == ' ')
       *p = '\0';
     addto_MessageLine(isupportFile, isupportbuffer);
   }
