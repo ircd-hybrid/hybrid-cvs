@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.349 2005/07/27 04:37:17 adx Exp $
+ *  $Id: ircd.c,v 7.350 2005/08/02 06:20:26 adx Exp $
  */
 
 #include "stdinc.h"
@@ -619,6 +619,9 @@ main(int argc, char *argv[])
     exit(EXIT_FAILURE);
   }
 
+  init_sys();
+  init_ssl();
+
 #ifndef _WIN32
   if (!server_state.foreground)
   {
@@ -640,8 +643,6 @@ main(int argc, char *argv[])
   check_pidfile(pidFileName);
   /* Init the event subsystem */
   eventInit();
-  init_sys();
-  init_ssl();
 
 #ifndef NOBALLOC
   initBlockHeap();
