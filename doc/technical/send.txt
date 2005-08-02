@@ -74,7 +74,8 @@ sendto_channel_butone()
                   except to the client specified as "one", the prefix
                   is built by this function on the fly as it has to
                   be sent both to local clients on this server and to
-                  remote servers. 
+                  remote servers. +D clients are omitted, as this is used
+		  only for PRIVMSG/NOTICE.
 
                   usage - sendto_channel_butone(struct Client *one,
                                                 struct Client *from,
@@ -129,9 +130,10 @@ sendto_channel_local()
                   to remote servers. This is useful when removing
                   local chanops, or adding a local chanop. MODE/SJOIN
                   sent to remote server allows that server to propagate
-                  mode changes to its clients locally.
+                  mode changes to its clients locally. If nodeaf is YES,
+		  +D clients are omitted (used for delivering WALLCHOPS).
 
-                  usage - sendto_channel_local(type,
+                  usage - sendto_channel_local(type, nodeaf,
                                                struct Channel *chptr,
                                                const char *pattern, ... );
 
@@ -283,4 +285,4 @@ send_message()
 
 -- Diane Bruce 
 
-$Id: send.txt,v 1.19 2003/10/13 02:15:20 metalrock Exp $
+$Id: send.txt,v 1.19.4.1 2005/08/02 06:02:17 adx Exp $
