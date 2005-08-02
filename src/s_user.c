@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.354 2005/08/02 14:19:08 michael Exp $
+ *  $Id: s_user.c,v 7.355 2005/08/02 14:42:49 michael Exp $
  */
 
 #include <sys/types.h>
@@ -1501,7 +1501,7 @@ delete_isupport(const char *name)
  * output	- NONE
  * side effects	- Destroy the isupport MessageFile lines, and rebuild.
  */
-static void
+void
 rebuild_isupport_message_line(void)
 {
   char isupportbuffer[IRCD_BUFSIZE];

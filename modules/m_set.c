@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.59 2005/07/26 03:33:00 adx Exp $
+ *  $Id: m_set.c,v 1.60 2005/08/02 14:42:47 michael Exp $
  */
 
 /* rewritten by jdc */
@@ -42,9 +42,10 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "s_user.h"
 
 
-static void mo_set(struct Client*, struct Client*, int, char**);
+static void mo_set(struct Client *, struct Client *, int, char *[]);
 
 struct Message set_msgtab = {
   "SET", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -64,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.59 $";
+const char *_version = "$Revision: 1.60 $";
 #endif
 
 /* Structure used for the SET table itself */
@@ -120,7 +121,7 @@ static struct SetStruct set_cmd_table[] =
   { "SPLITNUM",		quote_splitnum,		0,	1 },
   { "SPLITUSERS",	quote_splitusers,	0,	1 },
   /* -------------------------------------------------------- */
-  { (char *)0,		(void(*)()) 0,		0,	0 }
+  { NULL,		NULL,		0,	0 }
 };
 
 /*
@@ -333,6 +334,7 @@ quote_msglocale( struct Client *source_p, char *locale )
   if (locale != NULL)
   {
     set_locale(locale);
+    rebuild_isupport_message_line();
     sendto_one(source_p, ":%s NOTICE %s :Set MSGLOCALE to '%s'",
 	       me.name, source_p->name, get_locale());
   }

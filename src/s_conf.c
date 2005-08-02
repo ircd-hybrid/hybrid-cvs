@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.547 2005/07/30 20:44:19 adx Exp $
+ *  $Id: s_conf.c,v 7.548 2005/08/02 14:42:49 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2521,7 +2521,7 @@ read_conf_files(int cold)
              ConfigChannel.use_invex ? "I" : "", ConfigChannel.max_bans);
   add_isupport("MAXLIST", chanmodes, -1);
   add_isupport("MAXTARGETS", NULL, ConfigFileEntry.max_targets);
-  if(ConfigChannel.disable_local_channels)
+  if (ConfigChannel.disable_local_channels)
     add_isupport("CHANTYPES", "#", -1);
   else
     add_isupport("CHANTYPES", "#&", -1);
@@ -2536,6 +2536,12 @@ read_conf_files(int cold)
   if (ConfigChannel.use_invex)
     add_isupport("INVEX", "I", -1);
   add_isupport("CHANMODES", chanmodes, -1);
+
+  /*
+   * message_locale may have changed.  rebuild isupport since it relies
+   * on strlen(form_str(RPL_ISUPPORT))
+   */
+  rebuild_isupport_message_line();
 
   parse_conf_file(KLINE_TYPE, cold);
   parse_conf_file(DLINE_TYPE, cold);
@@ -2732,6 +2738,8 @@ clear_out_old_conf(void)
 #ifdef HAVE_LIBCRYPTO
   ConfigFileEntry.default_cipher_preference = NULL;
 #endif /* HAVE_LIBCRYPTO */
+  delete_isupport("INVEX");
+  delete_isupport("EXCEPTS");
 }
 
 /* flush_deleted_I_P()

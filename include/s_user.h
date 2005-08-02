@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.44 2005/07/30 20:44:12 adx Exp $
+ *  $Id: s_user.h,v 7.45 2005/08/02 14:42:46 michael Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -56,8 +56,8 @@ extern void init_uid(void);
 extern char *uid_get(void);
 extern int valid_hostname(const char *);
 extern int valid_username(const char *);
-extern void add_isupport(const char *name, const char *options, int n);
-extern void delete_isupport(const char *name);
+extern void add_isupport(const char *, const char *, int);
+extern void delete_isupport(const char *);
 extern void init_isupport(void);
-
+extern void rebuild_isupport_message_line(void);
 #endif
