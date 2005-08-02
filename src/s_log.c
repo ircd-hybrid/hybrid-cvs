@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.62.2.2 2005/08/02 05:54:57 db Exp $
+ *  $Id: s_log.c,v 7.62.2.3 2005/08/02 06:25:26 adx Exp $
  */
 
 #include "stdinc.h"
@@ -89,25 +89,18 @@ static const char *logLevelToString[] =
 static int 
 open_log(const char *filename)
 {
-  if (!server_state.foreground)
-    close(2); /* let the logfile grab fd 2 to catch stderr */
-
   logFile = fbopen(filename, "a");
 
   if (logFile == NULL)
   {
-#ifndef  _WIN32
-    /* fbopen failed above, last ditch effort to snag fd 2 to catch stderr */
-    (void)open("/dev/null", O_RDONLY);
-#endif
 #ifdef USE_SYSLOG
     syslog(LOG_ERR, "Unable to open log file: %s: %s",
            filename, strerror(errno));
 #endif
-    return(0);
+    return (0);
   }
 
-  return(1);
+  return (1);
 }
 
 static void 
