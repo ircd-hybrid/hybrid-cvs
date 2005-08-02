@@ -197,14 +197,17 @@ sendto_anywhere()
 sendto_realops_flags()
                 - combines old sendto_realops and sendto_realops_flags
                   sends specified message to opers locally only
-                  depending on flags. FLAGS_ALL is a special case
-                  to send to any oper.
+                  depending on two flags, UMODE i.e. +y +d or UMODE_SERVNOTICE
+                  or special case, UMODE_ALL (see client.h UMODE flags )
+                  to send to any oper. The second flag gives the level
+                  of whom to send the messages to, OPERS, ADMINS only or both.
+                  (See send.h for those flags)
 
-                  usage - sendto_realops_flags(int flags,
+                  usage - sendto_realops_flags(int umode, int level,
                                                const char *pattern, ... );
 
                   e.g.
-                  sendto_realops_flags(FLAGS_ALL,
+                  sendto_realops_flags(UMODE_ALL, L_ALL,
                                  "Don't eat the yellow snow");
 
 sendto_wallops_flags()
@@ -216,7 +219,7 @@ sendto_wallops_flags()
                                     struct Client *, const char *patterm ...);
 
                   e.g.
-                  sendto_wallops_flags(FLAGS_LOCOPS,
+                  sendto_wallops_flags(UMODE_WALLOP,
                                       sptr, "Message");
 
 ts_warn()       - Only used to send warning messages to all opers
@@ -234,28 +237,6 @@ sendto_format() - Used to format a varargs buffer into given buffer
 
                   usage - sendto_format(char *sendbuf,
                                         const char *pattern, ... );
-
-send_trim()     - This local function simply trims a char string
-                  to fit inside 512 bytes as per rfc1459, adding
-                  a cr/lf pair as needed. It does not check to make
-                  sure original string has a cr/lf.
-    
-                  usage - int send_trim(char buffer, int len);
-                  returns length as modified or not,
-                  modifies buffer in-place.
-
-sendto_list_local()
-                - This local function sends given message to given dlink_list
-                  with data == a local client. This is used by
-                  sendto_common_channels_local() and by
-                  sendto_channel_local() 
- 
-                  It could easily be extended to sendto "groups" of
-                  otherwise unrelated users, not just channel groups.
-
-                  usage - sendto_list_local(dlink_list *list,
-                                            const char *sendbuf,
-                                            int len);
 
 
 sendto_list_anywhere()
@@ -285,4 +266,4 @@ send_message()
 
 -- Diane Bruce 
 
-$Id: send.txt,v 1.20 2005/08/02 06:04:28 adx Exp $
+$Id: send.txt,v 1.21 2005/08/02 06:26:23 db Exp $
