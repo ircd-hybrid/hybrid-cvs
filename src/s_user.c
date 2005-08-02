@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.355 2005/08/02 14:42:49 michael Exp $
+ *  $Id: s_user.c,v 7.356 2005/08/02 22:30:56 metalrock Exp $
  */
 
 #include <sys/types.h>
@@ -55,6 +55,7 @@
 #include "userhost.h"
 #include "hook.h"
 #include "s_misc.h"
+#include "msg.h"
 
 int MaxClientCount     = 1;
 int MaxConnectionCount = 1;
@@ -75,7 +76,6 @@ struct Isupport
 
 dlink_list support_list = { NULL, NULL, 0 };
 MessageFile *isupportFile;
-static void rebuild_isupport_message_line(void);
 
 /* table of ascii char letters
  * to corresponding bitmask
