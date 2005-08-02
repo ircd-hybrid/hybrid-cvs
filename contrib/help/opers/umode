@@ -1,4 +1,4 @@
-# $Id: umode,v 1.2.4.1 2005/07/31 04:15:28 adx Exp $
+# $Id: umode,v 1.2.4.2 2005/08/02 05:33:37 adx Exp $
 MODE <nick> <+|-><modes>
 
 Usermodes: (* designates that the umode is oper only)
@@ -23,6 +23,7 @@ Usermodes: (* designates that the umode is oper only)
        * +x     - Can see new server introduction and split messages.
        * +b     - Can see possible bot warnings.
        * +a     - Is marked as a server admin in stats p/o.
+         +D     - "deaf": don't receive channel messages
          +G     - "soft caller id": block private messages from people not on
                   any common channels with you (unless they are /accept'ed)
          +g     - "caller id" mode: only allow /accept clients to message you

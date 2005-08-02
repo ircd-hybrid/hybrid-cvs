@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.76.2.1 2005/07/12 11:32:52 michael Exp $
+ *  $Id: m_mode.c,v 1.76.2.2 2005/08/02 05:33:47 adx Exp $
  */
 
 #include "stdinc.h"
@@ -41,6 +41,7 @@
 #include "parse.h"
 #include "modules.h"
 #include "packet.h"
+#include "common.h"
 
 static void m_mode(struct Client *, struct Client *, int, char **);
 static void ms_tmode(struct Client *, struct Client *, int, char **);
@@ -76,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&bmask_msgtab);
 }
 
-const char *_version = "$Revision: 1.76.2.1 $";
+const char *_version = "$Revision: 1.76.2.2 $";
 #endif
 
 /*
@@ -321,7 +322,7 @@ ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[
         *mbuf = '\0';
         *(pbuf - 1) = '\0';
 
-        sendto_channel_local(ALL_MEMBERS, chptr, "%s %s",
+        sendto_channel_local(ALL_MEMBERS, NO, chptr, "%s %s",
                              modebuf, parabuf);
         sendto_server(client_p, NULL, chptr, needcap, CAP_TS6, NOFLAGS,
                       "%s %s", modebuf, parabuf);
@@ -342,7 +343,7 @@ ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[
   if (modecount)
   {
     *mbuf = *(pbuf - 1) = '\0';
-    sendto_channel_local(ALL_MEMBERS, chptr, "%s %s", modebuf, parabuf);
+    sendto_channel_local(ALL_MEMBERS, NO, chptr, "%s %s", modebuf, parabuf);
     sendto_server(client_p, NULL, chptr, needcap, CAP_TS6, NOFLAGS,
                   "%s %s", modebuf, parabuf);
   }

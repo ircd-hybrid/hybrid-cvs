@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.80.2.2 2005/07/17 09:48:55 michael Exp $
+ *  $Id: m_invite.c,v 1.80.2.3 2005/08/02 05:33:45 adx Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.80.2.2 $";
+const char *_version = "$Revision: 1.80.2.3 $";
 #endif
 
 /*
@@ -182,7 +182,7 @@ m_invite(struct Client *client_p, struct Client *source_p,
       if (chptr->mode.mode & MODE_PRIVATE)
       {
         /* Only do this if channel is set +i AND +p */
-        sendto_channel_local(CHFL_CHANOP|CHFL_HALFOP, chptr,
+        sendto_channel_local(CHFL_CHANOP|CHFL_HALFOP, NO, chptr,
                              ":%s NOTICE %s :%s is inviting %s to %s.",
                              me.name, chptr->chname, source_p->name,
                              target_p->name, chptr->chname);

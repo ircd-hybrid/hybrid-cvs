@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.144.2.2 2005/07/28 02:21:55 adx Exp $
+ *  $Id: channel_mode.c,v 7.144.2.3 2005/08/02 05:33:50 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1684,7 +1684,7 @@ send_mode_changes(struct Client *client_p, struct Client *source_p,
         modebuf[mbl - 1] = '\0';
 
       if (nc != 0)
-        sendto_channel_local(ALL_MEMBERS, chptr, "%s %s", modebuf, parabuf);
+        sendto_channel_local(ALL_MEMBERS, NO, chptr, "%s %s", modebuf, parabuf);
 
       nc = 0;
       mc = 0;
@@ -1724,7 +1724,7 @@ send_mode_changes(struct Client *client_p, struct Client *source_p,
     parabuf[pbl - 1] = 0;
 
   if (nc != 0)
-    sendto_channel_local(ALL_MEMBERS, chptr, "%s %s", modebuf, parabuf);
+    sendto_channel_local(ALL_MEMBERS, NO, chptr, "%s %s", modebuf, parabuf);
 
   nc = 0;
   mc = 0;

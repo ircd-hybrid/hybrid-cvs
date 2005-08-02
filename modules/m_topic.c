@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.69 2004/07/08 00:27:23 erik Exp $
+ *  $Id: m_topic.c,v 1.69.2.1 2005/08/02 05:33:45 adx Exp $
  */
 
 #include "stdinc.h"
@@ -40,6 +40,7 @@
 #include "parse.h"
 #include "modules.h"
 #include "packet.h"
+#include "common.h"
 
 static void m_topic(struct Client *, struct Client *, int, char **);
 static void ms_topic(struct Client *, struct Client *, int, char **);
@@ -62,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.69 $";
+const char *_version = "$Revision: 1.69.2.1 $";
 #endif
 
 /* m_topic()
@@ -150,7 +151,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
                       ":%s TOPIC %s :%s",
                       source_p->name, chptr->chname,
                       chptr->topic == NULL ? "" : chptr->topic);
-        sendto_channel_local(ALL_MEMBERS,
+        sendto_channel_local(ALL_MEMBERS, NO,
                              chptr, ":%s!%s@%s TOPIC %s :%s",
                              source_p->name,
                              source_p->username,
@@ -244,7 +245,7 @@ ms_topic(struct Client *client_p, struct Client *source_p,
 
     if (ConfigServerHide.hide_servers)
     {
-      sendto_channel_local(ALL_MEMBERS,
+      sendto_channel_local(ALL_MEMBERS, NO,
                            chptr, ":%s TOPIC %s :%s",
                            me.name, chptr->chname,
                            chptr->topic == NULL ? "" : chptr->topic);
@@ -252,7 +253,7 @@ ms_topic(struct Client *client_p, struct Client *source_p,
     }
     else
     {
-      sendto_channel_local(ALL_MEMBERS,
+      sendto_channel_local(ALL_MEMBERS, NO,
                            chptr, ":%s TOPIC %s :%s",
                            source_p->name,
                            chptr->chname, chptr->topic == NULL ? "" : chptr->topic);

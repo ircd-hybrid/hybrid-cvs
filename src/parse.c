@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.198 2005/05/27 20:16:30 adx Exp $
+ *  $Id: parse.c,v 7.198.2.1 2005/08/02 05:33:53 adx Exp $
  */
 
 #include "stdinc.h"
@@ -839,7 +839,7 @@ do_numeric(char numeric[], struct Client *client_p, struct Client *source_p,
     return;
   }
   else if ((chptr = hash_find_channel(parv[1])) != NULL)
-    sendto_channel_local(ALL_MEMBERS, chptr,
+    sendto_channel_local(ALL_MEMBERS, NO, chptr,
 			 ":%s %s %s %s",
 			 source_p->name,
 			 numeric, chptr->chname, buffer);

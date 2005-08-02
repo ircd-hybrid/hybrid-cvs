@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_clearchan.c,v 1.53 2005/07/09 13:27:52 adx Exp $
+ *  $Id: m_clearchan.c,v 1.53.2.1 2005/08/02 05:33:35 adx Exp $
  */
 
 #include "stdinc.h"
@@ -41,7 +41,7 @@
 #include "modules.h"
 #include "list.h"
 #include "s_conf.h"
-
+#include "common.h"
 
 extern BlockHeap *ban_heap;
 
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.53.2.1 $";
 #endif
 
 /*
@@ -129,10 +129,10 @@ mo_clearchan(struct Client *client_p, struct Client *source_p,
                 LL_ICLIENT, ":%s SJOIN %lu %s +ntsi :@%s",
                 me.name, (unsigned long)(chptr->channelts - 1),
                 chptr->chname, source_p->name);
-  sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
+  sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s!%s@%s JOIN %s",
                        source_p->name, source_p->username,
                        source_p->host, chptr->chname);
-  sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +o %s",
+  sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s MODE %s +o %s",
                        me.name, chptr->chname, source_p->name);
 
 
@@ -160,7 +160,8 @@ kick_list(struct Client *client_p, struct Client *source_p,
   DLINK_FOREACH(m, chptr->members.head)
   {
     ms = m->data;
-    sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s KICK %s %s :CLEARCHAN",
+    sendto_channel_local(ALL_MEMBERS, NO, chptr,
+                         ":%s!%s@%s KICK %s %s :CLEARCHAN",
                          source_p->name, source_p->username, source_p->host,
                          chptr->chname, ms->client_p->name);
     sendto_server(NULL, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
@@ -249,7 +250,7 @@ remove_a_mode(struct Channel *chptr, int mask, char flag)
     if (count == 4)
     {
       *mbuf = '\0';
-      sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
+      sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s MODE %s %s %s %s %s %s",
                            me.name, chptr->chname, lmodebuf, lpara[0],
                            lpara[1], lpara[2], lpara[3]);
 
@@ -263,7 +264,7 @@ remove_a_mode(struct Channel *chptr, int mask, char flag)
   if (count != 0)
   {
     *mbuf = '\0';
-    sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
+    sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s MODE %s %s %s %s %s %s",
                          me.name, chptr->chname, lmodebuf, lpara[0],
                          lpara[1], lpara[2], lpara[3]);
   }

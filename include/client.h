@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.235.2.1 2005/07/31 04:15:35 adx Exp $
+ *  $Id: client.h,v 7.235.2.2 2005/08/02 05:33:43 adx Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -384,10 +384,11 @@ struct LocalUser
 #define UMODE_SOFTCALLERID 0x04000 /* block unless on common channel */
 #define UMODE_UNAUTH       0x08000 /* show unauth connects here */
 #define UMODE_LOCOPS       0x10000 /* show locops */
+#define UMODE_DEAF         0x20000 /* don't receive channel messages */
 
 /* user information flags, only settable by remote mode or local oper */
-#define UMODE_OPER         0x20000 /* Operator */
-#define UMODE_ADMIN        0x40000 /* Admin on server */
+#define UMODE_OPER         0x40000 /* Operator */
+#define UMODE_ADMIN        0x80000 /* Admin on server */
 #define UMODE_ALL	   UMODE_SERVNOTICE
 
 #define SEND_UMODES  (UMODE_INVISIBLE | UMODE_OPER | UMODE_WALLOP | \
@@ -397,7 +398,7 @@ struct LocalUser
                       UMODE_NCHANGE | UMODE_OPERWALL | UMODE_DEBUG | \
                       UMODE_BOTS | UMODE_EXTERNAL | UMODE_LOCOPS | \
                       UMODE_ADMIN | UMODE_UNAUTH | UMODE_CALLERID | \
-		      UMODE_SOFTCALLERID)
+		      UMODE_SOFTCALLERID | UMODE_DEAF)
 
 
 /* oper priv flags */
@@ -465,6 +466,7 @@ struct LocalUser
 #define IsSetCallerId(x)	((x)->umodes & \
                                  (UMODE_CALLERID|UMODE_SOFTCALLERID))
 #define IsSoftCallerId(x)       ((x)->umodes & UMODE_SOFTCALLERID)
+#define IsDeaf(x)               ((x)->umodes & UMODE_DEAF)
 
 #define SetSendQExceeded(x)	((x)->flags |= FLAGS_SENDQEX)
 #define IsSendQExceeded(x)	((x)->flags &  FLAGS_SENDQEX)

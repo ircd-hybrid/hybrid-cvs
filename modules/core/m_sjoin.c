@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.191.2.1 2005/07/22 15:36:13 michael Exp $
+ *  $Id: m_sjoin.c,v 1.191.2.2 2005/08/02 05:33:47 adx Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.191.2.1 $";
+const char *_version = "$Revision: 1.191.2.2 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -202,7 +202,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   {
     if (!newts && !isnew && oldts)
     {
-      sendto_channel_local(ALL_MEMBERS, chptr,
+      sendto_channel_local(ALL_MEMBERS, NO, chptr,
  		  	   ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
 		  	   me.name, chptr->chname, chptr->chname, (unsigned long)oldts);
       sendto_realops_flags(UMODE_ALL, L_ALL,
@@ -245,7 +245,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   if (!keep_our_modes)
   {
     remove_our_modes(chptr, source_p);
-    sendto_channel_local(ALL_MEMBERS, chptr,
+    sendto_channel_local(ALL_MEMBERS, NO, chptr,
    		         ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to %lu",
 	 		 me.name, chptr->chname, chptr->chname,
 			 (unsigned long)oldts, (unsigned long)newts);
@@ -255,7 +255,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   {
     /* This _SHOULD_ be to ALL_MEMBERS
      * It contains only +imnpstlk, etc */
-    sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s",
+    sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s MODE %s %s %s",
 	                 servername, chptr->chname, modebuf, parabuf);
   }
 
@@ -459,7 +459,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     if (!IsMember(target_p, chptr))
     {
       add_user_to_channel(chptr, target_p, fl);
-      sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
+      sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s!%s@%s JOIN :%s",
                            target_p->name, target_p->username,
                            target_p->host, chptr->chname);
     }
@@ -487,7 +487,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
           slen = ircsprintf(sptr, " %s", para[lcount]);	/* see? */
 	  sptr += slen;					/* ready for next */
         }
-        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s%s",
+        sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s MODE %s %s%s",
                             servername, chptr->chname, modebuf, sendbuf);
         mbuf = modebuf;
         *mbuf++ = '+';
@@ -511,7 +511,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
           slen = ircsprintf(sptr, " %s", para[lcount]);
           sptr += slen;
         }
-        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s%s",
+        sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s MODE %s %s%s",
                              servername, chptr->chname, modebuf, sendbuf);
 
         mbuf = modebuf;
@@ -536,7 +536,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
           slen = ircsprintf(sptr, " %s", para[lcount]);
 	  sptr += slen;
         }
-        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s%s",
+        sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s MODE %s %s%s",
                              servername, chptr->chname, modebuf, sendbuf);
 
         mbuf = modebuf;
@@ -586,7 +586,7 @@ nextnick:
       slen = ircsprintf(sptr, " %s", para[lcount]);
       sptr += slen;
     }
-    sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s%s",
+    sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s MODE %s %s%s",
                         servername, chptr->chname, modebuf, sendbuf);
 
   }
@@ -814,7 +814,7 @@ remove_a_mode(struct Channel *chptr, struct Client *source_p,
       }
 
       *mbuf = '\0';
-      sendto_channel_local(ALL_MEMBERS, chptr,
+      sendto_channel_local(ALL_MEMBERS, NO, chptr,
                            ":%s MODE %s %s%s",
 			   (IsHidden(source_p) ||
 			   ConfigServerHide.hide_servers) ?
@@ -838,7 +838,7 @@ remove_a_mode(struct Channel *chptr, struct Client *source_p,
       strlcat(sendbuf, " ", sizeof(sendbuf));
       strlcat(sendbuf, lpara[lcount], sizeof(sendbuf));
     }
-    sendto_channel_local(ALL_MEMBERS, chptr,
+    sendto_channel_local(ALL_MEMBERS, NO, chptr,
 			 ":%s MODE %s %s%s",
 			 (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
 			 me.name : source_p->name,
@@ -883,7 +883,7 @@ remove_ban_list(struct Channel *chptr, struct Client *source_p,
       /* remove trailing space */
       *(pbuf - 1) = '\0';
 
-      sendto_channel_local(ALL_MEMBERS, chptr, "%s %s",
+      sendto_channel_local(ALL_MEMBERS, NO, chptr, "%s %s",
                lmodebuf, lparabuf);
       sendto_server(source_p, NULL, chptr, cap, CAP_TS6, NOFLAGS,
 		    "%s %s", lmodebuf, lparabuf);
@@ -908,7 +908,7 @@ remove_ban_list(struct Channel *chptr, struct Client *source_p,
   }
 
   *(pbuf - 1) = *mbuf = '\0';
-  sendto_channel_local(ALL_MEMBERS, chptr, "%s %s", lmodebuf, lparabuf);
+  sendto_channel_local(ALL_MEMBERS, NO, chptr, "%s %s", lmodebuf, lparabuf);
   sendto_server(source_p, NULL, chptr, cap, CAP_TS6, NOFLAGS,
 		"%s %s", lmodebuf, lparabuf);
 
