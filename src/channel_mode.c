@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.144.2.3 2005/08/02 05:33:50 adx Exp $
+ *  $Id: channel_mode.c,v 7.144.2.4 2005/08/02 22:20:04 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1480,18 +1480,23 @@ get_channel_access(struct Client *source_p, struct Membership *member)
 {
   /* Let hacked servers in for now... */
   if (!MyClient(source_p))
-    return(CHACCESS_CHANOP);
+    return (CHACCESS_CHANOP);
 
   if (member == NULL)
-    return(CHACCESS_NOTONCHAN);
+    return (CHACCESS_NOTONCHAN);
 
   /* just to be sure.. */
   assert(source_p == member->client_p);
 
   if (has_member_flags(member, CHFL_CHANOP))
-    return(CHACCESS_CHANOP);
+    return (CHACCESS_CHANOP);
 
-  return(CHACCESS_PEON);
+#ifdef HALFOPS
+  if (has_member_flags(member, CHFL_HALFOP))
+    return (CHACCESS_HALFOP);
+#endif
+
+  return (CHACCESS_PEON);
 }
 
 /* void send_cap_mode_changes(struct Client *client_p,
