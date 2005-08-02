@@ -231,30 +231,12 @@ ts_warn()       - Only used to send warning messages to all opers
 
 *** LOCAL HELPER FUNCTIONS (static) ***
 
-sendto_format() - Used to format a varargs buffer into given buffer
+send_format()   - Used to format a varargs buffer into given buffer
                   returns length of buffer built, enforces RFC1459 length
                   limits and appends \r\n as per rfc.
 
-                  usage - sendto_format(char *sendbuf,
-                                        const char *pattern, ... );
-
-
-sendto_list_anywhere()
-                - This local function sends a message to all members
-                  as given in a dlink_list, whether they are remote or local
-                  clients. It is used by sendto_channel_butone()
-
-                  It could easily be extended to sendto "groups" of
-                  otherwise unrelated users, not just channel groups.
-
-                  usage: sendto_list_anywhere(struct Client *one,
-                                              struct Client *from,
-                                              dlink_list *list,
-                                              const char *local_sendbuf,
-                                              int local_len,
-                                              const char *remote_sendbuf,
-                                              int remote_len);
-
+                  usage - send_format(char *sendbuf,
+                                      const char *pattern, ... );
 
 send_message()
                 - This local function does the actual send of message
@@ -264,6 +246,17 @@ send_message()
                   The message has to be pre-formatted and the length
                   must be pre-calculated. 
 
+send_message_remote()
+                - This local function does the actual send of message to
+                  remote clients
+
+                  usage: send_message_remote(struct Client *to,
+                  struct Client *from, char *msg, int len);
+
+                  The message has to be pre-formatted and the length
+                  must be pre-calculated.
+
+
 -- Diane Bruce 
 
-$Id: send.txt,v 1.19.4.2 2005/08/02 06:27:54 db Exp $
+$Id: send.txt,v 1.19.4.3 2005/08/02 17:09:58 db Exp $
