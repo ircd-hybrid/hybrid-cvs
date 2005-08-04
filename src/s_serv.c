@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.430 2005/07/30 20:44:20 adx Exp $
+ *  $Id: s_serv.c,v 7.431 2005/08/04 10:14:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1648,7 +1648,7 @@ send_tb(struct Client *client_p, struct Channel *chptr)
     }
     else
     {
-      sendto_one(client_p, ":%s TB %s %lu %s",
+      sendto_one(client_p, ":%s TB %s %lu :%s",
 		 me.name, chptr->chname,
 		 (unsigned long)chptr->topic_time, chptr->topic);
     }
@@ -1664,12 +1664,11 @@ send_tb(struct Client *client_p, struct Channel *chptr)
 static void
 cjoin_all(struct Client *client_p)
 {
-  dlink_node *gptr;
-  struct Channel *chptr;
+  const dlink_node *gptr = NULL;
 
   DLINK_FOREACH(gptr, global_channel_list.head)
   {
-    chptr = gptr->data;
+    const struct Channel *chptr = gptr->data;
     sendto_one(client_p, ":%s CBURST %s",
                me.name, chptr->chname);
   }
@@ -1738,7 +1737,7 @@ void
 add_lazylinkclient(struct Client *local_server_p, struct Client *client_p)
 {
   assert(MyConnect(local_server_p));
-   client_p->lazyLinkClientExists |= local_server_p->localClient->serverMask;
+  client_p->lazyLinkClientExists |= local_server_p->localClient->serverMask;
 }
 
 /* remove_lazylink_flags()
@@ -2205,16 +2204,16 @@ serv_connect_callback(fde_t *fd, int status, void *data)
     return;
   }
 #endif
-    
+
   /* jdc -- Check and send spasswd, not passwd. */
   if (!EmptyString(aconf->spasswd) && (me.id[0] != '\0'))
       /* Send TS 6 form only if id */
-      sendto_one(client_p, "PASS %s TS %d %s",
-		 aconf->spasswd, TS_CURRENT, me.id);
-    else
-      sendto_one(client_p, "PASS %s TS 5",
-		 aconf->spasswd);
-      
+    sendto_one(client_p, "PASS %s TS %d %s",
+               aconf->spasswd, TS_CURRENT, me.id);
+  else
+    sendto_one(client_p, "PASS %s TS 5",
+               aconf->spasswd);
+
   /* Pass my info to the new server
    *
    * If trying to negotiate LazyLinks, pass on CAP_LL
@@ -2381,7 +2380,7 @@ static char base64_chars[] =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
 static char base64_values[] =
-            {
+{
 /* 00-15   */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 /* 16-31   */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 /* 32-47   */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63,
@@ -2398,7 +2397,7 @@ static char base64_values[] =
 /* 208-223 */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 /* 224-239 */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 /* 240-255 */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
-            };
+};
 
 /*
  * base64_block will allocate and return a new block of memory
