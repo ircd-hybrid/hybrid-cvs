@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.197 2005/07/28 03:31:53 db Exp $
+ *  $Id: m_kline.c,v 1.198 2005/08/04 23:53:43 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.197 $";
+const char *_version = "$Revision: 1.198 $";
 #endif
 
 /* Local function prototypes */
@@ -427,7 +427,7 @@ static void
 mo_dline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  char def_reason[] = "No Reason";
+  char def_reason[] = "No reason";
   char *dlhost, *oper_reason, *reason;
   const char *creason;
 #ifndef IPV6
@@ -605,7 +605,7 @@ already_placed_kline(struct Client *source_p, const char *luser, const char *lho
   {
     if (warn)
     {
-      reason = aconf->reason ? aconf->reason : "No Reason";
+      reason = aconf->reason ? aconf->reason : "No reason";
       sendto_one(source_p,
                  ":%s NOTICE %s :[%s@%s] already K-Lined by [%s@%s] - %s",
                  me.name, source_p->name, luser, lhost, aconf->user,

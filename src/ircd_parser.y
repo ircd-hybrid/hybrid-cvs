@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.417 2005/08/04 05:50:51 metalrock Exp $
+ *  $Id: ircd_parser.y,v 1.418 2005/08/04 23:53:47 metalrock Exp $
  */
 
 %{
@@ -2016,7 +2016,7 @@ resv_channel: CHANNEL '=' QSTRING ';'
   {
     if (IsChanPrefix(*yylval.string))
     {
-      char def_reason[] = "No reason specified";
+      char def_reason[] = "No reason";
 
       create_channel_resv(yylval.string, resv_reason != NULL ? resv_reason : def_reason, 1);
     }
@@ -2031,7 +2031,7 @@ resv_nick: NICK '=' QSTRING ';'
   {
     if (clean_resv_nick(yylval.string))
     {
-      char def_reason[] = "No reason specified";
+      char def_reason[] = "No reason";
 
       create_nick_resv(yylval.string, resv_reason != NULL ? resv_reason : def_reason, 1);
     }
@@ -2715,7 +2715,7 @@ deny_entry: DENY
     yy_conf = make_conf_item(DLINE_TYPE);
     yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
     /* default reason */
-    DupString(yy_aconf->reason, "NO REASON");
+    DupString(yy_aconf->reason, "No reason");
   }
 } '{' deny_items '}' ';'
 {
@@ -2835,7 +2835,7 @@ gecos_entry: GECOS
       if (gecos_reason[0])
         DupString(yy_match_item->reason, gecos_reason);
       else
-        DupString(yy_match_item->reason, "<No reason specified>");
+        DupString(yy_match_item->reason, "No reason");
     }
   }
 };

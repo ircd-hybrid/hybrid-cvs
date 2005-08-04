@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_squit.c,v 1.59 2005/07/30 20:44:17 adx Exp $
+ *  $Id: m_squit.c,v 1.60 2005/08/04 23:53:45 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&squit_msgtab);
 }
 
-const char *_version = "$Revision: 1.59 $";
+const char *_version = "$Revision: 1.60 $";
 #endif
 
 /* mo_squit - SQUIT message handler
@@ -77,7 +77,7 @@ mo_squit(struct Client *client_p, struct Client *source_p,
   dlink_node *ptr;
   char *comment;
   const char *server;
-  char def_reason[] = "No reason specified";
+  char def_reason[] = "No reason";
 
   if (parc < 2 || EmptyString(parv[1]))
   {
@@ -151,7 +151,7 @@ ms_squit(struct Client *client_p, struct Client *source_p,
   struct Client *target_p = NULL;
   char *comment;
   const char *server;
-  char def_reason[] = "No reason specified";
+  char def_reason[] = "No reason";
 
   if (parc < 2 || EmptyString(parv[1]))
     return;

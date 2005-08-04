@@ -1,4 +1,4 @@
-/*$Id: y.tab.c,v 7.44 2005/08/04 05:50:51 metalrock Exp $*/
+/* $Id: y.tab.c,v 7.45 2005/08/04 23:53:47 metalrock Exp $ */
 #include <stdlib.h>
 #ifndef lint
 #ifdef __unused
@@ -3898,7 +3898,7 @@ case 283:
   {
     if (IsChanPrefix(*yylval.string))
     {
-      char def_reason[] = "No reason specified";
+      char def_reason[] = "No reason";
 
       create_channel_resv(yylval.string, resv_reason != NULL ? resv_reason : def_reason, 1);
     }
@@ -3914,7 +3914,7 @@ case 284:
   {
     if (clean_resv_nick(yylval.string))
     {
-      char def_reason[] = "No reason specified";
+      char def_reason[] = "No reason";
 
       create_nick_resv(yylval.string, resv_reason != NULL ? resv_reason : def_reason, 1);
     }
@@ -4667,7 +4667,7 @@ case 389:
     yy_conf = make_conf_item(DLINE_TYPE);
     yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
     /* default reason */
-    DupString(yy_aconf->reason, "NO REASON");
+    DupString(yy_aconf->reason, "No reason");
   }
 }
 break;
@@ -4789,7 +4789,7 @@ case 406:
       if (gecos_reason[0])
         DupString(yy_match_item->reason, gecos_reason);
       else
-        DupString(yy_match_item->reason, "<No reason specified>");
+        DupString(yy_match_item->reason, "No reason");
     }
   }
 }

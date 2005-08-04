@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.50 2005/07/29 21:08:16 michael Exp $
+ *  $Id: csvlib.c,v 7.51 2005/08/04 23:53:47 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -131,7 +131,7 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
       if (reason_field != NULL)
         DupString(match_item->reason, reason_field);
       else
-        DupString(match_item->reason, "<No reason specified>");
+        DupString(match_item->reason, "No reason");
     }
 #endif
       break;

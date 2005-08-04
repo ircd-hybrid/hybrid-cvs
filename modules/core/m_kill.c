@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.91 2005/07/30 20:44:17 adx Exp $
+ *  $Id: m_kill.c,v 1.92 2005/08/04 23:53:45 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.91 $";
+const char *_version = "$Revision: 1.92 $";
 #endif
 
 /* mo_kill()
@@ -81,7 +81,7 @@ mo_kill(struct Client *client_p, struct Client *source_p,
   const char *inpath = client_p->name;
   char *user;
   char *reason;
-  char def_reason[] = "No reason specified";
+  char def_reason[] = "No reason";
 
   user   = parv[1];
   reason = parv[2]; /* Either defined or NULL (parc >= 2!!) */
@@ -190,7 +190,7 @@ ms_kill(struct Client *client_p, struct Client *source_p,
   char *user;
   char *reason;
   const char *path;
-  char def_reason[] = "No reason specified";
+  char def_reason[] = "No reason";
 
   *buf = '\0';
 

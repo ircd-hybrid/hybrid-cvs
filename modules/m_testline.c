@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.42 2005/06/23 09:33:56 michael Exp $
+ *  $Id: m_testline.c,v 1.43 2005/08/04 23:53:43 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&testgecos_msgtab);
 }
  
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 
 /* mo_testline()
@@ -177,7 +177,7 @@ mo_testline(struct Client *client_p, struct Client *source_p,
 	       IsConfTemporary(aconf) ? ((aconf->hold - CurrentTime) / 60)
 	       : 0L,
 	       userhost, 
-	       aconf->passwd ? aconf->passwd : "No Reason",
+	       aconf->passwd ? aconf->passwd : "No reason",
 	       aconf->oper_reason ? aconf->oper_reason : "");
     ++matches;
   }
@@ -221,7 +221,7 @@ mo_testline(struct Client *client_p, struct Client *source_p,
 	       me.name, source_p->name,
 	       'Q', 0L,
 	       conf->name, 
-	       mconf->reason ? mconf->reason : "No Reason",
+	       mconf->reason ? mconf->reason : "No reason",
 	       mconf->oper_reason ? mconf->oper_reason : "");
     ++matches;
   }
