@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.416 2005/07/31 05:32:41 adx Exp $
+ *  $Id: ircd_parser.y,v 1.417 2005/08/04 05:50:51 metalrock Exp $
  */
 
 %{
@@ -983,7 +983,7 @@ oper_items:     oper_items oper_item | oper_item;
 oper_item:      oper_name | oper_user | oper_password | oper_hidden_admin |
 		oper_class | oper_global_kill | oper_remote |
                 oper_kline | oper_xline | oper_unkline |
-		oper_gline | oper_nick_changes |
+		oper_gline | oper_nick_changes | oper_remoteban |
                 oper_die | oper_rehash | oper_admin |
 		oper_encrypted | oper_rsa_public_key_file |
                 oper_flags | error ';' ;
@@ -1139,6 +1139,17 @@ oper_remote: REMOTE '=' TBOOL ';'
       yy_aconf->port |= OPER_FLAG_REMOTE;
     else
       yy_aconf->port &= ~OPER_FLAG_REMOTE; 
+  }
+};
+
+oper_remoteban: REMOTEBAN '=' TBOOL ';'
+{
+  if (ypass == 2)
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_REMOTEBAN;
+    else
+      yy_aconf->port &= ~OPER_FLAG_REMOTEBAN;
   }
 };
 
