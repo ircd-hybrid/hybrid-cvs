@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.350 2005/08/02 06:20:26 adx Exp $
+ *  $Id: ircd.c,v 7.351 2005/08/05 00:04:05 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -597,7 +597,7 @@ main(int argc, char *argv[])
   ConfigFileEntry.configfile = CPATH;  /* Server configuration file */
   ConfigFileEntry.klinefile  = KPATH;  /* Server kline file         */
   ConfigFileEntry.xlinefile  = XPATH;  /* Server xline file         */
-  ConfigFileEntry.rxlinefile = RXPATH;
+  ConfigFileEntry.rxlinefile = RXPATH; /* Server regex xline file   */
   ConfigFileEntry.dlinefile  = DLPATH; /* dline file                */
   ConfigFileEntry.glinefile  = GPATH;  /* gline log file            */
   ConfigFileEntry.cresvfile  = CRESVPATH; /* channel resv file      */
