@@ -19,13 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.418 2005/08/04 23:53:47 metalrock Exp $
+ *  $Id: ircd_parser.y,v 1.419 2005/08/06 11:01:16 michael Exp $
  */
 
 %{
-
-/* XXX */
-#define WE_ARE_MEMORY_C
 
 #define YY_NO_UNPUT
 #include <sys/types.h>

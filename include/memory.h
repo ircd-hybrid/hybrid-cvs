@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: memory.h,v 7.40 2003/08/03 14:22:18 michael Exp $
+ *  $Id: memory.h,v 7.41 2005/08/06 11:01:14 michael Exp $
  */
 
 #ifndef _I_MEMORY_H
@@ -89,21 +89,4 @@ _DupString(char **x, const char *y)
 #endif /* __GNUC__ */
 
 #define DupString(x,y) _DupString(&x, y)
-
-
-#ifndef WE_ARE_MEMORY_C
-#undef strdup
-#undef malloc
-#undef realloc
-#undef calloc
-#undef free
-#define malloc do_not_call_old_memory_functions!call_My*functions
-#define calloc do_not_call_old_memory_functions!call_My*functions
-#define realloc do_not_call_old_memory_functions!call_My*functions
-#define strdup do_not_call_old_memory_functions!call_My*functions
-#define free do_not_call_old_memory_functions!call_My*functions
-#endif
-
-
 #endif /* _I_MEMORY_H */
-

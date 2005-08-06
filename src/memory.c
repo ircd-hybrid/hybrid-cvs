@@ -19,11 +19,9 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: memory.c,v 7.40 2003/08/03 14:22:23 michael Exp $
+ *  $Id: memory.c,v 7.41 2005/08/06 11:01:16 michael Exp $
  */
 
-
-#define WE_ARE_MEMORY_C
 
 #include "stdinc.h"
 #include "ircd_defs.h"

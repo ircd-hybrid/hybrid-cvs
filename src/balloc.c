@@ -27,7 +27,7 @@
 
 /*! \file balloc.c
  * \brief A block allocator
- * \version $Id: balloc.c,v 7.58 2005/07/26 03:33:04 adx Exp $
+ * \version $Id: balloc.c,v 7.59 2005/08/06 11:01:15 michael Exp $
  * 
  * About the block allocator
  *
@@ -50,7 +50,6 @@
  * down after we no longer need it.
  */
 
-#define WE_ARE_MEMORY_C
 #include "stdinc.h"
 #include "ircd_defs.h"          /* DEBUG_BLOCK_ALLOCATOR */
 #include "ircd.h"

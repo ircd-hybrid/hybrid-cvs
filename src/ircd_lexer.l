@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.204 2005/07/31 05:32:40 adx Exp $
+ *  $Id: ircd_lexer.l,v 1.205 2005/08/06 11:01:16 michael Exp $
  */
 
 %option case-insensitive
@@ -28,20 +28,16 @@
 %option never-interactive
 
 %{
-/* XXX - No we aren't but lex calls malloc :(. It is even worse that it
-   doesn't call free! */
-#define WE_ARE_MEMORY_C
 #include "stdinc.h"
 #include "tools.h"
 #include "irc_string.h"
 #include "common.h"
 #include "s_conf.h"
-
-#include "y.tab.h"
-
 #include "memory.h"
 #include "hostmask.h"
 #include "s_log.h"
+
+#include "y.tab.h"
 
 #undef YY_INPUT
 #define YY_FATAL_ERROR(msg) conf_yy_fatal_error(msg)
@@ -61,16 +57,15 @@ static unsigned int lineno_stack[MAX_INCLUDE_DEPTH];
 static FBFILE *inc_fbfile_in[MAX_INCLUDE_DEPTH];
 static char conffile_stack[MAX_INCLUDE_DEPTH][IRCD_BUFSIZE];
 static void ccomment(void);
-static void hashcomment(void);
 static void cinclude(void);
 static int ieof(void);
 %}
 
-ws        [ \t]*
-digit     [0-9]
-comment   #.*
+WS        [[:blank:]]+
+DIGIT     [[:digit:]]+
+COMMENT   ("//"|"#").*
 qstring   \"[^\"\n]*[\"\n]
-include   \.include{ws}(\<.*\>|\".*\")
+include   \.include{WS}(\<.*\>|\".*\")
 
 %%
 {include}       { cinclude(); }
@@ -78,10 +73,10 @@ include   \.include{ws}(\<.*\>|\".*\")
 
 \n.*	        { strcpy(linebuf, yytext+1); ++lineno; yyless(1); }
 
-{ws}            ;
-{comment}       { hashcomment(); }
+{WS}            ;
+{COMMENT}       ;
 
-{digit}+        { yylval.number = atoi(yytext); return NUMBER; }
+{DIGIT}         { yylval.number = atoi(yytext); return NUMBER; }
 
 {qstring}	{ if (yytext[yyleng-2] == '\\')
 		    {
@@ -430,18 +425,6 @@ ccomment(void)
   }
 }
 
-/* #-comment style, look for #include */
-#define INCLUDE "#include"
-static void
-hashcomment(void) 
-{
-  if (strlen(yytext) < strlen(INCLUDE))
-    return;
-
-  if (!ircncmp(yytext, INCLUDE, strlen(INCLUDE))) 
-    yyerror("You probably meant '.include', skipping");
-}
-
 /* C-style .includes. This function will properly swap input conf buffers,
  * and lineno -kre */
 static void
@@ -469,7 +452,8 @@ cinclude(void)
     
     if (tmp_fbfile_in == NULL)
     {
-      ilog(L_ERROR, "Cannot include %s", filenamebuf);
+      ilog(L_ERROR, "Cannot include %s (%s)",
+           filenamebuf, strerror(errno));
       return;
     }
 
@@ -500,7 +484,7 @@ ieof(void)
      * later and reenter lexer -kre */
     include_stack_ptr = 0;
     lineno = 1;
-    return(1);
+    return 1;
   }
 
   /* switch buffer */
@@ -508,8 +492,8 @@ ieof(void)
   yy_delete_buffer(YY_CURRENT_BUFFER);
   lineno = lineno_stack[include_stack_ptr];
   conf_fbfile_in = inc_fbfile_in[include_stack_ptr];
-  strlcpy(conffilebuf, conffile_stack[include_stack_ptr], IRCD_BUFSIZE); 
+  strlcpy(conffilebuf, conffile_stack[include_stack_ptr], sizeof(conffilebuf)); 
   yy_switch_to_buffer(include_stack[include_stack_ptr]);
 
-  return(0);
+  return 0;
 }
