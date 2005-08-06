@@ -32,7 +32,7 @@
    There are some unavoidable exceptions within include files to
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
-/*  $Id: y.tab.c,v 7.46 2005/08/06 11:01:17 michael Exp $ */
+/*  $Id: y.tab.c,v 7.47 2005/08/06 16:30:25 michael Exp $ */
 /* Identify Bison output.  */
 #define YYBISON 1
 

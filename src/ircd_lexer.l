@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.205 2005/08/06 11:01:16 michael Exp $
+ *  $Id: ircd_lexer.l,v 1.206 2005/08/06 16:30:25 michael Exp $
  */
 
 %option case-insensitive
@@ -61,7 +61,7 @@ static void cinclude(void);
 static int ieof(void);
 %}
 
-WS        [[:blank:]]+
+WS        [[:blank:]]*
 DIGIT     [[:digit:]]+
 COMMENT   ("//"|"#").*
 qstring   \"[^\"\n]*[\"\n]
