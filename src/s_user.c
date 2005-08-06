@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.356 2005/08/02 22:30:56 metalrock Exp $
+ *  $Id: s_user.c,v 7.357 2005/08/06 12:57:24 db Exp $
  */
 
 #include <sys/types.h>
@@ -498,8 +498,13 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
 /* register_remote_user()
  *
- * inputs
- * output
+ * inputs       - client_p directly connected client
+ *              - source_p remote or directly connected client
+ *              - username to register as
+ *              - host name to register as
+ *              - server name
+ *              - realname (gecos)
+ * output	- NONE
  * side effects	- This function is called when a remote client
  *		  is introduced by a server.
  */
@@ -571,8 +576,9 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
 
 /* introduce_client()
  *
- * inputs	-
- * output	-
+ * inputs	- client_p
+ *              - source_p
+ * output	- NONE
  * side effects - This common function introduces a client to the rest
  *		  of the net, either from a local client connect or
  *		  from a remote connect.
@@ -814,7 +820,7 @@ report_and_set_user_flags(struct Client *source_p, struct AccessItem *aconf)
 /* do_local_user()
  *
  * inputs	-
- * output	-
+ * output	- NONE
  * side effects -
  */
 void
