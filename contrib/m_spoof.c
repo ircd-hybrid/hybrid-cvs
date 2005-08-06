@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_spoof.c,v 1.6 2005/07/11 01:19:35 metalrock Exp $
+ *  $Id: m_spoof.c,v 1.7 2005/08/06 22:15:26 michael Exp $
  */
 
 /* MODULE CONFIGURATION FOLLOWS -- please read!! */
@@ -288,7 +288,7 @@ mo_spoof(struct Client *client_p, struct Client *source_p,
     {
       case 't': i |= CONF_FLAGS_NO_TILDE;      /* no_tilde = yes; */
                 break;
-      case 'i': i |= CONF_FLAGS_NEED_IDENTD;   /* have_ident = yes; */
+      case 'i': i |= CONF_FLAGS_NEED_IDENTD;   /* need_ident = yes; */
                 break;
       case 'k': i |= CONF_FLAGS_EXEMPTKLINE;   /* kline_exempt = yes; */
                 break;
