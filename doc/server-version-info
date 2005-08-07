@@ -1,16 +1,16 @@
                               Server VERSION Info
 
-   $Id: server-version-info,v 7.15 2003/05/15 07:17:18 joshk Exp $
+   $Id: server-version-info,v 7.15.4.1 2005/08/07 10:07:01 michael Exp $
 
-   Copyright (c) 2003 by ircd-hybrid team
+   Copyright (c) 2005 by ircd-hybrid team
 
      ----------------------------------------------------------------------
 
-   Updated for Hybrid 7 (2003/05/11)
+   Updated for Hybrid 7.1 (2005/08/07)
 
    When you type /version, you will often see something like this:
 
- hybrid-7beta7(20010803_2). irc.leeh.co.uk egGHIKMpTZp TS3ow
+ hybrid-7.1.1(20050803_1). irc711.db.net egGHIKMTZ TS6ow
 
    Ever wondered what those funny chars mean after the version number? Well
    here they are:
@@ -30,8 +30,6 @@
    |------+---------------------|
    | 'M'  | IDLE_FROM_MSG       |
    |------+---------------------|
-   | 'p'  | CRYPT_OPER_PASSWORD |
-   |------+---------------------|
    | 'T'  | IGNORE_BOGUS_TS     |
    |------+---------------------|
    | 'Y'  | USE_SYSLOG          |
@@ -44,7 +42,7 @@
    |------+---------------------|
    | 'TS' | Supports TS         |
    |------+---------------------|
-   | '5'  | TS Version 5        |
+   | '6'  | TS Version 6        |
    |------+---------------------|
    | 'o'  | TS Only             |
    |------+---------------------|

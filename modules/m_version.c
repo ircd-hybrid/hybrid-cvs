@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_version.c,v 1.52 2005/05/23 10:16:14 michael Exp $
+ *  $Id: m_version.c,v 1.52.2.1 2005/08/07 10:07:02 michael Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&version_msgtab);
 }
 
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.52.2.1 $";
 #endif
 
 /*
@@ -169,8 +169,8 @@ confopts(struct Client *source_p)
   if (ConfigChannel.use_except)
     *p++ = 'e';
   if (ConfigFileEntry.glines)
-    *p++ = 'g';
-  *p++ = 'G';
+    *p++ = 'G';
+  *p++ = 'g';
 
   /* might wanna hide this :P */
   if (ServerInfo.hub && 
