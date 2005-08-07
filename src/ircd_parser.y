@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.419 2005/08/06 11:01:16 michael Exp $
+ *  $Id: ircd_parser.y,v 1.420 2005/08/07 08:48:57 michael Exp $
  */
 
 %{
@@ -736,7 +736,7 @@ serverinfo_hub: HUB '=' TBOOL ';'
     }
     else if (ServerInfo.hub)
     {
-      dlink_node *ptr;
+      dlink_node *ptr = NULL;
 
       ServerInfo.hub = 0;
       delete_capability("HUB");
@@ -744,13 +744,13 @@ serverinfo_hub: HUB '=' TBOOL ';'
       /* Don't become a leaf if we have a lazylink active. */
       DLINK_FOREACH(ptr, serv_list.head)
       {
-        if (MyConnect((struct Client *)ptr->data) &&
-            IsCapable((struct Client *)ptr->data, CAP_LL))
+        const struct Client *acptr = ptr->data;
+        if (MyConnect(acptr) && IsCapable(acptr, CAP_LL))
         {
           sendto_realops_flags(UMODE_ALL, L_ALL,
                                "Ignoring config file line hub=no; "
                                "due to active LazyLink (%s)",
-                               ((struct Client *)ptr->data)->name);
+                               acptr->name);
           add_capability("HUB", CAP_HUB, 1);
           ServerInfo.hub = 1;
           break;
@@ -799,6 +799,7 @@ admin_description: DESCRIPTION '=' QSTRING ';'
 /***************************************************************************
  *  section logging
  ***************************************************************************/
+/* XXX */
 logging_entry:          LOGGING  '{' logging_items '}' ';' ;
 
 logging_items:          logging_items logging_item |
@@ -1717,7 +1718,7 @@ auth_item:      auth_user | auth_passwd | auth_class | auth_flags |
                 auth_exceed_limit | auth_no_tilde | auth_gline_exempt |
 		auth_spoof | auth_spoof_notice |
                 auth_redir_serv | auth_redir_port | auth_can_flood |
-                auth_need_password | error ';' ;
+                auth_need_password | auth_encrypted | error ';' ;
 
 auth_user: USER '=' QSTRING ';'
 {
@@ -1778,6 +1779,17 @@ auth_class: CLASS '=' QSTRING ';'
   {
     MyFree(class_name);
     DupString(class_name, yylval.string);
+  }
+};
+
+auth_encrypted: ENCRYPTED '=' TBOOL ';'
+{
+  if (ypass == 2)
+  {
+    if (yylval.number)
+      SetConfEncrypted(yy_aconf);
+    else
+      ClearConfEncrypted(yy_aconf);
   }
 };
 
@@ -1985,7 +1997,10 @@ auth_need_password: NEED_PASSWORD '=' TBOOL ';'
 resv_entry: RESV
 {
   if (ypass == 2)
+  {
+    MyFree(resv_reason);
     resv_reason = NULL;
+  }
 } '{' resv_items '}' ';'
 {
   if (ypass == 2)

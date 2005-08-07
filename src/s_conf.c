@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.548 2005/08/02 14:42:49 michael Exp $
+ *  $Id: s_conf.c,v 7.549 2005/08/07 08:48:57 michael Exp $
  */
 
 #include "stdinc.h"
@@ -3635,4 +3635,39 @@ cluster(char *hostname)
     }
 
   return(result);
+}
+
+/* match_conf_password()
+ *
+ * inputs       - pointer to given password
+ *              - pointer to Conf
+ * output       - YES or NO if match
+ * side effects - none
+ */
+int
+match_conf_password(const char *password, const struct AccessItem *aconf)
+{
+  const char *encr = NULL;
+
+  if (aconf->flags & CONF_FLAGS_ENCRYPTED)
+  {
+    /* use first two chars of the password they send in as salt */
+    /* If the password in the conf is MD5, and ircd is linked
+     * to scrypt on FreeBSD, or the standard crypt library on
+     * glibc Linux, then this code will work fine on generating
+     * the proper encrypted hash for comparison.
+     */
+    /* passwd may be NULL pointer. Head it off at the pass... */
+    if (aconf->passwd == NULL)
+      return(0);
+
+    if (password && *aconf->passwd)
+      encr = crypt(password, aconf->passwd);
+    else
+      encr = "";
+  }
+  else
+    encr = password;
+
+  return(!strcmp(encr, aconf->passwd));
 }

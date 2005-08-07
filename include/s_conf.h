@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.305 2005/07/30 18:57:39 db Exp $
+ *  $Id: s_conf.h,v 7.306 2005/08/07 08:48:53 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -498,11 +498,11 @@ extern char *get_oper_name(const struct Client *);
 extern void *map_to_conf(struct ConfItem *);
 extern struct ConfItem *unmap_conf_item(void *);
 /* XXX should the parse_aline stuff go into another file ?? */
-int parse_aline(const char *cmd, struct Client *source_p,
+extern int parse_aline(const char *cmd, struct Client *source_p,
 		char **user, char **host,
 		int parc, char **parv, time_t *tkline_time,
 		char **target_server, char **reason);
-int valid_comment(struct Client *source_p, char *comment, int warn);
+extern int valid_comment(struct Client *source_p, char *comment, int warn);
 
 /* XXX */
 extern int yylex(void);
@@ -510,6 +510,7 @@ extern int yylex(void);
 #define TK_SECONDS 0
 #define TK_MINUTES 1
 extern time_t valid_tkline(char *, int);
+extern int match_conf_password(const char *, const struct AccessItem *);
 
 #define NOT_AUTHORIZED    (-1)
 #define IRCD_SOCKET_ERROR (-2)

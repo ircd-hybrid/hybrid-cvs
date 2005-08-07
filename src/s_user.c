@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.357 2005/08/06 12:57:24 db Exp $
+ *  $Id: s_user.c,v 7.358 2005/08/07 08:48:57 michael Exp $
  */
 
 #include <sys/types.h>
@@ -61,7 +61,7 @@ int MaxClientCount     = 1;
 int MaxConnectionCount = 1;
 
 static void user_welcome(struct Client *);
-static void report_and_set_user_flags(struct Client *, struct AccessItem *);
+static void report_and_set_user_flags(struct Client *, const struct AccessItem *);
 static int check_xline(struct Client *);
 static int check_regexp_xline(struct Client *);
 static void introduce_client(struct Client *, struct Client *);
@@ -74,7 +74,7 @@ struct Isupport
   int number;
 };
 
-dlink_list support_list = { NULL, NULL, 0 };
+static dlink_list support_list = { NULL, NULL, 0 };
 MessageFile *isupportFile;
 
 /* table of ascii char letters
@@ -297,7 +297,7 @@ void
 register_local_user(struct Client *client_p, struct Client *source_p, 
                     const char *nick, const char *username)
 {
-  struct AccessItem *aconf;
+  const struct AccessItem *aconf = NULL;
   const char *id = NULL;
   char ipaddr[HOSTIPLEN];
   int status;
@@ -373,15 +373,18 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   }
 
   /* password check */
-  if (!EmptyString(aconf->passwd) &&
-      (source_p->localClient->passwd == NULL ||
-      strcmp(source_p->localClient->passwd, aconf->passwd)))
+  if (!EmptyString(aconf->passwd))
   {
-    ServerStats->is_ref++;
-    sendto_one(source_p, form_str(ERR_PASSWDMISMATCH),
-               me.name, source_p->name);
-    exit_client(source_p, &me, "Bad Password");
-    return;
+    const char *pass = source_p->localClient->passwd;
+
+    if (!match_conf_password(pass, aconf))
+    {
+      ServerStats->is_ref++;
+      sendto_one(source_p, form_str(ERR_PASSWDMISMATCH),
+                 me.name, source_p->name);
+      exit_client(source_p, &me, "Bad Password");
+      return;
+    }
   }
 
   /* don't free source_p->localClient->passwd here - it can be required
@@ -754,7 +757,7 @@ valid_username(const char *username)
  *                they are getting, and set them.
  */
 static void
-report_and_set_user_flags(struct Client *source_p, struct AccessItem *aconf)
+report_and_set_user_flags(struct Client *source_p, const struct AccessItem *aconf)
 {
   /* If this user is being spoofed, tell them so */
   if (IsConfDoSpoofIp(aconf))

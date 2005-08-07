@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.79 2005/06/07 22:49:45 db Exp $
+ *  $Id: m_oper.c,v 1.80 2005/08/07 08:48:55 michael Exp $
  */
 
 #include "stdinc.h"
@@ -27,11 +27,9 @@
 #include "handlers.h"
 #include "client.h"
 #include "common.h"
-#include "fdlist.h"
 #include "irc_string.h"
 #include "ircd.h"
 #include "numeric.h"
-#include "fdlist.h"
 #include "s_bsd.h"
 #include "s_conf.h"
 #include "s_log.h"
@@ -44,15 +42,14 @@
 #include "packet.h"
 
 static struct ConfItem *find_password_conf(const char *, struct Client *);
-static int match_oper_password(const char *, struct AccessItem *);
 static void failed_oper_notice(struct Client *, const char *, const char *);
-static void m_oper(struct Client *, struct Client *, int, char **);
-static void mo_oper(struct Client *, struct Client *, int, char **);
+static void m_oper(struct Client *, struct Client *, int, char *[]);
+static void mo_oper(struct Client *, struct Client *, int, char *[]);
 
 
 struct Message oper_msgtab = {
   "OPER", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_oper, m_ignore, m_ignore, mo_oper, m_ignore} 
+  { m_unregistered, m_oper, m_ignore, m_ignore, mo_oper, m_ignore }
 };
 
 #ifndef STATIC_MODULES
@@ -68,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.79 $";
+const char *_version = "$Revision: 1.80 $";
 #endif
 
 /*
@@ -109,7 +106,7 @@ m_oper(struct Client *client_p, struct Client *source_p,
 
   aconf = (struct AccessItem *)map_to_conf(conf);
 
-  if (match_oper_password(password, aconf))
+  if (match_conf_password(password, aconf))
   {
     if (attach_conf(source_p, conf) != 0)
     {
@@ -144,7 +141,7 @@ static void
 mo_oper(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
-  sendto_one(source_p, form_str(RPL_YOUREOPER), me.name, parv[0]);
+  sendto_one(source_p, form_str(RPL_YOUREOPER), me.name, source_p->name);
   send_message_file(source_p, &ConfigFileEntry.opermotd);
 }
 
@@ -158,7 +155,7 @@ mo_oper(struct Client *client_p, struct Client *source_p,
 static struct ConfItem *
 find_password_conf(const char *name, struct Client *source_p)
 {
-  struct ConfItem *conf;
+  struct ConfItem *conf = NULL;
 
   if ((conf = find_exact_name_conf(OPER_TYPE,
 				   name, source_p->username, source_p->host
@@ -166,7 +163,7 @@ find_password_conf(const char *name, struct Client *source_p)
   {
     return(conf);
   }
-  else
+
   if ((conf = find_exact_name_conf(OPER_TYPE,
 				   name, source_p->username,
 				   source_p->sockhost)) != NULL)
@@ -175,46 +172,6 @@ find_password_conf(const char *name, struct Client *source_p)
   }
 
   return(NULL);
-}
-
-/* match_oper_password()
- *
- * inputs       - pointer to given password
- *              - pointer to Conf 
- * output       - YES or NO if match
- * side effects - none
- */
-static int
-match_oper_password(const char *password, struct AccessItem *aconf)
-{
-  const char *encr = NULL;
-
-  assert(IsConfOperator(aconf));
-
-  if (!IsConfOperator(aconf))
-    return(0);
-
-  if (aconf->flags & CONF_FLAGS_ENCRYPTED)
-  {
-    /* use first two chars of the password they send in as salt */
-    /* If the password in the conf is MD5, and ircd is linked   
-     * to scrypt on FreeBSD, or the standard crypt library on
-     * glibc Linux, then this code will work fine on generating
-     * the proper encrypted hash for comparison.
-     */
-    /* passwd may be NULL pointer. Head it off at the pass... */
-    if (aconf->passwd == NULL)
-      return(0);
-
-    if (password && *aconf->passwd)
-      encr = crypt(password, aconf->passwd);
-    else
-      encr = "";
-  }
-  else
-    encr = password;
-
-  return(!strcmp(encr, aconf->passwd));
 }
 
 /* failed_oper_notice()
