@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_version.c,v 1.52 2005/05/23 10:16:14 michael Exp $
+ *  $Id: m_version.c,v 1.53 2005/08/07 10:02:16 michael Exp $
  */
 
 #include "stdinc.h"
@@ -36,9 +36,9 @@
 #include "modules.h"
 
 static char *confopts(struct Client *);
-static void m_version(struct Client *, struct Client *, int, char **);
-static void ms_version(struct Client *, struct Client *, int, char **);
-static void mo_version(struct Client *, struct Client *, int, char **);
+static void m_version(struct Client *, struct Client *, int, char *[]);
+static void ms_version(struct Client *, struct Client *, int, char *[]);
+static void mo_version(struct Client *, struct Client *, int, char *[]);
 
 /* Option string. */
 static const char serveropts[] = {
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&version_msgtab);
 }
 
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 
 /*
@@ -160,17 +160,14 @@ ms_version(struct Client *client_p, struct Client *source_p,
 static char *
 confopts(struct Client *source_p)
 {
-  static char result[15];
-  char *p;
-
-  result[0] = '\0';
-  p = result;
+  static char result[12];
+  char *p = result;
 
   if (ConfigChannel.use_except)
     *p++ = 'e';
   if (ConfigFileEntry.glines)
-    *p++ = 'g';
-  *p++ = 'G';
+    *p++ = 'G';
+  *p++ = 'g';
 
   /* might wanna hide this :P */
   if (ServerInfo.hub && 
@@ -194,7 +191,8 @@ confopts(struct Client *source_p)
   *p++ = 'Z';
 #endif
   *p++ = '6';
+
   *p = '\0';
 
-  return(result);
+  return result;
 }
