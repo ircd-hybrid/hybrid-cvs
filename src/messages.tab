@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.118 2005/07/31 03:32:14 adx Exp $
+ *   $Id: messages.tab,v 7.119 2005/08/07 21:26:09 adx Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -731,8 +731,8 @@ static struct NumericInfo replies[] = {
 /* 704 */  {"RPL_HELPSTART", ":%s 704 %s %s :%s", NULL},
 /* 705 */  {"RPL_HELPTXT", ":%s 705 %s %s :%s", NULL},
 /* 706 */  {"RPL_ENDOFHELP", ":%s 706 %s %s :End of /HELP.", NULL},
-/* 707 */  {"RPL_ISCAPTURED", ":%s 707 %s :%s Is Captured.", NULL},
-/* 708 */  {"RPL_ISUNCAPTURED", ":%s 708 %s :%s Is UnCaptured.", NULL},
+/* 707 */  {NULL, NULL, NULL},
+/* 708 */  {NULL, NULL, NULL},
 /* 709 */  {NULL, NULL, NULL},
 /* 710 */  {"RPL_KNOCK", ":%s 710 %s %s %s!%s@%s :has asked for an invite.", NULL},
 /* 711 */  {"RPL_KNOCKDLVR", ":%s 711 %s %s :Your KNOCK has been delivered.", NULL},
@@ -751,8 +751,8 @@ static struct NumericInfo replies[] = {
 /* 724 */  {"RPL_TESTMASK", ":%s 724 %s %s@%s %d %d :Local/remote clients match.", NULL },
 /* 725 */  {"RPL_TESTLINE", ":%s 725 %s %c %ld %s :%s | %s", NULL },
 /* 726 */  {"RPL_NOTESTLINE", ":%s 726 %s %s :No matches", NULL },
-/* 727 */  {NULL, NULL, NULL},
-/* 728 */  {NULL, NULL, NULL},
+/* 727 */  {"RPL_ISCAPTURED", ":%s 727 %s :%s Is Captured.", NULL},
+/* 728 */  {"RPL_ISUNCAPTURED", ":%s 728 %s :%s Is UnCaptured.", NULL},
 /* 729 */  {NULL, NULL, NULL},
 /* 730 */  {NULL, NULL, NULL},
 /* 731 */  {NULL, NULL, NULL},
