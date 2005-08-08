@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rxline.c,v 1.10 2005/07/31 10:11:01 michael Exp $
+ *  $Id: m_rxline.c,v 1.11 2005/08/08 21:28:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -83,7 +83,7 @@ _moddeinit(void)
   mod_del_cmd(&unrxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 #endif
 
 
@@ -127,8 +127,9 @@ mo_rxline(struct Client *client_p, struct Client *source_p,
     if (!match(target_server, me.name))
       return;
   }
-  else if (dlink_list_length(&cluster_items) != 0)
-    cluster_xline(source_p, gecos, 0, reason);
+  else
+    cluster_a_line(source_p, "RXLINE", CLUSTER_XLINE, CAP_KLN,
+		   "%s 0 :%s", gecos, reason);
 
   if (!valid_xline(source_p, gecos, reason, 0))
     return;
@@ -238,8 +239,9 @@ mo_unrxline(struct Client *client_p, struct Client *source_p,
     if (!match(parv[3], me.name))
       return;
   }
-  else if (dlink_list_length(&cluster_items))
-    cluster_unxline(source_p, parv[1]);
+  else
+    cluster_a_line(source_p, "UNRXLINE", CLUSTER_UNXLINE, CAP_KLN,
+		   "%s", parv[1]);
 
   remove_xline(source_p, parv[1], 0);
 }

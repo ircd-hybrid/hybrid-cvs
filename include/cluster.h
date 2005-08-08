@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: cluster.h,v 7.3 2003/07/07 21:18:52 michael Exp $
+ *  $Id: cluster.h,v 7.4 2005/08/08 21:28:40 db Exp $
  */
 
 #ifndef __CLUSTER_H_
@@ -50,11 +50,6 @@ struct Client;
 #define IsClusterUnresv(x)	((x)->action & CLUSTER_UNRESV)
 #define IsClusterLocops(x)	((x)->action & CLUSTER_LOCOPS)
 
-extern void cluster_kline(struct Client *, int, const char *, const char *, const char *);
-extern void cluster_unkline(struct Client *, const char *, const char *);
-extern void cluster_xline(struct Client *, const char *, int, const char *);
-extern void cluster_unxline(struct Client *, const char *);
-extern void cluster_resv(struct Client *, const char *, const char *);
-extern void cluster_unresv(struct Client *, const char *);
-extern void cluster_locops(struct Client *, const char *);
+extern void cluster_a_line(struct Client *,
+			   const char *, int, int, const char *,...);
 #endif /* __CLUSTER_H_ */

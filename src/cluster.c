@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: cluster.c,v 7.3 2003/07/07 21:18:57 michael Exp $
+ *  $Id: cluster.c,v 7.4 2005/08/08 21:28:44 db Exp $
  */
 
 #include "cluster.h"
@@ -32,135 +32,37 @@
 #include "list.h"
 
 
+/*
+ * cluster_a_line
+ *
+ * inputs	- client sending the cluster
+ * 		- int flag for action
+ * output	- none
+ * side effects	-
+*/
 void
-cluster_kline(struct Client *source_p, int tkline_time, const char *user,
-              const char *host, const char *reason)
+cluster_a_line(struct Client *source_p, const char *command,
+	       int capab, int action_type, const char *pattern, ...)
 {
+  va_list args;
+  char buffer[BUFSIZE];
   struct ConfItem *conf;
   struct MatchItem *cptr;
   dlink_node *ptr;
+
+  va_start(args, pattern);
+  vsnprintf(buffer, sizeof(buffer), pattern, args);
+  va_end(args);
 
   DLINK_FOREACH(ptr, cluster_items.head)
   {
     conf = ptr->data;
     cptr = (struct MatchItem *)map_to_conf(conf);
 
-    if (IsClusterKline(cptr))
-      sendto_match_servs(source_p, conf->name, CAP_KLN,
-                         "KLINE %s %d %s %s :%s",
-                         conf->name, tkline_time, user, host, reason);
-  }
-}
-
-void
-cluster_unkline(struct Client *source_p, const char *user, const char *host)
-{
-  struct ConfItem *conf;
-  struct MatchItem *cptr;
-  dlink_node *ptr;
-
-  DLINK_FOREACH(ptr, cluster_items.head)
-  {
-    conf = ptr->data;
-    cptr = (struct MatchItem *)map_to_conf(conf);
-
-    if (IsClusterUnkline(cptr))
-      sendto_match_servs(source_p, conf->name, CAP_UNKLN,
-                         "UNKLINE %s %s %s",
-                         conf->name, user, host);
-  }
-}
-
-void
-cluster_xline(struct Client *source_p, const char *gecos,
-              int xtype, const char *reason)
-{
-  struct ConfItem *conf;
-  struct MatchItem *cptr;
-  dlink_node *ptr;
-
-  DLINK_FOREACH(ptr, cluster_items.head)
-  {
-    conf = ptr->data;
-    cptr = (struct MatchItem *)map_to_conf(conf);
-
-    if (IsClusterXline(cptr))
-      sendto_match_servs(source_p, conf->name, CAP_CLUSTER,
-                         "XLINE %s %s %d :%s",
-                         conf->name, gecos, xtype, reason);
-  }
-}
-
-void
-cluster_unxline(struct Client *source_p, const char *gecos)
-{
-  struct ConfItem *conf;
-  struct MatchItem *cptr;
-  dlink_node *ptr;
-
-  DLINK_FOREACH(ptr, cluster_items.head)
-  {
-    conf = ptr->data;
-    cptr = (struct MatchItem *)map_to_conf(conf);
-
-    if (IsClusterUnxline(cptr))
-      sendto_match_servs(source_p, conf->name, CAP_CLUSTER,
-                         "UNXLINE %s %s",
-                         conf->name, gecos);
-  }
-}
-
-void
-cluster_resv(struct Client *source_p, const char *name, const char *reason)
-{
-  struct ConfItem *conf;
-  struct MatchItem *cptr;
-  dlink_node *ptr;
-
-  DLINK_FOREACH(ptr, cluster_items.head)
-  {
-    conf = ptr->data;
-    cptr = (struct MatchItem *)map_to_conf(conf);
-
-    if (IsClusterResv(cptr))
-      sendto_match_servs(source_p, conf->name, CAP_CLUSTER,
-                         "RESV %s %s :%s",
-                         conf->name, name, reason);
-  }
-}
-
-void
-cluster_unresv(struct Client *source_p, const char *name)
-{
-  struct ConfItem *conf;
-  struct MatchItem *cptr;
-  dlink_node *ptr;
-
-  DLINK_FOREACH(ptr, cluster_items.head)
-  {
-    conf = ptr->data;
-    cptr = (struct MatchItem *)map_to_conf(conf);
-
-    if (IsClusterUnresv(cptr))
-      sendto_match_servs(source_p, conf->name, CAP_CLUSTER,
-                         "UNRESV %s %s", conf->name, name);
-  }
-}
-
-void
-cluster_locops(struct Client *source_p, const char *message)
-{
-  struct ConfItem *conf;
-  struct MatchItem *cptr;
-  dlink_node *ptr;
-
-  DLINK_FOREACH(ptr, cluster_items.head)
-  {
-    conf = ptr->data;
-    cptr = (struct MatchItem *)map_to_conf(conf);
-
-    if (IsClusterLocops(cptr))
-      sendto_match_servs(source_p, conf->name, CAP_CLUSTER,
-                         "LOCOPS %s :%s", conf->name, message);
+    if (cptr->action & action_type)
+    {
+      sendto_match_servs(source_p, conf->name, CAP_CLUSTER|capab,
+			 "%s %s", command, buffer);
+    }
   }
 }

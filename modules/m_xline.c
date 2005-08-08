@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.58 2005/07/31 10:11:01 michael Exp $
+ *  $Id: m_xline.c,v 1.59 2005/08/08 21:28:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -50,6 +50,7 @@
 
 static void mo_xline(struct Client *, struct Client *, int, char *[]);
 static void ms_xline(struct Client *, struct Client *, int, char *[]);
+static void me_xline(struct Client *, struct Client *, int, char *[]);
 
 static void mo_unxline(struct Client *, struct Client *, int, char *[]);
 static void ms_unxline(struct Client *, struct Client *, int, char *[]);
@@ -59,9 +60,12 @@ static void write_xline(struct Client *, char *, char *, time_t);
 static void remove_xline(struct Client *, char *, int);
 static int remove_txline_match(const char *gecos);
 
+static void relay_xline(struct Client *source_p, char *parv1,
+			char *parv2, char *parv3, char *parv4);
+
 struct Message xline_msgtab = {
   "XLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_xline, ms_xline, mo_xline, m_ignore}
+  {m_unregistered, m_not_oper, ms_xline, me_xline, mo_xline, m_ignore}
 };
 
 struct Message unxline_msgtab = {
@@ -86,7 +90,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.58 $";
+const char *_version = "$Revision: 1.59 $";
 #endif
 
 
@@ -128,14 +132,32 @@ mo_xline(struct Client *client_p, struct Client *source_p,
 
   if (target_server != NULL)
   {
-    sendto_match_servs(source_p, target_server, CAP_CLUSTER,
-                       "XLINE %s %s %d :%s",
-                       target_server, gecos, (int)tkline_time, reason);
-    if (!match(target_server, me.name))
-      return;
+    /* The XLINE is not on us */
+
+    /* if a given expire time is given, ENCAP it */
+    if ((int)tkline_time != 0)
+    {
+      sendto_match_servs(source_p, target_server, CAP_ENCAP,
+			 "ENCAP %s XLINE %s %d :%s",
+			 target_server, gecos, (int)tkline_time, reason);
+    }
+    else
+    {
+      sendto_match_servs(source_p, target_server, CAP_CLUSTER,
+			 "XLINE %s %s %d :%s",
+			 target_server, gecos, (int)tkline_time, reason);
+    }
+    return;
   }
-  else if (dlink_list_length(&cluster_items) != 0)
-    cluster_xline(source_p, gecos, 0, reason);
+  else
+  {
+    if ((int)tkline_time != 0)
+      cluster_a_line(source_p, "ENCAP", CLUSTER_XLINE, CAP_ENCAP,
+		     "XLINE %s %d :%s", gecos, (int)tkline_time, reason);
+    else
+      cluster_a_line(source_p, "XLINE", CLUSTER_XLINE, CAP_KLN,
+		     "%s 0 :%s", gecos, reason);
+  }
 
   if (!valid_xline(source_p, gecos, reason, 0))
     return;
@@ -166,10 +188,6 @@ static void
 ms_xline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  struct ConfItem *conf;
-  struct MatchItem *match_item;
-  int t_sec;
-
   if (parc != 5 || EmptyString(parv[4]))
     return;
 
@@ -179,44 +197,79 @@ ms_xline(struct Client *client_p, struct Client *source_p,
   if (!valid_xline(source_p, parv[2], parv[4], 0))
     return;
 
-  t_sec = atoi(parv[3]);
+
+  relay_xline(source_p, parv[1], parv[2], parv[3], parv[4]);
+}
+
+/* me_xline()
+ *
+ * inputs	- server
+ *		- client (oper)
+ *		- parc number of arguments
+ *		- parv list of arguments
+ *
+ * via parv[]   - target server, xline, time, reason
+ * outputs	- none
+ * side effects	- 
+ */
+static void
+me_xline(struct Client *client_p, struct Client *source_p,
+         int parc, char *parv[])
+{
+  if (parc != 4)
+    return;
+
+  relay_xline(source_p, parv[1], parv[2], parv[3], parv[4]);
+}
+
+
+static void
+relay_xline(struct Client *source_p, char *parv1,
+	    char *parv2, char *parv3, char *parv4)
+{
+  struct ConfItem *conf;
+  struct MatchItem *match_item;
+
+  int t_sec;
+
+  t_sec = atoi(parv3);
   /* XXX kludge! */
   if (t_sec < 3)
     t_sec = 0;
 
-  sendto_match_servs(source_p, parv[1], CAP_CLUSTER,
+  sendto_match_servs(source_p, parv1, CAP_CLUSTER,
                      "XLINE %s %s %s :%s",
-                     parv[1], parv[2], parv[3], parv[4]);
+                     parv1, parv2, parv3, parv4);
 
-  if (!match(parv[1], me.name))
+  if ((match(parv1, me.name) != 0) && (match(parv1, me.id) != 0))
     return;
 
   if (find_matching_name_conf(CLUSTER_TYPE, source_p->servptr->name,
                               NULL, NULL, CLUSTER_XLINE))
   {
-    if ((find_matching_name_conf(XLINE_TYPE, parv[2],
+    if ((find_matching_name_conf(XLINE_TYPE, parv2,
 				NULL, NULL, 0)) != NULL)
       return;
 
-    write_xline(source_p, parv[2], parv[4], t_sec);
+    write_xline(source_p, parv2, parv4, t_sec);
   }
   else if (find_matching_name_conf(ULINE_TYPE,
 		       source_p->servptr->name,
                        source_p->username, source_p->host,
                        SHARED_XLINE))
   {
-    if ((conf = find_matching_name_conf(XLINE_TYPE, parv[2],
+    if ((conf = find_matching_name_conf(XLINE_TYPE, parv2,
 					NULL, NULL, 0)) != NULL)
     {
       match_item = (struct MatchItem *)map_to_conf(conf);
       sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
                  ID_or_name(&me, source_p->from),
                  ID_or_name(source_p, source_p->from),
-                 parv[2], conf->name, match_item->reason);
+                 parv2, conf->name, match_item->reason);
       return;
     }
 
-    write_xline(source_p, parv[2], parv[4], t_sec);
+    write_xline(source_p, parv2, parv4, t_sec);
   }
 }
 
@@ -258,8 +311,9 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
       return;
   }
   /* UNXLINE bill */
-  else if (dlink_list_length(&cluster_items))
-    cluster_unxline(source_p, parv[1]);
+  else
+    cluster_a_line(source_p, "UNXLINE", CAP_CLUSTER,
+		   CLUSTER_UNXLINE, "%s", parv[1]);
 
   remove_xline(source_p, parv[1], 0);
 }
