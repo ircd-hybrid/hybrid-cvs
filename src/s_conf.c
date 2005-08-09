@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.553 2005/08/09 10:58:08 db Exp $
+ *  $Id: s_conf.c,v 7.554 2005/08/09 11:04:15 db Exp $
  */
 
 #include "stdinc.h"
@@ -3325,6 +3325,10 @@ valid_wild_card(struct Client *source_p, int warn, int count, ...)
  *                error is reported.
  *                if target_server is NULL and an "ON" is found error
  *                is reported.
+ *                if reason pointer is NULL ignore pointer,
+ *                this allows usee of parse_a_line in unkline etc.
+ *
+ * - Dianora
  */
 int
 parse_aline(const char *cmd, struct Client *source_p,
@@ -3414,21 +3418,12 @@ parse_aline(const char *cmd, struct Client *source_p,
     }
     else
     {
+      /* Make sure target_server *is* NULL if no ON server found
+       * caller probably NULL'd it first, but no harm to do it again -db
+       */
       if (target_server != NULL)
 	*target_server = NULL;
     }
-  }
-
-  if (reason != NULL)
-  {
-    if (parc != 0)
-    {
-      *reason = *parv;
-      if (!valid_comment(source_p, *reason, YES))
-	return(-1);
-    }
-    else
-      *reason = def_reason;
   }
 
   if (h_p != NULL)
@@ -3445,6 +3440,19 @@ parse_aline(const char *cmd, struct Client *source_p,
   else
     if (!valid_wild_card(source_p, YES, 1, *up_p))
       return(-1);
+
+  if (reason != NULL)
+  {
+    if (parc != 0)
+    {
+      *reason = *parv;
+      if (!valid_comment(source_p, *reason, YES))
+	return(-1);
+    }
+    else
+      *reason = def_reason;
+  }
+
   return(1);
 }
 
