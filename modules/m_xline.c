@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.63 2005/08/09 10:21:20 db Exp $
+ *  $Id: m_xline.c,v 1.64 2005/08/09 10:58:06 db Exp $
  */
 
 #include "stdinc.h"
@@ -89,7 +89,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.63 $";
+const char *_version = "$Revision: 1.64 $";
 #endif
 
 
@@ -131,8 +131,6 @@ mo_xline(struct Client *client_p, struct Client *source_p,
 
   if (target_server != NULL)
   {
-    /* The XLINE is not on us */
-
     /* if a given expire time is given, ENCAP it */
     if ((int)tkline_time != 0)
     {
@@ -146,15 +144,20 @@ mo_xline(struct Client *client_p, struct Client *source_p,
 			 "XLINE %s %s %d :%s",
 			 target_server, gecos, (int)tkline_time, reason);
     }
-    return;
-  }
+    /* Allow ON to apply local xline as well if it matches */
+    if (!match(target_server, me.name))
+      return;
 
-  if ((int)tkline_time != 0)
-    cluster_a_line(source_p, "ENCAP", CAP_ENCAP, CLUSTER_XLINE,
-		   "XLINE %d %s 0 :%s", (int)tkline_time, gecos, reason);
-  else
-    cluster_a_line(source_p, "XLINE", CAP_KLN, CLUSTER_XLINE,
-		   "%s 0 :%s", gecos, reason);
+  }
+  else 
+  {
+    if ((int)tkline_time != 0)
+      cluster_a_line(source_p, "ENCAP", CAP_ENCAP, CLUSTER_XLINE,
+		     "XLINE %d %s 0 :%s", (int)tkline_time, gecos, reason);
+    else
+      cluster_a_line(source_p, "XLINE", CAP_KLN, CLUSTER_XLINE,
+		     "%s 0 :%s", gecos, reason);
+  }
 
   if (!valid_xline(source_p, gecos, reason, 0))
     return;
@@ -311,12 +314,13 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
                        "UNXLINE %s %s",
                        target_server, gecos);
 
-    return;
+    /* Allow ON to apply local unxline as well if it matches */
+    if (!match(target_server, me.name))
+      return;
   }
-  /* UNXLINE bill */
-
-  cluster_a_line(source_p, "UNXLINE", CAP_CLUSTER,
-		 CLUSTER_UNXLINE, "%s", gecos);
+  else
+    cluster_a_line(source_p, "UNXLINE", CAP_CLUSTER,
+		   CLUSTER_UNXLINE, "%s", gecos);
 
   remove_xline(source_p, gecos, 0);
 }

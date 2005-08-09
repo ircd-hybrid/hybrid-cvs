@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.203 2005/08/09 10:21:20 db Exp $
+ *  $Id: m_kline.c,v 1.204 2005/08/09 10:58:06 db Exp $
  */
 
 #include "stdinc.h"
@@ -107,7 +107,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.203 $";
+const char *_version = "$Revision: 1.204 $";
 #endif
 
 /* Local function prototypes */
@@ -173,11 +173,13 @@ mo_kline(struct Client *client_p, struct Client *source_p,
                     source_p->name, target_server, (unsigned long)tkline_time,
                     user, host, reason);
 
-    return;
+    /* Allow ON to apply local kline as well if it matches */
+    if (!match(target_server, me.name))
+      return;
   }
-  /* only send the kline to cluster servers if the target was not specified */
-  cluster_a_line(source_p, "KLINE", CAP_KLN, CLUSTER_KLINE,
-		 "%d %s %s :%s", tkline_time, user, host, reason);
+  else
+    cluster_a_line(source_p, "KLINE", CAP_KLN, CLUSTER_KLINE,
+		   "%d %s %s :%s", tkline_time, user, host, reason);
 
   if (already_placed_kline(source_p, user, host, YES))
     return;
@@ -695,10 +697,12 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
                        "UNKLINE %s %s %s",
                        target_server, user, host);
 
-    return;
+    /* Allow ON to apply local unkline as well if it matches */
+    if (!match(target_server, me.name))
+      return;
   }
-
-  cluster_a_line(source_p, "UNKLINE", CAP_UNKLN, CLUSTER_UNKLINE,
+  else
+    cluster_a_line(source_p, "UNKLINE", CAP_UNKLN, CLUSTER_UNKLINE,
 		   "%s %s", user, host);
 
   if (remove_tkline_match(host, user))

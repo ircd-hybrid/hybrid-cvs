@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.43 2005/08/09 10:21:20 db Exp $
+ *  $Id: m_resv.c,v 1.44 2005/08/09 10:58:06 db Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 
 /* mo_resv()
@@ -93,21 +93,22 @@ mo_resv(struct Client *client_p, struct Client *source_p,
 		  &resv, NULL, NULL, &target_server, &reason) < 0)
     return;
 
-  if (target_server != NULL)    /* remote */
+  if (target_server != NULL)
   {
     sendto_match_servs(source_p, target_server, CAP_CLUSTER,
                        "RESV %s %s :%s",
                        target_server, resv, reason);
+    /* Allow ON to apply local resv as well if it matches */
+    if (!match(target_server, me.name))
+      return;
   }
   /* RESV #channel :abuse
    * RESV kiddie :abuse
    */
-  else                          /* local */
-  {
+  else
     cluster_a_line(source_p, "RESV", CAP_KLN, CLUSTER_RESV,
 		   "%s %s", resv, reason);
-    parse_resv(source_p, resv, reason, 0);
-  }
+  parse_resv(source_p, resv, reason, 0);
 }
 
 /* ms_resv()
@@ -167,12 +168,14 @@ mo_unresv(struct Client *client_p, struct Client *source_p,
                        "UNRESV %s %s",
                        target_server, resv);
 
+    /* Allow ON to apply local unresv as well if it matches */
+    if (!match(target_server, me.name))
+      return;
   }
   else 
-  {
     cluster_a_line(source_p, "UNRESV", CAP_KLN, CLUSTER_UNRESV, resv);
-    remove_resv(source_p, resv, 0);
-  }
+
+  remove_resv(source_p, resv, 0);
 }
 
 /* ms_unresv()

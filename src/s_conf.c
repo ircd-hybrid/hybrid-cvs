@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.552 2005/08/09 10:21:22 db Exp $
+ *  $Id: s_conf.c,v 7.553 2005/08/09 10:58:08 db Exp $
  */
 
 #include "stdinc.h"
@@ -3419,11 +3419,17 @@ parse_aline(const char *cmd, struct Client *source_p,
     }
   }
 
-  /* XXX must have reason pointer or server will core, it's that simple */
-  if (parc != 0)
-    *reason = *parv;
-  else
-    *reason = def_reason;
+  if (reason != NULL)
+  {
+    if (parc != 0)
+    {
+      *reason = *parv;
+      if (!valid_comment(source_p, *reason, YES))
+	return(-1);
+    }
+    else
+      *reason = def_reason;
+  }
 
   if (h_p != NULL)
   {
@@ -3439,10 +3445,6 @@ parse_aline(const char *cmd, struct Client *source_p,
   else
     if (!valid_wild_card(source_p, YES, 1, *up_p))
       return(-1);
-
-  if (!valid_comment(source_p, *reason, YES))
-    return(-1);
-
   return(1);
 }
 
