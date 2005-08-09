@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: cluster.c,v 7.4 2005/08/08 21:28:44 db Exp $
+ *  $Id: cluster.c,v 7.5 2005/08/09 03:55:53 db Exp $
  */
 
 #include "cluster.h"
@@ -62,7 +62,7 @@ cluster_a_line(struct Client *source_p, const char *command,
     if (cptr->action & action_type)
     {
       sendto_match_servs(source_p, conf->name, CAP_CLUSTER|capab,
-			 "%s %s", command, buffer);
+			 "%s %s %s", command, conf->name, buffer);
     }
   }
 }
