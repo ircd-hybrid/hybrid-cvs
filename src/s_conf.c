@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.554 2005/08/09 11:04:15 db Exp $
+ *  $Id: s_conf.c,v 7.555 2005/08/09 11:26:27 db Exp $
  */
 
 #include "stdinc.h"
@@ -3716,13 +3716,17 @@ match_conf_password(const char *password, const struct AccessItem *aconf)
  * cluster_a_line
  *
  * inputs	- client sending the cluster
- * 		- int flag for action
+ *		- command name "KLINE" "XLINE" etc.
+ *		- capab -- CAP_KLN etc. from s_serv.h
+ *		- cluster type -- CLUSTER_KLINE etc. from s_conf.h
+ *		- pattern and args to send along
  * output	- none
- * side effects	-
+ * side effects	- Take source_p send the pattern with args given
+ *		  along to all servers that match capab and cluster type
 */
 void
 cluster_a_line(struct Client *source_p, const char *command,
-	       int capab, int action_type, const char *pattern, ...)
+	       int capab, int cluster_type, const char *pattern, ...)
 {
   va_list args;
   char buffer[BUFSIZE];
@@ -3739,7 +3743,7 @@ cluster_a_line(struct Client *source_p, const char *command,
     conf = ptr->data;
     cptr = (struct MatchItem *)map_to_conf(conf);
 
-    if (cptr->action & action_type)
+    if (cptr->action & cluster_type)
     {
       sendto_match_servs(source_p, conf->name, CAP_CLUSTER|capab,
 			 "%s %s %s", command, conf->name, buffer);
