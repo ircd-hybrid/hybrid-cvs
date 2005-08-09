@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.40 2005/08/09 03:55:51 db Exp $
+ *  $Id: m_resv.c,v 1.41 2005/08/09 04:29:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -37,7 +37,6 @@
 #include "s_conf.h"
 #include "resv.h"
 #include "hash.h"
-#include "cluster.h"
 
 static void mo_resv(struct Client *, struct Client *, int, char **);
 static void ms_resv(struct Client *, struct Client *, int, char **);
@@ -72,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
 
 /* mo_resv()

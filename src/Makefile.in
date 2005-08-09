@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.155 2005/07/10 12:30:13 michael Exp $
+# $Id: Makefile.in,v 7.156 2005/08/09 04:29:55 db Exp $
 #
 @SET_MAKE@
 
@@ -53,7 +53,6 @@ BASE_SRCS =	\
  channel.c \
  channel_mode.c \
  client.c \
- cluster.c \
  @CRYPT_C@ \
  csvlib.c \
  dbuf.c	\

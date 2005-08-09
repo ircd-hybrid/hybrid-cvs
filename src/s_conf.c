@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.549 2005/08/07 08:48:57 michael Exp $
+ *  $Id: s_conf.c,v 7.550 2005/08/09 04:29:56 db Exp $
  */
 
 #include "stdinc.h"
@@ -31,7 +31,6 @@
 #include "s_stats.h"
 #include "channel.h"
 #include "client.h"
-#include "cluster.h"
 #include "common.h"
 #include "event.h"
 #include "hash.h"
@@ -3670,4 +3669,39 @@ match_conf_password(const char *password, const struct AccessItem *aconf)
     encr = password;
 
   return(!strcmp(encr, aconf->passwd));
+}
+
+/*
+ * cluster_a_line
+ *
+ * inputs	- client sending the cluster
+ * 		- int flag for action
+ * output	- none
+ * side effects	-
+*/
+void
+cluster_a_line(struct Client *source_p, const char *command,
+	       int capab, int action_type, const char *pattern, ...)
+{
+  va_list args;
+  char buffer[BUFSIZE];
+  struct ConfItem *conf;
+  struct MatchItem *cptr;
+  dlink_node *ptr;
+
+  va_start(args, pattern);
+  vsnprintf(buffer, sizeof(buffer), pattern, args);
+  va_end(args);
+
+  DLINK_FOREACH(ptr, cluster_items.head)
+  {
+    conf = ptr->data;
+    cptr = (struct MatchItem *)map_to_conf(conf);
+
+    if (cptr->action & action_type)
+    {
+      sendto_match_servs(source_p, conf->name, CAP_CLUSTER|capab,
+			 "%s %s %s", command, conf->name, buffer);
+    }
+  }
 }

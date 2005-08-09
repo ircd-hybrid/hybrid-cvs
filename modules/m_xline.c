@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.60 2005/08/09 03:55:51 db Exp $
+ *  $Id: m_xline.c,v 1.61 2005/08/09 04:29:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,6 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-#include "cluster.h"
 #include "resv.h"
 #include "list.h"
 
@@ -90,7 +89,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.60 $";
+const char *_version = "$Revision: 1.61 $";
 #endif
 
 

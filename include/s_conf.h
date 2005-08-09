@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.306 2005/08/07 08:48:53 michael Exp $
+ *  $Id: s_conf.h,v 7.307 2005/08/09 04:29:51 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -520,4 +520,20 @@ extern int match_conf_password(const char *, const struct AccessItem *);
 #define TOO_FAST          (-6)
 
 #define CLEANUP_TKLINES_TIME 60
+
+#define CLUSTER_KLINE	0x0001
+#define CLUSTER_UNKLINE	0x0002
+#define CLUSTER_XLINE	0x0004
+#define CLUSTER_UNXLINE	0x0008
+#define CLUSTER_RESV	0x0010
+#define CLUSTER_UNRESV	0x0020
+#define CLUSTER_LOCOPS	0x0040
+
+#define CLUSTER_ALL	(CLUSTER_KLINE | CLUSTER_UNKLINE | CLUSTER_XLINE |\
+			 CLUSTER_UNXLINE | CLUSTER_RESV | CLUSTER_UNRESV |\
+			 CLUSTER_LOCOPS)
+
+extern void cluster_a_line(struct Client *,
+			   const char *, int, int, const char *,...);
+
 #endif /* INCLUDED_s_conf_h */

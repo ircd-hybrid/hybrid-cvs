@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.420 2005/08/07 08:48:57 michael Exp $
+ *  $Id: ircd_parser.y,v 1.421 2005/08/09 04:29:55 db Exp $
  */
 
 %{
@@ -47,7 +47,6 @@
 #include "listener.h"
 #include "resv.h"
 #include "numeric.h"
-#include "cluster.h"
 #include "s_user.h"
 
 #ifdef HAVE_LIBCRYPTO

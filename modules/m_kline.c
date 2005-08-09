@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.200 2005/08/09 03:55:50 db Exp $
+ *  $Id: m_kline.c,v 1.201 2005/08/09 04:29:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -46,7 +46,6 @@
 #include "s_gline.h"
 #include "parse.h"
 #include "modules.h"
-#include "cluster.h"
 #include "tools.h"
 
 static void me_kline(struct Client *, struct Client *, int, char **);
@@ -108,7 +107,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.200 $";
+const char *_version = "$Revision: 1.201 $";
 #endif
 
 /* Local function prototypes */
