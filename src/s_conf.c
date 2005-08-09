@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.551 2005/08/09 10:02:50 db Exp $
+ *  $Id: s_conf.c,v 7.552 2005/08/09 10:21:22 db Exp $
  */
 
 #include "stdinc.h"
@@ -3328,8 +3328,8 @@ valid_wild_card(struct Client *source_p, int warn, int count, ...)
  */
 int
 parse_aline(const char *cmd, struct Client *source_p,
-	    char **up_p, char **h_p,
-	    int parc, char **parv, time_t *tkline_time, 
+	    int parc, char **parv,
+	    char **up_p, char **h_p, time_t *tkline_time, 
 	    char **target_server, char **reason)
 {
   int found_tkline_time=0;

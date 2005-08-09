@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.202 2005/08/09 10:02:48 db Exp $
+ *  $Id: m_kline.c,v 1.203 2005/08/09 10:21:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -107,7 +107,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.202 $";
+const char *_version = "$Revision: 1.203 $";
 #endif
 
 /* Local function prototypes */
@@ -150,8 +150,8 @@ mo_kline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (parse_aline("KLINE", source_p, &user, &host,
-		  parc, parv, &tkline_time, &target_server, &reason) < 0)
+  if (parse_aline("KLINE", source_p, parc, parv,
+		  &user, &host, &tkline_time, &target_server, &reason) < 0)
     return;
 
   if (target_server != NULL)
@@ -443,8 +443,8 @@ mo_dline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (parse_aline("DLINE", source_p, &dlhost, NULL,
-		  parc, parv, &tkline_time, NULL, &reason) < 0)
+  if (parse_aline("DLINE", source_p,  parc, parv,
+		  &dlhost, NULL, &tkline_time, NULL, &reason) < 0)
     return;
 
   if ((t=parse_netmask(dlhost, NULL, &bits)) == HM_HOST)
@@ -678,8 +678,8 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
     return;
   }
 
-  if (parse_aline("UNKLINE", source_p, &user, &host,
-		  parc, parv, NULL, &target_server, NULL) < 0)
+  if (parse_aline("UNKLINE", source_p, parc, parv,
+		  &user, &host, NULL, &target_server, NULL) < 0)
     return;
 
   if (target_server != NULL)
@@ -690,7 +690,7 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
                me.name, source_p->name, "remoteban");
       return;
     }
-
+  
     sendto_match_servs(source_p, target_server, CAP_UNKLN,
                        "UNKLINE %s %s %s",
                        target_server, user, host);

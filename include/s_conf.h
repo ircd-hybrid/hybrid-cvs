@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.307 2005/08/09 04:29:51 db Exp $
+ *  $Id: s_conf.h,v 7.308 2005/08/09 10:21:18 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -499,9 +499,9 @@ extern void *map_to_conf(struct ConfItem *);
 extern struct ConfItem *unmap_conf_item(void *);
 /* XXX should the parse_aline stuff go into another file ?? */
 extern int parse_aline(const char *cmd, struct Client *source_p,
-		char **user, char **host,
-		int parc, char **parv, time_t *tkline_time,
-		char **target_server, char **reason);
+		       int parc, char **parv,
+		       char **user, char **host, time_t *tkline_time,
+		       char **target_server, char **reason);
 extern int valid_comment(struct Client *source_p, char *comment, int warn);
 
 /* XXX */
