@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.309 2005/08/09 15:37:09 michael Exp $
+ *  $Id: s_conf.h,v 7.310 2005/08/09 19:45:44 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -157,8 +157,7 @@ struct ClassItem
 #define CONF_XLINE              0x00001000
 #define CONF_ULINE              0x00002000
 #define CONF_EXEMPTDLINE        0x00004000
-#define CONF_CLUSTER		0x00008000
-#define CONF_GLINE              0x00010000
+#define CONF_GLINE              0x00008000
 
 #define CONF_SERVER_MASK       CONF_SERVER
 #define CONF_CLIENT_MASK       (CONF_CLIENT | CONF_OPERATOR | CONF_SERVER_MASK)
@@ -182,7 +181,6 @@ struct ClassItem
 #define IsConfTypeOfClient(x)	((x)->status & CONF_CLIENT_MASK)
 #define IsConfUline(x)		((x)->status & CONF_ULINE)
 #define IsConfXline(x)		((x)->status & CONF_XLINE)
-#define IsConfCluster(x)	((x)->status & CONF_CLUSTER)
 #define IsConfGline(x)          ((x)->status == CONF_GLINE)
 
 /* AccessItem->flags */

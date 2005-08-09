@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.422 2005/08/09 15:37:13 michael Exp $
+ *  $Id: ircd_parser.y,v 1.423 2005/08/09 19:45:46 db Exp $
  */
 
 %{
@@ -2146,8 +2146,7 @@ cluster_entry: T_CLUSTER
   if (ypass == 2)
   {
     yy_conf = make_conf_item(CLUSTER_TYPE);
-    yy_match_item = (struct MatchItem *)map_to_conf(yy_conf);
-    yy_match_item->action = CLUSTER_ALL;
+    yy_conf->flags = CLUSTER_ALL;
   }
 } '{' cluster_items '}' ';'
 {
@@ -2155,10 +2154,6 @@ cluster_entry: T_CLUSTER
   {
     if (yy_conf->name == NULL)
       DupString(yy_conf->name, "*");
-    if (yy_match_item->user == NULL)
-      DupString(yy_match_item->user, "*");
-    if (yy_match_item->host == NULL)
-      DupString(yy_match_item->host, "*");
     yy_conf = NULL;
   }
 };
@@ -2175,42 +2170,42 @@ cluster_name: NAME '=' QSTRING ';'
 cluster_type: TYPE
 {
   if (ypass == 2)
-    yy_match_item->action = 0;
+    yy_conf->flags = 0;
 } '=' cluster_types ';' ;
 
 cluster_types:	cluster_types ',' cluster_type_item | cluster_type_item;
 cluster_type_item: KLINE
 {
   if (ypass == 2)
-    yy_match_item->action |= CLUSTER_KLINE;
+    yy_conf->flags |= CLUSTER_KLINE;
 } | UNKLINE
 {
   if (ypass == 2)
-    yy_match_item->action |= CLUSTER_UNKLINE;
+    yy_conf->flags |= CLUSTER_UNKLINE;
 } | XLINE
 {
   if (ypass == 2)
-    yy_match_item->action |= CLUSTER_XLINE;
+    yy_conf->flags |= CLUSTER_XLINE;
 } | T_UNXLINE
 {
   if (ypass == 2)
-    yy_match_item->action |= CLUSTER_UNXLINE;
+    yy_conf->flags |= CLUSTER_UNXLINE;
 } | RESV
 {
   if (ypass == 2)
-    yy_match_item->action |= CLUSTER_RESV;
+    yy_conf->flags |= CLUSTER_RESV;
 } | T_UNRESV
 {
   if (ypass == 2)
-    yy_match_item->action |= CLUSTER_UNRESV;
+    yy_conf->flags |= CLUSTER_UNRESV;
 } | T_LOCOPS
 {
   if (ypass == 2)
-    yy_match_item->action |= CLUSTER_LOCOPS;
+    yy_conf->flags |= CLUSTER_LOCOPS;
 } | T_ALL
 {
   if (ypass == 2)
-    yy_match_item->action = CLUSTER_ALL;
+    yy_conf->flags = CLUSTER_ALL;
 };
 
 /***************************************************************************

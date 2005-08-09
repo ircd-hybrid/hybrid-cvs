@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.556 2005/08/09 15:37:13 michael Exp $
+ *  $Id: s_conf.c,v 7.557 2005/08/09 19:45:46 db Exp $
  */
 
 #include "stdinc.h"
@@ -305,8 +305,7 @@ make_conf_item(ConfType type)
     break;
 
   case CLUSTER_TYPE:
-    conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
-                                       sizeof(struct MatchItem));
+    conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem));
     dlinkAdd(conf, &conf->node, &cluster_items);
     break;
 
@@ -495,11 +494,6 @@ delete_conf_item(struct ConfItem *conf)
     break;
 
   case CLUSTER_TYPE:
-    match_item = (struct MatchItem *)map_to_conf(conf);
-    MyFree(match_item->user);
-    MyFree(match_item->host);
-    MyFree(match_item->reason);
-    MyFree(match_item->oper_reason);
     dlinkDelete(&conf->node, &cluster_items);
     MyFree(conf);
     break;
@@ -667,52 +661,47 @@ report_confitem_types(struct Client *source_p, ConfType type)
     DLINK_FOREACH(ptr, cluster_items.head)
     {
       conf = ptr->data;
-      matchitem = map_to_conf(conf);
 
       p = buf;
 
       *p++ = 'C';
 
-      if (matchitem->action & CLUSTER_KLINE)
+      if (conf->flags & CLUSTER_KLINE)
+      {
         *p++ = 'K';
-      else
         *p++ = 'k';
+      }
 
-      if (matchitem->action & CLUSTER_LOCOPS)
+      if (conf->flags & CLUSTER_LOCOPS)
         *p++ = 'L';
-      else
-        *p++ = 'l';
 
-      if (matchitem->action & CLUSTER_RESV)
-        *p++ = 'Q';
-      else
+      if (conf->flags & CLUSTER_RESV)
+      {
+       *p++ = 'Q';
+#if 0
         *p++ = 'q';
-
-      if (matchitem->action & CLUSTER_UNRESV)
+#endif
+      }
+      if (conf->flags & CLUSTER_UNRESV)
         *p++ = 'R';
-      else
-        *p++ = 'r';
 
-      if (matchitem->action & CLUSTER_UNKLINE)
+      if (conf->flags & CLUSTER_UNKLINE)
         *p++ = 'U';
-      else
-        *p++ = 'u';
 
-      if (matchitem->action & CLUSTER_XLINE)
+      if (conf->flags & CLUSTER_XLINE)
+      {
         *p++ = 'X';
-      else
         *p++ = 'x';
+      }
 
-      if (matchitem->action & CLUSTER_UNXLINE)
+      if (conf->flags & CLUSTER_UNXLINE)
         *p++ = 'Y';
-      else
-        *p++ = 'y';
 
       *p = '\0';
 
       sendto_one(source_p, form_str(RPL_STATSULINE),
                  me.name, source_p->name, conf->name,
-                 matchitem->user, matchitem->host, buf);
+                 "*", "*", buf);
     }
 
     break;
@@ -3730,7 +3719,6 @@ cluster_a_line(struct Client *source_p, const char *command,
   va_list args;
   char buffer[BUFSIZE];
   struct ConfItem *conf;
-  struct MatchItem *cptr;
   dlink_node *ptr;
 
   va_start(args, pattern);
@@ -3740,9 +3728,8 @@ cluster_a_line(struct Client *source_p, const char *command,
   DLINK_FOREACH(ptr, cluster_items.head)
   {
     conf = ptr->data;
-    cptr = (struct MatchItem *)map_to_conf(conf);
 
-    if (cptr->action & cluster_type)
+    if (conf->flags & cluster_type)
     {
       sendto_match_servs(source_p, conf->name, CAP_CLUSTER|capab,
 			 "%s %s %s", command, conf->name, buffer);
