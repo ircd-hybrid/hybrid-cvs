@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.61 2005/08/09 04:29:53 db Exp $
+ *  $Id: m_xline.c,v 1.62 2005/08/09 10:02:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -89,7 +89,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.61 $";
+const char *_version = "$Revision: 1.62 $";
 #endif
 
 
@@ -137,8 +137,8 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     if ((int)tkline_time != 0)
     {
       sendto_match_servs(source_p, target_server, CAP_ENCAP,
-			 "ENCAP %s XLINE %s %d :%s",
-			 target_server, gecos, (int)tkline_time, reason);
+			 "ENCAP %s XLINE %d %s 0 :%s",
+			 target_server, (int)tkline_time, gecos, reason);
     }
     else
     {
@@ -148,15 +148,13 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     }
     return;
   }
+
+  if ((int)tkline_time != 0)
+    cluster_a_line(source_p, "ENCAP", CAP_ENCAP, CLUSTER_XLINE,
+		   "XLINE %d %s 0 :%s", (int)tkline_time, gecos, reason);
   else
-  {
-    if ((int)tkline_time != 0)
-      cluster_a_line(source_p, "ENCAP", CAP_ENCAP, CLUSTER_XLINE,
-		     "XLINE %d %d 0 :%s", (int)tkline_time, gecos, reason);
-    else
-      cluster_a_line(source_p, "XLINE", CAP_KLN, CLUSTER_XLINE,
-		     "%s 0 :%s", gecos, reason);
-  }
+    cluster_a_line(source_p, "XLINE", CAP_KLN, CLUSTER_XLINE,
+		   "%s 0 :%s", gecos, reason);
 
   if (!valid_xline(source_p, gecos, reason, 0))
     return;
@@ -285,6 +283,9 @@ static void
 mo_unxline(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
+  char *gecos=NULL;
+  char *target_server = NULL;
+
   if (!IsOperX(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
@@ -293,7 +294,11 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
   }
 
   /* UNXLINE bill ON irc.server.com */
-  if ((parc > 3) && (irccmp(parv[2], "ON") == 0))
+  if (parse_aline("UNXLINE", source_p, &gecos, NULL,
+		  parc, parv, NULL, &target_server, NULL) < 0)
+    return;
+
+  if (target_server != NULL)
   {
     if (!IsOperRemoteBan(source_p))
     {
@@ -302,19 +307,18 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    sendto_match_servs(source_p, parv[3], CAP_CLUSTER,
+    sendto_match_servs(source_p, target_server, CAP_CLUSTER,
                        "UNXLINE %s %s",
-                       parv[3], parv[1]);
+                       target_server, gecos);
 
-    if (match(parv[3], me.name) == 0)
-      return;
+    return;
   }
   /* UNXLINE bill */
-  else
-    cluster_a_line(source_p, "UNXLINE", CAP_CLUSTER,
-		   CLUSTER_UNXLINE, "%s", parv[1]);
 
-  remove_xline(source_p, parv[1], 0);
+  cluster_a_line(source_p, "UNXLINE", CAP_CLUSTER,
+		 CLUSTER_UNXLINE, "%s", gecos);
+
+  remove_xline(source_p, gecos, 0);
 }
 
 /* ms_unxline()

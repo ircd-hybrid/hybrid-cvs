@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.41 2005/08/09 04:29:53 db Exp $
+ *  $Id: m_resv.c,v 1.42 2005/08/09 10:02:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 
 /* mo_resv()
@@ -82,35 +82,32 @@ static void
 mo_resv(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
+  char *resv;
   char *reason;
+  char *target_server=NULL;
 
   /* RESV #channel ON irc.server.com :abuse
    * RESV kiddie ON irc.server.com :abuse
    */
-  if ((parc > 3) && (!irccmp(parv[2], "ON")))
-  {
-    if (parc < 5)
-    {
-      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, source_p->name, "RESV");
-      return;
-    }
-    reason = parv[4];
-    sendto_match_servs(source_p, parv[3], CAP_CLUSTER,
-                       "RESV %s %s :%s",
-                       parv[3], parv[1], reason);
+  if (parse_aline("RESV", source_p, &resv, NULL,
+		  parc, parv, NULL, &target_server, &reason) < 0)
+    return;
 
-    if (match(parv[3], me.name) == 0)
-      return;
+  if (target_server != NULL)    /* remote */
+  {
+    sendto_match_servs(source_p, target_server, CAP_CLUSTER,
+                       "RESV %s %s :%s",
+                       target_server, resv, reason);
   }
   /* RESV #channel :abuse
    * RESV kiddie :abuse
    */
-  else
+  else                          /* local */
+  {
     cluster_a_line(source_p, "RESV", CAP_KLN, CLUSTER_RESV,
-		   "%s %s", parv[1], parv[2]);
-
-  parse_resv(source_p, parv[1], parv[2], 0);
+		   "%s %s", resv, reason);
+    parse_resv(source_p, resv, reason, 0);
+  }
 }
 
 /* ms_resv()
@@ -154,21 +151,28 @@ static void
 mo_unresv(struct Client *client_p, struct Client *source_p,
           int parc, char *parv[])
 {
+  char *resv;
+  char *reason;
+  char *target_server;
+
   /* UNRESV #channel ON irc.server.com */
   /* UNRESV kiddie ON irc.server.com */
-  if ((parc > 3) && (!irccmp(parv[2], "ON")))
-  {
-    sendto_match_servs(source_p, parv[3], CAP_CLUSTER,
-                       "UNRESV %s %s",
-                       parv[3], parv[1]);
+  if (parse_aline("UNRESV", source_p, &resv, NULL,
+		  parc, parv, NULL, &target_server, &reason) < 0)
+    return;
 
-    if (!match(parv[3], me.name))
-      return;
+  if (target_server != NULL)
+  {
+    sendto_match_servs(source_p, target_server, CAP_CLUSTER,
+                       "UNRESV %s %s",
+                       target_server, resv);
+
   }
   else 
-    cluster_a_line(source_p, "UNRESV", CAP_KLN, CLUSTER_UNRESV, parv[1]);
-
-  remove_resv(source_p, parv[1], 0);
+  {
+    cluster_a_line(source_p, "UNRESV", CAP_KLN, CLUSTER_UNRESV, resv);
+    remove_resv(source_p, resv, 0);
+  }
 }
 
 /* ms_unresv()

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rxline.c,v 1.13 2005/08/09 04:29:53 db Exp $
+ *  $Id: m_rxline.c,v 1.14 2005/08/09 10:02:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unrxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.13 $";
+const char *_version = "$Revision: 1.14 $";
 #endif
 
 
@@ -123,12 +123,13 @@ mo_rxline(struct Client *client_p, struct Client *source_p,
     sendto_match_servs(source_p, target_server, CAP_CLUSTER,
                        "RXLINE %s %s %d :%s",
                        target_server, gecos, (int)tkline_time, reason);
-    if (!match(target_server, me.name))
-      return;
+    return;
   }
-  else
-    cluster_a_line(source_p, "RXLINE", CAP_KLN, CLUSTER_XLINE,
-		   "%s 0 :%s", gecos, reason);
+
+#if 0
+  cluster_a_line(source_p, "RXLINE", CAP_KLN, CLUSTER_XLINE,
+		 "%s 0 :%s", gecos, reason);
+#endif
 
   if (!valid_xline(source_p, gecos, reason, 0))
     return;
@@ -216,6 +217,9 @@ static void
 mo_unrxline(struct Client *client_p, struct Client *source_p,
             int parc, char *parv[])
 {
+  char *gecos=NULL;
+  char *target_server = NULL;
+
   if (!IsOperX(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
@@ -223,7 +227,11 @@ mo_unrxline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if ((parc > 3) && !irccmp(parv[2], "ON"))
+  if (parse_aline("UNRXLINE", source_p, &gecos, NULL,
+		  parc, parv, NULL, &target_server, NULL) < 0)
+    return;
+
+  if (target_server != NULL)
   {
     if (!IsOperRemoteBan(source_p))
     {
@@ -232,17 +240,18 @@ mo_unrxline(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    sendto_match_servs(source_p, parv[3], CAP_CLUSTER,
-                       "UNXLINE %s %s", parv[3], parv[1]);
+    sendto_match_servs(source_p, target_server, CAP_CLUSTER,
+                       "UNXLINE %s %s", target_server, gecos);
 
-    if (!match(parv[3], me.name))
-      return;
+    return;
   }
-  else
-    cluster_a_line(source_p, "UNRXLINE", CAP_CLUSTER, CLUSTER_UNXLINE,
-		   "%s", parv[1]);
 
-  remove_xline(source_p, parv[1], 0);
+#if 0
+  cluster_a_line(source_p, "UNRXLINE", CAP_CLUSTER, CLUSTER_UNXLINE,
+		 "%s", gecos);
+#endif
+
+  remove_xline(source_p, gecos, 0);
 }
 
 /* ms_unrxline()

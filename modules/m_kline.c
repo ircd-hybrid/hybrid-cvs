@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.201 2005/08/09 04:29:53 db Exp $
+ *  $Id: m_kline.c,v 1.202 2005/08/09 10:02:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -107,7 +107,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.201 $";
+const char *_version = "$Revision: 1.202 $";
 #endif
 
 /* Local function prototypes */
@@ -173,16 +173,11 @@ mo_kline(struct Client *client_p, struct Client *source_p,
                     source_p->name, target_server, (unsigned long)tkline_time,
                     user, host, reason);
 
-    /* If we are sending it somewhere that doesn't include us, we stop
-     * else we apply it locally too
-     */
-    if (!match(target_server, me.name))
-      return;
+    return;
   }
   /* only send the kline to cluster servers if the target was not specified */
-  else
-    cluster_a_line(source_p, "KLINE", CAP_KLN, CLUSTER_KLINE,
-		   "%d %s %s :%s", tkline_time, user, host, reason);
+  cluster_a_line(source_p, "KLINE", CAP_KLN, CLUSTER_KLINE,
+		 "%d %s %s :%s", tkline_time, user, host, reason);
 
   if (already_placed_kline(source_p, user, host, YES))
     return;
@@ -666,7 +661,7 @@ static void
 mo_unkline(struct Client *client_p,struct Client *source_p,
            int parc, char *parv[])
 {
-  char star[] = "*";
+  char *target_server = NULL;
   char *user, *host;
 
   if (!IsOperUnkline(source_p))
@@ -683,31 +678,12 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
     return;
   }
 
-  if ((host = strchr(parv[1], '@')) || *parv[1] == '*')
-  {
-    /* Explicit user@host mask given */
-    if (host)                  /* Found user@host */
-    {
-          user = parv[1];       /* here is user part */
-          *(host++) = '\0';     /* and now here is host */
-    }
-    else
-    {
-      user = star;           /* no @ found, assume its *@somehost */
-      host = parv[1];
-    }
-  }
-  else
-  {
-    sendto_one(source_p, ":%s NOTICE %s :Invalid parameters",
-               me.name, source_p->name);
+  if (parse_aline("UNKLINE", source_p, &user, &host,
+		  parc, parv, NULL, &target_server, NULL) < 0)
     return;
-  }
 
-  /* UNKLINE bill@mu.org ON irc.mu.org */
-  if ((parc > 3) && (irccmp(parv[2], "ON") == 0))
+  if (target_server != NULL)
   {
-
     if (!IsOperRemoteBan(source_p))
     {
       sendto_one(source_p, form_str(ERR_NOPRIVS),
@@ -715,15 +691,14 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
       return;
     }
 
-    sendto_match_servs(source_p, parv[3], CAP_UNKLN,
+    sendto_match_servs(source_p, target_server, CAP_UNKLN,
                        "UNKLINE %s %s %s",
-                       parv[3], user, host);
+                       target_server, user, host);
 
-    if (!match(parv[3], me.name))
-      return;
+    return;
   }
-  else
-    cluster_a_line(source_p, "UNKLINE", CAP_UNKLN, CLUSTER_UNKLINE,
+
+  cluster_a_line(source_p, "UNKLINE", CAP_UNKLN, CLUSTER_UNKLINE,
 		   "%s %s", user, host);
 
   if (remove_tkline_match(host, user))

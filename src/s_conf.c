@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.550 2005/08/09 04:29:56 db Exp $
+ *  $Id: s_conf.c,v 7.551 2005/08/09 10:02:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -3306,11 +3306,25 @@ valid_wild_card(struct Client *source_p, int warn, int count, ...)
  *
  * input        - pointer to cmd name being used
  *              - pointer to client using cmd
- *		- user name to check
- *              - host name to check
- *		- int flag, 0 for no warning oper 1 for warning oper
+ *		- pointer to user or string to parse into
+ *              - pointer to host or NULL to parse into if non NULL
+ *              - parc parameter count
+ *              - parv[] list of parameters to parse
+ *              - pointer to optional tkline time or NULL 
+ *              - pointer to target_server to parse into if non NULL
+ *              - pointer to reason to parse into
+ *
  * output       - 1 if valid, -1 if not valid
- * side effects -
+ * side effects - A generalised k/d/x etc. line parser,
+ *               "ALINE [time] user@host|string [ON] target :reason"
+ *                will parse returning a parsed user, host if
+ *                h_p pointer is non NULL, string otherwise.
+ *                if tkline_time pointer is non NULL a tk line will be set
+ *                to non zero if found.
+ *                if tkline_time pointer is NULL and tk line is found,
+ *                error is reported.
+ *                if target_server is NULL and an "ON" is found error
+ *                is reported.
  */
 int
 parse_aline(const char *cmd, struct Client *source_p,
@@ -3318,6 +3332,7 @@ parse_aline(const char *cmd, struct Client *source_p,
 	    int parc, char **parv, time_t *tkline_time, 
 	    char **target_server, char **reason)
 {
+  int found_tkline_time=0;
   static char def_reason[] = "No Reason";
   static char user[USERLEN+2];
   static char host[HOSTLEN+2];
@@ -3325,12 +3340,22 @@ parse_aline(const char *cmd, struct Client *source_p,
   parv++;
   parc--;
 
-  *tkline_time = valid_tkline(*parv, TK_MINUTES);
+  found_tkline_time = valid_tkline(*parv, TK_MINUTES);
 
-  if (*tkline_time != 0)
+  if (found_tkline_time != 0)
   {
     parv++;
     parc--;
+    if (tkline_time != NULL)
+    {
+      *tkline_time = found_tkline_time;
+    }
+    else
+    {
+      sendto_one(source_p, ":%s NOTICE %s :temp_line not supported by %s",
+		 me.name, source_p->name, cmd);
+      return(-1);
+    }
   }
 
   if (parc == 0)
@@ -3387,8 +3412,14 @@ parse_aline(const char *cmd, struct Client *source_p,
       parc--;
       parv++;
     }
+    else
+    {
+      if (target_server != NULL)
+	*target_server = NULL;
+    }
   }
 
+  /* XXX must have reason pointer or server will core, it's that simple */
   if (parc != 0)
     *reason = *parv;
   else
