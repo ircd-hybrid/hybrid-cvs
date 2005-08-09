@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.421 2005/08/09 04:29:55 db Exp $
+ *  $Id: ircd_parser.y,v 1.422 2005/08/09 15:37:13 michael Exp $
  */
 
 %{
@@ -2128,6 +2128,10 @@ shared_type_item: KLINE
 {
   if (ypass == 2)
     yy_match_item->action |= SHARED_UNRESV;
+} | T_LOCOPS
+{
+  if (ypass == 2)
+    yy_match_item->action |= SHARED_LOCOPS;
 } | T_ALL
 {
   if (ypass == 2)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.44 2005/08/09 10:58:06 db Exp $
+ *  $Id: m_resv.c,v 1.45 2005/08/09 15:37:11 michael Exp $
  */
 
 #include "stdinc.h"
@@ -38,22 +38,22 @@
 #include "resv.h"
 #include "hash.h"
 
-static void mo_resv(struct Client *, struct Client *, int, char **);
-static void ms_resv(struct Client *, struct Client *, int, char **);
-static void mo_unresv(struct Client *, struct Client *, int, char **);
-static void ms_unresv(struct Client *, struct Client *, int, char **);
+static void mo_resv(struct Client *, struct Client *, int, char *[]);
+static void ms_resv(struct Client *, struct Client *, int, char *[]);
+static void mo_unresv(struct Client *, struct Client *, int, char *[]);
+static void ms_unresv(struct Client *, struct Client *, int, char *[]);
 
-static void parse_resv(struct Client *, char *, char *, int);
-static void remove_resv(struct Client *, char *, int);
+static void parse_resv(struct Client *, char *, char *);
+static void remove_resv(struct Client *, char *);
 
 struct Message resv_msgtab = {
   "RESV", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_ignore, m_not_oper, ms_resv, m_ignore, mo_resv, m_ignore}
+  { m_ignore, m_not_oper, ms_resv, m_ignore, mo_resv, m_ignore }
 };
 
 struct Message unresv_msgtab = {
   "UNRESV", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_ignore, m_not_oper, ms_unresv, m_ignore, mo_unresv, m_ignore}
+  { m_ignore, m_not_oper, ms_unresv, m_ignore, mo_unresv, m_ignore }
 };
 
 #ifndef STATIC_MODULES
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.44 $";
+const char *_version = "$Revision: 1.45 $";
 #endif
 
 /* mo_resv()
@@ -108,7 +108,7 @@ mo_resv(struct Client *client_p, struct Client *source_p,
   else
     cluster_a_line(source_p, "RESV", CAP_KLN, CLUSTER_RESV,
 		   "%s %s", resv, reason);
-  parse_resv(source_p, resv, reason, 0);
+  parse_resv(source_p, resv, reason);
 }
 
 /* ms_resv()
@@ -128,20 +128,13 @@ ms_resv(struct Client *client_p, struct Client *source_p,
                      "RESV %s %s :%s",
                      parv[1], parv[2], parv[3]);
 
-  if (!match(parv[1], me.name))
+  if (!IsClient(source_p) || !match(parv[1], me.name))
     return;
 
-  if (!IsClient(source_p))
-    return;
-
-  if (find_matching_name_conf(CLUSTER_TYPE, source_p->servptr->name,
-                              NULL, NULL, CLUSTER_RESV))
-    parse_resv(source_p, parv[2], parv[3], 1);
-  else if (find_matching_name_conf(ULINE_TYPE,
-				   source_p->servptr->name,
-				   source_p->username, source_p->host,
-				   SHARED_RESV))
-  parse_resv(source_p, parv[2], parv[3], 0);
+  if (find_matching_name_conf(ULINE_TYPE, source_p->servptr->name,
+                              source_p->username, source_p->host,
+                              SHARED_RESV))
+    parse_resv(source_p, parv[2], parv[3]);
 }
 
 /* mo_unresv()
@@ -175,7 +168,7 @@ mo_unresv(struct Client *client_p, struct Client *source_p,
   else 
     cluster_a_line(source_p, "UNRESV", CAP_KLN, CLUSTER_UNRESV, resv);
 
-  remove_resv(source_p, resv, 0);
+  remove_resv(source_p, resv);
 }
 
 /* ms_unresv()
@@ -194,20 +187,13 @@ ms_unresv(struct Client *client_p, struct Client *source_p,
                      "UNRESV %s %s",
                      parv[1], parv[2]);
 
-  if (!match(me.name, parv[1]))
+  if (!IsClient(source_p) || !match(me.name, parv[1]))
     return;
 
-  if (!IsClient(source_p))
-    return;
-
-  if (find_matching_name_conf(CLUSTER_TYPE, source_p->servptr->name,
-                              NULL, NULL, CLUSTER_UNRESV))
-    remove_resv(source_p, parv[2], 1);
-  else if (find_matching_name_conf(ULINE_TYPE,
-				   source_p->servptr->name,
-				   source_p->username, source_p->host,
-				   SHARED_UNRESV))
-    remove_resv(source_p, parv[2], 0);
+  if (find_matching_name_conf(ULINE_TYPE, source_p->servptr->name,
+                              source_p->username, source_p->host,
+                              SHARED_UNRESV))
+    remove_resv(source_p, parv[2]);
 }
 
 /* parse_resv()
@@ -220,7 +206,7 @@ ms_unresv(struct Client *client_p, struct Client *source_p,
  */
 static void
 parse_resv(struct Client *source_p, char *name,
-           char *reason, int cluster)
+           char *reason)
 {
   struct ConfItem *conf;
 
@@ -230,8 +216,7 @@ parse_resv(struct Client *source_p, char *name,
 
     if ((conf = create_channel_resv(name, reason, 0)) == NULL)
     {
-      if (!cluster)
-        sendto_one(source_p,
+      sendto_one(source_p,
 	   ":%s NOTICE %s :A RESV has already been placed on channel: %s",
                    me.name, source_p->name, name);
       return;
@@ -239,8 +224,7 @@ parse_resv(struct Client *source_p, char *name,
 
     resv_p = (struct ResvChannel *)map_to_conf(conf);
 
-    if (!cluster)
-      sendto_one(source_p,
+    sendto_one(source_p,
 		 ":%s NOTICE %s :A %s RESV has been placed on channel: %s",
                  me.name, source_p->name,
                  (MyClient(source_p) ? "local" : "remote"), name);
@@ -257,8 +241,7 @@ parse_resv(struct Client *source_p, char *name,
 
     if ((strchr(name, '*') || strchr(name, '?')) && !IsAdmin(source_p))
     {
-      if (!cluster)
-        sendto_one(source_p,
+      sendto_one(source_p,
 	   ":%s NOTICE %s :You must be an admin to perform a wildcard RESV",
                    me.name, source_p->name);
       return;
@@ -266,8 +249,7 @@ parse_resv(struct Client *source_p, char *name,
 
     if ((conf = create_nick_resv(name, reason, 0)) == NULL)
     {
-      if (!cluster)
-        sendto_one(source_p,
+      sendto_one(source_p,
 		   ":%s NOTICE %s :A RESV has already been placed on nick: %s",
                    me.name, source_p->name, name);
       return;
@@ -275,8 +257,7 @@ parse_resv(struct Client *source_p, char *name,
 
     resv_p = (struct MatchItem *)map_to_conf(conf);
 
-    if (!cluster)
-      sendto_one(source_p,
+    sendto_one(source_p,
 		 ":%s NOTICE %s :A %s RESV has been placed on nick: %s [%s]",
                  me.name, source_p->name,
                  (MyClient(source_p) ? "local" : "remote"),
@@ -288,14 +269,14 @@ parse_resv(struct Client *source_p, char *name,
                          conf->name, resv_p->reason);
     write_conf_line(source_p, conf, NULL /* not used */, 0 /* not used */);
   }
-  else if (!cluster)
+  else
     sendto_one(source_p,
 	       ":%s NOTICE %s :You have specified an invalid resv: [%s]",
                me.name, source_p->name, name);
 }
 
 static void
-remove_resv(struct Client *source_p, char *name, int cluster)
+remove_resv(struct Client *source_p, char *name)
 {
   struct ConfItem *conf;
 
@@ -306,27 +287,24 @@ remove_resv(struct Client *source_p, char *name, int cluster)
     if (resv_channel_list.head == NULL ||
         !(resv_p = hash_find_resv(name)))
     {
-      if (!cluster)
-        sendto_one(source_p,
-		   ":%s NOTICE %s :A RESV does not exist for channel: %s",
-                   me.name, source_p->name, name);
+      sendto_one(source_p,
+                 ":%s NOTICE %s :A RESV does not exist for channel: %s",
+                 me.name, source_p->name, name);
       return;
     }
     else if (resv_p->conf)
     {
-      if (!cluster)
-        sendto_one(source_p,
-                   ":%s NOTICE %s :The RESV for channel: %s is in ircd.conf and must be removed by hand.",
-                   me.name, source_p->name, name);
+      sendto_one(source_p,
+                 ":%s NOTICE %s :The RESV for channel: %s is in ircd.conf and must be removed by hand.",
+                 me.name, source_p->name, name);
       return;
     }
     else
     {
       delete_channel_resv(resv_p);
-      (void)remove_conf_line(CRESV_TYPE, source_p, name, NULL);
+      remove_conf_line(CRESV_TYPE, source_p, name, NULL);
 
-      if (!cluster)
-        sendto_one(source_p,
+      sendto_one(source_p,
 		   ":%s NOTICE %s :The RESV has been removed on channel: %s",
                    me.name, source_p->name, name);
       sendto_realops_flags(UMODE_ALL, L_ALL,
@@ -341,17 +319,17 @@ remove_resv(struct Client *source_p, char *name, int cluster)
 
     if (conf == NULL)
     {
-      if (!cluster)
-        sendto_one(source_p,
+      sendto_one(source_p,
 		   ":%s NOTICE %s :A RESV does not exist for nick: %s",
                    me.name, source_p->name, name);
       return;
     }
+
     resv_p = (struct MatchItem *)map_to_conf(conf);
+
     if (resv_p->action)
     {
-      if (!cluster)
-        sendto_one(source_p,
+      sendto_one(source_p,
                    ":%s NOTICE %s :The RESV for nick: %s is in ircd.conf and must be removed by hand.",
                    me.name, source_p->name, name);
       return;
@@ -359,12 +337,10 @@ remove_resv(struct Client *source_p, char *name, int cluster)
     else
     {
       delete_conf_item(conf);
-      (void)remove_conf_line(NRESV_TYPE, source_p, name, NULL);
+      remove_conf_line(NRESV_TYPE, source_p, name, NULL);
 
-      if (!cluster)
-        sendto_one(source_p,
-		   ":%s NOTICE %s :The RESV has been removed on nick: %s",
-                   me.name, source_p->name, name);
+      sendto_one(source_p, ":%s NOTICE %s :The RESV has been removed on nick: %s",
+                 me.name, source_p->name, name);
       sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "%s has removed the RESV for nick: %s",
                            get_oper_name(source_p), name);

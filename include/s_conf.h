@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.308 2005/08/09 10:21:18 db Exp $
+ *  $Id: s_conf.h,v 7.309 2005/08/09 15:37:09 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -264,8 +264,10 @@ struct ClassItem
 #define SHARED_UNXLINE		0x0008
 #define SHARED_RESV		0x0010
 #define SHARED_UNRESV		0x0020
+#define SHARED_LOCOPS           0x0040
 #define SHARED_ALL		(SHARED_KLINE | SHARED_UNKLINE | SHARED_XLINE |\
-				 SHARED_UNXLINE | SHARED_RESV | SHARED_UNRESV)
+				 SHARED_UNXLINE | SHARED_RESV | SHARED_UNRESV |\
+                                 SHARED_LOCOPS)
 
 /* gline acl entry actions */
 #define GDENY_BLOCK		0x1

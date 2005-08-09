@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_locops.c,v 1.40 2005/08/09 10:02:48 db Exp $
+ *  $Id: m_locops.c,v 1.41 2005/08/09 15:37:11 michael Exp $
  */
 
 #include "stdinc.h"
@@ -37,12 +37,12 @@
 #include "parse.h"
 #include "modules.h"
 
-static void m_locops(struct Client *, struct Client *, int, char **);
-static void ms_locops(struct Client *, struct Client *, int, char **);
+static void m_locops(struct Client *, struct Client *, int, char *[]);
+static void ms_locops(struct Client *, struct Client *, int, char *[]);
 
 struct Message locops_msgtab = {
   "LOCOPS", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_locops, m_ignore, m_locops, m_ignore}
+  { m_unregistered, m_not_oper, ms_locops, m_ignore, m_locops, m_ignore }
 };
 
 #ifndef STATIC_MODULES
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&locops_msgtab);
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
 
 /*
@@ -96,13 +96,10 @@ ms_locops(struct Client *client_p, struct Client *source_p,
   sendto_server(client_p, NULL, NULL, CAP_CLUSTER, 0, 0, "LOCOPS %s :%s",
                 parv[1], parv[2]);
 
-  if (!match(parv[1], me.name))
+  if (!IsClient(source_p) || !match(parv[1], me.name))
     return;
 
-  if (!IsClient(source_p))
-    return;
-
-  if (find_matching_name_conf(CLUSTER_TYPE, source_p->servptr->name,
-                              NULL, NULL, CLUSTER_LOCOPS))
+  if (find_matching_name_conf(ULINE_TYPE, source_p->servptr->name,
+                              "*", "*", SHARED_LOCOPS))
     sendto_wallops_flags(UMODE_LOCOPS, source_p, "SLOCOPS - %s", parv[2]);
 }

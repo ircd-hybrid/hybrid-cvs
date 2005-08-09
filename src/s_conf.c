@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.555 2005/08/09 11:26:27 db Exp $
+ *  $Id: s_conf.c,v 7.556 2005/08/09 15:37:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -550,7 +550,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
   struct AccessItem *aconf;
   struct MatchItem *matchitem;
   struct ClassItem *classitem;
-  char buf[10], *p = buf;
+  char buf[12], *p = NULL;
 
   switch (type)
   {
@@ -558,9 +558,8 @@ report_confitem_types(struct Client *source_p, ConfType type)
     DLINK_FOREACH(ptr, gdeny_items.head)
     {
       conf = ptr->data;
-      aconf = (struct AccessItem *)map_to_conf(conf);
+      aconf = map_to_conf(conf);
 
-      buf[0] = '\0';
       p = buf;
 
       if (aconf->flags & GDENY_BLOCK)
@@ -573,7 +572,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
       else
         *p++ = 'r';
 
-     *p++ = '\0';
+      *p = '\0';
 
       sendto_one(source_p, ":%s %d %s V %s@%s %s %s",
                  me.name, RPL_STATSDEBUG, source_p->name, 
@@ -585,7 +584,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
     DLINK_FOREACH(ptr, xconf_items.head)
     {
       conf = ptr->data;
-      matchitem = (struct MatchItem *)map_to_conf(conf);
+      matchitem = map_to_conf(conf);
 
       sendto_one(source_p, form_str(RPL_STATSXLINE),
 		 me.name, source_p->name, 
@@ -598,7 +597,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
     DLINK_FOREACH(ptr, rxconf_items.head)
     {
       conf = ptr->data;
-      matchitem = (struct MatchItem *)map_to_conf(conf);
+      matchitem = map_to_conf(conf);
 
       sendto_one(source_p, form_str(RPL_STATSXLINE),
                  me.name, source_p->name,
@@ -611,9 +610,8 @@ report_confitem_types(struct Client *source_p, ConfType type)
     DLINK_FOREACH(ptr, uconf_items.head)
     {
       conf = ptr->data;
-      matchitem = (struct MatchItem *)map_to_conf(conf);
+      matchitem = map_to_conf(conf);
 
-      buf[0] = '\0';
       p = buf;
 
       /* some of these are redundant for the sake of 
@@ -626,7 +624,10 @@ report_confitem_types(struct Client *source_p, ConfType type)
       else
         *p++ = 'k';
 
-      *p++ = 'l';
+      if (matchitem->action & SHARED_LOCOPS)
+        *p++ = 'L';
+      else
+        *p++ = 'l';
 
       if (matchitem->action & SHARED_RESV)
       { 
@@ -655,7 +656,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
         *p++ = 'y';
       }
 
-      *p++ = '\0';
+      *p = '\0';
 
       sendto_one(source_p, form_str(RPL_STATSULINE),
 		 me.name, source_p->name, conf->name,
@@ -666,9 +667,8 @@ report_confitem_types(struct Client *source_p, ConfType type)
     DLINK_FOREACH(ptr, cluster_items.head)
     {
       conf = ptr->data;
-      matchitem = (struct MatchItem *)map_to_conf(conf);
+      matchitem = map_to_conf(conf);
 
-      buf[0] = '\0';
       p = buf;
 
       *p++ = 'C';
@@ -708,7 +708,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
       else
         *p++ = 'y';
 
-      *p++ = '\0';
+      *p = '\0';
 
       sendto_one(source_p, form_str(RPL_STATSULINE),
                  me.name, source_p->name, conf->name,
@@ -721,7 +721,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
     DLINK_FOREACH(ptr, oconf_items.head)
     {
       conf = ptr->data;
-      aconf = (struct AccessItem *)map_to_conf(conf);
+      aconf = map_to_conf(conf);
 
       /* Don't allow non opers to see oper privs */
       if (IsOper(source_p))
@@ -741,7 +741,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
     DLINK_FOREACH(ptr, class_items.head)
     {
       conf = ptr->data;
-      classitem = (struct ClassItem *)map_to_conf(conf);
+      classitem = map_to_conf(conf);
       sendto_one(source_p, form_str(RPL_STATSYLINE),
 		 me.name, source_p->name, 'Y',
 		 conf->name, PingFreq(classitem),
@@ -757,28 +757,27 @@ report_confitem_types(struct Client *source_p, ConfType type)
   case SERVER_TYPE:
     DLINK_FOREACH(ptr, server_items.head)
     {
-      char sbuf[20];
-      char *s = sbuf;
+      p = buf;
 
       conf = ptr->data;
-      aconf = (struct AccessItem *)map_to_conf(conf);
+      aconf = map_to_conf(conf);
 
-      sbuf[0] = '\0';
+      buf[0] = '\0';
 
       if (IsConfAllowAutoConn(aconf))
-	*s++ = 'A';
+	*p++ = 'A';
       if (IsConfCryptLink(aconf))
-	*s++ = 'C';
+	*p++ = 'C';
       if (IsConfLazyLink(aconf))
-	*s++ = 'L';
+	*p++ = 'L';
       if (IsConfCompressed(aconf))
-	*s++ = 'Z';
+	*p++ = 'Z';
       if (aconf->fakename)
-	*s++ = 'M';
-      if (sbuf[0] == '\0')
-	*s++ = '*';
+	*p++ = 'M';
+      if (buf[0] == '\0')
+	*p++ = '*';
 
-      *s++ = '\0';
+      *p = '\0';
 
       /* Allow admins to see actual ips
        * unless hide_server_ips is enabled
@@ -786,12 +785,12 @@ report_confitem_types(struct Client *source_p, ConfType type)
       if (!ConfigServerHide.hide_server_ips && IsAdmin(source_p))
 	sendto_one(source_p, form_str(RPL_STATSCLINE),
 		   me.name, source_p->name, 'C', aconf->host,
-		   sbuf, conf->name, aconf->port,
+		   buf, conf->name, aconf->port,
 		   aconf->class_ptr ? aconf->class_ptr->name : "<default>");
         else
           sendto_one(source_p, form_str(RPL_STATSCLINE),
                      me.name, source_p->name, 'C',
-		     "*@127.0.0.1", sbuf, conf->name, aconf->port,
+		     "*@127.0.0.1", buf, conf->name, aconf->port,
 		     aconf->class_ptr ? aconf->class_ptr->name : "<default>");
     }
     break;
@@ -800,7 +799,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
     DLINK_FOREACH(ptr, hub_items.head)
     {
       conf = ptr->data;
-      matchitem = (struct MatchItem *)map_to_conf(conf);
+      matchitem = map_to_conf(conf);
       sendto_one(source_p, form_str(RPL_STATSHLINE), me.name,
 		 source_p->name, 'H', matchitem->host, conf->name, 0, "*");
     }
@@ -810,7 +809,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
     DLINK_FOREACH(ptr, leaf_items.head)
     {
       conf = ptr->data;
-      matchitem = (struct MatchItem *)map_to_conf(conf);
+      matchitem = map_to_conf(conf);
       sendto_one(source_p, form_str(RPL_STATSLLINE), me.name,
 		 source_p->name, 'L', matchitem->host, conf->name, 0, "*");
     }
