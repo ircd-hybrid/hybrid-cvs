@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.61 2005/07/30 22:16:08 metalrock Exp $
+ *  $Id: modules.h,v 7.62 2005/08/10 17:16:15 db Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -186,6 +186,17 @@ extern struct Message omotd_msgtab;
 extern struct Message operspy_msgtab;
 extern struct Message opme_msgtab;
 extern struct Message tburst_msgtab;
+extern struct Message capture_msgtab;
+extern struct Message uncapture_msgtab;
+extern struct Message chgident_msgtab;
+extern struct Message chghost_msgtab;
+extern struct Message chgname_msgtab;
+extern struct Message ctrace_msgtab;
+extern struct Message etrace_msgtab;
+extern struct Message ltrace_msgtab;
+extern struct Message mkpasswd_msgtab;
+extern struct Message spoof_msgtab;
+extern struct Message delspoof_msgtab;
 #endif
 
 extern void load_all_modules(int);
