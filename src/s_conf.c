@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.559 2005/08/10 04:34:12 db Exp $
+ *  $Id: s_conf.c,v 7.560 2005/08/10 15:04:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -3414,14 +3414,14 @@ parse_aline(const char *cmd, struct Client *source_p,
       if (!IsOperRemoteBan(source_p))
       {
         sendto_one(source_p, form_str(ERR_NOPRIVS),
-                 me.name, source_p->name, "remoteban");
+                   me.name, source_p->name, "remoteban");
         return(-1);
       }
 
-      if (parc == 0)
+      if (parc == 0 || EmptyString(*parv))
       {
 	sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-		   me.name, source_p->name, "KLINE");
+		   me.name, source_p->name, cmd);
 	return(-1);
       }
 
