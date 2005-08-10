@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.558 2005/08/10 03:57:57 db Exp $
+ *  $Id: s_conf.c,v 7.559 2005/08/10 04:34:12 db Exp $
  */
 
 #include "stdinc.h"
@@ -615,40 +615,32 @@ report_confitem_types(struct Client *source_p, ConfType type)
       *p++ = 'c';
 
       if (matchitem->action & SHARED_KLINE)
+      {
         *p++ = 'K';
-      else
         *p++ = 'k';
+      }
 
       if (matchitem->action & SHARED_LOCOPS)
+      {
         *p++ = 'L';
-      else
         *p++ = 'l';
+      }
 
       if (matchitem->action & SHARED_RESV)
       { 
         *p++ = 'Q';
-        *p++ = 'R';
-      }
-      else
-      {
         *p++ = 'q';
-        *p++ = 'r';
+        *p++ = 'R';
       }
 
       if (matchitem->action & SHARED_UNKLINE)
         *p++ = 'U';
-      else
-        *p++ = 'u';
 
       if (matchitem->action & SHARED_XLINE)
       {
         *p++ = 'X';
-        *p++ = 'Y';
-      }
-      else
-      {
         *p++ = 'x';
-        *p++ = 'y';
+        *p++ = 'Y';
       }
 
       *p = '\0';
