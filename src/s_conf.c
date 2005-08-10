@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.557 2005/08/09 19:45:46 db Exp $
+ *  $Id: s_conf.c,v 7.558 2005/08/10 03:57:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -76,6 +76,7 @@ dlink_list temporary_dlines  = { NULL, NULL, 0 };
 dlink_list temporary_xlines  = { NULL, NULL, 0 };
 dlink_list temporary_glines  = { NULL, NULL, 0 };
 dlink_list temporary_rxlines = { NULL, NULL, 0 };
+dlink_list temporary_resv = { NULL, NULL, 0 };
 
 extern unsigned int lineno;
 extern char linebuf[];
@@ -677,10 +678,8 @@ report_confitem_types(struct Client *source_p, ConfType type)
 
       if (conf->flags & CLUSTER_RESV)
       {
-       *p++ = 'Q';
-#if 0
-        *p++ = 'q';
-#endif
+	*p++ = 'Q';
+	*p++ = 'q';
       }
       if (conf->flags & CLUSTER_UNRESV)
         *p++ = 'R';
@@ -2283,6 +2282,11 @@ add_temp_line(struct ConfItem *conf)
     conf->flags |= CONF_FLAGS_TEMPORARY;
     dlinkAdd(conf, make_dlink_node(), &temporary_rxlines);
   }
+  else if ((conf->type == NRESV_TYPE) || (conf->type == CRESV_TYPE))
+  {
+    conf->flags |= CONF_FLAGS_TEMPORARY;
+    dlinkAdd(conf, make_dlink_node(), &temporary_resv);
+  }
 }
 
 /* cleanup_tklines()
@@ -2300,6 +2304,7 @@ cleanup_tklines(void *notused)
   expire_tklines(&temporary_dlines);
   expire_tklines(&temporary_xlines);
   expire_tklines(&temporary_rxlines);
+  expire_tklines(&temporary_resv);
 }
 
 /* expire_tklines()
@@ -2315,7 +2320,9 @@ expire_tklines(dlink_list *tklist)
   dlink_node *next_ptr;
   struct ConfItem *conf;
   struct MatchItem *xconf;
+  struct MatchItem *nconf;
   struct AccessItem *aconf;
+  struct ResvChannel *cconf;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, tklist->head)
   {
@@ -2331,19 +2338,19 @@ expire_tklines(dlink_list *tklist)
 	/* Alert opers that a TKline expired - Hwy */
         if (ConfigFileEntry.tkline_expire_notices)
         {
-	if (aconf->status & CONF_KILL)
-	{
-	  sendto_realops_flags(UMODE_ALL, L_ALL,
-			       "Temporary K-line for [%s@%s] expired",
-			       (aconf->user) ? aconf->user : "*",
-			       (aconf->host) ? aconf->host : "*");
-	}
-	else if (conf->type == DLINE_TYPE)
-	{
-	  sendto_realops_flags(UMODE_ALL, L_ALL,
-			       "Temporary D-line for [%s] expired",
-			       (aconf->host) ? aconf->host : "*");
-	}
+	  if (aconf->status & CONF_KILL)
+	  {
+	    sendto_realops_flags(UMODE_ALL, L_ALL,
+				 "Temporary K-line for [%s@%s] expired",
+				 (aconf->user) ? aconf->user : "*",
+				 (aconf->host) ? aconf->host : "*");
+	  }
+	  else if (conf->type == DLINE_TYPE)
+	  {
+	    sendto_realops_flags(UMODE_ALL, L_ALL,
+				 "Temporary D-line for [%s] expired",
+				 (aconf->host) ? aconf->host : "*");
+	  }
         }
 
 	delete_one_address_conf(aconf->host, aconf);
@@ -2360,6 +2367,32 @@ expire_tklines(dlink_list *tklist)
 	  sendto_realops_flags(UMODE_ALL, L_ALL,
                                "Temporary X-line for [%s] %sexpired", conf->name,
                                conf->type == RXLINE_TYPE ? "(REGEX) " : "");
+	dlinkDelete(ptr, tklist);
+        free_dlink_node(ptr);
+	delete_conf_item(conf);
+      }
+    }
+    else if (conf->type == NRESV_TYPE)
+    {
+      nconf = (struct MatchItem *)map_to_conf(conf);
+      if (nconf->hold <= CurrentTime)
+      {
+        if (ConfigFileEntry.tkline_expire_notices)
+	  sendto_realops_flags(UMODE_ALL, L_ALL,
+                               "Temporary RESV for [%s] expired", conf->name);
+	dlinkDelete(ptr, tklist);
+        free_dlink_node(ptr);
+	delete_conf_item(conf);
+      }
+    }
+    else if (conf->type == CRESV_TYPE)
+    {
+      cconf = (struct ResvChannel *)map_to_conf(conf);
+      if (cconf->hold <= CurrentTime)
+      {
+        if (ConfigFileEntry.tkline_expire_notices)
+	  sendto_realops_flags(UMODE_ALL, L_ALL,
+                               "Temporary RESV for [%s] expired", cconf->name);
 	dlinkDelete(ptr, tklist);
         free_dlink_node(ptr);
 	delete_conf_item(conf);

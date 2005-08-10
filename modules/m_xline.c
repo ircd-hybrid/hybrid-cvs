@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.65 2005/08/09 15:37:11 michael Exp $
+ *  $Id: m_xline.c,v 1.66 2005/08/10 03:57:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -88,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.65 $";
+const char *_version = "$Revision: 1.66 $";
 #endif
 
 
@@ -201,8 +201,13 @@ ms_xline(struct Client *client_p, struct Client *source_p,
  *		- client (oper)
  *		- parc number of arguments
  *		- parv list of arguments
+ * via parv[]
+ * parv[1] = target
+ * parv[2] = server
+ * parv[3] = xline
+ * parv[4] = time
+ * parv[5] = reason
  *
- * via parv[]   - target server, xline, time, reason
  * outputs	- none
  * side effects	- 
  */
@@ -210,7 +215,9 @@ static void
 me_xline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  if (parc != 4)
+  if (!IsClient(source_p))
+    return;
+  if (parc != 5)
     return;
 
   relay_xline(source_p, parv[1], parv[2], parv[3], parv[4]);

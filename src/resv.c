@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.36 2005/06/22 16:56:42 adx Exp $
+ *  $Id: resv.c,v 7.37 2005/08/10 03:57:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -93,8 +93,7 @@ create_nick_resv(char *name, char *reason, int in_conf)
   if (name == NULL || reason == NULL)
     return NULL;
 
-  if (find_matching_name_conf(NRESV_TYPE, name,
-			      NULL, NULL, 0))
+  if (find_matching_name_conf(NRESV_TYPE, name, NULL, NULL, 0))
     return NULL;
 
   if (strlen(reason) > TOPICLEN)
