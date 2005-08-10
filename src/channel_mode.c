@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.155 2005/08/02 22:18:45 adx Exp $
+ *  $Id: channel_mode.c,v 7.156 2005/08/10 22:39:03 db Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,7 @@
 #include "balloc.h"
 #include "s_log.h"
 
-int del_id(struct Channel *, const char *, int);
+static int del_id(struct Channel *, char *, int);
 
 /* some small utility functions */
 static char *check_string(char *s);
@@ -159,8 +159,6 @@ check_string(char *s)
  *   -is 8/9/00 
  */
 
-char banid_copy[BUFSIZE];
-
 int
 add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
 {
@@ -190,8 +188,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
   if (strlen(banid) > MODEBUFLEN)
     return 0;
 
-  strcpy(banid_copy, banid);
-  split_nuh(banid_copy, &name, &username, &host);
+  split_nuh(banid, &name, &username, &host);
 
   switch (type)
   {
@@ -219,9 +216,9 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
   }
 
   actualBan = (struct Ban *)BlockHeapAlloc(ban_heap);
-  DupString(actualBan->name, name);
-  DupString(actualBan->username, username);
-  DupString(actualBan->host, host);
+  actualBan->name = name;
+  actualBan->username = username;
+  actualBan->host = host;
   actualBan->len = strlen(name) + strlen(username) + strlen(host);
 
   if (IsClient(client_p))
@@ -252,8 +249,8 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
  * output	- 0 for failure, 1 for success
  * side effects	-
  */
-int
-del_id(struct Channel *chptr, const char *banid, int type)
+static int
+del_id(struct Channel *chptr, char *banid, int type)
 {
   dlink_list *list;
   dlink_node *ban;
@@ -263,8 +260,7 @@ del_id(struct Channel *chptr, const char *banid, int type)
   if (banid == NULL)
     return(0);
 
-  strcpy(banid_copy, banid);
-  split_nuh(banid_copy, &name, &username, &host);
+  split_nuh(banid, &name, &username, &host);
 
   switch (type)
   {
@@ -280,6 +276,9 @@ del_id(struct Channel *chptr, const char *banid, int type)
     default:
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "del_id() called with unknown ban type %d!", type);
+      MyFree(name);
+      MyFree(username);
+      MyFree(host);
       return(0);
   }
 
@@ -292,10 +291,15 @@ del_id(struct Channel *chptr, const char *banid, int type)
 	(irccmp(host, banptr->host) == 0))
     {
       remove_ban(banptr, list);
+      MyFree(name);
+      MyFree(username);
+      MyFree(host);
       return(1);
     }
   }
-
+  MyFree(name);
+  MyFree(username);
+  MyFree(host);
   return(0);
 }
 
@@ -1811,7 +1815,10 @@ set_channel_mode(struct Client *client_p, struct Client *source_p, struct Channe
  *		- pointer to pointer where user should go
  *		- pointer to pointer where host should go
  * output	- NONE
- * side effects	- mask is modified in place
+ * side effects	- mask is modified in place, but restored, so must
+ *		  be writable.
+ *		  If nick pointer is NULL, ignore writing to it
+ *		  this allows us to use this function elsewhere.
  *
  * mask				nick	user	host
  * ----------------------	------- ------- ------
@@ -1831,58 +1838,72 @@ void
 split_nuh(char *mask, char **nick, char **user, char **host)
 {
   char *p, *q;
+  char *restore_bang=NULL;
+  char *restore_at= NULL;
 
   if ((p = strchr(mask, '!')) != NULL)
   {
+    restore_bang = p;
     *p = '\0';
-    if (*mask != '\0')
-      *nick = mask;
-    else
-      *nick = "*";
+    if (nick != NULL)
+    {
+      if (*mask != '\0')
+	DupString(*nick, mask);
+      else
+	DupString(*nick, "*");
+    }
     p++;
     if ((q = strchr(p, '@')) != NULL)
     {
+      restore_at = q;
       *q = '\0';
       if (*p != '\0')
-	*user = p;
+	DupString(*user, p);
       else
-	*user = "*";
+	DupString(*user, "*");
       q++;
       if (*q != '\0')
-	*host = q;
+	DupString(*host, q);
       else
-	*host = "*";
+	DupString(*host, "*");
     }
     else
     {
       if (*p != '\0')
-	*user = p;
+	DupString(*user, p);
       else
-	*user = "*";
-      *host = "*";
+	DupString(*user, "*");
+      DupString(*host, "*");
     }
   }
   else
   {
     if ((p = strchr(mask, '@')) != NULL)
     {
-      *nick = "*";
+      if (nick != NULL)
+	DupString(*nick, "*");
+      restore_at = p;
       *p = '\0';
       if (*mask != '\0')
-	*user = mask;
+	DupString(*user, mask);
       else
-	*user = "*";
+	DupString(*user, "*");
       p++;
       if (*p != '\0')
-	*host = p;
+	DupString(*host, p);
       else
-	*host = "*";
+	DupString(*host, "*");
     }
     else
     {
-      *nick = mask;
-      *user = "*";
-      *host = "*";
+      if (nick != NULL)
+	DupString(*nick, mask);
+      DupString(*user, "*");
+      DupString(*host, "*");
     }
   }
+  if (restore_bang != NULL)
+    *restore_bang = '!';
+  if (restore_at != NULL)
+    *restore_at = '@';
 }
