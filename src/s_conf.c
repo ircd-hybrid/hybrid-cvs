@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.560 2005/08/10 15:04:24 michael Exp $
+ *  $Id: s_conf.c,v 7.561 2005/08/10 15:25:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -3319,10 +3319,10 @@ valid_wild_card(struct Client *source_p, int warn, int count, ...)
  *
  * input        - pointer to cmd name being used
  *              - pointer to client using cmd
- *		- pointer to user or string to parse into
- *              - pointer to host or NULL to parse into if non NULL
  *              - parc parameter count
  *              - parv[] list of parameters to parse
+ *		- pointer to user or string to parse into
+ *              - pointer to host or NULL to parse into if non NULL
  *              - pointer to optional tkline time or NULL 
  *              - pointer to target_server to parse into if non NULL
  *              - pointer to reason to parse into
