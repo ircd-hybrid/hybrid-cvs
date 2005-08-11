@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.424 2005/08/11 01:06:46 db Exp $
+ *  $Id: ircd_parser.y,v 1.425 2005/08/11 01:51:01 db Exp $
  */
 
 %{
@@ -344,6 +344,9 @@ unhook_hub_leaf_confs(void)
 %token  THROTTLE_TIME
 %token  TOPICBURST
 %token  TRUE_NO_OPER_FLOOD
+%token  TKLINE
+%token  TXLINE
+%token  TRESV
 %token  UNKLINE
 %token  USER
 %token  USE_EGD
@@ -2095,6 +2098,10 @@ shared_type_item: KLINE
 {
   if (ypass == 2)
     yy_match_item->action |= SHARED_KLINE;
+} | TKLINE
+{
+  if (ypass == 2)
+    yy_match_item->action |= SHARED_TKLINE;
 } | UNKLINE
 {
   if (ypass == 2)
@@ -2103,6 +2110,10 @@ shared_type_item: KLINE
 {
   if (ypass == 2)
     yy_match_item->action |= SHARED_XLINE;
+} | TXLINE
+{
+  if (ypass == 2)
+    yy_match_item->action |= SHARED_TXLINE;
 } | T_UNXLINE
 {
   if (ypass == 2)
@@ -2111,6 +2122,10 @@ shared_type_item: KLINE
 {
   if (ypass == 2)
     yy_match_item->action |= SHARED_RESV;
+} | TRESV
+{
+  if (ypass == 2)
+    yy_match_item->action |= SHARED_TRESV;
 } | T_UNRESV
 {
   if (ypass == 2)
@@ -2165,6 +2180,10 @@ cluster_type_item: KLINE
 {
   if (ypass == 2)
     yy_conf->flags |= CLUSTER_KLINE;
+} | TKLINE
+{
+  if (ypass == 2)
+    yy_conf->flags |= CLUSTER_TKLINE;
 } | UNKLINE
 {
   if (ypass == 2)
@@ -2173,6 +2192,10 @@ cluster_type_item: KLINE
 {
   if (ypass == 2)
     yy_conf->flags |= CLUSTER_XLINE;
+} | TXLINE
+{
+  if (ypass == 2)
+    yy_conf->flags |= CLUSTER_TXLINE;
 } | T_UNXLINE
 {
   if (ypass == 2)
@@ -2181,6 +2204,10 @@ cluster_type_item: KLINE
 {
   if (ypass == 2)
     yy_conf->flags |= CLUSTER_RESV;
+} | TRESV
+{
+  if (ypass == 2)
+    yy_conf->flags |= CLUSTER_TRESV;
 } | T_UNRESV
 {
   if (ypass == 2)

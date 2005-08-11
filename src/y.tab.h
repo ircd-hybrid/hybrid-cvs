@@ -1,4 +1,4 @@
-/* $Id: y.tab.h,v 7.45 2005/08/11 01:06:47 db Exp $ */
+/* $Id: y.tab.h,v 7.46 2005/08/11 01:51:02 db Exp $ */
 #ifndef YYERRCODE
 #define YYERRCODE 256
 #endif
@@ -223,19 +223,22 @@
 #define THROTTLE_TIME 474
 #define TOPICBURST 475
 #define TRUE_NO_OPER_FLOOD 476
-#define UNKLINE 477
-#define USER 478
-#define USE_EGD 479
-#define USE_EXCEPT 480
-#define USE_INVEX 481
-#define USE_KNOCK 482
-#define USE_LOGGING 483
-#define USE_WHOIS_ACTUALLY 484
-#define VHOST 485
-#define VHOST6 486
-#define XLINE 487
-#define WARN 488
-#define WARN_NO_NLINE 489
+#define TKLINE 477
+#define TXLINE 478
+#define TRESV 479
+#define UNKLINE 480
+#define USER 481
+#define USE_EGD 482
+#define USE_EXCEPT 483
+#define USE_INVEX 484
+#define USE_KNOCK 485
+#define USE_LOGGING 486
+#define USE_WHOIS_ACTUALLY 487
+#define VHOST 488
+#define VHOST6 489
+#define XLINE 490
+#define WARN 491
+#define WARN_NO_NLINE 492
 typedef union {
   int number;
   char *string;
