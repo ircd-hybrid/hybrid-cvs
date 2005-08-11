@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.312 2005/08/11 01:50:58 db Exp $
+ *  $Id: s_conf.h,v 7.313 2005/08/11 13:32:17 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -255,7 +255,9 @@ struct ClassItem
 #define SetConfTopicBurst(x)    ((x)->flags |= CONF_FLAGS_TOPICBURST)
 #define ClearConfTopicBurst(x)  ((x)->flags &= ~CONF_FLAGS_TOPICBURST)
 
-/* shared server entry types */
+/* shared/cluster server entry types 
+ * These defines are used for both shared and cluster.
+ */
 #define SHARED_KLINE		0x0001
 #define SHARED_TKLINE		0x0002
 #define SHARED_UNKLINE		0x0004
@@ -264,8 +266,8 @@ struct ClassItem
 #define SHARED_UNXLINE		0x0020
 #define SHARED_RESV		0x0040
 #define SHARED_TRESV		0x0080
-#define SHARED_UNRESV		0x0040
-#define SHARED_LOCOPS           0x0080
+#define SHARED_UNRESV		0x0100
+#define SHARED_LOCOPS           0x0200
 #define SHARED_ALL		(SHARED_KLINE | SHARED_TKLINE | SHARED_UNKLINE | \
 				 SHARED_XLINE | SHARED_TXLINE | SHARED_UNXLINE | \
 				 SHARED_RESV | SHARED_TRESV | SHARED_UNRESV |\
@@ -524,22 +526,6 @@ extern int match_conf_password(const char *, const struct AccessItem *);
 #define TOO_FAST          (-6)
 
 #define CLEANUP_TKLINES_TIME 60
-
-#define CLUSTER_KLINE	0x0001
-#define CLUSTER_TKLINE	0x0002
-#define CLUSTER_UNKLINE	0x0004
-#define CLUSTER_XLINE	0x0008
-#define CLUSTER_TXLINE	0x0010
-#define CLUSTER_UNXLINE	0x0020
-#define CLUSTER_RESV	0x0040
-#define CLUSTER_TRESV	0x0080
-#define CLUSTER_UNRESV	0x0100
-#define CLUSTER_LOCOPS	0x0200
-
-#define CLUSTER_ALL	(CLUSTER_KLINE | CLUSTER_TKLINE | CLUSTER_UNKLINE | \
- 			 CLUSTER_XLINE | CLUSTER_TXLINE | CLUSTER_UNXLINE | \
-			 CLUSTER_RESV | CLUSTER_TRESV | CLUSTER_UNRESV |\
-			 CLUSTER_LOCOPS)
 
 extern void cluster_a_line(struct Client *,
 			   const char *, int, int, const char *,...);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.564 2005/08/11 01:58:31 db Exp $
+ *  $Id: s_conf.c,v 7.565 2005/08/11 13:32:21 db Exp $
  */
 
 #include "stdinc.h"
@@ -659,33 +659,33 @@ report_confitem_types(struct Client *source_p, ConfType type)
 
       *p++ = 'C';
 
-      if (conf->flags & CLUSTER_KLINE)
+      if (conf->flags & SHARED_KLINE)
       {
         *p++ = 'K';
         *p++ = 'k';
       }
 
-      if (conf->flags & CLUSTER_LOCOPS)
+      if (conf->flags & SHARED_LOCOPS)
         *p++ = 'L';
 
-      if (conf->flags & CLUSTER_RESV)
+      if (conf->flags & SHARED_RESV)
       {
 	*p++ = 'Q';
 	*p++ = 'q';
       }
-      if (conf->flags & CLUSTER_UNRESV)
+      if (conf->flags & SHARED_UNRESV)
         *p++ = 'R';
 
-      if (conf->flags & CLUSTER_UNKLINE)
+      if (conf->flags & SHARED_UNKLINE)
         *p++ = 'U';
 
-      if (conf->flags & CLUSTER_XLINE)
+      if (conf->flags & SHARED_XLINE)
       {
         *p++ = 'X';
         *p++ = 'x';
       }
 
-      if (conf->flags & CLUSTER_UNXLINE)
+      if (conf->flags & SHARED_UNXLINE)
         *p++ = 'Y';
 
       *p = '\0';
@@ -1673,7 +1673,6 @@ find_matching_name_conf(ConfType type, const char *name, const char *user,
   case XLINE_TYPE:
   case ULINE_TYPE:
   case NRESV_TYPE:
-  case CLUSTER_TYPE:
 
     DLINK_FOREACH(ptr, (*list_p).head)
     {
@@ -1695,25 +1694,6 @@ find_matching_name_conf(ConfType type, const char *name, const char *user,
       }
     }
       break;
-
-  case OPER_TYPE:
-    DLINK_FOREACH(ptr, (*list_p).head)
-    {
-      conf = ptr->data;
-
-      if ((name != NULL) && (irccmp(name, conf->name) == 0))
-      {
-	if ((user == NULL && (host == NULL)))
-	  return (conf);
-
-	aconf = map_to_conf(conf);
-	if (EmptyString(aconf->user) || EmptyString(aconf->host))
-	  return (conf);
-	if (match(aconf->user, user) && match(aconf->host, host))
-	  return (conf);
-      }
-    }
-    break;
 
   case SERVER_TYPE:
     DLINK_FOREACH(ptr, (*list_p).head)

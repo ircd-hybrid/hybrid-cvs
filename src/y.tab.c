@@ -1,4 +1,4 @@
-/* $Id: y.tab.c,v 7.54 2005/08/11 12:12:35 db Exp $ */
+/* $Id: y.tab.c,v 7.55 2005/08/11 13:32:21 db Exp $ */
 #include <stdlib.h>
 #ifndef lint
 #ifdef __unused
@@ -4070,7 +4070,7 @@ case 312:
   if (ypass == 2)
   {
     yy_conf = make_conf_item(CLUSTER_TYPE);
-    yy_conf->flags = CLUSTER_ALL;
+    yy_conf->flags = SHARED_ALL;
   }
 }
 break;
@@ -4103,77 +4103,77 @@ case 324:
 #line 2174 "ircd_parser.y"
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_KLINE;
+    yy_conf->flags |= SHARED_KLINE;
 }
 break;
 case 325:
 #line 2178 "ircd_parser.y"
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_TKLINE;
+    yy_conf->flags |= SHARED_TKLINE;
 }
 break;
 case 326:
 #line 2182 "ircd_parser.y"
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_UNKLINE;
+    yy_conf->flags |= SHARED_UNKLINE;
 }
 break;
 case 327:
 #line 2186 "ircd_parser.y"
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_XLINE;
+    yy_conf->flags |= SHARED_XLINE;
 }
 break;
 case 328:
 #line 2190 "ircd_parser.y"
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_TXLINE;
+    yy_conf->flags |= SHARED_TXLINE;
 }
 break;
 case 329:
 #line 2194 "ircd_parser.y"
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_UNXLINE;
+    yy_conf->flags |= SHARED_UNXLINE;
 }
 break;
 case 330:
 #line 2198 "ircd_parser.y"
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_RESV;
+    yy_conf->flags |= SHARED_RESV;
 }
 break;
 case 331:
 #line 2202 "ircd_parser.y"
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_TRESV;
+    yy_conf->flags |= SHARED_TRESV;
 }
 break;
 case 332:
 #line 2206 "ircd_parser.y"
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_UNRESV;
+    yy_conf->flags |= SHARED_UNRESV;
 }
 break;
 case 333:
 #line 2210 "ircd_parser.y"
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_LOCOPS;
+    yy_conf->flags |= SHARED_LOCOPS;
 }
 break;
 case 334:
 #line 2214 "ircd_parser.y"
 {
   if (ypass == 2)
-    yy_conf->flags = CLUSTER_ALL;
+    yy_conf->flags = SHARED_ALL;
 }
 break;
 case 335:

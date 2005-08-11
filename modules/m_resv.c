@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.46 2005/08/10 03:57:55 db Exp $
+ *  $Id: m_resv.c,v 1.47 2005/08/11 13:32:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.47 $";
 #endif
 
 /* mo_resv()
@@ -117,10 +117,10 @@ mo_resv(struct Client *client_p, struct Client *source_p,
   else
   {
     if (tkline_time != 0)
-      cluster_a_line(source_p, "ENCAP", CAP_ENCAP, CLUSTER_RESV,
+      cluster_a_line(source_p, "ENCAP", CAP_ENCAP, SHARED_RESV,
 		     "RESV %d %s 0 : %s", (int)tkline_time, resv, reason);
     else
-      cluster_a_line(source_p, "RESV", CAP_KLN, CLUSTER_RESV,
+      cluster_a_line(source_p, "RESV", CAP_KLN, SHARED_RESV,
 		     "%s : %s", resv, reason);
   }
   parse_resv(source_p, resv, (int)tkline_time, reason);
@@ -209,7 +209,7 @@ mo_unresv(struct Client *client_p, struct Client *source_p,
       return;
   }
   else 
-    cluster_a_line(source_p, "UNRESV", CAP_KLN, CLUSTER_UNRESV, resv);
+    cluster_a_line(source_p, "UNRESV", CAP_KLN, SHARED_UNRESV, resv);
 
   remove_resv(source_p, resv);
 }

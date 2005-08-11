@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.205 2005/08/09 15:37:11 michael Exp $
+ *  $Id: m_kline.c,v 1.206 2005/08/11 13:32:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -107,7 +107,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.205 $";
+const char *_version = "$Revision: 1.206 $";
 #endif
 
 /* Local function prototypes */
@@ -176,7 +176,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
       return;
   }
   else
-    cluster_a_line(source_p, "KLINE", CAP_KLN, CLUSTER_KLINE,
+    cluster_a_line(source_p, "KLINE", CAP_KLN, SHARED_KLINE,
 		   "%d %s %s :%s", tkline_time, user, host, reason);
 
   if (already_placed_kline(source_p, user, host, YES))
@@ -660,7 +660,7 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
       return;
   }
   else
-    cluster_a_line(source_p, "UNKLINE", CAP_UNKLN, CLUSTER_UNKLINE,
+    cluster_a_line(source_p, "UNKLINE", CAP_UNKLN, SHARED_UNKLINE,
 		   "%s %s", user, host);
 
   if (remove_tkline_match(host, user))

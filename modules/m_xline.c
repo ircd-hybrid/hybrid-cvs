@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.66 2005/08/10 03:57:55 db Exp $
+ *  $Id: m_xline.c,v 1.67 2005/08/11 13:32:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -88,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.66 $";
+const char *_version = "$Revision: 1.67 $";
 #endif
 
 
@@ -147,10 +147,10 @@ mo_xline(struct Client *client_p, struct Client *source_p,
   else 
   {
     if (tkline_time != 0)
-      cluster_a_line(source_p, "ENCAP", CAP_ENCAP, CLUSTER_XLINE,
+      cluster_a_line(source_p, "ENCAP", CAP_ENCAP, SHARED_XLINE,
 		     "XLINE %d %s 0 :%s", (int)tkline_time, gecos, reason);
     else
-      cluster_a_line(source_p, "XLINE", CAP_KLN, CLUSTER_XLINE,
+      cluster_a_line(source_p, "XLINE", CAP_KLN, SHARED_XLINE,
 		     "%s 0 :%s", gecos, reason);
   }
 
@@ -308,8 +308,8 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
       return;
   }
   else
-    cluster_a_line(source_p, "UNXLINE", CAP_CLUSTER,
-		   CLUSTER_UNXLINE, "%s", gecos);
+    cluster_a_line(source_p, "UNXLINE", CAP_CLUSTER, SHARED_UNXLINE,
+		   "%s", gecos);
 
   remove_xline(source_p, gecos);
 }

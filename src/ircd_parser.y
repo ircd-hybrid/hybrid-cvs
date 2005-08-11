@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.426 2005/08/11 12:12:35 db Exp $
+ *  $Id: ircd_parser.y,v 1.427 2005/08/11 13:32:21 db Exp $
  */
 
 %{
@@ -2142,7 +2142,7 @@ cluster_entry: T_CLUSTER
   if (ypass == 2)
   {
     yy_conf = make_conf_item(CLUSTER_TYPE);
-    yy_conf->flags = CLUSTER_ALL;
+    yy_conf->flags = SHARED_ALL;
   }
 } '{' cluster_items '}' ';'
 {
@@ -2173,47 +2173,47 @@ cluster_types:	cluster_types ',' cluster_type_item | cluster_type_item;
 cluster_type_item: KLINE
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_KLINE;
+    yy_conf->flags |= SHARED_KLINE;
 } | TKLINE
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_TKLINE;
+    yy_conf->flags |= SHARED_TKLINE;
 } | UNKLINE
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_UNKLINE;
+    yy_conf->flags |= SHARED_UNKLINE;
 } | XLINE
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_XLINE;
+    yy_conf->flags |= SHARED_XLINE;
 } | TXLINE
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_TXLINE;
+    yy_conf->flags |= SHARED_TXLINE;
 } | T_UNXLINE
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_UNXLINE;
+    yy_conf->flags |= SHARED_UNXLINE;
 } | RESV
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_RESV;
+    yy_conf->flags |= SHARED_RESV;
 } | TRESV
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_TRESV;
+    yy_conf->flags |= SHARED_TRESV;
 } | T_UNRESV
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_UNRESV;
+    yy_conf->flags |= SHARED_UNRESV;
 } | T_LOCOPS
 {
   if (ypass == 2)
-    yy_conf->flags |= CLUSTER_LOCOPS;
+    yy_conf->flags |= SHARED_LOCOPS;
 } | T_ALL
 {
   if (ypass == 2)
-    yy_conf->flags = CLUSTER_ALL;
+    yy_conf->flags = SHARED_ALL;
 };
 
 /***************************************************************************
