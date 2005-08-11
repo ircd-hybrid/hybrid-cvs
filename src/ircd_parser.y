@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.425 2005/08/11 01:51:01 db Exp $
+ *  $Id: ircd_parser.y,v 1.426 2005/08/11 12:12:35 db Exp $
  */
 
 %{
@@ -2078,12 +2078,6 @@ shared_user: USER '=' QSTRING ';'
   if (ypass == 2)
   {
     split_nuh(yylval.string, NULL, &yy_match_item->user, &yy_match_item->host);
-
-    /* default to *@* */
-    if (yy_match_item->user == NULL)
-      DupString(yy_match_item->user, "*");
-    if (yy_match_item->host == NULL)
-      DupString(yy_match_item->host, "*");
   }
 };
 
