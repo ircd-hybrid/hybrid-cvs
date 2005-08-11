@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.563 2005/08/11 01:54:23 db Exp $
+ *  $Id: s_conf.c,v 7.564 2005/08/11 01:58:31 db Exp $
  */
 
 #include "stdinc.h"
@@ -3822,7 +3822,7 @@ split_nuh(char *mask, char **nick, char **user, char **host)
       else
 	DupString(*host, "*");
     }
-      else                                      /* no @ found */
+    else                                        /* no @ found */
     {
       if (nick != NULL)
       {
