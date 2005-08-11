@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.55.2.2 2005/07/22 17:21:00 db Exp $
+ *  $Id: modules.h,v 7.55.2.3 2005/08/11 15:33:18 adx Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -65,6 +65,9 @@ extern void mod_clear_paths(void);
 
 /* Add this module to list of modules to be loaded from conf */
 extern void add_conf_module(const char *);
+/* load all modules listed in conf */
+extern void load_conf_modules(void);
+
 /* load all modules */
 extern void load_all_modules(int warn);
 

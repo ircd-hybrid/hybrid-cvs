@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.155.2.4 2005/07/30 20:13:41 db Exp $
+ *  $Id: modules.c,v 7.155.2.5 2005/08/11 15:33:20 adx Exp $
  */
 
 #include "stdinc.h"
@@ -313,6 +313,27 @@ load_all_modules(int warn)
   }
 
   closedir(system_module_dir);
+}
+
+/* load_conf_modules()
+ *
+ * input        - NONE
+ * output       - NONE
+ * side effects - load modules given in ircd.conf
+ */
+void
+load_conf_modules(void)
+{
+  dlink_node *ptr;
+  struct module_path *mpath;
+
+  DLINK_FOREACH(ptr, conf_modules.head)
+  {
+    mpath = ptr->data;
+
+    if (findmodule_byname(mpath->path) == NULL)
+      load_one_module(mpath->path, 0);
+  }
 }
 
 /* load_core_modules()
