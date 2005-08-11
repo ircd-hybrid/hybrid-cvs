@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.156 2005/08/10 22:39:03 db Exp $
+ *  $Id: channel_mode.c,v 7.157 2005/08/11 01:06:45 db Exp $
  */
 
 #include "stdinc.h"
@@ -1805,105 +1805,4 @@ set_channel_mode(struct Client *client_p, struct Client *source_p, struct Channe
     }
   }
   send_mode_changes(client_p, source_p, chptr, chname);
-}
-
-/*
- * split_nuh
- *
- * inputs	- pointer to original mask (modified in place)
- *		- pointer to pointer where nick should go
- *		- pointer to pointer where user should go
- *		- pointer to pointer where host should go
- * output	- NONE
- * side effects	- mask is modified in place, but restored, so must
- *		  be writable.
- *		  If nick pointer is NULL, ignore writing to it
- *		  this allows us to use this function elsewhere.
- *
- * mask				nick	user	host
- * ----------------------	------- ------- ------
- * Dianora!db@db.net		Dianora	db	db.net
- * Dianora			Dianora	*	*
- * Dianora!			Dianora	*	*
- * Dianora!@			Dianora	*	*
- * Dianora!db			Dianora	db	*
- * Dianora!@db.net		Dianora	*	db.net
- * db@db.net			*	db	db.net
- * !@				*	*	*
- * @				*	*	*
- * !				*	*	*
- */
-
-void
-split_nuh(char *mask, char **nick, char **user, char **host)
-{
-  char *p, *q;
-  char *restore_bang=NULL;
-  char *restore_at= NULL;
-
-  if ((p = strchr(mask, '!')) != NULL)
-  {
-    restore_bang = p;
-    *p = '\0';
-    if (nick != NULL)
-    {
-      if (*mask != '\0')
-	DupString(*nick, mask);
-      else
-	DupString(*nick, "*");
-    }
-    p++;
-    if ((q = strchr(p, '@')) != NULL)
-    {
-      restore_at = q;
-      *q = '\0';
-      if (*p != '\0')
-	DupString(*user, p);
-      else
-	DupString(*user, "*");
-      q++;
-      if (*q != '\0')
-	DupString(*host, q);
-      else
-	DupString(*host, "*");
-    }
-    else
-    {
-      if (*p != '\0')
-	DupString(*user, p);
-      else
-	DupString(*user, "*");
-      DupString(*host, "*");
-    }
-  }
-  else
-  {
-    if ((p = strchr(mask, '@')) != NULL)
-    {
-      if (nick != NULL)
-	DupString(*nick, "*");
-      restore_at = p;
-      *p = '\0';
-      if (*mask != '\0')
-	DupString(*user, mask);
-      else
-	DupString(*user, "*");
-      p++;
-      if (*p != '\0')
-	DupString(*host, p);
-      else
-	DupString(*host, "*");
-    }
-    else
-    {
-      if (nick != NULL)
-	DupString(*nick, mask);
-      DupString(*user, "*");
-      DupString(*host, "*");
-    }
-  }
-  if (restore_bang != NULL)
-    *restore_bang = '!';
-  if (restore_at != NULL)
-    *restore_at = '@';
 }

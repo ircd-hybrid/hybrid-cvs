@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.561 2005/08/10 15:25:42 db Exp $
+ *  $Id: s_conf.c,v 7.562 2005/08/11 01:06:46 db Exp $
  */
 
 #include "stdinc.h"
@@ -2065,38 +2065,6 @@ validate_conf(void)
     ConfigFileEntry.client_flood = CLIENT_FLOOD_MAX;
 }
 
-/* split_user_host()
- *
- * inputs	- pointer to original string of form "user@host"
- *		- pointer to new user part
- *		- pointer to new host part
- * output	- NONE
- * side effects - splits user@host found in a name field of conf given
- *		  stuff the user into ->user and the host into ->host
- */
-void
-split_user_host(char *user_host, char **user_p, char **host_p)
-{
-  char *p;
-  char *new_user;
-  char *new_host;
-
-  if ((p = strchr(user_host, '@')) != NULL)
-  {
-    *p = '\0';
-    DupString(new_user, user_host);
-    p++;
-    DupString(new_host, p);
-    MyFree(user_host);
-    *user_p = new_user;
-    *host_p = new_host;
-  }
-  else
-  {
-    DupString(*user_p, "*");
-  }
-}
-
 /* lookup_confhost()
  *
  * start DNS lookups of all hostnames in the conf
@@ -3114,6 +3082,7 @@ int
 conf_add_server(struct ConfItem *conf, unsigned int lcount, const char *class_name)
 {
   struct AccessItem *aconf;
+  char *orig_host;
 
   aconf = map_to_conf(conf);
 
@@ -3134,7 +3103,9 @@ conf_add_server(struct ConfItem *conf, unsigned int lcount, const char *class_na
     return(-1);
   }
 
-  split_user_host(aconf->host, &aconf->user, &aconf->host);
+  orig_host = aconf->host;
+  split_nuh(orig_host, NULL, &aconf->user, &aconf->host);
+  MyFree(orig_host);
   lookup_confhost(conf);
 
   return(0);
@@ -3760,4 +3731,112 @@ cluster_a_line(struct Client *source_p, const char *command,
 			 "%s %s %s", command, conf->name, buffer);
     }
   }
+}
+
+/*
+ * split_nuh
+ *
+ * inputs	- pointer to original mask (modified in place)
+ *		- pointer to pointer where nick should go
+ *		- pointer to pointer where user should go
+ *		- pointer to pointer where host should go
+ * output	- NONE
+ * side effects	- mask is modified in place, but restored, so must
+ *		  be writable.
+ *		  If nick pointer is NULL, ignore writing to it
+ *		  this allows us to use this function elsewhere.
+ *
+ * mask				nick	user	host
+ * ----------------------	------- ------- ------
+ * Dianora!db@db.net		Dianora	db	db.net
+ * Dianora			Dianora	*	*
+ * Dianora!			Dianora	*	*
+ * Dianora!@			Dianora	*	*
+ * Dianora!db			Dianora	db	*
+ * Dianora!@db.net		Dianora	*	db.net
+ * db@db.net			*	db	db.net
+ * !@				*	*	*
+ * @				*	*	*
+ * !				*	*	*
+ */
+
+void
+split_nuh(char *mask, char **nick, char **user, char **host)
+{
+  char *p, *q;
+  char *restore_bang=NULL;
+  char *restore_at= NULL;
+
+  if ((p = strchr(mask, '!')) != NULL)
+  {
+    restore_bang = p;
+    *p = '\0';
+    if (nick != NULL)
+    {
+      if (*mask != '\0')
+	DupString(*nick, mask);
+      else
+	DupString(*nick, "*");
+    }
+    p++;
+    if ((q = strchr(p, '@')) != NULL)
+    {
+      restore_at = q;
+      *q = '\0';
+      if (*p != '\0')
+	DupString(*user, p);
+      else
+	DupString(*user, "*");
+      q++;
+      if (*q != '\0')
+	DupString(*host, q);
+      else
+	DupString(*host, "*");
+    }
+    else
+    {
+      if (*p != '\0')
+	DupString(*user, p);
+      else
+	DupString(*user, "*");
+      DupString(*host, "*");
+    }
+  }
+  else  /* No ! found so lets look for a user@host */
+  {
+    if ((p = strchr(mask, '@')) != NULL)        /* if found a @ */
+    {
+      if (nick != NULL)
+	DupString(*nick, "*");
+      restore_at = p;
+      *p = '\0';
+      if (*mask != '\0')
+	DupString(*user, mask);
+      else
+	DupString(*user, "*");
+      p++;
+      if (*p != '\0')
+	DupString(*host, p);
+      else
+	DupString(*host, "*");
+    }
+      else                                      /* no @ found */
+    {
+      if (nick != NULL)
+      {
+        DupString(*nick, mask);
+        DupString(*user, "*");
+        DupString(*host, "*");
+      }
+      else
+      {
+        DupString(*user, "*");
+        DupString(*host, mask);
+      }
+    }
+  }
+  if (restore_bang != NULL)
+    *restore_bang = '!';
+  if (restore_at != NULL)
+    *restore_at = '@';
 }

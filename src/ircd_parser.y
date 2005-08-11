@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.423 2005/08/09 19:45:46 db Exp $
+ *  $Id: ircd_parser.y,v 1.424 2005/08/11 01:06:46 db Exp $
  */
 
 %{
@@ -1017,16 +1017,12 @@ oper_user: USER '=' QSTRING ';'
 
     if (yy_aconf->user == NULL)
     {
-      DupString(yy_aconf->host, yylval.string);
-      split_user_host(yy_aconf->host, &yy_aconf->user, &yy_aconf->host);
+      split_nuh(yylval.string, NULL, &yy_aconf->user, &yy_aconf->host);
     }
     else
     {
       yy_tmp = (struct CollectItem *)MyMalloc(sizeof(struct CollectItem));
-
-      DupString(yy_tmp->host, yylval.string);
-      split_user_host(yy_tmp->host, &yy_tmp->user, &yy_tmp->host);
-
+      split_nuh(yylval.string, NULL, &yy_tmp->user, &yy_tmp->host);
       dlinkAdd(yy_tmp, &yy_tmp->node, &col_conf_list);
     }
   }
@@ -1727,20 +1723,12 @@ auth_user: USER '=' QSTRING ';'
 
     if (yy_aconf->user == NULL)
     {
-      if (yylval.string != NULL)
-      {
-	DupString(yy_aconf->host, yylval.string);
-	split_user_host(yy_aconf->host, &yy_aconf->user, &yy_aconf->host);
-      }
+      split_nuh(yylval.string, NULL, &yy_aconf->user, &yy_aconf->host);
     }
     else
     {
       yy_tmp = (struct CollectItem *)MyMalloc(sizeof(struct CollectItem));
-      if (yylval.string != NULL)
-      {
-	DupString(yy_tmp->host, yylval.string);
-	split_user_host(yy_tmp->host, &yy_tmp->user, &yy_tmp->host);
-      }
+      split_nuh(yylval.string, NULL, &yy_tmp->user, &yy_tmp->host);
       dlinkAdd(yy_tmp, &yy_tmp->node, &col_conf_list);
     }
   }
@@ -2086,8 +2074,7 @@ shared_user: USER '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    DupString(yy_match_item->user, yylval.string);
-    split_user_host(yy_match_item->user, &yy_match_item->user, &yy_match_item->host);
+    split_nuh(yylval.string, NULL, &yy_match_item->user, &yy_match_item->host);
 
     /* default to *@* */
     if (yy_match_item->user == NULL)
@@ -2701,8 +2688,7 @@ kill_user: USER '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    DupString(yy_aconf->host, yylval.string);
-    split_user_host(yy_aconf->host, &yy_aconf->user, &yy_aconf->host);
+    split_nuh(yylval.string, NULL, &yy_aconf->user, &yy_aconf->host);
   }
 };
 
@@ -3519,16 +3505,12 @@ gline_user: USER '=' QSTRING ';'
 
     if (yy_aconf->user == NULL)
     {
-      DupString(yy_aconf->host, yylval.string);
-      split_user_host(yy_aconf->host, &yy_aconf->user, &yy_aconf->host);
+      split_nuh(yylval.string, NULL, &yy_aconf->user, &yy_aconf->host);
     }
     else
     {
       yy_tmp = (struct CollectItem *)MyMalloc(sizeof(struct CollectItem));
-
-      DupString(yy_tmp->host, yylval.string);
-      split_user_host(yy_tmp->host, &yy_tmp->user, &yy_tmp->host);
-
+      split_nuh(yylval.string, NULL, &yy_tmp->user, &yy_tmp->host);
       dlinkAdd(yy_tmp, &yy_tmp->node, &col_conf_list);
     }
   }
