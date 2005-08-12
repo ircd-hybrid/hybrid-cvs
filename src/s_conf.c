@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.566 2005/08/12 06:25:34 db Exp $
+ *  $Id: s_conf.c,v 7.567 2005/08/12 06:31:54 db Exp $
  */
 
 #include "stdinc.h"
@@ -3772,7 +3772,7 @@ split_nuh(char *mask, char **nick, char **user, char **host)
  * flags_to_ascii
  *
  * inputs	- flags is a bitmask
- * output	- none (via *p)
+ * output	- new p
  * side effects	- string pointed to by p has bitmap chars written to it
  */
 char *
