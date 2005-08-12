@@ -5,6 +5,7 @@ o) /rxline, a command for setting regexp X-lines
 o) Native win32 build
 o) Usermode +D - "deaf", don't receive channel messages
 
+
 --------------------------------------------------------------------------------
 
 This is a beta version of ircd-hybrid-7.2.
@@ -48,4 +49,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.109 2005/07/31 05:32:23 adx Exp $
+$Id: RELNOTES,v 1.110 2005/08/12 02:23:18 lusky Exp $
