@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.358 2005/08/07 08:48:57 michael Exp $
+ *  $Id: s_user.c,v 7.359 2005/08/12 06:25:34 db Exp $
  */
 
 #include <sys/types.h>
@@ -65,6 +65,10 @@ static void report_and_set_user_flags(struct Client *, const struct AccessItem *
 static int check_xline(struct Client *);
 static int check_regexp_xline(struct Client *);
 static void introduce_client(struct Client *, struct Client *);
+
+/* Used for building up the isupport string,
+ * used with init_isupport, add_isupport, delete_isupport
+ */
 
 struct Isupport 
 {

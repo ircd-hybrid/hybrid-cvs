@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.565 2005/08/11 13:32:21 db Exp $
+ *  $Id: s_conf.c,v 7.566 2005/08/12 06:25:34 db Exp $
  */
 
 #include "stdinc.h"
@@ -104,9 +104,9 @@ static dlink_list *map_to_list(ConfType);
 static int find_user_host(struct Client *source_p,
                           char *user_host_or_nick, char *user, char *host);
 
-/* XXX Should the parse_aline() stuff go into separate file ? - Dianora */
+char *flags_to_ascii(int flags, int bit_table[], char *p);
+
 static char *cluster(char *);
-/* XXX */
 
 FBFILE *conf_fbfile_in;
 extern char yytext[];
@@ -530,6 +530,9 @@ free_access_item(struct AccessItem *aconf)
   delete_conf_item(conf);
 }
 
+int shared_bit_table[] =
+  { 'K', 'k', 'U', 'X', 'x', 'Y', 'Q', 'q', 'R', 'L', 0};
+
 /* report_confitem_types()
  *
  * inputs	- pointer to client requesting confitem report
@@ -613,36 +616,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
        * consistency with cluster{} flags
        */
       *p++ = 'c';
-
-      if (matchitem->action & SHARED_KLINE)
-      {
-        *p++ = 'K';
-        *p++ = 'k';
-      }
-
-      if (matchitem->action & SHARED_LOCOPS)
-      {
-        *p++ = 'L';
-        *p++ = 'l';
-      }
-
-      if (matchitem->action & SHARED_RESV)
-      { 
-        *p++ = 'Q';
-        *p++ = 'q';
-        *p++ = 'R';
-      }
-
-      if (matchitem->action & SHARED_UNKLINE)
-        *p++ = 'U';
-
-      if (matchitem->action & SHARED_XLINE)
-      {
-        *p++ = 'X';
-        *p++ = 'x';
-        *p++ = 'Y';
-      }
-
+      p = flags_to_ascii(matchitem->action, shared_bit_table, p);
       *p = '\0';
 
       sendto_one(source_p, form_str(RPL_STATSULINE),
@@ -658,36 +632,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
       p = buf;
 
       *p++ = 'C';
-
-      if (conf->flags & SHARED_KLINE)
-      {
-        *p++ = 'K';
-        *p++ = 'k';
-      }
-
-      if (conf->flags & SHARED_LOCOPS)
-        *p++ = 'L';
-
-      if (conf->flags & SHARED_RESV)
-      {
-	*p++ = 'Q';
-	*p++ = 'q';
-      }
-      if (conf->flags & SHARED_UNRESV)
-        *p++ = 'R';
-
-      if (conf->flags & SHARED_UNKLINE)
-        *p++ = 'U';
-
-      if (conf->flags & SHARED_XLINE)
-      {
-        *p++ = 'X';
-        *p++ = 'x';
-      }
-
-      if (conf->flags & SHARED_UNXLINE)
-        *p++ = 'Y';
-
+      p = flags_to_ascii(conf->flags, shared_bit_table, p);
       *p = '\0';
 
       sendto_one(source_p, form_str(RPL_STATSULINE),
@@ -3821,4 +3766,25 @@ split_nuh(char *mask, char **nick, char **user, char **host)
     *restore_bang = '!';
   if (restore_at != NULL)
     *restore_at = '@';
+}
+
+/*
+ * flags_to_ascii
+ *
+ * inputs	- flags is a bitmask
+ * output	- none (via *p)
+ * side effects	- string pointed to by p has bitmap chars written to it
+ */
+char *
+flags_to_ascii(int flags, int bit_table[], char *p)
+{
+  int mask=1;
+  int i=0;
+
+  for (mask = 1; (mask != 0) && (bit_table[i] != 0); mask <<= 1, i++)
+  {
+    if (flags & mask)
+      *p++ = bit_table[i];
+  }
+  return(p);
 }
