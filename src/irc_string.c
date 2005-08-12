@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.71 2005/07/29 21:14:17 michael Exp $
+ *  $Id: irc_string.c,v 7.72 2005/08/12 19:53:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -42,6 +42,17 @@
 #define INT16SZ 2
 #endif
 
+
+char *
+xstrldup(const char *s, size_t n)
+{
+  size_t len = strlen(s) + 1;
+  char *p = NULL;
+
+  if (len > n)
+    len = n;
+  return strlcpy((p = malloc(len)), s, len), p;
+}
 
 /*
  * myctime - This is like standard ctime()-function, but it zaps away

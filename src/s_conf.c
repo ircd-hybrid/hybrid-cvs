@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.567 2005/08/12 06:31:54 db Exp $
+ *  $Id: s_conf.c,v 7.568 2005/08/12 19:53:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -3675,6 +3675,7 @@ cluster_a_line(struct Client *source_p, const char *command,
  * ----------------------	------- ------- ------
  * Dianora!db@db.net		Dianora	db	db.net
  * Dianora			Dianora	*	*
+ * db.net                       *       *       db.net
  * OR if nick pointer is NULL
  * Dianora			-	*	Dianora
  * Dianora!			Dianora	*	*
@@ -3690,42 +3691,40 @@ cluster_a_line(struct Client *source_p, const char *command,
 void
 split_nuh(char *mask, char **nick, char **user, char **host)
 {
-  char *p, *q;
-  char *restore_bang=NULL;
-  char *restore_at= NULL;
+  char *p = NULL, *q = NULL;
 
   if ((p = strchr(mask, '!')) != NULL)
   {
-    restore_bang = p;
     *p = '\0';
     if (nick != NULL)
     {
       if (*mask != '\0')
-	DupString(*nick, mask);
+	*nick = xstrldup(mask, NICKLEN);
       else
 	DupString(*nick, "*");
     }
-    p++;
-    if ((q = strchr(p, '@')) != NULL)
+
+    if ((q = strchr(++p, '@')) != NULL)
     {
-      restore_at = q;
       *q = '\0';
+
       if (*p != '\0')
-	DupString(*user, p);
+	*user = xstrldup(p, USERLEN+1);
       else
 	DupString(*user, "*");
-      q++;
-      if (*q != '\0')
-	DupString(*host, q);
+
+      if (*++q != '\0')
+	*host = xstrldup(q, HOSTLEN+1);
       else
 	DupString(*host, "*");
     }
     else
     {
       if (*p != '\0')
-	DupString(*user, p);
+	*user = xstrldup(p, USERLEN+1);
       else
 	DupString(*user, "*");
+
       DupString(*host, "*");
     }
   }
@@ -3735,15 +3734,15 @@ split_nuh(char *mask, char **nick, char **user, char **host)
     {
       if (nick != NULL)
 	DupString(*nick, "*");
-      restore_at = p;
       *p = '\0';
+
       if (*mask != '\0')
-	DupString(*user, mask);
+	*user = xstrldup(mask, USERLEN+1);
       else
 	DupString(*user, "*");
-      p++;
-      if (*p != '\0')
-	DupString(*host, p);
+
+      if (*++p != '\0')
+	*host = xstrldup(p, HOSTLEN+1);
       else
 	DupString(*host, "*");
     }
@@ -3751,21 +3750,26 @@ split_nuh(char *mask, char **nick, char **user, char **host)
     {
       if (nick != NULL)
       {
-        DupString(*nick, mask);
+        if (strpbrk(mask, ".:"))
+        {
+          DupString(*nick, "*");
+          *host = xstrldup(mask, HOSTLEN+1);
+        }
+        else
+        {
+          *nick = xstrldup(mask, NICKLEN);
+          DupString(*host, "*");
+        }
+
         DupString(*user, "*");
-        DupString(*host, "*");
       }
       else
       {
         DupString(*user, "*");
-        DupString(*host, mask);
+        *host = xstrldup(mask, HOSTLEN+1);
       }
     }
   }
-  if (restore_bang != NULL)
-    *restore_bang = '!';
-  if (restore_at != NULL)
-    *restore_at = '@';
 }
 
 /*
@@ -3778,13 +3782,12 @@ split_nuh(char *mask, char **nick, char **user, char **host)
 char *
 flags_to_ascii(int flags, int bit_table[], char *p)
 {
-  int mask=1;
-  int i=0;
+  int mask = 1;
+  int i = 0;
 
   for (mask = 1; (mask != 0) && (bit_table[i] != 0); mask <<= 1, i++)
-  {
     if (flags & mask)
       *p++ = bit_table[i];
-  }
-  return(p);
+
+  return p;
 }
