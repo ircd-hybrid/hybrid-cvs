@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.359 2005/08/12 06:25:34 db Exp $
+ *  $Id: s_user.c,v 7.360 2005/08/13 01:50:43 db Exp $
  */
 
 #include <sys/types.h>
@@ -302,7 +302,6 @@ register_local_user(struct Client *client_p, struct Client *source_p,
                     const char *nick, const char *username)
 {
   const struct AccessItem *aconf = NULL;
-  const char *id = NULL;
   char ipaddr[HOSTIPLEN];
   int status;
   dlink_node *ptr;
@@ -440,10 +439,6 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   if (IsDead(client_p))
     return;
 
-  while (hash_find_id((id = uid_get())))
-    ;
-
-  strlcpy(source_p->id, id, sizeof(source_p->id));
   hash_add_id(source_p);
 
   hd.client_p = client_p;

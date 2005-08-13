@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.150 2005/07/28 16:26:39 adx Exp $
+ *  $Id: s_auth.c,v 7.151 2005/08/13 01:50:43 db Exp $
  */
 
 /*
@@ -378,7 +378,11 @@ GetValidIdent(char *buf)
 }
 
 /*
- * start_auth - starts auth (identd) and dns queries for a client
+ * start_auth 
+ *
+ * inputs	- pointer to client to auth
+ * output	- NONE
+ * side effects	- starts auth (identd) and dns queries for a client
  */
 void
 start_auth(struct Client *client)

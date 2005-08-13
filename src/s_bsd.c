@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.237 2005/08/10 15:48:39 adx Exp $
+ *  $Id: s_bsd.c,v 7.238 2005/08/13 01:50:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -51,6 +51,8 @@
 #include "s_stats.h"
 #include "send.h"
 #include "memory.h"
+#include "hash.h"
+#include "s_user.h"
 
 #ifndef IN_LOOPBACKNET
 #define IN_LOOPBACKNET        0x7f
@@ -359,12 +361,14 @@ ssl_handshake(int fd, struct Client *client_p)
 /*
  * add_connection - creates a client which has just connected to us on 
  * the given fd. The sockhost field is initialized with the ip# of the host.
+ * An unique id is calculated now, in case it is needed for auth.
  * The client is sent to the auth module for verification, and not put in
  * any client list yet.
  */
 void
 add_connection(struct Listener* listener, int fd)
 {
+  const char *id = NULL;
   struct Client *new_client;
   socklen_t len = sizeof(struct irc_ssaddr);
   struct irc_ssaddr irn;
@@ -432,6 +436,12 @@ add_connection(struct Listener* listener, int fd)
   set_no_delay(fd);
   if (!disable_sock_options(fd))
     report_error(L_ALL, OPT_ERROR_MSG, get_client_name(new_client, SHOW_IP), errno);
+
+  /* Get an UID early so there is an unique ID for async lookups */
+  while (hash_find_id((id = uid_get())))
+    ;
+
+  strlcpy(new_client->id, id, sizeof(new_client->id));
 
 #ifdef HAVE_LIBCRYPTO
   if ((listener->flags & LISTENER_SSL))

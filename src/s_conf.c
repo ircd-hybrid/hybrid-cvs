@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.568 2005/08/12 19:53:38 michael Exp $
+ *  $Id: s_conf.c,v 7.569 2005/08/13 01:50:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -3666,8 +3666,7 @@ cluster_a_line(struct Client *source_p, const char *command,
  *		- pointer to pointer where user should go
  *		- pointer to pointer where host should go
  * output	- NONE
- * side effects	- mask is modified in place, but restored, so must
- *		  be writable.
+ * side effects	- mask is modified in place
  *		  If nick pointer is NULL, ignore writing to it
  *		  this allows us to use this function elsewhere.
  *
