@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.47 2005/08/11 13:32:18 db Exp $
+ *  $Id: m_resv.c,v 1.48 2005/08/13 15:38:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 
 /* mo_resv()
@@ -93,7 +93,7 @@ mo_resv(struct Client *client_p, struct Client *source_p,
    * RESV kiddie ON irc.server.com :abuse
    */
   if (parse_aline("RESV", source_p, parc, parv,
-		  &resv, NULL, &tkline_time, &target_server, &reason) < 0)
+		  AWILD, &resv, NULL, &tkline_time, &target_server, &reason) < 0)
     return;
 
   if (target_server != NULL)
@@ -195,7 +195,7 @@ mo_unresv(struct Client *client_p, struct Client *source_p,
   /* UNRESV #channel ON irc.server.com */
   /* UNRESV kiddie ON irc.server.com */
   if (parse_aline("UNRESV", source_p, parc, parv,
-		  &resv, NULL, NULL, &target_server, &reason) < 0)
+		  0, &resv, NULL, NULL, &target_server, &reason) < 0)
     return;
 
   if (target_server != NULL)

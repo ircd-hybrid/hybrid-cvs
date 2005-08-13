@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.206 2005/08/11 13:32:18 db Exp $
+ *  $Id: m_kline.c,v 1.207 2005/08/13 15:38:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -107,7 +107,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.206 $";
+const char *_version = "$Revision: 1.207 $";
 #endif
 
 /* Local function prototypes */
@@ -149,7 +149,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   }
 
   if (parse_aline("KLINE", source_p, parc, parv,
-		  &user, &host, &tkline_time, &target_server, &reason) < 0)
+		  AWILD, &user, &host, &tkline_time, &target_server, &reason) < 0)
     return;
 
   if (target_server != NULL)
@@ -408,7 +408,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   }
 
   if (parse_aline("DLINE", source_p,  parc, parv,
-		  &dlhost, NULL, &tkline_time, NULL, &reason) < 0)
+		  AWILD, &dlhost, NULL, &tkline_time, NULL, &reason) < 0)
     return;
 
   if ((t = parse_netmask(dlhost, NULL, &bits)) == HM_HOST)
@@ -639,7 +639,7 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
   }
 
   if (parse_aline("UNKLINE", source_p, parc, parv,
-		  &user, &host, NULL, &target_server, NULL) < 0)
+		  0, &user, &host, NULL, &target_server, NULL) < 0)
     return;
 
   if (target_server != NULL)

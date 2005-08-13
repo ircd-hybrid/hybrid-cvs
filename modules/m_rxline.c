@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rxline.c,v 1.17 2005/08/11 13:32:18 db Exp $
+ *  $Id: m_rxline.c,v 1.18 2005/08/13 15:38:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unrxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.17 $";
+const char *_version = "$Revision: 1.18 $";
 #endif
 
 
@@ -115,7 +115,7 @@ mo_rxline(struct Client *client_p, struct Client *source_p,
   }
 
   if (parse_aline("RXLINE", source_p, parc, parv,
-		  &gecos, NULL, &tkline_time, NULL, &reason) < 0)
+		  AWILD, &gecos, NULL, &tkline_time, NULL, &reason) < 0)
     return;
 
   if (target_server != NULL)
@@ -219,7 +219,7 @@ mo_unrxline(struct Client *client_p, struct Client *source_p,
   }
 
   if (parse_aline("UNRXLINE", source_p, parc, parv, 
-		  &gecos, NULL, NULL, &target_server, NULL) < 0)
+		  0, &gecos, NULL, NULL, &target_server, NULL) < 0)
     return;
 
   if (target_server != NULL)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.67 2005/08/11 13:32:18 db Exp $
+ *  $Id: m_xline.c,v 1.68 2005/08/13 15:38:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -88,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.67 $";
+const char *_version = "$Revision: 1.68 $";
 #endif
 
 
@@ -125,7 +125,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
    * XLINE <gecos> ON <mask> :<reason>
    */
   if (parse_aline("XLINE", source_p, parc, parv,
-		  &gecos, NULL, &tkline_time, &target_server, &reason) < 0)
+		  AWILD, &gecos, NULL, &tkline_time, &target_server, &reason) < 0)
     return;
 
   if (target_server != NULL)
@@ -288,7 +288,7 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
 
   /* UNXLINE bill ON irc.server.com */
   if (parse_aline("UNXLINE", source_p, parc, parv,
-		  &gecos, NULL, NULL, &target_server, NULL) < 0)
+		  0, &gecos, NULL, NULL, &target_server, NULL) < 0)
     return;
 
   if (target_server != NULL)

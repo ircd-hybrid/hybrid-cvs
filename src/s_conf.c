@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.569 2005/08/13 01:50:43 db Exp $
+ *  $Id: s_conf.c,v 7.570 2005/08/13 15:38:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -3217,6 +3217,7 @@ valid_wild_card(struct Client *source_p, int warn, int count, ...)
  *              - pointer to client using cmd
  *              - parc parameter count
  *              - parv[] list of parameters to parse
+ *		- parse_flags bit map of things to test
  *		- pointer to user or string to parse into
  *              - pointer to host or NULL to parse into if non NULL
  *              - pointer to optional tkline time or NULL 
@@ -3242,7 +3243,7 @@ valid_wild_card(struct Client *source_p, int warn, int count, ...)
 int
 parse_aline(const char *cmd, struct Client *source_p,
 	    int parc, char **parv,
-	    char **up_p, char **h_p, time_t *tkline_time, 
+	    int parse_flags, char **up_p, char **h_p, time_t *tkline_time, 
 	    char **target_server, char **reason)
 {
   int found_tkline_time=0;
@@ -3343,11 +3344,11 @@ parse_aline(const char *cmd, struct Client *source_p,
                  me.name, source_p->name);
       return(-1);
     }
-    if (!valid_wild_card(source_p, YES, 2, *up_p, *h_p))
+    if ((parse_flags & AWILD) && !valid_wild_card(source_p, YES, 2, *up_p, *h_p))
       return(-1);
   }
   else
-    if (!valid_wild_card(source_p, YES, 1, *up_p))
+    if ((parse_flags & AWILD) && !valid_wild_card(source_p, YES, 1, *up_p))
       return(-1);
 
   if (reason != NULL)
