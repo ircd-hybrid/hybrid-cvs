@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.238 2005/08/13 01:50:43 db Exp $
+ *  $Id: s_bsd.c,v 7.239 2005/08/13 05:15:19 db Exp $
  */
 
 #include "stdinc.h"
@@ -53,6 +53,7 @@
 #include "memory.h"
 #include "hash.h"
 #include "s_user.h"
+#include "hook.h"
 
 #ifndef IN_LOOPBACKNET
 #define IN_LOOPBACKNET        0x7f
@@ -335,6 +336,7 @@ static void
 ssl_handshake(int fd, struct Client *client_p)
 {
   int ret = SSL_accept(client_p->localClient->fd.ssl);
+  struct hook_auth_data hdata;
 
   if (ret <= 0)
     switch (SSL_get_error(client_p->localClient->fd.ssl, ret))
@@ -354,7 +356,11 @@ ssl_handshake(int fd, struct Client *client_p)
 	return;
     }
 
-  start_auth(client_p);
+  hdata.client = client_p;
+  hdata.callback = auth_callback_local_user;
+
+  if (hook_call_event("start_auth", &hdata) < 0)
+    start_auth(client_p);
 }
 #endif
 
@@ -372,6 +378,7 @@ add_connection(struct Listener* listener, int fd)
   struct Client *new_client;
   socklen_t len = sizeof(struct irc_ssaddr);
   struct irc_ssaddr irn;
+  struct hook_auth_data hdata;
   assert(NULL != listener);
 
   /* 
@@ -461,7 +468,13 @@ add_connection(struct Listener* listener, int fd)
   }
   else
 #endif
-    start_auth(new_client);
+    {
+      hdata.client = new_client;
+      hdata.callback = auth_callback_local_user;
+
+      if (hook_call_event("start_auth", &hdata) < 0)
+	start_auth(new_client);
+    }
 }
 
 /*

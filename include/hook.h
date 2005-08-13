@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.h,v 1.17 2003/04/14 06:42:49 michael Exp $
+ *  $Id: hook.h,v 1.18 2005/08/13 05:15:19 db Exp $
  */
 
 #ifndef __HOOK_H_INCLUDED
@@ -79,10 +79,18 @@ struct hook_io_data
   unsigned int len;
 };
 
-struct hook_burst_channel
+/* hook with AUTH_CALLBACK to call after start_auth() hook is called
+ * when our auth is finished, AUTH_CALLBACK() will be called
+ * struct Client * should be filled in with DNS, authd etc.as normal
+ * int should be 1 to allow -1 to exit this client
+ * const char * reason to exit client.
+ */
+typedef void AUTH_CALLBACK(struct Client *, int allow, const char *reason);
+
+struct hook_auth_data
 {
   struct Client *client;
-  struct Channel *chptr;
+  AUTH_CALLBACK *callback;
 };
 
 extern int hook_add_event(const char *);
