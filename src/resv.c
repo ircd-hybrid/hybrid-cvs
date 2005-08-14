@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.37 2005/08/10 03:57:57 db Exp $
+ *  $Id: resv.c,v 7.38 2005/08/14 07:26:45 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,14 +57,14 @@ create_channel_resv(char *name, char *reason, int in_conf)
   if (name == NULL || reason == NULL)
     return NULL;
 
-  if (find_channel_resv(name))
+  if (hash_find_resv(name))
     return NULL;
 
   if (strlen(reason) > TOPICLEN)
     reason[TOPICLEN] = '\0';
 
   conf = make_conf_item(CRESV_TYPE);
-  resv_p = (struct ResvChannel *)map_to_conf(conf);
+  resv_p = map_to_conf(conf);
 
   strlcpy(resv_p->name, name, sizeof(resv_p->name));
   DupString(resv_p->reason, reason);
@@ -153,23 +153,6 @@ delete_channel_resv(struct ResvChannel *resv_p)
   return 1;
 }
 
-/* find_channel_resv()
- *
- * inputs	- pointer to channel resv to find
- * output	- 1 if found, 0 if not.
- * side effects	- NONE
- */
-int
-find_channel_resv(const char *name)
-{
-  struct ResvChannel *resv_p;
-
-  if ((resv_p = hash_find_resv(name)) != NULL)
-    return 1;
-
-  return 0;
-}
-
 /* match_find_resv()
  *
  * inputs       - pointer to name
@@ -182,7 +165,7 @@ match_find_resv(const char *name)
 {
   dlink_node *ptr = NULL;
 
-  if (!*name)
+  if (EmptyString(name))
     return 0;
 
   DLINK_FOREACH(ptr, resv_channel_list.head)
@@ -222,48 +205,13 @@ report_resv(struct Client *source_p)
   DLINK_FOREACH(ptr, nresv_items.head)
   {
     conf = ptr->data;
-    resv_np = (struct MatchItem *)map_to_conf(conf);
+    resv_np = map_to_conf(conf);
 
     sendto_one(source_p, form_str(RPL_STATSQLINE),
                me.name, source_p->name,
 	       resv_np->action ? 'Q' : 'q',
 	       conf->name, resv_np->reason);
   }
-}
-
-/* clean_resv_nick()
- *
- * inputs	- pointer to nick to clean
- * output	- NONE
- * side effects	- nick is modified in place
- */
-int
-clean_resv_nick(char *nick)
-{
-  char tmpch;
-  int as = 0;
-  int q  = 0;
-  int ch = 0;
-
-  if (*nick == '-' || IsDigit(*nick))
-    return 0;
-
-  while ((tmpch = *nick++))
-  {
-    if (tmpch == '?')
-      q++;
-    else if (tmpch == '*')
-      as++;
-    else if (IsNickChar(tmpch))
-      ch++;
-    else
-      return 0;
-  }
-
-  if (!ch && as)
-    return 0;
-
-  return 1;
 }
 
 /* valid_wild_card_simple()
@@ -273,9 +221,10 @@ clean_resv_nick(char *nick)
  * side effects	- none
  */
 int
-valid_wild_card_simple(char *data)
+valid_wild_card_simple(const char *data)
 {
-  char *p = data, tmpch;
+  const char *p = data;
+  char tmpch = '\0';
   int nonwild = 0;
 
   while ((tmpch = *p++))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.28 2005/07/31 05:32:38 adx Exp $
+ *  $Id: m_join.c,v 1.29 2005/08/14 07:26:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -29,7 +29,6 @@
 #include "channel_mode.h"
 #include "client.h"
 #include "common.h"   /* bleah */
-#include "resv.h"
 #include "hash.h"
 #include "irc_string.h"
 #include "sprintf_irc.h"
@@ -50,6 +49,7 @@ struct entity
   char *key;
   int flags;
 };
+
 static struct entity targets[512];
 static int ntargets, join_0;
 
@@ -88,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 
 /* m_join()
@@ -497,7 +497,7 @@ build_target_list(struct Client *client_p, struct Client *source_p,
       continue;
     }
 
-    if (find_channel_resv(chan) && !IsExemptResv(source_p) &&
+    if (hash_find_resv(chan) && !IsExemptResv(source_p) &&
         (!IsOper(source_p) && ConfigFileEntry.oper_pass_resv))
     {
       sendto_one(source_p, form_str(ERR_BADCHANNAME),

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.43 2005/07/09 14:24:17 joant Exp $
+ * $Id: match.c,v 7.44 2005/08/14 07:26:45 michael Exp $
  *
  */
 
@@ -525,7 +525,7 @@ const unsigned int CharAttrs[] = {
 /* 7 */      PRINT_C|DIGIT_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,
 /* 8 */      PRINT_C|DIGIT_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,
 /* 9 */      PRINT_C|DIGIT_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,
-/* : */      PRINT_C|CHAN_C|NONEOS_C|HOST_C,
+/* : */      PRINT_C|KWILD_C|CHAN_C|NONEOS_C|HOST_C,
 /* ; */      PRINT_C|CHAN_C|NONEOS_C,
 /* < */      PRINT_C|CHAN_C|NONEOS_C,
 /* = */      PRINT_C|CHAN_C|NONEOS_C,

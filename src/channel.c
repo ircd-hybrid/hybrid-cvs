@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.441 2005/07/28 03:07:42 adx Exp $
+ * \version $Id: channel.c,v 7.442 2005/08/14 07:26:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -43,7 +43,6 @@
 #include "event.h"
 #include "memory.h"
 #include "balloc.h"
-#include "resv.h"
 
 struct config_channel_entry ConfigChannel;
 dlink_list global_channel_list = { NULL, NULL, 0 };
@@ -678,7 +677,7 @@ can_send(struct Channel *chptr, struct Client *source_p)
   if (IsServer(source_p))
     return(CAN_SEND_OPV);
 
-  if (MyClient(source_p) && (find_channel_resv(chptr->chname) &&
+  if (MyClient(source_p) && (hash_find_resv(chptr->chname) &&
       !IsExemptResv(source_p) &&
       !(IsOper(source_p)) && ConfigFileEntry.oper_pass_resv))
     return(CAN_SEND_NO);
