@@ -1,9 +1,15 @@
-$Id: README.cloaking,v 1.1 2005/08/15 17:07:24 knight Exp $
+$Id: README.cloaking,v 1.2 2005/08/15 17:40:28 knight Exp $
 
 This README covers IP cloaking and how it works. Once you have applied
 the patch and built ircd-hybrid, you will also need to build the
 contrib module m_change.c. Once you have built the module and installed
 it please put the following line in your ircd.conf so it always loads:
+
+It should also be noted that before you build ircd-hybrid it is *strongly*
+recommended that you edit src/cloak.c and modify the #defines for KEY, KEY2
+and KEY3 to use different numbers. These should however match *all* servers
+to prevent confusion and possible problems. A good source to get randomised
+numbers is the ${RANDOM} variable through bash by doing echo ${RANDOM}.
 
 modules = "m_change.so";
 
