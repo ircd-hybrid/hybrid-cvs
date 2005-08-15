@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.461 2005/07/30 20:44:19 adx Exp $
+ *  $Id: client.c,v 7.462 2005/08/15 11:45:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1003,12 +1003,12 @@ exit_client(struct Client *source_p, struct Client *from, const char *comment)
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "%s was connected for %d seconds.  %llu/%llu sendK/recvK.",
                            source_p->name, (int)(CurrentTime - source_p->firsttime),
-                           source_p->localClient->send.bytes >> 10,
-                           source_p->localClient->recv.bytes >> 10);
+                           (unsigned long long)(source_p->localClient->send.bytes >> 10),
+                           (unsigned long long)(source_p->localClient->recv.bytes >> 10));
       ilog(L_NOTICE, "%s was connected for %d seconds.  %llu/%llu sendK/recvK.",
            source_p->name, (int)(CurrentTime - source_p->firsttime), 
-           source_p->localClient->send.bytes >> 10,
-           source_p->localClient->recv.bytes >> 10);
+           (unsigned long long)(source_p->localClient->send.bytes >> 10),
+           (unsigned long long)(source_p->localClient->recv.bytes >> 10));
     }
   }
   else if (IsClient(source_p) && !IsKilled(source_p))

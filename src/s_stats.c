@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_stats.c,v 7.29 2005/05/30 13:19:13 michael Exp $
+ *  $Id: s_stats.c,v 7.30 2005/08/15 11:45:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -109,10 +109,12 @@ tstats(struct Client *source_p)
              (unsigned int)sp->is_sv);
   sendto_one(source_p, ":%s %d %s T :bytes sent %llu %llu",
              me.name, RPL_STATSDEBUG, source_p->name,
-             sp->is_cbs, sp->is_sbs);
+             (unsigned long long)sp->is_cbs,
+             (unsigned long long)sp->is_sbs);
   sendto_one(source_p, ":%s %d %s T :bytes recv %llu %llu",
              me.name, RPL_STATSDEBUG, source_p->name,
-             sp->is_cbr, sp->is_sbr);
+             (unsigned long long)sp->is_cbr,
+             (unsigned long long)sp->is_sbr);
   sendto_one(source_p, ":%s %d %s T :time connected %u %u",
              me.name, RPL_STATSDEBUG, source_p->name,
              (unsigned int)sp->is_cti,

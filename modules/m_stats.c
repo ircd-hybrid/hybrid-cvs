@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.177 2005/08/04 23:53:43 metalrock Exp $
+ *  $Id: m_stats.c,v 1.178 2005/08/15 11:45:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.177 $";
+const char *_version = "$Revision: 1.178 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -1256,9 +1256,9 @@ stats_servlinks(struct Client *source_p)
                get_client_name(target_p, IsAdmin(source_p) ? SHOW_IP : MASK_IP),
                dbuf_length(&target_p->localClient->buf_sendq),
                target_p->localClient->send.messages,
-               target_p->localClient->send.bytes>>10,
+               (unsigned long long)(target_p->localClient->send.bytes>>10),
                target_p->localClient->recv.messages,
-               target_p->localClient->recv.bytes>>10,
+               (unsigned long long)(target_p->localClient->recv.bytes>>10),
                (unsigned)(CurrentTime - target_p->firsttime),
                (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since): 0,
                IsOper(source_p) ? show_capabilities(target_p) : "TS");
