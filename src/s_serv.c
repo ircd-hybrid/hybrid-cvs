@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.431 2005/08/04 10:14:47 michael Exp $
+ *  $Id: s_serv.c,v 7.432 2005/08/15 21:20:11 db Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,6 @@
 #include "send.h"
 #include "memory.h"
 #include "channel.h" /* chcap_usage_counts stuff...*/
-#include "hook.h"
 
 #define MIN_CONN_FREQ 300
 
@@ -1632,7 +1631,8 @@ burst_all(struct Client *client_p)
  * inputs	- pointer to Client
  *		- pointer to channel
  * output	- NONE
- * side effects	- called when hooked by a burst_channel
+ * side effects	- Called on a server burst when 
+ *                server is CAP_TB capable
  */
 static void
 send_tb(struct Client *client_p, struct Channel *chptr)
