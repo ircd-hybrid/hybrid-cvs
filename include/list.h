@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.h,v 7.24 2005/07/18 13:30:15 michael Exp $
+ *  $Id: list.h,v 7.25 2005/08/15 20:50:01 adx Exp $
  */
 
 #ifndef INCLUDED_list_h
@@ -28,4 +28,5 @@
 extern void init_dlink_nodes(void);
 extern void free_dlink_node(dlink_node *);
 extern dlink_node *make_dlink_node(void);
+
 #endif

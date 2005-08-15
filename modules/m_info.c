@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.93 2005/06/29 23:42:34 metalrock Exp $
+ *  $Id: m_info.c,v 1.94 2005/08/15 20:50:02 adx Exp $
  */
 
 #include "stdinc.h"
@@ -44,8 +44,7 @@
 
 static void send_conf_options(struct Client *);
 static void send_birthdate_online_time(struct Client *);
-static void send_info_text(struct Client *);
-static void info_spy(struct Client *);
+static void *send_info_text(va_list);
 
 static void m_info(struct Client *, struct Client *, int, char **);
 static void ms_info(struct Client *, struct Client *, int, char **);
@@ -57,21 +56,22 @@ struct Message info_msgtab = {
 };
 
 #ifndef STATIC_MODULES
+const char *_version = "$Revision: 1.94 $";
+static struct Callback *info_cb;
+
 void
 _modinit(void)
 {
-  hook_add_event("doing_info");
+  info_cb = register_callback("doing_info", send_info_text);
   mod_add_cmd(&info_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
+  uninstall_hook(info_cb, send_info_text);
 }
-
-const char *_version = "$Revision: 1.93 $";
 #endif
 
 /*
@@ -513,13 +513,17 @@ m_info(struct Client *client_p, struct Client *source_p,
     }
   }
 
-  info_spy(source_p);
+#ifdef STATIC_MODULES
+  {
+    va_list args;
 
-  send_info_text(source_p);
-  send_birthdate_online_time(source_p);
-
-  sendto_one(source_p, form_str(RPL_ENDOFINFO),
-             me.name, source_p->name);
+    va_start(args, client_p);
+    send_info_text(args);
+    va_end(args);
+  }
+#else
+  execute_callback(info_cb, source_p, parc, parv);
+#endif
 }
 
 /*
@@ -535,14 +539,17 @@ mo_info(struct Client *client_p, struct Client *source_p,
                   parc, parv) != HUNTED_ISME)
     return;
 
-  info_spy(source_p);
-  
-  send_info_text(source_p);
-  send_conf_options(source_p);
-  send_birthdate_online_time(source_p);
+#ifdef STATIC_MODULES
+  {
+    va_list args;
 
-  sendto_one(source_p, form_str(RPL_ENDOFINFO),
-             me.name, source_p->name);
+    va_start(args, client_p);
+    send_info_text(args);
+    va_end(args);
+  }
+#else
+  execute_callback(info_cb, source_p, parc, parv);
+#endif
 }
 
 /*
@@ -561,15 +568,17 @@ ms_info(struct Client *client_p, struct Client *source_p,
                   1, parc, parv) != HUNTED_ISME)
     return;
 
-  info_spy(source_p);
-  send_info_text(source_p); 
+#ifdef STATIC_MODULES
+  {
+    va_list args;
 
-  if (IsOper(source_p))
-    send_conf_options(source_p);
-      
-  send_birthdate_online_time(source_p);
-  sendto_one(source_p, form_str(RPL_ENDOFINFO),
-             ID_or_name(&me, client_p), ID_or_name(source_p, client_p));
+    va_start(args, client_p);
+    send_info_text(args);
+    va_end(args);
+  }
+#else
+  execute_callback(info_cb, source_p, parc, parv);
+#endif
 }
 
 /* send_info_text()
@@ -578,9 +587,10 @@ ms_info(struct Client *client_p, struct Client *source_p,
  * output	- NONE
  * side effects	- info text is sent to client
  */
-static void
-send_info_text(struct Client *source_p)
+static void *
+send_info_text(va_list args)
 {
+  struct Client *source_p = va_arg(args, struct Client *);
   const char **text = infotext;
   char *source, *target;
   
@@ -600,6 +610,15 @@ send_info_text(struct Client *source_p)
     sendto_one(source_p, form_str(RPL_INFO),
                source, target, line);
   }
+
+  if (IsOper(source_p))
+    send_conf_options(source_p);
+
+  send_birthdate_online_time(source_p);
+
+  sendto_one(source_p, form_str(RPL_ENDOFINFO),
+             me.name, source_p->name);
+  return NULL;
 }
 
 /* send_birthdate_online_time()
@@ -645,8 +664,6 @@ send_conf_options(struct Client *source_p)
   Info *infoptr;
   int i = 0;
   const char *from, *to;
-
-  
 
   /* Now send them a list of all our configuration options
    * (mostly from defaults.h and setup.h)
@@ -760,20 +777,4 @@ send_conf_options(struct Client *source_p)
 #endif
   sendto_one(source_p, form_str(RPL_INFO),
              from, to, "");
-}
-
-/* info_spy()
- * 
- * input        - pointer to client
- * output       - NONE
- * side effects - hook doing_info is called
- */
-static void
-info_spy(struct Client *source_p)
-{
-  struct hook_spy_data data;
-
-  data.source_p = source_p;
-
-  hook_call_event("doing_info", &data);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.h,v 1.18 2005/08/13 05:15:19 db Exp $
+ *  $Id: hook.h,v 1.19 2005/08/15 20:50:01 adx Exp $
  */
 
 #ifndef __HOOK_H_INCLUDED
@@ -27,76 +27,23 @@
 
 #include "tools.h"
 
+typedef void *CBFUNC(va_list);
 
-typedef struct
-{
-  char *name;
-  dlink_list hooks;
-} hook;
-
-/* we don't define the arguments to hookfn, because
- * they can vary between different hooks
- */
-typedef int (*hookfn)(void *data);
-
-/* this is used when a hook is called by an m_function
- * stand data you'd need in that situation
- */
-struct hook_mfunc_data 
-{
-  struct Client *client_p;
-  struct Client *source_p;
-  int parc;
-  char **parv;
+struct Callback {
+  const char *name;
+  dlink_list chain;
+  dlink_node node;
 };
 
-struct hook_stats_data 
-{
-  struct Client *source_p;
-  char statchar;
-  char *name;
-};
+extern dlink_list callback_list;  /* listing/debugging purposes */
 
-struct hook_links_data
-{
-  struct Client *client_p;
-  struct Client *source_p;
-  int parc;
-  char **parv;
-  const char statchar;
-  const char *mask;
-};
+struct Callback *register_callback(const char *, CBFUNC *);
+void *execute_callback(struct Callback *, ...);
+struct Callback *find_callback(const char *);
+dlink_node *install_hook(struct Callback *, CBFUNC *);
+void uninstall_hook(struct Callback *, CBFUNC *);
 
-struct hook_spy_data
-{
-  struct Client *source_p;
-};
+#define is_callback_present(c) (!!dlink_list_length(&c->chain))
+#define pass_callback(d,p) (d->next ? ((CBFUNC *) d->next->data)(p) : NULL)
 
-struct hook_io_data
-{
-  struct Client *connection;
-  char *data;
-  unsigned int len;
-};
-
-/* hook with AUTH_CALLBACK to call after start_auth() hook is called
- * when our auth is finished, AUTH_CALLBACK() will be called
- * struct Client * should be filled in with DNS, authd etc.as normal
- * int should be 1 to allow -1 to exit this client
- * const char * reason to exit client.
- */
-typedef void AUTH_CALLBACK(struct Client *, int allow, const char *reason);
-
-struct hook_auth_data
-{
-  struct Client *client;
-  AUTH_CALLBACK *callback;
-};
-
-extern int hook_add_event(const char *);
-extern int hook_add_hook(const char *, hookfn *);
-extern int hook_call_event(const char *, void *);
-extern int hook_del_event(const char *);
-extern int hook_del_hook(const char *event, hookfn *fn);
-extern void init_hooks(void);
 #endif

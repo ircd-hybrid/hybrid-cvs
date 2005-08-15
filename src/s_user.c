@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.364 2005/08/15 18:08:26 adx Exp $
+ *  $Id: s_user.c,v 7.365 2005/08/15 20:50:02 adx Exp $
  */
 
 #include <sys/types.h>
@@ -272,10 +272,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 {
   const struct AccessItem *aconf = NULL;
   char ipaddr[HOSTIPLEN];
-  int status;
   dlink_node *ptr;
   dlink_node *m;
-  struct hook_mfunc_data hd;
 
   assert(source_p != NULL);
   assert(MyConnect(source_p));
@@ -301,7 +299,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   /* Straight up the maximum rate of flooding... */
   source_p->localClient->allow_read = MAX_FLOOD_BURST;
 
-  if ((status = check_client(client_p, source_p, username)) < 0)
+  if (!execute_callback(client_check_cb, source_p, username))
     return;
 
   if (valid_hostname(source_p->host) == 0)
@@ -410,10 +408,6 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   hash_add_id(source_p);
 
-  hd.client_p = client_p;
-  hd.source_p = source_p;
-  hook_call_event("register_local_user", &hd);
-
   irc_getnameinfo((struct sockaddr *)&source_p->localClient->ip,
                   source_p->localClient->ip.ss_len, ipaddr,
                   HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
@@ -465,81 +459,6 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   SetUserHost(source_p);
 
   introduce_client(client_p, source_p);
-}
-
-/*
- * auth_callback_local
- *
- * inputs	- pointer to client auth'd externally
- *		- int to accepted 1 for yes, -1 for no
- *		- reason string for reason to deny client
- * output	- NONE
- * side effects	- given client as called by start_auth event is 
- *		  introduced to network or exited.
- */
-void
-auth_callback_local_user(struct Client *source_p, int accepted,
-			 const char *reason)
-{
-  char ipaddr[HOSTIPLEN];
-  dlink_node *m;
-
-  if (IsDead(source_p))
-    return;
-
-  hash_add_id(source_p);
-
-  irc_getnameinfo((struct sockaddr *)&source_p->localClient->ip,
-                  source_p->localClient->ip.ss_len, ipaddr,
-                  HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
-
-  sendto_realops_flags(UMODE_CCONN, L_ALL,
-                       "Client connecting: %s (%s@%s) [%s] {%s} [%s]",
-                       source_p->name, source_p->username, source_p->host,
-                       ConfigFileEntry.hide_spoof_ips && IsIPSpoof(source_p) ?
-                       "255.255.255.255" : ipaddr, get_client_class(source_p),
-                       source_p->info);
-
-  /* If they have died in send_* don't do anything. */
-  if (IsDead(source_p))
-    return;
-
-  source_p->umodes |= UMODE_INVISIBLE;
-  Count.invisi++;
-
-  if ((++Count.local) > Count.max_loc)
-  {
-    Count.max_loc = Count.local;
-
-    if (!(Count.max_loc % 10))
-      sendto_realops_flags(UMODE_ALL, L_ALL, "New Max Local Clients: %d",
-                           Count.max_loc);
-  }
-
-  SetClient(source_p);
-
-  source_p->servptr = &me;
-  dlinkAdd(source_p, &source_p->lnode, &source_p->servptr->serv->users);
-
-  /* Increment our total user count here */
-  if (++Count.total > Count.max_tot)
-    Count.max_tot = Count.total;
-  Count.totalrestartcount++;
-
-  source_p->localClient->allow_read = MAX_FLOOD_BURST;
-
-  if ((m = dlinkFindDelete(&unknown_list, source_p)) != NULL)
-  {
-    free_dlink_node(m);
-    dlinkAdd(source_p, &source_p->localClient->lclient_node, &local_client_list);
-  }
-  else assert(0);
-
-  user_welcome(source_p);
-  add_user_host(source_p->username, source_p->host, 0);
-  SetUserHost(source_p);
-
-  introduce_client(&me, source_p);
 }
 
 /* register_remote_user()
@@ -1375,7 +1294,6 @@ static void add_one_to_uid(int i);
  *		  (first 3 bytes) or defaulted to 'A'.
  *	          Rest is filled in with 'A'
  */
-
 void
 init_uid(void)
 {

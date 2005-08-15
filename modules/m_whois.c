@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.136 2005/07/28 03:02:51 adx Exp $
+ *  $Id: m_whois.c,v 1.137 2005/08/15 20:50:02 adx Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,7 @@
 #include "modules.h"
 #include "hook.h"
 
-static void do_whois(struct Client *, struct Client *, int, char *[]);
+static void *do_whois(va_list);
 static int single_whois(struct Client *, struct Client *);
 static void whois_person(struct Client *, struct Client *);
 static int global_whois(struct Client *, const char *);
@@ -59,21 +59,22 @@ struct Message whois_msgtab = {
 };
 
 #ifndef STATIC_MODULES
+const char *_version = "$Revision: 1.137 $";
+static struct Callback *whois_cb;
+
 void
 _modinit(void)
 {
-  hook_add_event("doing_whois");
+  whois_cb = register_callback("doing_whois", do_whois);
   mod_add_cmd(&whois_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  hook_del_event("doing_whois");
   mod_del_cmd(&whois_msgtab);
+  uninstall_hook(whois_cb, do_whois);
 }
-
-const char *_version = "$Revision: 1.136 $";
 #endif
 
 /*
@@ -120,7 +121,15 @@ m_whois(struct Client *client_p, struct Client *source_p,
     parv[1] = parv[2];
   }
 
-  do_whois(client_p, source_p, parc, parv);
+#ifdef STATIC_MODULES
+  {
+    va_start(args, client_p);
+    do_whois(args);
+    va_end(args);
+  }
+#else
+  execute_callback(whois_cb, source_p, parc, parv);
+#endif
 }
 
 /*
@@ -148,7 +157,15 @@ mo_whois(struct Client *client_p, struct Client *source_p,
     parv[1] = parv[2];
   }
 
-  do_whois(client_p, source_p, parc, parv);
+#ifdef STATIC_MODULES
+  {
+    va_start(args, client_p);
+    do_whois(args);
+    va_end(args);
+  }
+#else
+  execute_callback(whois_cb, source_p, parc, parv);
+#endif
 }
 
 /* do_whois()
@@ -157,10 +174,12 @@ mo_whois(struct Client *client_p, struct Client *source_p,
  * output	- 
  * side effects -
  */
-static void
-do_whois(struct Client *client_p, struct Client *source_p,
-         int parc, char *parv[])
+static void *
+do_whois(va_list args)
 {
+  struct Client *source_p = va_arg(args, struct Client *);
+  int parc = va_arg(args, int);
+  char **parv = va_arg(args, char **);
   struct Client *target_p;
   char *nick;
   char *p = NULL;
@@ -173,7 +192,7 @@ do_whois(struct Client *client_p, struct Client *source_p,
     *p = '\0';
 
   if (*nick == '\0')
-    return;
+    return NULL;
 
   collapse(nick);
 
@@ -181,8 +200,8 @@ do_whois(struct Client *client_p, struct Client *source_p,
   {
     if ((target_p = find_client(nick)) != NULL)
     {
-      if (IsServer(client_p))
-	client_burst_if_needed(client_p, target_p);
+      if (IsServer(source_p->from))
+	client_burst_if_needed(source_p->from, target_p);
 
       if (IsClient(target_p))
       {
@@ -198,14 +217,14 @@ do_whois(struct Client *client_p, struct Client *source_p,
       else
         sendto_one(uplink,":%s WHOIS %s",
                    source_p->name, nick);
-      return;
+      return NULL;
     }
   }
   else /* wilds is true */
   {
     /* disallow wild card whois on lazylink leafs for now */
     if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
-      return;
+      return NULL;
 
     /* Oh-oh wilds is true so have to do it the hard expensive way */
     if (MyClient(source_p))
@@ -221,8 +240,10 @@ do_whois(struct Client *client_p, struct Client *source_p,
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
 		 me.name, source_p->name, nick);
   }
+
   sendto_one(source_p, form_str(RPL_ENDOFWHOIS),
              me.name, source_p->name, parv[1]);
+  return NULL;
 }
 
 /* global_whois()
@@ -325,7 +346,6 @@ whois_person(struct Client *source_p, struct Client *target_p)
   char *t = NULL;
   int tlen;
   int reply_to_send = NO;
-  struct hook_mfunc_data hd;
 
   server_p = target_p->servptr;
 
@@ -415,12 +435,4 @@ whois_person(struct Client *source_p, struct Client *target_p)
                CurrentTime - target_p->localClient->last,
                target_p->firsttime);
   }
-
-  hd.client_p = target_p;
-  hd.source_p = source_p;
-
-  /* although we should fill in parc and parv, we don't ..
-   * be careful of this when writing whois hooks
-   */
-  hook_call_event("doing_whois", &hd);
 }

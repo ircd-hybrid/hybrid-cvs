@@ -19,222 +19,154 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.24 2005/08/13 05:15:19 db Exp $
- */
-
-/* hooks are used by modules to hook into events called by other parts of
- * the code.  modules can also register their own events, and call them
- * as appropriate.
- *
- * A hook event is registered using hook_add_event("name")
- * A hook_call_event("name") is then inserted at the given event.
- * i.e. for event "start_auth" an hook_call_event("start_auth") is 
- * inserted just before the start_auth() is called.
- * Now, if a module calls hook_add_hook("start_auth", hookfn fn)
- * the fn is called just before start_auth() is called. This enables
- * us to replace how authentication is done with an user provided module.
- *
+ *  $Id: hook.c,v 7.25 2005/08/15 20:50:02 adx Exp $
  */
 
 #include "stdinc.h"
-#include "tools.h"
-#include "list.h"
 #include "hook.h"
+#include "list.h"
 #include "memory.h"
+#include "tools.h"
 
-static dlink_list hooks = { NULL, NULL, 0 };
-static hook *find_hook(const char *name);
-
-void
-init_hooks(void)
-{
-#ifndef NDEBUG
-  hook_add_event("iosend");
-  hook_add_event("iorecv");
-  hook_add_event("iorecvctrl");
-#endif
-  hook_add_event("register_local_user");
-  hook_add_event("start_auth");
-}
+dlink_list callback_list = {NULL, NULL, 0};
 
 /*
- * new_hook
+ * register_callback()
  *
- * inputs	- name of hook
- * output	- pointer to newly created hook 
- * side effects -
- */
-static hook *
-new_hook(const char *name)
-{
-  hook *h;
-
-  h = MyMalloc(sizeof(hook));
-  DupString(h->name, name);
-  return(h);
-}
-
-/*
- * hook_add_event
+ * Creates a new callback.
  *
- * inputs	- name of hook
- * output	- -1 if hook is not found
- * side effects -
- */
-int
-hook_add_event(const char *name)
-{
-  hook *newhook;
-
-  if (find_hook(name) != NULL)
-    return(-1);
-
-  newhook = new_hook(name);
-	
-  dlinkAdd(newhook, make_dlink_node(), &hooks);
-  return(0);
-}
-
-/*
- * hook_del_event
+ * inputs:
+ *   name  -  name used to identify the callback
+ *            (can be NULL for anonymous callbacks)
+ *   func  -  initial function attached to the chain
+ *            (can be NULL to create an empty chain)
+ * output: pointer to Callback structure or NULL if already exists
  *
- * inputs	- name of hook
- * output	- returns 0 in all cases
- * side effects - removes given hook from hook system
+ * NOTE: Once registered, a callback should never be freed!
+ * That's because there may be modules which depend on it
+ * (even if no functions are attached). That's also why
+ * we dynamically allocate the struct here -- we don't want
+ * to allow anyone to place it in module data, which can be
+ * unloaded at any time.
  */
-int
-hook_del_event(const char *name)
+struct Callback *
+register_callback(const char *name, CBFUNC *func)
 {
-  dlink_node *node;
-  hook *h;
+  struct Callback *cb;
 
-  DLINK_FOREACH(node, hooks.head)
-  {
-    h = node->data;
-
-    if (!strcmp(h->name, name))
+  if (name != NULL)
+    if ((cb = find_callback(name)) != NULL)
     {
-      dlinkDelete(node, &hooks);
-      MyFree(h);
-      return(0);
+      /* re-attaching an empty hook chain? */
+      if (!is_callback_present(cb))
+      {
+        dlinkAdd(func, make_dlink_node(), &cb->chain);
+	return (cb);
+      }
+      return (NULL);
     }
-  }
 
-  return(0);
-}
-
-/*
- * find_hook
- *
- * inputs	- name of hook
- * output	- return pointer to given named hook or NULL if not found
- * side effects - none
- */
-static hook *
-find_hook(const char *name)
-{
-  dlink_node *node;
-  hook *h;
-
-  DLINK_FOREACH(node, hooks.head)
+  cb = MyMalloc(sizeof(struct Callback));
+  if (func != NULL)
+    dlinkAdd(func, make_dlink_node(), &cb->chain);
+  if (name != NULL)
   {
-    h = node->data;
-
-    if (!strcmp(h->name, name))
-      return(h);
+    cb->name = name;
+    dlinkAdd(cb, &cb->node, &callback_list);
   }
-
-  return(NULL);
+  return (cb);
 }
 
 /*
- * hook_del_hook
+ * execute_callback()
  *
- * inputs	- name of event
- *		- name of hook attached to named event
- * output	- -1 if hook not found on event
- * side effects - none
+ * Passes control down the callback hook chain.
+ *
+ * inputs:
+ *   callback  -  pointer to Callback structure
+ *   param     -  argument to pass
+ * output: function return value
  */
-int 
-hook_del_hook(const char *event, hookfn *fn)
+void *
+execute_callback(struct Callback *cb, ...)
 {
-  hook *h;
-  dlink_node *node, *nnode;
+  void *res;
+  va_list args;
 
-  if ((h = find_hook(event)) == NULL)
-    return(-1);
+  if (!is_callback_present(cb))
+    return (NULL);
 
-  DLINK_FOREACH_SAFE(node, nnode, h->hooks.head)
+  va_start(args, cb);
+  res = ((CBFUNC *) cb->chain.head->data)(args);
+  va_end(args);
+  return (res);
+}
+
+/*
+ * find_callback()
+ *
+ * Finds a named callback.
+ *
+ * inputs:
+ *   name  -  name of the callback
+ * output: pointer to Callback structure or NULL if not found
+ */
+struct Callback *
+find_callback(const char *name)
+{
+  struct Callback *cb;
+  dlink_node *ptr;
+
+  DLINK_FOREACH(ptr, callback_list.head)
   {
-    if (fn == node->data)
-    {
-      dlinkDelete(node, &h->hooks);
-      free_dlink_node(node);
-    } 
+    cb = ptr->data;
+    if (!strcasecmp(cb->name, name))
+      return (cb);
   }
 
-  return(0);
+  return (NULL);
 }
 
 /*
- * hook_add_hook
+ * install_hook()
  *
- * inputs	- name of event
- *		- name of hook to attach to named event
- * output	- -1 if hook event name is not found
- * side effects - add given named hook to given event
+ * Installs a hook for the given callback.
+ *
+ * inputs:
+ *   cb      -  pointer to Callback structure
+ *   hook    -  address of hook function
+ * output: pointer to dlink_node of the hook (used when
+ *         passing control to the next hook in the chain);
+ *         valid till uninstall_hook() is called
+ *
+ * NOTE: The new hook is installed at the beginning of the chain,
+ * so it has full control over functions installed earlier.
  */
-int
-hook_add_hook(const char *event, hookfn *fn)
+dlink_node *
+install_hook(struct Callback *cb, CBFUNC *hook)
 {
-  hook *h;
+  dlink_node *node = make_dlink_node();
 
-  if ((h = find_hook(event)) == NULL)
-    return(-1);
-
-  dlinkAdd(fn, make_dlink_node(), &h->hooks);
-  return(0);
+  dlinkAdd(hook, node, &cb->chain);
+  return (node);
 }
 
 /*
- * hook_call_event
+ * uninstall_hook()
  *
- * inputs	- name of event
- *		- void pointer to hook data
- * output	- -1 if no hook executed, 
- *		  0 if no further processing by ircd needed
- *		  1 if further processing by original ircd code needed.
- * side effects - add given named hook to given event, 
- *		  Can possibly replace given event handling code normally
- *		  done by the ircd itself. Example: "start_auth"
- *		  A given module can replace the work done by "start_auth".
+ * Removes a specific hook for the given callback.
+ *
+ * inputs:
+ *   cb      -  pointer to Callback structure
+ *   hook    -  address of hook function
+ * output: none
  */
-int
-hook_call_event(const char *event, void *data)
+void
+uninstall_hook(struct Callback *cb, CBFUNC *hook)
 {
-  hook *h;
-  dlink_node *node;
-  hookfn fn;
+  /* let it core if not found */
+  dlink_node *ptr = dlinkFind(&cb->chain, hook);
 
-  if ((h = find_hook(event)) == NULL)
-    return(-1);
-
-  DLINK_FOREACH(node, h->hooks.head)
-  {
-    fn = (hookfn)(uintptr_t)node->data;
-
-    /* If the hook function is successful, and returns 1
-     * return 0 to ircd, signifying no further processing by ircd
-     * is needed.
-     * if hook function returns 0, return 1 to ircd signifying
-     * the ircd should continue to process.
-     */
-    if (fn(data) != 0)
-      return(0);
-    else
-      return(1);
-  }
-
-  return(-1);
+  dlinkDelete(ptr, &cb->chain);
+  free_dlink_node(ptr);
 }
-

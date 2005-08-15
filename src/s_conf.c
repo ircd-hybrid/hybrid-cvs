@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.570 2005/08/13 15:38:29 db Exp $
+ *  $Id: s_conf.c,v 7.571 2005/08/15 20:50:02 adx Exp $
  */
 
 #include "stdinc.h"
@@ -34,6 +34,7 @@
 #include "common.h"
 #include "event.h"
 #include "hash.h"
+#include "hook.h"
 #include "irc_string.h"
 #include "sprintf_irc.h"
 #include "s_bsd.h"
@@ -56,6 +57,7 @@
 #include "s_user.h"
 #include "channel_mode.h"
 
+struct Callback *client_check_cb = NULL;
 struct config_server_hide ConfigServerHide;
 
 /* general conf items link list root, other than k lines etc. */
@@ -764,9 +766,11 @@ report_confitem_types(struct Client *source_p, ConfType type)
  *		  Look for conf lines which have the same
  * 		  status as the flags passed.
  */
-int
-check_client(struct Client *client_p, struct Client *source_p, const char *username)
+static void *
+check_client(va_list args)
 {
+  struct Client *source_p = va_arg(args, struct Client *);
+  const char *username = va_arg(args, const char *);
   int i;
  
   /* I'm already in big trouble if source_p->localClient is NULL -db */
@@ -839,7 +843,7 @@ check_client(struct Client *client_p, struct Client *source_p, const char *usern
      break;
   }
 
-  return(i);
+  return (i < 0 ? NULL : source_p);
 }
 
 /* verify_access()
@@ -2899,6 +2903,8 @@ init_class(void)
   MaxTotal(aclass) = ConfigFileEntry.maximum_links;
   MaxSendq(aclass) = DEFAULT_SENDQ;
   CurrUserCount(aclass) = 0;
+
+  client_check_cb = register_callback("check_client", check_client);
 }
 
 /* get_sendq()

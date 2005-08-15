@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.314 2005/08/13 15:38:28 db Exp $
+ *  $Id: s_conf.h,v 7.315 2005/08/15 20:50:01 adx Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -32,12 +32,14 @@
 #include "ircd_defs.h"
 #include "motd.h"               /* MessageFile */
 #include "client.h"
+#include "hook.h"
 
 struct Client;
 struct DNSReply;
 struct hostent;
 
 extern FBFILE *conf_fbfile_in;
+extern struct Callback *client_check_cb;
 
 typedef enum {  
   CONF_TYPE, 
@@ -463,7 +465,6 @@ extern void free_access_item(struct AccessItem *);
 extern void read_conf_files(int);
 extern int attach_conf(struct Client *, struct ConfItem *);
 extern int attach_connect_block(struct Client *, const char *, const char *);
-extern int check_client(struct Client *, struct Client *, const char *);
 
 extern int detach_conf(struct Client *, ConfType);
 extern void detach_all_confs(struct Client *);

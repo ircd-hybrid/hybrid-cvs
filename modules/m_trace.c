@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.81 2005/07/26 03:33:00 adx Exp $
+ *  $Id: m_trace.c,v 1.82 2005/08/15 20:50:02 adx Exp $
  */
 
 #include "stdinc.h"
@@ -46,8 +46,7 @@ static void m_trace(struct Client *, struct Client *, int, char **);
 static void ms_trace(struct Client*, struct Client*, int, char**);
 static void mo_trace(struct Client*, struct Client*, int, char**);
 
-static void trace_spy(struct Client *);
-static void do_actual_trace(const char *, struct Client *, struct Client *, int, char **);
+static void *do_actual_trace(va_list);
 
 struct Message trace_msgtab = {
   "TRACE", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -55,20 +54,22 @@ struct Message trace_msgtab = {
 };
 
 #ifndef STATIC_MODULES
+const char *_version = "$Revision: 1.82 $";
+static struct Callback *trace_cb;
+
 void
 _modinit(void)
 {
-  hook_add_event("doing_trace");
+  trace_cb = register_callback("doing_trace", do_actual_trace);
   mod_add_cmd(&trace_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
+  uninstall_hook(trace_cb, do_actual_trace);
 }
-const char *_version = "$Revision: 1.81 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
@@ -111,7 +112,7 @@ mo_trace(struct Client *client_p, struct Client *source_p,
   if (parc > 2)
     if (hunt_server(client_p, source_p, ":%s TRACE %s :%s", 2, parc, parv))
       return;
-  
+
   if (parc > 1)
     tname = parv[1];
   else
@@ -156,26 +157,41 @@ mo_trace(struct Client *client_p, struct Client *source_p,
       return;
     }
     case HUNTED_ISME:
-      do_actual_trace(tname, client_p, source_p, parc, parv);
+#ifdef STATIC_MODULES
+      {
+        va_list args;
+
+        va_start(args, client_p);
+	do_actual_trace(args);
+	va_end(args);
+      }
+#else
+      execute_callback(trace_cb, source_p, parc, parv);
+#endif
       break;
     default:
       return;
   }
 }
 
-static void
-do_actual_trace(const char *tname, struct Client *client_p,
-		struct Client *source_p, int parc, char *parv[])
+static void *
+do_actual_trace(va_list args)
 {
+  struct Client *source_p = va_arg(args, struct Client *);
+  int parc = va_arg(args, int);
+  char **parv = va_arg(args, char **);
   struct Client *target_p = NULL;
   struct ConfItem *conf;
   struct ClassItem *cltmp;
   int doall = 0;
   int cnt = 0, wilds, dow;
   dlink_node *ptr;
-  const char *from, *to;
+  const char *from, *to, *tname;
 
-  trace_spy(source_p);
+  if (parc > 1)
+    tname = parv[1];
+  else
+    tname = me.name;
 
   if (!MyConnect(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
   {
@@ -239,7 +255,7 @@ do_actual_trace(const char *tname, struct Client *client_p,
       
     sendto_one(source_p, form_str(RPL_ENDOFTRACE),
                from, to, tname);
-    return;
+    return NULL;
   }
 
   /* report all direct connections */
@@ -293,7 +309,9 @@ do_actual_trace(const char *tname, struct Client *client_p,
       sendto_one(source_p, form_str(RPL_TRACECLASS),
 		 from, to, conf->name, CurrUserCount(cltmp));
   }
+
   sendto_one(source_p, form_str(RPL_ENDOFTRACE), from, to, tname);
+  return NULL;
 }
 
 
@@ -451,20 +469,4 @@ report_this_status(struct Client *source_p, struct Client *target_p,
   }
 
   return cnt;
-}
-
-/* trace_spy()
- *
- * input        - pointer to client
- * output       - none
- * side effects - hook event doing_trace is called
- */
-static void
-trace_spy(struct Client *source_p)
-{
-  struct hook_spy_data data;
-
-  data.source_p = source_p;
-
-  hook_call_event("doing_trace", &data);
 }

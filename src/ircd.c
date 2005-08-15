@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.351 2005/08/05 00:04:05 metalrock Exp $
+ *  $Id: ircd.c,v 7.352 2005/08/15 20:50:02 adx Exp $
  */
 
 #include "stdinc.h"
@@ -658,7 +658,6 @@ main(int argc, char *argv[])
   init_class();
   init_whowas();
   init_stats();
-  init_hooks();
   read_conf_files(1);   /* cold start init conf files */
   initServerMask();
   me.id[0] = '\0';

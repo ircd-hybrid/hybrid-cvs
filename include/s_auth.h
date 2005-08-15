@@ -19,13 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.h,v 7.24 2005/07/28 16:26:37 adx Exp $
+ *  $Id: s_auth.h,v 7.25 2005/08/15 20:50:01 adx Exp $
  */
 
 #ifndef INCLUDED_s_auth_h
 #define INCLUDED_s_auth_h
 
 #include "irc_res.h"
+#include "hook.h"
 
 /* How many auth allocations to allocate in a block. I'm guessing that
  * a good number here is 64, because these are temporary and don't live
@@ -62,11 +63,12 @@ struct AuthRequest
 #define ClearAuth(x)         ((x)->flags &= ~AM_DOING_AUTH)
 #define IsDoingAuth(x)       ((x)->flags &  AM_DOING_AUTH)
 
-extern void start_auth(struct Client *);
-extern void send_auth_query(struct AuthRequest* req);
-extern void remove_auth_request(struct AuthRequest *req);
-extern struct AuthRequest *FindAuthClient(long id);
-extern void init_auth(void);
-extern void delete_auth(struct Client *);
+extern struct Callback *auth_cb;
+
+void send_auth_query(struct AuthRequest* req);
+void remove_auth_request(struct AuthRequest *req);
+struct AuthRequest *FindAuthClient(long id);
+void init_auth(void);
+void delete_auth(struct Client *);
 
 #endif /* INCLUDED_s_auth_h */

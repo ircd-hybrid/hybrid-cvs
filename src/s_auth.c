@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.151 2005/08/13 01:50:43 db Exp $
+ *  $Id: s_auth.c,v 7.152 2005/08/15 20:50:02 adx Exp $
  */
 
 /*
@@ -41,6 +41,7 @@
 #include "common.h"
 #include "event.h"
 #include "fdlist.h"              /* fdlist_add */
+#include "hook.h"
 #include "irc_string.h"
 #include "sprintf_irc.h"
 #include "ircd.h"
@@ -91,6 +92,9 @@ static EVH timeout_auth_queries_event;
 
 static PF read_auth_reply;
 static CNCB auth_connect_callback;
+static CBFUNC start_auth;
+
+struct Callback *auth_cb = NULL;
 
 /* init_auth()
  *
@@ -99,6 +103,7 @@ static CNCB auth_connect_callback;
 void
 init_auth(void)
 {
+  auth_cb = register_callback("start_auth", start_auth);
   eventAddIsh("timeout_auth_queries_event", timeout_auth_queries_event, NULL, 1);
 }
 
@@ -384,9 +389,10 @@ GetValidIdent(char *buf)
  * output	- NONE
  * side effects	- starts auth (identd) and dns queries for a client
  */
-void
-start_auth(struct Client *client)
+static void *
+start_auth(va_list args)
 {
+  struct Client *client = va_arg(args, struct Client *);
   struct AuthRequest *auth = NULL;
 
   assert(client != NULL);
@@ -399,13 +405,17 @@ start_auth(struct Client *client)
 
   sendheader(client, REPORT_DO_DNS);
 
-  /* No DNS cache now, remember? -- adrian */
-  gethost_byaddr(&client->localClient->ip, client->localClient->dns_query);
-  SetDNSPending(auth);
-  dlinkAdd(auth, &auth->dns_node, &auth_doing_dns_list);
-
   if (ConfigFileEntry.disable_auth == 0)
     start_auth_query(auth);
+
+  /* auth order changed, before gethost_byaddr can immediately call
+   * dns callback under win32 when the lookup cannot be started.
+   * And that would do MyFree(auth) etc -adx */
+  SetDNSPending(auth);
+  dlinkAdd(auth, &auth->dns_node, &auth_doing_dns_list);
+  gethost_byaddr(&client->localClient->ip, client->localClient->dns_query);
+
+  return NULL;
 }
 
 /*

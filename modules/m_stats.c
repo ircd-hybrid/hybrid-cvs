@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.178 2005/08/15 11:45:29 michael Exp $
+ *  $Id: m_stats.c,v 1.179 2005/08/15 20:50:02 adx Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,7 @@
 #include "whowas.h"
 #include "list.h"
 
-
+static void *do_stats(va_list);
 static void m_stats(struct Client *, struct Client *, int, char *[]);
 static void mo_stats(struct Client *, struct Client *, int, char *[]);
 static void ms_stats(struct Client *, struct Client *, int, char *[]);
@@ -63,31 +63,27 @@ struct Message stats_msgtab = {
 };
 
 #ifndef STATIC_MODULES
+const char *_version = "$Revision: 1.179 $";
+static struct Callback *stats_cb;
+
 void
 _modinit(void)
 {
-  hook_add_event("doing_stats");
-  hook_add_event("doing_stats_p");
+  stats_cb = register_callback("doing_stats", do_stats);
   mod_add_cmd(&stats_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  hook_del_event("doing_stats_p");
-  hook_del_event("doing_stats");
   mod_del_cmd(&stats_msgtab);
+  uninstall_hook(stats_cb, do_stats);
 }
-
-const char *_version = "$Revision: 1.178 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
 static void stats_L(struct Client *, char *, int, int, char);
 static void stats_L_list(struct Client *s, char *, int, int, dlink_list *, char);
-static void stats_spy(struct Client *, char);
-static void stats_p_spy(struct Client *);
-static void stats_L_spy(struct Client *, char, char *);
 
 static void stats_dns_servers(struct Client *);
 static void stats_connect(struct Client *);
@@ -178,6 +174,50 @@ static const struct StatsStruct
 
 const char *from, *to;
 
+static void *
+do_stats(va_list args)
+{
+  struct Client *source_p = va_arg(args, struct Client *);
+  int parc = va_arg(args, int);
+  char **parv = va_arg(args, char **);
+  char statchar = parv[1][0];
+  int i;
+
+  if (statchar == '\0')
+  {
+    sendto_one(source_p, form_str(RPL_ENDOFSTATS),
+               from, to, '*');
+    return NULL;
+  }
+
+  for (i = 0; stats_cmd_table[i].handler; i++)
+  {
+    if (stats_cmd_table[i].letter == statchar)
+    {
+      /* The stats table says what privs are needed, so check --fl_ */
+      if ((stats_cmd_table[i].need_admin && !IsAdmin(source_p)) ||
+          (stats_cmd_table[i].need_oper && !IsOper(source_p)))
+      {
+        sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+                   from, to);
+        break;
+      }
+
+      /* Blah, stats L needs the parameters, none of the others do.. */
+      if (statchar == 'L' || statchar == 'l')
+        stats_cmd_table[i].handler(source_p, parc, parv);
+      else
+        stats_cmd_table[i].handler(source_p);
+
+      break;
+    }
+  }
+
+  sendto_one(source_p, form_str(RPL_ENDOFSTATS),
+             from, to, statchar);
+  return NULL;
+}
+
 /*
  * m_stats by fl_
  *      parv[0] = sender prefix
@@ -191,9 +231,12 @@ static void
 m_stats(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
-  int i;
-  char statchar;
   static time_t last_used = 0;
+
+  /* Is the stats meant for us? */
+  if (!ConfigFileEntry.disable_remote)
+    if (hunt_server(client_p,source_p,":%s STATS %s :%s",2,parc,parv) != HUNTED_ISME)
+      return;
 
   if (!MyClient(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
   {
@@ -216,48 +259,17 @@ m_stats(struct Client *client_p, struct Client *source_p,
   else
     last_used = CurrentTime;
 
-  /* Is the stats meant for us? */
-  if (!ConfigFileEntry.disable_remote)
-    if (hunt_server(client_p,source_p,":%s STATS %s :%s",2,parc,parv) != HUNTED_ISME)
-      return;
-
-  statchar = parv[1][0];
-
-  if (statchar == '\0')
+#ifdef STATIC_MODULES
   {
-    sendto_one(source_p, form_str(RPL_ENDOFSTATS),
-               from, to, '*');
-    return;
+    va_list args;
+
+    va_start(args, client_p);
+    do_stats(args);
+    va_end(args);
   }
-
-  for (i = 0; stats_cmd_table[i].handler; i++)
-  {
-    if (stats_cmd_table[i].letter == statchar)
-    {
-      /* The stats table says what privs are needed, so check --fl_ */
-      if (stats_cmd_table[i].need_oper || stats_cmd_table[i].need_admin)
-      {
-        sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
-                   from, to);
-        break;
-      }
-
-      /* Blah, stats L needs the parameters, none of the others do.. */
-      if (statchar == 'L' || statchar == 'l')
-        stats_cmd_table[i].handler(source_p, parc, parv);
-      else
-        stats_cmd_table[i].handler(source_p);
-
-      break;
-    }
-  }
-
-  /* Send the end of stats notice, and the stats_spy */
-  sendto_one(source_p, form_str(RPL_ENDOFSTATS),
-             from, to, statchar);
-
-  if ((statchar != 'L') && (statchar != 'l'))
-    stats_spy(source_p, statchar);
+#else
+  execute_callback(stats_cb, source_p, parc, parv);
+#endif
 }
 
 /*
@@ -273,10 +285,8 @@ static void
 mo_stats(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  int i;
-  char statchar;
-
-  if (hunt_server(client_p,source_p,":%s STATS %s :%s",2,parc,parv) != HUNTED_ISME)
+  if (hunt_server(client_p, source_p, ":%s STATS %s :%s", 2, parc, parv) !=
+      HUNTED_ISME)
      return;
 
   if (!MyClient(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
@@ -290,47 +300,17 @@ mo_stats(struct Client *client_p, struct Client *source_p,
     to = source_p->name;
   }
 
-  statchar = parv[1][0];
-
-  if (statchar == '\0')
+#ifdef STATIC_MODULES
   {
-    sendto_one(source_p, form_str(RPL_ENDOFSTATS),
-               from, to, '*');
-    return;
+    va_list args;
+
+    va_start(args, client_p);
+    do_stats(args);
+    va_end(args);
   }
-
-  for (i = 0; stats_cmd_table[i].handler; i++)
-  {
-    if (stats_cmd_table[i].letter == statchar)
-    {
-      /* The stats table says what privs are needed, so check --fl_ */
-      /* Called for remote clients and for local opers, so check need_admin
-       * and need_oper
-       */
-      if ((stats_cmd_table[i].need_admin && !IsAdmin(source_p)) ||
-          (stats_cmd_table[i].need_oper && !IsOper(source_p)))
-      {
-        sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
-                   from, to);
-        break;
-      }
-
-      /* Blah, stats L needs the parameters, none of the others do.. */
-      if (statchar == 'L' || statchar == 'l')
-        stats_cmd_table[i].handler(source_p, parc, parv, statchar);
-      else
-        stats_cmd_table[i].handler(source_p);
-
-      break;
-    }
-  }
-
-  /* Send the end of stats notice, and the stats_spy */
-  sendto_one(source_p, form_str(RPL_ENDOFSTATS),
-             from, to, statchar);
-
-  if ((statchar != 'L') && (statchar != 'l'))
-    stats_spy(source_p, statchar);
+#else
+  execute_callback(stats_cb, source_p, parc, parv);
+#endif
 }
 
 /*
@@ -1099,7 +1079,6 @@ stats_operedup(struct Client *source_p)
 
   sendto_one(source_p, ":%s %d %s p :%lu OPER(s)",
              from, RPL_STATSDEBUG, to, dlink_list_length(&oper_list));
-  stats_p_spy(source_p);
 }
 
 static void
@@ -1305,7 +1284,6 @@ stats_ltrace(struct Client *source_p, int parc, char *parv[])
     statchar = parv[1][0];
 
     stats_L(source_p, name, doall, wilds, statchar);
-    stats_L_spy(source_p, statchar, name);
   }
   else
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
@@ -1426,69 +1404,6 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
 		   IsServer(target_p) ? show_capabilities(target_p) : "-");
     }
   }
-}
-
-/* stats_spy()
- *
- * inputs	- pointer to client doing the /stats
- *		- char letter they are doing /stats on
- * output	- none
- * side effects -
- * This little helper function reports to opers if configured.
- * personally, I don't see why opers need to see stats requests
- * at all. They are just "noise" to an oper, and users can't do
- * any damage with stats requests now anyway. So, why show them?
- * -Dianora
- */
-static void
-stats_spy(struct Client *source_p, char statchar)
-{
-  struct hook_stats_data data;
-
-  data.source_p = source_p;
-  data.statchar = statchar;
-  data.name     = NULL;
-
-  hook_call_event("doing_stats", &data);
-}
-
-/* stats_p_spy()
- *
- * input	- pointer to client doing stats
- * output	-
- * side effects - call hook doing_stats_p
- */
-static void
-stats_p_spy(struct Client *source_p)
-{
-  struct hook_stats_data data;
-
-  data.source_p = source_p;
-  data.name     = NULL;
-  data.statchar = 'p';
-
-  hook_call_event("doing_stats_p", &data);
-}
-
-/* stats_L_spy()
- * 
- * inputs	- pointer to source_p, client doing stats L
- *		- stat that they are doing 'L' 'l'
- * 		- any name argument they have given
- * output	- NONE
- * side effects	- a notice is sent to opers, IF spy mode is configured
- * 		  in the conf file.
- */
-static void
-stats_L_spy(struct Client *source_p, char statchar, char *name)
-{
-  struct hook_stats_data data;
-
-  data.source_p = source_p;
-  data.statchar = statchar;
-  data.name     = name;
-
-  hook_call_event("doing_stats", &data);
 }
 
 /* parse_stats_args()
