@@ -1,0 +1,19 @@
+$Id: README.cloaking,v 1.1 2005/08/15 17:07:24 knight Exp $
+
+This README covers IP cloaking and how it works. Once you have applied
+the patch and built ircd-hybrid, you will also need to build the
+contrib module m_change.c. Once you have built the module and installed
+it please put the following line in your ircd.conf so it always loads:
+
+modules = "m_change.so";
+
+Once the module is loaded on *all* servers along with the IP cloaking, users
+can activate the IP cloaking by doing:
+
+/MODE nickname +h
+
+Be aware however that the IP cloaking *does not* support IPv6 users and will
+not activate if the user already has a spoof assigned via an auth {} block.
+Since this is an unofficial patch, please do not ask questions concerning
+this in the ircd-hybrid mailing list but rather direct them to knight-
+on irc.chatjunkies.org in #cservice. Enjoy!
