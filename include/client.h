@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.242 2005/07/31 05:32:34 adx Exp $
+ *  $Id: client.h,v 7.243 2005/08/15 18:08:26 adx Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -388,12 +388,6 @@ struct LocalUser
 
 #define SEND_UMODES  (UMODE_INVISIBLE | UMODE_OPER | UMODE_WALLOP | \
                       UMODE_ADMIN)
-#define ALL_UMODES   (SEND_UMODES | UMODE_SERVNOTICE | UMODE_CCONN | \
-                      UMODE_REJ | UMODE_SKILL | UMODE_FULL | UMODE_SPY | \
-                      UMODE_NCHANGE | UMODE_OPERWALL | UMODE_DEBUG | \
-                      UMODE_BOTS | UMODE_EXTERNAL | UMODE_LOCOPS | \
-                      UMODE_ADMIN | UMODE_UNAUTH | UMODE_CALLERID | \
-		      UMODE_SOFTCALLERID | UMODE_DEAF)
 
 
 /* oper priv flags */

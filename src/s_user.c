@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.363 2005/08/15 17:54:49 adx Exp $
+ *  $Id: s_user.c,v 7.364 2005/08/15 18:08:26 adx Exp $
  */
 
 #include <sys/types.h>
@@ -1181,7 +1181,7 @@ send_umode_out(struct Client *client_p, struct Client *source_p,
   }
 
   if (client_p && MyClient(client_p))
-    send_umode(client_p, source_p, old, ALL_UMODES, buf);
+    send_umode(client_p, source_p, old, 0xffffffff, buf);
 }
 
 /* user_welcome()
@@ -1321,17 +1321,17 @@ check_regexp_xline(struct Client *source_p)
 void
 oper_up(struct Client *source_p)
 {
-  unsigned int old = (source_p->umodes & ALL_UMODES);
+  unsigned int old = source_p->umodes;
   const char *operprivs = "";
   struct AccessItem *oconf;
 
   SetOper(source_p);
 
   if (ConfigFileEntry.oper_umodes)
-    source_p->umodes |= ConfigFileEntry.oper_umodes & ALL_UMODES;
+    source_p->umodes |= ConfigFileEntry.oper_umodes;
   else
     source_p->umodes |= (UMODE_SERVNOTICE|UMODE_OPERWALL|
-			 UMODE_WALLOP|UMODE_LOCOPS) & ALL_UMODES;
+			 UMODE_WALLOP|UMODE_LOCOPS);
 
   Count.oper++;
 
