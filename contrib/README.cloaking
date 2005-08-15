@@ -1,25 +1,79 @@
-$Id: README.cloaking,v 1.2 2005/08/15 17:40:28 knight Exp $
+ircd-hybrid IP/hostname cloaking README:
+-----------------------------------------------
+$Id: README.cloaking,v 1.3 2005/08/15 19:41:19 knight Exp $
 
-This README covers IP cloaking and how it works. Once you have applied
-the patch and built ircd-hybrid, you will also need to build the
-contrib module m_change.c. Once you have built the module and installed
-it please put the following line in your ircd.conf so it always loads:
+Copyright (c) 2005 by Alan 'knight-' LeVee of ChatJunkies IRC Network
+-----------------------------------------------
 
-It should also be noted that before you build ircd-hybrid it is *strongly*
-recommended that you edit src/cloak.c and modify the #defines for KEY, KEY2
-and KEY3 to use different numbers. These should however match *all* servers
-to prevent confusion and possible problems. A good source to get randomised
-numbers is the ${RANDOM} variable through bash by doing echo ${RANDOM}.
+This README file is designed to cover the aspects of the IP cloaking features
+new to hybrid in this contrib patch named 4000_ip-cloaking.patch. The basis
+for the IP cloaking is to add some level of privacy for local users to have
+by cloaking, or rather masking, a part of their hostname with a CRC32 polymorphism
+hash.
+
+To apply the patch you'll need to do the following command in the main ircd-hybrid tree:
+
+patch -p1 < contrib/4000_ip-cloaking.patch
+
+This will make the necessary additions to the source code to allow IP cloaking to work 
+as well as adding in a new user mode known as +h. Normally on most IRC daemons such as
+UnrealIRCd or ircu2, IP masking is assigned the user mode +x but since we use +x for
+external operator messages we used +h as the next logical step.
+
+Basically the IP cloaking is a proof of concept utilising a CRC32 based salt encryption
+method that UnrealIRCd uses but with some changes and bit stuffing and bit shifting. However,
+before you compile ircd-hybrid, it is *strongly* recommended that you modify src/cloak.c
+and modify the following:
+
+#define KEY
+#define KEY2
+#define KEY3
+
+With different numbers than are present in the provided patch. This insures that no one can 
+really decifier the secret keys because they'll go on the basis that they are stock and not modified.
+To get proper or good entropy on random numbers rather than trying to guess them it is a good idea
+to use an entropy variable or device to grab them. If you have BASH available you can use the randomisation
+variable called ${RANDOM} to get your bits. You need at least 3 secret keys in order for this to work, there
+is no preset requirement as to how many numbers per key is required but it should have at least 4 to 5 numbers
+on each block. If you want to do it easily and you have bash you can do the following command in a BASH shell:
+
+$ echo -e "KEY  ${RANDOM}\nKEY2 ${RANDOM}\nKEY3 ${RANDOM}"
+
+You'll get an output similar to this:
+KEY  1762
+KEY2 26409
+KEY3 25
+
+Once you run that command you can copy and paste the output into cloak.c and compile. However all servers *must*
+the same secret keys in order for this to work properly or you'll run into problems especially for channel
+bans.
+
+Once you've compiled and install ircd-hybrid you will *need* the module m_change.so in order for this to work
+as the cloaking code at this time depends on the CHGHOST command. To activate this module you'll need to do 
+the following:
+
+cd contrib; make install
+
+Then you'll need to edit etc/ircd.conf and add the following line so you can load the module:
 
 modules = "m_change.so";
 
-Once the module is loaded on *all* servers along with the IP cloaking, users
-can activate the IP cloaking by doing:
+Please note that *all* servers *must* have this module loaded or IP cloaking will *not* work. Once this is done 
+you can activate the IP cloaking by passing the following user mode:
 
 /MODE nickname +h
 
-Be aware however that the IP cloaking *does not* support IPv6 users and will
-not activate if the user already has a spoof assigned via an auth {} block.
-Since this is an unofficial patch, please do not ask questions concerning
-this in the ircd-hybrid mailing list but rather direct them to knight-
-on irc.chatjunkies.org in #cservice. Enjoy!
+You should then recieve a message:
+
+--- 36cc6673-5813df1c-ec6f50f-8f92678.ypwest01.mi.comcast.net :is your visible host
+
+This means that anyone who runs WHOIS on you will recieve that as the host response. However if hide_spoof_ips is
+set to no, yourself and IRC operators can get your true IP from WHOIS but no one else. Once user mode +h is set
+however, it cannot be unset (ala ircu2). Also as of right now, IP cloaking does not support IPv6 users due to
+the rare use of IPv6 and the difficulty in coding support for it. So if an IPv6 user tries to set +h they will
+get the following message:
+
+--- *** Sorry, IP cloaking does not support IPv6 users!
+
+If you have any questions please direct them to knight- on irc.chatjunkies.org in #cservice as this is not
+officially supported by the ircd-hybrid team. Thank you, and enjoy!
