@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.88 2005/08/10 22:39:01 db Exp $
+$Id: Hybrid-team,v 7.89 2005/08/15 17:16:41 knight Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -50,6 +50,7 @@ vx0, Mark Miller <mark@oc768.net>
 wiz, Jason Dambrosio <jason@wiz.cx>
 Xride, Søren Straarup <xride@x12.dk>
 zb^3, Alfred Perlstein <alfred@freebsd.org>
+knight-, Alan LeVee <alan.levee@prometheus-designs.net>
 
 Others are welcome. Always. And if we left anyone off the above list,
 be sure to let us know that too. Many others have contributed to
