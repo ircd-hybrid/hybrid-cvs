@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.147 2005/07/30 20:44:17 adx Exp $
+ *  $Id: m_nick.c,v 1.148 2005/08/15 17:54:48 adx Exp $
  */
 
 #include "stdinc.h"
@@ -93,7 +93,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.147 $";
+const char *_version = "$Revision: 1.148 $";
 #endif
 
 /* mr_nick()
@@ -708,7 +708,7 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
 
       while (*m)
       {
-        flag = user_modes_from_c_to_bitmask[(unsigned char)*m];
+        flag = user_modes[(unsigned char)*m];
         if (!(source_p->umodes & UMODE_INVISIBLE) && (flag & UMODE_INVISIBLE))
 	  Count.invisi++;
         if (!(source_p->umodes & UMODE_OPER) && (flag & UMODE_OPER))
@@ -783,7 +783,7 @@ client_from_server(struct Client *client_p, struct Client *source_p, int parc,
   m = &parv[4][1];
   while (*m)
   {
-    flag = user_modes_from_c_to_bitmask[(unsigned char)*m];
+    flag = user_modes[(unsigned char)*m];
     if (flag & UMODE_INVISIBLE)
       Count.invisi++;
     if (flag & UMODE_OPER)

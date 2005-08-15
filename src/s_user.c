@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.362 2005/08/15 07:50:38 metalrock Exp $
+ *  $Id: s_user.c,v 7.363 2005/08/15 17:54:49 adx Exp $
  */
 
 #include <sys/types.h>
@@ -81,39 +81,8 @@ struct Isupport
 static dlink_list support_list = { NULL, NULL, 0 };
 MessageFile *isupportFile;
 
-/* table of ascii char letters
- * to corresponding bitmask
- */
-static const struct flag_item
-{
-  const unsigned int mode;
-  const unsigned char letter;
-} user_modes[] = {
-  { UMODE_ADMIN,        'a' },
-  { UMODE_BOTS,         'b' },
-  { UMODE_CCONN,        'c' },
-  { UMODE_DEAF,         'D' },
-  { UMODE_DEBUG,        'd' },
-  { UMODE_FULL,         'f' },
-  { UMODE_SOFTCALLERID, 'G' },
-  { UMODE_CALLERID,     'g' },
-  { UMODE_INVISIBLE,    'i' },
-  { UMODE_SKILL,        'k' },
-  { UMODE_LOCOPS,       'l' },
-  { UMODE_NCHANGE,      'n' },
-  { UMODE_OPER,         'o' },
-  { UMODE_REJ,          'r' },
-  { UMODE_SERVNOTICE,   's' },
-  { UMODE_UNAUTH,       'u' },
-  { UMODE_WALLOP,       'w' },
-  { UMODE_EXTERNAL,     'x' },
-  { UMODE_SPY,          'y' },
-  { UMODE_OPERWALL,     'z' },
-  { 0, '\0' }
-};
-
 /* memory is cheap. map 0-255 to equivalent mode */
-const unsigned int user_modes_from_c_to_bitmask[] =
+unsigned int user_modes[256] =
 {
   /* 0x00 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x0F */
   /* 0x10 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x1F */
@@ -953,15 +922,10 @@ void
 set_user_mode(struct Client *client_p, struct Client *source_p,
               int parc, char *parv[])
 {
-  unsigned int i;
-  unsigned int flag;
-  unsigned int setflags;
-  char **p;
-  char *m;
+  unsigned int flag, setflags;
+  char **p, *m, buf[BUFSIZE];
   struct Client *target_p;
-  int what = MODE_ADD;
-  int badflag = 0; /* Only send one bad flag notice */
-  char buf[BUFSIZE];
+  int what = MODE_ADD, badflag = 0, i;
 #if 0
   /* already covered by m_mode */
   if (parc < 2)
@@ -1001,9 +965,9 @@ set_user_mode(struct Client *client_p, struct Client *source_p,
     m = buf;
     *m++ = '+';
 
-    for (i = 0; user_modes[i].letter && (m - buf < BUFSIZE - 4); i++)
-      if (source_p->umodes & user_modes[i].mode)
-        *m++ = user_modes[i].letter;
+    for (i = 0; i < 128; i++)
+      if ((source_p->umodes & user_modes[i]))
+        *m++ = (char)i;
     *m = '\0';
 
     sendto_one(source_p, form_str(RPL_UMODEIS),
@@ -1072,7 +1036,7 @@ set_user_mode(struct Client *client_p, struct Client *source_p,
           break;
 
         default:
-          if ((flag = user_modes_from_c_to_bitmask[(unsigned char)*m]))
+          if ((flag = user_modes[(unsigned char)*m]))
           {
             if (MyConnect(source_p) && !IsOper(source_p) &&
                 (ConfigFileEntry.oper_only_umodes & flag))
@@ -1144,9 +1108,11 @@ send_umode(struct Client *client_p, struct Client *source_p,
   /* build a string in umode_buf to represent the change in the user's
    * mode between the new (source_p->umodes) and 'old'.
    */
-  for (i = 0; user_modes[i].letter; i++)
+  for (i = 0; i < 128; i++)
   {
-    flag = user_modes[i].mode;
+    flag = user_modes[i];
+    if (!flag)
+      continue;
 
     if (MyClient(source_p) && !(flag & sendmask))
       continue;
@@ -1154,23 +1120,23 @@ send_umode(struct Client *client_p, struct Client *source_p,
     if ((flag & old) && !(source_p->umodes & flag))
     {
       if (what == MODE_DEL)
-        *m++ = user_modes[i].letter;
+        *m++ = (char)i;
       else
       {
         what = MODE_DEL;
         *m++ = '-';
-        *m++ = user_modes[i].letter;
+        *m++ = (char)i;
       }
     }
     else if (!(flag & old) && (source_p->umodes & flag))
     {
       if (what == MODE_ADD)
-        *m++ = user_modes[i].letter;
+        *m++ = (char)i;
       else
       {
         what = MODE_ADD;
         *m++ = '+';
-        *m++ = user_modes[i].letter;
+        *m++ = (char)i;
       }
     }
   }

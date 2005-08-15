@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.47 2005/08/15 07:50:37 metalrock Exp $
+ *  $Id: s_user.h,v 7.48 2005/08/15 17:54:48 adx Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -52,7 +52,7 @@ void auth_callback_local_user(struct Client *, int, const char *);
 extern void do_local_user(const char *, struct Client *, struct Client *,
                           const char *, const char *, const char *,
                           const char *);
-extern const unsigned int user_modes_from_c_to_bitmask[];
+extern unsigned int user_modes[];
 extern void init_uid(void);
 extern char *uid_get(void);
 extern int valid_hostname(const char *);
@@ -61,4 +61,5 @@ extern void add_isupport(const char *, const char *, int);
 extern void delete_isupport(const char *);
 extern void init_isupport(void);
 extern void rebuild_isupport_message_line(void);
+
 #endif
