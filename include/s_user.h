@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.46 2005/08/13 05:15:19 db Exp $
+ *  $Id: s_user.h,v 7.47 2005/08/15 07:50:37 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -48,8 +48,7 @@ extern void register_local_user(struct Client *, struct Client *,
 extern void register_remote_user(struct Client *, struct Client *,
                                  const char *, const char *,
                                  const char *, const char *);
-void auth_callback_local_user(struct Client *source_p, int accept,
-			      const char *reason);
+void auth_callback_local_user(struct Client *, int, const char *);
 extern void do_local_user(const char *, struct Client *, struct Client *,
                           const char *, const char *, const char *,
                           const char *);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.361 2005/08/13 05:15:19 db Exp $
+ *  $Id: s_user.c,v 7.362 2005/08/15 07:50:38 metalrock Exp $
  */
 
 #include <sys/types.h>
@@ -502,14 +502,14 @@ register_local_user(struct Client *client_p, struct Client *source_p,
  * auth_callback_local
  *
  * inputs	- pointer to client auth'd externally
- *		- int to accept 1 for yes, -1 for no
+ *		- int to accepted 1 for yes, -1 for no
  *		- reason string for reason to deny client
  * output	- NONE
  * side effects	- given client as called by start_auth event is 
  *		  introduced to network or exited.
  */
 void
-auth_callback_local_user(struct Client *source_p, int accept,
+auth_callback_local_user(struct Client *source_p, int accepted,
 			 const char *reason)
 {
   char ipaddr[HOSTIPLEN];
