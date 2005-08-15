@@ -1,4 +1,4 @@
-$Id: README,v 1.40 2005/08/15 17:07:24 knight Exp $
+$Id: README,v 1.41 2005/08/15 18:02:10 knight Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
@@ -134,10 +134,6 @@ you will get two messages.
 
 Patches
 _______
-
-halfops.diff	- This patch will add halfops support to the ircd. To
-		  use this patch, type "patch -p1 < contrib/halfops.diff"
-		  in the main ircd-hybrid directory.
 
 4000_ip-cloaking.patch  - This patch will add IP cloaking to the ircd.
                           To use this patch, type 
