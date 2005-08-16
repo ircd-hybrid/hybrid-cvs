@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.26 2005/08/16 10:11:01 adx Exp $
+ *  $Id: hook.c,v 7.27 2005/08/16 15:14:05 knight Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ register_callback(const char *name, CBFUNC *func)
     dlinkAdd(func, make_dlink_node(), &cb->chain);
   if (name != NULL)
   {
-    cb->name = name;
+    DupString(cb->name, name);
     dlinkAdd(cb, &cb->node, &callback_list);
   }
   return (cb);

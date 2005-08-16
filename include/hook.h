@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.h,v 1.19 2005/08/15 20:50:01 adx Exp $
+ *  $Id: hook.h,v 1.20 2005/08/16 15:14:05 knight Exp $
  */
 
 #ifndef __HOOK_H_INCLUDED
@@ -30,7 +30,7 @@
 typedef void *CBFUNC(va_list);
 
 struct Callback {
-  const char *name;
+  char *name;
   dlink_list chain;
   dlink_node node;
 };
