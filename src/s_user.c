@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.365 2005/08/15 20:50:02 adx Exp $
+ *  $Id: s_user.c,v 7.366 2005/08/16 08:01:40 adx Exp $
  */
 
 #include <sys/types.h>
@@ -59,6 +59,8 @@
 
 int MaxClientCount     = 1;
 int MaxConnectionCount = 1;
+struct Callback *entering_umode_cb = NULL;
+struct Callback *umode_cb = NULL;
 
 static void user_welcome(struct Client *);
 static void report_and_set_user_flags(struct Client *, const struct AccessItem *);
@@ -830,6 +832,31 @@ do_local_user(const char *nick, struct Client *client_p, struct Client *source_p
   }
 }
 
+/* change_simple_umode()
+ *
+ * this callback can be hooked to allow special handling of
+ * certain usermodes
+ */
+static void *
+change_simple_umode(va_list args)
+{
+  struct Client *source_p;
+  int what;
+  unsigned int flag;
+
+  va_arg(args, struct Client *);
+  source_p = va_arg(args, struct Client *);
+  what = va_arg(args, int);
+  flag = va_arg(args, unsigned int);
+
+  if (what == MODE_ADD)
+    source_p->umodes |= flag;
+  else
+    source_p->umodes &= ~flag;
+
+  return NULL;
+}
+
 /* set_user_mode()
  *
  * added 15/10/91 By Darren Reed.
@@ -893,6 +920,8 @@ set_user_mode(struct Client *client_p, struct Client *source_p,
                me.name, source_p->name, buf);
     return;
   }
+
+  execute_callback(entering_umode_cb, client_p, source_p);
 
   /* find flags already set for user */
   setflags = source_p->umodes;
@@ -963,12 +992,7 @@ set_user_mode(struct Client *client_p, struct Client *source_p,
               badflag = 1;
             }
             else
-            {
-              if (what == MODE_ADD)
-                source_p->umodes |= flag;
-              else
-                source_p->umodes &= ~flag;  
-            }
+	      execute_callback(umode_cb, client_p, source_p, what, flag);
           }
           else
           {
@@ -1284,7 +1308,7 @@ oper_up(struct Client *source_p)
 
 static char new_uid[TOTALSIDUID+1];     /* allow for \0 */
 static void add_one_to_uid(int i);
-  
+
 /*
  * init_uid()
  * 
@@ -1316,6 +1340,9 @@ init_uid(void)
 
   /* XXX if IRC_MAXUID != 6, this will have to be rewritten */
   memcpy(new_uid+IRC_MAXSID, "AAAAAA", IRC_MAXUID);
+
+  entering_umode_cb = register_callback("entering_umode", NULL);
+  umode_cb = register_callback("changing_umode", change_simple_umode);
 }
 
 /*

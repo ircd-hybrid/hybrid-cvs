@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.48 2005/08/15 17:54:48 adx Exp $
+ *  $Id: s_user.h,v 7.49 2005/08/16 08:01:40 adx Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -34,32 +34,33 @@ struct AccessItem;
 
 extern int MaxClientCount;     /* GLOBAL - highest number of clients     */
 extern int MaxConnectionCount; /* GLOBAL - highest number of connections */
-
-extern void set_user_mode(struct Client *, struct Client *, int, char **);
-extern void send_umode(struct Client *, struct Client *,
-                       unsigned int, unsigned int, char *);
-extern void send_umode_out(struct Client *, struct Client *, unsigned int);
-extern void show_lusers(struct Client *);
-extern void show_isupport(struct Client *);
-extern void oper_up(struct Client *);
-
-extern void register_local_user(struct Client *, struct Client *,
-                                const char *, const char *);
-extern void register_remote_user(struct Client *, struct Client *,
-                                 const char *, const char *,
-                                 const char *, const char *);
-void auth_callback_local_user(struct Client *, int, const char *);
-extern void do_local_user(const char *, struct Client *, struct Client *,
-                          const char *, const char *, const char *,
-                          const char *);
+extern struct Callback *entering_umode_cb;
+extern struct Callback *umode_cb;
 extern unsigned int user_modes[];
-extern void init_uid(void);
-extern char *uid_get(void);
-extern int valid_hostname(const char *);
-extern int valid_username(const char *);
-extern void add_isupport(const char *, const char *, int);
-extern void delete_isupport(const char *);
-extern void init_isupport(void);
-extern void rebuild_isupport_message_line(void);
+
+void set_user_mode(struct Client *, struct Client *, int, char **);
+void send_umode(struct Client *, struct Client *,
+                unsigned int, unsigned int, char *);
+void send_umode_out(struct Client *, struct Client *, unsigned int);
+void show_lusers(struct Client *);
+void show_isupport(struct Client *);
+void oper_up(struct Client *);
+
+void register_local_user(struct Client *, struct Client *,
+                         const char *, const char *);
+void register_remote_user(struct Client *, struct Client *,
+                          const char *, const char *,
+                          const char *, const char *);
+void do_local_user(const char *, struct Client *, struct Client *,
+                   const char *, const char *, const char *,
+                   const char *);
+void init_uid(void);
+char *uid_get(void);
+int valid_hostname(const char *);
+int valid_username(const char *);
+void add_isupport(const char *, const char *, int);
+void delete_isupport(const char *);
+void init_isupport(void);
+void rebuild_isupport_message_line(void);
 
 #endif
