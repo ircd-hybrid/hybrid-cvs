@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.63 2005/08/16 00:42:20 knight Exp $
+ *  $Id: modules.h,v 7.64 2005/08/16 20:42:49 knight Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -172,27 +172,41 @@ extern struct Message rxline_msgtab;
 
 #ifdef BUILD_CONTRIB
 extern struct Message capture_msgtab;
+extern struct Message chanserv_msgtab;
 extern struct Message chghost_msgtab;
 extern struct Message chgident_msgtab;
 extern struct Message chgname_msgtab;
 extern struct Message classlist_msgtab;
 extern struct Message clearchan_msgtab;
+extern struct Message cs_msgtab;
 extern struct Message ctrace_msgtab;
 extern struct Message delspoof_msgtab;
 extern struct Message etrace_msgtab;
 extern struct Message flags_msgtab;
 extern struct Message forcejoin_msgtab;
 extern struct Message forcepart_msgtab;
+extern struct Message global_msgtab;
 extern struct Message help_msgtab;
+extern struct Message helpserv_msgtab;
+extern struct Message identify_msgtab;
 extern struct Message jupe_msgtab;
 extern struct Message killhost_msgtab;
 extern struct Message ltrace_msgtab;
+extern struct Message memoserv_msgtab;
 extern struct Message mkpasswd_msgtab;
+extern struct Message ms_msgtab;
+extern struct Message nickserv_msgtab;
+extern struct Message ns_msgtab;
 extern struct Message ojoin_msgtab;
 extern struct Message omotd_msgtab;
+extern struct Message operserv_msgtab;
 extern struct Message operspy_msgtab;
 extern struct Message opme_msgtab;
+extern struct Message os_msgtab;
+extern struct Message seenserv_msgtab;
 extern struct Message spoof_msgtab;
+extern struct Message statserv_msgtab;
+extern struct Message svsnick_msgtab;
 extern struct Message test_msgtab;
 extern struct Message uhelp_msgtab;
 extern struct Message uncapture_msgtab;

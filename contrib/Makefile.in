@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.68 2005/08/16 10:03:50 adx Exp $
+# $Id: Makefile.in,v 1.69 2005/08/16 20:42:49 knight Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -44,7 +44,8 @@ SRCS = \
   m_omotd.c     \
   m_operspy.c   \
   m_opme.c      \
-  m_spoof.c     
+  m_spoof.c     \
+  m_services.c     
 
 SHARED_ONLY_SRCS = \
   m_ctrace.c \
