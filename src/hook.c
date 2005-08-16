@@ -2,7 +2,8 @@
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  hook.c: Provides a generic event hooking interface.
  *
- *  Copyright (C) 2000-2002 Edward Brocklesby, Hybrid Development Team
+ *  Copyright (C) 2003 Piotr Nizynski, Advanced IRC Services Project Team
+ *  Copyright (C) 2005 Hybrid Development Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.25 2005/08/15 20:50:02 adx Exp $
+ *  $Id: hook.c,v 7.26 2005/08/16 10:11:01 adx Exp $
  */
 
 #include "stdinc.h"
