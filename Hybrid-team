@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.89 2005/08/15 17:16:41 knight Exp $
+$Id: Hybrid-team,v 7.90 2005/08/16 00:42:20 knight Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -39,6 +39,7 @@ Hwy101, W. Campbell <wcampbel@botbay.net>
 jmallett, Juli Mallett <jmallett@FreeBSD.org>
 jv, Jakub Vlasek <jv@pilsedu.cz>
 k9, Jeremy Chadwick <ircd@jdc.parodius.com>
+knight, Alan LeVee <alan.levee@prometheus-designs.net>
 kre, Dinko Korunic <kreator@fly.srk.fer.hr>
 madmax, Paul Lomax <madmax@efnet.org>
 Riedel, Dennis Vink, <riedel@chaotic.nl>
@@ -50,7 +51,6 @@ vx0, Mark Miller <mark@oc768.net>
 wiz, Jason Dambrosio <jason@wiz.cx>
 Xride, Søren Straarup <xride@x12.dk>
 zb^3, Alfred Perlstein <alfred@freebsd.org>
-knight-, Alan LeVee <alan.levee@prometheus-designs.net>
 
 Others are welcome. Always. And if we left anyone off the above list,
 be sure to let us know that too. Many others have contributed to

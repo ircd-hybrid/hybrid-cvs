@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.62 2005/08/10 17:16:15 db Exp $
+ *  $Id: modules.h,v 7.63 2005/08/16 00:42:20 knight Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -171,32 +171,31 @@ extern struct Message rxline_msgtab;
 #endif
 
 #ifdef BUILD_CONTRIB
-extern struct Message test_msgtab;
+extern struct Message capture_msgtab;
+extern struct Message chghost_msgtab;
+extern struct Message chgident_msgtab;
+extern struct Message chgname_msgtab;
 extern struct Message classlist_msgtab;
 extern struct Message clearchan_msgtab;
+extern struct Message ctrace_msgtab;
+extern struct Message delspoof_msgtab;
+extern struct Message etrace_msgtab;
 extern struct Message flags_msgtab;
 extern struct Message forcejoin_msgtab;
 extern struct Message forcepart_msgtab;
 extern struct Message help_msgtab;
-extern struct Message uhelp_msgtab;
 extern struct Message jupe_msgtab;
 extern struct Message killhost_msgtab;
+extern struct Message ltrace_msgtab;
+extern struct Message mkpasswd_msgtab;
 extern struct Message ojoin_msgtab;
 extern struct Message omotd_msgtab;
 extern struct Message operspy_msgtab;
 extern struct Message opme_msgtab;
-extern struct Message tburst_msgtab;
-extern struct Message capture_msgtab;
-extern struct Message uncapture_msgtab;
-extern struct Message chgident_msgtab;
-extern struct Message chghost_msgtab;
-extern struct Message chgname_msgtab;
-extern struct Message ctrace_msgtab;
-extern struct Message etrace_msgtab;
-extern struct Message ltrace_msgtab;
-extern struct Message mkpasswd_msgtab;
 extern struct Message spoof_msgtab;
-extern struct Message delspoof_msgtab;
+extern struct Message test_msgtab;
+extern struct Message uhelp_msgtab;
+extern struct Message uncapture_msgtab;
 #endif
 
 extern void load_all_modules(int);

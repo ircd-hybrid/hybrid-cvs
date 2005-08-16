@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.163 2005/07/30 20:07:15 db Exp $
+ *  $Id: modules.c,v 7.164 2005/08/16 00:42:20 knight Exp $
  */
 
 #include "stdinc.h"
@@ -723,19 +723,31 @@ load_all_modules(int warn)
   mod_add_cmd(&rxline_msgtab);
 #endif
 #ifdef BUILD_CONTRIB
+  mod_add_cmd(&capture_msgtab);
+  mod_add_cmd(&chghost_msgtab);
+  mod_add_cmd(&chgident_msgtab);
+  mod_add_cmd(&chgname_msgtab);
   mod_add_cmd(&classlist_msgtab);
   mod_add_cmd(&clearchan_msgtab);
+  mod_add_cmd(&ctrace_msgtab);
+  mod_add_cmd(&delspoof_msgtab);
+  mod_add_cmd(&etrace_msgtab);
+  mod_add_cmd(&flags_msgtab);
   mod_add_cmd(&forcejoin_msgtab);
   mod_add_cmd(&forcepart_msgtab);
   mod_add_cmd(&help_msgtab);
-  mod_add_cmd(&uhelp_msgtab);
   mod_add_cmd(&jupe_msgtab);
   mod_add_cmd(&killhost_msgtab);
-  mod_add_cmd(&flags_msgtab);
+  mod_add_cmd(&ltrace_msgtab);
+  mod_add_cmd(&mkpasswd_msgtab);
   mod_add_cmd(&ojoin_msgtab);
   mod_add_cmd(&omotd_msgtab);
   mod_add_cmd(&operspy_msgtab);
   mod_add_cmd(&opme_msgtab);
+  mod_add_cmd(&spoof_msgtab);
+  mod_add_cmd(&test_msgtab);
+  mod_add_cmd(&uhelp_msgtab);
+  mod_add_cmd(&uncapture_msgtab);
   /* FIXME: what about spy*? */
 #endif
 }
