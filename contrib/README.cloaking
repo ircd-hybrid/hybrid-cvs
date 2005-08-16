@@ -1,19 +1,14 @@
 ircd-hybrid IP/hostname cloaking README:
 -----------------------------------------------
-$Id: README.cloaking,v 1.4 2005/08/16 10:03:51 adx Exp $
+$Id: README.cloaking,v 1.5 2005/08/16 14:06:58 knight Exp $
 
 Copyright (c) 2005 by Alan 'knight-' LeVee of ChatJunkies IRC Network
 -----------------------------------------------
 
 This README file is designed to cover the aspects of the IP cloaking features
-new to hybrid in this contrib patch named 4000_ip-cloaking.patch. The basis
-for the IP cloaking is to add some level of privacy for local users to have
-by cloaking, or rather masking, a part of their hostname with a CRC32 polymorphism
-hash.
-
-To apply the patch you'll need to do the following command in the main ircd-hybrid tree:
-
-patch -p1 < contrib/4000_ip-cloaking.patch
+new to hybrid in the contrib module named ip_cloaking.c. The basis for the 
+IP cloaking is to add some level of privacy for local users to have by cloaking, 
+or rather masking, a part of their hostname with a CRC32 polymorphism hash.
 
 This will make the necessary additions to the source code to allow IP cloaking to work 
 as well as adding in a new user mode known as +h. Normally on most IRC daemons such as
@@ -22,14 +17,14 @@ external operator messages we used +h as the next logical step.
 
 Basically the IP cloaking is a proof of concept utilising a CRC32 based salt encryption
 method that UnrealIRCd uses but with some changes and bit stuffing and bit shifting. However,
-before you compile ircd-hybrid, it is *strongly* recommended that you modify src/cloak.c
-and modify the following:
+before you compile the contrib module, it is *strongly* recommended that you modify the
+ip_cloaking.c module and edit the following:
 
 #define KEY
 #define KEY2
 #define KEY3
 
-With different numbers than are present in the provided patch. This insures that no one can 
+With different numbers than are present in the provided module. This insures that no one can 
 really decifier the secret keys because they'll go on the basis that they are stock and not modified.
 To get proper or good entropy on random numbers rather than trying to guess them it is a good idea
 to use an entropy variable or device to grab them. If you have BASH available you can use the randomisation
@@ -37,28 +32,28 @@ variable called ${RANDOM} to get your bits. You need at least 3 secret keys in o
 is no preset requirement as to how many numbers per key is required but it should have at least 4 to 5 numbers
 on each block. If you want to do it easily and you have bash you can do the following command in a BASH shell:
 
-$ echo -e "KEY  ${RANDOM}\nKEY2 ${RANDOM}\nKEY3 ${RANDOM}"
+$ echo -e "#define KEY  ${RANDOM}\n#define KEY2 ${RANDOM}\n#define KEY3 ${RANDOM}"
 
 You'll get an output similar to this:
-KEY  1762
-KEY2 26409
-KEY3 25
 
-Once you run that command you can copy and paste the output into cloak.c and compile. However all servers *must*
-use the same secret keys in order for this to work properly or you'll run into problems especially for channel
-bans.
+#define KEY  935
+#define KEY2 23539
+#define KEY3 22522
 
-Once you've compiled and install ircd-hybrid you will *need* the module m_change.so in order for this to work
-as the cloaking code at this time depends on the CHGHOST command. To activate this module you'll need to do 
-the following:
+Once you run that command you can copy and paste the output into ip_cloaking.c and compile the module. However 
+all servers *must* use the same secret keys in order for this to work properly or you'll run into problems 
+especially for channel bans.
+
+Since you will also need the module m_change.so to go with IP cloaking it is best just to cd into the contrib
+directory and build all the modules like so:
 
 cd contrib; make install
 
-Then you'll need to edit etc/ircd.conf and add the following line so you can load the module:
+Then you'll need to edit etc/ircd.conf and add the following line to the modules {} block so you can load the module:
 
-modules = "m_change.so";
+modules = "m_change.so ip_cloaking.so";
 
-Please note that *all* servers *must* have this module loaded or IP cloaking will *not* work. Once this is done 
+Please note that *all* servers *must* have these modules loaded or IP cloaking will *not* work. Once this is done 
 you can activate the IP cloaking by passing the following user mode:
 
 /MODE nickname +h
