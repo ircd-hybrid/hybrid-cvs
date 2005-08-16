@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_trace_notice.c,v 1.12 2005/07/16 12:19:38 michael Exp $
+ *  $Id: spy_trace_notice.c,v 1.13 2005/08/16 09:27:45 adx Exp $
  */
 
 #include "stdinc.h"
@@ -30,42 +30,85 @@
 #include "ircd.h"
 #include "send.h"
 
-static int show_trace(struct hook_spy_data *);
-static int show_ltrace(struct hook_spy_data *);
+static struct Callback *trace_cb = NULL;
+static dlink_node *prev_trace;
+
+static struct Callback *ltrace_cb = NULL;
+static dlink_node *prev_ltrace;
+
+static struct Callback *ctrace_cb = NULL;
+static dlink_node *prev_ctrace;
+
+static void *show_trace(va_list);
+static void *show_ltrace(va_list);
+static void *show_ctrace(va_list);
 
 void
 _modinit(void)
 {
-  hook_add_hook("doing_trace", (hookfn *)show_trace);
-  hook_add_hook("doing_ltrace", (hookfn *)show_ltrace);
+  if ((trace_cb = find_callback("doing_trace")))
+    prev_trace = install_hook(trace_cb, show_trace);
+
+  if ((ltrace_cb = find_callback("doing_ltrace")))
+    prev_ltrace = install_hook(ltrace_cb, show_ltrace);
+
+  if ((ctrace_cb = find_callback("doing_ctrace")))
+    prev_ctrace = install_hook(ctrace_cb, show_ctrace);
 }
 
 void
 _moddeinit(void)
 {
-  hook_del_hook("doing_trace", (hookfn *)show_trace);
-  hook_del_hook("doing_ltrace", (hookfn *)show_ltrace);
+  if (trace_cb)
+    uninstall_hook(trace_cb, show_trace);
+
+  if (ltrace_cb)
+    uninstall_hook(ltrace_cb, show_ltrace);
+
+  if (ctrace_cb)
+    uninstall_hook(ctrace_cb, show_ctrace);
 }
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 
-static int
-show_trace(struct hook_spy_data *data)
+static void *
+show_trace(va_list args)
 {
-  sendto_realops_flags(UMODE_SPY, L_ALL,
-                       "trace requested by %s (%s@%s) [%s]",
-                       data->source_p->name, data->source_p->username,
-                       data->source_p->host, data->source_p->servptr->name);
+  struct Client *source_p = va_arg(args, struct Client *);
 
-  return 0;
+  if (IsClient(source_p))
+    sendto_realops_flags(UMODE_SPY, L_ALL,
+                         "trace requested by %s (%s@%s) [%s]",
+                         source_p->name, source_p->username,
+                         source_p->host, source_p->servptr->name);
+
+  return pass_callback(prev_trace, args);
 }
 
-static int
-show_ltrace(struct hook_spy_data *data)
+static void *
+show_ltrace(va_list args)
 {
-  sendto_realops_flags(UMODE_SPY, L_ALL,
-		       "ltrace requested by %s (%s@%s) [%s]",
-		       data->source_p->name, data->source_p->username,
-		       data->source_p->host, data->source_p->servptr->name);
-  return 0;
+  struct Client *source_p = va_arg(args, struct Client *);
+
+  if (IsClient(source_p))
+    sendto_realops_flags(UMODE_SPY, L_ALL,
+                         "ltrace requested by %s (%s@%s) [%s]",
+                         source_p->name, source_p->username,
+                         source_p->host, source_p->servptr->name);
+
+  return pass_callback(prev_ltrace, args);
+}
+
+static void *
+show_ctrace(va_list args)
+{
+  struct Client *source_p = va_arg(args, struct Client *);
+
+  if (IsClient(source_p))
+    sendto_realops_flags(UMODE_SPY, L_ALL,
+                         "ctrace requested by %s (%s@%s) [%s]",
+                         source_p->name, source_p->username,
+                         source_p->host, source_p->servptr->name);
+
+  return pass_callback(prev_ctrace, args);
 }

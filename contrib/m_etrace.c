@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_etrace.c,v 1.3 2005/07/16 12:19:38 michael Exp $
+ *  $Id: m_etrace.c,v 1.4 2005/08/16 09:27:45 adx Exp $
  */
 
 #include "stdinc.h"
@@ -44,8 +44,8 @@
 
 #define FORM_STR_RPL_ETRACE	":%s 709 %s %s %s %s %s %s :%s"
 
+static void *do_etrace(va_list);
 static void mo_etrace(struct Client *, struct Client *, int, char *[]);
-static void etrace_spy(struct Client *);
 
 struct Message etrace_msgtab = {
   "ETRACE", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -53,39 +53,40 @@ struct Message etrace_msgtab = {
 };
 
 #ifndef STATIC_MODULES
+const char *_version = "$Revision: 1.4 $";
+static struct Callback *etrace_cb;
+
 void
 _modinit(void)
 {
-  hook_add_event("doing_etrace");
+  etrace_cb = register_callback("doing_etrace", do_etrace);
   mod_add_cmd(&etrace_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  hook_del_event("doing_etrace");
   mod_del_cmd(&etrace_msgtab);
+  uninstall_hook(etrace_cb, do_etrace);
 }
-const char *_version = "$Revision: 1.3 $";
 #endif
 
 static void report_this_status(struct Client *, struct Client *);
 
-/* mo_etrace()
- *      parv[0] = sender prefix
- *      parv[1] = servername
+/*
+ * do_etrace()
  */
-static void
-mo_etrace(struct Client *client_p, struct Client *source_p,
-	  int parc, char *parv[])
+static void *
+do_etrace(va_list args)
 {
+  struct Client *source_p = va_arg(args, struct Client *);
+  int parc = va_arg(args, int);
+  char **parv = va_arg(args, char **);
   const char *tname = NULL;
   struct Client *target_p = NULL;
   int wilds = 0;
   int do_all = 0;
   dlink_node *ptr;
-
-  etrace_spy(source_p);
 
   if (parc > 0)
   {
@@ -101,8 +102,6 @@ mo_etrace(struct Client *client_p, struct Client *source_p,
     tname = "*";
   }
 
-  set_time();
-
   if (!wilds && !do_all)
   {
     target_p = find_client(tname);
@@ -112,7 +111,7 @@ mo_etrace(struct Client *client_p, struct Client *source_p,
       
     sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name, 
 	       source_p->name, tname);
-    return;
+    return NULL;
   }
 
   DLINK_FOREACH(ptr, local_client_list.head)
@@ -132,6 +131,26 @@ mo_etrace(struct Client *client_p, struct Client *source_p,
 
   sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name,
 	     source_p->name, tname);
+  return NULL;
+}
+
+/* mo_etrace()
+ *      parv[0] = sender prefix
+ *      parv[1] = servername
+ */
+static void
+mo_etrace(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
+{
+#ifdef STATIC_MODULES
+  va_list args;
+
+  va_start(args, client_p);
+  do_etrace(args);
+  va_end(args);
+#else
+  execute_callback(etrace_cb, source_p, parc, parv);
+#endif
 }
 
 /* report_this_status()
@@ -176,20 +195,4 @@ report_this_status(struct Client *source_p, struct Client *target_p)
 		 target_p->name, target_p->username, ip,
 		 target_p->info);
   }
-}
-
-/* etrace_spy()
- *
- * input        - pointer to client
- * output       - none
- * side effects - hook event doing_etrace is called
- */
-static void
-etrace_spy(struct Client *source_p)
-{
-  struct hook_spy_data data;
-
-  data.source_p = source_p;
-
-  hook_call_event("doing_etrace", &data);
 }

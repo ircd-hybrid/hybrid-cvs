@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_admin_notice.c,v 1.11 2005/07/16 12:19:38 michael Exp $
+ *  $Id: spy_admin_notice.c,v 1.12 2005/08/16 09:27:45 adx Exp $
  */
 
 #include "stdinc.h"
@@ -30,29 +30,37 @@
 #include "ircd.h"
 #include "send.h"
 
-static int show_admin(struct hook_spy_data *);
+static struct Callback *admin_cb = NULL;
+static dlink_node *prev_hook;
+
+static void *show_admin(va_list);
 
 void
 _modinit(void)
 {
-  hook_add_hook("doing_admin", (hookfn *)show_admin);
+  if ((admin_cb = find_callback("doing_admin")))
+    prev_hook = install_hook(admin_cb, show_admin);
 }
 
 void
 _moddeinit(void)
 {
-  hook_del_hook("doing_admin", (hookfn *)show_admin);
+  if (admin_cb)
+    uninstall_hook(admin_cb, show_admin);
 }
 
-const char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 
-static int
-show_admin(struct hook_spy_data *data)
+static void *
+show_admin(va_list args)
 {
-  sendto_realops_flags(UMODE_SPY, L_ALL,
-                         "admin requested by %s (%s@%s) [%s]",
-                         data->source_p->name, data->source_p->username,
-                         data->source_p->host, data->source_p->servptr->name);
+  struct Client *source_p = va_arg(args, struct Client *);
 
-  return 0;
+  if (IsClient(source_p))
+    sendto_realops_flags(UMODE_SPY, L_ALL,
+                         "admin requested by %s (%s@%s) [%s]",
+                         source_p->name, source_p->username,
+                         source_p->host, source_p->servptr->name);
+
+  return pass_callback(prev_hook, args);
 }

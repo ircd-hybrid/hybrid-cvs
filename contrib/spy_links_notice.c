@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_links_notice.c,v 1.15 2005/07/16 12:19:38 michael Exp $
+ *  $Id: spy_links_notice.c,v 1.16 2005/08/16 09:27:45 adx Exp $
  */
 
 #include "stdinc.h"
@@ -30,29 +30,42 @@
 #include "ircd.h"
 #include "send.h"
 
-static int show_links(struct hook_links_data *);
+static struct Callback *links_cb = NULL;
+static dlink_node *prev_hook;
+
+static void *show_links(va_list);
 
 void
 _modinit(void)
 {
-  hook_add_hook("doing_links", (hookfn *)show_links);
+  if ((links_cb = find_callback("doing_links")))
+    prev_hook = install_hook(links_cb, show_links);
 }
 
 void
 _moddeinit(void)
 {
-  hook_del_hook("doing_links", (hookfn *)show_links);
+  if (links_cb)
+    uninstall_hook(links_cb, show_links);
 }
 
-const char *_version = "$Revision: 1.15 $";
+const char *_version = "$Revision: 1.16 $";
 
-static int
-show_links(struct hook_links_data *data)
+static void *
+show_links(va_list args)
 {
-  sendto_realops_flags(UMODE_SPY, L_ALL,
-                       "LINKS '%s' requested by %s (%s@%s) [%s]",
-                       data->mask, data->source_p->name, data->source_p->username,
-                       data->source_p->host, data->source_p->servptr->name);
+  struct Client *source_p = va_arg(args, struct Client *);
+  char **parv;
 
-  return 0;
+  va_arg(args, int);
+  parv = va_arg(args, char **);
+
+  if (IsClient(source_p))
+    sendto_realops_flags(UMODE_SPY, L_ALL,
+                         "LINKS '%s' requested by %s (%s@%s) [%s]",
+                         parv[1] ? parv[1] : "", source_p->name,
+			 source_p->username, source_p->host,
+			 source_p->servptr->name);
+
+  return pass_callback(prev_hook, args);
 }

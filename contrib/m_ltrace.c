@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.18 2005/07/26 13:07:28 adx Exp $
+ *  $Id: m_ltrace.c,v 1.19 2005/08/16 09:27:45 adx Exp $
  */
 
 #include "stdinc.h"
@@ -41,10 +41,9 @@
 #include "parse.h"
 #include "modules.h"
 
-
+static void *do_ltrace(va_list);
 static void m_ltrace(struct Client *, struct Client *, int, char **);
 static void mo_ltrace(struct Client *, struct Client *, int, char **);
-static void ltrace_spy(struct Client *);
 
 struct Message ltrace_msgtab = {
   "LTRACE", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -52,21 +51,22 @@ struct Message ltrace_msgtab = {
 };
 
 #ifndef STATIC_MODULES
+const char *_version = "$Revision: 1.19 $";
+static struct Callback *ltrace_cb;
+
 void
 _modinit(void)
 {
-  hook_add_event("doing_ltrace");
+  ltrace_cb = register_callback("doing_ltrace", do_ltrace);
   mod_add_cmd(&ltrace_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  hook_del_event("doing_ltrace");
   mod_del_cmd(&ltrace_msgtab);
+  uninstall_hook(ltrace_cb, do_ltrace);
 }
-
-const char *_version = "$Revision: 1.18 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
@@ -92,37 +92,22 @@ m_ltrace(struct Client *client_p, struct Client *source_p,
 }
 
 /*
- * mo_ltrace
- *      parv[0] = sender prefix
- *      parv[1] = servername
+ * do_ltrace
  */
-static void
-mo_ltrace(struct Client *client_p, struct Client *source_p,
-          int parc, char *parv[])
+static void *
+do_ltrace(va_list args)
 {
+  struct Client *source_p = va_arg(args, struct Client *);
+  int   parc = va_arg(args, int);
+  char  **parv = va_arg(args, char **);
   struct Client *target_p = NULL;
-  char  *tname;
   int   doall;
   int   wilds, dow;
   dlink_node *ptr;
   char *looking_for = parv[0];
+  char *tname = parc > 1 ? parv[1] : me.name;
 
-  if (parc > 1)
-    tname = parv[1];
-  else
-    tname = me.name;
-
-  if (!IsOper(source_p))
-  {
-    sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name, parv[0], tname);
-    return;
-  }
-
-  if (parc > 2)
-    if (hunt_server(client_p, source_p, ":%s LTRACE %s :%s", 2, parc, parv))
-      return;
-
-  switch (hunt_server(client_p, source_p, ":%s LTRACE :%s", 1, parc, parv))
+  switch (hunt_server(source_p->from, source_p, ":%s LTRACE :%s", 1,parc,parv))
   {
     case HUNTED_PASS: /* note: gets here only if parv[1] exists */
     {
@@ -145,15 +130,13 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
       else
         sendto_one(source_p, form_str(RPL_TRACELINK), me.name, looking_for,
                    ircd_version, tname, "ac2ptr_is_NULL!!");
-      return;
+      return NULL;
     }
     case HUNTED_ISME:
       break;
     default:
-      return;
+      return NULL;
   }
-
-  ltrace_spy(source_p);
 
   doall = (parv[1] && (parc > 1)) ? match(tname, me.name): TRUE;
   wilds = !parv[1] || strchr(tname, '*') || strchr(tname, '?');
@@ -196,7 +179,7 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
 
     sendto_one(source_p, form_str(RPL_ENDOFTRACE),
                me.name, source_p->name, tname);
-    return;
+    return NULL;
   }
 
   /* report all opers */
@@ -231,6 +214,40 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
   }
 
   sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name, parv[0], tname);
+  return NULL;
+}
+
+/*
+ * mo_ltrace
+ *      parv[0] = sender prefix
+ *      parv[1] = servername
+ */
+static void
+mo_ltrace(struct Client *client_p, struct Client *source_p,
+          int parc, char *parv[])
+{
+  if (!IsOper(source_p))
+  {
+    sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name, parv[0],
+               parc > 1 ? parv[1] : me.name);
+    return;
+  }
+
+  if (parc > 2)
+    if (hunt_server(client_p, source_p, ":%s LTRACE %s :%s", 2, parc, parv))
+      return;
+
+#ifdef STATIC_MODULES
+  {
+    va_list args;
+
+    va_start(args, client_p);
+    do_ltrace(args);
+    va_end(args);
+  }
+#else
+  execute_callback(ltrace_cb, source_p, parc, parv);
+#endif
 }
 
 /*
@@ -329,22 +346,5 @@ report_this_status(struct Client *source_p, struct Client *target_p,
       break;
     }
 
-  return(0);
+  return 0;
 }
-
-/* ltrace_spy()
- *
- * input        - pointer to client
- * output       - none
- * side effects - hook event doing_trace is called
- */
-static void
-ltrace_spy(struct Client *source_p)
-{
-  struct hook_spy_data data;
-
-  data.source_p = source_p;
-
-  hook_call_event("doing_ltrace", &data);
-}
-

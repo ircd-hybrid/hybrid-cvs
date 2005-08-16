@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ctrace.c,v 1.10 2005/07/16 12:19:38 michael Exp $
+ *  $Id: m_ctrace.c,v 1.11 2005/08/16 09:27:45 adx Exp $
  */
 
 #include "stdinc.h"
@@ -42,9 +42,8 @@
 #include "modules.h"
 #include "irc_getnameinfo.h"
 
+static void *do_ctrace(va_list);
 static void mo_ctrace(struct Client*, struct Client*, int, char**);
-
-static void ctrace_spy(struct Client *);
 
 struct Message ctrace_msgtab = {
   "CTRACE", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -52,23 +51,25 @@ struct Message ctrace_msgtab = {
 };
 
 #ifndef STATIC_MODULES
+const char *_version = "$Revision: 1.11 $";
+static struct Callback *ctrace_cb;
+
 void
 _modinit(void)
 {
-  hook_add_event("doing_ctrace");
+  ctrace_cb = register_callback("doing_ctrace", do_ctrace);
   mod_add_cmd(&ctrace_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  hook_del_event("doing_ctrace");
   mod_del_cmd(&ctrace_msgtab);
+  uninstall_hook(ctrace_cb, do_ctrace);
 }
-const char *_version = "$Revision: 1.10 $";
 #endif
-static int report_this_status(struct Client *source_p, struct Client *target_p);
 
+static int report_this_status(struct Client *source_p, struct Client *target_p);
 
 /*
 ** mo_ctrace
@@ -79,11 +80,6 @@ static void
 mo_ctrace(struct Client *client_p, struct Client *source_p,
 	 int parc, char *parv[])
 {
-  struct Client       *target_p = NULL;
-  dlink_node *ptr;
-  char *class_looking_for;
-  const char* class_name;
-
   if (EmptyString(parv[1]))
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
@@ -91,10 +87,35 @@ mo_ctrace(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  class_looking_for = parv[1];
-  ctrace_spy(source_p);
+#ifdef STATIC_MODULES
+  {
+    va_list args;
 
-  set_time();
+    va_start(args, client_p);
+    do_ctrace(args);
+    va_end(args);
+  }
+#else
+  execute_callback(ctrace_cb, source_p, parc, parv);
+#endif
+}
+
+/*
+ * do_ctrace
+ */
+static void *
+do_ctrace(va_list args)
+{
+  struct Client *source_p = va_arg(args, struct Client *);
+  char **parv;
+  struct Client *target_p = NULL;
+  char *class_looking_for;
+  const char *class_name;
+  dlink_node *ptr;
+
+  va_arg(args, int);
+  parv = va_arg(args, char **);
+  class_looking_for = parv[1];
 
   /* report all direct connections */
 
@@ -104,13 +125,13 @@ mo_ctrace(struct Client *client_p, struct Client *source_p,
 
     class_name = get_client_class(target_p);
     if ((class_name != NULL) && match(class_looking_for, class_name))
-      (void)report_this_status(source_p,target_p);
+      (void)report_this_status(source_p, target_p);
   }
 
-  sendto_one(source_p, form_str(RPL_ENDOFTRACE),me.name,
+  sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name,
 	     parv[0], class_looking_for);
+  return NULL;
 }
-
 
 /*
  * report_this_status
@@ -204,20 +225,4 @@ report_this_status(struct Client *source_p, struct Client *target_p)
     }
 
   return(cnt);
-}
-
-/* ctrace_spy()
- *
- * input        - pointer to client
- * output       - none
- * side effects - hook event doing_trace is called
- */
-static void
-ctrace_spy(struct Client *source_p)
-{
-  struct hook_spy_data data;
-
-  data.source_p = source_p;
-
-  hook_call_event("doing_ctrace", &data);
 }
