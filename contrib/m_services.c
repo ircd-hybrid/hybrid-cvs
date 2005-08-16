@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.1 2005/08/16 20:42:49 knight Exp $
+ *  $Id: m_services.c,v 1.2 2005/08/16 20:59:29 knight Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -196,7 +196,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-char *_version = "$Revision: 1.1 $";
+char *_version = "$Revision: 1.2 $";
 #endif
 
 /*
@@ -377,7 +377,7 @@ static void deliver_services_msg(char *service, char *command,
    */
   acptr = find_client(service);
 
-  if (!acptr || IsServ(acptr))
+  if (!acptr || IsServer(acptr))
   {
     sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Services are currently unavailable.",
                me.name, parv[0]);
