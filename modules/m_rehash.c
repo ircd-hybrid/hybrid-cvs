@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rehash.c,v 1.53 2005/07/27 04:37:15 adx Exp $
+ *  $Id: m_rehash.c,v 1.54 2005/08/16 18:34:46 knight Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&rehash_msgtab);
 }
 
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.54 $";
 #endif
 
 /*
@@ -119,10 +119,11 @@ mo_rehash(struct Client *client_p, struct Client *source_p,
     {
 #ifdef _WIN32
       sendto_one(source_p, ":%s NOTICE %s :rehash one of :MOTD OMOTD",
+                 me.name, source_p->name);
 #else
       sendto_one(source_p, ":%s NOTICE %s :rehash one of :DNS MOTD OMOTD",
-#endif
                  me.name, source_p->name);
+#endif
       return;
     }
   }
