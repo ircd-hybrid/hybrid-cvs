@@ -1,6 +1,6 @@
 ircd-hybrid IP/hostname cloaking README:
 -----------------------------------------------
-$Id: README.cloaking,v 1.6 2005/08/16 14:12:55 knight Exp $
+$Id: README.cloaking,v 1.7 2005/08/16 14:14:18 knight Exp $
 
 Copyright (c) 2005 by Alan 'knight-' LeVee of ChatJunkies IRC Network
 -----------------------------------------------
@@ -51,8 +51,8 @@ cd contrib; make install
 
 Then you'll need to edit etc/ircd.conf and add the following lines to the modules {} block so you can load the module:
 
-modules = "m_change.so";
-modules = "ip_cloaking.so";
+module = "m_change.so";
+module = "ip_cloaking.so";
 
 Please note that *all* servers *must* have these modules loaded or IP cloaking will *not* work. Once this is done 
 you can activate the IP cloaking by passing the following user mode:
