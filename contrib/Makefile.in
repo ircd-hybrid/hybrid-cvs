@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.67 2005/07/28 03:57:55 db Exp $
+# $Id: Makefile.in,v 1.68 2005/08/16 10:03:50 adx Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -30,6 +30,7 @@ INCLUDES	= -I../include $(SSL_INCLUDES)
 CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
 
 SRCS = \
+  ip_cloaking.c \
   m_capture.c \
   m_change.c \
   m_clearchan.c \

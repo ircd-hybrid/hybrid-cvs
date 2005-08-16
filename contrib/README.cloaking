@@ -1,6 +1,6 @@
 ircd-hybrid IP/hostname cloaking README:
 -----------------------------------------------
-$Id: README.cloaking,v 1.3 2005/08/15 19:41:19 knight Exp $
+$Id: README.cloaking,v 1.4 2005/08/16 10:03:51 adx Exp $
 
 Copyright (c) 2005 by Alan 'knight-' LeVee of ChatJunkies IRC Network
 -----------------------------------------------
@@ -45,7 +45,7 @@ KEY2 26409
 KEY3 25
 
 Once you run that command you can copy and paste the output into cloak.c and compile. However all servers *must*
-the same secret keys in order for this to work properly or you'll run into problems especially for channel
+use the same secret keys in order for this to work properly or you'll run into problems especially for channel
 bans.
 
 Once you've compiled and install ircd-hybrid you will *need* the module m_change.so in order for this to work
