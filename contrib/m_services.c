@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.2 2005/08/16 20:59:29 knight Exp $
+ *  $Id: m_services.c,v 1.3 2005/08/17 00:47:32 knight Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -49,17 +49,6 @@
 /* Services' function macro generation -- knight- */
 #define SERV_FUNC(a,b,c) static void a (struct Client *, struct Client *, int, char *[]) \
 { return deliver_services_msg (b, c, client_p, source_p, parc, parv); }
-
-/* Generate macros */
-SERV_FUNC(m_chanserv, "ChanServ", "CHANSERV")
-SERV_FUNC(m_global,   "Global",   "GLOBAL"  )
-SERV_FUNC(m_helpserv, "HelpServ", "HELPSERV")
-SERV_FUNC(m_memoserv, "MemoServ", "MEMOSERV")
-SERV_FUNC(m_nickserv, "NickServ", "NICKSERV")
-SERV_FUNC(m_operserv, "OperServ", "OPERSERV")
-SERV_FUNC(m_seenserv, "SeenServ", "SEENSERV")
-SERV_FUNC(m_statserv, "StatServ", "STATSERV")
-
 
 static void mo_svsnick(struct Client *, struct Client *, int, char *[]);
 
@@ -196,7 +185,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-char *_version = "$Revision: 1.2 $";
+char *_version = "$Revision: 1.3 $";
 #endif
 
 /*
@@ -397,3 +386,13 @@ static void deliver_services_msg(char *service, char *command,
                parv[0], acptr->name, servmsg);
   }
 }
+
+/* Generate macros */
+SERV_FUNC(m_chanserv, "ChanServ", "CHANSERV")
+SERV_FUNC(m_global,   "Global",   "GLOBAL"  )
+SERV_FUNC(m_helpserv, "HelpServ", "HELPSERV")
+SERV_FUNC(m_memoserv, "MemoServ", "MEMOSERV")
+SERV_FUNC(m_nickserv, "NickServ", "NICKSERV")
+SERV_FUNC(m_operserv, "OperServ", "OPERSERV")
+SERV_FUNC(m_seenserv, "SeenServ", "SEENSERV")
+SERV_FUNC(m_statserv, "StatServ", "STATSERV")

@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  *
- * $Id: ip_cloaking.c,v 1.1 2005/08/16 10:03:51 adx Exp $
+ * $Id: ip_cloaking.c,v 1.2 2005/08/17 00:47:32 knight Exp $
  */
 
 /*
@@ -66,7 +66,7 @@ static int vhost_ipv6_err;
 static dlink_node *prev_enter_umode;
 static dlink_node *prev_umode;
 
-const char *_version = "$Revision: 1.1 $";
+const char *_version = "$Revision: 1.2 $";
 
 static void *reset_ipv6err_flag(va_list);
 static void *h_set_user_mode(va_list);
@@ -321,8 +321,8 @@ make_virthost (char *curr, char *host, char *new)
     if (parc2 >= 4)
     {
       /* isp.sub.tld or district.isp.tld */
-      ircsprintf (mask, "%lx-%lx-%lx.%s.%s.%s",
-            hash[2], hash[0], hash[3], parv2[parc2 - 3], parv2[parc2 - 2],
+      ircsprintf (mask, "%lx-%lx.%s.%s.%s",
+            hash[3], hash[1], parv2[parc2 - 3], parv2[parc2 - 2],
             parv2[parc2 - 1]);
     }
     else
@@ -335,8 +335,8 @@ make_virthost (char *curr, char *host, char *new)
     if (parc2 >= 5)
     {
       /* zone.district.isp.tld or district.isp.sub.tld */
-      ircsprintf (mask, "%lx-%lx-%lx-%lx.%s.%s.%s.%s",
-            hash[0], hash[3], hash[1], hash[2], parv2[parc2 - 4], parv2[parc2 - 3],
+      ircsprintf (mask, "%lx-%lx.%s.%s.%s.%s",
+            hash[1], hash[0], parv2[parc2 - 4], parv2[parc2 - 3],
             parv2[parc2 - 2], parv2[parc2 - 1]);
     }
     else
