@@ -1,6 +1,6 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  m_services.c: SVSMODE, SVSNICK and Services Aliases Support
+ *  m_services.c: SVS commands and Services support
  *
  *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.3 2005/08/17 00:47:32 knight Exp $
+ *  $Id: m_services.c,v 1.4 2005/08/17 01:13:34 knight Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -50,6 +50,7 @@
 #define SERV_FUNC(a,b,c) static void a (struct Client *, struct Client *, int, char *[]) \
 { return deliver_services_msg (b, c, client_p, source_p, parc, parv); }
 
+static void mo_svsmode(struct Client *, struct Client *, int, char *[]);
 static void mo_svsnick(struct Client *, struct Client *, int, char *[]);
 
 static void m_chanserv(struct Client *, struct Client *, int, char *[]);
@@ -66,14 +67,18 @@ char *GetString(int, char *[]);
 static int clean_nick_name(char *);
 static void deliver_services_msg(char *, char *, struct Client *, struct Client *, int, char *[]);
 
-struct Message svsnick_msgtab = {
-  "SVSNICK", 0, 0, 3, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, m_ignore, mo_svsnick, mo_svsnick, m_ignore}
+/* SVS commands */
+struct Message svsmode_msgtab = {
+  "SVSMODE", 0, 0, 3, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_not_oper, m_ignore, mo_svsmode, mo_svsmode, m_ignore}
 };
 
-/*
- * Services Structures
- */
+struct Message svsnick_msgtab = {
+  "SVSNICK", 0, 0, 3, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_not_oper, m_ignore, mo_svsnick, mo_svsnick, m_ignore}
+};
+
+/* Services */
 struct Message chanserv_msgtab = {
   "CHANSERV", 0, 0, 1, 0 MFLG_SLOW, 0,
   {m_unregistered, m_chanserv, m_ignore, m_ignore, m_chanserv, m_ignore}
@@ -119,9 +124,7 @@ struct Message statserv_msgtab = {
     {m_unregistered, m_statserv, m_ignore, m_ignore, m_statserv, m_ignore}
 };
 
-/*
- * Short-hand aliases for NickServ, ChanServ, MemoServ and OperServ
- */
+/* Short-hand aliases for NickServ, ChanServ, MemoServ and OperServ */
 struct Message ns_msgtab = {
     "NS", 0, 0, 1, 0 MFLG_SLOW, 0,
     {m_unregistered, m_nickserv, m_ignore, m_ignore, m_nickserv, m_ignore}
@@ -147,6 +150,7 @@ void
 _modinit(void)
 {
   mod_add_cmd(&svsnick_msgtab);
+  mod_add_cmd(&svsmode_msgtab);
   
   mod_add_cmd(&chanserv_msgtab); 
   mod_add_cmd(&global_msgtab);
@@ -168,7 +172,8 @@ void
 _moddeinit(void)
 {
   mod_del_cmd(&svsnick_msgtab);
-
+  mod_del_cmd(&svsmode_msgtab);
+  
   mod_del_cmd(&chanserv_msgtab); 
   mod_del_cmd(&global_msgtab);
   mod_del_cmd(&helpserv_msgtab);
@@ -185,8 +190,43 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-char *_version = "$Revision: 1.3 $";
+char *_version = "$Revision: 1.4 $";
 #endif
+
+/*
+ * mo_svsmode()
+ *
+ * Sets or changes modes for a particular user
+ *
+ * parv[0] = sender prefix
+ * parv[1] = target
+ * parv[2] = modes
+ */
+static void mo_svsmode(struct Client *client_p, struct Client *source_p,
+                       int parc, char *parv[])
+{
+  struct Client *target_p;
+
+  if (MyConnect(source_p) && !IsOperAdmin(source_p))
+  {
+      sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
+                 me.name, parv[0]);
+  }
+
+  if (*parv[1] == '\0')
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, parv[0], "SVSMODE");
+    return;
+  }
+
+  target_p = find_person(parv[1]);
+
+  if (target_p == NULL)
+    return;
+
+  user_mode(client_p, source_p, parc, parv);
+}
 
 /*
  * mo_svsnick()
@@ -204,6 +244,13 @@ static void mo_svsnick(struct Client *client_p, struct Client *source_p,
   {
     sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
                me.name, parv[0]);
+  }
+
+  if (*parv[1] == '\0')
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, parv[0], "SVSNICK");
+    return;
   }
 
   if (!clean_nick_name(parv[2]))
@@ -239,6 +286,23 @@ static void mo_svsnick(struct Client *client_p, struct Client *source_p,
 
   change_local_nick(target_p, target_p, parv[2]);
 }
+
+  
+/*
+ * SERV_FUNC()
+ *
+ * These generate the services functions through
+ * a macro.
+ */
+SERV_FUNC(m_chanserv, "ChanServ", "CHANSERV")
+SERV_FUNC(m_global,   "Global",   "GLOBAL"  )
+SERV_FUNC(m_helpserv, "HelpServ", "HELPSERV")
+SERV_FUNC(m_memoserv, "MemoServ", "MEMOSERV")
+SERV_FUNC(m_nickserv, "NickServ", "NICKSERV")
+SERV_FUNC(m_operserv, "OperServ", "OPERSERV")
+SERV_FUNC(m_seenserv, "SeenServ", "SEENSERV")
+SERV_FUNC(m_statserv, "StatServ", "STATSERV")
+
 
 /*
  * GetString()
@@ -386,13 +450,3 @@ static void deliver_services_msg(char *service, char *command,
                parv[0], acptr->name, servmsg);
   }
 }
-
-/* Generate macros */
-SERV_FUNC(m_chanserv, "ChanServ", "CHANSERV")
-SERV_FUNC(m_global,   "Global",   "GLOBAL"  )
-SERV_FUNC(m_helpserv, "HelpServ", "HELPSERV")
-SERV_FUNC(m_memoserv, "MemoServ", "MEMOSERV")
-SERV_FUNC(m_nickserv, "NickServ", "NICKSERV")
-SERV_FUNC(m_operserv, "OperServ", "OPERSERV")
-SERV_FUNC(m_seenserv, "SeenServ", "SEENSERV")
-SERV_FUNC(m_statserv, "StatServ", "STATSERV")
