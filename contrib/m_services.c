@@ -2,7 +2,7 @@
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  m_services.c: SVS commands and Services support
  *
- *  Copyright (C) 2002 by the past and present ircd coders, and others.
+ *  Copyright (C) 2005 by the past and present ircd coders, and others.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,10 +19,9 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.4 2005/08/17 01:13:34 knight Exp $
+ *  $Id: m_services.c,v 1.5 2005/08/17 03:05:34 metalrock Exp $
  */
 
-/* List of ircd includes from ../include/ */
 #include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
@@ -80,69 +79,69 @@ struct Message svsnick_msgtab = {
 
 /* Services */
 struct Message chanserv_msgtab = {
-  "CHANSERV", 0, 0, 1, 0 MFLG_SLOW, 0,
+  "CHANSERV", 0, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_chanserv, m_ignore, m_ignore, m_chanserv, m_ignore}
 };
 
 struct Message global_msgtab = {
-  "GLOBAL", 0, 0, 1, 0 MFLG_SLOW, 0,
+  "GLOBAL", 0, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_global, m_ignore, m_ignore, m_global, m_ignore}
 };
 
 struct Message helpserv_msgtab = {
-  "HELPSERV", 0, 0, 1, 0 MFLG_SLOW, 0,
+  "HELPSERV", 0, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_helpserv, m_ignore, m_ignore, m_helpserv, m_ignore}
 };
 
 struct Message identify_msgtab = {
-  "IDENTIFY", 0, 0, 0, 2 MFLG_SLOW, 0,
+  "IDENTIFY", 0, 0, 0, 2, MFLG_SLOW, 0,
   {m_unregistered, m_helpserv, m_ignore, m_ignore, m_helpserv, m_ignore}
 };
 
 struct Message memoserv_msgtab = {
-  "MEMOSERV", 0, 0, 1, 0 MFLG_SLOW, 0,
+  "MEMOSERV", 0, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_memoserv, m_ignore, m_ignore, m_memoserv, m_ignore}
 };
 
 struct Message nickserv_msgtab = {
-  "NICKSERV", 0, 0, 1, 0 MFLG_SLOW, 0,
+  "NICKSERV", 0, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_nickserv, m_ignore, m_ignore, m_nickserv, m_ignore}
 };
 
 struct Message operserv_msgtab = {
-    "OPERSERV", 0, 0, 1, 0 MFLG_SLOW, 0,
-    {m_unregistered, m_operserv, m_ignore, m_ignore, m_operserv, m_ignore}
+  "OPERSERV", 0, 0, 1, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_operserv, m_ignore, m_ignore, m_operserv, m_ignore}
 };
 
 struct Message seenserv_msgtab = {
-    "SEENSERV", 0, 0, 1, 0 MFLG_SLOW, 0,
-    {m_unregistered, m_seenserv, m_ignore, m_ignore, m_seenserv, m_ignore}
+  "SEENSERV", 0, 0, 1, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_seenserv, m_ignore, m_ignore, m_seenserv, m_ignore}
 };
 
 struct Message statserv_msgtab = {
-    "STATSERV", 0, 0, 1, 0 MFLG_SLOW, 0,
-    {m_unregistered, m_statserv, m_ignore, m_ignore, m_statserv, m_ignore}
+  "STATSERV", 0, 0, 1, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_statserv, m_ignore, m_ignore, m_statserv, m_ignore}
 };
 
 /* Short-hand aliases for NickServ, ChanServ, MemoServ and OperServ */
 struct Message ns_msgtab = {
-    "NS", 0, 0, 1, 0 MFLG_SLOW, 0,
-    {m_unregistered, m_nickserv, m_ignore, m_ignore, m_nickserv, m_ignore}
+  "NS", 0, 0, 1, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_nickserv, m_ignore, m_ignore, m_nickserv, m_ignore}
 };
 
 struct Message cs_msgtab = {
-    "CS", 0, 0, 1, 0 MFLG_SLOW, 0,
-    {m_unregistered, m_chanserv, m_ignore, m_ignore, m_chanserv, m_ignore}
+  "CS", 0, 0, 1, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_chanserv, m_ignore, m_ignore, m_chanserv, m_ignore}
 };
 
 struct Message ms_msgtab = {
-    "MS", 0, 0, 1, 0 MFLG_SLOW, 0,
-    {m_unregistered, m_memoserv, m_ignore, m_ignore, m_memoserv, m_ignore}
+  "MS", 0, 0, 1, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_memoserv, m_ignore, m_ignore, m_memoserv, m_ignore}
 };
 
 struct Message os_msgtab = {
-    "OS", 0, 0, 1, 0 MFLG_SLOW, 0,
-    {m_unregistered, m_operserv, m_ignore, m_ignore, m_operserv, m_ignore}
+  "OS", 0, 0, 1, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_operserv, m_ignore, m_ignore, m_operserv, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -151,7 +150,6 @@ _modinit(void)
 {
   mod_add_cmd(&svsnick_msgtab);
   mod_add_cmd(&svsmode_msgtab);
-  
   mod_add_cmd(&chanserv_msgtab); 
   mod_add_cmd(&global_msgtab);
   mod_add_cmd(&helpserv_msgtab);
@@ -161,7 +159,6 @@ _modinit(void)
   mod_add_cmd(&operserv_msgtab);
   mod_add_cmd(&seenserv_msgtab);
   mod_add_cmd(&statserv_msgtab);
-  
   mod_add_cmd(&ns_msgtab);
   mod_add_cmd(&cs_msgtab);
   mod_add_cmd(&ms_msgtab);
@@ -173,7 +170,6 @@ _moddeinit(void)
 {
   mod_del_cmd(&svsnick_msgtab);
   mod_del_cmd(&svsmode_msgtab);
-  
   mod_del_cmd(&chanserv_msgtab); 
   mod_del_cmd(&global_msgtab);
   mod_del_cmd(&helpserv_msgtab);
@@ -183,14 +179,13 @@ _moddeinit(void)
   mod_del_cmd(&operserv_msgtab);
   mod_del_cmd(&seenserv_msgtab);
   mod_del_cmd(&statserv_msgtab);
-
   mod_del_cmd(&ns_msgtab);
   mod_del_cmd(&cs_msgtab);
   mod_del_cmd(&ms_msgtab);
   mod_del_cmd(&os_msgtab);
 }
 
-char *_version = "$Revision: 1.4 $";
+const char *_version = "$Revision: 1.5 $";
 #endif
 
 /*
