@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.463 2005/08/15 21:20:11 db Exp $
+ *  $Id: client.c,v 7.464 2005/08/17 23:15:47 adx Exp $
  */
 
 #include "stdinc.h"
@@ -794,7 +794,7 @@ recurse_send_quits(struct Client *original_source_p, struct Client *source_p,
     }
 
   DLINK_FOREACH_SAFE(ptr, next, source_p->serv->servers.head)
-    recurse_send_quits(original_source_p, target_p, from, ptr->data,
+    recurse_send_quits(original_source_p, ptr->data, from, to,
                        comment, splitstr, myname);
 
   if (!hidden && ((source_p == original_source_p && to != from) ||
