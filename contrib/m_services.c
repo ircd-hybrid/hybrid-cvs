@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.5 2005/08/17 03:05:34 metalrock Exp $
+ *  $Id: m_services.c,v 1.6 2005/08/17 10:22:07 michael Exp $
  */
 
 #include "stdinc.h"
@@ -42,12 +42,15 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "s_user.h"
 
 #define MAXLINE 512   /* Please DO NOT change this! -- knight- */
 
 /* Services' function macro generation -- knight- */
-#define SERV_FUNC(a,b,c) static void a (struct Client *, struct Client *, int, char *[]) \
-{ return deliver_services_msg (b, c, client_p, source_p, parc, parv); }
+#define SERV_FUNC(a,b,c) static void a(struct Client *client_p,\
+                                       struct Client *source_p, int parc,\
+                                       char *parv[]) \
+{ deliver_services_msg(b, c, client_p, source_p, parc, parv); }
 
 static void mo_svsmode(struct Client *, struct Client *, int, char *[]);
 static void mo_svsnick(struct Client *, struct Client *, int, char *[]);
@@ -62,9 +65,9 @@ static void m_operserv(struct Client *, struct Client *, int, char *[]);
 static void m_seenserv(struct Client *, struct Client *, int, char *[]);
 static void m_statserv(struct Client *, struct Client *, int, char *[]);
 
-char *GetString(int, char *[]);
+static void get_string(int, char *[], char *);
 static int clean_nick_name(char *);
-static void deliver_services_msg(char *, char *, struct Client *, struct Client *, int, char *[]);
+static void deliver_services_msg(const char *, const char *, struct Client *, struct Client *, int, char *[]);
 
 /* SVS commands */
 struct Message svsmode_msgtab = {
@@ -95,7 +98,7 @@ struct Message helpserv_msgtab = {
 
 struct Message identify_msgtab = {
   "IDENTIFY", 0, 0, 0, 2, MFLG_SLOW, 0,
-  {m_unregistered, m_helpserv, m_ignore, m_ignore, m_helpserv, m_ignore}
+  {m_unregistered, m_identify, m_ignore, m_ignore, m_helpserv, m_ignore}
 };
 
 struct Message memoserv_msgtab = {
@@ -185,7 +188,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.5 $";
+const char *_version = "$Revision: 1.6 $";
 #endif
 
 /*
@@ -197,30 +200,28 @@ const char *_version = "$Revision: 1.5 $";
  * parv[1] = target
  * parv[2] = modes
  */
-static void mo_svsmode(struct Client *client_p, struct Client *source_p,
-                       int parc, char *parv[])
+static void
+mo_svsmode(struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
 {
-  struct Client *target_p;
+  struct Client *target_p = NULL;
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-      sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
-                 me.name, parv[0]);
+    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
+               me.name, parv[0]);
+    return;
   }
 
-  if (*parv[1] == '\0')
+  if (parc < 3 || *parv[2] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                me.name, parv[0], "SVSMODE");
     return;
   }
 
-  target_p = find_person(parv[1]);
-
-  if (target_p == NULL)
-    return;
-
-  user_mode(client_p, source_p, parc, parv);
+  if ((target_p = find_person(client_p, parv[1])))
+    set_user_mode(client_p, target_p, parc, parv);
 }
 
 /*
@@ -230,8 +231,9 @@ static void mo_svsmode(struct Client *client_p, struct Client *source_p,
  * parv[1] = user to force
  * parv[2] = nick to force them to
  */
-static void mo_svsnick(struct Client *client_p, struct Client *source_p,
-                       int parc, char *parv[])
+static void
+mo_svsnick(struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
 {
   struct Client *target_p;
 
@@ -239,9 +241,10 @@ static void mo_svsnick(struct Client *client_p, struct Client *source_p,
   {
     sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
                me.name, parv[0]);
+    return;
   }
 
-  if (*parv[1] == '\0')
+  if (parc < 3 || *parv[2] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                me.name, parv[0], "SVSNICK");
@@ -265,8 +268,8 @@ static void mo_svsnick(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if ((hunt_server(client_p, source_p, ":%s SVSNICK %s %s", 1, parc,
-        parv)) != HUNTED_ISME)
+  if ((hunt_server(client_p, source_p, ":%s SVSNICK %s %s", 1,
+                   parc, parv)) != HUNTED_ISME)
     return;
 
   if (!IsClient(target_p))
@@ -298,36 +301,27 @@ SERV_FUNC(m_operserv, "OperServ", "OPERSERV")
 SERV_FUNC(m_seenserv, "SeenServ", "SEENSERV")
 SERV_FUNC(m_statserv, "StatServ", "STATSERV")
 
-
 /*
  * GetString()
  *
  * Reverse the array parv back into a normal string assuming
- * there are "parc" indicies in the array. Space is allocated
- * for a new string.
+ * there are "parc" indicies in the array.
  *
  * Thanks to kre.
+ *
+ * kre should be shot if he really wrote the previous version
+ * of this function -Michael
  */
-char *GetString(int parc, char *parv[])
+static void
+get_string(int parc, char *parv[], char *buf)
 {
-  char *final;
-  char temp[MAXLINE];
   int ii = 0;
-  
-  final = MyMalloc(sizeof(char));
-  *final = '\0';
-  
-  while (ii < parc)
-  {
-    ircsprintf(tmp, "%s%s", parv[ii], ((ii + 1) >= parc) ? "" : " ");
-    final = MyRealloc(final, strlen(final) + strlen(temp) + sizeof(char));
-    strlcat(final, temp, sizeof(final)); /* this should be strlcat() not strcat()! -- knight- */
-    ++ii;
-  }
-  
-  return (final);
-}
+  int bw = 0;
 
+  for (; ii < parc; ++ii)
+    bw += ircsprintf(buf+bw, "%s ", parv[ii]);
+  buf[bw-1] = '\0';
+}
 
 /*
  * clean_nick_name()
@@ -336,44 +330,41 @@ char *GetString(int parc, char *parv[])
  * output       - none
  * side effects - walks through the nickname, returning 0 if erroneous
  */
-static int clean_nick_name(char *nick)
+static int
+clean_nick_name(char *nick)
 {
   assert(nick);
-  if (nick == NULL)
-    return (0);
 
   /* nicks can't start with a digit or - or be 0 length */
   /* This closer duplicates behaviour of hybrid-6 */
 
   if (*nick == '-' || IsDigit(*nick) || *nick == '\0')
-    return (0);
+    return 0;
 
-  for (; *nick; nick++)
-  {
+  for (; *nick; ++nick)
     if (!IsNickChar(*nick))
-      return (0);
-  }
+      return 0;
 
-  return (1);
+  return 1;
 }
 
 /*
  * m_identify()
  * 
  */
-static void m_identify(struct Client *client_p, struct Client *source_p,
-                       int parc, char *parv[])
+static void
+m_identify(struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
 {
-  struct Client *acptr;
+  struct Client *acptr = NULL;
 
   if (parc == 3)
   {
       acptr = find_person(client_p, "ChanServ");
-      if (!acptr || IsServer(acptr))
+      if (!acptr)
       {
         sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Services are currently unavailable.",
                    me.name, parv[0]);
-        return;
       }
       else
       {
@@ -384,11 +375,10 @@ static void m_identify(struct Client *client_p, struct Client *source_p,
   else if (parc == 2)
   {
     acptr = find_person(client_p, "NickServ");
-    if (!acptr || IsServer(acptr))
+    if (!acptr)
     {
       sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Services are currently unavailable.",
                  me.name, parv[0]);
-      return;
     }
     else
     {
@@ -413,35 +403,33 @@ static void m_identify(struct Client *client_p, struct Client *source_p,
  *
  * Borrowed from HybServ -- knight-
  */
-static void deliver_services_msg(char *service, char *command,
-                                 struct Client *client_p, struct Client *source_p,
-                                 int parc, char *parv[])
+static void
+deliver_services_msg(const char *service, const char *command,
+                     struct Client *client_p,
+                     struct Client *source_p, int parc, char *parv[])
 {
-  struct Client *acptr;
-  char *servmsg;
+  struct Client *acptr = NULL;
+  char buf[IRCD_BUFSIZE] = { '\0' };
+
+  if (parc < 2 || parv[1] == '\0')
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, parv[0], command);
+    return;
+  }
 
   /*
    * Check to make sure the nick is existant.
    */
-  acptr = find_client(service);
-
-  if (!acptr || IsServer(acptr))
+  if ((acptr = find_person(client_p, service)) == NULL)
   {
     sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Services are currently unavailable.",
                me.name, parv[0]);
+    return;
   }
-  else
-  {
-    if (parc == 1 || parv[1] == '\0')
-    {
-      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, parv[0], command);
-      return;
-    }
 
-    servmsg = GetString(parc - 1, parv + 1);
+  get_string(parc - 1, parv + 1, buf);
 
-    sendto_one(acptr, ":%s PRIVMSG %s :%s",
-               parv[0], acptr->name, servmsg);
-  }
+  sendto_one(acptr, ":%s PRIVMSG %s :%s",
+             parv[0], acptr->name, buf);
 }
