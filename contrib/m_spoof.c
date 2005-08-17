@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_spoof.c,v 1.7 2005/08/06 22:15:26 michael Exp $
+ *  $Id: m_spoof.c,v 1.8 2005/08/17 22:36:59 metalrock Exp $
  */
 
 /* MODULE CONFIGURATION FOLLOWS -- please read!! */
@@ -161,7 +161,8 @@ mo_spoof(struct Client *client_p, struct Client *source_p,
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag", me.name, parv[0]);
+    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
+	       me.name, source_p->name);
     return;
   }
 
@@ -171,7 +172,7 @@ mo_spoof(struct Client *client_p, struct Client *source_p,
     syntax:
     if (MyConnect(source_p))
       sendto_one(source_p, ":%s NOTICE %s :Syntax: SPOOF <umask@hmask> "
-                 "<spoof/-> [flags/- [password]]", me.name, parv[0]);
+                 "<spoof/-> [flags/- [password]]", me.name, source_p->name);
     return;
   }
 
@@ -186,7 +187,7 @@ mo_spoof(struct Client *client_p, struct Client *source_p,
     if (MyConnect(source_p))
       sendto_one(source_p, ":%s NOTICE %s :Not enough non-wildcard characters "
                            "in user@host mask",
-                           me.name, parv[0]);
+                           me.name, source_p->name);
     return;
   }
 
@@ -214,13 +215,13 @@ mo_spoof(struct Client *client_p, struct Client *source_p,
       if (!IsHostChar(*tmp)) {
         if (MyConnect(source_p))
           sendto_one(source_p, ":%s NOTICE %s :The spoof [%s] is invalid",
-                     me.name, parv[0], spoof);
+                     me.name, source_p->name, spoof);
         return;
       }
     if (strlen(spoof) >= HOSTLEN) {
       if (MyConnect(source_p))
         sendto_one(source_p, ":%s NOTICE %s :Spoofs must be less than %d.."
-                             "ignoring it", me.name, parv[0], HOSTLEN);
+                             "ignoring it", me.name, source_p->name, HOSTLEN);
       return;
     }
   }
@@ -231,7 +232,7 @@ mo_spoof(struct Client *client_p, struct Client *source_p,
 #ifdef PROPAGATE_SPOOF
   sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
                 ":%s SPOOF %s@%s %s %s :%s",
-                parv[0], user, host, spoof, flags, password ? password : "");
+                source_p->name, user, host, spoof, flags, password ? password : "");
 #endif
 
 #ifdef SPOOF_FILE
@@ -246,11 +247,11 @@ mo_spoof(struct Client *client_p, struct Client *source_p,
         if (MyConnect(source_p))
           sendto_one(source_p,
                      ":%s NOTICE %s :auth for %s@%s already exists, you need "
-                     "to use /DELSPOOF first", me.name, parv[0], user, host);
+                     "to use /DELSPOOF first", me.name, source_p->name, user, host);
 #ifdef LOG_SPOOF
         sendto_realops_flags(UMODE_ALL, L_ALL,
                              "%s attemped to re-add auth for %s@%s "
-                             "[spoof: %s, flags: %s]", parv[0], user, host,
+                             "[spoof: %s, flags: %s]", source_p->name, user, host,
                              spoof, flags);
 #endif
         return;
@@ -262,7 +263,7 @@ mo_spoof(struct Client *client_p, struct Client *source_p,
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "Could not open %s file, auth for %s@%s "
                          "[spoof: %s, flags: %s, requested by %s] not added",
-                         SPOOF_FILE, user, host, spoof, flags, parv[0]);
+                         SPOOF_FILE, user, host, spoof, flags, source_p->name);
     return;
   }
 
@@ -329,9 +330,9 @@ mo_spoof(struct Client *client_p, struct Client *source_p,
 #ifdef LOG_SPOOF
   sendto_realops_flags(UMODE_ALL, L_ALL,
                        "%s added auth for %s@%s [spoof: %s, flags: %s]",
-                       parv[0], user, host, spoof, flags);
+                       source_p->name, user, host, spoof, flags);
   ilog(L_TRACE, "%s added auth for %s@%s [spoof: %s, flags: %s]",
-                parv[0], user, host, spoof, flags);
+                source_p->name, user, host, spoof, flags);
 #endif
 }
 
@@ -352,7 +353,7 @@ mo_delspoof(struct Client *client_p, struct Client *source_p,
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag", me.name, parv[0]);
+    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag", me.name, source_p->name);
     return;
   }
 
@@ -360,7 +361,7 @@ mo_delspoof(struct Client *client_p, struct Client *source_p,
   {
     if (MyConnect(source_p))
       sendto_one(source_p, ":%s NOTICE %s :Syntax: /DELSPOOF <user@host>",
-                           me.name, parv[0]);
+                           me.name, source_p->name);
     return;
   }
 
@@ -382,7 +383,7 @@ mo_delspoof(struct Client *client_p, struct Client *source_p,
 
 #ifdef PROPAGATE_SPOOF
   sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
-    ":%s DELSPOOF %s@%s", parv[0], user, host);
+    ":%s DELSPOOF %s@%s", source_p->name, user, host);
 #endif
 
 #ifdef SPOOF_FILE
@@ -391,7 +392,7 @@ mo_delspoof(struct Client *client_p, struct Client *source_p,
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "Could not open %s file, auth for %s@%s not deleted "
                          "(requested by %s)",
-                         SPOOF_FILE, user, host, parv[0]);
+                         SPOOF_FILE, user, host, source_p->name);
     return;
   }
 
@@ -400,7 +401,7 @@ mo_delspoof(struct Client *client_p, struct Client *source_p,
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "Could not create %s.new file, auth for %s@%s not "
                          "deleted (requested by %s)",
-                         SPOOF_FILE, user, host, parv[0]);
+                         SPOOF_FILE, user, host, source_p->name);
     return;
   }
 
@@ -487,7 +488,7 @@ mo_delspoof(struct Client *client_p, struct Client *source_p,
   {
     if (MyConnect(source_p))
       sendto_one(source_p, ":%s NOTICE %s :No auth for %s@%s found",
-                 me.name, parv[0], user, host);
+                 me.name, source_p->name, user, host);
     unlink(SPOOF_FILE ".new");
     return;
   }
@@ -499,6 +500,6 @@ mo_delspoof(struct Client *client_p, struct Client *source_p,
 
 #ifdef LOG_SPOOF
   sendto_realops_flags(UMODE_ALL, L_ALL, "%s deleted auth for %s@%s",
-                       parv[0], user, host);
+                       source_p->name, user, host);
 #endif
 }

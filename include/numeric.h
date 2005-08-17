@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.48 2005/08/07 21:26:08 adx Exp $
+ *  $Id: numeric.h,v 7.49 2005/08/17 22:36:59 metalrock Exp $
  */
 
 #ifndef INCLUDED_numeric_h
@@ -342,7 +342,7 @@ extern const char *get_locale(void);
 #define ERR_UNAVAILRESOURCE  437
 #define ERR_NICKTOOFAST	     438	/* We did it first Undernet! ;) db */
 
-/*	ERR_SERVICESDOWN     440	Dalnet,unreal */
+#define ERR_SERVICESDOWN     440
 
 #define ERR_USERNOTINCHANNEL 441
 #define ERR_NOTONCHANNEL     442

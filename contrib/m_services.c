@@ -22,7 +22,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.11 2005/08/17 16:02:51 michael Exp $
+ *  $Id: m_services.c,v 1.12 2005/08/17 22:36:59 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -197,7 +197,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 #endif
 
 /*
@@ -216,14 +216,14 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
     sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
-               me.name, parv[0]);
+               me.name, source_p->name);
     return;
   }
 
   if (parc < 3 || *parv[2] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, parv[0], "SVSNICK");
+               me.name, source_p->name, "SVSNICK");
     return;
   }
 
@@ -339,35 +339,27 @@ m_identify(struct Client *client_p, struct Client *source_p,
   if (parc == 3)
   {
       if (!(acptr = find_server(SERVICES_NAME))) /* Michael suggested; Thanks! -- knight- */
-      {
-        sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Services are currently unavailable.",
-                   me.name, parv[0]);
-      }
+        sendto_one(source_p, form_str(ERR_SERVICESDOWN),
+		   me.name, source_p->name);
       else
-      {
         sendto_one(acptr, ":%s PRIVMSG ChanServ@%s :IDENTIFY %s %s",
-                   parv[0], SERVICES_NAME, parv[1], parv[2]);
-      }
+                   source_p->name, SERVICES_NAME, parv[1], parv[2]);
   }
   else if (parc == 2)
   {
     if (!(acptr = find_server(SERVICES_NAME))) /* Michael suggested; Thanks! -- knight- */
-    {
-      sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Services are currently unavailable.",
-                 me.name, parv[0]);
-    }
+      sendto_one(source_p, form_str(ERR_SERVICESDOWN),
+                 me.name, source_p->name);
     else
-    {
       sendto_one(acptr, ":%s PRIVMSG NickServ@%s :IDENTIFY %s",
-                 parv[0], SERVICES_NAME, parv[1]);
-    }
+                 source_p->name, SERVICES_NAME, parv[1]);
   }
   else
   {
     sendto_one(source_p, ":%s NOTICE %s :Syntax: IDENTIFY <password> - for nickname",
-               me.name, parv[0]);
+               me.name, source_p->name);
     sendto_one(source_p, ":%s NOTICE %s :Syntax: IDENTIFY <channel> <password> - for channel",
-               me.name, parv[0]);
+               me.name, source_p->name);
   }
 }
 
@@ -390,18 +382,17 @@ deliver_services_msg(const char *service, const char *command,
   if (parc < 2 || *parv[1] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, parv[0], command);
+               me.name, source_p->name, command);
     return;
   }
 
   if (!(acptr = find_server(SERVICES_NAME))) /* Michael suggested; Thanks! -- knight- */
-  {
-    sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Services are currently unavailable.",
-               me.name, parv[0]);
-  }
+    sendto_one(source_p, form_str(ERR_SERVICESDOWN),
+               me.name, source_p->name);
   else
   {
     get_string(parc - 1, parv + 1, buf);
-    sendto_one(acptr, ":%s PRIVMSG %s@%s :%s", parv[0], service, SERVICES_NAME, buf);
+    sendto_one(acptr, ":%s PRIVMSG %s@%s :%s",
+	       source_p->name, service, SERVICES_NAME, buf);
   }
 }
