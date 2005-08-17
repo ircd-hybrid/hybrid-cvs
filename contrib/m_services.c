@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.7 2005/08/17 10:33:00 michael Exp $
+ *  $Id: m_services.c,v 1.8 2005/08/17 13:45:07 michael Exp $
  */
 
 #include "stdinc.h"
@@ -188,7 +188,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 #endif
 
 /*
@@ -411,7 +411,7 @@ deliver_services_msg(const char *service, const char *command,
   struct Client *acptr = NULL;
   char buf[IRCD_BUFSIZE] = { '\0' };
 
-  if (parc < 2 || parv[1] == '\0')
+  if (parc < 2 || *parv[1] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                me.name, parv[0], command);
