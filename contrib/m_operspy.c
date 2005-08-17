@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.64 2005/07/16 12:19:38 michael Exp $
+ *   $Id: m_operspy.c,v 1.65 2005/08/17 16:02:51 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -140,7 +140,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.64 $";
+const char *_version = "$Revision: 1.65 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -164,7 +164,7 @@ static void
 mo_operspy(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
-  char cmdbuf[BUFSIZE] = "<NONE>"; /* in case everything is undef'd */
+  char cmdbuf[IRCD_BUFSIZE] = "<NONE>"; /* in case everything is undef'd */
   size_t bcnt = 0;
   const struct operspy_s *optr = NULL;
 
@@ -209,7 +209,7 @@ operspy_list(struct Client *client_p, int parc, char *parv[])
   operspy_log(client_p, "LIST", parv[2]);
 #endif
 
-  if (!*parv[2])
+  if (*parv[2] == '\0')
     return;
 
   sendto_one(client_p, form_str(RPL_LISTSTART),
@@ -428,7 +428,7 @@ operspy_whois(struct Client *client_p, int parc, char *parv[])
   struct Channel *chptr_whois = NULL;
   struct Client *a2client_p;
   struct Client *target_p = NULL;
-  char buf[BUFSIZE];
+  char buf[IRCD_BUFSIZE];
 #ifdef OPERSPY_LOG
   /* "nick!user@host server\0" */
   char nuh[NICKLEN + 1 + USERLEN + 1 + HOSTLEN + 1 + HOSTLEN + 1];
@@ -473,7 +473,7 @@ operspy_whois(struct Client *client_p, int parc, char *parv[])
   {
     chptr_whois = ((struct Membership *)lp->data)->chptr;
 
-    if ((cur_len + strlen(chptr_whois->chname) + 2) > (BUFSIZE - 4))
+    if ((cur_len + strlen(chptr_whois->chname) + 2) > (IRCD_BUFSIZE - 4))
     {
       sendto_one(client_p, "%s", buf);
       cur_len = mlen;
@@ -589,13 +589,13 @@ do_who_on_channel(struct Client *source_p, struct Channel *chptr,
 static void
 operspy_log(struct Client *source_p, const char *command, const char *target)
 {
-  struct ConfItem *conf;
+  struct ConfItem *conf = NULL;
 #ifdef OPERSPY_LOGFILE
   size_t nbytes = 0;
   FBFILE *operspy_fb;
   dlink_node *cnode;
   const char *opername = source_p->name;
-  char linebuf[BUFSIZE], logfile[BUFSIZE];
+  char linebuf[IRCD_BUFSIZE], logfile[IRCD_BUFSIZE];
 #endif
 
   assert(source_p != NULL);

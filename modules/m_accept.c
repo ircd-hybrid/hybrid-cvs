@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_accept.c,v 1.48 2005/07/16 12:19:43 michael Exp $
+ *  $Id: m_accept.c,v 1.49 2005/08/17 16:02:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&accept_msgtab);
 }
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 
 /*
@@ -76,8 +76,8 @@ m_accept(struct Client *client_p, struct Client *source_p,
 {
   char *nick;
   char *p = NULL;
-  char addbuf[BUFSIZE] = { '\0' };
-  char delbuf[BUFSIZE] = { '\0' };
+  char addbuf[IRCD_BUFSIZE] = { '\0' };
+  char delbuf[IRCD_BUFSIZE] = { '\0' };
   struct Client *target_p = NULL;
   int accept_num;
   
@@ -183,8 +183,8 @@ build_nicklist(struct Client *source_p, char *addbuf,
     }
 
     if (*buf_p)
-      strlcat(buf_p, ",", BUFSIZE);
-    strlcat(buf_p, name, BUFSIZE);
+      strlcat(buf_p, ",", IRCD_BUFSIZE);
+    strlcat(buf_p, name, IRCD_BUFSIZE);
   }
 }
 
@@ -213,7 +213,7 @@ static void
 list_accepts(struct Client *source_p)
 {
   int len = 0;
-  char nicks[BUFSIZE] = { '\0' };
+  char nicks[IRCD_BUFSIZE] = { '\0' };
   char *t = nicks;
   const dlink_node *ptr = NULL;
 
@@ -223,7 +223,7 @@ list_accepts(struct Client *source_p)
   {
     const struct Client *target_p = ptr->data;
 
-    if ((t - nicks) + strlen(target_p->name) + len > BUFSIZE)
+    if ((t - nicks) + strlen(target_p->name) + len > IRCD_BUFSIZE)
     {
       *(t - 1) = '\0';
       sendto_one(source_p, form_str(RPL_ACCEPTLIST),

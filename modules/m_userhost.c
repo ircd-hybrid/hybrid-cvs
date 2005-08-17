@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_userhost.c,v 1.43 2005/07/16 12:19:44 michael Exp $
+ *  $Id: m_userhost.c,v 1.44 2005/08/17 16:02:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -36,7 +36,6 @@
 #include "modules.h"
 #include "s_conf.h"
 
-static char buf[BUFSIZE];
 
 static void m_userhost(struct Client *, struct Client *, int, char *[]);
 
@@ -58,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&userhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 
 /*
@@ -71,6 +70,7 @@ m_userhost(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
   struct Client *target_p;
+  char buf[IRCD_BUFSIZE];
   char response[NICKLEN*2+USERLEN+HOSTLEN+30];
   char *t;
   int i, n;               /* loop counter */
@@ -119,12 +119,12 @@ m_userhost(struct Client *client_p, struct Client *source_p,
 			    target_p->host);
 	  }
 
-	  if((rl + cur_len) < (BUFSIZE-10))
-	    {
+	  if ((rl + cur_len) < (IRCD_BUFSIZE-10))
+          {
 	      ircsprintf(t,"%s",response);
 	      t += rl;
 	      cur_len += rl;
-	    }
+          }
 	  else
 	    break;
 	}

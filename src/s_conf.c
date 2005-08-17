@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.571 2005/08/15 20:50:02 adx Exp $
+ *  $Id: s_conf.c,v 7.572 2005/08/17 16:02:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -3082,7 +3082,7 @@ conf_add_d_conf(struct AccessItem *aconf)
 void
 yyerror(const char *msg)
 {
-  char newlinebuf[BUFSIZE];
+  char newlinebuf[IRCD_BUFSIZE];
 
   if (ypass != 1)
     return;
@@ -3645,7 +3645,7 @@ cluster_a_line(struct Client *source_p, const char *command,
 	       int capab, int cluster_type, const char *pattern, ...)
 {
   va_list args;
-  char buffer[BUFSIZE];
+  char buffer[IRCD_BUFSIZE];
   struct ConfItem *conf;
   dlink_node *ptr;
 

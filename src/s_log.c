@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.67 2005/08/15 11:45:29 michael Exp $
+ *  $Id: s_log.c,v 7.68 2005/08/17 16:02:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -294,7 +294,7 @@ log_oper(struct Client *source_p, const char *name)
 
     if (oper_fb != NULL)
     {
-      char linebuf[BUFSIZE];
+      char linebuf[IRCD_BUFSIZE];
       size_t nbytes = ircsprintf(linebuf,
                                  "%s OPER (%s) by (%s!%s@%s)\n",
                                  myctime(CurrentTime), name, source_p->name,
@@ -330,7 +330,7 @@ log_failed_oper(struct Client *source_p, const char *name)
 
     if (oper_fb != NULL)
     {
-      char linebuf[BUFSIZE];
+      char linebuf[IRCD_BUFSIZE];
       size_t nbytes = ircsprintf(linebuf,
                                  "%s FAILED OPER (%s) by (%s!%s@%s)\n",
                                  myctime(CurrentTime), name, source_p->name,

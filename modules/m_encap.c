@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_encap.c,v 1.11 2005/05/26 01:24:07 michael Exp $
+ *  $Id: m_encap.c,v 1.12 2005/08/17 16:02:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -54,7 +54,7 @@ _moddeinit(void)
   mod_del_cmd(&encap_msgtab);
   delete_capability("ENCAP");
 }
-const char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 #endif
 
 /*
@@ -68,7 +68,7 @@ static void
 ms_encap(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  char buffer[BUFSIZE], *ptr = buffer;
+  char buffer[IRCD_BUFSIZE], *ptr = buffer;
   unsigned int cur_len = 0, len, i;
   int paramcount, mpara = 0;
   struct Message *mptr = NULL;
@@ -108,8 +108,7 @@ ms_encap(struct Client *client_p, struct Client *source_p,
   if (!match(parv[1], me.name))
     return;
 
-  mptr = find_command(parv[2]);
-  if ((mptr == NULL) || (mptr->cmd == NULL))
+  if ((mptr = find_command(parv[2])) == NULL)
     return;
 
   paramcount = mptr->parameters;

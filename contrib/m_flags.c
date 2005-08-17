@@ -27,7 +27,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_flags.c,v 1.18 2005/07/11 01:19:35 metalrock Exp $
+ *  $Id: m_flags.c,v 1.19 2005/08/17 16:02:51 michael Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -74,7 +74,7 @@ _moddeinit(void)
   mod_del_cmd(&flags_msgtab);
 }
 
-const char *_version = "$Revision: 1.18 $";
+const char *_version = "$Revision: 1.19 $";
 #endif
 
 /* FLAGS requires it's own mini parser, since the last parameter in it can
@@ -362,7 +362,7 @@ static char *
 set_flags_to_string(struct Client *client_p)
 {
   /* XXX - list all flags that we have set on the client */
-  static char setflags[BUFSIZE + 1];
+  static char setflags[IRCD_BUFSIZE + 1];
   int i;
 
   /* Clear it to begin with, we'll be doing a lot of ircsprintf's */
@@ -394,7 +394,7 @@ set_flags_to_string(struct Client *client_p)
 #if 0
   }
 #endif
-  return(setflags);
+  return setflags;
 }
 
 static char *
@@ -402,24 +402,23 @@ unset_flags_to_string(struct Client *client_p)
 {
   /* Inverse of above */
   /* XXX - list all flags that we do NOT have set on the client */
-  static char setflags[BUFSIZE + 1];
-  int i,isoper;
+  static char setflags[IRCD_BUFSIZE + 1];
+  int i, isoper;
 
   /* Clear it to begin with, we'll be doing a lot of ircsprintf's */
   setflags[0] = '\0';
 
-  if (IsOper(client_p))
-    isoper = 1;
-  else
-    isoper = 0;
+  isoper = IsOper(client_p) != 0;
 
   for (i = 0; flag_table[i].name; i++)
   {
-    if ( !(client_p->umodes & flag_table[i].mode))
+    if (!(client_p->umodes & flag_table[i].mode))
     {
       if (!isoper && flag_table[i].oper)
         continue;
-      ircsprintf(setflags, "%s %s", setflags, flag_table[i].name);
+
+      ircsprintf(setflags, "%s %s", setflags,
+                 flag_table[i].name);
     }
   }
 

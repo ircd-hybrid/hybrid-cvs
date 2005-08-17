@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.366 2005/08/16 08:01:40 adx Exp $
+ *  $Id: s_user.c,v 7.367 2005/08/17 16:02:52 michael Exp $
  */
 
 #include <sys/types.h>
@@ -869,7 +869,7 @@ set_user_mode(struct Client *client_p, struct Client *source_p,
               int parc, char *parv[])
 {
   unsigned int flag, setflags;
-  char **p, *m, buf[BUFSIZE];
+  char **p, *m, buf[IRCD_BUFSIZE];
   struct Client *target_p;
   int what = MODE_ADD, badflag = 0, i;
 #if 0
@@ -912,7 +912,7 @@ set_user_mode(struct Client *client_p, struct Client *source_p,
     *m++ = '+';
 
     for (i = 0; i < 128; i++)
-      if ((source_p->umodes & user_modes[i]))
+      if (source_p->umodes & user_modes[i])
         *m++ = (char)i;
     *m = '\0';
 
@@ -1102,24 +1102,27 @@ send_umode_out(struct Client *client_p, struct Client *source_p,
                unsigned int old)
 {
   struct Client *target_p;
-  char buf[BUFSIZE];
+  char buf[IRCD_BUFSIZE];
   dlink_node *ptr;
 
   send_umode(NULL, source_p, old, IsOperHiddenAdmin(source_p) ?
-    SEND_UMODES & ~UMODE_ADMIN : SEND_UMODES, buf);
+             SEND_UMODES & ~UMODE_ADMIN : SEND_UMODES, buf);
 
-  DLINK_FOREACH(ptr, serv_list.head)
+  if (*buf)
   {
-    target_p = ptr->data;
-
-    if ((target_p != client_p) && (target_p != source_p) && (*buf))
+    DLINK_FOREACH(ptr, serv_list.head)
     {
-      if ((!(ServerInfo.hub && IsCapable(target_p, CAP_LL))) ||
-          (target_p->localClient->serverMask &
-           source_p->lazyLinkClientExists))
-        sendto_one(target_p, ":%s MODE %s :%s",
-                   ID_or_name(source_p, target_p),
-		   ID_or_name(source_p, target_p), buf);
+      target_p = ptr->data;
+
+      if ((target_p != client_p) && (target_p != source_p))
+      {
+        if ((!(ServerInfo.hub && IsCapable(target_p, CAP_LL))) ||
+            (target_p->localClient->serverMask &
+             source_p->lazyLinkClientExists))
+          sendto_one(target_p, ":%s MODE %s :%s",
+                     ID_or_name(source_p, target_p),
+                     ID_or_name(source_p, target_p), buf);
+      }
     }
   }
 

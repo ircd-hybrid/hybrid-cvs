@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.203 2005/07/31 05:32:38 adx Exp $
+ *  $Id: m_sjoin.c,v 1.204 2005/08/17 16:02:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.203 $";
+const char *_version = "$Revision: 1.204 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -116,8 +116,8 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   unsigned       int fl;
   char           *s;
   char		 *sptr;
-  static         char nick_buf[BUFSIZE]; /* buffer for modes and prefix */
-  static         char uid_buf[BUFSIZE];  /* buffer for modes/prefixes for CAP_TS6 servers */
+  char nick_buf[IRCD_BUFSIZE]; /* buffer for modes and prefix */
+  char uid_buf[IRCD_BUFSIZE];  /* buffer for modes/prefixes for CAP_TS6 servers */
   char           *nick_ptr, *uid_ptr;      /* pointers used for making the two mode/prefix buffers */
   char           *p; /* pointer used making sjbuf */
   dlink_node     *m;
@@ -285,7 +285,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   /* check we can fit a nick on the end, as well as \r\n and a prefix "
    * @%+", and a space.
    */
-  if (buflen >= (BUFSIZE - IRCD_MAX(NICKLEN, IDLEN) - 2 - 3 - 1))
+  if (buflen >= (IRCD_BUFSIZE - IRCD_MAX(NICKLEN, IDLEN) - 2 - 3 - 1))
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
 			 "Long SJOIN from server: %s(via %s) (ignored)",
@@ -394,7 +394,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     }
     *np = *up = '\0';
 
-    if ((nick_ptr - nick_buf + len_nick) > (BUFSIZE  - 2))
+    if ((nick_ptr - nick_buf + len_nick) > (IRCD_BUFSIZE  - 2))
     {
       sendto_server(client_p, NULL, chptr, 0, CAP_TS6, 0, "%s", nick_buf);
       
@@ -405,7 +405,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     }
     nick_ptr += ircsprintf(nick_ptr, "%s%s ", nick_prefix, target_p->name);
     
-    if ((uid_ptr - uid_buf + len_uid) > (BUFSIZE - 2))
+    if ((uid_ptr - uid_buf + len_uid) > (IRCD_BUFSIZE - 2))
     {
       sendto_server(client_p, NULL, chptr, CAP_TS6, 0, 0, "%s", uid_buf);
       
@@ -528,14 +528,15 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   if (pargs != 0)
   {
     sptr = sendbuf;
-    for(lcount = 0; lcount < pargs; lcount++)
+
+    for (lcount = 0; lcount < pargs; lcount++)
     {
       slen = ircsprintf(sptr, " %s", para[lcount]);
       sptr += slen;
     }
+
     sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s MODE %s %s%s",
                         servername, chptr->chname, modebuf, sendbuf);
-
   }
 
   /* If this happens, its the result of a malformed SJOIN
@@ -777,7 +778,7 @@ remove_ban_list(struct Channel *chptr, struct Client *source_p,
                 dlink_list *list, char c, int cap)
 {
   char lmodebuf[MODEBUFLEN];
-  char lparabuf[BUFSIZE];
+  char lparabuf[IRCD_BUFSIZE];
   struct Ban *banptr = NULL;
   dlink_node *ptr = NULL;
   dlink_node *next_ptr = NULL;
@@ -797,7 +798,7 @@ remove_ban_list(struct Channel *chptr, struct Client *source_p,
 
     plen = banptr->len + 4;  /* another +b and "!@ " */
     if (count >= MAXMODEPARAMS ||
-        (cur_len + 1 /* space between */ + (plen - 1)) > BUFSIZE - 2)
+        (cur_len + 1 /* space between */ + (plen - 1)) > IRCD_BUFSIZE - 2)
     {
       /* remove trailing space */
       *(pbuf - 1) = '\0';

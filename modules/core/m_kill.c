@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.92 2005/08/04 23:53:45 metalrock Exp $
+ *  $Id: m_kill.c,v 1.93 2005/08/17 16:02:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -40,10 +40,10 @@
 #include "modules.h"
 
 
-static char buf[BUFSIZE];
+static char buf[IRCD_BUFSIZE];
 
-static void ms_kill(struct Client *, struct Client *, int, char **);
-static void mo_kill(struct Client *, struct Client *, int, char **);
+static void ms_kill(struct Client *, struct Client *, int, char *[]);
+static void mo_kill(struct Client *, struct Client *, int, char *[]);
 static void relay_kill(struct Client *, struct Client *, struct Client *,
                        const char *, const char *);
 
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.92 $";
+const char *_version = "$Revision: 1.93 $";
 #endif
 
 /* mo_kill()
@@ -192,8 +192,6 @@ ms_kill(struct Client *client_p, struct Client *source_p,
   const char *path;
   char def_reason[] = "No reason";
 
-  *buf = '\0';
-
   if (*parv[1] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
@@ -215,10 +213,7 @@ ms_kill(struct Client *client_p, struct Client *source_p,
     reason = strchr(parv[2], ' ');
 
     if (reason != NULL)
-    {
-      *reason = '\0';
-      reason++;
-    }
+      *reason++ = '\0';
     else
       reason = def_reason;
 
@@ -378,8 +373,7 @@ relay_kill(struct Client *one, struct Client *source_p,
     else
     {
         sendto_one(client_p, ":%s KILL %s :%s %s",
-                   from, to,
-                   inpath, reason);
+                   from, to, inpath, reason);
     }
   }
 }

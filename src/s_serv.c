@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.432 2005/08/15 21:20:11 db Exp $
+ *  $Id: s_serv.c,v 7.433 2005/08/17 16:02:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -800,7 +800,7 @@ send_capabilities(struct Client *client_p, struct AccessItem *aconf,
                   int cap_can_send, int enc_can_send)
 {
   struct Capability *cap=NULL;
-  char msgbuf[BUFSIZE];
+  char msgbuf[IRCD_BUFSIZE];
   char *t;
   int tl;
   dlink_node *ptr;
@@ -847,8 +847,7 @@ send_capabilities(struct Client *client_p, struct AccessItem *aconf,
       t = capend; /* truncate string before ENC:, below */
   }
 #endif
-  t--;
-  *t = '\0';
+  *(t-1) = '\0';
   sendto_one(client_p, "CAPAB :%s", msgbuf);
 }
 
@@ -932,7 +931,7 @@ client_burst_if_needed(struct Client *client_p, struct Client *target_p)
 const char *
 show_capabilities(struct Client *target_p)
 {
-  static char msgbuf[BUFSIZE];
+  static char msgbuf[IRCD_BUFSIZE];
   char *t = msgbuf;
   dlink_node *ptr;
 
@@ -972,6 +971,7 @@ make_server(struct Client *client_p)
     client_p->serv = MyMalloc(sizeof(struct Server));
     client_p->serv->dep_servers = 1;
   }
+
   return client_p->serv;
 }
 

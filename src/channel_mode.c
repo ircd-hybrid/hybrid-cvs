@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.158 2005/08/12 19:53:38 michael Exp $
+ *  $Id: channel_mode.c,v 7.159 2005/08/17 16:02:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -96,13 +96,13 @@ static void send_mode_changes(struct Client *, struct Client *,
                               struct Channel *, char *);
 
 /* some buffers for rebuilding channel/nick lists with ,'s */
-static char modebuf[BUFSIZE];
+static char modebuf[IRCD_BUFSIZE];
 static char parabuf[MODEBUFLEN];
 
 /* 10 is a magic number in hybrid 6 NFI where it comes from -db */
 #define BAN_FUDGE	10
 
-static struct ChModeChange mode_changes[BUFSIZE];
+static struct ChModeChange mode_changes[IRCD_BUFSIZE];
 static int mode_count;
 
 static int mode_limit;		/* number of modes set other than simple */
@@ -1403,9 +1403,9 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
     else
       arglen = 0;
 
-    if((mc == MAXMODEPARAMS) ||
-       ((arglen + mbl + pbl + 2) > BUFSIZE) ||
-       (pbl + arglen + BAN_FUDGE) >= MODEBUFLEN)
+    if ((mc == MAXMODEPARAMS) ||
+        ((arglen + mbl + pbl + 2) > IRCD_BUFSIZE) ||
+        (pbl + arglen + BAN_FUDGE) >= MODEBUFLEN)
     {
       if (nc != 0)
         sendto_server(client_p, source_p, chptr, cap, nocap,
@@ -1508,7 +1508,7 @@ send_mode_changes(struct Client *client_p, struct Client *source_p,
       arglen = 0;
 
     if ((mc == MAXMODEPARAMS)  || 
-        ((arglen + mbl + pbl + 2) > BUFSIZE) ||
+        ((arglen + mbl + pbl + 2) > IRCD_BUFSIZE) ||
 	((arglen + pbl + BAN_FUDGE) >= MODEBUFLEN))
     {
       if (mbl && modebuf[mbl - 1] == '-')
@@ -1524,7 +1524,7 @@ send_mode_changes(struct Client *client_p, struct Client *source_p,
         mbl = ircsprintf(modebuf, ":%s MODE %s ", me.name, chname);
       else
         mbl = ircsprintf(modebuf, ":%s!%s@%s MODE %s ", source_p->name,
-                   source_p->username, source_p->host, chname);
+                         source_p->username, source_p->host, chname);
 
       pbl = 0;
       parabuf[0] = '\0';
@@ -1625,5 +1625,6 @@ set_channel_mode(struct Client *client_p, struct Client *source_p, struct Channe
         break;
     }
   }
+
   send_mode_changes(client_p, source_p, chptr, chname);
 }

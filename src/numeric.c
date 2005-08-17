@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.c,v 7.27 2005/07/27 20:43:09 adx Exp $
+ *  $Id: numeric.c,v 7.28 2005/08/17 16:02:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -119,7 +119,7 @@ void
 set_locale(const char *locale)
 {
   int i, res = 1, linecnt = 0;
-  char buffer[BUFSIZE + 1];
+  char buffer[IRCD_BUFSIZE + 1];
   char *ident, *reply;
   FBFILE *f;
 
@@ -143,7 +143,7 @@ set_locale(const char *locale)
    * that it'll work even if some lame admin won't put "/" at the end
    * of MSGPATH.
    */
-  snprintf(buffer, BUFSIZE + 1, "%s/%s.lang", MSGPATH, locale);
+  snprintf(buffer, sizeof(buffer), "%s/%s.lang", MSGPATH, locale);
   if ((f = fbopen(buffer, "r")) == NULL)
   {
     strlcpy(used_locale, "standard", sizeof(used_locale));  /* XXX */
@@ -151,7 +151,7 @@ set_locale(const char *locale)
   }
 
   /* Process the language file */
-  while (fbgets(buffer, BUFSIZE + 1, f))
+  while (fbgets(buffer, sizeof(buffer), f))
   {
     ++linecnt;
     if (buffer[0] == ';')

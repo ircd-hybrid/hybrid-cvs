@@ -22,7 +22,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.10 2005/08/17 14:56:16 knight Exp $
+ *  $Id: m_services.c,v 1.11 2005/08/17 16:02:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -197,7 +197,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 #endif
 
 /*
@@ -276,6 +276,8 @@ SERV_FUNC(m_nickserv, "NickServ", "NICKSERV")
 SERV_FUNC(m_operserv, "OperServ", "OPERSERV")
 SERV_FUNC(m_seenserv, "SeenServ", "SEENSERV")
 SERV_FUNC(m_statserv, "StatServ", "STATSERV")
+SERV_FUNC(m_botserv,   "BotServ", "BOTSERV")
+SERV_FUNC(m_hostserv, "HostServ", "HOSTSERV")
 
 /*
  * GetString()

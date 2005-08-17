@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.442 2005/08/14 07:26:44 michael Exp $
+ * \version $Id: channel.c,v 7.443 2005/08/17 16:02:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -53,7 +53,7 @@ static BlockHeap *topic_heap = NULL;
 static BlockHeap *member_heap = NULL;
 static BlockHeap *channel_heap = NULL;
 
-static char buf[BUFSIZE];
+static char buf[IRCD_BUFSIZE];
 static char modebuf[MODEBUFLEN];
 static char parabuf[MODEBUFLEN];
 
@@ -202,7 +202,7 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
 {
   dlink_node *lp;
   struct Ban *banptr;
-  char pbuf[BUFSIZE];
+  char pbuf[IRCD_BUFSIZE];
   int tlen, mlen, cur_len;
   int count = 0;
   char *mp, *pp = pbuf;
@@ -231,8 +231,9 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
      * or if the target is non-ts6 and we have too many modes in
      * in this line.
      */
-    if (cur_len + (tlen - 1) > BUFSIZE - 2 || (!IsCapable(client_p, CAP_TS6)
-        && (count >= MAXMODEPARAMS || pp - pbuf >= MODEBUFLEN)))
+    if (cur_len + (tlen - 1) > IRCD_BUFSIZE - 2 ||
+        (!IsCapable(client_p, CAP_TS6) &&
+         (count >= MAXMODEPARAMS || pp - pbuf >= MODEBUFLEN)))
     {
       *(pp-1) = '\0'; /* get rid of trailing space on buffer */
    
@@ -282,6 +283,7 @@ send_channel_modes(struct Client *client_p, struct Channel *chptr)
   send_members(client_p, chptr, modebuf, parabuf);
 
   send_mode_list(client_p, chptr, &chptr->banlist, 'b');
+
   if (IsCapable(client_p, CAP_EX))
     send_mode_list(client_p, chptr, &chptr->exceptlist, 'e');
   if (IsCapable(client_p, CAP_IE))

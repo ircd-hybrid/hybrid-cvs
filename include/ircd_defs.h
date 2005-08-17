@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.42 2005/07/26 23:44:12 adx Exp $
+ *  $Id: ircd_defs.h,v 7.43 2005/08/17 16:02:51 michael Exp $
  */
 
 /*
@@ -35,6 +35,8 @@
 #define INCLUDED_ircd_defs_h
 #include "inet_misc.h"
 
+/* Right out of the RFC */
+#define IRCD_BUFSIZE    512     /* WARNING: *DONT* CHANGE THIS!!!!         */
 #define HOSTLEN         63      /* Length of hostname.  Updated to         */
                                 /* comply with RFC1123                     */
 #define PORTNAMELEN 6  /* ":31337" */
@@ -47,7 +49,6 @@
 
 /* 23+1 for \0 */
 #define KEYLEN          24
-#define BUFSIZE         512     /* WARNING: *DONT* CHANGE THIS!!!! */
 #define OPERNICKLEN     NICKLEN*2 /* Length of OPERNICKs. */
 
 #define USERHOST_REPLYLEN       (NICKLEN+HOSTLEN+USERLEN+5)

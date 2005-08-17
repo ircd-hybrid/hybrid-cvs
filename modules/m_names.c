@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_names.c,v 1.61 2005/07/16 12:19:44 michael Exp $
+ *  $Id: m_names.c,v 1.62 2005/08/17 16:02:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -43,11 +43,11 @@
 #include "modules.h"
 
 
-static void names_all_visible_channels(struct Client *source_p);
-static void names_non_public_non_secret(struct Client *source_p);
+static void names_all_visible_channels(struct Client *);
+static void names_non_public_non_secret(struct Client *);
 
-static void m_names(struct Client *, struct Client *, int, char **);
-static void ms_names(struct Client *, struct Client *, int, char **);
+static void m_names(struct Client *, struct Client *, int, char *[]);
+static void ms_names(struct Client *, struct Client *, int, char *[]);
 
 struct Message names_msgtab = {
   "NAMES", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-const char *_version = "$Revision: 1.61 $";
+const char *_version = "$Revision: 1.62 $";
 #endif
 
 /************************************************************************
@@ -94,7 +94,8 @@ m_names(struct Client *client_p, struct Client *source_p,
 
     if ((s = strchr(para, ',')) != NULL)
       *s = '\0';
-    if (!*para)
+
+    if (*para == '\0')
       return;
 
     if (!check_channel_name(para))
@@ -158,7 +159,7 @@ names_non_public_non_secret(struct Client *source_p)
   dlink_node *gc2ptr, *lp;
   struct Client *c2ptr;
   struct Channel *ch3ptr = NULL;
-  char buf[BUFSIZE];
+  char buf[IRCD_BUFSIZE];
   char *t;
 
   mlen = ircsprintf(buf,form_str(RPL_NAMREPLY),
@@ -193,7 +194,7 @@ names_non_public_non_secret(struct Client *source_p)
       continue;
 
     tlen = strlen(c2ptr->name);
-    if (cur_len + tlen + 1 > BUFSIZE - 2)
+    if (cur_len + tlen + 1 > IRCD_BUFSIZE - 2)
     {
       sendto_one(source_p, "%s", buf);
       cur_len = mlen;

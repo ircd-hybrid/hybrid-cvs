@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.79 2005/07/31 05:32:38 adx Exp $
+ *  $Id: m_mode.c,v 1.80 2005/08/17 16:02:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -43,9 +43,9 @@
 #include "packet.h"
 #include "common.h"
 
-static void m_mode(struct Client *, struct Client *, int, char **);
-static void ms_tmode(struct Client *, struct Client *, int, char **);
-static void ms_bmask(struct Client *, struct Client *, int, char **);
+static void m_mode(struct Client *, struct Client *, int, char *[]);
+static void ms_tmode(struct Client *, struct Client *, int, char *[]);
+static void ms_bmask(struct Client *, struct Client *, int, char *[]);
 
 struct Message mode_msgtab = {
   "MODE", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&bmask_msgtab);
 }
 
-const char *_version = "$Revision: 1.79 $";
+const char *_version = "$Revision: 1.80 $";
 #endif
 
 /*
@@ -94,7 +94,7 @@ m_mode(struct Client *client_p, struct Client *source_p,
   static char modebuf[MODEBUFLEN];
   static char parabuf[MODEBUFLEN];
 
-  if (parv[1][0] == '\0')
+  if (*parv[1] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                me.name, source_p->name, "MODE");
@@ -102,7 +102,7 @@ m_mode(struct Client *client_p, struct Client *source_p,
   }
 
   /* Now, try to find the channel in question */
-  if (!IsChanPrefix(parv[1][0]))
+  if (!IsChanPrefix(*parv[1]))
   {
     /* if here, it has to be a non-channel name */
     set_user_mode(client_p, source_p, parc, parv);
@@ -253,9 +253,9 @@ ms_tmode(struct Client *client_p, struct Client *source_p, int parc, char *parv[
 static void
 ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
-  static char modebuf[BUFSIZE];
-  static char parabuf[BUFSIZE];
-  static char banbuf[BUFSIZE];
+  static char modebuf[IRCD_BUFSIZE];
+  static char parabuf[IRCD_BUFSIZE];
+  static char banbuf[IRCD_BUFSIZE];
   struct Channel *chptr;
   char *s, *t, *mbuf, *pbuf;
   long mode_type;
@@ -263,7 +263,7 @@ ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[
   int modecount = 0;
   int needcap = NOCAPS;
 
-  if (!IsChanPrefix(parv[2][0]) || !check_channel_name(parv[2]))
+  if (!IsChanPrefix(*parv[2]) || !check_channel_name(parv[2]))
     return;
 
   if ((chptr = hash_find_channel(parv[2])) == NULL)
@@ -273,7 +273,7 @@ ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[
   if (atol(parv[1]) > chptr->channelts)
     return;
 
-  switch (parv[3][0])
+  switch (*parv[3])
   {
     case 'b':
       mode_type = CHFL_BAN;
@@ -316,7 +316,7 @@ ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[
     if (tlen && *s != ':' && add_id(source_p, chptr, s, mode_type))
     {
       /* this new one wont fit.. */
-      if (mbuf - modebuf + 2 + pbuf - parabuf + tlen > BUFSIZE - 2 ||
+      if (mbuf - modebuf + 2 + pbuf - parabuf + tlen > IRCD_BUFSIZE - 2 ||
           modecount >= MAXMODEPARAMS)
       {
         *mbuf = '\0';

@@ -32,7 +32,7 @@
    There are some unavoidable exceptions within include files to
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
-/*  $Id: y.tab.c,v 7.56 2005/08/14 07:26:45 michael Exp $ */
+/*  $Id: y.tab.c,v 7.57 2005/08/17 16:02:52 michael Exp $ */
 /* Identify Bison output.  */
 #define YYBISON 1
 
@@ -5787,7 +5787,7 @@ yyreduce:
 
         if ((ecode = regcomp(exp_p, gecos_name, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
         {
-          char errbuf[BUFSIZE];
+          char errbuf[IRCD_BUFSIZE];
 
           regerror(ecode, NULL, errbuf, sizeof(errbuf));
 

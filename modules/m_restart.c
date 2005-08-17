@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_restart.c,v 1.33 2005/06/01 18:23:35 db Exp $
+ *  $Id: m_restart.c,v 1.34 2005/08/17 16:02:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -38,7 +38,7 @@
 #include "parse.h"
 #include "modules.h"
 
-static void mo_restart(struct Client *, struct Client *, int, char **);
+static void mo_restart(struct Client *, struct Client *, int, char *[]);
 
 struct Message restart_msgtab = {
   "RESTART", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&restart_msgtab);
 }
 
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 
 /*
@@ -69,9 +69,9 @@ static void
 mo_restart(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
-  char buf[BUFSIZE]; 
-  dlink_node *ptr;
-  struct Client *target_p;
+  char buf[IRCD_BUFSIZE]; 
+  dlink_node *ptr = NULL;
+  struct Client *target_p = NULL;
 
   if (!IsOperDie(source_p))
   {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.428 2005/08/14 07:26:44 michael Exp $
+ *  $Id: ircd_parser.y,v 1.429 2005/08/17 16:02:52 michael Exp $
  */
 
 %{
@@ -2824,7 +2824,7 @@ gecos_entry: GECOS
 
         if ((ecode = regcomp(exp_p, gecos_name, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
         {
-          char errbuf[BUFSIZE];
+          char errbuf[IRCD_BUFSIZE];
 
           regerror(ecode, NULL, errbuf, sizeof(errbuf));
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_map.c,v 1.23 2005/07/22 03:15:00 db Exp $
+ *  $Id: m_map.c,v 1.24 2005/08/17 16:02:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -53,10 +53,10 @@ void _moddeinit(void)
   mod_del_cmd(&map_msgtab);
 }
 
-const char *_version = "$Revision: 1.23 $";
+const char *_version = "$Revision: 1.24 $";
 #endif
 
-static char buf[BUFSIZE];
+static char buf[IRCD_BUFSIZE];
 
 /* m_map()
  *	parv[0] = sender prefix

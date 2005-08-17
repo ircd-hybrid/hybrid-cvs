@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.51 2005/08/04 23:53:47 metalrock Exp $
+ *  $Id: csvlib.c,v 7.52 2005/08/17 16:02:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,7 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
   char  *reason_field=NULL;
   char  *oper_reason=NULL;
   char  *host_field=NULL;
-  char  line[BUFSIZE];
+  char  line[IRCD_BUFSIZE];
   char  *p;
 
   while (fbgets(line, sizeof(line), file) != NULL)
@@ -111,7 +111,7 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
 
       if ((ecode = regcomp(exp_p, name_field, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
       {
-        char errbuf[BUFSIZE];
+        char errbuf[IRCD_BUFSIZE];
 
         regerror(ecode, NULL, errbuf, sizeof(errbuf));
         MyFree(exp_p);
@@ -516,7 +516,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
   const char *filename;
   FBFILE *in, *out;
   int pairme=0;
-  char buf[BUFSIZE], buff[BUFSIZE], temppath[BUFSIZE];
+  char buf[IRCD_BUFSIZE], buff[IRCD_BUFSIZE], temppath[IRCD_BUFSIZE];
   char *found1;
   char *found2;
   int oldumask;
@@ -532,6 +532,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
 
   ircsprintf(temppath, "%s.tmp", filename);
   oldumask = umask(0);
+
   if ((out = fbopen(temppath, "w")) == NULL)
   {
     sendto_one(source_p, ":%s NOTICE %s :Cannot open %s", me.name,
@@ -540,6 +541,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
     umask(oldumask);
     return -1;
   }
+
   umask(oldumask);
   oldumask = umask(0);
 
@@ -547,7 +549,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
   {
     if ((*buf == '\0') || (*buf == '#'))
     {
-      if(flush_write(source_p, in, out, buf, temppath) < 0)
+      if (flush_write(source_p, in, out, buf, temppath) < 0)
 	return -1;
     }
     

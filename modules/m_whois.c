@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.137 2005/08/15 20:50:02 adx Exp $
+ *  $Id: m_whois.c,v 1.138 2005/08/17 16:02:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ struct Message whois_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.137 $";
+const char *_version = "$Revision: 1.138 $";
 static struct Callback *whois_cb;
 
 void
@@ -336,7 +336,7 @@ single_whois(struct Client *source_p, struct Client *target_p)
 static void
 whois_person(struct Client *source_p, struct Client *target_p)
 {
-  char buf[BUFSIZE];
+  char buf[IRCD_BUFSIZE];
   dlink_node *lp;
   struct Client *server_p;
   struct Channel *chptr;
@@ -364,7 +364,7 @@ whois_person(struct Client *source_p, struct Client *target_p)
 
     if (ShowChannel(source_p, chptr))
     {
-      if ((cur_len + 3 + strlen(chptr->chname) + 1) > (BUFSIZE - 2))
+      if ((cur_len + 3 + strlen(chptr->chname) + 1) > (IRCD_BUFSIZE - 2))
       {
 	*(t - 1) = '\0';
 	sendto_one(source_p, "%s", buf);

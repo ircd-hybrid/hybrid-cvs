@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.20 2005/07/30 22:37:03 metalrock Exp $
+ *  $Id: m_killhost.c,v 1.21 2005/08/17 16:02:51 michael Exp $
  *
  */
 
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&killhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.20 $";
+const char *_version = "$Revision: 1.21 $";
 #endif
 
 /* mo_killhost()
@@ -79,16 +79,15 @@ static void
 mo_killhost(struct Client *client_p, struct Client *source_p,
             int parc, char *parv[])
 {
-  dlink_node *ptr;
-  dlink_node *ptr_next;
-  struct Client *target_p;
+  dlink_node *ptr = NULL, *ptr_next = NULL;
+  struct Client *target_p = NULL;
   const char *inpath = client_p->name;
   char *nick = NULL;
   char *user = NULL;
   char *host = NULL;
-  char *reason;
-  char bufhost[BUFSIZE];
-  char buf_nuh[NICKLEN + USERLEN + HOSTLEN + 1];
+  char *reason = NULL;
+  char bufhost[IRCD_BUFSIZE];
+  char buf_nuh[NICKLEN + USERLEN + HOSTLEN + 3];
   char def_reason[] = "No reason specified";
   unsigned int count = 0;
 
@@ -103,7 +102,7 @@ mo_killhost(struct Client *client_p, struct Client *source_p,
   split_nuh(buf_nuh, &nick, &user, &host);
 
   if (!valid_wild_card(source_p, YES, 3, nick, user, host))
-    return;
+    goto cleanup;
 
   if (!EmptyString(parv[2]))
   {
@@ -159,6 +158,10 @@ mo_killhost(struct Client *client_p, struct Client *source_p,
 
   sendto_one(source_p,":%s NOTICE %s :%u clients killed",
              me.name, source_p->name, count);
+cleanup:
+  MyFree(nick);
+  MyFree(user);
+  MyFree(host);
 }
 
 static void

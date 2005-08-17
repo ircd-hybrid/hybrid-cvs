@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: common.h,v 7.4 2003/06/14 03:53:59 joshk Exp $
+ *  $Id: common.h,v 7.5 2005/08/17 16:02:51 michael Exp $
  */
 
 #ifndef INCLUDED_common_h
@@ -54,8 +54,4 @@
 
 #define IRCD_MAX(a, b)  ((a) > (b) ? (a) : (b))
 #define IRCD_MIN(a, b)  ((a) < (b) ? (a) : (b))
-
-/* Right out of the RFC */
-#define IRCD_BUFSIZE 512
-
 #endif /* INCLUDED_common_h */

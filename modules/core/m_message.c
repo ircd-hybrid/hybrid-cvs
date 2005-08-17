@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.143 2005/07/31 05:32:38 adx Exp $
+ *  $Id: m_message.c,v 1.144 2005/08/17 16:02:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -117,7 +117,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.143 $";
+const char *_version = "$Revision: 1.144 $";
 #endif
 
 /*
@@ -261,14 +261,14 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
                   struct Client *source_p, char *nicks_channels, char *text)
 {
   int type;
-  char *p, *nick, *target_list, ncbuf[BUFSIZE];
+  char *p, *nick, *target_list, ncbuf[IRCD_BUFSIZE];
   struct Channel *chptr = NULL;
   struct Client *target_p = NULL;
 
   /* Sigh, we can't mutilate parv[1] incase we need it to send to a hub */
   if (!ServerInfo.hub && (uplink != NULL) && IsCapable(uplink, CAP_LL))
   {
-    strncpy(ncbuf, nicks_channels, BUFSIZE);
+    strlcpy(ncbuf, nicks_channels, sizeof(ncbuf));
     target_list = ncbuf;
   }
   else
