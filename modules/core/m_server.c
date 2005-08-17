@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.133 2005/07/30 20:44:17 adx Exp $
+ *  $Id: m_server.c,v 1.134 2005/08/17 02:29:33 db Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.133 $";
+const char *_version = "$Revision: 1.134 $";
 #endif
 
 
@@ -569,17 +569,13 @@ ms_sid(struct Client *client_p, struct Client *source_p,
   int hlined = 0;
   int llined = 0;
   dlink_node *ptr, *ptr_next;
-  char *name;
-  char *sid;
   int hop;
 #define SID_NAME	parv[1]
 #define SID_HOP		parv[2]
 #define SID_SID		parv[3]
 #define SID_GECOS	parv[4]
 
-  name = SID_NAME;
   hop = atoi(SID_HOP);
-  sid = SID_SID;
 
   /* Just to be sure -A1kmm. */
   if (!IsServer(source_p))
@@ -619,7 +615,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
    * a connect comes in with same name toss the pending one,
    * but only if it's not the same client! - Dianora
    */
-  if ((target_p = find_servconn_in_progress(name)))
+  if ((target_p = find_servconn_in_progress(SID_NAME)))
     if (target_p != client_p)
       exit_client(target_p, &me, "Overridden");
 
@@ -651,7 +647,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
    */
   if (parc == 1 || info[0] == '\0')
   {
-    sendto_one(client_p, "ERROR :No server info specified for %s", name);
+    sendto_one(client_p, "ERROR :No server info specified for %s", SID_NAME);
     return;
   }
 
@@ -665,7 +661,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
     if (match(conf->name, client_p->name))
     {
       match_item = (struct MatchItem *)map_to_conf(conf);
-      if (match(match_item->host, name))
+      if (match(match_item->host, SID_NAME))
 	llined++;
     }
   }
@@ -678,7 +674,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
     {
       match_item = (struct MatchItem *)map_to_conf(conf);
 
-      if (match(match_item->host, name))
+      if (match(match_item->host, SID_NAME))
 	hlined++;
     }
   }
@@ -789,10 +785,10 @@ ms_sid(struct Client *client_p, struct Client *source_p,
     {
       sendto_realops_flags(UMODE_ALL, L_ADMIN,
                            "Lost connect{} block for %s on %s. Closing",
-                           get_client_name(client_p, HIDE_IP), name);
+                           get_client_name(client_p, HIDE_IP), SID_NAME);
       sendto_realops_flags(UMODE_ALL, L_OPER,
                            "Lost connect{} block for %s on %s. Closing",
-                           get_client_name(client_p, MASK_IP), name);
+                           get_client_name(client_p, MASK_IP), SID_NAME);
       exit_client(client_p, client_p, "Lost connect{} block");
       continue;
     }
