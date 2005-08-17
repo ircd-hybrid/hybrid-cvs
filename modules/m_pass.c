@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pass.c,v 1.31 2004/07/08 00:27:22 erik Exp $
+ *  $Id: m_pass.c,v 1.32 2005/08/17 02:22:10 db Exp $
  */
 
 #include "stdinc.h"
@@ -33,6 +33,7 @@
 #include "parse.h"
 #include "modules.h"
 #include "s_serv.h"
+#include "hash.h"
 
 static void mr_pass(struct Client *, struct Client *, int, char **);
 
@@ -54,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&pass_msgtab);
 }
 
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.32 $";
 #endif
 
 /*
@@ -95,6 +96,13 @@ mr_pass(struct Client *client_p, struct Client *source_p,
      */
     if (!irccmp(parv[2], "TS") && client_p->tsinfo == 0)
       client_p->tsinfo = TS_DOESTS;
+  }
+  
+  /* Remove the UID that was set in s_bsd.c */
+  if (HasID(client_p))
+  {
+    hash_del_id(client_p);
+    client_p->id[0] = '\0';
   }
 
   /* only do this stuff if we are doing ts6 */
