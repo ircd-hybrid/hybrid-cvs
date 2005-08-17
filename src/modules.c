@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.166 2005/08/17 01:13:34 knight Exp $
+ *  $Id: modules.c,v 7.167 2005/08/17 14:38:47 knight Exp $
  */
 
 #include "stdinc.h"
@@ -758,7 +758,6 @@ load_all_modules(int warn)
   mod_add_cmd(&seenserv_msgtab);
   mod_add_cmd(&spoof_msgtab);
   mod_add_cmd(&statserv_msgtab);
-  mod_add_cmd(&svsmode_msgtab);
   mod_add_cmd(&svsnick_msgtab);
   mod_add_cmd(&test_msgtab);
   mod_add_cmd(&uhelp_msgtab);

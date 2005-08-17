@@ -1,3 +1,6 @@
+/* CHANGE THIS PLEASE!!! */
+#define SERVICES_NAME "_CHANGE_ME_" /* e.g services.yournetwork.net */
+
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  m_services.c: SVS commands and Services support
@@ -19,7 +22,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.8 2005/08/17 13:45:07 michael Exp $
+ *  $Id: m_services.c,v 1.9 2005/08/17 14:38:47 knight Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +55,6 @@
                                        char *parv[]) \
 { deliver_services_msg(b, c, client_p, source_p, parc, parv); }
 
-static void mo_svsmode(struct Client *, struct Client *, int, char *[]);
 static void mo_svsnick(struct Client *, struct Client *, int, char *[]);
 
 static void m_chanserv(struct Client *, struct Client *, int, char *[]);
@@ -70,11 +72,6 @@ static int clean_nick_name(char *);
 static void deliver_services_msg(const char *, const char *, struct Client *, struct Client *, int, char *[]);
 
 /* SVS commands */
-struct Message svsmode_msgtab = {
-  "SVSMODE", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_svsmode, mo_svsmode, m_ignore}
-};
-
 struct Message svsnick_msgtab = {
   "SVSNICK", 0, 0, 3, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_svsnick, mo_svsnick, m_ignore}
@@ -152,7 +149,6 @@ void
 _modinit(void)
 {
   mod_add_cmd(&svsnick_msgtab);
-  mod_add_cmd(&svsmode_msgtab);
   mod_add_cmd(&chanserv_msgtab); 
   mod_add_cmd(&global_msgtab);
   mod_add_cmd(&helpserv_msgtab);
@@ -172,7 +168,6 @@ void
 _moddeinit(void)
 {
   mod_del_cmd(&svsnick_msgtab);
-  mod_del_cmd(&svsmode_msgtab);
   mod_del_cmd(&chanserv_msgtab); 
   mod_del_cmd(&global_msgtab);
   mod_del_cmd(&helpserv_msgtab);
@@ -188,41 +183,8 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 #endif
-
-/*
- * mo_svsmode()
- *
- * Sets or changes modes for a particular user
- *
- * parv[0] = sender prefix
- * parv[1] = target
- * parv[2] = modes
- */
-static void
-mo_svsmode(struct Client *client_p, struct Client *source_p,
-           int parc, char *parv[])
-{
-  struct Client *target_p = NULL;
-
-  if (MyConnect(source_p) && !IsOperAdmin(source_p))
-  {
-    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
-               me.name, parv[0]);
-    return;
-  }
-
-  if (parc < 3 || *parv[2] == '\0')
-  {
-    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, parv[0], "SVSMODE");
-    return;
-  }
-
-  if ((target_p = find_person(client_p, parv[1])))
-    set_user_mode(client_p, target_p, parc, parv);
-}
 
 /*
  * mo_svsnick()
@@ -360,30 +322,28 @@ m_identify(struct Client *client_p, struct Client *source_p,
 
   if (parc == 3)
   {
-      acptr = find_person(client_p, "ChanServ");
-      if (!acptr)
+      if (!(acptr = find_server(SERVICES_NAME))) /* Michael suggested; Thanks! -- knight- */
       {
         sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Services are currently unavailable.",
                    me.name, parv[0]);
       }
       else
       {
-        sendto_one(acptr, ":%s PRIVMSG ChanServ :IDENTIFY %s %s",
-                   parv[0], parv[1], parv[2]);
+        sendto_one(acptr, ":%s PRIVMSG ChanServ@%s :IDENTIFY %s %s",
+                   parv[0], SERVICES_NAME, parv[1], parv[2]);
       }
   }
   else if (parc == 2)
   {
-    acptr = find_person(client_p, "NickServ");
-    if (!acptr)
+    if (!(acptr = find_server(SERVICES_NAME))) /* Michael suggested; Thanks! -- knight- */
     {
       sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Services are currently unavailable.",
                  me.name, parv[0]);
     }
     else
     {
-      sendto_one(acptr, ":%s PRIVMSG NickServ :IDENTIFY %s",
-                 parv[0], parv[1]);
+      sendto_one(acptr, ":%s PRIVMSG NickServ@%s :IDENTIFY %s",
+                 parv[0], SERVICES_NAME, parv[1]);
     }
   }
   else
@@ -418,18 +378,14 @@ deliver_services_msg(const char *service, const char *command,
     return;
   }
 
-  /*
-   * Check to make sure the nick is existant.
-   */
-  if ((acptr = find_person(client_p, service)) == NULL)
+  if (!(acptr = find_server(SERVICES_NAME))) /* Michael suggested; Thanks! -- knight- */
   {
     sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Services are currently unavailable.",
                me.name, parv[0]);
-    return;
   }
-
-  get_string(parc - 1, parv + 1, buf);
-
-  sendto_one(acptr, ":%s PRIVMSG %s :%s",
-             parv[0], acptr->name, buf);
+  else
+  {
+    get_string(parc - 1, parv + 1, buf);
+    sendto_one(acptr, ":%s PRIVMSG %s@%s :%s", parv[0], service, SERVICES_NAME, buf);
+  }
 }
