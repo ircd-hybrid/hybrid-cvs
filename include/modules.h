@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.66 2005/08/17 14:38:47 knight Exp $
+ *  $Id: modules.h,v 7.67 2005/08/17 14:56:16 knight Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -171,6 +171,7 @@ extern struct Message rxline_msgtab;
 #endif
 
 #ifdef BUILD_CONTRIB
+extern struct Message botserv_msgtab;
 extern struct Message capture_msgtab;
 extern struct Message chanserv_msgtab;
 extern struct Message chghost_msgtab;
@@ -188,6 +189,7 @@ extern struct Message forcepart_msgtab;
 extern struct Message global_msgtab;
 extern struct Message help_msgtab;
 extern struct Message helpserv_msgtab;
+extern struct Message hostserv_msgtab;
 extern struct Message identify_msgtab;
 extern struct Message jupe_msgtab;
 extern struct Message killhost_msgtab;

@@ -22,7 +22,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.9 2005/08/17 14:38:47 knight Exp $
+ *  $Id: m_services.c,v 1.10 2005/08/17 14:56:16 knight Exp $
  */
 
 #include "stdinc.h"
@@ -47,8 +47,6 @@
 #include "modules.h"
 #include "s_user.h"
 
-#define MAXLINE 512   /* Please DO NOT change this! -- knight- */
-
 /* Services' function macro generation -- knight- */
 #define SERV_FUNC(a,b,c) static void a(struct Client *client_p,\
                                        struct Client *source_p, int parc,\
@@ -57,9 +55,11 @@
 
 static void mo_svsnick(struct Client *, struct Client *, int, char *[]);
 
+static void m_botserv(struct Client *, struct Client *, int, char *[]);
 static void m_chanserv(struct Client *, struct Client *, int, char *[]);
 static void m_global(struct Client *, struct Client *, int, char *[]);
 static void m_helpserv(struct Client *, struct Client *, int, char *[]);
+static void m_hostserv(struct Client *, struct Client *, int, char *[]);
 static void m_identify(struct Client *, struct Client *, int, char *[]);
 static void m_memoserv(struct Client *, struct Client *, int, char *[]);
 static void m_nickserv(struct Client *, struct Client *, int, char *[]);
@@ -78,6 +78,11 @@ struct Message svsnick_msgtab = {
 };
 
 /* Services */
+struct Message botserv_msgtab = {
+  "BOTSERV", 0, 0, 1, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_botserv, m_ignore, m_ignore, m_botserv, m_ignore}
+};
+
 struct Message chanserv_msgtab = {
   "CHANSERV", 0, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_chanserv, m_ignore, m_ignore, m_chanserv, m_ignore}
@@ -91,6 +96,11 @@ struct Message global_msgtab = {
 struct Message helpserv_msgtab = {
   "HELPSERV", 0, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_helpserv, m_ignore, m_ignore, m_helpserv, m_ignore}
+};
+
+struct Message hostserv_msgtab = {
+  "HOSTSERV", 0, 0, 1, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_hostserv, m_ignore, m_ignore, m_hostserv, m_ignore}
 };
 
 struct Message identify_msgtab = {
@@ -149,9 +159,11 @@ void
 _modinit(void)
 {
   mod_add_cmd(&svsnick_msgtab);
+  mod_add_cmd(&botserv_msgtab);
   mod_add_cmd(&chanserv_msgtab); 
   mod_add_cmd(&global_msgtab);
   mod_add_cmd(&helpserv_msgtab);
+  mod_add_cmd(&hostserv_msgtab);
   mod_add_cmd(&identify_msgtab);
   mod_add_cmd(&memoserv_msgtab);
   mod_add_cmd(&nickserv_msgtab);
@@ -168,9 +180,11 @@ void
 _moddeinit(void)
 {
   mod_del_cmd(&svsnick_msgtab);
+  mod_del_cmd(&botserv_msgtab);
   mod_del_cmd(&chanserv_msgtab); 
   mod_del_cmd(&global_msgtab);
   mod_del_cmd(&helpserv_msgtab);
+  mod_del_cmd(&hostserv_msgtab);
   mod_del_cmd(&identify_msgtab);
   mod_del_cmd(&memoserv_msgtab);
   mod_del_cmd(&nickserv_msgtab);
@@ -183,7 +197,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.10 $";
 #endif
 
 /*
