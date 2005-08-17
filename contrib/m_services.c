@@ -22,7 +22,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.12 2005/08/17 22:36:59 metalrock Exp $
+ *  $Id: m_services.c,v 1.13 2005/08/17 23:08:23 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,8 @@ static void m_statserv(struct Client *, struct Client *, int, char *[]);
 
 static void get_string(int, char *[], char *);
 static int clean_nick_name(char *);
-static void deliver_services_msg(const char *, const char *, struct Client *, struct Client *, int, char *[]);
+static void deliver_services_msg(const char *, const char *, struct Client *,
+				 struct Client *, int, char *[]);
 
 /* SVS commands */
 struct Message svsnick_msgtab = {
@@ -197,7 +198,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 #endif
 
 /*
