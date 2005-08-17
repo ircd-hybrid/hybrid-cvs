@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  *
- * $Id: ip_cloaking.c,v 1.2 2005/08/17 00:47:32 knight Exp $
+ * $Id: ip_cloaking.c,v 1.3 2005/08/17 02:59:51 metalrock Exp $
  */
 
 /*
@@ -57,6 +57,7 @@
 #include "s_user.h"
 #include "send.h"
 #include "s_conf.h"
+#include "modules.h"
 #include "memory.h"
 #include "s_log.h"
 #include "sprintf_irc.h"
@@ -66,7 +67,7 @@ static int vhost_ipv6_err;
 static dlink_node *prev_enter_umode;
 static dlink_node *prev_umode;
 
-const char *_version = "$Revision: 1.2 $";
+const char *_version = "$Revision: 1.3 $";
 
 static void *reset_ipv6err_flag(va_list);
 static void *h_set_user_mode(va_list);
