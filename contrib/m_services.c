@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.6 2005/08/17 10:22:07 michael Exp $
+ *  $Id: m_services.c,v 1.7 2005/08/17 10:33:00 michael Exp $
  */
 
 #include "stdinc.h"
@@ -98,7 +98,7 @@ struct Message helpserv_msgtab = {
 
 struct Message identify_msgtab = {
   "IDENTIFY", 0, 0, 0, 2, MFLG_SLOW, 0,
-  {m_unregistered, m_identify, m_ignore, m_ignore, m_helpserv, m_ignore}
+  {m_unregistered, m_identify, m_ignore, m_ignore, m_identify, m_ignore}
 };
 
 struct Message memoserv_msgtab = {
@@ -188,7 +188,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.6 $";
+const char *_version = "$Revision: 1.7 $";
 #endif
 
 /*
