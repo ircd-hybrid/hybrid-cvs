@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.152 2005/08/15 20:50:02 adx Exp $
+ *  $Id: s_auth.c,v 7.153 2005/08/17 01:25:08 db Exp $
  */
 
 /*
@@ -398,6 +398,7 @@ start_auth(va_list args)
   assert(client != NULL);
 
   auth = make_auth_request(client);
+  SetCrit(auth);
 
   client->localClient->dns_query = MyMalloc(sizeof(struct DNSQuery));
   client->localClient->dns_query->ptr = auth;
@@ -413,6 +414,7 @@ start_auth(va_list args)
    * And that would do MyFree(auth) etc -adx */
   SetDNSPending(auth);
   dlinkAdd(auth, &auth->dns_node, &auth_doing_dns_list);
+  ClearCrit(auth);
   gethost_byaddr(&client->localClient->ip, client->localClient->dns_query);
 
   return NULL;
@@ -603,10 +605,13 @@ read_auth_reply(fde_t *fd, void *data)
     SetGotId(auth->client);
   }
 
-  if (!IsDNSPending(auth))
+  if (!IsCrit(auth))
   {
-    release_auth_client(auth->client);
-    MyFree(auth);
+    if (!IsDNSPending(auth))
+    {
+      release_auth_client(auth->client);
+      MyFree(auth);
+    }
   }
 }
 

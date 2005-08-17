@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.h,v 7.25 2005/08/15 20:50:01 adx Exp $
+ *  $Id: s_auth.h,v 7.26 2005/08/17 01:25:08 db Exp $
  */
 
 #ifndef INCLUDED_s_auth_h
@@ -54,6 +54,7 @@ struct AuthRequest
  */
 #define AM_DOING_AUTH        1
 #define AM_DNS_PENDING       2
+#define CRIT_REGION	     4
 
 #define SetDNSPending(x)     ((x)->flags |= AM_DNS_PENDING)
 #define ClearDNSPending(x)   ((x)->flags &= ~AM_DNS_PENDING)
@@ -62,6 +63,10 @@ struct AuthRequest
 #define SetDoingAuth(x)      ((x)->flags |= AM_DOING_AUTH)
 #define ClearAuth(x)         ((x)->flags &= ~AM_DOING_AUTH)
 #define IsDoingAuth(x)       ((x)->flags &  AM_DOING_AUTH)
+
+#define IsCrit(x)	     ((x)->flags & CRIT_REGION)
+#define SetCrit(x)	     ((x)->flags |= CRIT_REGION)
+#define ClearCrit(x)	     ((x)->flags &= ~CRIT_REGION)
 
 extern struct Callback *auth_cb;
 
