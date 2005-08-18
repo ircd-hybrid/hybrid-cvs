@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.240 2005/08/15 20:50:02 adx Exp $
+ *  $Id: s_bsd.c,v 7.241 2005/08/18 00:52:10 db Exp $
  */
 
 #include "stdinc.h"
@@ -51,7 +51,6 @@
 #include "s_stats.h"
 #include "send.h"
 #include "memory.h"
-#include "hash.h"
 #include "s_user.h"
 #include "hook.h"
 
@@ -438,11 +437,8 @@ add_connection(struct Listener* listener, int fd)
   if (!disable_sock_options(fd))
     report_error(L_ALL, OPT_ERROR_MSG, get_client_name(new_client, SHOW_IP), errno);
 
-  /* Get an UID early so there is an unique ID for async lookups */
-  while (hash_find_id((id = uid_get())))
-    ;
-
-  strlcpy(new_client->id, id, sizeof(new_client->id));
+  connect_id++;
+  new_client->connect_id = connect_id;
 
 #ifdef HAVE_LIBCRYPTO
   if ((listener->flags & LISTENER_SSL))

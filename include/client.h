@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.243 2005/08/15 18:08:26 adx Exp $
+ *  $Id: client.h,v 7.244 2005/08/18 00:52:09 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -109,6 +109,7 @@ struct Client
   time_t            firsttime;  /* time client was created */
   time_t            since;      /* last time we parsed something */
   time_t            tsinfo;     /* TS on the nick, SVINFO on server */
+  unsigned long	    connect_id; /* unique connection ID */
   unsigned int      umodes;     /* opers, normal users subset */
   unsigned int      flags;      /* client flags */
 

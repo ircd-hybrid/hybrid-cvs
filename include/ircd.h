@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.77 2005/06/06 11:38:12 bill Exp $
+ *  $Id: ircd.h,v 7.78 2005/08/18 00:52:09 db Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -56,6 +56,7 @@ struct Counter
 };
 
 extern struct SetOptions GlobalSetOptions; /* defined in ircd.c */
+extern unsigned long connect_id;	/* unique connect ID */
 
 struct ServerState_t
 {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.352 2005/08/15 20:50:02 adx Exp $
+ *  $Id: ircd.c,v 7.353 2005/08/18 00:52:10 db Exp $
  */
 
 #include "stdinc.h"
@@ -85,6 +85,7 @@ struct logging_entry ConfigLoggingEntry = { 1, {0}, {0}, {0} };
 struct timeval SystemTime;
 struct Client me;             /* That's me */
 struct LocalUser meLocalUser; /* That's also part of me */
+unsigned long connect_id = 0; /* unique connect ID */
 
 static unsigned long initialVMTop = 0;   /* top of virtual memory at init */
 const char *logFileName = LPATH;
