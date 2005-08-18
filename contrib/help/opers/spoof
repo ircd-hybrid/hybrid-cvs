@@ -1,10 +1,12 @@
-# $Id: spoof,v 1.1 2005/08/18 13:23:48 knight Exp $
+# $Id: spoof,v 1.2 2005/08/18 15:53:46 knight Exp $
 SPOOF <user@hostname> <free.form.spoof|-> [flags|- [password]]
 
 The SPOOF command allows you to create free form auth {} spoofs for
 various users on the fly and can propegate to other servers. It can
 also append existant spoofs as well. To use the SPOOF command here
 is an example if I want to spoof god@10.0.0.10:
+
+You also need to make sure to have .include "spoof.conf" in your ircd.conf
 
 SPOOF *god@10.0.0.* i.hate.packets
 
