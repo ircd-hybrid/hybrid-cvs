@@ -1,5 +1,5 @@
 # Makefile to install help files
-# $Id: Makefile.in,v 1.6 2005/08/18 21:31:48 knight Exp $
+# $Id: Makefile.in,v 1.7 2005/08/18 21:38:00 knight Exp $
 
 INSTALL=	@INSTALL@
 INSTALL_DATA=	@INSTALL_DATA@
@@ -36,6 +36,8 @@ index:
 	@for help in $(SYMLINKS); do \
 		echo $$help >> users/index.tmp; \
 	done
+	echo 'Help topics available to users:' > users/index
+	echo '' >> users/index
 	cat users/index.tmp \
 		| sed -e 's|^users/||' \
 		| sed -e 's|^../../help/users/||' \
@@ -56,6 +58,8 @@ index:
 			echo $$help >> opers/index.tmp; \
 		fi \
 	done
+	echo 'Help topics available to opers:' > opers/index
+	echo '' >> opers/index
 	cat opers/index.tmp \
 		| sed -e 's|^opers/||' \
 		| sed -e 's|^../../help/opers/||' \
