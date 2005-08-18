@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.154 2005/08/18 16:26:07 adx Exp $
+ *  $Id: s_auth.c,v 7.155 2005/08/18 17:03:30 db Exp $
  */
 
 /*
@@ -605,13 +605,10 @@ read_auth_reply(fde_t *fd, void *data)
     SetGotId(auth->client);
   }
 
-  if (!IsCrit(auth))
+  if (!IsDNSPending(auth) && !IsCrit(auth))
   {
-    if (!IsDNSPending(auth))
-    {
-      release_auth_client(auth->client);
-      MyFree(auth);
-    }
+    release_auth_client(auth->client);
+    MyFree(auth);
   }
 }
 
