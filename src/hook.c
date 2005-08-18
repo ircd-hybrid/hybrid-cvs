@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.27 2005/08/16 15:14:05 knight Exp $
+ *  $Id: hook.c,v 7.28 2005/08/18 04:31:57 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -121,7 +121,7 @@ find_callback(const char *name)
   DLINK_FOREACH(ptr, callback_list.head)
   {
     cb = ptr->data;
-    if (!strcasecmp(cb->name, name))
+    if (!irccmp(cb->name, name))
       return (cb);
   }
 
