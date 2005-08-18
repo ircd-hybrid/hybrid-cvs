@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.156 2005/08/18 17:21:31 adx Exp $
+ *  $Id: s_auth.c,v 7.157 2005/08/18 17:24:47 adx Exp $
  */
 
 /*
@@ -601,8 +601,8 @@ read_auth_reply(fde_t *fd, void *data)
 
   if (s == NULL)
   {
+    sendheader(auth->client, REPORT_FAIL_ID);
     ++ServerStats->is_abad;
-    strcpy(auth->client->username, "unknown");
   }
   else
   {
