@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.28 2005/08/18 04:31:57 lusky Exp $
+ *  $Id: hook.c,v 7.29 2005/08/18 04:55:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -28,6 +28,7 @@
 #include "list.h"
 #include "memory.h"
 #include "tools.h"
+#include "irc_string.h"
 
 dlink_list callback_list = {NULL, NULL, 0};
 
