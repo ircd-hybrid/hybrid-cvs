@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.44 2005/08/02 06:12:51 adx Exp $
+ *  $Id: fdlist.c,v 7.45 2005/08/18 19:48:39 adx Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -33,6 +33,7 @@
 #include "numeric.h"
 
 fde_t *fd_hash[HARD_FDLIMIT];
+fde_t *fd_next_in_loop = NULL;
 int number_fd = 0;
 
 void
@@ -92,6 +93,9 @@ void
 fd_close(fde_t *F)
 {
   unsigned int hashv = hash_fd(F->fd);
+
+  if (F == fd_next_in_loop)
+    fd_next_in_loop = F->hnext;
 
   comm_setselect(F, COMM_SELECT_WRITE | COMM_SELECT_READ, NULL, NULL, 0);
 

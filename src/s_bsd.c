@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.243 2005/08/18 17:21:31 adx Exp $
+ *  $Id: s_bsd.c,v 7.244 2005/08/18 19:48:39 adx Exp $
  */
 
 #include "stdinc.h"
@@ -538,10 +538,10 @@ comm_checktimeouts(void *notused)
   void *data;
 
   for (i = 0; i <= HARD_FDLIMIT; i++)
-    for (F = fd_hash[i]; F != NULL; F = F->hnext)
+    for (F = fd_hash[i]; F != NULL; F = fd_next_in_loop)
     {
-      if (!F->flags.open)
-        continue;
+      assert(F->flags.open);
+      fd_next_in_loop = F->hnext;
 
       /* check flush functions */
       if (F->flush_handler && F->flush_timeout > 0 &&
