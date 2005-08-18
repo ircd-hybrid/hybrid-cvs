@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.155 2005/08/18 17:03:30 db Exp $
+ *  $Id: s_auth.c,v 7.156 2005/08/18 17:21:31 adx Exp $
  */
 
 /*
@@ -556,9 +556,15 @@ read_auth_reply(fde_t *fd, void *data)
 
   len = recv(fd->fd, buf, AUTH_BUFSIZ, 0);
   
-  if (len < 0 && ignoreErrno(errno))
+  if (len < 0)
   {
-    comm_setselect(fd, COMM_SELECT_READ, read_auth_reply, auth, 0);
+#ifdef _WIN32
+    errno = WSAGetLastError();
+#endif
+    if (ignoreErrno(errno))
+      comm_setselect(fd, COMM_SELECT_READ, read_auth_reply, auth, 0);
+    else
+      auth_error(auth);
     return;
   }
 

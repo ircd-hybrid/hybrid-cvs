@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.128 2005/08/18 06:37:42 db Exp $
+ *  $Id: packet.c,v 7.129 2005/08/18 17:21:31 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -301,7 +301,7 @@ read_ctrl_packet(fde_t *fd, void *data)
 
     if (length <= 0)
     {
-      if((length == -1) && ignoreErrno(errno))
+      if ((length == -1) && ignoreErrno(errno))
         goto nodata;
       dead_link_on_read(server, length);
       return;
@@ -434,7 +434,13 @@ read_packet(fde_t *fd, void *data)
     }
     else
 #endif
+    {
       length = recv(fd->fd, readBuf, READBUF_SIZE, 0);
+#ifdef _WIN32
+      if (length < 0)
+        errno = WSAGetLastError();
+#endif
+    }
 
     if (length <= 0)
     {

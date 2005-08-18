@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.242 2005/08/18 01:08:50 db Exp $
+ *  $Id: s_bsd.c,v 7.243 2005/08/18 17:21:31 adx Exp $
  */
 
 #include "stdinc.h"
@@ -85,7 +85,11 @@ check_can_use_v6(void)
   else
   {
     ServerInfo.can_use_v6 = 1;
+#ifdef _WIN32
+    closesocket(v6);
+#else
     close(v6);
+#endif
   }
 #else
   ServerInfo.can_use_v6 = 0;
@@ -101,7 +105,11 @@ check_can_use_v6(void)
 int
 get_sockerr(int fd)
 {
+#ifndef _WIN32
   int errtmp = errno;
+#else
+  int errtmp = WSAGetLastError();
+#endif
 #ifdef SO_ERROR
   int err = 0;
   socklen_t len = sizeof(err);
@@ -158,26 +166,12 @@ set_sock_buffers(int fd, int size)
 {
   if (setsockopt(fd, SOL_SOCKET, SO_RCVBUF, (char*) &size, sizeof(size)) ||
       setsockopt(fd, SOL_SOCKET, SO_SNDBUF, (char*) &size, sizeof(size)))
-    return 0;
-  return 1;
-}
-
-/*
- * disable_sock_options
- * 
- * inputs	- fd
- * output	- returns true (1) if successful, false (0) otherwise
- * side effects - disable_sock_options - if remote has any socket options set,
- *                disable them 
- */
-int
-disable_sock_options(int fd)
-{
-#if 0 
-defined(IP_OPTIONS) && defined(IPPROTO_IP) && !defined(IPV6)
-  if (setsockopt(fd, IPPROTO_IP, IP_OPTIONS, NULL, 0))
-    return 0;
+  {
+#ifdef _WIN32
+    errno = WSAGetLastError();
 #endif
+    return 0;
+  }
   return 1;
 }
 
@@ -200,7 +194,10 @@ set_non_blocking(int fd)
 
   res = ioctlsocket(fd, FIONBIO, &nonb);
   if (res != 0)
+  {
+    errno = WSAGetLastError();
     return 0;
+  }
 #else
   int nonb = O_NONBLOCK;
 
@@ -381,6 +378,9 @@ add_connection(struct Listener* listener, int fd)
   memset(&irn, 0, sizeof(irn));
   if (getpeername(fd, (struct sockaddr *)&irn, (socklen_t *)&len))
   {
+#ifdef _WIN32
+    errno = WSAGetLastError();
+#endif
     report_error(L_ALL, "Failed in adding new connection %s :%s", 
             get_listener_name(listener), errno);
     ServerStats->is_ref++;
@@ -433,8 +433,6 @@ add_connection(struct Listener* listener, int fd)
   ++listener->ref_count;
 
   set_no_delay(fd);
-  if (!disable_sock_options(fd))
-    report_error(L_ALL, OPT_ERROR_MSG, get_client_name(new_client, SHOW_IP), errno);
 
   connect_id++;
   new_client->connect_id = connect_id;
@@ -742,6 +740,9 @@ comm_connect_tryconnect(fde_t *fd, void *notused)
   /* Error? */
   if (retval < 0)
   {
+#ifdef _WIN32
+    errno = WSAGetLastError();
+#endif
     /*
      * If we get EISCONN, then we've already connect()ed the socket,
      * which is a good thing.
@@ -800,7 +801,12 @@ comm_open(fde_t *F, int family, int sock_type, int proto, const char *note)
    */
   fd = socket(family, sock_type, proto);
   if (fd < 0)
+  {
+#ifdef _WIN32
+    errno = WSAGetLastError();
+#endif
     return -1; /* errno will be passed through, yay.. */
+  }
 
   /* Set the socket non-blocking, and other wonderful bits */
   if (!set_non_blocking(fd))
@@ -808,7 +814,11 @@ comm_open(fde_t *F, int family, int sock_type, int proto, const char *note)
     ilog(L_CRIT, "comm_open: Couldn't set FD %d non blocking: %s",
          fd, strerror(errno));
 
+#ifdef _WIN32
+    closesocket(fd);
+#else
     close(fd);
+#endif
     return -1;
   }
 
@@ -843,7 +853,12 @@ comm_accept(struct Listener *lptr, struct irc_ssaddr *pn)
    */
   newfd = accept(lptr->fd.fd, (struct sockaddr *)pn, (socklen_t *)&addrlen);
   if (newfd < 0)
+  {
+#ifdef _WIN32
+    errno = WSAGetLastError();
+#endif
     return -1;
+  }
 
 #ifdef IPV6
   remove_ipv6_mapping(pn);
@@ -856,7 +871,11 @@ comm_accept(struct Listener *lptr, struct irc_ssaddr *pn)
   {
     ilog(L_CRIT, "comm_accept: Couldn't set FD %d non blocking!", newfd);
 
+#ifdef _WIN32
+    closesocket(newfd);
+#else
     close(newfd);
+#endif
     return -1;
   }
 

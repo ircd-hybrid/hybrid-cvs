@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.302 2005/08/18 06:37:42 db Exp $
+ *  $Id: send.c,v 7.303 2005/08/18 17:21:31 adx Exp $
  */
 
 #include "stdinc.h"
@@ -306,7 +306,12 @@ send_queued_write(struct Client *to)
         retlen = send(to->localClient->fd.fd, first->data, first->size, 0);
 
       if (retlen <= 0)
+      {
+#ifdef _WIN32
+        errno = WSAGetLastError();
+#endif
         break;
+      }
 
 #ifndef NDEBUG
     {

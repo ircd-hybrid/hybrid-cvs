@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.103 2005/07/31 10:11:03 michael Exp $
+ *  $Id: listener.c,v 7.104 2005/08/18 17:21:31 adx Exp $
  */
 
 #include "stdinc.h"
@@ -167,8 +167,8 @@ inetport(struct Listener *listener)
 
   if (number_fd >= HARD_FDLIMIT - 10)
   {
-    report_error(L_ALL, "no more connections left for listener %s:%s",
-                 get_listener_name(listener), errno);
+    report_error(L_ALL, "no more connections left for listener %s",
+                 get_listener_name(listener));
     fd_close(&listener->fd);
     return 0;
   }
@@ -179,6 +179,9 @@ inetport(struct Listener *listener)
    */
   if (setsockopt(listener->fd.fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
   {
+#ifdef _WIN32
+    errno = WSAGetLastError();
+#endif
     report_error(L_ALL, "setting SO_REUSEADDR for listener %s:%s",
                  get_listener_name(listener), errno);
     fd_close(&listener->fd);
@@ -193,6 +196,9 @@ inetport(struct Listener *listener)
 
   if (bind(listener->fd.fd, (struct sockaddr *)&lsin, lsin.ss_len))
   {
+#ifdef _WIN32
+    errno = WSAGetLastError();
+#endif
     report_error(L_ALL, "binding listener socket %s:%s",
                  get_listener_name(listener), errno);
     fd_close(&listener->fd);
@@ -201,6 +207,9 @@ inetport(struct Listener *listener)
 
   if (listen(listener->fd.fd, HYBRID_SOMAXCONN))
   {
+#ifdef _WIN32
+    errno = WSAGetLastError();
+#endif
     report_error(L_ALL, "listen failed for %s:%s",
                  get_listener_name(listener), errno);
     fd_close(&listener->fd);

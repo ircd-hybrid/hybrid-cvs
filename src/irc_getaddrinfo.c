@@ -33,7 +33,7 @@
 #include "irc_getaddrinfo.h"
 #include "ircd_defs.h"
 
-/*  $Id: irc_getaddrinfo.c,v 7.9 2005/07/25 04:52:41 adx Exp $ */
+/*  $Id: irc_getaddrinfo.c,v 7.10 2005/08/18 17:21:31 adx Exp $ */
 
 static const char in_addrany[]  = { 0, 0, 0, 0 };
 static const char in_loopback[] = { 127, 0, 0, 1 };
@@ -387,10 +387,17 @@ explore_null(const struct addrinfo *pai, const char *servname, struct addrinfo *
 	 */
 	s = socket(pai->ai_family, SOCK_DGRAM, 0);
 	if (s < 0) {
+#ifdef _WIN32
+                errno = WSAGetLastError();
+#endif
 		if (errno != EMFILE)
 			return 0;
 	} else
+#ifdef _WIN32
+                closesocket(s);
+#else
 		close(s);
+#endif
 
 	/*
 	 * if the servname does not match socktype/protocol, ignore it.
