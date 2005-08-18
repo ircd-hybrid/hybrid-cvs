@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.241 2005/08/18 00:52:10 db Exp $
+ *  $Id: s_bsd.c,v 7.242 2005/08/18 01:08:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -368,7 +368,6 @@ ssl_handshake(int fd, struct Client *client_p)
 void
 add_connection(struct Listener* listener, int fd)
 {
-  const char *id = NULL;
   struct Client *new_client;
   socklen_t len = sizeof(struct irc_ssaddr);
   struct irc_ssaddr irn;
