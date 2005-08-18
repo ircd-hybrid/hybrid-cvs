@@ -1,5 +1,5 @@
 # Makefile to install help files
-# $Id: Makefile.in,v 1.1 2005/08/18 12:52:20 knight Exp $
+# $Id: Makefile.in,v 1.2 2005/08/18 13:23:48 knight Exp $
 
 INSTALL=	@INSTALL@
 INSTALL_DATA=	@INSTALL_DATA@
@@ -10,8 +10,8 @@ exec_prefix=	@execprefix@
 uhelpdir=	${prefix}/help/users
 ohelpdir=	${prefix}/help/opers
 
-SYMLINKS=	chghost chgident chgname clearchan forcejoi forcepart \
-			jupe mkpasswd ojoin omotd opme
+SYMLINKS=	chghost chgname clearchan delspoof forcejoin jupe mkpasswd omotd spoof \
+            capture chgident classlist ctrace etrace forcepart ltrace ojoin opme
 
 all:
 build:
