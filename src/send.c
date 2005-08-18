@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.299 2005/08/17 16:02:52 michael Exp $
+ *  $Id: send.c,v 7.300 2005/08/18 03:41:19 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -265,7 +265,9 @@ send_queued_write(struct Client *to)
 {
   int retlen;
 #ifndef NDEBUG
+#if 0
   struct hook_io_data hdata;
+#endif
 #endif
   struct dbuf_block *first;
 
@@ -315,10 +317,12 @@ send_queued_write(struct Client *to)
         break;
 
 #ifndef NDEBUG
+#if 0
       hdata.data = ((struct dbuf_block *)
                     to->localClient->buf_sendq.blocks.head->data)->data;
       hdata.len = retlen;
       hook_call_event("iosend", &hdata);
+#endif
 #endif
       dbuf_delete(&to->localClient->buf_sendq, retlen);
 

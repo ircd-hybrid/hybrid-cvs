@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.126 2005/08/18 02:40:50 db Exp $
+ *  $Id: packet.c,v 7.127 2005/08/18 03:41:01 lusky Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -284,7 +284,9 @@ read_ctrl_packet(fde_t *fd, void *data)
   unsigned char *len = tmp;
   struct SlinkRplDef *replydef;
 #ifndef NDEBUG
+#if 0
   struct hook_io_data hdata;
+#endif
 #endif
   assert(lserver != NULL);
     
@@ -370,10 +372,12 @@ read_ctrl_packet(fde_t *fd, void *data)
   }
 
 #ifndef NDEBUG
+#if 0
   hdata.connection = server;
   hdata.len = reply->command;
   hdata.data = NULL;
   hook_call_event("iorecvctrl", &hdata);
+#endif
 #endif
 
   /* we now have the command and any data, pass it off to the handler */
