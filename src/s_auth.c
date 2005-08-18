@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.153 2005/08/17 01:25:08 db Exp $
+ *  $Id: s_auth.c,v 7.154 2005/08/18 16:26:07 adx Exp $
  */
 
 /*
@@ -233,7 +233,7 @@ auth_error(struct AuthRequest *auth)
 
   sendheader(auth->client, REPORT_FAIL_ID);
 
-  if (!IsDNSPending(auth))
+  if (!IsDNSPending(auth) && !IsCrit(auth))
   {
     release_auth_client(auth->client);
     MyFree(auth);
