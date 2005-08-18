@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.127 2005/08/18 03:41:01 lusky Exp $
+ *  $Id: packet.c,v 7.128 2005/08/18 06:37:42 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -283,11 +283,7 @@ read_ctrl_packet(fde_t *fd, void *data)
   unsigned char tmp[2];
   unsigned char *len = tmp;
   struct SlinkRplDef *replydef;
-#ifndef NDEBUG
-#if 0
-  struct hook_io_data hdata;
-#endif
-#endif
+
   assert(lserver != NULL);
     
   reply = &lserver->slinkrpl;
@@ -372,12 +368,11 @@ read_ctrl_packet(fde_t *fd, void *data)
   }
 
 #ifndef NDEBUG
-#if 0
-  hdata.connection = server;
-  hdata.len = reply->command;
-  hdata.data = NULL;
-  hook_call_event("iorecvctrl", &hdata);
-#endif
+    {
+      struct Callback *iorecvctrl_cb;
+      if ((iorecvctrl_cb = find_callback("iorecvctrl")) != NULL)
+        execute_callback(iorecvctrl_cb, server, reply->command);
+    }
 #endif
 
   /* we now have the command and any data, pass it off to the handler */
@@ -404,12 +399,6 @@ read_packet(fde_t *fd, void *data)
 {
   struct Client *client_p = data;
   int length = 0;
-#ifndef NDEBUG
-#if 0
-  /* This must be replaced with the new hook system */
-  struct hook_io_data hdata;
-#endif
-#endif
 
   if (IsDefunct(client_p))
     return;
@@ -461,12 +450,11 @@ read_packet(fde_t *fd, void *data)
     }
 
 #ifndef NDEBUG
-#if 0
-    hdata.connection = client_p;
-    hdata.data = readBuf;
-    hdata.len = length;
-    hook_call_event("iorecv", &hdata);
-#endif
+    {
+      struct Callback *iorecv_cb;
+      if ((iorecv_cb = find_callback("iorecv")) != NULL)
+        execute_callback(iorecv_cb, client_p, length, readBuf);
+    }
 #endif
 
     if (client_p->lasttime < CurrentTime)
