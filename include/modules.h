@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.67 2005/08/17 14:56:16 knight Exp $
+ *  $Id: modules.h,v 7.68 2005/08/18 02:40:50 db Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -147,6 +147,7 @@ extern struct Message sjoin_msgtab;
 extern struct Message squit_msgtab;
 extern struct Message stats_msgtab;
 extern struct Message svinfo_msgtab;
+extern struct Message tb_msgtab;
 extern struct Message testline_msgtab;
 extern struct Message testgecos_msgtab;
 extern struct Message testmask_msgtab;

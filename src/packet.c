@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.125 2005/07/30 20:44:19 adx Exp $
+ *  $Id: packet.c,v 7.126 2005/08/18 02:40:50 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -401,7 +401,10 @@ read_packet(fde_t *fd, void *data)
   struct Client *client_p = data;
   int length = 0;
 #ifndef NDEBUG
+#if 0
+  /* This must be replaced with the new hook system */
   struct hook_io_data hdata;
+#endif
 #endif
 
   if (IsDefunct(client_p))
@@ -454,10 +457,12 @@ read_packet(fde_t *fd, void *data)
     }
 
 #ifndef NDEBUG
+#if 0
     hdata.connection = client_p;
     hdata.data = readBuf;
     hdata.len = length;
     hook_call_event("iorecv", &hdata);
+#endif
 #endif
 
     if (client_p->lasttime < CurrentTime)
