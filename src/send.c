@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.300 2005/08/18 03:41:19 lusky Exp $
+ *  $Id: send.c,v 7.301 2005/08/18 03:42:17 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -283,7 +283,9 @@ send_queued_write(struct Client *to)
   if (dbuf_length(&to->localClient->buf_sendq))
   {
 #ifndef NDEBUG
+#if 0
     hdata.connection = to;
+#endif
 #endif
     do {
       first = to->localClient->buf_sendq.blocks.head->data;
