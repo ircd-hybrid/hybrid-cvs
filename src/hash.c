@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.103 2005/07/26 23:44:16 adx Exp $
+ *  $Id: hash.c,v 7.104 2005/08/19 04:29:01 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -48,7 +48,7 @@ static BlockHeap *userhost_heap = NULL;
 static BlockHeap *namehost_heap = NULL;
 static struct UserHost *find_or_add_userhost(const char *);
 
-static unsigned int random_key = 0;
+static unsigned int ircd_random_key = 0;
 
 /* The actual hash tables, both MUST be of the same HASHSIZE, variable
  * size tables could be supported but the rehash routine should also
@@ -82,9 +82,9 @@ init_hash(void)
   namehost_heap = BlockHeapCreate("namehost", sizeof(struct NameHost), CLIENT_HEAP_SIZE);
 
 #ifndef _WIN32
-  random_key = random() % 256;  /* better than nothing --adx */
+  ircd_random_key = random() % 256;  /* better than nothing --adx */
 #else
-  random_key = rand() % 256;
+  ircd_random_key = rand() % 256;
 #endif
 
   /* Clear the hash tables first */
@@ -116,7 +116,7 @@ strhash(const char *p)
   {
     hval += (hval << 1) + (hval <<  4) + (hval << 7) +
             (hval << 8) + (hval << 24);
-    hval ^= (ToLower(*p) ^ random_key);
+    hval ^= (ToLower(*p) ^ ircd_random_key);
   }
 
   return((hval >> FNV1_32_BITS) ^ (hval & ((1 << FNV1_32_BITS) -1)));

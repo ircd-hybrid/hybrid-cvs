@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.79 2005/08/19 04:00:36 lusky Exp $
+ *  $Id: ircd.h,v 7.80 2005/08/19 04:29:01 lusky Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -68,6 +68,7 @@ extern struct ServerState_t server_state;
 
 extern char **myargv;
 extern char ircd_platform[PLATFORMLEN];
+extern char *get_ircd_platform(char *);
 extern const char *infotext[];
 extern const char *serno;
 extern const char *ircd_version;
