@@ -19,12 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.78 2005/08/18 00:52:09 db Exp $
+ *  $Id: ircd.h,v 7.79 2005/08/19 04:00:36 lusky Exp $
  */
 
 #ifndef INCLUDED_ircd_h
 #define INCLUDED_ircd_h
 
+#include "ircd_defs.h"
 #include "setup.h"
 #include "tools.h"
 #include "memory.h"
@@ -66,9 +67,7 @@ struct ServerState_t
 extern struct ServerState_t server_state;
 
 extern char **myargv;
-extern const char *creation;
-extern const char *generation;
-extern const char *platform;
+extern char ircd_platform[PLATFORMLEN];
 extern const char *infotext[];
 extern const char *serno;
 extern const char *ircd_version;

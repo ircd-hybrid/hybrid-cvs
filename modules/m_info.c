@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.94 2005/08/15 20:50:02 adx Exp $
+ *  $Id: m_info.c,v 1.95 2005/08/19 04:00:36 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,7 @@ struct Message info_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.94 $";
+const char *_version = "$Revision: 1.95 $";
 static struct Callback *info_cb;
 
 void
@@ -632,20 +632,12 @@ send_birthdate_online_time(struct Client *source_p)
 {
   if (!MyClient(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
   {
-    sendto_one(source_p, ":%s %d %s :Birth Date: %s, compile # %s",
-               me.id, RPL_INFO, source_p->id,
-               creation, generation);
-             
     sendto_one(source_p, ":%s %d %s :On-line since %s",
                me.id, RPL_INFO, source_p->id,
                myctime(me.firsttime));
   }
   else
   {
-    sendto_one(source_p, ":%s %d %s :Birth Date: %s, compile # %s",
-               me.name, RPL_INFO, source_p->name,
-               creation, generation);
-
     sendto_one(source_p, ":%s %d %s :On-line since %s",
                me.name, RPL_INFO, source_p->name,
                myctime(me.firsttime));
@@ -772,7 +764,7 @@ send_conf_options(struct Client *source_p)
   if (IsAdmin(source_p))
   {
     sendto_one(source_p, ":%s %d %s :Compiled on [%s]",
-               from, RPL_INFO, to, platform); 
+               from, RPL_INFO, to, ircd_platform); 
   }
 #endif
   sendto_one(source_p, form_str(RPL_INFO),

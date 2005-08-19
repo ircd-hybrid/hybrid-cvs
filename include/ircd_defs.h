@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.43 2005/08/17 16:02:51 michael Exp $
+ *  $Id: ircd_defs.h,v 7.44 2005/08/19 04:00:36 lusky Exp $
  */
 
 /*
@@ -57,6 +57,8 @@
                                    /etc/resolv.conf we care about */
 
 #define LOWEST_SAFE_FD  4	/* skip stdin, stdout, stderr, and profiler */
+
+#define PLATFORMLEN     200     /* platform string used in info response */
 
 /* 
  * message return values 

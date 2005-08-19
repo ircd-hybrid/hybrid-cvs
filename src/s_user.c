@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.369 2005/08/18 00:52:10 db Exp $
+ *  $Id: s_user.c,v 7.370 2005/08/19 04:00:36 lusky Exp $
  */
 
 #include <sys/types.h>
@@ -1161,8 +1161,6 @@ user_welcome(struct Client *source_p)
   sendto_one(source_p, form_str(RPL_YOURHOST), me.name, source_p->name,
 	     get_listener_name(source_p->localClient->listener), ircd_version);
 
-  sendto_one(source_p, form_str(RPL_CREATED),
-             me.name,source_p->name, creation);
   sendto_one(source_p, form_str(RPL_MYINFO),
              me.name, source_p->name, me.name, ircd_version);
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.56 2005/08/18 17:21:31 adx Exp $
+ *  $Id: s_bsd.h,v 7.57 2005/08/19 04:00:36 lusky Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -91,6 +91,19 @@ void setup_sigio_fd(int);
 #define WM_REHASH  (WM_USER + 0x100)
 #define WM_REMOTD  (WM_USER + 0x101)
 extern HWND wndhandle;
+#define _UTSNAME_LENGTH 65
+#define _UTSNAME_NODENAME_LENGTH _UTSNAME_LENGTH
+#define _UTSNAME_DOMAIN_LENGTH _UTSNAME_LENGTH
+struct utsname
+{
+  char sysname[_UTSNAME_LENGTH];
+  char nodename[_UTSNAME_NODENAME_LENGTH];
+  char release[_UTSNAME_LENGTH];
+  char version[_UTSNAME_LENGTH];
+  char machine[_UTSNAME_LENGTH];
+  char domainname[_UTSNAME_DOMAIN_LENGTH];
+};
+int uname (struct utsname *);
 #endif
 
 #endif /* INCLUDED_s_bsd_h */

@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.156 2005/08/09 04:29:55 db Exp $
+# $Id: Makefile.in,v 7.157 2005/08/19 04:00:36 lusky Exp $
 #
 @SET_MAKE@
 
@@ -99,6 +99,7 @@ BASE_SRCS =	\
  @SNPRINTF_C@ \
  sprintf_irc.c \
  tools.c \
+ version.c \
  whowas.c \
  y.tab.c
 
@@ -109,9 +110,8 @@ all: .depend ircd
 
 build: all
 
-ircd: @MODULES_LIBS@ $(OBJS) version.o
-	${CC} ${CFLAGS} ${LDFLAGS} -o $@ ${OBJS} version.o ${IRCDLIBS}
-	${MV} -f version.c version.c.last
+ircd: @MODULES_LIBS@ $(OBJS)
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ ${OBJS} ${IRCDLIBS}
 
 ../modules/libmodules.a:
 	cd ../modules && ${MAKE} ${MFLAGS}
@@ -130,9 +130,6 @@ install: install-mkdirs build
 		$(INSTALL_BIN) $$i $(bindir); \
 	done
 
-version.c: version.c.SH
-	/bin/sh ./version.c.SH
-
 # this is really the default rule for c files
 .c.o:
 	${CC} ${CPPFLAGS} ${CFLAGS} -c $<
@@ -148,6 +145,6 @@ clean:
 	${RM} -f *.o *.exe *~ *core ircd
 
 distclean: clean
-	${RM} -f Makefile version.c version.c.last .depend
+	${RM} -f Makefile .depend
 
 .PHONY: clean distclean install install-mkdirs build

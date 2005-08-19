@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.353 2005/08/18 00:52:10 db Exp $
+ *  $Id: ircd.c,v 7.354 2005/08/19 04:00:36 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -92,6 +92,8 @@ const char *logFileName = LPATH;
 const char *pidFileName = PPATH;
 
 char **myargv;
+char ircd_platform[PLATFORMLEN];
+
 int dorehash = 0;
 int doremotd = 0;
 time_t nextconnect = 1;       /* time for next try_connections call */
@@ -581,7 +583,7 @@ main(int argc, char *argv[])
   /* save server boot time right away, so getrusage works correctly */
   set_time();
 
-  /* It ain't random, but it ought to be a little harder to guess */
+    /* It ain't random, but it ought to be a little harder to guess */
   srand(SystemTime.tv_sec ^ (SystemTime.tv_usec | (getpid() << 20)));
   memset(&me, 0, sizeof(me));
   memset(&meLocalUser, 0, sizeof(meLocalUser));
@@ -634,6 +636,8 @@ main(int argc, char *argv[])
 
   setup_signals();
 #endif
+
+  get_ircd_platform(ircd_platform);
 
   /* We need this to initialise the fd array before anything else */
   fdlist_init();
