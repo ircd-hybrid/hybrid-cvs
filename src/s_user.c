@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.370 2005/08/19 04:00:36 lusky Exp $
+ *  $Id: s_user.c,v 7.371 2005/08/19 17:19:18 db Exp $
  */
 
 #include <sys/types.h>
@@ -1148,6 +1148,12 @@ send_umode_out(struct Client *client_p, struct Client *source_p,
 static void
 user_welcome(struct Client *source_p)
 {
+#if defined(__TIME__) && defined(__DATE__)
+static const char built_date[] = __DATE__ " " __TIME__;
+#else
+static const char built_date[] = "unknown";
+#endif
+
 #ifdef HAVE_LIBCRYPTO
   if (source_p->localClient->fd.ssl != NULL)
     sendto_one(source_p, ":%s NOTICE %s :*** Connected securely via %s",
@@ -1161,6 +1167,8 @@ user_welcome(struct Client *source_p)
   sendto_one(source_p, form_str(RPL_YOURHOST), me.name, source_p->name,
 	     get_listener_name(source_p->localClient->listener), ircd_version);
 
+  sendto_one(source_p, form_str(RPL_CREATED),
+	     me.name, source_p->name, built_date);
   sendto_one(source_p, form_str(RPL_MYINFO),
              me.name, source_p->name, me.name, ircd_version);
 
