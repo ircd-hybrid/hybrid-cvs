@@ -21,6 +21,7 @@
 
 #include "patchlevel.h"
 #include "serno.h"
+#include "ircd.h"
 #ifndef _WIN32
 #include <sys/utsname.h>
 #else
