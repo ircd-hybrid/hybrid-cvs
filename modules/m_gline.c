@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.135 2005/07/16 12:19:43 michael Exp $
+ *  $Id: m_gline.c,v 1.136 2005/08/19 17:24:32 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,8 +65,6 @@ static int check_majority_gline(const struct Client *,
 static void add_new_majority_gline(const struct Client *,
                                    const char *, const char *, const char *);
 
-static int invalid_gline(struct Client *, const char *);
-
 static void do_sgline(struct Client *, struct Client *, int, char **, int);
 
 static void me_gline(struct Client *, struct Client *, int, char **);
@@ -74,6 +72,11 @@ static void ms_gline(struct Client *, struct Client *, int, char **);
 static void mo_gline(struct Client *, struct Client *, int, char **);
 static void mo_ungline(struct Client *, struct Client *, int, char **);
 
+/*
+ * gline enforces 3 parameters to force operator to give a reason
+ * a gline is not valid with "No reason"
+ * -db
+ */
 struct Message gline_msgtab = {
   "GLINE", 0, 0, 3, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, ms_gline, me_gline, mo_gline, m_ignore}
@@ -101,7 +104,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.135 $";
+const char *_version = "$Revision: 1.136 $";
 #endif
 
 /* mo_gline()
@@ -124,11 +127,8 @@ mo_gline(struct Client *client_p, struct Client *source_p,
 {
   char *user = NULL;
   char *host = NULL;	     /* user and host of GLINE "victim" */
-  const char *reason = NULL; /* reason for "victims" demise     */
-  const char *p = NULL;
-  char star[] = "*";
-  char tempuser[USERLEN * 2 + 2];
-  char temphost[HOSTLEN * 2 + 2];
+  char *reason = NULL;       /* reason for "victims" demise     */
+  char *p;
 
   if (!ConfigFileEntry.glines)
   {
@@ -144,46 +144,11 @@ mo_gline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if ((host = strchr(parv[1], '@')) || *parv[1] == '*')
-  {
-    /* Explicit user@host mask given */
-    if (host != NULL)	/* Found user@host */
-    {
-      user = parv[1];   /* here is user part */
-      *(host++) = '\0'; /* and now here is host */
-
-      /* gline for "@host", use *@host */
-      if (*user == '\0')
-	user = star;
-    }
-    else
-    {
-      user = star; /* no @ found, assume its *@somehost */
-      host = parv[1];
-    }
-	      
-    if (*host == '\0') /* duh. no host found, assume its '*' host */
-      host = star;
-
-    strlcpy(tempuser, collapse(user), sizeof(tempuser)); /* allow for '*' */
-    strlcpy(temphost, collapse(host), sizeof(temphost));
-    user = tempuser;
-    host = temphost;
-  }
-  else
-  {
-    sendto_one(source_p, ":%s NOTICE %s :Can't G-Line a nick use user@host",
-	       me.name, source_p->name);
-    return;
-  }
-
-  if (invalid_gline(source_p, user))
-    return;
-			
-  if (!valid_wild_card(source_p, YES, 2, user, host))
+  if (parse_aline("GLINE", source_p, parc, parv,
+		  AWILD, &user, &host, NULL, NULL, &reason) < 0)
     return;
 
-  if ((p = strchr(host, '/')))
+  if ((p = strchr(host, '/')) != NULL)
   {
     int bitlen = strtol(++p, NULL, 10);
     int min_bitlen = strchr(host, ':') ? ConfigFileEntry.gline_min_cidr6 :
@@ -195,8 +160,6 @@ mo_gline(struct Client *client_p, struct Client *source_p,
       return;
     }
   }
-
-  reason = parv[2];
 
   /* If at least 3 opers agree this user should be G lined then do it */
   if (check_majority_gline(source_p, user, host, reason) ==
@@ -323,9 +286,6 @@ do_sgline(struct Client *client_p, struct Client *source_p,
 
   var_offset = 0;
 
-  if (invalid_gline(source_p, user))
-     return;
-   
   DLINK_FOREACH(ptr, gdeny_items.head)
   {
     conf = ptr->data;
@@ -339,7 +299,6 @@ do_sgline(struct Client *client_p, struct Client *source_p,
       break;
     }
   }
-
 
   if (prop && !(var_offset & GDENY_BLOCK))
   {
@@ -417,25 +376,6 @@ do_sgline(struct Client *client_p, struct Client *source_p,
      ilog(L_TRACE, "#gline for %s@%s [%s] requested by %s",
           user, host, reason, get_oper_name(source_p));
   }
-}
-
-/* invalid_gline()
- *
- * inputs       - pointer to source client
- *              - pointer to ident
- * output       - 1 if invalid, 0 if valid
- */
-static int
-invalid_gline(struct Client *source_p, const char *luser)
-{
-  if (strchr(luser, '!') != NULL)
-  {
-    sendto_one(source_p, ":%s NOTICE %s :Invalid character '!' in gline",
-               me.name, source_p->name);
-    return(1);
-  }
-
-  return(0);
 }
 
 /* set_local_gline()
@@ -654,7 +594,6 @@ static void
 mo_ungline(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
-  char star[] = "*";
   char *user, *host;
 
   if (!ConfigFileEntry.glines)
@@ -671,26 +610,9 @@ mo_ungline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if ((host = strchr(parv[1], '@')) || *parv[1] == '*')
-  {
-    /* Explicit user@host mask given */
-    if (host != NULL)   /* Found user@host */
-    {
-      user = parv[1];   /* here is user part */
-      *(host++) = '\0'; /* and now here is host */
-    }
-    else
-    {
-      user = star;      /* no @ found, assume its *@somehost */
-      host = parv[1];
-    }
-  }
-  else
-  {
-    sendto_one(source_p, ":%s NOTICE %s :Invalid parameters",
-               me.name, source_p->name);
+  if (parse_aline("UNGLINE", source_p, parc, parv,
+		  0, &user, &host, NULL, NULL, NULL) < 0)
     return;
-  }
 
   if (remove_gline_match(user, host))
   {
