@@ -1,4 +1,4 @@
-$Id: README,v 1.42 2005/08/17 15:27:58 knight Exp $
+$Id: README,v 1.43 2005/08/19 18:24:59 knight Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
@@ -150,4 +150,4 @@ Other files
 ___________
 
 confgen.pl	- generates hybrid-7 config files from SQL database
-
+confgen.pgsql - PgSQL table structure dump for confgen.pl (TODO: Add MySQL table dump)
