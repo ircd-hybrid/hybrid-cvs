@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.70 2005/08/18 12:52:20 knight Exp $
+# $Id: Makefile.in,v 1.71 2005/08/19 04:07:40 lusky Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -135,8 +135,10 @@ install_libmodules.a:
 
 clean:
 	${RM} -f *.so *.o *.sl *~ 
+	cd help && ${MAKE} clean || exit; cd ..;
 
 distclean: clean
 	${RM} -f Makefile .depend
+	cd help && ${MAKE} distclean || exit; cd ..;
 
 .PHONY: depend clean distclean install_hpux_shared install_libmodules.a shared_modules install hpux_shared build
