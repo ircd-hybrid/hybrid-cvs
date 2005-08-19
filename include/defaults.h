@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.18 2005/07/23 18:21:26 michael Exp $
+ *  $Id: defaults.h,v 7.19 2005/08/19 14:56:44 michael Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -64,6 +64,7 @@
 #define GPATH   ETCPATH "/gline.conf"           /* gline conffile */
 #define XPATH   ETCPATH "/xline.conf"           /* xline file */
 #define RXPATH  ETCPATH "/rxline.conf"
+#define RKPATH  ETCPATH "/rkline.conf"
 #define MPATH   ETCPATH "/ircd.motd"            /* MOTD file */
 #define LPATH   LOGPATH "/ircd.log"             /* ircd logfile */
 #define PPATH   ETCPATH "/ircd.pid"             /* pid file */

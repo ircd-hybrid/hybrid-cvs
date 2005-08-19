@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.572 2005/08/17 16:02:52 michael Exp $
+ *  $Id: s_conf.c,v 7.573 2005/08/19 14:56:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -69,6 +69,7 @@ dlink_list oconf_items   = { NULL, NULL, 0 };
 dlink_list uconf_items   = { NULL, NULL, 0 };
 dlink_list xconf_items   = { NULL, NULL, 0 };
 dlink_list rxconf_items  = { NULL, NULL, 0 };
+dlink_list rkconf_items  = { NULL, NULL, 0 };
 dlink_list nresv_items   = { NULL, NULL, 0 };
 dlink_list class_items   = { NULL, NULL, 0 };
 dlink_list gdeny_items	 = { NULL, NULL, 0 };
@@ -76,6 +77,7 @@ dlink_list gdeny_items	 = { NULL, NULL, 0 };
 dlink_list temporary_klines  = { NULL, NULL, 0 };
 dlink_list temporary_dlines  = { NULL, NULL, 0 };
 dlink_list temporary_xlines  = { NULL, NULL, 0 };
+dlink_list temporary_rklines = { NULL, NULL, 0 };
 dlink_list temporary_glines  = { NULL, NULL, 0 };
 dlink_list temporary_rxlines = { NULL, NULL, 0 };
 dlink_list temporary_resv = { NULL, NULL, 0 };
@@ -83,6 +85,7 @@ dlink_list temporary_resv = { NULL, NULL, 0 };
 extern unsigned int lineno;
 extern char linebuf[];
 extern char conffilebuf[IRCD_BUFSIZE];
+extern char yytext[];
 extern int yyparse(); /* defined in y.tab.c */
 unsigned int scount = 0; /* used by yyparse(), etc */
 int ypass  = 1; /* used by yyparse()      */
@@ -102,16 +105,13 @@ static int attach_iline(struct Client *, struct ConfItem *);
 static struct ip_entry *find_or_add_ip(struct irc_ssaddr *);
 static void parse_conf_file(int, int);
 static dlink_list *map_to_list(ConfType);
+static struct AccessItem *find_regexp_kline(const char *[]);
+static int find_user_host(struct Client *, char *, char *, char *, unsigned int);
 
-static int find_user_host(struct Client *source_p,
-                          char *user_host_or_nick, char *user, char *host);
-
-char *flags_to_ascii(int flags, int bit_table[], char *p);
-
+static void flags_to_ascii(unsigned int, const unsigned int[], char *);
 static char *cluster(char *);
 
-FBFILE *conf_fbfile_in;
-extern char yytext[];
+FBFILE *conf_fbfile_in = NULL;
 
 /* address of default class conf */
 static struct ConfItem *class_default;
@@ -227,9 +227,9 @@ make_conf_item(ConfType type)
   case CLIENT_TYPE:
   case OPER_TYPE:
   case SERVER_TYPE:
-    conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
-                                       sizeof(struct AccessItem));
-    aconf = (struct AccessItem *)map_to_conf(conf);
+    conf = MyMalloc(sizeof(struct ConfItem) +
+                    sizeof(struct AccessItem));
+    aconf = map_to_conf(conf);
     aconf->aftype = AF_INET;
 
     /* Yes, sigh. switch on type again */
@@ -243,6 +243,7 @@ make_conf_item(ConfType type)
       status = CONF_DLINE;
       break;
 
+    case RKLINE_TYPE:
     case KLINE_TYPE:
       status = CONF_KILL;
       break;
@@ -307,6 +308,12 @@ make_conf_item(ConfType type)
     dlinkAdd(conf, &conf->node, &rxconf_items);
     break;
 
+  case RKLINE_TYPE:
+    conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
+                                       sizeof(struct AccessItem));
+    dlinkAdd(conf, &conf->node, &rkconf_items);
+    break;
+
   case CLUSTER_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem));
     dlinkAdd(conf, &conf->node, &cluster_items);
@@ -355,6 +362,7 @@ delete_conf_item(struct ConfItem *conf)
   ConfType type = conf->type;
 
   MyFree(conf->name);
+  conf->name = NULL;
 
   switch(type)
   {
@@ -365,7 +373,8 @@ delete_conf_item(struct ConfItem *conf)
   case CLIENT_TYPE:
   case OPER_TYPE:
   case SERVER_TYPE:
-    aconf = (struct AccessItem *)map_to_conf(conf);
+    aconf = map_to_conf(conf);
+
     if (aconf->dns_query != NULL)
     {
       delete_resolver_queries(aconf->dns_query);
@@ -402,14 +411,14 @@ delete_conf_item(struct ConfItem *conf)
       break;
 
     case OPER_TYPE:
-      aconf = (struct AccessItem *)map_to_conf(conf);
+      aconf = map_to_conf(conf);
       if (!IsConfIllegal(aconf))
 	dlinkDelete(&conf->node, &oconf_items);
       MyFree(conf);
       break;
 
     case SERVER_TYPE:
-      aconf = (struct AccessItem *)map_to_conf(conf);
+      aconf = map_to_conf(conf);
       if (!IsConfIllegal(aconf))
 	dlinkDelete(&conf->node, &server_items);
       MyFree(conf);
@@ -421,7 +430,7 @@ delete_conf_item(struct ConfItem *conf)
     break;
 
   case HUB_TYPE:
-    match_item = (struct MatchItem *)map_to_conf(conf);
+    match_item = map_to_conf(conf);
     MyFree(match_item->user);
     MyFree(match_item->host);
     MyFree(match_item->reason);
@@ -433,7 +442,7 @@ delete_conf_item(struct ConfItem *conf)
     break;
 
   case LEAF_TYPE:
-    match_item = (struct MatchItem *)map_to_conf(conf);
+    match_item = map_to_conf(conf);
     MyFree(match_item->user);
     MyFree(match_item->host);
     MyFree(match_item->reason);
@@ -445,7 +454,7 @@ delete_conf_item(struct ConfItem *conf)
     break;
 
   case ULINE_TYPE:
-    match_item = (struct MatchItem *)map_to_conf(conf);
+    match_item = map_to_conf(conf);
     MyFree(match_item->user);
     MyFree(match_item->host);
     MyFree(match_item->reason);
@@ -455,7 +464,7 @@ delete_conf_item(struct ConfItem *conf)
     break;
 
   case XLINE_TYPE:
-    match_item = (struct MatchItem *)map_to_conf(conf);
+    match_item = map_to_conf(conf);
     MyFree(match_item->user);
     MyFree(match_item->host);
     MyFree(match_item->reason);
@@ -464,12 +473,29 @@ delete_conf_item(struct ConfItem *conf)
     MyFree(conf);
     break;
 
+  case RKLINE_TYPE:
+#ifdef HAVE_REGEX_H
+    regfree(aconf->regexuser);
+    MyFree(aconf->regexuser);
+
+    regfree(aconf->regexhost);
+    MyFree(aconf->regexhost);
+#endif
+    aconf = map_to_conf(conf);
+    MyFree(aconf->user);
+    MyFree(aconf->host);
+    MyFree(aconf->reason);
+    MyFree(aconf->oper_reason);
+    dlinkDelete(&conf->node, &rkconf_items);
+    MyFree(conf);
+    break;
+
   case RXLINE_TYPE:
 #ifdef HAVE_REGEX_H
     regfree(conf->regexpname);
     MyFree(conf->regexpname);
 #endif
-    match_item = (struct MatchItem *)map_to_conf(conf);
+    match_item = map_to_conf(conf);
     MyFree(match_item->user);
     MyFree(match_item->host);
     MyFree(match_item->reason);
@@ -479,7 +505,7 @@ delete_conf_item(struct ConfItem *conf)
     break;
 
   case NRESV_TYPE:
-    match_item = (struct MatchItem *)map_to_conf(conf);
+    match_item = map_to_conf(conf);
     MyFree(match_item->user);
     MyFree(match_item->host);
     MyFree(match_item->reason);
@@ -489,7 +515,7 @@ delete_conf_item(struct ConfItem *conf)
     break;
 
   case GDENY_TYPE:
-    aconf = (struct AccessItem *)map_to_conf(conf);
+    aconf = map_to_conf(conf);
     MyFree(aconf->user);
     MyFree(aconf->host);
     dlinkDelete(&conf->node, &gdeny_items);
@@ -532,7 +558,7 @@ free_access_item(struct AccessItem *aconf)
   delete_conf_item(conf);
 }
 
-int shared_bit_table[] =
+static const unsigned int shared_bit_table[] =
   { 'K', 'k', 'U', 'X', 'x', 'Y', 'Q', 'q', 'R', 'L', 0};
 
 /* report_confitem_types()
@@ -606,6 +632,17 @@ report_confitem_types(struct Client *source_p, ConfType type)
     }
     break;
 
+  case RKLINE_TYPE:
+    DLINK_FOREACH(ptr, rxconf_items.head)
+    {
+      aconf = map_to_conf(ptr->data);
+
+      sendto_one(source_p, form_str(RPL_STATSKLINE), me.name,
+                 source_p->name, 'K', aconf->host, aconf->user,
+                 aconf->reason, aconf->oper_reason ? aconf->oper_reason : "");
+    }
+    break;
+
   case ULINE_TYPE:
     DLINK_FOREACH(ptr, uconf_items.head)
     {
@@ -618,8 +655,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
        * consistency with cluster{} flags
        */
       *p++ = 'c';
-      p = flags_to_ascii(matchitem->action, shared_bit_table, p);
-      *p = '\0';
+      flags_to_ascii(matchitem->action, shared_bit_table, p);
 
       sendto_one(source_p, form_str(RPL_STATSULINE),
 		 me.name, source_p->name, conf->name,
@@ -634,8 +670,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
       p = buf;
 
       *p++ = 'C';
-      p = flags_to_ascii(conf->flags, shared_bit_table, p);
-      *p = '\0';
+      flags_to_ascii(conf->flags, shared_bit_table, p);
 
       sendto_one(source_p, form_str(RPL_STATSULINE),
                  me.name, source_p->name, conf->name,
@@ -697,10 +732,12 @@ report_confitem_types(struct Client *source_p, ConfType type)
 	*p++ = 'C';
       if (IsConfLazyLink(aconf))
 	*p++ = 'L';
-      if (IsConfCompressed(aconf))
-	*p++ = 'Z';
       if (aconf->fakename)
 	*p++ = 'M';
+      if (IsConfTopicBurst(aconf))
+        *p++ = 'T';
+      if (IsConfCompressed(aconf))
+        *p++ = 'Z';
       if (buf[0] == '\0')
 	*p++ = '*';
 
@@ -858,7 +895,7 @@ verify_access(struct Client *client_p, const char *username)
 {
   struct AccessItem *aconf;
   struct ConfItem *conf;
-  char non_ident[USERLEN + 1];
+  char non_ident[USERLEN + 1] = { '~', '\0' };
 
   if (IsGotId(client_p))
   {
@@ -869,14 +906,24 @@ verify_access(struct Client *client_p, const char *username)
   }
   else
   {
-    strlcpy(non_ident, "~", sizeof(non_ident));
-    strlcat(non_ident, username, sizeof(non_ident));
+    strlcpy(non_ident+1, username, sizeof(non_ident)-1);
     aconf = find_address_conf(client_p->host,non_ident,
 			     &client_p->localClient->ip,
 			     client_p->localClient->aftype,
 	                     client_p->localClient->passwd);
   }
-  
+
+  if (aconf == NULL)
+  {
+    const char *uhi[3];
+
+    uhi[0] = IsGotId(client_p) ? client_p->username : non_ident;
+    uhi[1] = client_p->host;
+    uhi[2] = client_p->sockhost;
+
+    find_regexp_kline(uhi);
+  }
+ 
   if (aconf != NULL)
   {
     if (IsConfClient(aconf))
@@ -963,10 +1010,11 @@ attach_iline(struct Client *client_p, struct ConfItem *conf)
      */
     if ((MaxTotal(aclass) != 0) &&
 	(CurrUserCount(aclass) > MaxTotal(aclass)))
-      {
+    {
 	max_limit_reached = 1;
 	a_limit_reached = 1;
-      }
+    }
+
     if ((MaxPerIp(aclass) != 0) && (ip_found->count > MaxPerIp(aclass)))
       a_limit_reached = 1;
     else if ((MaxLocal(aclass) != 0) && (local > MaxLocal(aclass)))
@@ -1015,7 +1063,7 @@ void
 init_ip_hash_table(void)
 {
   ip_entry_heap = BlockHeapCreate("ip", sizeof(struct ip_entry), 2*HARD_FDLIMIT);
-  memset((void *)ip_hash_table, 0, sizeof(ip_hash_table));
+  memset(ip_hash_table, 0, sizeof(ip_hash_table));
 }
 
 /* find_or_add_ip()
@@ -1547,12 +1595,12 @@ find_conf_name(dlink_list *list, const char *name, ConfType type)
     if (conf->type == type)
     {
       if (conf->name && (irccmp(conf->name, name) == 0 ||
-          match(conf->name, name)))
-      return(conf);
+                         match(conf->name, name)))
+      return conf;
     }
   }
 
-  return(NULL);
+  return NULL;
 }
 
 /* map_to_list()
@@ -1623,7 +1671,7 @@ find_matching_name_conf(ConfType type, const char *name, const char *user,
   case ULINE_TYPE:
   case NRESV_TYPE:
 
-    DLINK_FOREACH(ptr, (*list_p).head)
+    DLINK_FOREACH(ptr, list_p->head)
     {
       conf = ptr->data;
 
@@ -1645,7 +1693,7 @@ find_matching_name_conf(ConfType type, const char *name, const char *user,
       break;
 
   case SERVER_TYPE:
-    DLINK_FOREACH(ptr, (*list_p).head)
+    DLINK_FOREACH(ptr, list_p->head)
     {
       conf = ptr->data;
       aconf = map_to_conf(conf);
@@ -1691,7 +1739,7 @@ find_exact_name_conf(ConfType type, const char *name,
   case ULINE_TYPE:
   case NRESV_TYPE:
 
-    DLINK_FOREACH(ptr, (*list_p).head)
+    DLINK_FOREACH(ptr, list_p->head)
     {
       conf = ptr->data;
       match_item = (struct MatchItem *)map_to_conf(conf);
@@ -1711,7 +1759,7 @@ find_exact_name_conf(ConfType type, const char *name,
     break;
 
   case OPER_TYPE:
-    DLINK_FOREACH(ptr, (*list_p).head)
+    DLINK_FOREACH(ptr, list_p->head)
     {
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
@@ -1731,7 +1779,7 @@ find_exact_name_conf(ConfType type, const char *name,
     break;
 
   case SERVER_TYPE:
-    DLINK_FOREACH(ptr, (*list_p).head)
+    DLINK_FOREACH(ptr, list_p->head)
     {
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
@@ -1753,7 +1801,7 @@ find_exact_name_conf(ConfType type, const char *name,
     break;
 
   case CLASS_TYPE:
-    DLINK_FOREACH(ptr, (*list_p).head)
+    DLINK_FOREACH(ptr, list_p->head)
     {
       conf = ptr->data;
       aclass = (struct ClassItem *)map_to_conf(conf);
@@ -1963,7 +2011,9 @@ read_conf(FBFILE *file)
   set_default_conf(); /* Set default values prior to conf parsing */
   ypass = 1;
   yyparse();	      /* pick up the classes first */
-  (void)fbrewind(file);
+
+  fbrewind(file);
+
   ypass = 2;
   yyparse();          /* Load the values from the conf */
   validate_conf();    /* Check to make sure some values are still okay. */
@@ -2059,10 +2109,10 @@ conf_connect_allowed(struct irc_ssaddr *addr, int aftype)
 
   /* DLINE exempt also gets you out of static limits/pacing... */
   if (aconf && (aconf->status & CONF_EXEMPTDLINE))
-    return(0);
+    return 0;
 
   if (aconf != NULL)
-    return(BANNED_CLIENT);
+    return BANNED_CLIENT;
 
   ip_found = find_or_add_ip(addr);
 
@@ -2070,11 +2120,34 @@ conf_connect_allowed(struct irc_ssaddr *addr, int aftype)
       ConfigFileEntry.throttle_time)
   {
     ip_found->last_attempt = CurrentTime;
-    return(TOO_FAST);
+    return TOO_FAST;
   }
 
   ip_found->last_attempt = CurrentTime;
-  return(0);
+  return 0;
+}
+
+static struct AccessItem *
+find_regexp_kline(const char *uhi[])
+{
+#ifdef HAVE_REGEX_H
+  const dlink_node *ptr = NULL;
+
+  DLINK_FOREACH(ptr, rkconf_items.head)
+  {
+    struct AccessItem *aptr = map_to_conf(ptr->data);
+
+    assert(aptr->regexuser);
+    assert(aptr->regexhost);
+
+    if (!regexec(aptr->regexuser, uhi[0], 0, NULL, 0) &&
+        (!regexec(aptr->regexhost, uhi[1], 0, NULL, 0) ||
+         !regexec(aptr->regexhost, uhi[2], 0, NULL, 0)))
+      return aptr;
+  }
+#endif
+
+  return NULL;
 }
 
 /* find_kill()
@@ -2087,22 +2160,25 @@ conf_connect_allowed(struct irc_ssaddr *addr, int aftype)
 struct AccessItem *
 find_kill(struct Client *client_p)
 {
-  struct AccessItem *aconf;
+  struct AccessItem *aconf = NULL;
+  const char *uhi[3];
+
+  uhi[0] = client_p->username;
+  uhi[1] = client_p->host;
+  uhi[2] = client_p->sockhost;
 
   assert(client_p != NULL);
-
-  if (client_p == NULL)
-    return(NULL);
 
   aconf = find_kline_conf(client_p->host, client_p->username,
 			  &client_p->localClient->ip,
 			  client_p->localClient->aftype);
   if (aconf == NULL)
-    return(NULL);
-  if (aconf->status & CONF_KILL)
-    return(aconf);
+    aconf = find_regexp_kline(uhi);
 
-  return(NULL);
+  if (aconf && (aconf->status & CONF_KLINE))
+    return aconf;
+
+  return NULL;
 }
 
 struct AccessItem *
@@ -2112,18 +2188,14 @@ find_gline(struct Client *client_p)
 
   assert(client_p != NULL);
 
-  if (client_p == NULL)
-    return(NULL);
-
   aconf = find_gline_conf(client_p->host, client_p->username,
                           &client_p->localClient->ip,
                           client_p->localClient->aftype);
-  if (aconf == NULL)
-    return(NULL);
-  if (aconf->status & CONF_GLINE)
-    return(aconf);
 
-  return(NULL);
+  if (aconf && (aconf->status & CONF_GLINE))
+    return aconf;
+
+  return NULL;
 }
 
 /* add_temp_line()
@@ -2140,7 +2212,7 @@ add_temp_line(struct ConfItem *conf)
 
   if (conf->type == DLINE_TYPE)
   {
-    aconf = (struct AccessItem *)map_to_conf(conf);
+    aconf = map_to_conf(conf);
     SetConfTemporary(aconf);
     dlinkAdd(conf, &conf->node, &temporary_dlines);
     MyFree(aconf->user);
@@ -2149,14 +2221,14 @@ add_temp_line(struct ConfItem *conf)
   }
   else if (conf->type == KLINE_TYPE)
   {
-    aconf = (struct AccessItem *)map_to_conf(conf);
+    aconf = map_to_conf(conf);
     SetConfTemporary(aconf);
     dlinkAdd(conf, &conf->node, &temporary_klines);
     add_conf_by_address(CONF_KILL, aconf);
   }
   else if (conf->type == GLINE_TYPE)
   {
-    aconf = (struct AccessItem *)map_to_conf(conf);
+    aconf = map_to_conf(conf);
     SetConfTemporary(aconf);
     dlinkAdd(conf, &conf->node, &temporary_glines);
     add_conf_by_address(CONF_GLINE, aconf);
@@ -2170,6 +2242,11 @@ add_temp_line(struct ConfItem *conf)
   {
     conf->flags |= CONF_FLAGS_TEMPORARY;
     dlinkAdd(conf, make_dlink_node(), &temporary_rxlines);
+  }
+  else if (conf->type == RKLINE_TYPE)
+  {
+    conf->flags |= CONF_FLAGS_TEMPORARY;
+    dlinkAdd(conf, make_dlink_node(), &temporary_rklines);
   }
   else if ((conf->type == NRESV_TYPE) || (conf->type == CRESV_TYPE))
   {
@@ -2193,6 +2270,7 @@ cleanup_tklines(void *notused)
   expire_tklines(&temporary_dlines);
   expire_tklines(&temporary_xlines);
   expire_tklines(&temporary_rxlines);
+  expire_tklines(&temporary_rklines);
   expire_tklines(&temporary_resv);
 }
 
@@ -2259,6 +2337,21 @@ expire_tklines(dlink_list *tklist)
 	dlinkDelete(ptr, tklist);
         free_dlink_node(ptr);
 	delete_conf_item(conf);
+      }
+    }
+    else if (conf->type == RKLINE_TYPE)
+    {
+      aconf = map_to_conf(conf);
+      if (aconf->hold <= CurrentTime)
+      {
+        if (ConfigFileEntry.tkline_expire_notices)
+           sendto_realops_flags(UMODE_ALL, L_ALL,
+                                "Temporary K-line for [%s@%s] (REGEX) expired",
+                                (aconf->user) ? aconf->user : "*",
+                                (aconf->host) ? aconf->host : "*");
+        dlinkDelete(ptr, tklist);
+        free_dlink_node(ptr);
+        delete_conf_item(conf);
       }
     }
     else if (conf->type == NRESV_TYPE)
@@ -2333,7 +2426,7 @@ oper_privs_as_string(const unsigned int port)
 
   *privs_ptr = '\0';
 
-  return(privs_out);
+  return privs_out;
 }
 
 /*
@@ -2357,14 +2450,14 @@ get_oper_name(const struct Client *client_p)
     DLINK_FOREACH(cnode, client_p->localClient->confs.head)
     {
       conf = cnode->data;
-      aconf = (struct AccessItem *)map_to_conf(conf);
+      aconf = map_to_conf(conf);
 
       if (IsConfOperator(aconf))
       {
 	ircsprintf(buffer, "%s!%s@%s{%s}", client_p->name,
 		   client_p->username, client_p->host,
 		   conf->name);
-	return(buffer);
+	return buffer;
       }
     }
 
@@ -2373,9 +2466,10 @@ get_oper_name(const struct Client *client_p)
      */
     assert(0); /* Oper without oper conf! */
   }
+
   ircsprintf(buffer, "%s!%s@%s{%s}", client_p->name,
 	     client_p->username, client_p->host, client_p->servptr->name);
-  return(buffer);
+  return buffer;
 }
 
 /* read_conf_files()
@@ -2391,8 +2485,6 @@ read_conf_files(int cold)
   char chanmodes[32];
   char chanlimit[32];
 
-  conf_fbfile_in = NULL;
-
   filename = get_conf_name(CONF_TYPE);
 
   /* We need to know the initial filename for the yyerror() to report
@@ -2407,14 +2499,15 @@ read_conf_files(int cold)
   {
     if (cold)
     {
-      ilog(L_CRIT, "Failed in reading configuration file %s", filename);
+      ilog(L_CRIT, "Failed in reading configuration file %s (%s)",
+           filename, strerror(errno));
       exit(-1);
     }
     else
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
-			   "Can't open file '%s' - aborting rehash!",
-			   filename );
+			   "Can't open file '%s' (%s) - aborting rehash!",
+			   filename, strerror(errno));
       return;
     }
   }
@@ -2453,6 +2546,7 @@ read_conf_files(int cold)
   rebuild_isupport_message_line();
 
   parse_conf_file(KLINE_TYPE, cold);
+  parse_conf_file(RKLINE_TYPE, cold);
   parse_conf_file(DLINE_TYPE, cold);
   parse_conf_file(XLINE_TYPE, cold);
   parse_conf_file(RXLINE_TYPE, cold);
@@ -2505,7 +2599,7 @@ clear_out_old_conf(void)
   struct MatchItem *match_item;
   dlink_list *free_items [] = {
     &server_items, &oconf_items, &hub_items, &leaf_items, &uconf_items,
-    &xconf_items, &rxconf_items, &nresv_items, &cluster_items, &gdeny_items, NULL
+    &xconf_items, &rxconf_items, &rkconf_items, &nresv_items, &cluster_items, &gdeny_items, NULL
   };
 
   dlink_list ** iterator = free_items; /* C is dumb */
@@ -2558,10 +2652,12 @@ clear_out_old_conf(void)
 	  delete_conf_item(conf);
 	}
       }
-      else if (conf->type == XLINE_TYPE || conf->type == RXLINE_TYPE)
+      else if (conf->type == XLINE_TYPE  ||
+               conf->type == RXLINE_TYPE ||
+               conf->type == RKLINE_TYPE)
       {
         /* temporary (r)xlines are also on
-         * the temporary_(r)xlines items list */
+         * the (r)xconf items list */
         if (conf->flags & CONF_FLAGS_TEMPORARY)
           continue;
       }
@@ -2707,6 +2803,9 @@ get_conf_name(ConfType type)
     case KLINE_TYPE:
       return(ConfigFileEntry.klinefile);
       break;
+    case RKLINE_TYPE:
+      return(ConfigFileEntry.rklinefile);
+      break;
     case DLINE_TYPE:
       return(ConfigFileEntry.dlinefile);
       break;
@@ -2754,10 +2853,11 @@ get_conf_ping(struct ConfItem *conf)
     if (aconf->class_ptr != NULL)
     {
       aclass = (struct ClassItem *)map_to_conf(aconf->class_ptr);
-      return(PingFreq(aclass));
+      return PingFreq(aclass);
     }
   }
-  return(BAD_PING);
+
+  return BAD_PING;
 }
 
 /* get_client_class()
@@ -2833,9 +2933,9 @@ int
 get_con_freq(struct ClassItem *clptr)
 {
   if (clptr != NULL)
-    return(ConFreq(clptr));
+    return ConFreq(clptr);
 
-  return(DEFAULT_CONNECTFREQUENCY);
+  return DEFAULT_CONNECTFREQUENCY;
 }
 
 /* find_class()
@@ -2936,7 +3036,7 @@ get_sendq(struct Client *client_p)
 	  continue;
 	aclass = (struct ClassItem *)map_to_conf(class_conf);
 	sendq = MaxSendq(aclass);
-	return(sendq);
+	return sendq;
       }
     }
   }
@@ -2944,7 +3044,7 @@ get_sendq(struct Client *client_p)
    * if here, then there wasn't an attached conf with a sendq
    * that is very bad -Dianora
    */
-  return(DEFAULT_SENDQ);
+  return DEFAULT_SENDQ;
 }
 
 /* conf_add_class_to_conf()
@@ -3023,7 +3123,7 @@ conf_add_server(struct ConfItem *conf, unsigned int lcount, const char *class_na
   {
     sendto_realops_flags(UMODE_ALL, L_ALL, "Bad connect block");
     ilog(L_WARN, "Bad connect block");
-    return(-1);
+    return -1;
   }
 
   if (EmptyString(aconf->passwd) && !IsConfCryptLink(aconf))
@@ -3031,7 +3131,7 @@ conf_add_server(struct ConfItem *conf, unsigned int lcount, const char *class_na
     sendto_realops_flags(UMODE_ALL, L_ALL, "Bad connect block, name %s",
                          conf->name);
     ilog(L_WARN, "Bad connect block, host %s", conf->name);
-    return(-1);
+    return -1;
   }
 
   orig_host = aconf->host;
@@ -3039,7 +3139,7 @@ conf_add_server(struct ConfItem *conf, unsigned int lcount, const char *class_na
   MyFree(orig_host);
   lookup_confhost(conf);
 
-  return(0);
+  return 0;
 }
 
 /* conf_add_d_conf()
@@ -3088,7 +3188,7 @@ yyerror(const char *msg)
     return;
 
   strip_tabs(newlinebuf, linebuf, sizeof(newlinebuf));
-  sendto_realops_flags(UMODE_ALL, L_ALL,"\"%s\", line %u: %s: %s",
+  sendto_realops_flags(UMODE_ALL, L_ALL, "\"%s\", line %u: %s: %s",
                        conffilebuf, lineno + 1, msg, newlinebuf);
   ilog(L_WARN, "\"%s\", line %u: %s: %s",
        conffilebuf, lineno + 1, msg, newlinebuf);
@@ -3097,18 +3197,16 @@ yyerror(const char *msg)
 int
 conf_fbgets(char *lbuf, unsigned int max_size, FBFILE *fb)
 {
-  char *buff;
+  if (fbgets(lbuf, max_size, fb) == NULL)
+    return 0;
 
-  if ((buff = fbgets(lbuf, max_size, fb)) == NULL)
-    return(0);
-
-  return(strlen(lbuf));
+  return strlen(lbuf);
 }
 
 int
 conf_yy_fatal_error(const char *msg)
 {
-  return(0);
+  return 0;
 }
 
 /*
@@ -3126,38 +3224,39 @@ valid_tkline(char *p, int minutes)
 {
   time_t result = 0;
 
-  while(*p)
+  while (*p)
   {
-    if(IsDigit(*p))
+    if (IsDigit(*p))
     {
       result *= 10;
       result += ((*p) & 0xF);
       p++;
     }
     else
-      return(0);
+      return 0;
   }
+
   /* in the degenerate case where oper does a /quote kline 0 user@host :reason 
    * i.e. they specifically use 0, I am going to return 1 instead
    * as a return value of non-zero is used to flag it as a temporary kline
    */
 
-  if(result == 0)
+  if (result == 0)
     result = 1;
 
   /* 
    * If the incoming time is in seconds convert it to minutes for the purpose
    * of this calculation
    */
-  if(!minutes)
-      result = (time_t)result / (time_t)60; 
+  if (!minutes)
+    result = result / (time_t)60; 
 
-  if(result > MAX_TDKLINE_TIME)
+  if (result > MAX_TDKLINE_TIME)
     result = MAX_TDKLINE_TIME;
 
-  result = (time_t)result * (time_t)60;  /* turn it into seconds */
+  result = result * (time_t)60;  /* turn it into seconds */
 
-  return(result);
+  return result;
 }
 
 /* valid_wild_card()
@@ -3205,7 +3304,7 @@ valid_wild_card(struct Client *source_p, int warn, int count, ...)
          * break - no point in searching further.
          */
         if (++nonwild >= ConfigFileEntry.min_nonwildcard)
-          return (1);
+          return 1;
       }
     }
   }
@@ -3213,7 +3312,7 @@ valid_wild_card(struct Client *source_p, int warn, int count, ...)
   if (warn)
     sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the mask",
                me.name, source_p->name, ConfigFileEntry.min_nonwildcard);
-  return(0);
+  return 0;
 }
 
 /* XXX should this go into a separate file ? -Dianora */
@@ -3291,7 +3390,7 @@ parse_aline(const char *cmd, struct Client *source_p,
   }
   else
   {
-    if (find_user_host(source_p, *parv, user, host) == 0)
+    if (find_user_host(source_p, *parv, user, host, parse_flags) == 0)
       return(-1);
     *up_p = user;
     *h_p = host;
@@ -3383,15 +3482,15 @@ parse_aline(const char *cmd, struct Client *source_p,
  */
 static int
 find_user_host(struct Client *source_p, char *user_host_or_nick,
-               char *luser, char *lhost)
+               char *luser, char *lhost, unsigned int flags)
 {
-  struct Client *target_p;
-  char *hostp;
+  struct Client *target_p = NULL;
+  char *hostp = NULL;
 
   if (lhost == NULL)
   {
     strlcpy(luser, user_host_or_nick, USERLEN + 1);
-    return(1);
+    return 1;
   }
 
   if ((hostp = strchr(user_host_or_nick, '@')) || *user_host_or_nick == '*')
@@ -3417,21 +3516,21 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
       strlcpy(lhost, user_host_or_nick, HOSTLEN + 1);
     }
     
-    return(1);
+    return 1;
   }
-  else
+  else if (!(flags & NOUSERLOOKUP))
   {
     /* Try to find user@host mask from nick */
     /* Okay to use source_p as the first param, because source_p == client_p */
     if (!(target_p = find_chasing(source_p, source_p, user_host_or_nick, NULL)))
-      return(0);
+      return 0;
 
     if (IsServer(target_p))
     {
       sendto_one(source_p,
 	   ":%s NOTICE %s :Can't KLINE a server, use @'s where appropriate",
 		 me.name, source_p->name);
-      return(0);
+      return 0;
     }
 
     if (IsExemptKline(target_p))
@@ -3440,7 +3539,7 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
 	sendto_one(source_p,
 		   ":%s NOTICE %s :%s is E-lined",
 		   me.name, source_p->name, target_p->name);
-      return(0);
+      return 0;
     }
 
     /* turn the "user" bit into "*user", blow away '~'
@@ -3448,13 +3547,13 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
      */
 
     strlcpy(luser, target_p->username, USERLEN + 1);
-    if (*target_p->username == '~')
+    if (target_p->username[0] == '~')
       luser[0] = '*';
 
     strlcpy(lhost, cluster(target_p->host), HOSTLEN + 1);
   }
 
-  return(1);
+  return 0;
 }
 
 /* valid_comment()
@@ -3473,13 +3572,13 @@ valid_comment(struct Client *source_p, char *comment, int warn)
     if (warn)
       sendto_one(source_p, ":%s NOTICE %s :Invalid character '\"' in comment",
                  me.name, source_p->name);
-    return(0);
+    return 0;
   }
 
   if (strlen(comment) > REASONLEN)
     comment[REASONLEN-1] = '\0';
 
-  return(1);
+  return 1;
 }
 
 /*
@@ -3615,7 +3714,7 @@ match_conf_password(const char *password, const struct AccessItem *aconf)
      */
     /* passwd may be NULL pointer. Head it off at the pass... */
     if (aconf->passwd == NULL)
-      return(0);
+      return 0;
 
     if (password && *aconf->passwd)
       encr = crypt(password, aconf->passwd);
@@ -3625,7 +3724,7 @@ match_conf_password(const char *password, const struct AccessItem *aconf)
   else
     encr = password;
 
-  return(!strcmp(encr, aconf->passwd));
+  return !strcmp(encr, aconf->passwd);
 }
 
 /*
@@ -3782,18 +3881,17 @@ split_nuh(char *mask, char **nick, char **user, char **host)
  * flags_to_ascii
  *
  * inputs	- flags is a bitmask
- * output	- new p
+ * output	-
  * side effects	- string pointed to by p has bitmap chars written to it
  */
-char *
-flags_to_ascii(int flags, int bit_table[], char *p)
+static void
+flags_to_ascii(unsigned int flags, const unsigned int bit_table[], char *p)
 {
-  int mask = 1;
+  unsigned int mask = 1;
   int i = 0;
 
   for (mask = 1; (mask != 0) && (bit_table[i] != 0); mask <<= 1, i++)
     if (flags & mask)
       *p++ = bit_table[i];
-
-  return p;
+  *p = '\0';
 }

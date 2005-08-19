@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.315 2005/08/15 20:50:01 adx Exp $
+ *  $Id: s_conf.h,v 7.316 2005/08/19 14:56:44 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -53,6 +53,7 @@ typedef enum {
   DLINE_TYPE,
   EXEMPTDLINE_TYPE,
   CLUSTER_TYPE,
+  RKLINE_TYPE,
   RXLINE_TYPE,
   XLINE_TYPE,    
   ULINE_TYPE,
@@ -113,6 +114,10 @@ struct AccessItem
   char *           rsa_public_key_file;
   RSA *            rsa_public_key;
   struct EncCapability *cipher_preference;
+#endif
+#ifdef HAVE_REGEX_H
+  regex_t *regexuser;
+  regex_t *regexhost;
 #endif
 };
 
@@ -286,6 +291,7 @@ struct config_file_entry
   const char *klinefile;
   const char *xlinefile;
   const char *rxlinefile;
+  const char *rklinefile;
   const char *dlinefile;
   const char *glinefile;
   const char *cresvfile;
@@ -434,18 +440,20 @@ extern dlink_list server_items;
 extern dlink_list cluster_items;
 extern dlink_list hub_items;
 extern dlink_list rxconf_items;
+extern dlink_list rkconf_items;
 extern dlink_list leaf_items;
 extern dlink_list temporary_klines;
 extern dlink_list temporary_dlines;
 extern dlink_list temporary_glines;
 extern dlink_list temporary_rxlines;
+extern dlink_list temporary_rklines;
 extern struct logging_entry ConfigLoggingEntry;
 extern struct config_file_entry ConfigFileEntry;/* defined in ircd.c*/
 extern struct config_channel_entry ConfigChannel;/* defined in channel.c*/
 extern struct config_server_hide ConfigServerHide; /* defined in s_conf.c */
 extern struct server_info ServerInfo;       /* defined in ircd.c */
 extern struct admin_info AdminInfo;        /* defined in ircd.c */
-extern int valid_wild_card(struct Client *source_p, int warn, int count, ...);
+extern int valid_wild_card(struct Client *, int, int, ...);
 /* End GLOBAL section */
 
 
@@ -505,13 +513,11 @@ extern char *get_oper_name(const struct Client *);
 extern void *map_to_conf(struct ConfItem *);
 extern struct ConfItem *unmap_conf_item(void *);
 /* XXX should the parse_aline stuff go into another file ?? */
-#define AWILD 1		/* check wild cards */
-extern int parse_aline(const char *cmd, struct Client *source_p,
-		       int parc, char **parv,
-		       int parse_flags,
-		       char **user, char **host, time_t *tkline_time,
-		       char **target_server, char **reason);
-extern int valid_comment(struct Client *source_p, char *comment, int warn);
+#define AWILD 0x1		/* check wild cards */
+#define NOUSERLOOKUP 0x2 /* Don't lookup the user@host on /rkline nick */
+extern int parse_aline(const char *, struct Client *, int, char **,
+		       int, char **, char **, time_t *, char **, char **);
+extern int valid_comment(struct Client *, char *, int);
 
 /* XXX */
 extern int yylex(void);

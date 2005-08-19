@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.52 2005/08/17 16:02:52 michael Exp $
+ *  $Id: csvlib.c,v 7.53 2005/08/19 14:56:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -28,10 +28,10 @@
 #endif
 
 
-static void parse_csv_line(char *line, ...);
-static int write_csv_line(FBFILE *out, const char *format, ...);
-static int flush_write(struct Client *source_p, FBFILE *in, FBFILE* out, 
-                       const char *buf, const char *temppath);
+static void parse_csv_line(char *, ...);
+static int write_csv_line(FBFILE *, const char *, ...);
+static int flush_write(struct Client *, FBFILE *, FBFILE *, 
+                       const char *, const char *);
 static char *getfield(char *);
 
 /* parse_csv_file()
@@ -60,7 +60,7 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
     if ((p = strchr(line, '\n')) != NULL)
       *p = '\0';
 
-    if ((*line == '\0') || (*line == '#'))
+    if ((line[0] == '\0') || (line[0] == '#'))
       continue;
 
     switch(conf_type)
@@ -77,6 +77,50 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
 	DupString(aconf->user, user_field);
       if (aconf->host != NULL)
 	add_conf_by_address(CONF_KILL, aconf);
+      break;
+
+    case RKLINE_TYPE:
+#ifdef HAVE_REGEX_H
+    {
+      int ecode = 0;
+      regex_t *exp_user = NULL, *exp_host = NULL;
+
+      parse_csv_line(line, &user_field, &host_field, &reason_field, NULL);
+      exp_user = MyMalloc(sizeof(regex_t));
+      exp_host = MyMalloc(sizeof(regex_t));
+
+      if ((ecode = regcomp(exp_user, user_field, REG_EXTENDED|REG_ICASE|REG_NOSUB)) ||
+          (ecode = regcomp(exp_host, host_field, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
+      {
+        char errbuf[IRCD_BUFSIZE];
+
+        regerror(ecode, NULL, errbuf, sizeof(errbuf));
+        MyFree(exp_user);
+        MyFree(exp_host);
+
+        sendto_realops_flags(UMODE_ALL, L_ALL,
+                  "Failed to add regular expression based K-Line: %s", errbuf);
+        break;
+      }
+
+      if (host_field == NULL || user_field == NULL)
+        break;
+
+      aconf = map_to_conf(make_conf_item(RKLINE_TYPE));
+
+      aconf->regexuser = exp_user;
+      aconf->regexhost = exp_host;
+
+      DupString(aconf->user, user_field);
+      DupString(aconf->host, host_field);
+
+      if (reason_field != NULL)
+        DupString(aconf->reason, reason_field);
+      else
+        DupString(match_item->reason, "No reason");
+
+    }
+#endif
       break;
 
     case DLINE_TYPE:
@@ -255,6 +299,22 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
 		   aconf->user, aconf->host,
 		   aconf->reason, aconf->oper_reason, current_date,
 		   get_oper_name(source_p), cur_time);
+    break;
+
+  case RKLINE_TYPE:
+    aconf = map_to_conf(conf);
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "%s added RK-Line for [%s@%s] [%s]",
+                         get_oper_name(source_p),
+                         aconf->user, aconf->host, aconf->reason);
+    sendto_one(source_p, ":%s NOTICE %s :Added RK-Line [%s@%s]",
+               from, to, aconf->user, aconf->host);
+    ilog(L_TRACE, "%s added K-Line for [%s@%s] [%s]",
+         source_p->name, aconf->user, aconf->host, aconf->reason);
+    write_csv_line(out, "%s%s%s%s%s%s%d",
+                   aconf->user, aconf->host,
+                   aconf->reason, aconf->oper_reason, current_date,
+                   get_oper_name(source_p), cur_time);
     break;
 
   case DLINE_TYPE:

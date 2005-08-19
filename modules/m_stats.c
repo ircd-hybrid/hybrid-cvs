@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.179 2005/08/15 20:50:02 adx Exp $
+ *  $Id: m_stats.c,v 1.180 2005/08/19 14:56:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ struct Message stats_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.179 $";
+const char *_version = "$Revision: 1.180 $";
 static struct Callback *stats_cb;
 
 void
@@ -1022,8 +1022,10 @@ stats_klines(struct Client *source_p)
 	       aconf->oper_reason);
   }
   /* Theyre opered, or allowed to see all klines */
-  else
+  else {
     report_Klines(source_p, 0);
+    report_confitem_types(source_p, RKLINE_TYPE);
+  }
 }
 
 static void
