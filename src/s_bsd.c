@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.246 2005/08/19 10:54:50 adx Exp $
+ *  $Id: s_bsd.c,v 7.247 2005/08/19 15:29:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -537,7 +537,7 @@ comm_checktimeouts(void *notused)
   PF *hdl;
   void *data;
 
-  for (i = 0; i <= HARD_FDLIMIT; i++)
+  for (i = 0; i < HARD_FDLIMIT; i++)
     for (F = fd_hash[i]; F != NULL; F = fd_next_in_loop)
     {
       assert(F->flags.open);

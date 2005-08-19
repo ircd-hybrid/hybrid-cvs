@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.45 2005/08/18 19:48:39 adx Exp $
+ *  $Id: fdlist.c,v 7.46 2005/08/19 15:29:42 db Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -143,7 +143,7 @@ fd_dump(struct Client *source_p)
   int i;
   fde_t *F;
 
-  for (i = 0; i <= HARD_FDLIMIT; i++)
+  for (i = 0; i < HARD_FDLIMIT; i++)
     for (F = fd_hash[i]; F != NULL; F = F->hnext)
       sendto_one(source_p, ":%s %d %s :fd %-5d desc '%s'",
                  me.name, RPL_STATSDEBUG, source_p->name,
