@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.429 2005/08/17 16:02:52 michael Exp $
+ *  $Id: ircd_parser.y,v 1.430 2005/08/19 17:06:07 michael Exp $
  */
 
 %{
@@ -65,8 +65,10 @@ static dlink_list col_conf_list  = { NULL, NULL, 0 };
 static dlink_list hub_conf_list  = { NULL, NULL, 0 };
 static dlink_list leaf_conf_list = { NULL, NULL, 0 };
 static unsigned int listener_flags = 0;
-static unsigned int gecos_flags = 0;
-static char gecos_reason[REASONLEN + 1];
+static unsigned int regex_ban = 0;
+static char userbuf[IRCD_BUFSIZE];
+static char hostbuf[IRCD_BUFSIZE];
+static char reasonbuf[REASONLEN + 1];
 static char gecos_name[REALLEN * 4];
 
 extern dlink_list gdeny_items;
@@ -1652,12 +1654,16 @@ auth_entry: IRCD_AUTH
 {
   if (ypass == 2)
   {
-    struct CollectItem *yy_tmp;
-    dlink_node *ptr;
-    dlink_node *next_ptr;
+    struct CollectItem *yy_tmp = NULL;
+    dlink_node *ptr = NULL, *next_ptr = NULL;
 
-    conf_add_class_to_conf(yy_conf, class_name);
-    add_conf_by_address(CONF_CLIENT, yy_aconf);
+    if (yy_aconf->user && yy_aconf->host)
+    {
+      conf_add_class_to_conf(yy_conf, class_name);
+      add_conf_by_address(CONF_CLIENT, yy_aconf);
+    }
+    else
+      delete_conf_item(yy_conf);
 
     /* copy over settings from first struct */
     DLINK_FOREACH_SAFE(ptr, next_ptr, col_conf_list.head)
@@ -1666,36 +1672,27 @@ auth_entry: IRCD_AUTH
       struct ConfItem *new_conf;
 
       new_conf = make_conf_item(CLIENT_TYPE);
-      new_aconf = (struct AccessItem *)map_to_conf(new_conf);
+      new_aconf = map_to_conf(new_conf);
 
       yy_tmp = ptr->data;
+
+      assert(yy_tmp->user && yy_tmp->host);
 
       if (yy_aconf->passwd != NULL)
         DupString(new_aconf->passwd, yy_aconf->passwd);
       if (yy_conf->name != NULL)
         DupString(new_conf->name, yy_conf->name);
-
       if (yy_aconf->passwd != NULL)
-	DupString(new_aconf->passwd, yy_aconf->passwd);
+        DupString(new_aconf->passwd, yy_aconf->passwd);
 
       new_aconf->flags = yy_aconf->flags;
       new_aconf->port  = yy_aconf->port;
 
-      if (yy_tmp->user != NULL)
-      {
-	DupString(new_aconf->user, yy_tmp->user);
-        collapse(new_aconf->user);
-      }
-      else
-        DupString(new_aconf->user, "*");
+      DupString(new_aconf->user, yy_tmp->user);
+      collapse(new_aconf->user);
 
-      if (yy_tmp->host != NULL)
-      {
-	DupString(new_aconf->host, yy_tmp->host);
-        collapse(new_aconf->host);
-      }
-      else
-	DupString(new_aconf->host, "*");
+      DupString(new_aconf->host, yy_tmp->host);
+      collapse(new_aconf->host);
 
       conf_add_class_to_conf(new_conf, class_name);
       add_conf_by_address(CONF_CLIENT, new_aconf);
@@ -1725,12 +1722,10 @@ auth_user: USER '=' QSTRING ';'
     struct CollectItem *yy_tmp;
 
     if (yy_aconf->user == NULL)
-    {
       split_nuh(yylval.string, NULL, &yy_aconf->user, &yy_aconf->host);
-    }
     else
     {
-      yy_tmp = (struct CollectItem *)MyMalloc(sizeof(struct CollectItem));
+      yy_tmp = MyMalloc(sizeof(struct CollectItem));
       split_nuh(yylval.string, NULL, &yy_tmp->user, &yy_tmp->host);
       dlinkAdd(yy_tmp, &yy_tmp->node, &col_conf_list);
     }
@@ -2678,43 +2673,104 @@ kill_entry: KILL
 {
   if (ypass == 2)
   {
-    yy_conf = make_conf_item(KLINE_TYPE);
-    yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
+    userbuf[0] = hostbuf[0] = reasonbuf[0] = '\0';
+    regex_ban = 0;
   }
 } '{' kill_items '}' ';'
 {
   if (ypass == 2)
   {
-    if (yy_aconf->user && yy_aconf->reason && yy_aconf->host)
+    if (userbuf[0] && hostbuf[0])
     {
-      if (yy_aconf->host != NULL)
+      if (regex_ban)
+      {
+#ifdef HAVE_REGEX_H
+        int ecode = 0;
+        regex_t *exp_user = MyMalloc(sizeof(regex_t));
+        regex_t *exp_host = MyMalloc(sizeof(regex_t));
+
+        if ((ecode = regcomp(exp_user, userbuf, REG_EXTENDED|REG_ICASE|REG_NOSUB)) ||
+            (ecode = regcomp(exp_host, hostbuf, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
+        {
+          char errbuf[IRCD_BUFSIZE];
+
+          regerror(ecode, NULL, errbuf, sizeof(errbuf));
+
+          MyFree(exp_user);
+          MyFree(exp_host);
+          ilog(L_ERROR, "Failed to add regular expression based K-Line: %s", errbuf);
+          break;
+        }
+
+        yy_conf = make_conf_item(RKLINE_TYPE);
+        yy_aconf->regexuser = exp_user;
+        yy_aconf->regexhost = exp_host;
+
+        DupString(yy_aconf->user, userbuf);
+        DupString(yy_aconf->host, hostbuf);
+
+        if (reasonbuf[0])
+          DupString(yy_aconf->reason, reasonbuf);
+        else
+          DupString(yy_aconf->reason, "No reason");
+#else
+        yyerror("Your system doesn't support regex");
+#endif
+      }
+      else
+      {
+        yy_conf = make_conf_item(KLINE_TYPE);
+        yy_aconf = map_to_conf(yy_conf);
+
+        if (reasonbuf[0])
+          DupString(yy_aconf->reason, reasonbuf);
+        else
+          DupString(yy_aconf->reason, "No reason");
         add_conf_by_address(CONF_KILL, yy_aconf);
+      }
     }
     else
       delete_conf_item(yy_conf);
+
     yy_conf = NULL;
     yy_aconf = NULL;
   }
 }; 
 
+kill_type: TYPE
+{
+} '='  kill_type_items ';';
+
+kill_type_items: kill_type_items ',' kill_type_item | kill_type_item;
+kill_type_item: REGEX_T
+{
+  if (ypass == 2)
+    regex_ban = 1;
+};
+
 kill_items:     kill_items kill_item | kill_item;
-kill_item:      kill_user | kill_reason | error;
+kill_item:      kill_user | kill_reason | kill_type | error;
 
 kill_user: USER '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    split_nuh(yylval.string, NULL, &yy_aconf->user, &yy_aconf->host);
+    char *user = NULL, *host = NULL;
+
+    split_nuh(yylval.string, NULL, &user, &host);
+
+    strlcpy(userbuf, user, sizeof(userbuf));
+    strlcpy(hostbuf, host, sizeof(hostbuf));
+
+    MyFree(user);
+    MyFree(host);
   }
 };
 
 kill_reason: REASON '=' QSTRING ';' 
 {
   if (ypass == 2)
-  {
-    MyFree(yy_aconf->reason);
-    DupString(yy_aconf->reason, yylval.string);
-  }
+    strlcpy(reasonbuf, yylval.string, sizeof(reasonbuf));
 };
 
 /***************************************************************************
@@ -2806,8 +2862,8 @@ gecos_entry: GECOS
 {
   if (ypass == 2)
   {
-    gecos_flags = 0;
-    gecos_reason[0] = gecos_name[0] = '\0';
+    regex_ban = 0;
+    reasonbuf[0] = gecos_name[0] = '\0';
   }
 } '{' gecos_items '}' ';'
 {
@@ -2817,7 +2873,7 @@ gecos_entry: GECOS
     {
       int ecode = 0;
 
-      if (gecos_flags & 1)
+      if (regex_ban)
       {
 #ifdef HAVE_REGEX_H
         regex_t *exp_p = MyMalloc(sizeof(regex_t));
@@ -2844,15 +2900,15 @@ gecos_entry: GECOS
 
       yy_match_item = map_to_conf(yy_conf);
       DupString(yy_conf->name, gecos_name);
-      if (gecos_reason[0])
-        DupString(yy_match_item->reason, gecos_reason);
+      if (reasonbuf[0])
+        DupString(yy_match_item->reason, reasonbuf);
       else
         DupString(yy_match_item->reason, "No reason");
     }
   }
 };
 
-gecos_flags: IRCD_FLAGS
+gecos_flags: TYPE
 {
 } '='  gecos_flags_items ';';
 
@@ -2860,7 +2916,7 @@ gecos_flags_items: gecos_flags_items ',' gecos_flags_item | gecos_flags_item;
 gecos_flags_item: REGEX_T
 {
   if (ypass == 2)
-    gecos_flags |= 1;
+    regex_ban = 1;
 };
 
 gecos_items: gecos_items gecos_item | gecos_item;
@@ -2869,19 +2925,13 @@ gecos_item:  gecos_name | gecos_reason | gecos_flags | error;
 gecos_name: NAME '=' QSTRING ';' 
 {
   if (ypass == 2)
-  {
-    gecos_name[0] = '\0';
-    strlcpy(gecos_name, yylval.string, sizeof(gecos_reason));
-  }
+    strlcpy(gecos_name, yylval.string, sizeof(gecos_name));
 };
 
 gecos_reason: REASON '=' QSTRING ';' 
 {
   if (ypass == 2)
-  {
-    gecos_name[0] = '\0';
-    strlcpy(gecos_reason, yylval.string, sizeof(gecos_name));
-  }
+    strlcpy(reasonbuf, yylval.string, sizeof(reasonbuf));
 };
 
 /***************************************************************************

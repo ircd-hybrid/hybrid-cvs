@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.573 2005/08/19 14:56:44 michael Exp $
+ *  $Id: s_conf.c,v 7.574 2005/08/19 17:06:07 michael Exp $
  */
 
 #include "stdinc.h"
@@ -893,8 +893,8 @@ check_client(va_list args)
 static int
 verify_access(struct Client *client_p, const char *username)
 {
-  struct AccessItem *aconf;
-  struct ConfItem *conf;
+  struct AccessItem *aconf = NULL;
+  struct ConfItem *conf = NULL;
   char non_ident[USERLEN + 1] = { '~', '\0' };
 
   if (IsGotId(client_p))
@@ -921,7 +921,7 @@ verify_access(struct Client *client_p, const char *username)
     uhi[1] = client_p->host;
     uhi[2] = client_p->sockhost;
 
-    find_regexp_kline(uhi);
+    aconf = find_regexp_kline(uhi);
   }
  
   if (aconf != NULL)
