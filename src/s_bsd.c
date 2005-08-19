@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.245 2005/08/18 20:53:47 knight Exp $
+ *  $Id: s_bsd.c,v 7.246 2005/08/19 10:54:50 adx Exp $
  */
 
 #include "stdinc.h"
@@ -533,7 +533,7 @@ void
 comm_checktimeouts(void *notused)
 {
   int i;
-  fde_t *F, *fd_next_in_loop = NULL;
+  fde_t *F;
   PF *hdl;
   void *data;
 
