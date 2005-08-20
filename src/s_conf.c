@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.577 2005/08/20 15:03:15 michael Exp $
+ *  $Id: s_conf.c,v 7.578 2005/08/20 16:49:31 michael Exp $
  */
 
 #include "stdinc.h"
@@ -213,9 +213,9 @@ conf_dns_lookup(struct AccessItem *aconf)
 struct ConfItem *
 make_conf_item(ConfType type)
 {
-  struct ConfItem *conf;
-  struct AccessItem *aconf;
-  struct ClassItem *aclass;
+  struct ConfItem *conf = NULL;
+  struct AccessItem *aconf = NULL;
+  struct ClassItem *aclass = NULL;
   int status = 0;
 
   switch (type)
@@ -310,6 +310,7 @@ make_conf_item(ConfType type)
   case RKLINE_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
                                        sizeof(struct AccessItem));
+    aconf = map_to_conf(conf);
     aconf->status = CONF_KLINE;
     dlinkAdd(conf, &conf->node, &rkconf_items);
     break;
@@ -474,6 +475,7 @@ delete_conf_item(struct ConfItem *conf)
     break;
 
   case RKLINE_TYPE:
+    aconf = map_to_conf(conf);
 #ifdef HAVE_REGEX_H
     regfree(aconf->regexuser);
     MyFree(aconf->regexuser);
@@ -481,7 +483,6 @@ delete_conf_item(struct ConfItem *conf)
     regfree(aconf->regexhost);
     MyFree(aconf->regexhost);
 #endif
-    aconf = map_to_conf(conf);
     MyFree(aconf->user);
     MyFree(aconf->host);
     MyFree(aconf->reason);
@@ -2589,15 +2590,15 @@ parse_conf_file(int type, int cold)
 static void
 clear_out_old_conf(void)
 {
-  dlink_node *ptr;
-  dlink_node *next_ptr;
+  dlink_node *ptr = NULL, *next_ptr = NULL;
   struct ConfItem *conf;
   struct AccessItem *aconf;
   struct ClassItem *cltmp;
   struct MatchItem *match_item;
   dlink_list *free_items [] = {
-    &server_items, &oconf_items, &hub_items, &leaf_items, &uconf_items,
-    &xconf_items, &rxconf_items, &rkconf_items, &nresv_items, &cluster_items, &gdeny_items, NULL
+    &server_items,   &oconf_items,    &hub_items, &leaf_items,
+     &uconf_items,   &xconf_items, &rxconf_items, &rkconf_items,
+     &nresv_items, &cluster_items,  &gdeny_items, NULL
   };
 
   dlink_list ** iterator = free_items; /* C is dumb */
@@ -2658,6 +2659,8 @@ clear_out_old_conf(void)
          * the (r)xconf items list */
         if (conf->flags & CONF_FLAGS_TEMPORARY)
           continue;
+
+        delete_conf_item(conf);
       }
       else
       {

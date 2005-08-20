@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rkline.c,v 1.2 2005/08/20 15:03:15 michael Exp $
+ *  $Id: m_rkline.c,v 1.3 2005/08/20 16:49:31 michael Exp $
  */
 
 #include "stdinc.h"
@@ -88,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&unrkline_msgtab);
 }
 
-const char *_version = "$Revision: 1.2 $";
+const char *_version = "$Revision: 1.3 $";
 #endif
 
 /* mo_rkline()
@@ -547,13 +547,14 @@ remove_trkline_match(const char *host, const char *user)
 
   DLINK_FOREACH(ptr, temporary_rklines.head)
   {
+    struct ConfItem *conf = ptr->data;
     struct AccessItem *aptr = map_to_conf(ptr->data);
 
     if (!irccmp(user, aptr->user) && !irccmp(aptr->host, host))
     {
       dlinkDelete(ptr, &temporary_rklines);
       free_dlink_node(ptr);
-      delete_conf_item(ptr->data);
+      delete_conf_item(conf);
       return 1;
     }
   }
