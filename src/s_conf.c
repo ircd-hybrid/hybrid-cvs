@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.575 2005/08/20 12:02:29 michael Exp $
+ *  $Id: s_conf.c,v 7.576 2005/08/20 14:00:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -3351,8 +3351,8 @@ parse_aline(const char *cmd, struct Client *source_p,
 {
   int found_tkline_time=0;
   static char def_reason[] = "No Reason";
-  static char user[USERLEN+2];
-  static char host[HOSTLEN+2];
+  static char user[USERLEN*4+1];
+  static char host[HOSTLEN*4+2];
 
   parv++;
   parc--;
@@ -3363,15 +3363,14 @@ parse_aline(const char *cmd, struct Client *source_p,
   {
     parv++;
     parc--;
+
     if (tkline_time != NULL)
-    {
       *tkline_time = found_tkline_time;
-    }
     else
     {
       sendto_one(source_p, ":%s NOTICE %s :temp_line not supported by %s",
 		 me.name, source_p->name, cmd);
-      return(-1);
+      return -1;
     }
   }
 
@@ -3379,17 +3378,17 @@ parse_aline(const char *cmd, struct Client *source_p,
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                me.name, source_p->name, cmd);
-    return(-1);
+    return -1;
   }
 
   if (h_p == NULL)
-  {
     *up_p = *parv;
   }
   else
   {
     if (find_user_host(source_p, *parv, user, host, parse_flags) == 0)
-      return(-1);
+      return -1;
+
     *up_p = user;
     *h_p = host;
   }
@@ -3408,21 +3407,21 @@ parse_aline(const char *cmd, struct Client *source_p,
       {
 	sendto_one(source_p, ":%s NOTICE %s :ON server not supported by %s",
 		   me.name, source_p->name, cmd);
-	return(-1);
+	return -1;
       }
 
       if (!IsOperRemoteBan(source_p))
       {
         sendto_one(source_p, form_str(ERR_NOPRIVS),
                    me.name, source_p->name, "remoteban");
-        return(-1);
+        return -1;
       }
 
       if (parc == 0 || EmptyString(*parv))
       {
 	sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
 		   me.name, source_p->name, cmd);
-	return(-1);
+	return -1;
       }
 
       *target_server = *parv;
@@ -3445,14 +3444,15 @@ parse_aline(const char *cmd, struct Client *source_p,
     {
       sendto_one(source_p, ":%s NOTICE %s :Invalid character '!' in kline",
                  me.name, source_p->name);
-      return(-1);
+      return -1;
     }
+
     if ((parse_flags & AWILD) && !valid_wild_card(source_p, YES, 2, *up_p, *h_p))
-      return(-1);
+      return -1;
   }
   else
     if ((parse_flags & AWILD) && !valid_wild_card(source_p, YES, 1, *up_p))
-      return(-1);
+      return -1;
 
   if (reason != NULL)
   {
@@ -3460,13 +3460,13 @@ parse_aline(const char *cmd, struct Client *source_p,
     {
       *reason = *parv;
       if (!valid_comment(source_p, *reason, YES))
-	return(-1);
+	return -1;
     }
     else
       *reason = def_reason;
   }
 
-  return(1);
+  return 1;
 }
 
 /* find_user_host()
@@ -3487,7 +3487,7 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
 
   if (lhost == NULL)
   {
-    strlcpy(luser, user_host_or_nick, USERLEN + 1);
+    strlcpy(luser, user_host_or_nick, USERLEN*4 + 1);
     return 1;
   }
 
@@ -3499,7 +3499,7 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
     {
       *(hostp++) = '\0';                       /* short and squat */
       if (*user_host_or_nick)
-	strlcpy(luser, user_host_or_nick, USERLEN + 1); /* here is my user */
+	strlcpy(luser, user_host_or_nick, USERLEN*4 + 1); /* here is my user */
       else
 	strcpy(luser, "*");
       if (*hostp)
@@ -3511,7 +3511,7 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
     {
       luser[0] = '*';             /* no @ found, assume its *@somehost */
       luser[1] = '\0';	  
-      strlcpy(lhost, user_host_or_nick, HOSTLEN + 1);
+      strlcpy(lhost, user_host_or_nick, HOSTLEN*4 + 1);
     }
     
     return 1;
@@ -3540,15 +3540,16 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
       return 0;
     }
 
-    /* turn the "user" bit into "*user", blow away '~'
+    /*
+     * turn the "user" bit into "*user", blow away '~'
      * if found in original user name (non-idented)
      */
+    strlcpy(luser, target_p->username, USERLEN*4 + 1);
 
-    strlcpy(luser, target_p->username, USERLEN + 1);
     if (target_p->username[0] == '~')
       luser[0] = '*';
 
-    strlcpy(lhost, cluster(target_p->host), HOSTLEN + 1);
+    strlcpy(lhost, cluster(target_p->host), HOSTLEN*4 + 1);
   }
 
   return 0;
