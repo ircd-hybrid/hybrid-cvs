@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_spoof.c,v 1.8 2005/08/17 22:36:59 metalrock Exp $
+ *  $Id: m_spoof.c,v 1.9 2005/08/20 05:16:50 michael Exp $
  */
 
 /* MODULE CONFIGURATION FOLLOWS -- please read!! */
@@ -127,7 +127,7 @@ _moddeinit(void)
   mod_del_cmd(&spoof_msgtab);
 }
 
-const char *_version = "20050622";
+const char *_version = "$Revision: 1.9 $";
 
 #ifdef SPOOF_FILE
 static void

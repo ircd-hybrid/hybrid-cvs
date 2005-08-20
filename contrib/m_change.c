@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_change.c,v 1.3 2005/07/24 01:58:59 adx Exp $
+ *  $Id: m_change.c,v 1.4 2005/08/20 05:16:50 michael Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -77,10 +77,11 @@ _moddeinit(void)
   mod_del_cmd(&chgident_msgtab);
 }
 
-char *_version = "20050709";
+const char *_version = "$Revision: 1.4 $";
 
-static void mo_chgident(struct Client *client_p, struct Client *source_p,
-                        int parc, char *parv[])
+static void
+mo_chgident(struct Client *client_p, struct Client *source_p,
+            int parc, char *parv[])
 {
   struct Client *target_p;
 
