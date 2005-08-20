@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.207 2005/08/13 15:38:28 db Exp $
+ *  $Id: m_kline.c,v 1.208 2005/08/20 15:03:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -107,7 +107,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.207 $";
+const char *_version = "$Revision: 1.208 $";
 #endif
 
 /* Local function prototypes */
@@ -631,29 +631,22 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
     return;
   }
 
-  if (parc < 2)
+  if (parc < 2 || EmptyString(parv[1]))
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                me.name, source_p->name, "UNKLINE");
     return;
   }
 
-  if (parse_aline("UNKLINE", source_p, parc, parv,
-		  0, &user, &host, NULL, &target_server, NULL) < 0)
+  if (parse_aline("UNKLINE", source_p, parc, parv, 0, &user,
+                  &host, NULL, &target_server, NULL) < 0)
     return;
 
   if (target_server != NULL)
   {
-    if (!IsOperRemoteBan(source_p))
-    {
-      sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name, "remoteban");
-      return;
-    }
-  
-    sendto_match_servs(source_p, target_server, CAP_UNKLN,
-                       "UNKLINE %s %s %s",
-                       target_server, user, host);
+     sendto_match_servs(source_p, target_server, CAP_UNKLN,
+                        "UNKLINE %s %s %s",
+                        target_server, user, host);
 
     /* Allow ON to apply local unkline as well if it matches */
     if (!match(target_server, me.name))

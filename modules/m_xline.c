@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.68 2005/08/13 15:38:28 db Exp $
+ *  $Id: m_xline.c,v 1.69 2005/08/20 15:03:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ static void write_xline(struct Client *, char *, char *, time_t);
 static void remove_xline(struct Client *, char *);
 static int remove_txline_match(const char *);
 
-static void relay_xline(struct Client *, char *, char *, char *, char *);
+static void relay_xline(struct Client *, char *[]);
 
 struct Message xline_msgtab = {
   "XLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -88,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.68 $";
+const char *_version = "$Revision: 1.69 $";
 #endif
 
 
@@ -192,7 +192,7 @@ ms_xline(struct Client *client_p, struct Client *source_p,
   if (!valid_xline(source_p, parv[2], parv[4], 0))
     return;
 
-  relay_xline(source_p, parv[1], parv[2], parv[3], parv[4]);
+  relay_xline(source_p, parv);
 }
 
 /* me_xline()
@@ -215,51 +215,47 @@ static void
 me_xline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  if (!IsClient(source_p))
-    return;
-  if (parc != 5)
+  if (!IsClient(source_p) || parc != 5)
     return;
 
-  relay_xline(source_p, parv[1], parv[2], parv[3], parv[4]);
+  relay_xline(source_p, parv);
 }
 
 static void
-relay_xline(struct Client *source_p, char *parv1,
-	    char *parv2, char *parv3, char *parv4)
+relay_xline(struct Client *source_p, char *parv[])
 {
   struct ConfItem *conf;
   struct MatchItem *match_item;
-
   int t_sec;
 
-  t_sec = atoi(parv3);
+  t_sec = atoi(parv[3]);
   /* XXX kludge! */
   if (t_sec < 3)
     t_sec = 0;
 
-  sendto_match_servs(source_p, parv1, CAP_CLUSTER,
+  sendto_match_servs(source_p, parv[1], CAP_CLUSTER,
                      "XLINE %s %s %s :%s",
-                     parv1, parv2, parv3, parv4);
+                     parv[1], parv[2], parv[3], parv[4]);
 
-  if (match(parv1, me.name))
+  if (match(parv[1], me.name))
     return;
 
   if (find_matching_name_conf(ULINE_TYPE, source_p->servptr->name,
                               source_p->username, source_p->host,
                               SHARED_XLINE))
   {
-    if ((conf = find_matching_name_conf(XLINE_TYPE, parv2,
+    if ((conf = find_matching_name_conf(XLINE_TYPE, parv[2],
 					NULL, NULL, 0)) != NULL)
     {
       match_item = map_to_conf(conf);
       sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
                  ID_or_name(&me, source_p->from),
                  ID_or_name(source_p, source_p->from),
-                 parv2, conf->name, match_item->reason);
+                 parv[2], conf->name, match_item->reason);
       return;
     }
 
-    write_xline(source_p, parv2, parv4, t_sec);
+    write_xline(source_p, parv[2], parv[4], t_sec);
   }
 }
 
@@ -287,19 +283,12 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
   }
 
   /* UNXLINE bill ON irc.server.com */
-  if (parse_aline("UNXLINE", source_p, parc, parv,
-		  0, &gecos, NULL, NULL, &target_server, NULL) < 0)
+  if (parse_aline("UNXLINE", source_p, parc, parv, 0, &gecos,
+                  NULL, NULL, &target_server, NULL) < 0)
     return;
 
   if (target_server != NULL)
   {
-    if (!IsOperRemoteBan(source_p))
-    {
-      sendto_one(source_p, form_str(ERR_NOPRIVS),
-                 me.name, source_p->name, "remoteban");
-      return;
-    }
-
     sendto_match_servs(source_p, target_server, CAP_CLUSTER,
                        "UNXLINE %s %s", target_server, gecos);
 
@@ -356,14 +345,14 @@ valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
     if (warn)
       sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                  me.name, source_p->name, "XLINE");
-    return(0);
+    return 0;
   }
 
   if (strchr(gecos, '"'))
   {
     sendto_one(source_p, ":%s NOTICE %s :Invalid character '\"'",
                me.name, source_p->name);
-    return(0);
+    return 0;
   }
 
   if (!valid_wild_card_simple(gecos))
@@ -372,10 +361,10 @@ valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
       sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the xline",
                  me.name, source_p->name, ConfigFileEntry.min_nonwildcard_simple);
 
-    return(0);
+    return 0;
   }
 
-  return(1);
+  return 1;
 }
 
 /* write_xline()
@@ -464,9 +453,8 @@ remove_xline(struct Client *source_p, char *gecos)
 static int
 remove_txline_match(const char *gecos)
 {
-  dlink_node *ptr;
-  dlink_node *next_ptr;
-  struct ConfItem *conf;
+  dlink_node *ptr = NULL, *next_ptr = NULL;
+  struct ConfItem *conf = NULL;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, temporary_xlines.head)
   {
@@ -478,9 +466,9 @@ remove_txline_match(const char *gecos)
       free_dlink_node(ptr);
       delete_conf_item(conf);
 
-      return(YES);
+      return 1;
     }
   }
 
-  return(NO);
+  return 0;
 }

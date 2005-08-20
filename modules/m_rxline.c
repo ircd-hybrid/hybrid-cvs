@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rxline.c,v 1.19 2005/08/17 16:02:51 michael Exp $
+ *  $Id: m_rxline.c,v 1.20 2005/08/20 15:03:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unrxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.19 $";
+const char *_version = "$Revision: 1.20 $";
 #endif
 
 
@@ -100,10 +100,10 @@ static void
 mo_rxline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  char *reason;
+  char *reason = NULL;
   char *gecos = NULL;
-  struct ConfItem *conf;
-  struct MatchItem *match_item;
+  struct ConfItem *conf = NULL;
+  struct MatchItem *match_item = NULL;
   char *target_server = NULL;
   time_t tkline_time = 0;
 
@@ -114,8 +114,8 @@ mo_rxline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (parse_aline("RXLINE", source_p, parc, parv,
-		  AWILD, &gecos, NULL, &tkline_time, NULL, &reason) < 0)
+  if (parse_aline("RXLINE", source_p, parc, parv, AWILD, &gecos, 
+                  NULL, &tkline_time, NULL, &reason) < 0)
     return;
 
   if (target_server != NULL)
@@ -123,7 +123,10 @@ mo_rxline(struct Client *client_p, struct Client *source_p,
     sendto_match_servs(source_p, target_server, CAP_CLUSTER,
                        "RXLINE %s %s %d :%s",
                        target_server, gecos, (int)tkline_time, reason);
-    return;
+
+    /* Allow ON to apply local rxline as well if it matches */
+    if (!match(target_server, me.name))
+      return;
   }
 
 #if 0
@@ -159,9 +162,9 @@ static void
 ms_rxline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  struct ConfItem *conf;
-  struct MatchItem *match_item;
-  int t_sec;
+  struct ConfItem *conf = NULL;
+  struct MatchItem *match_item = NULL;
+  int t_sec = 0;
 
   if (parc != 5 || EmptyString(parv[4]))
     return;
@@ -184,10 +187,9 @@ ms_rxline(struct Client *client_p, struct Client *source_p,
   if (!match(parv[1], me.name))
     return;
 
-  if (find_matching_name_conf(ULINE_TYPE,
-                       source_p->servptr->name,
-                       source_p->username, source_p->host,
-                       SHARED_XLINE))
+  if (find_matching_name_conf(ULINE_TYPE, source_p->servptr->name,
+                              source_p->username, source_p->host,
+                              SHARED_XLINE))
   {
     if ((conf = find_matching_name_conf(RXLINE_TYPE, parv[2],
                                         NULL, NULL, 0)) != NULL)
@@ -208,7 +210,7 @@ static void
 mo_unrxline(struct Client *client_p, struct Client *source_p,
             int parc, char *parv[])
 {
-  char *gecos=NULL;
+  char *gecos = NULL;
   char *target_server = NULL;
 
   if (!IsOperX(source_p))
@@ -218,23 +220,19 @@ mo_unrxline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (parse_aline("UNRXLINE", source_p, parc, parv, 
-		  0, &gecos, NULL, NULL, &target_server, NULL) < 0)
+  if (parse_aline("UNRXLINE", source_p, parc, parv, 0, &gecos,
+                  NULL, NULL, &target_server, NULL) < 0)
     return;
 
   if (target_server != NULL)
   {
-    if (!IsOperRemoteBan(source_p))
-    {
-      sendto_one(source_p, form_str(ERR_NOPRIVS),
-                 me.name, source_p->name, "remoteban");
-      return;
-    }
 
     sendto_match_servs(source_p, target_server, CAP_CLUSTER,
-                       "UNXLINE %s %s", target_server, gecos);
+                       "UNRXLINE %s %s", target_server, gecos);
 
-    return;
+    /* Allow ON to apply local unrxline as well if it matches */
+    if (!match(target_server, me.name))
+      return;
   }
 
 #if 0
@@ -288,14 +286,14 @@ valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
     if (warn)
       sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                  me.name, source_p->name, "RXLINE");
-    return(0);
+    return 0;
   }
 
   if (strchr(gecos, '"'))
   {
     sendto_one(source_p, ":%s NOTICE %s :Invalid character '\"'",
                me.name, source_p->name);
-    return(0);
+    return 0;
   }
 
   if (!valid_wild_card_simple(gecos))
@@ -304,10 +302,10 @@ valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
       sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the rxline",
                  me.name, source_p->name, ConfigFileEntry.min_nonwildcard_simple);
 
-    return(0);
+    return 0;
   }
 
-  return(1);
+  return 1;
 }
 
 /* write_rxline()
@@ -425,9 +423,9 @@ remove_txline_match(const char *gecos)
       dlinkDelete(ptr, &temporary_rxlines);
       free_dlink_node(ptr);
       delete_conf_item(conf);
-      return(1);
+      return 1;
     }
   }
 
-  return(0);
+  return 0;
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rkline.c,v 1.1 2005/08/19 14:56:44 michael Exp $
+ *  $Id: m_rkline.c,v 1.2 2005/08/20 15:03:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -88,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&unrkline_msgtab);
 }
 
-const char *_version = "$Revision: 1.1 $";
+const char *_version = "$Revision: 1.2 $";
 #endif
 
 /* mo_rkline()
@@ -302,7 +302,7 @@ me_rkline(struct Client *client_p, struct Client *source_p,
 
 static void
 ms_rkline(struct Client *client_p, struct Client *source_p,
-	 int parc, char *parv[])
+          int parc, char *parv[])
 {
   if (parc != 6)
     return;
@@ -325,7 +325,7 @@ ms_rkline(struct Client *client_p, struct Client *source_p,
  */
 static void 
 apply_rkline(struct Client *source_p, struct ConfItem *conf,
-	    const char *current_date, time_t cur_time)
+             const char *current_date, time_t cur_time)
 {
   write_conf_line(source_p, conf, current_date, cur_time);
   /* Now, activate kline against current online clients */
@@ -377,7 +377,7 @@ already_placed_rkline(struct Client *source_p, const char *user, const char *hos
     if (!irccmp(user, aptr->user) && !irccmp(aptr->host, host))
     {
       sendto_one(source_p,
-                 ":%s NOTICE %s :[%s@%s] already K-Lined by [%s@%s] - %s",
+                 ":%s NOTICE %s :[%s@%s] already RK-Lined by [%s@%s] - %s",
                  me.name, source_p->name, user, host, aptr->user,
                  aptr->host, aptr->reason ? aptr->reason : "No reason");
       return 1;
@@ -399,7 +399,7 @@ mo_unrkline(struct Client *client_p,struct Client *source_p,
   char *target_server = NULL;
   char *user, *host;
 
-  if (IsAdmin(source_p) || !IsOperUnkline(source_p))
+  if (!IsAdmin(source_p) || !IsOperUnkline(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
                me.name, source_p->name, "unrkline");
@@ -419,13 +419,6 @@ mo_unrkline(struct Client *client_p,struct Client *source_p,
 
   if (target_server != NULL)
   {
-    if (!IsOperRemoteBan(source_p))
-    {
-      sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name, "remoteban");
-      return;
-    }
-
     sendto_match_servs(source_p, target_server, CAP_UNKLN,
                        "UNRKLINE %s %s %s",
                        target_server, user, host);
@@ -456,16 +449,16 @@ mo_unrkline(struct Client *client_p,struct Client *source_p,
   if (remove_conf_line(RKLINE_TYPE, source_p, user, host) > 0)
   {
     sendto_one(source_p, ":%s NOTICE %s :RK-Line for [%s@%s] is removed", 
-	       me.name, source_p->name, user,host);
+               me.name, source_p->name, user,host);
     sendto_realops_flags(UMODE_ALL, L_ALL,
-			 "%s has removed the RK-Line for: [%s@%s]",
-			 get_oper_name(source_p), user, host);
+                         "%s has removed the RK-Line for: [%s@%s]",
+                         get_oper_name(source_p), user, host);
     ilog(L_NOTICE, "%s removed RK-Line for [%s@%s]",
-	 source_p->name, user, host);
+         source_p->name, user, host);
   }
   else
     sendto_one(source_p, ":%s NOTICE %s :No RK-Line for [%s@%s] found", 
-	       me.name, source_p->name, user, host);
+               me.name, source_p->name, user, host);
 }
 
 /* me_unrkline()
@@ -500,12 +493,12 @@ me_unrkline(struct Client *client_p, struct Client *source_p,
     if (remove_trkline_match(host, user))
     {
       sendto_one(source_p,
-                 ":%s NOTICE %s :Un-klined [%s@%s] from temporary K-Lines",
+                 ":%s NOTICE %s :Un-klined [%s@%s] from temporary RK-Lines",
                  me.name, source_p->name, user, host);
       sendto_realops_flags(UMODE_ALL, L_ALL,  
-                           "%s has removed the temporary K-Line for: [%s@%s]",
+                           "%s has removed the temporary RK-Line for: [%s@%s]",
                            get_oper_name(source_p), user, host);
-      ilog(L_NOTICE, "%s removed temporary K-Line for [%s@%s]",
+      ilog(L_NOTICE, "%s removed temporary RK-Line for [%s@%s]",
            source_p->name, user, host);
       return;
     }

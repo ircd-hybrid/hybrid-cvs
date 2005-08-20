@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.576 2005/08/20 14:00:13 michael Exp $
+ *  $Id: s_conf.c,v 7.577 2005/08/20 15:03:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -3352,7 +3352,7 @@ parse_aline(const char *cmd, struct Client *source_p,
   int found_tkline_time=0;
   static char def_reason[] = "No Reason";
   static char user[USERLEN*4+1];
-  static char host[HOSTLEN*4+2];
+  static char host[HOSTLEN*4+1];
 
   parv++;
   parc--;
@@ -3383,7 +3383,6 @@ parse_aline(const char *cmd, struct Client *source_p,
 
   if (h_p == NULL)
     *up_p = *parv;
-  }
   else
   {
     if (find_user_host(source_p, *parv, user, host, parse_flags) == 0)
