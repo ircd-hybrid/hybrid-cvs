@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.303 2005/08/18 17:21:31 adx Exp $
+ *  $Id: send.c,v 7.304 2005/08/20 23:48:43 adx Exp $
  */
 
 #include "stdinc.h"
@@ -46,6 +46,9 @@
 #include "packet.h"
 
 #define LOG_BUFSIZE 2048
+
+struct Callback *iosend_cb = NULL;
+struct Callback *iosendctrl_cb = NULL;
 
 static void send_message(struct Client *, char *, int);
 static void send_message_remote(struct Client *, struct Client *, char *, int);
@@ -313,14 +316,7 @@ send_queued_write(struct Client *to)
         break;
       }
 
-#ifndef NDEBUG
-    {
-      struct Callback *iosend_cb;
-      if ((iosend_cb = find_callback("iosend")) != NULL)
-        execute_callback(iosend_cb, to, retlen,
-			 to->localClient->buf_sendq.blocks.head->data);
-    }
-#endif
+      execute_callback(iosend_cb, to, retlen, first->data);
       dbuf_delete(&to->localClient->buf_sendq, retlen);
 
       /* We have some data written .. update counters */
@@ -384,6 +380,8 @@ send_queued_slink_write(struct Client *to)
     }
     else
     {
+      execute_callback(iosendctrl_cb, to, retlen,
+        to->localClient->slinkq + to->localClient->slinkq_ofs);
       to->localClient->slinkq_len -= retlen;
 
       assert(to->localClient->slinkq_len >= 0);

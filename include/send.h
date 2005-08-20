@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.h,v 7.76 2005/07/31 05:32:34 adx Exp $
+ *  $Id: send.h,v 7.77 2005/08/20 23:48:42 adx Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -39,9 +39,13 @@
 /*
  * struct decls
  */
-struct Client;
+struct Callback;
 struct Channel;
+struct Client;
 struct dlink_list;
+
+extern struct Callback *iosend_cb;
+extern struct Callback *iosendctrl_cb;
 
 /* send.c prototypes */
 

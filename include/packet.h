@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.h,v 7.18 2003/06/18 00:53:08 joshk Exp $
+ *  $Id: packet.h,v 7.19 2005/08/20 23:48:42 adx Exp $
  */
 
 #ifndef INCLUDED_packet_h
@@ -46,11 +46,14 @@
 #define MAX_FLOOD 5
 #define MAX_FLOOD_BURST MAX_FLOOD * 8
 
-extern PF  read_ctrl_packet;
-extern PF  read_packet;
-extern PF  flood_recalc;
-extern void flood_endgrace(struct Client *);
+struct Callback;
+
+extern struct Callback *iorecv_cb;
+extern struct Callback *iorecvctrl_cb;
+
+PF read_ctrl_packet;
+PF read_packet;
+PF flood_recalc;
+void flood_endgrace(struct Client *);
 
 #endif /* INCLUDED_packet_h */
-
-

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.129 2005/08/18 17:21:31 adx Exp $
+ *  $Id: packet.c,v 7.130 2005/08/20 23:48:43 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -39,9 +39,11 @@
 #include "send.h"
 #include "irc_getnameinfo.h"
 
+struct Callback *iorecv_cb = NULL;
+struct Callback *iorecvctrl_cb = NULL;
+
 static char readBuf[READBUF_SIZE];
 static void client_dopacket(struct Client *, char *, size_t);
-
 
 /* extract_one_line()
  *
@@ -367,13 +369,7 @@ read_ctrl_packet(fde_t *fd, void *data)
       return; /* wait for more data */
   }
 
-#ifndef NDEBUG
-    {
-      struct Callback *iorecvctrl_cb;
-      if ((iorecvctrl_cb = find_callback("iorecvctrl")) != NULL)
-        execute_callback(iorecvctrl_cb, server, reply->command);
-    }
-#endif
+  execute_callback(iorecvctrl_cb, server, reply->command);
 
   /* we now have the command and any data, pass it off to the handler */
   (*replydef->handler)(reply->command, reply->datalen, reply->data, server);
@@ -455,13 +451,7 @@ read_packet(fde_t *fd, void *data)
       return;
     }
 
-#ifndef NDEBUG
-    {
-      struct Callback *iorecv_cb;
-      if ((iorecv_cb = find_callback("iorecv")) != NULL)
-        execute_callback(iorecv_cb, client_p, length, readBuf);
-    }
-#endif
+    execute_callback(iorecv_cb, client_p, length, readBuf);
 
     if (client_p->lasttime < CurrentTime)
       client_p->lasttime = CurrentTime;

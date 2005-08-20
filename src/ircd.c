@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.355 2005/08/19 14:56:44 michael Exp $
+ *  $Id: ircd.c,v 7.356 2005/08/20 23:48:43 adx Exp $
  */
 
 #include "stdinc.h"
@@ -45,6 +45,7 @@
 #include "msg.h"         /* msgtab */
 #include "hostmask.h"
 #include "numeric.h"
+#include "packet.h"
 #include "parse.h"
 #include "irc_res.h"
 #include "restart.h"
@@ -560,6 +561,21 @@ init_ssl(void)
 #endif /* HAVE_LIBCRYPTO */
 }
 
+/* init_callbacks()
+ *
+ * inputs       - nothing
+ * output       - nothing
+ * side effects - setups standard hook points
+ */
+static void
+init_callbacks(void)
+{
+  iorecv_cb = register_callback("iorecv", NULL);
+  iosend_cb = register_callback("iosend", NULL);
+  iorecvctrl_cb = register_callback("iorecvctrl", NULL);
+  iosendctrl_cb = register_callback("iosendctrl", NULL);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -654,6 +670,7 @@ main(int argc, char *argv[])
   initBlockHeap();
 #endif
   init_dlink_nodes();
+  init_callbacks();
   initialize_message_files();
   dbuf_init();
   init_hash();
