@@ -32,7 +32,7 @@
    There are some unavoidable exceptions within include files to
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
-/*  $Id: y.tab.c,v 7.58 2005/08/19 17:06:07 michael Exp $ */
+/*  $Id: y.tab.c,v 7.59 2005/08/20 12:02:29 michael Exp $ */
 /* Identify Bison output.  */
 #define YYBISON 1
 
@@ -1176,34 +1176,34 @@ static const unsigned short int yyrline[] =
     2372,  2384,  2396,  2405,  2417,  2429,  2435,  2439,  2447,  2457,
     2456,  2460,  2460,  2461,  2462,  2464,  2471,  2482,  2489,  2496,
     2503,  2513,  2554,  2565,  2576,  2591,  2602,  2615,  2628,  2637,
-    2673,  2672,  2741,  2740,  2744,  2744,  2745,  2751,  2751,  2752,
-    2752,  2752,  2752,  2754,  2770,  2780,  2779,  2801,  2801,  2802,
-    2802,  2802,  2804,  2813,  2826,  2825,  2846,  2846,  2847,  2847,
-    2849,  2862,  2861,  2912,  2911,  2915,  2915,  2916,  2922,  2922,
-    2923,  2923,  2923,  2923,  2925,  2931,  2940,  2943,  2943,  2944,
-    2944,  2945,  2945,  2946,  2946,  2947,  2947,  2948,  2948,  2949,
-    2949,  2950,  2951,  2951,  2952,  2952,  2953,  2953,  2954,  2954,
-    2955,  2955,  2956,  2956,  2957,  2957,  2958,  2959,  2959,  2960,
-    2960,  2961,  2962,  2962,  2963,  2963,  2964,  2964,  2965,  2966,
-    2966,  2967,  2967,  2968,  2968,  2969,  2969,  2970,  2970,  2971,
-    2971,  2972,  2976,  2982,  2988,  2994,  2999,  3004,  3010,  3016,
-    3022,  3028,  3034,  3040,  3046,  3052,  3058,  3064,  3070,  3076,
-    3087,  3093,  3102,  3108,  3114,  3120,  3124,  3130,  3134,  3140,
-    3146,  3152,  3158,  3164,  3170,  3176,  3182,  3193,  3199,  3205,
-    3211,  3217,  3226,  3258,  3276,  3282,  3291,  3297,  3302,  3309,
-    3308,  3314,  3314,  3315,  3319,  3323,  3327,  3331,  3335,  3339,
-    3343,  3347,  3351,  3355,  3359,  3363,  3367,  3371,  3375,  3379,
-    3383,  3390,  3389,  3395,  3395,  3396,  3400,  3404,  3408,  3412,
-    3416,  3420,  3424,  3428,  3432,  3436,  3440,  3444,  3448,  3452,
-    3456,  3460,  3464,  3470,  3476,  3482,  3488,  3494,  3504,  3503,
-    3529,  3529,  3530,  3531,  3532,  3533,  3534,  3535,  3536,  3538,
-    3544,  3551,  3550,  3555,  3555,  3556,  3560,  3566,  3585,  3595,
-    3594,  3637,  3637,  3638,  3642,  3651,  3654,  3654,  3655,  3656,
-    3657,  3658,  3659,  3660,  3661,  3662,  3663,  3664,  3665,  3666,
-    3667,  3668,  3669,  3670,  3672,  3678,  3684,  3690,  3696,  3702,
-    3708,  3714,  3720,  3726,  3732,  3738,  3744,  3750,  3756,  3765,
-    3768,  3768,  3769,  3769,  3770,  3771,  3772,  3773,  3774,  3776,
-    3782,  3788,  3802,  3808,  3814
+    2673,  2672,  2744,  2743,  2747,  2747,  2748,  2754,  2754,  2755,
+    2755,  2755,  2755,  2757,  2773,  2783,  2782,  2804,  2804,  2805,
+    2805,  2805,  2807,  2816,  2829,  2828,  2849,  2849,  2850,  2850,
+    2852,  2865,  2864,  2915,  2914,  2918,  2918,  2919,  2925,  2925,
+    2926,  2926,  2926,  2926,  2928,  2934,  2943,  2946,  2946,  2947,
+    2947,  2948,  2948,  2949,  2949,  2950,  2950,  2951,  2951,  2952,
+    2952,  2953,  2954,  2954,  2955,  2955,  2956,  2956,  2957,  2957,
+    2958,  2958,  2959,  2959,  2960,  2960,  2961,  2962,  2962,  2963,
+    2963,  2964,  2965,  2965,  2966,  2966,  2967,  2967,  2968,  2969,
+    2969,  2970,  2970,  2971,  2971,  2972,  2972,  2973,  2973,  2974,
+    2974,  2975,  2979,  2985,  2991,  2997,  3002,  3007,  3013,  3019,
+    3025,  3031,  3037,  3043,  3049,  3055,  3061,  3067,  3073,  3079,
+    3090,  3096,  3105,  3111,  3117,  3123,  3127,  3133,  3137,  3143,
+    3149,  3155,  3161,  3167,  3173,  3179,  3185,  3196,  3202,  3208,
+    3214,  3220,  3229,  3261,  3279,  3285,  3294,  3300,  3305,  3312,
+    3311,  3317,  3317,  3318,  3322,  3326,  3330,  3334,  3338,  3342,
+    3346,  3350,  3354,  3358,  3362,  3366,  3370,  3374,  3378,  3382,
+    3386,  3393,  3392,  3398,  3398,  3399,  3403,  3407,  3411,  3415,
+    3419,  3423,  3427,  3431,  3435,  3439,  3443,  3447,  3451,  3455,
+    3459,  3463,  3467,  3473,  3479,  3485,  3491,  3497,  3507,  3506,
+    3532,  3532,  3533,  3534,  3535,  3536,  3537,  3538,  3539,  3541,
+    3547,  3554,  3553,  3558,  3558,  3559,  3563,  3569,  3588,  3598,
+    3597,  3640,  3640,  3641,  3645,  3654,  3657,  3657,  3658,  3659,
+    3660,  3661,  3662,  3663,  3664,  3665,  3666,  3667,  3668,  3669,
+    3670,  3671,  3672,  3673,  3675,  3681,  3687,  3693,  3699,  3705,
+    3711,  3717,  3723,  3729,  3735,  3741,  3747,  3753,  3759,  3768,
+    3771,  3771,  3772,  3772,  3773,  3774,  3775,  3776,  3777,  3779,
+    3785,  3791,  3805,  3811,  3817
 };
 #endif
 
@@ -5679,6 +5679,9 @@ yyreduce:
         yy_conf = make_conf_item(KLINE_TYPE);
         yy_aconf = map_to_conf(yy_conf);
 
+        DupString(yy_aconf->user, userbuf);
+        DupString(yy_aconf->host, hostbuf);
+
         if (reasonbuf[0])
           DupString(yy_aconf->reason, reasonbuf);
         else
@@ -5696,13 +5699,13 @@ yyreduce:
     break;
 
   case 392:
-#line 2741 "ircd_parser.y"
+#line 2744 "ircd_parser.y"
     {
 }
     break;
 
   case 396:
-#line 2746 "ircd_parser.y"
+#line 2749 "ircd_parser.y"
     {
   if (ypass == 2)
     regex_ban = 1;
@@ -5710,7 +5713,7 @@ yyreduce:
     break;
 
   case 403:
-#line 2755 "ircd_parser.y"
+#line 2758 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -5728,7 +5731,7 @@ yyreduce:
     break;
 
   case 404:
-#line 2771 "ircd_parser.y"
+#line 2774 "ircd_parser.y"
     {
   if (ypass == 2)
     strlcpy(reasonbuf, yylval.string, sizeof(reasonbuf));
@@ -5736,12 +5739,12 @@ yyreduce:
     break;
 
   case 405:
-#line 2780 "ircd_parser.y"
+#line 2783 "ircd_parser.y"
     {
   if (ypass == 2)
   {
     yy_conf = make_conf_item(DLINE_TYPE);
-    yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
+    yy_aconf = map_to_conf(yy_conf);
     /* default reason */
     DupString(yy_aconf->reason, "No reason");
   }
@@ -5749,7 +5752,7 @@ yyreduce:
     break;
 
   case 406:
-#line 2789 "ircd_parser.y"
+#line 2792 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -5764,7 +5767,7 @@ yyreduce:
     break;
 
   case 412:
-#line 2805 "ircd_parser.y"
+#line 2808 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -5775,7 +5778,7 @@ yyreduce:
     break;
 
   case 413:
-#line 2814 "ircd_parser.y"
+#line 2817 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -5786,7 +5789,7 @@ yyreduce:
     break;
 
   case 414:
-#line 2826 "ircd_parser.y"
+#line 2829 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -5798,7 +5801,7 @@ yyreduce:
     break;
 
   case 415:
-#line 2834 "ircd_parser.y"
+#line 2837 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -5813,7 +5816,7 @@ yyreduce:
     break;
 
   case 420:
-#line 2850 "ircd_parser.y"
+#line 2853 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -5824,7 +5827,7 @@ yyreduce:
     break;
 
   case 421:
-#line 2862 "ircd_parser.y"
+#line 2865 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -5835,7 +5838,7 @@ yyreduce:
     break;
 
   case 422:
-#line 2869 "ircd_parser.y"
+#line 2872 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -5880,13 +5883,13 @@ yyreduce:
     break;
 
   case 423:
-#line 2912 "ircd_parser.y"
+#line 2915 "ircd_parser.y"
     {
 }
     break;
 
   case 427:
-#line 2917 "ircd_parser.y"
+#line 2920 "ircd_parser.y"
     {
   if (ypass == 2)
     regex_ban = 1;
@@ -5894,7 +5897,7 @@ yyreduce:
     break;
 
   case 434:
-#line 2926 "ircd_parser.y"
+#line 2929 "ircd_parser.y"
     {
   if (ypass == 2)
     strlcpy(gecos_name, yylval.string, sizeof(gecos_name));
@@ -5902,7 +5905,7 @@ yyreduce:
     break;
 
   case 435:
-#line 2932 "ircd_parser.y"
+#line 2935 "ircd_parser.y"
     {
   if (ypass == 2)
     strlcpy(reasonbuf, yylval.string, sizeof(reasonbuf));
@@ -5910,7 +5913,7 @@ yyreduce:
     break;
 
   case 492:
-#line 2977 "ircd_parser.y"
+#line 2980 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.gline_min_cidr = (yyvsp[-1].number);
@@ -5918,7 +5921,7 @@ yyreduce:
     break;
 
   case 493:
-#line 2983 "ircd_parser.y"
+#line 2986 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.gline_min_cidr6 = (yyvsp[-1].number);
@@ -5926,7 +5929,7 @@ yyreduce:
     break;
 
   case 494:
-#line 2989 "ircd_parser.y"
+#line 2992 "ircd_parser.y"
     {
   if (ypass == 1) /* must be set in the 1st pass */
     ConfigFileEntry.burst_away = yylval.number;
@@ -5934,21 +5937,21 @@ yyreduce:
     break;
 
   case 495:
-#line 2995 "ircd_parser.y"
+#line 2998 "ircd_parser.y"
     {
   ConfigFileEntry.use_whois_actually = yylval.number;
 }
     break;
 
   case 496:
-#line 3000 "ircd_parser.y"
+#line 3003 "ircd_parser.y"
     {
   ConfigFileEntry.tkline_expire_notices = yylval.number;
 }
     break;
 
   case 497:
-#line 3005 "ircd_parser.y"
+#line 3008 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.kill_chase_time_limit = (yyvsp[-1].number);
@@ -5956,7 +5959,7 @@ yyreduce:
     break;
 
   case 498:
-#line 3011 "ircd_parser.y"
+#line 3014 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.hide_spoof_ips = yylval.number;
@@ -5964,7 +5967,7 @@ yyreduce:
     break;
 
   case 499:
-#line 3017 "ircd_parser.y"
+#line 3020 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.ignore_bogus_ts = yylval.number;
@@ -5972,7 +5975,7 @@ yyreduce:
     break;
 
   case 500:
-#line 3023 "ircd_parser.y"
+#line 3026 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.disable_remote = yylval.number;
@@ -5980,7 +5983,7 @@ yyreduce:
     break;
 
   case 501:
-#line 3029 "ircd_parser.y"
+#line 3032 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.failed_oper_notice = yylval.number;
@@ -5988,7 +5991,7 @@ yyreduce:
     break;
 
   case 502:
-#line 3035 "ircd_parser.y"
+#line 3038 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.anti_nick_flood = yylval.number;
@@ -5996,7 +5999,7 @@ yyreduce:
     break;
 
   case 503:
-#line 3041 "ircd_parser.y"
+#line 3044 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.max_nick_time = (yyvsp[-1].number); 
@@ -6004,7 +6007,7 @@ yyreduce:
     break;
 
   case 504:
-#line 3047 "ircd_parser.y"
+#line 3050 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.max_nick_changes = (yyvsp[-1].number);
@@ -6012,7 +6015,7 @@ yyreduce:
     break;
 
   case 505:
-#line 3053 "ircd_parser.y"
+#line 3056 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.max_accept = (yyvsp[-1].number);
@@ -6020,7 +6023,7 @@ yyreduce:
     break;
 
   case 506:
-#line 3059 "ircd_parser.y"
+#line 3062 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.anti_spam_exit_message_time = (yyvsp[-1].number);
@@ -6028,7 +6031,7 @@ yyreduce:
     break;
 
   case 507:
-#line 3065 "ircd_parser.y"
+#line 3068 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.ts_warn_delta = (yyvsp[-1].number);
@@ -6036,7 +6039,7 @@ yyreduce:
     break;
 
   case 508:
-#line 3071 "ircd_parser.y"
+#line 3074 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.ts_max_delta = (yyvsp[-1].number);
@@ -6044,7 +6047,7 @@ yyreduce:
     break;
 
   case 509:
-#line 3077 "ircd_parser.y"
+#line 3080 "ircd_parser.y"
     {
   if (((yyvsp[-1].number) > 0) && ypass == 1)
   {
@@ -6057,7 +6060,7 @@ yyreduce:
     break;
 
   case 510:
-#line 3088 "ircd_parser.y"
+#line 3091 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.kline_with_reason = yylval.number;
@@ -6065,7 +6068,7 @@ yyreduce:
     break;
 
   case 511:
-#line 3094 "ircd_parser.y"
+#line 3097 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -6076,7 +6079,7 @@ yyreduce:
     break;
 
   case 512:
-#line 3103 "ircd_parser.y"
+#line 3106 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.warn_no_nline = yylval.number;
@@ -6084,7 +6087,7 @@ yyreduce:
     break;
 
   case 513:
-#line 3109 "ircd_parser.y"
+#line 3112 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.stats_o_oper_only = yylval.number;
@@ -6092,7 +6095,7 @@ yyreduce:
     break;
 
   case 514:
-#line 3115 "ircd_parser.y"
+#line 3118 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.stats_P_oper_only = yylval.number;
@@ -6100,7 +6103,7 @@ yyreduce:
     break;
 
   case 515:
-#line 3121 "ircd_parser.y"
+#line 3124 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.stats_k_oper_only = 2 * yylval.number;
@@ -6108,7 +6111,7 @@ yyreduce:
     break;
 
   case 516:
-#line 3125 "ircd_parser.y"
+#line 3128 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.stats_k_oper_only = 1;
@@ -6116,7 +6119,7 @@ yyreduce:
     break;
 
   case 517:
-#line 3131 "ircd_parser.y"
+#line 3134 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.stats_i_oper_only = 2 * yylval.number;
@@ -6124,7 +6127,7 @@ yyreduce:
     break;
 
   case 518:
-#line 3135 "ircd_parser.y"
+#line 3138 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.stats_i_oper_only = 1;
@@ -6132,7 +6135,7 @@ yyreduce:
     break;
 
   case 519:
-#line 3141 "ircd_parser.y"
+#line 3144 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.pace_wait = (yyvsp[-1].number);
@@ -6140,7 +6143,7 @@ yyreduce:
     break;
 
   case 520:
-#line 3147 "ircd_parser.y"
+#line 3150 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.caller_id_wait = (yyvsp[-1].number);
@@ -6148,7 +6151,7 @@ yyreduce:
     break;
 
   case 521:
-#line 3153 "ircd_parser.y"
+#line 3156 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.pace_wait_simple = (yyvsp[-1].number);
@@ -6156,7 +6159,7 @@ yyreduce:
     break;
 
   case 522:
-#line 3159 "ircd_parser.y"
+#line 3162 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.short_motd = yylval.number;
@@ -6164,7 +6167,7 @@ yyreduce:
     break;
 
   case 523:
-#line 3165 "ircd_parser.y"
+#line 3168 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.no_oper_flood = yylval.number;
@@ -6172,7 +6175,7 @@ yyreduce:
     break;
 
   case 524:
-#line 3171 "ircd_parser.y"
+#line 3174 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.true_no_oper_flood = yylval.number;
@@ -6180,7 +6183,7 @@ yyreduce:
     break;
 
   case 525:
-#line 3177 "ircd_parser.y"
+#line 3180 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_pass_resv = yylval.number;
@@ -6188,7 +6191,7 @@ yyreduce:
     break;
 
   case 526:
-#line 3183 "ircd_parser.y"
+#line 3186 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -6201,7 +6204,7 @@ yyreduce:
     break;
 
   case 527:
-#line 3194 "ircd_parser.y"
+#line 3197 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.idletime = (yyvsp[-1].number);
@@ -6209,7 +6212,7 @@ yyreduce:
     break;
 
   case 528:
-#line 3200 "ircd_parser.y"
+#line 3203 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.dots_in_ident = (yyvsp[-1].number);
@@ -6217,7 +6220,7 @@ yyreduce:
     break;
 
   case 529:
-#line 3206 "ircd_parser.y"
+#line 3209 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.maximum_links = (yyvsp[-1].number);
@@ -6225,7 +6228,7 @@ yyreduce:
     break;
 
   case 530:
-#line 3212 "ircd_parser.y"
+#line 3215 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.max_targets = (yyvsp[-1].number);
@@ -6233,7 +6236,7 @@ yyreduce:
     break;
 
   case 531:
-#line 3218 "ircd_parser.y"
+#line 3221 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -6244,7 +6247,7 @@ yyreduce:
     break;
 
   case 532:
-#line 3227 "ircd_parser.y"
+#line 3230 "ircd_parser.y"
     {
 #ifdef HAVE_LIBCRYPTO
   if (ypass == 2)
@@ -6278,7 +6281,7 @@ yyreduce:
     break;
 
   case 533:
-#line 3259 "ircd_parser.y"
+#line 3262 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -6298,7 +6301,7 @@ yyreduce:
     break;
 
   case 534:
-#line 3277 "ircd_parser.y"
+#line 3280 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.use_egd = yylval.number;
@@ -6306,7 +6309,7 @@ yyreduce:
     break;
 
   case 535:
-#line 3283 "ircd_parser.y"
+#line 3286 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -6317,7 +6320,7 @@ yyreduce:
     break;
 
   case 536:
-#line 3292 "ircd_parser.y"
+#line 3295 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.ping_cookie = yylval.number;
@@ -6325,14 +6328,14 @@ yyreduce:
     break;
 
   case 537:
-#line 3298 "ircd_parser.y"
+#line 3301 "ircd_parser.y"
     {
   ConfigFileEntry.disable_auth = yylval.number;
 }
     break;
 
   case 538:
-#line 3303 "ircd_parser.y"
+#line 3306 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.throttle_time = yylval.number;
@@ -6340,7 +6343,7 @@ yyreduce:
     break;
 
   case 539:
-#line 3309 "ircd_parser.y"
+#line 3312 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes = 0;
@@ -6348,7 +6351,7 @@ yyreduce:
     break;
 
   case 543:
-#line 3316 "ircd_parser.y"
+#line 3319 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_BOTS;
@@ -6356,7 +6359,7 @@ yyreduce:
     break;
 
   case 544:
-#line 3320 "ircd_parser.y"
+#line 3323 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_CCONN;
@@ -6364,7 +6367,7 @@ yyreduce:
     break;
 
   case 545:
-#line 3324 "ircd_parser.y"
+#line 3327 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_DEAF;
@@ -6372,7 +6375,7 @@ yyreduce:
     break;
 
   case 546:
-#line 3328 "ircd_parser.y"
+#line 3331 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_DEBUG;
@@ -6380,7 +6383,7 @@ yyreduce:
     break;
 
   case 547:
-#line 3332 "ircd_parser.y"
+#line 3335 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_FULL;
@@ -6388,7 +6391,7 @@ yyreduce:
     break;
 
   case 548:
-#line 3336 "ircd_parser.y"
+#line 3339 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_SKILL;
@@ -6396,7 +6399,7 @@ yyreduce:
     break;
 
   case 549:
-#line 3340 "ircd_parser.y"
+#line 3343 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_NCHANGE;
@@ -6404,7 +6407,7 @@ yyreduce:
     break;
 
   case 550:
-#line 3344 "ircd_parser.y"
+#line 3347 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_REJ;
@@ -6412,7 +6415,7 @@ yyreduce:
     break;
 
   case 551:
-#line 3348 "ircd_parser.y"
+#line 3351 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_UNAUTH;
@@ -6420,7 +6423,7 @@ yyreduce:
     break;
 
   case 552:
-#line 3352 "ircd_parser.y"
+#line 3355 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_SPY;
@@ -6428,7 +6431,7 @@ yyreduce:
     break;
 
   case 553:
-#line 3356 "ircd_parser.y"
+#line 3359 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_EXTERNAL;
@@ -6436,7 +6439,7 @@ yyreduce:
     break;
 
   case 554:
-#line 3360 "ircd_parser.y"
+#line 3363 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_OPERWALL;
@@ -6444,7 +6447,7 @@ yyreduce:
     break;
 
   case 555:
-#line 3364 "ircd_parser.y"
+#line 3367 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_SERVNOTICE;
@@ -6452,7 +6455,7 @@ yyreduce:
     break;
 
   case 556:
-#line 3368 "ircd_parser.y"
+#line 3371 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_INVISIBLE;
@@ -6460,7 +6463,7 @@ yyreduce:
     break;
 
   case 557:
-#line 3372 "ircd_parser.y"
+#line 3375 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_WALLOP;
@@ -6468,7 +6471,7 @@ yyreduce:
     break;
 
   case 558:
-#line 3376 "ircd_parser.y"
+#line 3379 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_SOFTCALLERID;
@@ -6476,7 +6479,7 @@ yyreduce:
     break;
 
   case 559:
-#line 3380 "ircd_parser.y"
+#line 3383 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_CALLERID;
@@ -6484,7 +6487,7 @@ yyreduce:
     break;
 
   case 560:
-#line 3384 "ircd_parser.y"
+#line 3387 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_umodes |= UMODE_LOCOPS;
@@ -6492,7 +6495,7 @@ yyreduce:
     break;
 
   case 561:
-#line 3390 "ircd_parser.y"
+#line 3393 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes = 0;
@@ -6500,7 +6503,7 @@ yyreduce:
     break;
 
   case 565:
-#line 3397 "ircd_parser.y"
+#line 3400 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_BOTS;
@@ -6508,7 +6511,7 @@ yyreduce:
     break;
 
   case 566:
-#line 3401 "ircd_parser.y"
+#line 3404 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_CCONN;
@@ -6516,7 +6519,7 @@ yyreduce:
     break;
 
   case 567:
-#line 3405 "ircd_parser.y"
+#line 3408 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_DEAF;
@@ -6524,7 +6527,7 @@ yyreduce:
     break;
 
   case 568:
-#line 3409 "ircd_parser.y"
+#line 3412 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_DEBUG;
@@ -6532,7 +6535,7 @@ yyreduce:
     break;
 
   case 569:
-#line 3413 "ircd_parser.y"
+#line 3416 "ircd_parser.y"
     { 
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_FULL;
@@ -6540,7 +6543,7 @@ yyreduce:
     break;
 
   case 570:
-#line 3417 "ircd_parser.y"
+#line 3420 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_SKILL;
@@ -6548,7 +6551,7 @@ yyreduce:
     break;
 
   case 571:
-#line 3421 "ircd_parser.y"
+#line 3424 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_NCHANGE;
@@ -6556,7 +6559,7 @@ yyreduce:
     break;
 
   case 572:
-#line 3425 "ircd_parser.y"
+#line 3428 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_REJ;
@@ -6564,7 +6567,7 @@ yyreduce:
     break;
 
   case 573:
-#line 3429 "ircd_parser.y"
+#line 3432 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_UNAUTH;
@@ -6572,7 +6575,7 @@ yyreduce:
     break;
 
   case 574:
-#line 3433 "ircd_parser.y"
+#line 3436 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_SPY;
@@ -6580,7 +6583,7 @@ yyreduce:
     break;
 
   case 575:
-#line 3437 "ircd_parser.y"
+#line 3440 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_EXTERNAL;
@@ -6588,7 +6591,7 @@ yyreduce:
     break;
 
   case 576:
-#line 3441 "ircd_parser.y"
+#line 3444 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_OPERWALL;
@@ -6596,7 +6599,7 @@ yyreduce:
     break;
 
   case 577:
-#line 3445 "ircd_parser.y"
+#line 3448 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_SERVNOTICE;
@@ -6604,7 +6607,7 @@ yyreduce:
     break;
 
   case 578:
-#line 3449 "ircd_parser.y"
+#line 3452 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_INVISIBLE;
@@ -6612,7 +6615,7 @@ yyreduce:
     break;
 
   case 579:
-#line 3453 "ircd_parser.y"
+#line 3456 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_WALLOP;
@@ -6620,7 +6623,7 @@ yyreduce:
     break;
 
   case 580:
-#line 3457 "ircd_parser.y"
+#line 3460 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_SOFTCALLERID;
@@ -6628,7 +6631,7 @@ yyreduce:
     break;
 
   case 581:
-#line 3461 "ircd_parser.y"
+#line 3464 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_CALLERID;
@@ -6636,7 +6639,7 @@ yyreduce:
     break;
 
   case 582:
-#line 3465 "ircd_parser.y"
+#line 3468 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_LOCOPS;
@@ -6644,7 +6647,7 @@ yyreduce:
     break;
 
   case 583:
-#line 3471 "ircd_parser.y"
+#line 3474 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.min_nonwildcard = (yyvsp[-1].number);
@@ -6652,7 +6655,7 @@ yyreduce:
     break;
 
   case 584:
-#line 3477 "ircd_parser.y"
+#line 3480 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.min_nonwildcard_simple = (yyvsp[-1].number);
@@ -6660,7 +6663,7 @@ yyreduce:
     break;
 
   case 585:
-#line 3483 "ircd_parser.y"
+#line 3486 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.default_floodcount = (yyvsp[-1].number);
@@ -6668,7 +6671,7 @@ yyreduce:
     break;
 
   case 586:
-#line 3489 "ircd_parser.y"
+#line 3492 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.client_flood = (yyvsp[-1].number);
@@ -6676,7 +6679,7 @@ yyreduce:
     break;
 
   case 587:
-#line 3495 "ircd_parser.y"
+#line 3498 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.dot_in_ip6_addr = yylval.number;
@@ -6684,7 +6687,7 @@ yyreduce:
     break;
 
   case 588:
-#line 3504 "ircd_parser.y"
+#line 3507 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -6696,7 +6699,7 @@ yyreduce:
     break;
 
   case 589:
-#line 3512 "ircd_parser.y"
+#line 3515 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -6716,7 +6719,7 @@ yyreduce:
     break;
 
   case 599:
-#line 3539 "ircd_parser.y"
+#line 3542 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.glines = yylval.number;
@@ -6724,7 +6727,7 @@ yyreduce:
     break;
 
   case 600:
-#line 3545 "ircd_parser.y"
+#line 3548 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.gline_time = (yyvsp[-1].number);
@@ -6732,7 +6735,7 @@ yyreduce:
     break;
 
   case 601:
-#line 3551 "ircd_parser.y"
+#line 3554 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.gline_logging = 0;
@@ -6740,7 +6743,7 @@ yyreduce:
     break;
 
   case 605:
-#line 3557 "ircd_parser.y"
+#line 3560 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.gline_logging |= GDENY_REJECT;
@@ -6748,7 +6751,7 @@ yyreduce:
     break;
 
   case 606:
-#line 3561 "ircd_parser.y"
+#line 3564 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigFileEntry.gline_logging |= GDENY_BLOCK;
@@ -6756,7 +6759,7 @@ yyreduce:
     break;
 
   case 607:
-#line 3567 "ircd_parser.y"
+#line 3570 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -6777,7 +6780,7 @@ yyreduce:
     break;
 
   case 608:
-#line 3586 "ircd_parser.y"
+#line 3589 "ircd_parser.y"
     {
   if (ypass == 2)  
   {
@@ -6788,7 +6791,7 @@ yyreduce:
     break;
 
   case 609:
-#line 3595 "ircd_parser.y"
+#line 3598 "ircd_parser.y"
     {
   if (ypass == 2)
     yy_aconf->flags = 0;
@@ -6796,7 +6799,7 @@ yyreduce:
     break;
 
   case 610:
-#line 3599 "ircd_parser.y"
+#line 3602 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -6837,7 +6840,7 @@ yyreduce:
     break;
 
   case 613:
-#line 3639 "ircd_parser.y"
+#line 3642 "ircd_parser.y"
     {
   if (ypass == 2)
     yy_aconf->flags |= GDENY_REJECT;
@@ -6845,7 +6848,7 @@ yyreduce:
     break;
 
   case 614:
-#line 3643 "ircd_parser.y"
+#line 3646 "ircd_parser.y"
     {
   if (ypass == 2)
     yy_aconf->flags |= GDENY_BLOCK;
@@ -6853,7 +6856,7 @@ yyreduce:
     break;
 
   case 634:
-#line 3673 "ircd_parser.y"
+#line 3676 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigChannel.disable_local_channels = yylval.number;
@@ -6861,7 +6864,7 @@ yyreduce:
     break;
 
   case 635:
-#line 3679 "ircd_parser.y"
+#line 3682 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigChannel.use_except = yylval.number;
@@ -6869,7 +6872,7 @@ yyreduce:
     break;
 
   case 636:
-#line 3685 "ircd_parser.y"
+#line 3688 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigChannel.use_invex = yylval.number;
@@ -6877,7 +6880,7 @@ yyreduce:
     break;
 
   case 637:
-#line 3691 "ircd_parser.y"
+#line 3694 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigChannel.use_knock = yylval.number;
@@ -6885,7 +6888,7 @@ yyreduce:
     break;
 
   case 638:
-#line 3697 "ircd_parser.y"
+#line 3700 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigChannel.knock_delay = (yyvsp[-1].number);
@@ -6893,7 +6896,7 @@ yyreduce:
     break;
 
   case 639:
-#line 3703 "ircd_parser.y"
+#line 3706 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigChannel.knock_delay_channel = (yyvsp[-1].number);
@@ -6901,7 +6904,7 @@ yyreduce:
     break;
 
   case 640:
-#line 3709 "ircd_parser.y"
+#line 3712 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigChannel.invite_ops_only = yylval.number;
@@ -6909,7 +6912,7 @@ yyreduce:
     break;
 
   case 641:
-#line 3715 "ircd_parser.y"
+#line 3718 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigChannel.max_chans_per_user = (yyvsp[-1].number);
@@ -6917,7 +6920,7 @@ yyreduce:
     break;
 
   case 642:
-#line 3721 "ircd_parser.y"
+#line 3724 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigChannel.quiet_on_ban = yylval.number;
@@ -6925,7 +6928,7 @@ yyreduce:
     break;
 
   case 643:
-#line 3727 "ircd_parser.y"
+#line 3730 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigChannel.max_bans = (yyvsp[-1].number);
@@ -6933,7 +6936,7 @@ yyreduce:
     break;
 
   case 644:
-#line 3733 "ircd_parser.y"
+#line 3736 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigChannel.default_split_user_count = (yyvsp[-1].number);
@@ -6941,7 +6944,7 @@ yyreduce:
     break;
 
   case 645:
-#line 3739 "ircd_parser.y"
+#line 3742 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigChannel.default_split_server_count = (yyvsp[-1].number);
@@ -6949,7 +6952,7 @@ yyreduce:
     break;
 
   case 646:
-#line 3745 "ircd_parser.y"
+#line 3748 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigChannel.no_create_on_split = yylval.number;
@@ -6957,7 +6960,7 @@ yyreduce:
     break;
 
   case 647:
-#line 3751 "ircd_parser.y"
+#line 3754 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigChannel.no_join_on_split = yylval.number;
@@ -6965,7 +6968,7 @@ yyreduce:
     break;
 
   case 648:
-#line 3757 "ircd_parser.y"
+#line 3760 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigChannel.burst_topicwho = yylval.number;
@@ -6973,7 +6976,7 @@ yyreduce:
     break;
 
   case 659:
-#line 3777 "ircd_parser.y"
+#line 3780 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigServerHide.flatten_links = yylval.number;
@@ -6981,7 +6984,7 @@ yyreduce:
     break;
 
   case 660:
-#line 3783 "ircd_parser.y"
+#line 3786 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigServerHide.hide_servers = yylval.number;
@@ -6989,7 +6992,7 @@ yyreduce:
     break;
 
   case 661:
-#line 3789 "ircd_parser.y"
+#line 3792 "ircd_parser.y"
     {
   if (ypass == 2)
   {
@@ -7005,7 +7008,7 @@ yyreduce:
     break;
 
   case 662:
-#line 3803 "ircd_parser.y"
+#line 3806 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigServerHide.hidden = yylval.number;
@@ -7013,7 +7016,7 @@ yyreduce:
     break;
 
   case 663:
-#line 3809 "ircd_parser.y"
+#line 3812 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigServerHide.disable_hidden = yylval.number;
@@ -7021,7 +7024,7 @@ yyreduce:
     break;
 
   case 664:
-#line 3815 "ircd_parser.y"
+#line 3818 "ircd_parser.y"
     {
   if (ypass == 2)
     ConfigServerHide.hide_server_ips = yylval.number;
@@ -7032,7 +7035,7 @@ yyreduce:
     }
 
 /* Line 1037 of yacc.c.  */
-#line 7036 "y.tab.c"
+#line 7039 "y.tab.c"
 
   yyvsp -= yylen;
   yyssp -= yylen;

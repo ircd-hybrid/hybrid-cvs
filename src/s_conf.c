@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.574 2005/08/19 17:06:07 michael Exp $
+ *  $Id: s_conf.c,v 7.575 2005/08/20 12:02:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -243,9 +243,8 @@ make_conf_item(ConfType type)
       status = CONF_DLINE;
       break;
 
-    case RKLINE_TYPE:
     case KLINE_TYPE:
-      status = CONF_KILL;
+      status = CONF_KLINE;
       break;
 
     case GLINE_TYPE:
@@ -311,6 +310,7 @@ make_conf_item(ConfType type)
   case RKLINE_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
                                        sizeof(struct AccessItem));
+    aconf->status = CONF_KLINE;
     dlinkAdd(conf, &conf->node, &rkconf_items);
     break;
 
@@ -633,7 +633,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
     break;
 
   case RKLINE_TYPE:
-    DLINK_FOREACH(ptr, rxconf_items.head)
+    DLINK_FOREACH(ptr, rkconf_items.head)
     {
       aconf = map_to_conf(ptr->data);
 
@@ -893,9 +893,10 @@ check_client(va_list args)
 static int
 verify_access(struct Client *client_p, const char *username)
 {
-  struct AccessItem *aconf = NULL;
+  struct AccessItem *aconf = NULL, *rkconf = NULL;
   struct ConfItem *conf = NULL;
   char non_ident[USERLEN + 1] = { '~', '\0' };
+  const char *uhi[3];
 
   if (IsGotId(client_p))
   {
@@ -913,20 +914,15 @@ verify_access(struct Client *client_p, const char *username)
 	                     client_p->localClient->passwd);
   }
 
-  if (aconf == NULL)
-  {
-    const char *uhi[3];
+  uhi[0] = IsGotId(client_p) ? client_p->username : non_ident;
+  uhi[1] = client_p->host;
+  uhi[2] = client_p->sockhost;
 
-    uhi[0] = IsGotId(client_p) ? client_p->username : non_ident;
-    uhi[1] = client_p->host;
-    uhi[2] = client_p->sockhost;
+  rkconf = find_regexp_kline(uhi);
 
-    aconf = find_regexp_kline(uhi);
-  }
- 
   if (aconf != NULL)
   {
-    if (IsConfClient(aconf))
+    if (IsConfClient(aconf) && !rkconf)
     {
       conf = unmap_conf_item(aconf);
 
@@ -956,8 +952,10 @@ verify_access(struct Client *client_p, const char *username)
 
       return(attach_iline(client_p, conf));
     }
-    else if (IsConfKill(aconf) || (ConfigFileEntry.glines && IsConfGline(aconf)))
+    else if (rkconf || IsConfKill(aconf) || (ConfigFileEntry.glines && IsConfGline(aconf)))
     {
+      /* XXX */
+      aconf = rkconf ? rkconf : aconf;
       if (IsConfGline(aconf))
         sendto_one(client_p, ":%s NOTICE %s :*** G-lined", me.name,
                    client_p->name);

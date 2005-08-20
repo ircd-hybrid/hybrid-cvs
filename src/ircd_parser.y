@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.430 2005/08/19 17:06:07 michael Exp $
+ *  $Id: ircd_parser.y,v 1.431 2005/08/20 12:02:29 michael Exp $
  */
 
 %{
@@ -2722,6 +2722,9 @@ kill_entry: KILL
         yy_conf = make_conf_item(KLINE_TYPE);
         yy_aconf = map_to_conf(yy_conf);
 
+        DupString(yy_aconf->user, userbuf);
+        DupString(yy_aconf->host, hostbuf);
+
         if (reasonbuf[0])
           DupString(yy_aconf->reason, reasonbuf);
         else
@@ -2781,7 +2784,7 @@ deny_entry: DENY
   if (ypass == 2)
   {
     yy_conf = make_conf_item(DLINE_TYPE);
-    yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
+    yy_aconf = map_to_conf(yy_conf);
     /* default reason */
     DupString(yy_aconf->reason, "No reason");
   }
