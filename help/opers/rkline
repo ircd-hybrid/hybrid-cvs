@@ -1,0 +1,18 @@
+# $Id: rkline,v 1.1 2005/08/20 16:08:53 knight Exp $
+RKLINE [time] <regular expression user@host> [ON server] :[reason]
+
+[time] if present, gives number of minutes for temporary RXLINE
+
+Adds a regular expression RKLINE to the rkline.conf file which
+will ban the specified gecos from that server.
+The banned client will receive a message saying he/she
+is banned with reason [reason]
+
+regular expression examples:
+rkline ^O[[:alpha:]]?[[:digit:]]+(x\.o|\.xo)$@^[[:alnum:]]{4}\.evilnet.org$
+
+See http://en.wikipedia.org/wiki/Regular_expression
+
+If ON server is present, the RKLINE is propagated to given server.
+
+- Requires Oper Priv: K
