@@ -1,4 +1,4 @@
-# $Id: rkline,v 1.2 2005/08/20 16:17:02 knight Exp $
+# $Id: rkline,v 1.3 2005/08/20 16:17:57 knight Exp $
 RKLINE [time] <mask> [ON <server>] :[reason]
 
 [time] if present, gives number of minutes for temporary RXLINE
@@ -10,6 +10,8 @@ is banned with reason [reason]
 
 regular expression examples:
 rkline ^O[[:alpha:]]?[[:digit:]]+(x\.o|\.xo)$@^[[:alnum:]]{4}\.evilnet.org$
+
+Note: The mask has to be a valid regular expression based on user@host mask
 
 See http://en.wikipedia.org/wiki/Regular_expression
 
