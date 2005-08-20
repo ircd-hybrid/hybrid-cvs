@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.71 2005/08/19 04:07:40 lusky Exp $
+# $Id: Makefile.in,v 1.72 2005/08/20 17:35:11 michael Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -31,21 +31,21 @@ CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
 
 SRCS = \
   ip_cloaking.c \
-  m_capture.c \
-  m_change.c \
+  m_capture.c   \
+  m_change.c    \
   m_clearchan.c \
   m_classlist.c \
   m_flags.c     \
-  m_force.c	\
+  m_force.c     \
   m_jupe.c      \
-  m_killhost.c	\
+  m_killhost.c  \
   m_mkpasswd.c  \
   m_ojoin.c     \
   m_omotd.c     \
   m_operspy.c   \
   m_opme.c      \
-  m_spoof.c     \
-  m_services.c     
+  m_services.c  \
+  m_spoof.c
 
 SHARED_ONLY_SRCS = \
   m_ctrace.c \

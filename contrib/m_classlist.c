@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_classlist.c,v 1.11 2005/08/20 05:04:32 michael Exp $
+ *  $Id: m_classlist.c,v 1.12 2005/08/20 17:35:11 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&classlist_msgtab);
 }
 
-const char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 #endif
 
 /* mo_classlist()
@@ -86,7 +86,7 @@ mo_classlist(struct Client *client_p, struct Client *source_p,
 
   DLINK_FOREACH(ptr, class_items.head)
   {
-    const struct ConfItem *conf = ptr->data;
+    struct ConfItem *conf = ptr->data;
 
     if (match(parv[1], conf->name))
     {
