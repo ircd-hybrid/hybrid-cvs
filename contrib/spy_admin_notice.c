@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_admin_notice.c,v 1.12 2005/08/16 09:27:45 adx Exp $
+ *  $Id: spy_admin_notice.c,v 1.13 2005/08/20 17:19:57 adx Exp $
  */
 
 #include "stdinc.h"
@@ -49,12 +49,14 @@ _moddeinit(void)
     uninstall_hook(admin_cb, show_admin);
 }
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 
 static void *
 show_admin(va_list args)
 {
   struct Client *source_p = va_arg(args, struct Client *);
+  int parc = va_arg(args, int);
+  char **parv = va_arg(args, char **);
 
   if (IsClient(source_p))
     sendto_realops_flags(UMODE_SPY, L_ALL,
@@ -62,5 +64,5 @@ show_admin(va_list args)
                          source_p->name, source_p->username,
                          source_p->host, source_p->servptr->name);
 
-  return pass_callback(prev_hook, args);
+  return pass_callback(prev_hook, source_p, parc, parv);
 }

@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.29 2005/08/18 04:55:28 db Exp $
+ *  $Id: hook.c,v 7.30 2005/08/20 17:19:58 adx Exp $
  */
 
 #include "stdinc.h"
@@ -100,6 +100,32 @@ execute_callback(struct Callback *cb, ...)
 
   va_start(args, cb);
   res = ((CBFUNC *) cb->chain.head->data)(args);
+  va_end(args);
+  return (res);
+}
+
+/*
+ * pass_callback()
+ *
+ * Called by a hook function to pass code flow further
+ * in the hook chain.
+ *
+ * inputs:
+ *   this_hook  -  pointer to dlink_node of the current hook function
+ *   ...        -  (original or modified) arguments to be passed
+ * output: callback return value
+ */
+void *
+pass_callback(dlink_node *this_hook, ...)
+{
+  void *res;
+  va_list args;
+
+  if (this_hook->next == NULL)
+    return (NULL);  /* reached the last one */
+
+  va_start(args, this_hook);
+  res = ((CBFUNC *) this_hook->next->data)(args);
   va_end(args);
   return (res);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_whois_notice.c,v 1.14 2005/08/16 09:27:45 adx Exp $
+ *  $Id: spy_whois_notice.c,v 1.15 2005/08/20 17:19:57 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -49,7 +49,7 @@ _moddeinit(void)
     uninstall_hook(whois_cb, show_notice);
 }
 
-const char *_version = "$Revision: 1.14 $";
+const char *_version = "$Revision: 1.15 $";
 
 /* show_notice
  *
@@ -61,11 +61,10 @@ void *
 show_notice(va_list args)
 {
   struct Client *source_p = va_arg(args, struct Client *);
-  char **parv;
+  int parc = va_arg(args, int);
+  char **parv = va_arg(args, char **);
   struct Client *target_p;
 
-  va_arg(args, int);
-  parv = va_arg(args, char **);
   target_p = parv[1] ? find_client(parv[1]) : NULL;
 
   if (target_p != NULL && target_p != source_p)
@@ -77,5 +76,5 @@ show_notice(va_list args)
 		 source_p->username, source_p->host);
     }
 
-  return pass_callback(prev_hook, args);
+  return pass_callback(prev_hook, source_p, parc, parv);
 }

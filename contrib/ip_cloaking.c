@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  *
- * $Id: ip_cloaking.c,v 1.3 2005/08/17 02:59:51 metalrock Exp $
+ * $Id: ip_cloaking.c,v 1.4 2005/08/20 17:19:57 adx Exp $
  */
 
 /*
@@ -67,7 +67,7 @@ static int vhost_ipv6_err;
 static dlink_node *prev_enter_umode;
 static dlink_node *prev_umode;
 
-const char *_version = "$Revision: 1.3 $";
+const char *_version = "$Revision: 1.4 $";
 
 static void *reset_ipv6err_flag(va_list);
 static void *h_set_user_mode(va_list);
@@ -376,8 +376,12 @@ set_vhost(struct Client *client_p, struct Client *source_p,
 static void *
 reset_ipv6err_flag(va_list args)
 {
+  struct Client *client_p = va_arg(args, struct Client *);
+  struct Client *source_p = va_arg(args, struct Client *);
+
   vhost_ipv6_err = NO;
-  return pass_callback(prev_enter_umode, args);
+
+  return pass_callback(prev_enter_umode, client_p, source_p);
 }
 
 static void *
@@ -419,5 +423,5 @@ h_set_user_mode(va_list args)
     return NULL;
   }
 
-  return pass_callback(prev_umode, args);
+  return pass_callback(prev_umode, client_p, target_p, what, flag);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_stats_notice.c,v 1.17 2005/08/16 09:27:45 adx Exp $
+ *  $Id: spy_stats_notice.c,v 1.18 2005/08/20 17:19:57 adx Exp $
  */
 
 #include "stdinc.h"
@@ -49,7 +49,7 @@ _moddeinit(void)
     uninstall_hook(stats_cb, show_stats);
 }
 
-const char *_version = "$Revision: 1.17 $";
+const char *_version = "$Revision: 1.18 $";
 
 /* show a stats request */
 static void *
@@ -83,5 +83,5 @@ show_stats(va_list args)
                          statchar, source_p->name, source_p->username,
                          source_p->host, source_p->servptr->name);
 
-  return pass_callback(prev_hook, args);
+  return pass_callback(prev_hook, source_p, parc, parv);
 }

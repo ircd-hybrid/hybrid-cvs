@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.h,v 1.21 2005/08/18 06:37:41 db Exp $
+ *  $Id: hook.h,v 1.22 2005/08/20 17:19:57 adx Exp $
  */
 
 #ifndef __HOOK_H_INCLUDED
@@ -43,8 +43,8 @@ void *execute_callback(struct Callback *, ...);
 struct Callback *find_callback(const char *);
 dlink_node *install_hook(struct Callback *, CBFUNC *);
 void uninstall_hook(struct Callback *, CBFUNC *);
+void *pass_callback(dlink_node *this_hook, ...);
 
 #define is_callback_present(c) (!!dlink_list_length(&c->chain))
-#define pass_callback(d,p) (d->next ? ((CBFUNC *) d->next->data)(p) : NULL)
 
 #endif
