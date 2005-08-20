@@ -1,8 +1,8 @@
                          Message Customization Overview
 
-   $Id: messages.txt,v 1.9 2004/07/17 00:12:07 lusky Exp $
+   $Id: messages.txt,v 1.10 2005/08/20 15:00:54 knight Exp $
 
-   Copyright (c) 2001, 2003 by ircd-hybrid team
+   Copyright (c) 2005 by ircd-hybrid team
 
      ----------------------------------------------------------------------
 
