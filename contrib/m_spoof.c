@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_spoof.c,v 1.9 2005/08/20 05:16:50 michael Exp $
+ *  $Id: m_spoof.c,v 1.10 2005/08/21 09:33:08 adx Exp $
  */
 
 /* MODULE CONFIGURATION FOLLOWS -- please read!! */
@@ -127,7 +127,7 @@ _moddeinit(void)
   mod_del_cmd(&spoof_msgtab);
 }
 
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.10 $";
 
 #ifdef SPOOF_FILE
 static void
@@ -161,8 +161,8 @@ mo_spoof(struct Client *client_p, struct Client *source_p,
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
-	       me.name, source_p->name);
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
+               me.name, source_p->name, "SPOOF");
     return;
   }
 
@@ -353,7 +353,7 @@ mo_delspoof(struct Client *client_p, struct Client *source_p,
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag", me.name, source_p->name);
+    sendto_one(source_p, form_str(ERR_NOPRIVS), me.name, parv[0], "DELSPOOF");
     return;
   }
 

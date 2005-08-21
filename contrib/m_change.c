@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_change.c,v 1.4 2005/08/20 05:16:50 michael Exp $
+ *  $Id: m_change.c,v 1.5 2005/08/21 09:33:08 adx Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&chgident_msgtab);
 }
 
-const char *_version = "$Revision: 1.4 $";
+const char *_version = "$Revision: 1.5 $";
 
 static void
 mo_chgident(struct Client *client_p, struct Client *source_p,
@@ -87,8 +87,7 @@ mo_chgident(struct Client *client_p, struct Client *source_p,
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
-               me.name, parv[0]);
+    sendto_one(source_p, form_str(ERR_NOPRIVS), me.name, parv[0], "CHGIDENT");
     return;
   }
 
@@ -139,8 +138,7 @@ static void mo_chghost(struct Client *client_p, struct Client *source_p,
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
-               me.name, parv[0]);
+    sendto_one(source_p, form_str(ERR_NOPRIVS), me.name, parv[0], "CHGHOST");
     return;
   }
 
@@ -191,8 +189,7 @@ static void mo_chgname(struct Client *client_p, struct Client *source_p,
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
-               me.name, parv[0]);
+    sendto_one(source_p, form_str(ERR_NOPRIVS), me.name, parv[0], "CHGNAME");
     return;
   }
 

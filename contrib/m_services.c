@@ -22,7 +22,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.14 2005/08/18 01:36:40 knight Exp $
+ *  $Id: m_services.c,v 1.15 2005/08/21 09:33:08 adx Exp $
  */
 
 #include "stdinc.h"
@@ -198,7 +198,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.14 $";
+const char *_version = "$Revision: 1.15 $";
 #endif
 
 /*
@@ -216,8 +216,8 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
-               me.name, source_p->name);
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
+               me.name, source_p->name, "SVSNICK");
     return;
   }
 
