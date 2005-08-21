@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.431 2005/08/20 12:02:29 michael Exp $
+ *  $Id: ircd_parser.y,v 1.432 2005/08/21 17:19:16 knight Exp $
  */
 
 %{
@@ -148,6 +148,7 @@ unhook_hub_leaf_confs(void)
 %token  BURST_TOPICWHO
 %token  BYTES KBYTES MBYTES GBYTES TBYTES
 %token  CALLER_ID_WAIT
+%token  OPERS_BYPASS_CALLERID
 %token  CAN_FLOOD
 %token  CAN_IDLE
 %token  CHANNEL
@@ -2961,8 +2962,8 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
                     general_message_locale |
                     general_oper_only_umodes | general_max_targets |
                     general_use_egd | general_egdpool_path |
-                    general_oper_umodes |
-                    general_caller_id_wait | general_default_floodcount |
+                    general_oper_umodes | general_caller_id_wait |
+                    general_opers_bypass_callerid | general_default_floodcount |
                     general_min_nonwildcard | general_min_nonwildcard_simple |
                     general_servlink_path | general_disable_remote_commands |
                     general_default_cipher_preference |
@@ -3150,6 +3151,12 @@ general_caller_id_wait: CALLER_ID_WAIT '=' timespec ';'
 {
   if (ypass == 2)
     ConfigFileEntry.caller_id_wait = $3;
+};
+
+general_opers_bypass_callerid: OPERS_BYPASS_CALLERID '=' TBOOL ';'
+{
+  if (ypass == 2)
+    ConfigFileEntry.opers_bypass_callerid = yylval.number;
 };
 
 general_pace_wait_simple: PACE_WAIT_SIMPLE '=' timespec ';'

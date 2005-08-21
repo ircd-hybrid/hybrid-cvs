@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.578 2005/08/20 16:49:31 michael Exp $
+ *  $Id: s_conf.c,v 7.579 2005/08/21 17:19:16 knight Exp $
  */
 
 #include "stdinc.h"
@@ -1960,6 +1960,7 @@ set_default_conf(void)
   ConfigFileEntry.stats_i_oper_only = 1;  /* masked */
   ConfigFileEntry.stats_P_oper_only = NO;
   ConfigFileEntry.caller_id_wait = 60;
+  ConfigFileEntry.opers_bypass_callerid = NO;
   ConfigFileEntry.pace_wait = 10;
   ConfigFileEntry.pace_wait_simple = 1;
   ConfigFileEntry.short_motd = NO;

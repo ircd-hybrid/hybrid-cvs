@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.144 2005/08/17 16:02:52 michael Exp $
+ *  $Id: m_message.c,v 1.145 2005/08/21 17:19:16 knight Exp $
  */
 
 #include "stdinc.h"
@@ -117,7 +117,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.144 $";
+const char *_version = "$Revision: 1.145 $";
 #endif
 
 /*
@@ -610,7 +610,8 @@ msg_client(int p_or_n, const char *command, struct Client *source_p,
     if (!IsServer(source_p) && IsSetCallerId(target_p))
     {
       /* Here is the anti-flood bot/spambot code -db */
-      if (source_p == target_p || accept_message(source_p, target_p))
+      if (source_p == target_p || accept_message(source_p, target_p) ||
+         (IsOper(source_p) && (ConfigFileEntry.opers_bypass_callerid == 1)))
       {
         sendto_one(target_p, ":%s!%s@%s %s %s :%s",
                    source_p->name, source_p->username,

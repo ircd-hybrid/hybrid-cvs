@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.316 2005/08/19 14:56:44 michael Exp $
+ *  $Id: s_conf.h,v 7.317 2005/08/21 17:19:16 knight Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -347,6 +347,7 @@ struct config_file_entry
   int oper_umodes;
   int max_targets;
   int caller_id_wait;
+  int opers_bypass_callerid;
   int min_nonwildcard;
   int min_nonwildcard_simple;
   int kill_chase_time_limit;
