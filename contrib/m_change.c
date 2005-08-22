@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_change.c,v 1.1 2005/07/09 13:27:52 adx Exp $
+ *  $Id: m_change.c,v 1.1.2.1 2005/08/22 13:47:37 michael Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -80,17 +80,18 @@ _moddeinit(void)
   mod_del_cmd(&chgident_msgtab);
 }
 
-char *_version = "20050709";
+const char *_version = "$Revision: 1.1.2.1 $";
 
-static void mo_chgident(struct Client *client_p, struct Client *source_p,
-                        int parc, char *parv[])
+static void
+mo_chgident(struct Client *client_p, struct Client *source_p,
+            int parc, char *parv[])
 {
   struct Client *target_p;
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
-               me.name, parv[0]);
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
+               me.name, source_p->name, "admin");
     return;
   }
 
@@ -123,15 +124,16 @@ static void mo_chgident(struct Client *client_p, struct Client *source_p,
                me.name, target_p->name, target_p->username, target_p->host);
 }
 
-static void mo_chghost(struct Client *client_p, struct Client *source_p,
-                       int parc, char *parv[])
+static void
+mo_chghost(struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
 {
   struct Client *target_p;
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
-               me.name, parv[0]);
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
+               me.name, source_p->name, "admin");
     return;
   }
 
@@ -164,15 +166,16 @@ static void mo_chghost(struct Client *client_p, struct Client *source_p,
                me.name, target_p->name, target_p->username, target_p->host);
 }
 
-static void mo_chgname(struct Client *client_p, struct Client *source_p,
-                       int parc, char *parv[])
+static void
+mo_chgname(struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
 {
   struct Client *target_p;
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no admin flag",
-               me.name, parv[0]);
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
+               me.name, source_p->name, "admin");
     return;
   }
 
@@ -189,7 +192,7 @@ static void mo_chgname(struct Client *client_p, struct Client *source_p,
   }
 
   strcpy(target_p->info, parv[2]);
-  
+
   if (MyClient(source_p))
   {
     sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_opme.c,v 1.55.2.1 2005/08/02 05:33:35 adx Exp $
+ *  $Id: m_opme.c,v 1.55.2.2 2005/08/22 13:47:37 michael Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.55.2.1 $";
+const char *_version = "$Revision: 1.55.2.2 $";
 #endif
 
 static int
@@ -90,8 +90,8 @@ mo_opme(struct Client *client_p, struct Client *source_p,
 
   if (!IsAdmin(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
-               me.name, source_p->name);
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
+               me.name, source_p->name, "admin");
     return;
   }
 

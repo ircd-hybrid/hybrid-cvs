@@ -1,3 +1,10 @@
+-- ircd-hybrid-7.1.2 RELNOTES
+o) Updated example configuration files
+o) Fixed clustering not worked as being advertised
+o) Fixed a m_capture MODUNLOAD bug
+o) Various RESV cleanups
+
+
 -- ircd-hybrid-7.1.1 RELNOTES
 o) Fixed build with static modules
 o) Fixed BMASK
@@ -10,10 +17,12 @@ o) Usermode +G, like +g, but allow messaging from people on common channels
 o) Usermode +D - "deaf", don't receive channel messages
 o) TB modules now replaces TBURST from contrib
 
+
 -- ircd-hybrid-7.1 RELNOTES
 o) Improved SAFELIST
 o) Added m_change.c
 o) Fixed m_capture
+
 
 -- ircd-hybrid-7.1rc4 RELNOTES
 o) Various cleanups and bugfixes: invite, max_global, who, whois, names
@@ -113,4 +122,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.105.2.11 2005/08/03 01:49:55 db Exp $
+$Id: RELNOTES,v 1.105.2.12 2005/08/22 13:47:37 michael Exp $

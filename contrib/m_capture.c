@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capture.c,v 1.13.2.1 2005/07/13 13:39:11 adx Exp $
+ *  $Id: m_capture.c,v 1.13.2.2 2005/08/22 13:47:37 michael Exp $
  */
 
 #include "stdinc.h"
@@ -69,9 +69,10 @@ void
 _moddeinit(void)
 {
   mod_del_cmd(&capture_msgtab);
+  mod_del_cmd(&uncapture_msgtab);
 }
 
-const char *_version = "$Revision: 1.13.2.1 $";
+const char *_version = "$Revision: 1.13.2.2 $";
 #endif
 
 /* mo_capture
@@ -95,10 +96,10 @@ mo_capture(struct Client *client_p, struct Client *source_p,
 
   /* XXX Add oper flag in future ? */
 
-  if (!IsAdmin(source_p))
+  if (MyClient(source_p) && !IsAdmin(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
-	       me.name, source_p->name, "CAPTURE");
+	       me.name, source_p->name, "admin");
     return;
   }
 
@@ -195,6 +196,13 @@ mo_uncapture(struct Client *client_p, struct Client *source_p,
   struct Client *target_p;
   char *nick, *user, *host, *p;
   dlink_node *ptr;
+
+  if (MyClient(source_p) && !IsAdmin(source_p))
+  {
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
+               me.name, source_p->name, "admin");
+    return;
+  }
 
   if (parc < 2 || EmptyString(parv[1]))
   {

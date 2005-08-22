@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.191 2005/07/07 20:36:29 michael Exp $
+ *  $Id: m_kline.c,v 1.191.2.1 2005/08/22 13:47:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.191 $";
+const char *_version = "$Revision: 1.191.2.1 $";
 #endif
 
 /* Local function prototypes */
@@ -257,14 +257,12 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   if ((oper_reason = strchr(reason, '|')) != NULL)
     *oper_reason++ = '\0';
 
-  set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
   conf = make_conf_item(KLINE_TYPE);
   aconf = (struct AccessItem *)map_to_conf(conf);
   DupString(aconf->host, host);
   DupString(aconf->user, user);
-  aconf->port = 0;
 
   if (tkline_time != 0)
   {
@@ -298,7 +296,7 @@ me_kline(struct Client *client_p, struct Client *source_p,
   time_t cur_time;
   char *kuser, *khost, *kreason, *oper_reason;
 
-  if (parc != 6)
+  if (parc != 6 || EmptyString(parv[5]))
     return;
 
   if (!match(parv[1], me.name))
@@ -312,49 +310,12 @@ me_kline(struct Client *client_p, struct Client *source_p,
   if ((oper_reason = strchr(kreason, '|')) != NULL)
     *oper_reason++ = '\0';
 
-  set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
 
-  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
-                              NULL, NULL, CLUSTER_KLINE))
-  {
-    if (!valid_wild_card(source_p, NO, 2, kuser, khost) ||
-        !valid_user_host(source_p, kuser, khost, NO) ||
-        !valid_comment(source_p, kreason, NO) ||
-        !IsPerson(source_p) ||
-        already_placed_kline(source_p, kuser, khost, NO))
-      return;
-
-    conf = make_conf_item(KLINE_TYPE);
-    aconf = (struct AccessItem *)map_to_conf(conf);
-    DupString(aconf->host, khost);
-    DupString(aconf->user, kuser);
-
-
-    if (tkline_time != 0)
-    {
-      ircsprintf(buffer,
-                 "Temporary K-line %d min. - %s (%s)",
-                 (int)(tkline_time/60), kreason, current_date);
-      DupString(aconf->reason, buffer);
-      if (oper_reason != NULL)
-        DupString(aconf->oper_reason, oper_reason);
-      apply_tkline(source_p, conf, tkline_time);
-    }
-    else
-    {
-      ircsprintf(buffer, "%s (%s)", kreason, current_date);
-      DupString(aconf->reason, buffer);
-      if (oper_reason != NULL)
-        DupString(aconf->oper_reason, oper_reason);
-      apply_kline(source_p, conf, current_date, cur_time);
-    }
-  }
-  else if (find_matching_name_conf(ULINE_TYPE,
-				  source_p->user->server->name,
-				  source_p->username, source_p->host,
-				  SHARED_KLINE))
+  if (find_matching_name_conf(ULINE_TYPE, source_p->user->server->name,
+                              source_p->username, source_p->host,
+                              SHARED_KLINE))
   {
     if (!valid_wild_card(source_p, YES, 2, kuser, khost) ||
         !valid_user_host(source_p, kuser, khost, YES) ||
@@ -402,7 +363,6 @@ ms_kline(struct Client *client_p, struct Client *source_p,
                      "KLINE %s %s %s %s :%s",
                      parv[1], parv[2], parv[3], parv[4], parv[5]);
 
-  
   me_kline(client_p, source_p, parc, parv);
 }
 
@@ -742,16 +702,12 @@ mo_dline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
 
   /* Look for an oper reason */
   if ((oper_reason = strchr(reason, '|')) != NULL)
-  {
-    *oper_reason = '\0';
-    oper_reason++;
-  }
+    *oper_reason++ = '\0';
 
   if (!valid_comment(source_p, reason, YES))
     return;
@@ -1022,7 +978,7 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
     return;
   }
 
-  if (parc < 2)
+  if (parc < 2 || EmptyString(parv[1]))
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                me.name, source_p->name, "UNKLINE");
@@ -1115,49 +1071,18 @@ me_unkline(struct Client *client_p, struct Client *source_p,
 {
   const char *kuser, *khost;
 
-  if (parc != 4)
+  if (parc != 4 || EmptyString(parv[3]))
     return;
 
   kuser = parv[2];
   khost = parv[3];
 
-  if (!match(parv[1], me.name))
+  if (!IsPerson(source_p) || !match(parv[1], me.name))
     return;
 
-  if (!IsPerson(source_p))
-    return;
-  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
-                              NULL, NULL, CLUSTER_UNKLINE))
-  {
-    if (remove_tkline_match(khost, kuser))
-    {
-      sendto_one(source_p,
-                 ":%s NOTICE %s :Un-klined [%s@%s] from temporary K-Lines",
-                 me.name, source_p->name, kuser, khost);
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "%s has removed the temporary K-Line for: [%s@%s]",
-                           get_oper_name(source_p), kuser, khost);
-      ilog(L_NOTICE, "%s removed temporary K-Line for [%s@%s]",
-           source_p->name, kuser, khost);
-      return;
-    }
-
-    if (remove_conf_line(KLINE_TYPE, source_p, kuser, khost))
-    {
-      sendto_one(source_p, ":%s NOTICE %s :K-Line for [%s@%s] is removed",
-                 me.name, source_p->name, kuser, khost);
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "%s has removed the K-Line for: [%s@%s]",
-                           get_oper_name(source_p), kuser, khost);
-
-      ilog(L_NOTICE, "%s removed K-Line for [%s@%s]",
-           source_p->name, kuser, khost);
-    }
-  }
-  else if (find_matching_name_conf(ULINE_TYPE,
-				   source_p->user->server->name,
-				   source_p->username, source_p->host,
-				   SHARED_UNKLINE))
+  if (find_matching_name_conf(ULINE_TYPE, source_p->user->server->name,
+                              source_p->username, source_p->host,
+                              SHARED_UNKLINE))
   {
     if (remove_tkline_match(khost, kuser))
     {
@@ -1291,7 +1216,7 @@ static void
 mo_undline(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
-  const char  *cidr;
+  const char *cidr = NULL;
 
   if (!IsOperUnkline(source_p))
   {

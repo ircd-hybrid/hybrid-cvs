@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.36 2005/06/22 16:56:42 adx Exp $
+ *  $Id: resv.c,v 7.36.2.1 2005/08/22 13:47:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -230,41 +230,6 @@ report_resv(struct Client *source_p)
 	       resv_np->action ? 'Q' : 'q',
 	       conf->name, resv_np->reason);
   }
-}
-
-/* clean_resv_nick()
- *
- * inputs	- pointer to nick to clean
- * output	- NONE
- * side effects	- nick is modified in place
- */
-int
-clean_resv_nick(char *nick)
-{
-  char tmpch;
-  int as = 0;
-  int q  = 0;
-  int ch = 0;
-
-  if (*nick == '-' || IsDigit(*nick))
-    return 0;
-
-  while ((tmpch = *nick++))
-  {
-    if (tmpch == '?')
-      q++;
-    else if (tmpch == '*')
-      as++;
-    else if (IsNickChar(tmpch))
-      ch++;
-    else
-      return 0;
-  }
-
-  if (!ch && as)
-    return 0;
-
-  return 1;
 }
 
 /* valid_wild_card_simple()

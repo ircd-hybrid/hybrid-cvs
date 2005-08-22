@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.62 2005/05/19 22:54:55 michael Exp $
+ *  $Id: m_jupe.c,v 1.62.2.1 2005/08/22 13:47:37 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.62 $";
+const char *_version = "$Revision: 1.62.2.1 $";
 #endif
 
 /*
@@ -86,8 +86,8 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
 
   if (!IsAdmin(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
-               me.name, source_p->name);
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
+               me.name, source_p->name, "admin");
     return;
   }
 

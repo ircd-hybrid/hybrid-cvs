@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.144.2.4 2005/08/02 22:20:04 adx Exp $
+ *  $Id: channel_mode.c,v 7.144.2.5 2005/08/22 13:47:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -217,7 +217,6 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
   }
 
   actualBan = (struct Ban *)BlockHeapAlloc(ban_heap);
-  memset(actualBan, 0, sizeof(struct Ban));
   DupString(actualBan->banstr, banid);
 
   if (IsPerson(client_p))
@@ -1044,17 +1043,6 @@ chm_op(struct Client *client_p, struct Client *source_p,
   if ((dir == MODE_QUERY) || (parc <= *parn))
     return;
 
-  if (IsRestricted(source_p) && (dir == MODE_ADD))
-  {
-    if (!(*errors & SM_ERR_RESTRICTED))
-      sendto_one(source_p, 
-                 ":%s NOTICE %s :*** Notice -- You are restricted and cannot "
-		 "chanop others", me.name, source_p->name);
-    
-    *errors |= SM_ERR_RESTRICTED;
-    return;
-  }
-
   opnick = parv[(*parn)++];
 
   if ((targ_p = find_chasing(client_p, source_p, opnick, NULL)) == NULL)
@@ -1134,17 +1122,6 @@ chm_hop(struct Client *client_p, struct Client *source_p,
   }
   if ((dir == MODE_QUERY) || (parc <= *parn))
     return;
-
-  if (IsRestricted(source_p) && (dir == MODE_ADD))
-  {
-    if (!(*errors & SM_ERR_RESTRICTED))
-      sendto_one(source_p,
-                 ":%s NOTICE %s :*** Notice -- You are restricted and cannot "
-                 "chanop others", me.name, source_p->name);
-
-    *errors |= SM_ERR_RESTRICTED;
-    return;
-  }
 
   opnick = parv[(*parn)++];
 

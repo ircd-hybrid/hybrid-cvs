@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.54 2005/06/29 23:48:52 metalrock Exp $
+ *  $Id: m_xline.c,v 1.54.2.1 2005/08/22 13:47:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,7 @@ static void ms_unxline(struct Client *, struct Client *, int, char **);
 
 static int valid_xline(struct Client *, char *, char *, int);
 static void write_xline(struct Client *, char *, char *, time_t);
-static void remove_xline(struct Client *, char *, int);
+static void remove_xline(struct Client *, char *);
 static int remove_txline_match(const char *gecos);
 
 struct Message xline_msgtab = {
@@ -86,10 +86,9 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.54 $";
+const char *_version = "$Revision: 1.54.2.1 $";
 #endif
 
-static char buffer[IRCD_BUFSIZE];
 
 /* mo_xline()
  *
@@ -242,19 +241,9 @@ ms_xline(struct Client *client_p, struct Client *source_p,
   if (!match(parv[1], me.name))
     return;
 
-  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
-                              NULL, NULL, CLUSTER_XLINE))
-  {
-    if ((find_matching_name_conf(XLINE_TYPE, parv[2],
-				NULL, NULL, 0)) != NULL)
-      return;
-
-    write_xline(source_p, parv[2], parv[4], t_sec);
-  }
-  else if (find_matching_name_conf(ULINE_TYPE,
-		       source_p->user->server->name,
-                       source_p->username, source_p->host,
-                       SHARED_XLINE))
+  if (find_matching_name_conf(ULINE_TYPE, source_p->user->server->name,
+                              source_p->username, source_p->host,
+                              SHARED_XLINE))
   {
     if ((conf = find_matching_name_conf(XLINE_TYPE, parv[2],
 					NULL, NULL, 0)) != NULL)
@@ -305,7 +294,7 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
   else if (dlink_list_length(&cluster_items))
     cluster_unxline(source_p, parv[1]);
 
-  remove_xline(source_p, parv[1], 0);
+  remove_xline(source_p, parv[1]);
 }
 
 /* ms_unxline()
@@ -318,46 +307,20 @@ static void
 ms_unxline(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
-  if (parc != 3)
-    return;
-
-  if (EmptyString(parv[2]))
+  if (parc != 3 || EmptyString(parv[2]))
     return;
 
   sendto_match_servs(source_p, parv[1], CAP_CLUSTER,
                      "UNXLINE %s %s",
                      parv[1], parv[2]);
 
-  if (!match(parv[1], me.name))
+  if (!IsPerson(source_p) || !match(parv[1], me.name))
     return;
 
-  if (!IsPerson(source_p))
-    return;
-
-  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
-                              NULL, NULL, CLUSTER_UNXLINE))
-    remove_xline(source_p, parv[2], 1);
-  else if (find_matching_name_conf(ULINE_TYPE,
-		       source_p->user->server->name,
-                       source_p->username, source_p->host,
-                       SHARED_UNXLINE))
-  {
-    if (remove_conf_line(XLINE_TYPE, source_p, parv[2], NULL) > 0)
-    {
-      sendto_one(source_p, ":%s NOTICE %s :X-Line for [%s] is removed",
-                 ID_or_name(&me, source_p->from),
-                 ID_or_name(source_p, source_p->from), parv[2]);
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "%s has removed the X-Line for: [%s]",
-                           get_oper_name(source_p), parv[2]);
-      ilog(L_NOTICE, "%s removed X-Line for [%s]", get_oper_name(source_p),
-           parv[2]);
-    }
-    else
-      sendto_one(source_p, ":%s NOTICE %s :No X-Line for %s",
-                 ID_or_name(&me, source_p->from),
-                 ID_or_name(source_p, source_p->from), parv[2]);
-  }
+  if (find_matching_name_conf(ULINE_TYPE, source_p->user->server->name,
+                              source_p->username, source_p->host,
+                              SHARED_UNXLINE))
+    remove_xline(source_p, parv[2]);
 }
 
 /* valid_xline()
@@ -381,14 +344,6 @@ valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
   {
     sendto_one(source_p, ":%s NOTICE %s :Invalid character '\"'",
                me.name, source_p->name);
-    return(0);
-  }
-
-  if (strchr(reason, ':'))
-  {
-    if (warn)
-      sendto_one(source_p, ":%s NOTICE %s :Invalid character ':' in comment",
-                 me.name, source_p->name);
     return(0);
   }
 
@@ -427,15 +382,11 @@ write_xline(struct Client *source_p, char *gecos, char *reason,
   DupString(conf->name, gecos);
   DupString(match_item->reason, reason);
   DupString(match_item->oper_reason, "");	/* XXX */
-  set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
 
   if (tkline_time != 0)
   {
-    ircsprintf(buffer, "Temporary X-line %d min. - %s (%s)",
-	       (int)(tkline_time/60), reason, current_date);
-
     sendto_realops_flags(UMODE_ALL, L_ALL,
 			 "%s added temporary %d min. X-Line for [%s] [%s]",
 			 get_oper_name(source_p), (int)tkline_time/60,
@@ -455,7 +406,7 @@ write_xline(struct Client *source_p, char *gecos, char *reason,
 }
 
 static void
-remove_xline(struct Client *source_p, char *gecos, int cluster)
+remove_xline(struct Client *source_p, char *gecos)
 {
   /* XXX use common temporary un function later */
   if (remove_txline_match(gecos))
@@ -473,16 +424,15 @@ remove_xline(struct Client *source_p, char *gecos, int cluster)
 
   if (remove_conf_line(XLINE_TYPE, source_p, gecos, NULL) > 0)
   {
-    if (!cluster)
-      sendto_one(source_p, ":%s NOTICE %s :X-Line for [%s] is removed",
-                 me.name, source_p->name, gecos);
+    sendto_one(source_p, ":%s NOTICE %s :X-Line for [%s] is removed",
+               me.name, source_p->name, gecos);
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s has removed the X-Line for: [%s]",
                          get_oper_name(source_p), gecos);
     ilog(L_NOTICE, "%s removed X-Line for [%s]",
          get_oper_name(source_p), gecos);
   }
-  else if (!cluster)
+  else
     sendto_one(source_p, ":%s NOTICE %s :No X-Line for %s",
                me.name, source_p->name, gecos);
 }

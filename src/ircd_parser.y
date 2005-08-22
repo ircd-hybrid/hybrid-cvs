@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.393.2.7 2005/08/04 05:57:45 metalrock Exp $
+ *  $Id: ircd_parser.y,v 1.393.2.8 2005/08/22 13:47:38 michael Exp $
  */
 
 %{
@@ -1943,15 +1943,10 @@ resv_nick: NICK '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    if (clean_resv_nick(yylval.string))
-    {
       char def_reason[] = "No reason specified";
 
       create_nick_resv(yylval.string, resv_reason != NULL ? resv_reason : def_reason, 1);
-    }
   }
-
-  /* otherwise its erroneous, but ignore it for now */
 };
 
 /***************************************************************************
@@ -2031,6 +2026,10 @@ shared_type_item: KLINE
 {
   if (ypass == 2)
     yy_match_item->action |= SHARED_UNRESV;
+} | T_LOCOPS
+{
+  if (ypass == 2)
+    yy_match_item->action |= SHARED_LOCOPS;
 } | T_ALL
 {
   if (ypass == 2)

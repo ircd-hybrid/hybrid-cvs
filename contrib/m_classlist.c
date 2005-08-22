@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_classlist.c,v 1.10 2004/07/08 00:27:16 erik Exp $
+ *  $Id: m_classlist.c,v 1.10.2.1 2005/08/22 13:47:37 michael Exp $
  */
 
 #include "stdinc.h"
@@ -48,8 +48,8 @@ struct Message classlist_msgtab = {
   "CLASSLIST", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_classlist, m_ignore}
 };
-#ifndef STATIC_MODULES
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&classlist_msgtab);
 }
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.10.2.1 $";
 #endif
 
 /* mo_classlist()
@@ -72,12 +72,13 @@ const char *_version = "$Revision: 1.10 $";
  */
 static void
 mo_classlist(struct Client *client_p, struct Client *source_p,
-	     int parc, char *parv[])
+             int parc, char *parv[])
 { 
   struct ClassItem *aclass;
   struct ConfItem *conf;
   char *classname;
   dlink_node *ptr;
+  int found = 0;
 
   if (EmptyString(parv[1]))
   {
@@ -92,19 +93,17 @@ mo_classlist(struct Client *client_p, struct Client *source_p,
   {
     conf = ptr->data;
 
-    if (conf == NULL)
-      continue;
-
     if (match(classname, conf->name))
     {
       aclass = (struct ClassItem *)map_to_conf(conf);
       sendto_one(source_p, ":%s NOTICE %s :%s %d",
 		 me.name, source_p->name, conf->name,
 		 CurrUserCount(aclass));
-      return;
+      found = 1;
     }
   }
 
-  sendto_one(source_p, ":%s NOTICE %s :Class %s not found",
-		 me.name, source_p->name, classname);
+  if (!found)
+    sendto_one(source_p, ":%s NOTICE %s :Class %s not found",
+               me.name, source_p->name, classname);
 }
