@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.579 2005/08/21 17:19:16 knight Exp $
+ *  $Id: s_conf.c,v 7.580 2005/08/22 20:55:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ static dlink_list *map_to_list(ConfType);
 static struct AccessItem *find_regexp_kline(const char *[]);
 static int find_user_host(struct Client *, char *, char *, char *, unsigned int);
 
-static void flags_to_ascii(unsigned int, const unsigned int[], char *);
+static void flags_to_ascii(unsigned int, const unsigned int[], char *, int);
 static char *cluster(char *);
 
 FBFILE *conf_fbfile_in = NULL;
@@ -656,7 +656,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
        * consistency with cluster{} flags
        */
       *p++ = 'c';
-      flags_to_ascii(matchitem->action, shared_bit_table, p);
+      flags_to_ascii(matchitem->action, shared_bit_table, p, 0);
 
       sendto_one(source_p, form_str(RPL_STATSULINE),
 		 me.name, source_p->name, conf->name,
@@ -671,7 +671,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
       p = buf;
 
       *p++ = 'C';
-      flags_to_ascii(conf->flags, shared_bit_table, p);
+      flags_to_ascii(conf->flags, shared_bit_table, p, 0);
 
       sendto_one(source_p, form_str(RPL_STATSULINE),
                  me.name, source_p->name, conf->name,
@@ -2389,43 +2389,19 @@ expire_tklines(dlink_list *tklist)
  * output        - pointer to static string showing oper privs
  * side effects  - return as string, the oper privs as derived from port
  */
-static const struct oper_privs
-{
-  const unsigned int oprivs;
-  const unsigned int hidden;
-  const unsigned char c;
-} flag_list[] = {
-  { OPER_FLAG_ADMIN,       OPER_FLAG_HIDDEN_ADMIN,  'A' },
-  { OPER_FLAG_DIE,         0,                       'D' },
-  { OPER_FLAG_GLINE,       0,                       'G' },
-  { OPER_FLAG_REHASH,      0,                       'H' },
-  { OPER_FLAG_K,           0,                       'K' },
-  { OPER_FLAG_N,           0,                       'N' },
-  { OPER_FLAG_GLOBAL_KILL, 0,                       'O' },
-  { OPER_FLAG_REMOTE,      0,                       'R' },
-  { OPER_FLAG_UNKLINE,     0,                       'U' },
-  { OPER_FLAG_X,           0,                       'X' },
-  { 0, 0, '\0' }
-};
+
+static const unsigned int oper_flags_table[] = 
+  { 'O', 'R', 'U', 'G', 'N', 'K', 'X', 'D', 'H', 'A' , 0 };
 
 char *
 oper_privs_as_string(const unsigned int port)
 {
   static char privs_out[12];
-  char *privs_ptr = privs_out;
-  unsigned int i;
 
-  for (i = 0; flag_list[i].oprivs; i++)
-  {
-    if ((port & flag_list[i].oprivs) &&
-        (port & flag_list[i].hidden) == 0)
-      *privs_ptr++ = flag_list[i].c;
-    else
-      *privs_ptr++ = ToLowerTab[flag_list[i].c];
-  }
-
-  *privs_ptr = '\0';
-
+  if (port & OPER_FLAG_HIDDEN_ADMIN)
+    flags_to_ascii(port & ~OPER_FLAG_ADMIN, oper_flags_table, privs_out, 1);
+  else
+    flags_to_ascii(port, oper_flags_table, privs_out, 1);
   return privs_out;
 }
 
@@ -3883,17 +3859,26 @@ split_nuh(char *mask, char **nick, char **user, char **host)
  * flags_to_ascii
  *
  * inputs	- flags is a bitmask
- * output	-
+ *		- pointer to table of ascii letters corresponding
+ *		  to each bit
+ *		- flag 1 for convert ToLower if bit missing 
+ *		  0 if ignore.
+ * output	- none
  * side effects	- string pointed to by p has bitmap chars written to it
  */
 static void
-flags_to_ascii(unsigned int flags, const unsigned int bit_table[], char *p)
+flags_to_ascii(unsigned int flags, const unsigned int bit_table[], char *p,
+	       int lowerit)
 {
   unsigned int mask = 1;
   int i = 0;
 
   for (mask = 1; (mask != 0) && (bit_table[i] != 0); mask <<= 1, i++)
+  {
     if (flags & mask)
       *p++ = bit_table[i];
+    else if(lowerit)
+      *p++ = ToLower(bit_table[i]);
+  }
   *p = '\0';
 }
