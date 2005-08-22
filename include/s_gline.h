@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.h,v 7.21 2005/06/07 13:18:07 michael Exp $
+ *  $Id: s_gline.h,v 7.22 2005/08/22 10:48:07 michael Exp $
  */
 
 #ifndef INCLUDED_s_gline_h
@@ -27,7 +27,6 @@
 
 #include "ircd_defs.h"
 
-struct Client;
 struct AccessItem;
 
 extern void cleanup_glines(void *);
@@ -56,13 +55,12 @@ struct gline_pending
   char host[HOSTLEN * 2 + 2];
 };
 
-/* how long a pending G line can be around
+/*
+ * how long a pending G line can be around
  * 10 minutes should be plenty
  */
 #define GLINE_PENDING_EXPIRE 600
 #define CLEANUP_GLINES_TIME  300
 
 extern dlink_list pending_glines;
-extern dlink_list glines;
-
 #endif /* INCLUDED_s_gline_h */

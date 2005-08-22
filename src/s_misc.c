@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_misc.c,v 7.35 2005/07/11 04:15:43 db Exp $
+ *  $Id: s_misc.c,v 7.36 2005/08/22 10:48:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -55,15 +55,15 @@ static const char *weekdays[] =
 char *
 date(time_t lclock) 
 {
-  static        char        buf[80], plus;
-  struct        tm *lt, *gm;
-  struct        tm        gmbuf;
-  int        minswest;
+  static char buf[80], plus;
+  struct tm *lt, *gm;
+  struct tm gmbuf;
+  int minswest;
 
   if (!lclock) 
     lclock = CurrentTime;
   gm = gmtime(&lclock);
-  memcpy((void *)&gmbuf, (void *)gm, sizeof(gmbuf));
+  memcpy(&gmbuf, gm, sizeof(gmbuf));
   gm = &gmbuf;
   lt = localtime(&lclock);
 
@@ -84,7 +84,7 @@ date(time_t lclock)
           lt->tm_year + 1900, lt->tm_hour, lt->tm_min, lt->tm_sec,
           plus, minswest/60, minswest%60);
 
-  return(buf);
+  return buf;
 }
 
 const char *
@@ -96,8 +96,9 @@ smalldate(time_t lclock)
 
   if (!lclock)
     lclock = CurrentTime;
+
   gm = gmtime(&lclock);
-  memcpy((void *)&gmbuf, (void *)gm, sizeof(gmbuf));
+  memcpy(&gmbuf, gm, sizeof(gmbuf));
   gm = &gmbuf; 
   lt = localtime(&lclock);
   
@@ -105,7 +106,7 @@ smalldate(time_t lclock)
              lt->tm_year + 1900, lt->tm_mon + 1, lt->tm_mday,
              lt->tm_hour, lt->tm_min);
 
-  return(buf);
+  return buf;
 }
 
 /* small_file_date()
@@ -120,17 +121,19 @@ small_file_date(time_t lclock)
 
   if (!lclock)
     time(&lclock);
+
   tmptr = localtime(&lclock);
   strftime(timebuffer, MAX_DATE_STRING, "%Y%m%d", tmptr);
 
-  return(timebuffer);
+  return timebuffer;
 }
 
 #ifdef HAVE_LIBCRYPTO
-char *ssl_get_cipher(SSL *ssl)
+char *
+ssl_get_cipher(SSL *ssl)
 {
   static char buffer[128];
-  char *name;
+  const char *name = NULL;
   int bits;
 
   switch (ssl->session->ssl_version)
@@ -156,6 +159,6 @@ char *ssl_get_cipher(SSL *ssl)
   snprintf(buffer, sizeof(buffer), "%s %s-%d",
            name, SSL_get_cipher(ssl), bits);
   
-  return (buffer);
+  return buffer;
 }
 #endif
