@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.49 2005/08/14 07:26:44 michael Exp $
+ *  $Id: m_resv.c,v 1.50 2005/08/22 13:56:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 
 /* mo_resv()
@@ -306,7 +306,7 @@ parse_resv(struct Client *source_p, char *name, int tkline_time, char *reason)
 
     if (!valid_wild_card_simple(name))
     {
-      sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the xline",
+      sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the resv",
                  me.name, source_p->name, ConfigFileEntry.min_nonwildcard_simple);
       return;
     }
