@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.157 2005/08/18 17:24:47 adx Exp $
+ *  $Id: s_auth.c,v 7.158 2005/08/23 18:00:35 db Exp $
  */
 
 /*
@@ -126,7 +126,7 @@ make_auth_request(struct Client *client)
  * this adds the client into the local client lists so it can be read by
  * the main io processing loop
  */
-static void
+void
 release_auth_client(struct Client *client)
 {
   /*

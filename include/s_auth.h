@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.h,v 7.26 2005/08/17 01:25:08 db Exp $
+ *  $Id: s_auth.h,v 7.27 2005/08/23 18:00:35 db Exp $
  */
 
 #ifndef INCLUDED_s_auth_h
@@ -75,5 +75,6 @@ void remove_auth_request(struct AuthRequest *req);
 struct AuthRequest *FindAuthClient(long id);
 void init_auth(void);
 void delete_auth(struct Client *);
+void release_auth_client(struct Client *client);
 
 #endif /* INCLUDED_s_auth_h */
