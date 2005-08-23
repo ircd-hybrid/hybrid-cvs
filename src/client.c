@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.465 2005/08/20 16:49:31 michael Exp $
+ *  $Id: client.c,v 7.466 2005/08/23 14:06:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -960,7 +960,7 @@ exit_client(struct Client *source_p, struct Client *from, const char *comment)
 
     if (!IsDead(source_p))
     {
-      if (IsServer(source_p) && source_p != &me)
+      if (IsServer(source_p))
       {
         /* for them, we are exiting the network */
         sendto_one(source_p, ":%s SQUIT %s :%s",
