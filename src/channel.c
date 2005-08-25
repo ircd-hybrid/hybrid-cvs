@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.443 2005/08/17 16:02:52 michael Exp $
+ * \version $Id: channel.c,v 7.444 2005/08/25 17:14:41 db Exp $
  */
 
 #include "stdinc.h"
@@ -702,6 +702,11 @@ can_send(struct Channel *chptr, struct Client *source_p)
   return(CAN_SEND_NONOP);
 }
 
+/*! \brief Checks to see if given client can send a part message
+ * \param member     pointer to channel membership
+ * \param chptr      pointer to channel struct
+ * \param source_p   pointer to struct Client to check
+ */
 int
 can_send_part(struct Membership *member, struct Channel *chptr,
               struct Client *source_p)
