@@ -19,11 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.247 2005/08/19 15:29:42 db Exp $
+ *  $Id: s_bsd.c,v 7.248 2005/08/25 15:13:56 adx Exp $
  */
 
 #include "stdinc.h"
 #ifndef _WIN32
+#include <netinet/in_systm.h>
+#include <netinet/ip.h>
 #include <netinet/tcp.h>
 #endif
 #include "fdlist.h"
@@ -208,6 +210,13 @@ set_non_blocking(int fd)
   res = fcntl(fd, F_GETFL, 0);
   if (-1 == res || fcntl(fd, F_SETFL, res | nonb) == -1)
     return 0;
+#endif
+
+#ifdef IPTOS_LOWDELAY
+  {
+    int tos = IPTOS_LOWDELAY;
+    setsockopt(fd, IPPROTO_IP, IP_TOS, &tos, sizeof(tos));
+  }
 #endif
 
   return 1;
@@ -865,7 +874,7 @@ comm_accept(struct Listener *lptr, struct irc_ssaddr *pn)
 #else
   pn->ss_len = addrlen;
 #endif
- 
+
   /* Set the socket non-blocking, and other wonderful bits */
   if (!set_non_blocking(newfd))
   {
