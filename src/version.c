@@ -86,7 +86,7 @@ const char *infotext[] =
   "",
   "A1kmm, Andrew Miller <a1kmm@mware.virtualave.net>",
   "AndroSyn, Aaron Sethman <androsyn@ratbox.org>",
-  "bane, <ddosen@pauk.ffzg.hr>",
+  "bane, Dragan Dosen <bane@idolnet.org>",
   "bysin, Ben Kittridge <bkittridge@cfl.rr.com>",
   "cosine, Patrick Alken <wnder@uwns.underworld.net>",
   "David-T, David Taylor <davidt@yadt.co.uk>",
