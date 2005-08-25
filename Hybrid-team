@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.87 2005/07/06 18:09:04 db Exp $
+$Id: Hybrid-team,v 7.87.2.1 2005/08/25 09:46:37 db Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -30,7 +30,7 @@ recent releases of Hybrid, in nick alphabetical order:
 
 A1kmm, Andrew Miller <a1kmm@mware.virtualave.net>
 AndroSyn, Aaron Sethman <androsyn@ratbox.org>
-bane, <ddosen@pauk.ffzg.hr>
+bane, Dragan Dosen <bane@idolnet.org>
 bysin, Ben Kittridge <bkittridge@cfl.rr.com>
 cosine, Patrick Alken <wnder@uwns.underworld.net>
 David-T, David Taylor <davidt@yadt.co.uk>
