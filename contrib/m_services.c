@@ -1,6 +1,3 @@
-/* CHANGE THIS PLEASE!!! */
-#define SERVICES_NAME "_CHANGE_ME_" /* e.g services.yournetwork.net */
-
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  m_services.c: SVS commands and Services support
@@ -22,8 +19,19 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.15 2005/08/21 09:33:08 adx Exp $
+ *  $Id: m_services.c,v 1.16 2005/08/26 15:03:52 knight Exp $
  */
+
+/* MODULE CONFIGURATION FOLLOWS -- please read!! */
+
+/*
+ * Change this #define to point to the name of the server
+ * your services run on. For example services.yournet.net
+ * otherwise the services aliases will not work!
+ */
+#define SERVICES_NAME "services.yournet.net"
+
+/* END OF MODULE CONFIGURATION */
 
 #include "stdinc.h"
 #include "tools.h"
@@ -47,10 +55,10 @@
 #include "modules.h"
 #include "s_user.h"
 
-/* Services' function macro generation -- knight- */
-#define SERV_FUNC(a,b,c) static void a(struct Client *client_p,\
-                                       struct Client *source_p, int parc,\
-                                       char *parv[]) \
+/* Custom Macros */
+#define services_function(a,b,c) static void a(struct Client *client_p,\
+        struct Client *source_p, int parc,\
+        char *parv[]) \
 { deliver_services_msg(b, c, client_p, source_p, parc, parv); }
 
 static void mo_svsnick(struct Client *, struct Client *, int, char *[]);
@@ -104,11 +112,6 @@ struct Message hostserv_msgtab = {
   {m_unregistered, m_hostserv, m_ignore, m_ignore, m_hostserv, m_ignore}
 };
 
-struct Message identify_msgtab = {
-  "IDENTIFY", 0, 0, 0, 2, MFLG_SLOW, 0,
-  {m_unregistered, m_identify, m_ignore, m_ignore, m_identify, m_ignore}
-};
-
 struct Message memoserv_msgtab = {
   "MEMOSERV", 0, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_memoserv, m_ignore, m_ignore, m_memoserv, m_ignore}
@@ -135,19 +138,24 @@ struct Message statserv_msgtab = {
 };
 
 /* Short-hand aliases for NickServ, ChanServ, MemoServ and OperServ */
-struct Message ns_msgtab = {
-  "NS", 0, 0, 1, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_nickserv, m_ignore, m_ignore, m_nickserv, m_ignore}
-};
-
 struct Message cs_msgtab = {
   "CS", 0, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_chanserv, m_ignore, m_ignore, m_chanserv, m_ignore}
 };
 
+struct Message identify_msgtab = {
+  "IDENTIFY", 0, 0, 0, 2, MFLG_SLOW, 0,
+  {m_unregistered, m_identify, m_ignore, m_ignore, m_identify, m_ignore}
+};
+
 struct Message ms_msgtab = {
   "MS", 0, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_memoserv, m_ignore, m_ignore, m_memoserv, m_ignore}
+};
+
+struct Message ns_msgtab = {
+  "NS", 0, 0, 1, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_nickserv, m_ignore, m_ignore, m_nickserv, m_ignore}
 };
 
 struct Message os_msgtab = {
@@ -198,7 +206,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.15 $";
+const char *_version = "$Revision: 1.16 $";
 #endif
 
 /*
@@ -264,21 +272,19 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
 
   
 /*
- * SERV_FUNC()
- *
  * These generate the services functions through
  * a macro.
  */
-SERV_FUNC(m_chanserv, "ChanServ", "CHANSERV")
-SERV_FUNC(m_global,   "Global",   "GLOBAL"  )
-SERV_FUNC(m_helpserv, "HelpServ", "HELPSERV")
-SERV_FUNC(m_memoserv, "MemoServ", "MEMOSERV")
-SERV_FUNC(m_nickserv, "NickServ", "NICKSERV")
-SERV_FUNC(m_operserv, "OperServ", "OPERSERV")
-SERV_FUNC(m_seenserv, "SeenServ", "SEENSERV")
-SERV_FUNC(m_statserv, "StatServ", "STATSERV")
-SERV_FUNC(m_botserv,   "BotServ", "BOTSERV")
-SERV_FUNC(m_hostserv, "HostServ", "HOSTSERV")
+services_function(m_botserv,  "BotServ",  "BOTSERV" )
+services_function(m_chanserv, "ChanServ", "CHANSERV")
+services_function(m_global,   "Global",   "GLOBAL"  )
+services_function(m_helpserv, "HelpServ", "HELPSERV")
+services_function(m_hostserv, "HostServ", "HOSTSERV")
+services_function(m_memoserv, "MemoServ", "MEMOSERV")
+services_function(m_nickserv, "NickServ", "NICKSERV")
+services_function(m_operserv, "OperServ", "OPERSERV")
+services_function(m_seenserv, "SeenServ", "SEENSERV")
+services_function(m_statserv, "StatServ", "STATSERV")
 
 /*
  * GetString()
