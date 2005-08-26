@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.34 2005/08/11 01:06:44 db Exp $
+ *  $Id: channel_mode.h,v 7.35 2005/08/26 13:42:07 db Exp $
  */
 
 
@@ -67,6 +67,10 @@ extern void unset_chcap_usage_counts(struct Client *);
 #define MODE_TOPICLIMIT 0x0008
 #define MODE_INVITEONLY 0x0010
 #define MODE_NOPRIVMSGS 0x0020
+
+/* cache flags for silence on ban */
+#define CHFL_BAN_CHECKED  0x0080
+#define CHFL_BAN_SILENCED 0x0100
 
 #define MODE_QUERY  0
 #define MODE_ADD    1

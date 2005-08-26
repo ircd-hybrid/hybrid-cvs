@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.159 2005/08/17 16:02:52 michael Exp $
+ *  $Id: channel_mode.c,v 7.160 2005/08/26 13:42:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -48,6 +48,7 @@
 static char *check_string(char *s);
 static char *fix_key(char *);
 static char *fix_key_old(char *);
+static void clear_ban_cache(struct Channel *chptr);
 
 static void chm_nosuch(struct Client *, struct Client *,
                        struct Channel *, int, int *, char **, int *, int,
@@ -676,6 +677,8 @@ chm_ban(struct Client *client_p, struct Client *source_p,
       assert(0);
   }
 
+  if (ConfigChannel.quiet_on_ban)
+    clear_ban_cache(chptr);
   mode_changes[mode_count].letter = c;
   mode_changes[mode_count].dir = dir;
   mode_changes[mode_count].caps = 0;
@@ -763,6 +766,8 @@ chm_except(struct Client *client_p, struct Client *source_p,
       assert(0);
   }
 
+  if (ConfigChannel.quiet_on_ban)
+    clear_ban_cache(chptr);
   mode_changes[mode_count].letter = c;
   mode_changes[mode_count].dir = dir;
   mode_changes[mode_count].caps = CAP_EX;
@@ -867,6 +872,24 @@ chm_invex(struct Client *client_p, struct Client *source_p,
 
   mode_changes[mode_count].id = NULL;
   mode_changes[mode_count++].arg = mask;
+}
+
+/*
+ * inputs	- pointer to channel
+ * output	- none
+ * side effects	- clear ban cache
+ */
+static void
+clear_ban_cache(struct Channel *chptr)
+{
+  dlink_node *cptr;
+  struct Membership *ms;
+
+  DLINK_FOREACH(cptr, chptr->locmembers.head)
+  {
+    ms = (struct Membership *) cptr->data;
+    ms->flags &= ~(CHFL_BAN_SILENCED|CHFL_BAN_CHECKED);
+  }
 }
 
 static void

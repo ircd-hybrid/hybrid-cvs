@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.444 2005/08/25 17:14:41 db Exp $
+ * \version $Id: channel.c,v 7.445 2005/08/26 13:42:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -686,17 +686,35 @@ can_send(struct Channel *chptr, struct Client *source_p)
 
   ms = find_channel_link(source_p, chptr);
 
-  if ((ms != NULL) && ms->flags & (CHFL_CHANOP|CHFL_HALFOP|CHFL_VOICE))
-     return(CAN_SEND_OPV);
+  if (ms == NULL)
+  {
+    if(chptr->mode.mode & MODE_NOPRIVMSGS)
+      return(CAN_SEND_NO);
+  }
+  else
+  {
+    if (ms->flags & (CHFL_CHANOP|CHFL_HALFOP|CHFL_VOICE))
+      return(CAN_SEND_OPV);
+
+    /* cache can send if quiet_on_ban and banned */
+    if (ConfigChannel.quiet_on_ban && MyClient(source_p))
+    {
+      if (ms->flags & CHFL_BAN_SILENCED)
+	return(CAN_SEND_NO);
+      if ((ms->flags & CHFL_BAN_CHECKED) == 0)
+      {
+	if (is_banned(chptr, source_p))
+	{
+	  ms->flags |= (CHFL_BAN_CHECKED|CHFL_BAN_SILENCED);
+	  return(CAN_SEND_NO);
+	}
+	else
+	  ms->flags |= CHFL_BAN_CHECKED;
+      }
+    }
+  }
 
   if (chptr->mode.mode & MODE_MODERATED)
-    return(CAN_SEND_NO);
-
-  if (ConfigChannel.quiet_on_ban && MyClient(source_p) &&
-      is_banned(chptr, source_p))
-    return(CAN_SEND_NO);
-
-  if ((chptr->mode.mode & MODE_NOPRIVMSGS) && ms == NULL)
     return(CAN_SEND_NO);
 
   return(CAN_SEND_NONOP);
