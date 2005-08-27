@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.16 2005/08/26 15:03:52 knight Exp $
+ *  $Id: m_services.c,v 1.17 2005/08/27 14:18:24 knight Exp $
  */
 
 /* MODULE CONFIGURATION FOLLOWS -- please read!! */
@@ -83,7 +83,7 @@ static void deliver_services_msg(const char *, const char *, struct Client *,
 /* SVS commands */
 struct Message svsnick_msgtab = {
   "SVSNICK", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, mo_svsnick, m_ignore, mo_svsnick, m_ignore}
+  {m_unregistered, m_not_oper, mo_svsnick, mo_svsnick, mo_svsnick, m_ignore}
 };
 
 /* Services */
@@ -206,7 +206,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.16 $";
+const char *_version = "$Revision: 1.17 $";
 #endif
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_change.c,v 1.6 2005/08/27 01:47:27 knight Exp $
+ *  $Id: m_change.c,v 1.7 2005/08/27 14:18:24 knight Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -48,17 +48,17 @@ static void mo_chgname(struct Client *, struct Client *, int, char *[]);
 
 struct Message chgident_msgtab = {
   "CHGIDENT", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, mo_chgident, m_ignore, mo_chgident, m_ignore}
+  {m_unregistered, m_not_oper, mo_chgident, mo_chgident, mo_chgident, m_ignore}
 };
 
 struct Message chghost_msgtab = {
   "CHGHOST", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, mo_chghost, m_ignore, mo_chghost, m_ignore}
+  {m_unregistered, m_not_oper, mo_chghost, mo_chghost, mo_chghost, m_ignore}
 };
 
 struct Message chgname_msgtab = {
   "CHGNAME", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, mo_chgname, m_ignore, mo_chgname, m_ignore}
+  {m_unregistered, m_not_oper, mo_chgname, mo_chgname, mo_chgname, m_ignore}
 };
 
 void
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&chgident_msgtab);
 }
 
-const char *_version = "$Revision: 1.6 $";
+const char *_version = "$Revision: 1.7 $";
 
 static void
 mo_chgident(struct Client *client_p, struct Client *source_p,
