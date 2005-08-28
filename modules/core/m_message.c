@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.145 2005/08/21 17:19:16 knight Exp $
+ *  $Id: m_message.c,v 1.146 2005/08/28 01:49:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -102,12 +102,17 @@ struct Message notice_msgtab = {
   {m_unregistered, m_notice, m_notice, m_ignore, m_notice, m_ignore}
 };
 
+struct Callback *client_message;
+struct Callback *channel_message;
+
 #ifndef STATIC_MODULES
 void
 _modinit(void)
 {
   mod_add_cmd(&privmsg_msgtab);
   mod_add_cmd(&notice_msgtab);
+  client_message = register_callback("client_message", NULL);
+  channel_message = register_callback("channel_message", NULL);
 }
 
 void
@@ -117,7 +122,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.145 $";
+const char *_version = "$Revision: 1.146 $";
 #endif
 
 /*
@@ -484,6 +489,8 @@ msg_channel(int p_or_n, const char *command, struct Client *client_p,
       source_p->localClient->last = CurrentTime;
   }
 
+  execute_callback(channel_message, source_p, chptr, text);
+
   /* chanops and voiced can flood their own channel with impunity */
   if ((result = can_send(chptr, source_p)))
   {
@@ -600,6 +607,8 @@ msg_client(int p_or_n, const char *command, struct Client *source_p,
     if ((p_or_n != NOTICE) && (source_p != target_p))
       source_p->localClient->last = CurrentTime;
   }
+
+  execute_callback(client_message, source_p, target_p, text);
 
   if (MyConnect(source_p) && (p_or_n != NOTICE) && target_p->away)
     sendto_one(source_p, form_str(RPL_AWAY), me.name,
