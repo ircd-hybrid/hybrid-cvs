@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.467 2005/08/29 09:10:24 adx Exp $
+ *  $Id: client.c,v 7.468 2005/08/29 09:14:52 adx Exp $
  */
 
 #include "stdinc.h"
@@ -297,8 +297,7 @@ check_pings_list(dlink_list *list)
            * If the client/server hasn't talked to us in 2*ping seconds
            * and it has a ping time, then close its connection.
            */
-          if (IsServer(client_p) || IsConnecting(client_p) ||
-              IsHandshake(client_p))
+          if (IsServer(client_p) || IsHandshake(client_p))
 	  {
 	    sendto_realops_flags(UMODE_ALL, L_ADMIN,
 				 "No response from %s, closing link",
@@ -314,9 +313,8 @@ check_pings_list(dlink_list *list)
 
           exit_client(client_p, &me, scratch);
         }
-        else if (pingwarn > 0 && (IsServer(client_p) || IsConnecting(client_p) ||
-                 IsHandshake(client_p)) && CurrentTime - client_p->lasttime >=
-                 ping + pingwarn)
+        else if (pingwarn > 0 && (IsServer(client_p) || IsHandshake(client_p))
+	         && CurrentTime - client_p->lasttime >= ping + pingwarn)
         {
           /*
            * If the server hasn't replied in pingwarn seconds after sending
