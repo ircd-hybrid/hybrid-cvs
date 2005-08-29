@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.244 2005/08/18 00:52:09 db Exp $
+ *  $Id: client.h,v 7.245 2005/08/29 11:22:34 adx Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -358,7 +358,7 @@ struct LocalUser
 #define FLAGS_BURSTED     0x08000000 /* user was already bursted                 */
 #define FLAGS_EXEMPTRESV  0x10000000 /* client is exempt from RESV               */
 #define FLAGS_GOTUSER     0x20000000 /* if we received a USER command            */
-/*                        0x40000000  */
+#define FLAGS_PINGWARNING 0x40000000 /* unreplied ping warning already sent      */
 /*                        0x80000000  */
 
 
@@ -471,6 +471,10 @@ struct LocalUser
 #define SetPingSent(x)		((x)->flags |= FLAGS_PINGSENT)
 #define IsPingSent(x)		((x)->flags & FLAGS_PINGSENT)
 #define ClearPingSent(x)	((x)->flags &= ~FLAGS_PINGSENT)
+
+#define SetPingWarning(x)       ((x)->flags |= FLAGS_PINGWARNING)
+#define IsPingWarning(x)        ((x)->flags & FLAGS_PINGWARNING)
+#define ClearPingWarning(x)     ((x)->flags &= ~FLAGS_PINGWARNING)
 
 #define SetNeedId(x)            ((x)->flags |= FLAGS_NEEDID)
 #define IsNeedId(x)             ((x)->flags & FLAGS_NEEDID)

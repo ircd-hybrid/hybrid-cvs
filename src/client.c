@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.468 2005/08/29 09:14:52 adx Exp $
+ *  $Id: client.c,v 7.469 2005/08/29 11:22:35 adx Exp $
  */
 
 #include "stdinc.h"
@@ -286,6 +286,7 @@ check_pings_list(dlink_list *list)
 	 * it is still alive.
 	 */
 	SetPingSent(client_p);
+	ClearPingWarning(client_p);
 	client_p->lasttime = CurrentTime - ping;
 	sendto_one(client_p, "PING :%s", ID_or_name(&me, client_p));
       }
@@ -313,13 +314,15 @@ check_pings_list(dlink_list *list)
 
           exit_client(client_p, &me, scratch);
         }
-        else if (pingwarn > 0 && (IsServer(client_p) || IsHandshake(client_p))
-	         && CurrentTime - client_p->lasttime >= ping + pingwarn)
+        else if (!IsPingWarning(client_p) && pingwarn > 0 &&
+	         (IsServer(client_p) || IsHandshake(client_p)) &&
+	         CurrentTime - client_p->lasttime >= ping + pingwarn)
         {
           /*
            * If the server hasn't replied in pingwarn seconds after sending
            * the PING, notify the opers so that they are aware of the problem.
            */
+	  SetPingWarning(client_p);
           sendto_realops_flags(UMODE_ALL, L_ADMIN,
 	                       "Warning, no response from %s in %d seconds",
 	                       get_client_name(client_p, HIDE_IP), pingwarn);
