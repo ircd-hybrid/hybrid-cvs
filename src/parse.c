@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.202 2005/07/31 05:32:41 adx Exp $
+ *  $Id: parse.c,v 7.203 2005/08/29 21:02:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -810,7 +810,7 @@ do_numeric(char numeric[], struct Client *client_p, struct Client *source_p,
        */
       num = atoi(numeric);
 
-      if ((num != ERR_NOSUCHNICK) && (num != ERR_NOTARGET))
+      if ((num != ERR_NOSUCHNICK))
         sendto_realops_flags(UMODE_ALL, L_ADMIN,
 			     "*** %s(via %s) sent a %s numeric to me: %s",
 			     source_p->name, client_p->name, numeric, buffer);

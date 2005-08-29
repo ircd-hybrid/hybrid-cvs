@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.146 2005/08/28 01:49:28 db Exp $
+ *  $Id: m_message.c,v 1.147 2005/08/29 21:02:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -122,7 +122,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.146 $";
+const char *_version = "$Revision: 1.147 $";
 #endif
 
 /*
@@ -427,11 +427,7 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
         return -1;
       else if (p_or_n != NOTICE)
       {
-        if (IsDigit(*nick) && IsServer(client_p))
-	  sendto_one(source_p, form_str(ERR_NOTARGET),
-		     ID_or_name(&me, client_p),
-		     ID_or_name(source_p, client_p));
-	else
+        if (!IsDigit(*nick))
 	  sendto_one(source_p, form_str(ERR_NOSUCHNICK),
 		     ID_or_name(&me, client_p),
 		     ID_or_name(source_p, client_p), nick);

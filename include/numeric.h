@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.49 2005/08/17 22:36:59 metalrock Exp $
+ *  $Id: numeric.h,v 7.50 2005/08/29 21:02:50 db Exp $
  */
 
 #ifndef INCLUDED_numeric_h
@@ -317,7 +317,6 @@ extern const char *get_locale(void);
 #define ERR_TOOMANYTARGETS   407
 #define ERR_NOORIGIN         409
 
-#define ERR_NOTARGET         410
 #define ERR_NORECIPIENT      411
 #define ERR_NOTEXTTOSEND     412
 #define ERR_NOTOPLEVEL       413

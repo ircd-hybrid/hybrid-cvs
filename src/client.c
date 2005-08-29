@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.469 2005/08/29 11:22:35 adx Exp $
+ *  $Id: client.c,v 7.470 2005/08/29 21:02:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -596,11 +596,7 @@ find_chasing(struct Client *client_p, struct Client *source_p, const char *user,
     return(who);
 
   if (IsDigit(*user))
-  {
-    sendto_one(source_p, form_str(ERR_NOTARGET),
-               me.name, source_p->name);
     return(NULL);
-  }
 
   if ((who = get_history(user,
 			(time_t)ConfigFileEntry.kill_chase_time_limit))

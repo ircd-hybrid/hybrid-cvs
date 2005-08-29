@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.93 2005/08/17 16:02:52 michael Exp $
+ *  $Id: m_kill.c,v 1.94 2005/08/29 21:02:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.93 $";
+const char *_version = "$Revision: 1.94 $";
 #endif
 
 /* mo_kill()
@@ -118,7 +118,6 @@ mo_kill(struct Client *client_p, struct Client *source_p,
 				(time_t)ConfigFileEntry.kill_chase_time_limit))
 				== NULL)
     {
-      /* Don't need an ERR_NOTARGET here, since its a local oper -db */
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                  me.name, source_p->name, user);
       return;
@@ -226,16 +225,10 @@ ms_kill(struct Client *client_p, struct Client *source_p,
        * not an uid, automatically rewrite the KILL for this new nickname.
        * --this keeps servers in synch when nick change and kill collide
        */
-    if (IsDigit(*user))
-    {
-      sendto_one(source_p, form_str(ERR_NOTARGET),
-		 me.name, source_p->name);
-      return;
-    }
-    else if((target_p =
+    if((target_p =
 	     get_history(user,
 			 (time_t)ConfigFileEntry.kill_chase_time_limit))
-	    == NULL)
+	    == NULL && !IsDigit(*user))
     {
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
 		 me.name, source_p->name, user);

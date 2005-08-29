@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.93 2005/08/25 10:16:02 michael Exp $
+$Id: Hybrid-team,v 7.94 2005/08/29 21:02:50 db Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -42,6 +42,7 @@ jv, Jakub Vlasek <jv@pilsedu.cz>
 k9, Jeremy Chadwick <ircd@jdc.parodius.com>
 kre, Dinko Korunic <kreator@fly.srk.fer.hr>
 madmax, Paul Lomax <madmax@efnet.org>
+nenolod, William Pitcock <nenolod@nenolod.net>
 Riedel, Dennis Vink, <riedel@chaotic.nl>
 scuzzy, David Todd <scuzzy@aniverse.net>
 spookey, David Colburn <spookey@spookey.org>
