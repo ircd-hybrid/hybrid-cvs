@@ -1,10 +1,15 @@
 -- ircd-hybrid-7.2beta1 RELNOTES
 o) Usermode +G, like +g, but allow messaging from people on common channels
-o) Support for client SSL
-o) /rxline, a command for setting regexp X-lines
-o) Native win32 build
 o) Usermode +D - "deaf", don't receive channel messages
-
+o) RXLINE and RKLINE - commands for setting regexp K/X lines
+o) ping_warning, a class{} option to notify opers before "Ping timeout"
+o) New hooking system, support for modular usermodes, iauth etc.
+o) Network I/O speedups
+o) Various cleanups and bugfixes
+o) Support for client SSL
+o) Support for services (contrib/m_services.c)
+o) IP cloaking module (contrib/ip_cloaking.c)
+o) Native win32 build
 
 --------------------------------------------------------------------------------
 
@@ -49,4 +54,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.112 2005/08/16 01:02:12 lusky Exp $
+$Id: RELNOTES,v 1.113 2005/08/29 09:31:16 adx Exp $
