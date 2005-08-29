@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.432 2005/08/21 17:19:16 knight Exp $
+ *  $Id: ircd_parser.y,v 1.433 2005/08/29 09:10:24 adx Exp $
  */
 
 %{
@@ -268,6 +268,7 @@ unhook_hub_leaf_confs(void)
 %token  PATH
 %token  PING_COOKIE
 %token  PING_TIME
+%token  PING_WARNING
 %token  PORT
 %token  QSTRING
 %token  QUIET_ON_BAN
@@ -1391,6 +1392,7 @@ class_name_b: | class_name_t;
 class_items:    class_items class_item | class_item;
 class_item:     class_name |
                 class_ping_time |
+		class_ping_warning |
                 class_number_per_ip |
                 class_connectfreq |
                 class_max_number |
@@ -1427,6 +1429,7 @@ class_name: NAME '=' QSTRING ';'
       if (class != NULL)
       {
         PingFreq(class) = PingFreq(yy_class);
+	PingWarning(class) = PingWarning(yy_class);
         MaxPerIp(class) = MaxPerIp(yy_class);
         ConFreq(class) = ConFreq(yy_class);
         MaxTotal(class) = MaxTotal(yy_class);
@@ -1473,6 +1476,7 @@ class_name_t: QSTRING
       if (class != NULL)
       {
         PingFreq(class) = PingFreq(yy_class);
+	PingWarning(class) = PingWarning(yy_class);
         MaxPerIp(class) = MaxPerIp(yy_class);
         ConFreq(class) = ConFreq(yy_class);
         MaxTotal(class) = MaxTotal(yy_class);
@@ -1496,6 +1500,12 @@ class_ping_time: PING_TIME '=' timespec ';'
 {
   if (ypass == 1)
     PingFreq(yy_class) = $3;
+};
+
+class_ping_warning: PING_WARNING '=' timespec ';'
+{
+  if (ypass == 1)
+    PingWarning(yy_class) = $3;
 };
 
 class_number_per_ip: NUMBER_PER_IP '=' NUMBER ';'

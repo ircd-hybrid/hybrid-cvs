@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.317 2005/08/21 17:19:16 knight Exp $
+ *  $Id: s_conf.h,v 7.318 2005/08/29 09:10:24 adx Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -126,6 +126,7 @@ struct ClassItem
   long max_sendq;
   int con_freq;
   int ping_freq;
+  int ping_warning;
   int max_total;
   int max_local;
   int max_global;
@@ -136,6 +137,7 @@ struct ClassItem
 
 #define ConFreq(x)	((x)->con_freq)
 #define PingFreq(x)	((x)->ping_freq)
+#define PingWarning(x)  ((x)->ping_warning)
 #define MaxTotal(x)	((x)->max_total)
 #define MaxGlobal(x)	((x)->max_global)
 #define MaxLocal(x)	((x)->max_local)
@@ -462,7 +464,7 @@ extern int valid_wild_card(struct Client *, int, int, ...);
 extern unsigned long get_sendq(struct Client *);
 extern int get_con_freq(struct ClassItem *);
 extern const char *get_client_class(struct Client *);
-extern int get_client_ping(struct Client *);
+extern int get_client_ping(struct Client *, int *);
 extern void check_class(void);
 extern void init_class(void);
 extern struct ConfItem *find_class(const char *);

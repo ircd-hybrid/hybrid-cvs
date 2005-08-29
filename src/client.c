@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.466 2005/08/23 14:06:44 db Exp $
+ *  $Id: client.c,v 7.467 2005/08/29 09:10:24 adx Exp $
  */
 
 #include "stdinc.h"
@@ -228,7 +228,7 @@ check_pings_list(dlink_list *list)
 {
   char scratch[32];        /* way too generous but... */
   struct Client *client_p; /* current local client_p being examined */
-  int ping = 0;            /* ping time value from client */
+  int ping, pingwarn;      /* ping time value from client */
   dlink_node *ptr, *next_ptr;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, list->head)
@@ -272,21 +272,33 @@ check_pings_list(dlink_list *list)
     }
 
     if (!IsRegistered(client_p))
-      ping = CONNECTTIMEOUT;
+      ping = CONNECTTIMEOUT, pingwarn = 0;
     else
-      ping = get_client_ping(client_p);
+      ping = get_client_ping(client_p, &pingwarn);
 
-    if (ping < (CurrentTime - client_p->lasttime))
+    if (ping < CurrentTime - client_p->lasttime)
     {
-      /*
-       * If the client/server hasnt talked to us in 2*ping seconds
-       * and it has a ping time, then close its connection.
-       */
-      if (((CurrentTime - client_p->lasttime) >= (2 * ping) &&
-	   IsPingSent(client_p)))
+      if (!IsPingSent(client_p))
       {
-	if (IsServer(client_p) || IsConnecting(client_p) ||
-	    IsHandshake(client_p))
+	/*
+	 * if we havent PINGed the connection and we havent
+	 * heard from it in a while, PING it to make sure
+	 * it is still alive.
+	 */
+	SetPingSent(client_p);
+	client_p->lasttime = CurrentTime - ping;
+	sendto_one(client_p, "PING :%s", ID_or_name(&me, client_p));
+      }
+      else
+      {
+        if (CurrentTime - client_p->lasttime >= 2 * ping)
+        {
+          /*
+           * If the client/server hasn't talked to us in 2*ping seconds
+           * and it has a ping time, then close its connection.
+           */
+          if (IsServer(client_p) || IsConnecting(client_p) ||
+              IsHandshake(client_p))
 	  {
 	    sendto_realops_flags(UMODE_ALL, L_ADMIN,
 				 "No response from %s, closing link",
@@ -297,22 +309,28 @@ check_pings_list(dlink_list *list)
 	    ilog(L_NOTICE, "No response from %s, closing link",
 		 get_client_name(client_p, HIDE_IP));
 	  }
-	ircsprintf(scratch, "Ping timeout: %d seconds",
-                   (int)(CurrentTime - client_p->lasttime));
+          ircsprintf(scratch, "Ping timeout: %d seconds",
+                     (int)(CurrentTime - client_p->lasttime));
 
-	exit_client(client_p, &me, scratch);
-	continue;
-      }
-      else if (!IsPingSent(client_p))
-      {
-	/*
-	 * if we havent PINGed the connection and we havent
-	 * heard from it in a while, PING it to make sure
-	 * it is still alive.
-	 */
-	SetPingSent(client_p);
-	client_p->lasttime = CurrentTime - ping;
-	sendto_one(client_p, "PING :%s", ID_or_name(&me, client_p));
+          exit_client(client_p, &me, scratch);
+        }
+        else if (pingwarn > 0 && (IsServer(client_p) || IsConnecting(client_p) ||
+                 IsHandshake(client_p)) && CurrentTime - client_p->lasttime >=
+                 ping + pingwarn)
+        {
+          /*
+           * If the server hasn't replied in pingwarn seconds after sending
+           * the PING, notify the opers so that they are aware of the problem.
+           */
+          sendto_realops_flags(UMODE_ALL, L_ADMIN,
+	                       "Warning, no response from %s in %d seconds",
+	                       get_client_name(client_p, HIDE_IP), pingwarn);
+	  sendto_realops_flags(UMODE_ALL, L_OPER,
+	                       "Warning, no response from %s in %d seconds",
+	                       get_client_name(client_p, MASK_IP), pingwarn);
+          ilog(L_NOTICE, "No response from %s in %d seconds",
+	       get_client_name(client_p, HIDE_IP), pingwarn);
+        }
       }
     }
   }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.580 2005/08/22 20:55:48 db Exp $
+ *  $Id: s_conf.c,v 7.581 2005/08/29 09:10:24 adx Exp $
  */
 
 #include "stdinc.h"
@@ -2816,11 +2816,12 @@ get_conf_name(ConfType type)
 /* get_conf_ping()
  *
  * inputs       - pointer to struct AccessItem
+ *              - pointer to a variable that receives ping warning time
  * output       - ping frequency
  * side effects - NONE
  */
 static int
-get_conf_ping(struct ConfItem *conf)
+get_conf_ping(struct ConfItem *conf, int *pingwarn)
 {
   struct ClassItem *aclass;
   struct AccessItem *aconf;
@@ -2831,6 +2832,7 @@ get_conf_ping(struct ConfItem *conf)
     if (aconf->class_ptr != NULL)
     {
       aclass = (struct ClassItem *)map_to_conf(aconf->class_ptr);
+      *pingwarn = PingWarning(aclass);
       return PingFreq(aclass);
     }
   }
@@ -2874,11 +2876,12 @@ get_client_class(struct Client *target_p)
 /* get_client_ping()
  *
  * inputs	- pointer to client struct
+ *              - pointer to a variable that receives ping warning time
  * output	- ping frequency
  * side effects - NONE
  */
 int
-get_client_ping(struct Client *target_p)
+get_client_ping(struct Client *target_p, int *pingwarn)
 {
   int ping;
   struct ConfItem *conf;
@@ -2892,12 +2895,13 @@ get_client_ping(struct Client *target_p)
       if ((conf->type == CLIENT_TYPE) || (conf->type == SERVER_TYPE) ||
 	  (conf->type == OPER_TYPE))
       {
-        ping = get_conf_ping(conf);
+        ping = get_conf_ping(conf, pingwarn);
         if (ping > 0)
           return ping;
       }
     }
 
+  *pingwarn = 0;
   return DEFAULT_PINGFREQUENCY;
 }
 
