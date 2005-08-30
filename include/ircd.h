@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.80 2005/08/19 04:29:01 lusky Exp $
+ *  $Id: ircd.h,v 7.81 2005/08/30 18:28:39 adx Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -39,6 +39,10 @@ struct SetOptions
   int autoconn;      /* autoconn enabled for all servers? */
   int idletime;
   int floodcount;    /* Number of messages in 1 second    */
+  /* XXX for join flood catching - Dianora */
+  int joinfloodtime;
+  int joinfloodcount;
+  /* XXX */
   int ident_timeout; /* timeout for identd lookups        */
   int spam_num;
   int spam_time;

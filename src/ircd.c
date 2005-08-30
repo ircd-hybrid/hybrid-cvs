@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.356 2005/08/20 23:48:43 adx Exp $
+ *  $Id: ircd.c,v 7.357 2005/08/30 18:28:39 adx Exp $
  */
 
 #include "stdinc.h"
@@ -376,6 +376,10 @@ initialize_global_set_options(void)
     GlobalSetOptions.floodcount = ConfigFileEntry.default_floodcount;
   else
     GlobalSetOptions.floodcount = 10;
+
+  /* XXX I have no idea what to try here - Dianora */
+  GlobalSetOptions.joinfloodcount = 16;
+  GlobalSetOptions.joinfloodtime = 8;
 
   split_servers = ConfigChannel.default_split_server_count;
   split_users   = ConfigChannel.default_split_user_count;

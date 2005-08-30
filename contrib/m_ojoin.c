@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ojoin.c,v 1.35 2005/07/31 05:32:25 adx Exp $
+ *  $Id: m_ojoin.c,v 1.36 2005/08/30 18:28:39 adx Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 
 /* mo_ojoin()
@@ -136,7 +136,7 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
     }
     else
     {
-      add_user_to_channel(chptr, source_p, flags);
+      add_user_to_channel(chptr, source_p, flags, NO);
 
       if (chptr->chname[0] == '#')
       {

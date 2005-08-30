@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_clearchan.c,v 1.55 2005/07/31 05:32:25 adx Exp $
+ *  $Id: m_clearchan.c,v 1.56 2005/08/30 18:28:39 adx Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif
 
 /*
@@ -169,7 +169,7 @@ kick_list(struct Client *client_p, struct Client *source_p,
 
   /* Join the user themselves to the channel down here, so they dont see a nicklist 
    * or people being kicked */
-  add_user_to_channel(chptr, source_p, CHFL_CHANOP);
+  add_user_to_channel(chptr, source_p, CHFL_CHANOP, NO);
 
   DLINK_FOREACH_SAFE(m, next_m, chptr->members.head)
   {

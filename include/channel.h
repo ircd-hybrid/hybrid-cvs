@@ -21,7 +21,7 @@
 
 /*! \file channel.h
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.h,v 7.163 2005/07/22 15:28:49 michael Exp $
+ * \version $Id: channel.h,v 7.164 2005/08/30 18:28:39 adx Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -64,6 +64,9 @@ struct Channel
   time_t first_received_message_time; /*!< channel flood control */
   int received_number_of_privmsgs;
   char flood_noticed;
+  char join_flood_noticed;
+  float number_joined;
+  time_t last_join_time;
 
   time_t channelts;
   char chname[CHANNELLEN + 1];
@@ -103,7 +106,8 @@ extern int has_member_flags(struct Membership *, unsigned int);
 
 extern void remove_ban(struct Ban *, dlink_list *);
 extern void init_channels(void);
-extern void add_user_to_channel(struct Channel *, struct Client *, unsigned int);
+extern void add_user_to_channel(struct Channel *, struct Client *,
+                                unsigned int, int);
 extern void remove_user_from_channel(struct Membership *);
 extern void channel_member_names(struct Client *, struct Channel *, int);
 extern void add_invite(struct Channel *, struct Client *);

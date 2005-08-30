@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.65 2005/08/17 16:02:51 michael Exp $
+ *   $Id: m_operspy.c,v 1.66 2005/08/30 18:28:39 adx Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -140,7 +140,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.65 $";
+const char *_version = "$Revision: 1.66 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -295,7 +295,7 @@ operspy_names(struct Client *client_p, int parc, char *parv[])
    * is that your nickname shows up in the list.  for now, there is
    * no easy way around it.
    */ 
-  add_user_to_channel(chptr_names, client_p, CHFL_CHANOP);
+  add_user_to_channel(chptr_names, client_p, CHFL_CHANOP, NO);
   channel_member_names(client_p, chptr_names, 1);
   remove_user_from_channel(find_channel_link(client_p, chptr_names));
 }

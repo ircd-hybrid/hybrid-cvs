@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lljoin.c,v 1.69 2005/07/31 05:32:36 adx Exp $
+ *  $Id: m_lljoin.c,v 1.70 2005/08/30 18:28:39 adx Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&lljoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.69 $";
+const char *_version = "$Revision: 1.70 $";
 #endif
 /*
  * m_lljoin
@@ -185,7 +185,7 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
 	     chptr->chname,
 	     nick);
 
-  add_user_to_channel(chptr, target_p, flags);
+  add_user_to_channel(chptr, target_p, flags, YES);
 
   sendto_channel_local(ALL_MEMBERS, NO, chptr,
 		       ":%s!%s@%s JOIN :%s",

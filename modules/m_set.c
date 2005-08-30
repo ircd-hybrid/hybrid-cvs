@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.60 2005/08/02 14:42:47 michael Exp $
+ *  $Id: m_set.c,v 1.61 2005/08/30 18:28:39 adx Exp $
  */
 
 /* rewritten by jdc */
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.60 $";
+const char *_version = "$Revision: 1.61 $";
 #endif
 
 /* Structure used for the SET table itself */
@@ -93,7 +93,8 @@ static void quote_splitmode(struct Client *, char *);
 static void quote_splitnum(struct Client *, int);
 static void quote_splitusers(struct Client *, int);
 static void list_quote_commands(struct Client *);
-
+static void quote_jfloodtime(struct Client *, int);
+static void quote_jfloodcount(struct Client *, int);
 
 /* 
  * If this ever needs to be expanded to more than one arg of each
@@ -120,6 +121,8 @@ static struct SetStruct set_cmd_table[] =
   { "SPLITMODE",	quote_splitmode,	1,	0 },
   { "SPLITNUM",		quote_splitnum,		0,	1 },
   { "SPLITUSERS",	quote_splitusers,	0,	1 },
+  { "JFLOODTIME",	quote_jfloodtime,	0,	1 },
+  { "JFLOODCOUNT",	quote_jfloodcount,	0,	1 },
   /* -------------------------------------------------------- */
   { NULL,		NULL,		0,	0 }
 };
@@ -517,6 +520,38 @@ quote_splitusers(struct Client *source_p, int newval)
   else
     sendto_one(source_p, ":%s NOTICE %s :SPLITUSERS is currently %i", 
                me.name, source_p->name, split_users);
+}
+
+/* SET JFLOODTIME */
+static void
+quote_jfloodtime(struct Client *source_p, int newval)
+{
+  if (newval >= 0)
+  {
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "%s has changed JFLOODTIME to %i", 
+			 source_p->name, newval);
+    GlobalSetOptions.joinfloodtime = newval;
+  }
+  else
+    sendto_one(source_p, ":%s NOTICE %s :JFLOODTIME is currently %i", 
+               me.name, source_p->name, GlobalSetOptions.joinfloodtime);
+}
+
+/* SET JFLOODCOUNT */
+static void
+quote_jfloodcount(struct Client *source_p, int newval)
+{
+  if (newval >= 0)
+  {
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "%s has changed JFLOODCOUNT to %i", 
+			 source_p->name, newval);
+    GlobalSetOptions.joinfloodcount = newval;
+  }
+  else
+    sendto_one(source_p, ":%s NOTICE %s :JFLOODCOUNT is currently %i", 
+               me.name, source_p->name, GlobalSetOptions.joinfloodcount);
 }
 
 /*

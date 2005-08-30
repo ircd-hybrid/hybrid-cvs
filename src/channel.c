@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.445 2005/08/26 13:42:07 db Exp $
+ * \version $Id: channel.c,v 7.446 2005/08/30 18:28:39 adx Exp $
  */
 
 #include "stdinc.h"
@@ -79,15 +79,41 @@ init_channels(void)
 
 /*! \brief adds a user to a channel by adding another link to the
  *         channels member chain.
- * \param chptr pointer to channel to add client to
- * \param who   pointer to client (who) to add
- * \param flags flags for chanops etc
+ * \param chptr      pointer to channel to add client to
+ * \param who        pointer to client (who) to add
+ * \param flags      flags for chanops etc
+ * \param flood_ctrl whether to count this join in flood calculations
  */
 void
 add_user_to_channel(struct Channel *chptr, struct Client *who,
-                    unsigned int flags)
+                    unsigned int flags, int flood_ctrl)
 {
   struct Membership *ms;
+
+  if (flood_ctrl)
+    chptr->number_joined++;
+  chptr->number_joined -= (chptr->last_join_time - CurrentTime) *
+    GlobalSetOptions.joinfloodcount / GlobalSetOptions.joinfloodtime;
+
+  if (chptr->number_joined <= 0)
+  {
+    chptr->number_joined = 0;
+    chptr->join_flood_noticed = NO;
+  }
+  else if (chptr->number_joined >= GlobalSetOptions.joinfloodcount)
+  {
+    chptr->number_joined = GlobalSetOptions.joinfloodcount;
+    if (!chptr->join_flood_noticed)
+    {
+      chptr->join_flood_noticed = YES;
+      sendto_realops_flags(UMODE_BOTS, L_ALL,
+                           "Possible Join Flooder %s on %s target: %s",
+			   get_client_name(who, HIDE_IP),
+			   who->servptr->name, chptr->chname);
+    }
+  }
+
+  chptr->last_join_time = CurrentTime;
 
   ms = BlockHeapAlloc(member_heap);
   ms->client_p = who;

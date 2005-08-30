@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.204 2005/08/17 16:02:52 michael Exp $
+ *  $Id: m_sjoin.c,v 1.205 2005/08/30 18:28:39 adx Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.204 $";
+const char *_version = "$Revision: 1.205 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -102,8 +102,9 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   time_t         tstosend;
   static         struct Mode mode, *oldmode;
   int            args = 0;
-  int            keep_our_modes = 1;
-  int            keep_new_modes = 1;
+  char           keep_our_modes = YES;
+  char           keep_new_modes = YES;
+  char           have_many_nicks = NO;
   int            lcount;
   char           nick_prefix[4];
   char           uid_prefix[4];
@@ -300,18 +301,19 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   *mbuf++ = '+';
 
   s = parv[args + 4];
-  
-  do 
+  while (*s == ' ')
+    s++;
+  if ((p = strchr(s, ' ')) != NULL)
   {
-    int valid_mode = 1;
+    *p++ = '\0';
+    while (*p == ' ')
+      p++;
+    have_many_nicks = *p;
+  }
 
-    while (*s == ' ')
-      s++;
-    if (*s == '\0')
-      break;
-    if ((p = strchr(s, ' ')) != NULL)
-      *p++ = '\0';
-
+  while (*s)
+  {
+    int valid_mode = YES;
     fl = 0;
 
     do
@@ -333,10 +335,10 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         s++;
 	break;
       default:
-	valid_mode = 0;
+	valid_mode = NO;
 	break;
       }
-    } while(valid_mode);
+    } while (valid_mode);
 
     target_p = find_chasing(client_p, source_p, s, NULL);
 
@@ -423,7 +425,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
     if (!IsMember(target_p, chptr))
     {
-      add_user_to_channel(chptr, target_p, fl);
+      add_user_to_channel(chptr, target_p, fl, !have_many_nicks);
       sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s!%s@%s JOIN :%s",
                            target_p->name, target_p->username,
                            target_p->host, chptr->chname);
@@ -496,7 +498,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       {
 	sptr = sendbuf;
         *mbuf = '\0';
-        for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+        for (lcount = 0; lcount < MAXMODEPARAMS; lcount++)
         {
           slen = ircsprintf(sptr, " %s", para[lcount]);
 	  sptr += slen;
@@ -511,7 +513,18 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         pargs = 0;
       }
     }
-  } while((s = p) != NULL);
+
+    if ((s = p) == NULL)
+      break;
+    while (*s == ' ')
+      s++;
+    if ((p = strchr(s, ' ')) != NULL)
+    {
+      *p++ = 0;
+      while (*p == ' ')
+        p++;
+    }
+  }
 
   *mbuf = '\0';
   *(nick_ptr - 1) = '\0';

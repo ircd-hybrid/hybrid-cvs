@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.29 2005/08/14 07:26:44 michael Exp $
+ *  $Id: m_join.c,v 1.30 2005/08/30 18:28:39 adx Exp $
  */
 
 #include "stdinc.h"
@@ -88,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 
 /* m_join()
@@ -118,7 +118,7 @@ m_join(struct Client *client_p, struct Client *source_p,
   if ((a = (join_0 >= 0) ? join_0 : 0))
     do_join_0(client_p, source_p);
 
-  for ( ;a<ntargets;++a)                       
+  for (; a < ntargets; a++)
   {
     chptr = targets[a].chptr;
     key = targets[a].key;
@@ -142,7 +142,7 @@ m_join(struct Client *client_p, struct Client *source_p,
     ++successful_join_count;
 
     /* add the user to the channel */
-    add_user_to_channel(chptr, source_p, flags);
+    add_user_to_channel(chptr, source_p, flags, YES);
 
     /*
     **  Set timestamp if appropriate, and propagate
@@ -380,7 +380,7 @@ ms_join(struct Client *client_p, struct Client *source_p,
 
   if (!IsMember(source_p, chptr))
   {
-    add_user_to_channel(chptr, source_p, 0);
+    add_user_to_channel(chptr, source_p, 0, YES);
     sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s!%s@%s JOIN :%s",
                          source_p->name, source_p->username,
                          source_p->host, chptr->chname);

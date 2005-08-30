@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.41 2005/07/31 05:32:25 adx Exp $
+ * $Id: m_force.c,v 1.42 2005/08/30 18:28:39 adx Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 
 /* m_forcejoin()
@@ -164,7 +164,7 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    add_user_to_channel(chptr, target_p, type);
+    add_user_to_channel(chptr, target_p, type, NO);
 
     sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s!%s@%s JOIN :%s",
                          target_p->name, target_p->username,
@@ -254,7 +254,7 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
     }
 
     chptr = get_or_create_channel(target_p, newch, NULL);
-    add_user_to_channel(chptr, target_p, CHFL_CHANOP);
+    add_user_to_channel(chptr, target_p, CHFL_CHANOP, NO);
 
     /* send out a join, make target_p join chptr */
     if (chptr->chname[0] == '#')
