@@ -99,6 +99,7 @@ const char *infotext[] =
   "k9, Jeremy Chadwick <ircd@jdc.parodius.com>",
   "kre, Dinko Korunic <kreator@fly.srk.fer.hr>",
   "madmax, Paul Lomax <madmax@efnet.org>",
+  "nenolod, William Pitcock <nenolod@nenolod.net>",
   "Riedel, Dennis Vink, <riedel@chaotic.nl>",
   "scuzzy, David Todd <scuzzy@aniverse.net>",
   "spookey, David Colburn <spookey@spookey.org>",
