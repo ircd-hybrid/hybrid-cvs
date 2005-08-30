@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.65.2.1 2005/07/30 20:13:34 db Exp $
+# $Id: Makefile.in,v 1.65.2.2 2005/08/30 02:44:15 metalrock Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -98,7 +98,7 @@ hpux_shared: $(OBJS) $(SLOBJS)
 ../modules/libmodules.a:
 	cd ../modules && ${MAKE}
 
-install: install_@MOD_TARGET@ all install_help
+install: all install_@MOD_TARGET@ install_help
 
 install_shared_modules: $(OBJS)
 	mkdir -p $(AUTOMODULEDIR)
