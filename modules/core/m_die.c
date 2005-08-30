@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_die.c,v 1.33 2005/06/12 20:57:13 db Exp $
+ *  $Id: m_die.c,v 1.34 2005/08/30 11:42:02 michael Exp $
  */
 
 #include "stdinc.h"
@@ -37,8 +37,11 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "restart.h"
+#include "sprintf_irc.h"
 
-static void mo_die(struct Client *, struct Client *, int, char **);
+
+static void mo_die(struct Client *, struct Client *, int, char *[]);
 
 struct Message die_msgtab = {
   "DIE", 0, 0, 1, 0, MFLG_SLOW, 0,
@@ -58,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&die_msgtab);
 }
 
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 
 /*
@@ -68,8 +71,7 @@ static void
 mo_die(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
-  struct Client *target_p;
-  dlink_node *ptr;
+  char buf[IRCD_BUFSIZE];
 
   if (!IsOperDie(source_p))
   {
@@ -78,45 +80,21 @@ mo_die(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (parc < 2)
+  if (parc < 2 || EmptyString(parv[1]))
   {
     sendto_one(source_p,":%s NOTICE %s :Need server name /die %s",
                me.name, source_p->name, me.name);
     return;
   }
-  else
+
+  if (irccmp(parv[1], me.name))
   {
-    if (irccmp(parv[1], me.name))
-    {
-      sendto_one(source_p,":%s NOTICE %s :Mismatch on /die %s",
-                 me.name,source_p->name, me.name);
-      return;
-    }
+    sendto_one(source_p,":%s NOTICE %s :Mismatch on /die %s",
+               me.name,source_p->name, me.name);
+    return;
   }
 
-  DLINK_FOREACH(ptr, local_client_list.head)
-  {
-    target_p = ptr->data;
-
-    sendto_one(target_p, ":%s NOTICE %s :Server Terminating. %s",
-               me.name, target_p->name, get_client_name(source_p, HIDE_IP));
-  }
-
-  DLINK_FOREACH(ptr, serv_list.head)
-  {
-    target_p = ptr->data;
-
-    sendto_one(target_p, ":%s ERROR :Terminated by %s",
-               me.name, get_client_name(source_p, HIDE_IP));
-  }
-
-  ilog(L_NOTICE, "Server terminated by %s", get_oper_name(source_p));
-  send_queued_all();
-
-  /* this is a normal exit, tell the os it's ok 
-   */
-  unlink(pidFileName);
-  exit(0);
-  /* NOT REACHED */
+  ircsprintf(buf, "received DIE command from %s",
+             get_client_name(source_p, HIDE_IP));
+  server_die(buf);
 }
-

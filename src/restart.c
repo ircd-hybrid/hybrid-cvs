@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: restart.c,v 7.28 2005/07/26 03:33:05 adx Exp $
+ *  $Id: restart.c,v 7.29 2005/08/30 11:42:02 michael Exp $
  */
 
 #include "stdinc.h"
@@ -71,3 +71,36 @@ server_reboot(void)
   exit(-1);
 }
 
+void
+server_die(const char *mesg)
+{
+  int i = 0;
+  struct Client *target_p = NULL;
+  dlink_node *ptr = NULL;
+
+  DLINK_FOREACH(ptr, local_client_list.head)
+  {
+    target_p = ptr->data;
+
+    sendto_one(target_p, ":%s NOTICE %s :Server terminating: %s",
+               me.name, target_p->name, mesg);
+  }
+
+  DLINK_FOREACH(ptr, serv_list.head)
+  {
+    target_p = ptr->data;
+
+    sendto_one(target_p, ":%s ERROR :Server terminating: %s",
+               me.name, mesg);
+  }
+
+  ilog(L_NOTICE, "Server terminating: %s", mesg);
+  send_queued_all();
+
+  for (i = 0; i < HARD_FDLIMIT; ++i)
+    while (fd_hash[i] != NULL)
+      fd_close(fd_hash[i]);
+
+  unlink(pidFileName);
+  exit(0);
+}

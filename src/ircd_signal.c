@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_signal.c,v 7.16 2005/05/29 13:49:30 michael Exp $
+ *  $Id: ircd_signal.c,v 7.17 2005/08/30 11:42:02 michael Exp $
  */
 
 #include "stdinc.h"
@@ -31,30 +31,14 @@
 #include "s_bsd.h"
 
 /*
- * dummy_handler - don't know if this is really needed but if alarm is still
- * being used we probably will
- */ 
-static void 
-dummy_handler(int sig)
-{
-  /* Empty */
-}
-
-/*
  * sigterm_handler - exit the server
  */
 static void 
 sigterm_handler(int sig)  
 {
-  /* XXX we had a flush_connections() here - we should close all the
-   * connections and flush data. read server_reboot() for my explanation.
-   *     -- adrian
-   */
-  ilog(L_CRIT, "Server killed By SIGTERM");
-  unlink(pidFileName);
-  exit(-1);
+  server_die("received signal SIGTERM");
 }
-  
+
 /* 
  * sighup_handler - reread the server configuration
  */
@@ -137,9 +121,6 @@ setup_signals(void)
 #ifdef SIGTRAP
   sigaction(SIGTRAP, &act, 0);
 #endif
-
-  act.sa_handler = dummy_handler;
-  sigaction(SIGALRM, &act, 0);
 
   act.sa_handler = sighup_handler;
   sigemptyset(&act.sa_mask);
