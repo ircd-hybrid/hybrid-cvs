@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.581 2005/08/29 09:10:24 adx Exp $
+ *  $Id: s_conf.c,v 7.582 2005/08/30 21:57:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -3533,6 +3533,7 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
       luser[0] = '*';
 
     strlcpy(lhost, cluster(target_p->host), HOSTLEN*4 + 1);
+    return 1;
   }
 
   return 0;
