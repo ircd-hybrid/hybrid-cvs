@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.94 2005/08/29 21:02:50 db Exp $
+ *  $Id: m_kill.c,v 1.95 2005/08/30 03:54:08 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.94 $";
+const char *_version = "$Revision: 1.95 $";
 #endif
 
 /* mo_kill()
@@ -92,6 +92,9 @@ mo_kill(struct Client *client_p, struct Client *source_p,
                me.name, source_p->name, "KILL");
     return;
   }
+
+  if (IsDigit(*user))	/* opers shouldn't be trying uids anyway ;-) */
+    return;
 
   if (!IsOperK(source_p) && !IsOperGlobalKill(source_p))
   {
@@ -225,10 +228,11 @@ ms_kill(struct Client *client_p, struct Client *source_p,
        * not an uid, automatically rewrite the KILL for this new nickname.
        * --this keeps servers in synch when nick change and kill collide
        */
-    if((target_p =
-	     get_history(user,
-			 (time_t)ConfigFileEntry.kill_chase_time_limit))
-	    == NULL && !IsDigit(*user))
+    if(IsDigit(*user))	/* Somehow an uid was not found in the hash ! */
+      return;
+    if((target_p = get_history(user,
+		       (time_t)ConfigFileEntry.kill_chase_time_limit))
+       == NULL)
     {
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
 		 me.name, source_p->name, user);
