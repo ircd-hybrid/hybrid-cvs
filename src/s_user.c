@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.373 2005/08/31 02:13:19 db Exp $
+ *  $Id: s_user.c,v 7.374 2005/08/31 11:47:29 db Exp $
  */
 
 #include <sys/types.h>
@@ -1229,7 +1229,7 @@ check_xline(struct Client *source_p)
     {
       sendto_one(source_p, ":%s NOTICE %s :Bad user info",
 		 me.name, source_p->name);
-      source_p->reject_delay = CurrentTime + REJECT_HOLD_TIME;
+      source_p->localClient->reject_delay = CurrentTime + REJECT_HOLD_TIME;
       SetCaptured(source_p);
     }
     else

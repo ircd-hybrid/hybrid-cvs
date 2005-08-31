@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.583 2005/08/31 02:13:19 db Exp $
+ *  $Id: s_conf.c,v 7.584 2005/08/31 11:47:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -876,7 +876,7 @@ check_client(va_list args)
       {
 	sendto_one(source_p, ":%s NOTICE %s :You are not authorized to use this server",
 		   me.name, source_p->name);
-	source_p->reject_delay = CurrentTime + REJECT_HOLD_TIME;
+	source_p->localClient->reject_delay = CurrentTime + REJECT_HOLD_TIME;
 	SetCaptured(source_p);
       }
       else
@@ -891,7 +891,7 @@ check_client(va_list args)
       */
      if (REJECT_HOLD_TIME > 0)
      {
-       source_p->reject_delay = CurrentTime + REJECT_HOLD_TIME;
+       source_p->localClient->reject_delay = CurrentTime + REJECT_HOLD_TIME;
        SetCaptured(source_p);
      }
      else

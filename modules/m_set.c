@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.62 2005/08/31 02:13:18 db Exp $
+ *  $Id: m_set.c,v 1.63 2005/08/31 11:47:29 db Exp $
  */
 
 /* rewritten by jdc */
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.62 $";
+const char *_version = "$Revision: 1.63 $";
 #endif
 
 /* Structure used for the SET table itself */
@@ -563,13 +563,13 @@ quote_rejecttime(struct Client *source_p, int newval)
   if (newval >= 0)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "%s has changed REJECTTIME to %i", 
+                         "%s has changed REJECTTIME to %i seconds", 
 			 source_p->name, newval);
-    GlobalSetOptions.rejecttime = newval*60;
+    GlobalSetOptions.rejecttime = newval;
   }
   else
-    sendto_one(source_p, ":%s NOTICE %s :REJECTTIME is currently %i", 
-               me.name, source_p->name, GlobalSetOptions.rejecttime/60);
+    sendto_one(source_p, ":%s NOTICE %s :REJECTTIME is currently %i seconds", 
+               me.name, source_p->name, GlobalSetOptions.rejecttime);
 }
 
 /*
