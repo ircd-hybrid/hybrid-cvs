@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.147 2005/08/29 21:02:50 db Exp $
+ *  $Id: m_message.c,v 1.148 2005/08/31 01:11:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -122,7 +122,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.147 $";
+const char *_version = "$Revision: 1.148 $";
 #endif
 
 /*
@@ -756,20 +756,20 @@ flood_attack_channel(int p_or_n, struct Client *source_p,
       if (chptr->received_number_of_privmsgs <= 0)
       {
         chptr->received_number_of_privmsgs = 0;
-        chptr->flood_noticed = 0;
+        ClearFloodNoticed(chptr);
       }
     }
 
     if ((chptr->received_number_of_privmsgs >= GlobalSetOptions.floodcount)
-        || chptr->flood_noticed)
+        || IsSetFloodNoticed(chptr))
     {
-      if (chptr->flood_noticed == 0)
+      if (!IsSetFloodNoticed(chptr))
       {
         sendto_realops_flags(UMODE_BOTS, L_ALL,
                              "Possible Flooder %s on %s target: %s",
                              get_client_name(source_p, HIDE_IP),
                              source_p->servptr->name, chptr->chname);
-        chptr->flood_noticed = 1;
+        SetFloodNoticed(chptr);
 
         /* Add a bit of penalty */
         chptr->received_number_of_privmsgs += 2;

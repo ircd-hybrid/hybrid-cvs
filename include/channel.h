@@ -21,7 +21,7 @@
 
 /*! \file channel.h
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.h,v 7.164 2005/08/30 18:28:39 adx Exp $
+ * \version $Id: channel.h,v 7.165 2005/08/31 01:11:28 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -63,8 +63,7 @@ struct Channel
 
   time_t first_received_message_time; /*!< channel flood control */
   int received_number_of_privmsgs;
-  char flood_noticed;
-  char join_flood_noticed;
+  int flags;
   float number_joined;
   time_t last_join_time;
 
@@ -132,4 +131,16 @@ extern struct Membership *find_channel_link(struct Client *, struct Channel *);
 #define IsMember(who, chan) ((find_channel_link(who, chan)) ? 1 : 0)
 #define AddMemberFlag(x, y) ((x)->flags |=  (y))
 #define DelMemberFlag(x, y) ((x)->flags &= ~(y))
+
+#define FLOOD_NOTICED		1
+#define JOIN_FLOOD_NOTICED	2
+
+#define SetFloodNoticed(x)   ((x)->flags |= FLOOD_NOTICED)
+#define IsSetFloodNoticed(x) ((x)->flags & FLOOD_NOTICED)
+#define ClearFloodNoticed(x) ((x)->flags &= ~FLOOD_NOTICED)
+
+#define SetJoinFloodNoticed(x)   ((x)->flags |= JOIN_FLOOD_NOTICED)
+#define IsSetJoinFloodNoticed(x) ((x)->flags & JOIN_FLOOD_NOTICED)
+#define ClearJoinFloodNoticed(x) ((x)->flags &= ~JOIN_FLOOD_NOTICED)
+
 #endif  /* INCLUDED_channel_h */

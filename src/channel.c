@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.446 2005/08/30 18:28:39 adx Exp $
+ * \version $Id: channel.c,v 7.447 2005/08/31 01:11:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -98,14 +98,14 @@ add_user_to_channel(struct Channel *chptr, struct Client *who,
   if (chptr->number_joined <= 0)
   {
     chptr->number_joined = 0;
-    chptr->join_flood_noticed = NO;
+    ClearJoinFloodNoticed(chptr);
   }
   else if (chptr->number_joined >= GlobalSetOptions.joinfloodcount)
   {
     chptr->number_joined = GlobalSetOptions.joinfloodcount;
-    if (!chptr->join_flood_noticed)
+    if (!IsSetJoinFloodNoticed(chptr))
     {
-      chptr->join_flood_noticed = YES;
+      SetJoinFloodNoticed(chptr);
       sendto_realops_flags(UMODE_BOTS, L_ALL,
                            "Possible Join Flooder %s on %s target: %s",
 			   get_client_name(who, HIDE_IP),
