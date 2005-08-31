@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.111.2.2 2005/08/23 04:03:18 db Exp $
+ *   $Id: messages.tab,v 7.111.2.3 2005/08/31 15:42:05 adx Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -25,9 +25,9 @@ static struct NumericInfo replies[] = {
 /* 002 */  {"RPL_YOURHOST", ":%s 002 %s :Your host is %s, running version %s", NULL},
 /* 003 */  {"RPL_CREATED", ":%s 003 %s :This server was created %s", NULL},
 #ifdef HALFOPS
-/* 004 */  {"RPL_MYINFO", ":%s 004 %s %s %s oiwszcerkfydnxbaugl biklmnopstveIh bkloveIh", NULL},
+/* 004 */  {"RPL_MYINFO", ":%s 004 %s %s %s oiwszcerkfyDdnxbauGgl biklmnopstveIh bkloveIh", NULL},
 #else
-/* 004 */  {"RPL_MYINFO", ":%s 004 %s %s %s oiwszcerkfydnxbaugl biklmnopstveI bkloveI", NULL},
+/* 004 */  {"RPL_MYINFO", ":%s 004 %s %s %s oiwszcerkfyDdnxbauGgl biklmnopstveI bkloveI", NULL},
 #endif
 /* 005 */  {"RPL_ISUPPORT", ":%s 005 %s %s :are supported by this server", NULL},
 /* 006 */  {NULL, NULL, NULL},
