@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.81 2005/08/30 18:28:39 adx Exp $
+ *  $Id: ircd.h,v 7.82 2005/08/31 02:13:18 db Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -43,6 +43,7 @@ struct SetOptions
   int joinfloodtime;
   int joinfloodcount;
   /* XXX */
+  int rejecttime;
   int ident_timeout; /* timeout for identd lookups        */
   int spam_num;
   int spam_time;

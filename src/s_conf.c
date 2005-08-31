@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.582 2005/08/30 21:57:37 db Exp $
+ *  $Id: s_conf.c,v 7.583 2005/08/31 02:13:19 db Exp $
  */
 
 #include "stdinc.h"
@@ -867,14 +867,37 @@ check_client(va_list args)
 	  get_client_name(source_p, SHOW_IP),
 	  source_p->localClient->listener->name,
 	  source_p->localClient->listener->port);
-      exit_client(source_p, &me, "You are not authorized to use this server");
+
+      /* XXX It is prolematical whether it is better to use the
+       * capture reject code here or rely on the connecting too fast code.
+       * - Dianora
+       */
+      if(REJECT_HOLD_TIME > 0)
+      {
+	sendto_one(source_p, ":%s NOTICE %s :You are not authorized to use this server",
+		   me.name, source_p->name);
+	source_p->reject_delay = CurrentTime + REJECT_HOLD_TIME;
+	SetCaptured(source_p);
+      }
+      else
+	exit_client(source_p, &me, "You are not authorized to use this server");
       break;
     }
  
    case BANNED_CLIENT:
-      exit_client(source_p, &me, "Banned");
-      ServerStats->is_ref++;
-      break;
+     /*
+      * Don't exit them immediately, play with them a bit.
+      * - Dianora
+      */
+     if (REJECT_HOLD_TIME > 0)
+     {
+       source_p->reject_delay = CurrentTime + REJECT_HOLD_TIME;
+       SetCaptured(source_p);
+     }
+     else
+       exit_client(source_p, &me, "Banned");
+     ServerStats->is_ref++;
+     break;
 
    case 0:
    default:
@@ -3503,7 +3526,8 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
   {
     /* Try to find user@host mask from nick */
     /* Okay to use source_p as the first param, because source_p == client_p */
-    if (!(target_p = find_chasing(source_p, source_p, user_host_or_nick, NULL)))
+    if ((target_p = 
+        find_chasing(source_p, source_p, user_host_or_nick, NULL)) == NULL)
       return 0;
 
     if (IsServer(target_p))

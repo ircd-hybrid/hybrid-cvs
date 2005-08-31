@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.61 2005/08/30 18:28:39 adx Exp $
+ *  $Id: m_set.c,v 1.62 2005/08/31 02:13:18 db Exp $
  */
 
 /* rewritten by jdc */
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.61 $";
+const char *_version = "$Revision: 1.62 $";
 #endif
 
 /* Structure used for the SET table itself */
@@ -95,6 +95,7 @@ static void quote_splitusers(struct Client *, int);
 static void list_quote_commands(struct Client *);
 static void quote_jfloodtime(struct Client *, int);
 static void quote_jfloodcount(struct Client *, int);
+static void quote_rejecttime(struct Client *, int);
 
 /* 
  * If this ever needs to be expanded to more than one arg of each
@@ -123,6 +124,7 @@ static struct SetStruct set_cmd_table[] =
   { "SPLITUSERS",	quote_splitusers,	0,	1 },
   { "JFLOODTIME",	quote_jfloodtime,	0,	1 },
   { "JFLOODCOUNT",	quote_jfloodcount,	0,	1 },
+  { "REJECTTIME",	quote_rejecttime,	0,	1 },
   /* -------------------------------------------------------- */
   { NULL,		NULL,		0,	0 }
 };
@@ -552,6 +554,22 @@ quote_jfloodcount(struct Client *source_p, int newval)
   else
     sendto_one(source_p, ":%s NOTICE %s :JFLOODCOUNT is currently %i", 
                me.name, source_p->name, GlobalSetOptions.joinfloodcount);
+}
+
+/* SET REJECTTIME */
+static void
+quote_rejecttime(struct Client *source_p, int newval)
+{
+  if (newval >= 0)
+  {
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "%s has changed REJECTTIME to %i", 
+			 source_p->name, newval);
+    GlobalSetOptions.rejecttime = newval*60;
+  }
+  else
+    sendto_one(source_p, ":%s NOTICE %s :REJECTTIME is currently %i", 
+               me.name, source_p->name, GlobalSetOptions.rejecttime/60);
 }
 
 /*

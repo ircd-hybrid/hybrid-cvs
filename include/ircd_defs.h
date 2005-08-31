@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.44 2005/08/19 04:00:36 lusky Exp $
+ *  $Id: ircd_defs.h,v 7.45 2005/08/31 02:13:18 db Exp $
  */
 
 /*
@@ -83,4 +83,7 @@ struct irc_ssaddr
   unsigned char   ss_len;
   in_port_t       ss_port;
 };
+
+#define REJECT_HOLD_TIME GlobalSetOptions.rejecttime
+
 #endif /* INCLUDED_ircd_defs_h */

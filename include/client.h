@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.245 2005/08/29 11:22:34 adx Exp $
+ *  $Id: client.h,v 7.246 2005/08/31 02:13:18 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -172,6 +172,8 @@ struct Client
 
   dlink_list     channel;   /* chain of channel pointer blocks */
   dlink_list     invited;   /* chain of invite pointer blocks */
+
+  time_t reject_delay;
 
   struct LocalUser *localClient;
 };

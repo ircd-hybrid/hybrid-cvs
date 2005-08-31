@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.372 2005/08/19 18:07:20 db Exp $
+ *  $Id: s_user.c,v 7.373 2005/08/31 02:13:19 db Exp $
  */
 
 #include <sys/types.h>
@@ -1225,7 +1225,15 @@ check_xline(struct Client *source_p)
 			 source_p->sockhost);
 
     ServerStats->is_ref++;      
-    exit_client(source_p, &me, "Bad user info");
+    if(REJECT_HOLD_TIME > 0)
+    {
+      sendto_one(source_p, ":%s NOTICE %s :Bad user info",
+		 me.name, source_p->name);
+      source_p->reject_delay = CurrentTime + REJECT_HOLD_TIME;
+      SetCaptured(source_p);
+    }
+    else
+      exit_client(source_p, &me, "Bad user info");
     return 1;
   }
 

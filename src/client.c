@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.470 2005/08/29 21:02:50 db Exp $
+ *  $Id: client.c,v 7.471 2005/08/31 02:13:19 db Exp $
  */
 
 #include "stdinc.h"
@@ -243,6 +243,13 @@ check_pings_list(dlink_list *list)
     {
       /* Ignore it, its been exited already */
       continue; 
+    }
+
+    if (client_p->reject_delay > 0)
+    {
+      if (client_p->reject_delay <= CurrentTime)
+	exit_client(client_p, &me, "Rejected");
+      continue;
     }
 
     if (GlobalSetOptions.idletime && IsClient(client_p))
