@@ -1,4 +1,4 @@
-$Id: TODO,v 7.98 2005/07/11 23:19:34 metalrock Exp $
+$Id: TODO,v 7.99 2005/08/31 11:05:32 adx Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
@@ -79,8 +79,3 @@ it's a leaf.
 
 * Don't show local channels in a remote whois.
 * Write documentation for example.conf changes.
-
--- adx's list
-
-* Although hybrid is designed to be used mainly on EFnet, it wouldn't hurt
-if it was a bit more services friendly..

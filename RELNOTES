@@ -2,8 +2,10 @@
 o) Usermode +G, like +g, but allow messaging from people on common channels
 o) Usermode +D - "deaf", don't receive channel messages
 o) RXLINE and RKLINE - commands for setting regexp K/X lines
+o) Join flood is now detected and reported to +b opers
+o) Re-added REJECT_HOLD - lock clients for a while before throwing away
 o) ping_warning, a class{} option to notify opers before "Ping timeout"
-o) New hooking system, support for modular usermodes, iauth etc.
+o) New hooking system, modularised: usermodes, iauth, message filtering etc.
 o) Network I/O speedups
 o) Various cleanups and bugfixes
 o) Support for client SSL
@@ -54,4 +56,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.113 2005/08/29 09:31:16 adx Exp $
+$Id: RELNOTES,v 1.114 2005/08/31 11:05:32 adx Exp $
