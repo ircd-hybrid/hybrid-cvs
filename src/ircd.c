@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.357 2005/08/30 18:28:39 adx Exp $
+ *  $Id: ircd.c,v 7.358 2005/09/01 22:58:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -390,6 +390,10 @@ initialize_global_set_options(void)
     splitmode     = 1;
     splitchecking = 1;
   }
+
+  /* I also have no idea what to start these off at - Dianora */
+  GlobalSetOptions.joinfloodtime = 8;
+  GlobalSetOptions.joinfloodcount = 16;
 
   GlobalSetOptions.ident_timeout = IDENT_TIMEOUT;
   GlobalSetOptions.idletime = ConfigFileEntry.idletime;

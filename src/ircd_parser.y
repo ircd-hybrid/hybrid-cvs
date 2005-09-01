@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.433 2005/08/29 09:10:24 adx Exp $
+ *  $Id: ircd_parser.y,v 1.434 2005/09/01 22:58:43 db Exp $
  */
 
 %{
@@ -262,6 +262,8 @@ unhook_hub_leaf_confs(void)
 %token  OPER_SPY_T
 %token  OPER_UMODES
 %token	INVITE_OPS_ONLY
+%token  JOIN_FLOOD_COUNT
+%token  JOIN_FLOOD_TIME
 %token  PACE_WAIT
 %token  PACE_WAIT_SIMPLE
 %token  PASSWORD
@@ -277,6 +279,7 @@ unhook_hub_leaf_confs(void)
 %token  REDIRSERV
 %token  REGEX_T
 %token  REHASH
+%token  TREJECT_HOLD_TIME
 %token  REMOTE
 %token  REMOTEBAN
 %token  RESTRICTED
@@ -2983,6 +2986,8 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
                     general_disable_auth | general_burst_away |
 		    general_tkline_expire_notices | general_gline_min_cidr |
                     general_gline_min_cidr6 | general_use_whois_actually |
+		    general_reject_hold_time | general_jflood_count |
+		    general_jflood_time |
 		    error;
 
 
@@ -3008,6 +3013,21 @@ general_burst_away: BURST_AWAY '=' TBOOL ';'
 general_use_whois_actually: USE_WHOIS_ACTUALLY '=' TBOOL ';'
 {
   ConfigFileEntry.use_whois_actually = yylval.number;
+};
+
+general_reject_hold_time: TREJECT_HOLD_TIME '=' NUMBER ';'
+{
+  GlobalSetOptions.rejecttime = yylval.number;
+};
+
+general_jflood_count: JOIN_FLOOD_COUNT '=' NUMBER ';'
+{
+  GlobalSetOptions.joinfloodcount = yylval.number;
+};
+
+general_jflood_time: JOIN_FLOOD_TIME '=' NUMBER ';'
+{
+  GlobalSetOptions.joinfloodtime = yylval.number;
 };
 
 general_tkline_expire_notices: TKLINE_EXPIRE_NOTICES '=' TBOOL ';'

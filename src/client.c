@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.472 2005/08/31 11:47:29 db Exp $
+ *  $Id: client.c,v 7.473 2005/09/01 22:58:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -358,6 +358,13 @@ check_unknowns_list(void)
   DLINK_FOREACH_SAFE(ptr, next_ptr, unknown_list.head)
   {
     struct Client *client_p = ptr->data;
+
+    if (client_p->localClient->reject_delay > 0)
+    {
+      if (client_p->localClient->reject_delay <= CurrentTime)
+	exit_client(client_p, &me, "Rejected");
+      continue;
+    }
 
     /* Check UNKNOWN connections - if they have been in this state
      * for > 30s, close them.
