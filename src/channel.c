@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.447 2005/08/31 01:11:28 db Exp $
+ * \version $Id: channel.c,v 7.448 2005/09/01 23:18:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -90,29 +90,32 @@ add_user_to_channel(struct Channel *chptr, struct Client *who,
 {
   struct Membership *ms;
 
-  if (flood_ctrl)
-    chptr->number_joined++;
-  chptr->number_joined -= (chptr->last_join_time - CurrentTime) *
-    GlobalSetOptions.joinfloodcount / GlobalSetOptions.joinfloodtime;
+  if (GlobalSetOptions.joinfloodtime > 0)
+  {
+    if (flood_ctrl)
+      chptr->number_joined++;
 
-  if (chptr->number_joined <= 0)
-  {
-    chptr->number_joined = 0;
-    ClearJoinFloodNoticed(chptr);
-  }
-  else if (chptr->number_joined >= GlobalSetOptions.joinfloodcount)
-  {
-    chptr->number_joined = GlobalSetOptions.joinfloodcount;
-    if (!IsSetJoinFloodNoticed(chptr))
+    chptr->number_joined -= (chptr->last_join_time - CurrentTime) *
+      GlobalSetOptions.joinfloodcount / GlobalSetOptions.joinfloodtime;
+
+    if (chptr->number_joined <= 0)
     {
-      SetJoinFloodNoticed(chptr);
-      sendto_realops_flags(UMODE_BOTS, L_ALL,
-                           "Possible Join Flooder %s on %s target: %s",
-			   get_client_name(who, HIDE_IP),
-			   who->servptr->name, chptr->chname);
+      chptr->number_joined = 0;
+      ClearJoinFloodNoticed(chptr);
+    }
+    else if (chptr->number_joined >= GlobalSetOptions.joinfloodcount)
+    {
+      chptr->number_joined = GlobalSetOptions.joinfloodcount;
+      if (!IsSetJoinFloodNoticed(chptr))
+      {
+        SetJoinFloodNoticed(chptr);
+        sendto_realops_flags(UMODE_BOTS, L_ALL,
+                             "Possible Join Flooder %s on %s target: %s",
+			     get_client_name(who, HIDE_IP),
+	  		     who->servptr->name, chptr->chname);
+      }
     }
   }
-
   chptr->last_join_time = CurrentTime;
 
   ms = BlockHeapAlloc(member_heap);
