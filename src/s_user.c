@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.374 2005/08/31 11:47:29 db Exp $
+ *  $Id: s_user.c,v 7.375 2005/09/02 02:54:27 db Exp $
  */
 
 #include <sys/types.h>
@@ -1365,7 +1365,11 @@ init_uid(void)
       new_uid[i] = 'A';
 
   /* XXX if IRC_MAXUID != 6, this will have to be rewritten */
-  memcpy(new_uid+IRC_MAXSID, "AAAAAA", IRC_MAXUID);
+  /* Yes nenolod, I have known it was off by one ever since I wrote it
+   * But *JUST* for you, though, it really doesn't look as *pretty*
+   * -Dianora
+   */
+  memcpy(new_uid+IRC_MAXSID, "AAAAA@", IRC_MAXUID);
 
   entering_umode_cb = register_callback("entering_umode", NULL);
   umode_cb = register_callback("changing_umode", change_simple_umode);
