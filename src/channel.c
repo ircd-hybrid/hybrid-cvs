@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.448 2005/09/01 23:18:43 db Exp $
+ * \version $Id: channel.c,v 7.449 2005/09/02 01:37:01 db Exp $
  */
 
 #include "stdinc.h"
@@ -115,8 +115,9 @@ add_user_to_channel(struct Channel *chptr, struct Client *who,
 	  		     who->servptr->name, chptr->chname);
       }
     }
+    chptr->last_join_time = CurrentTime;
   }
-  chptr->last_join_time = CurrentTime;
+
 
   ms = BlockHeapAlloc(member_heap);
   ms->client_p = who;
