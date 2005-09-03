@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.20 2005/07/26 23:44:12 adx Exp $
+ * $Id: stdinc.h,v 1.21 2005/09/03 06:05:36 michael Exp $
  *
  */
 
@@ -133,10 +133,6 @@
 #include <errno.h>
 #else
 extern int errno;
-#endif
-
-#ifdef HAVE_REGEX_H
-#include <regex.h>
 #endif
 
 #include "inet_misc.h"

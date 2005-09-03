@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.69 2005/08/20 15:03:15 michael Exp $
+ *  $Id: m_xline.c,v 1.70 2005/09/03 06:05:37 michael Exp $
  */
 
 #include "stdinc.h"
@@ -71,8 +71,6 @@ struct Message unxline_msgtab = {
   { m_unregistered, m_not_oper, ms_unxline, m_ignore, mo_unxline, m_ignore }
 };
 
-extern dlink_list temporary_xlines;
-
 #ifndef STATIC_MODULES
 void
 _modinit(void)
@@ -88,7 +86,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.69 $";
+const char *_version = "$Revision: 1.70 $";
 #endif
 
 
@@ -124,8 +122,8 @@ mo_xline(struct Client *client_p, struct Client *source_p,
    * XLINE <gecos> <time> ON <mask> :<reason>
    * XLINE <gecos> ON <mask> :<reason>
    */
-  if (parse_aline("XLINE", source_p, parc, parv,
-		  AWILD, &gecos, NULL, &tkline_time, &target_server, &reason) < 0)
+  if (parse_aline("XLINE", source_p, parc, parv, AWILD, &gecos, NULL,
+                  &tkline_time, &target_server, &reason) < 0)
     return;
 
   if (target_server != NULL)

@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.157 2005/08/19 04:00:36 lusky Exp $
+# $Id: Makefile.in,v 7.158 2005/09/03 06:05:38 michael Exp $
 #
 @SET_MAKE@
 
@@ -34,8 +34,8 @@ PROGS		= ircd
 
 SSL_LIBS	= @SSL_LIBS@
 SSL_INCLUDES	= @SSL_INCLUDES@
-IRCDLIBS	= @MODULES_LIBS@ @LIBS@ $(SSL_LIBS)
-INCLUDES	= -I../include $(SSL_INCLUDES)
+IRCDLIBS	= @MODULES_LIBS@ @LIBS@ ../lib/pcre/libpcre.a $(SSL_LIBS)
+INCLUDES	= -I../include -I../lib/pcre $(SSL_INCLUDES)
 CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
  
 default:	all
@@ -110,11 +110,13 @@ all: .depend ircd
 
 build: all
 
-ircd: @MODULES_LIBS@ $(OBJS)
+ircd: @MODULES_LIBS@ ../lib/libpcre.a $(OBJS)
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ ${OBJS} ${IRCDLIBS}
 
 ../modules/libmodules.a:
 	cd ../modules && ${MAKE} ${MFLAGS}
+../lib/libpcre.a:
+	cd ../lib/pcre && ${MAKE} ${MFLAGS}
 
 install-mkdirs:
 	mkdir -p $(DESTDIR)$(prefix) $(exec_prefix) $(bindir) $(sysconfdir) \

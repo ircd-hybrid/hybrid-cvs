@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.109 2005/08/20 17:52:33 michael Exp $
+dnl $Id: configure.ac,v 7.110 2005/09/03 06:05:36 michael Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.109 2005/08/20 17:52:33 michael Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.110 2005/09/03 06:05:36 michael Exp $])
 
 AC_INIT([ircd-hybrid],[7.2])
 
@@ -1041,7 +1041,6 @@ AC_SUBST(SSL_SRCS_ENABLE)
 AC_SUBST(SSL_INCLUDES)
 AC_SUBST(SSL_LIBS)
 
-AC_SUBST(LDFLAGS)
 AC_SUBST(PICFLAGS)
 AC_SUBST(IRC_CFLAGS)
 AC_SUBST(SEDOBJ)
@@ -1072,13 +1071,15 @@ AC_CONFIG_FILES(		\
 	modules/Makefile	\
 	tools/Makefile		\
 	doc/Makefile		\
-	help/Makefile
+	help/Makefile		\
+	lib/Makefile		\
+	lib/pcre/Makefile
 )
 
 AC_OUTPUT
 
 dnl Configure options probably changed
-rm -f src/.depend modules/.depend servlink/.depend contrib/.depend
+rm -f src/.depend modules/.depend servlink/.depend contrib/.depend lib/pcre/.depend
 
 dnl Make it look sexay!
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.318 2005/08/29 09:10:24 adx Exp $
+ *  $Id: s_conf.h,v 7.319 2005/09/03 06:05:36 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -33,6 +33,7 @@
 #include "motd.h"               /* MessageFile */
 #include "client.h"
 #include "hook.h"
+#include "pcre.h"
 
 struct Client;
 struct DNSReply;
@@ -66,9 +67,7 @@ typedef enum {
 struct ConfItem
 {
   char *name;		/* Primary key */
-#ifdef HAVE_REGEX_H
-  regex_t *regexpname;
-#endif
+  pcre *regexpname;
   dlink_node node;	/* link into known ConfItems of this type */
   unsigned int flags;
   ConfType type;
@@ -115,10 +114,8 @@ struct AccessItem
   RSA *            rsa_public_key;
   struct EncCapability *cipher_preference;
 #endif
-#ifdef HAVE_REGEX_H
-  regex_t *regexuser;
-  regex_t *regexhost;
-#endif
+  pcre *regexuser;
+  pcre *regexhost;
 };
 
 struct ClassItem
@@ -448,6 +445,7 @@ extern dlink_list leaf_items;
 extern dlink_list temporary_klines;
 extern dlink_list temporary_dlines;
 extern dlink_list temporary_glines;
+extern dlink_list temporary_xlines;
 extern dlink_list temporary_rxlines;
 extern dlink_list temporary_rklines;
 extern struct logging_entry ConfigLoggingEntry;

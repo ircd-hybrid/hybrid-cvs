@@ -19,14 +19,17 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.h,v 7.50 2005/08/12 19:53:38 michael Exp $
+ *  $Id: irc_string.h,v 7.51 2005/09/03 06:05:36 michael Exp $
  */
 
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
 
 #include "setup.h"
+#include "pcre.h"
 
+extern int ircd_pcre_exec(const pcre *, const char *);
+extern pcre *ircd_pcre_compile(const char *, const char **);
 extern char *xstrldup(const char *, size_t);
 
 /*

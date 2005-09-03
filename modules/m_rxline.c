@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rxline.c,v 1.20 2005/08/20 15:03:15 michael Exp $
+ *  $Id: m_rxline.c,v 1.21 2005/09/03 06:05:37 michael Exp $
  */
 
 #include "stdinc.h"
@@ -27,6 +27,7 @@
 #include "channel.h"
 #include "client.h"
 #include "common.h"
+#include "pcre.h"
 #include "irc_string.h"
 #include "sprintf_irc.h"
 #include "ircd.h"
@@ -53,9 +54,9 @@ static void mo_unrxline(struct Client *, struct Client *, int, char *[]);
 static void ms_unrxline(struct Client *, struct Client *, int, char *[]);
 
 static int valid_xline(struct Client *, char *, char *, int);
-static void write_rxline(struct Client *, char *, char *, time_t);
+static void write_rxline(struct Client *, const char *, char *, time_t);
 static void remove_xline(struct Client *, char *);
-static int remove_txline_match(const char *);
+static int remove_txline(const char *);
 
 struct Message rxline_msgtab = {
   "RXLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -82,7 +83,7 @@ _moddeinit(void)
   mod_del_cmd(&unrxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.20 $";
+const char *_version = "$Revision: 1.21 $";
 #endif
 
 
@@ -137,7 +138,7 @@ mo_rxline(struct Client *client_p, struct Client *source_p,
   if (!valid_xline(source_p, gecos, reason, 0))
     return;
 
-  if ((conf = find_conf_name(&rxconf_items, gecos, RXLINE_TYPE)) != NULL)
+  if ((conf = find_exact_name_conf(RXLINE_TYPE, gecos, NULL, NULL)) != NULL)
   {
     match_item = map_to_conf(conf);
 
@@ -191,8 +192,7 @@ ms_rxline(struct Client *client_p, struct Client *source_p,
                               source_p->username, source_p->host,
                               SHARED_XLINE))
   {
-    if ((conf = find_matching_name_conf(RXLINE_TYPE, parv[2],
-                                        NULL, NULL, 0)) != NULL)
+    if ((conf = find_exact_name_conf(RXLINE_TYPE, parv[2], NULL, NULL)))
     {
       match_item = map_to_conf(conf);
       sendto_one(source_p, ":%s NOTICE %s :[%s] already RX-Lined by [%s] - %s",
@@ -253,10 +253,7 @@ static void
 ms_unrxline(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
-  if (parc != 3)
-    return;
-
-  if (EmptyString(parv[2]))
+  if (parc != 3 || EmptyString(parv[2]))
     return;
 
   sendto_match_servs(source_p, parv[1], CAP_CLUSTER,
@@ -315,32 +312,25 @@ valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
  * side effects	- when successful, adds an rxline to the conf
  */
 static void
-write_rxline(struct Client *source_p, char *gecos, char *reason,
-	    time_t tkline_time)
+write_rxline(struct Client *source_p, const char *gecos, char *reason,
+             time_t tkline_time)
 {
-  struct ConfItem *conf;
-  struct MatchItem *match_item;
-  const char *current_date;
-  regex_t *exp_p = NULL;
-  time_t cur_time;
-  int ecode = 0;
+  struct ConfItem *conf = NULL;
+  struct MatchItem *match_item = NULL;
+  const char *current_date = NULL;
+  time_t cur_time = 0;
+  pcre *exp_gecos = NULL;
+  const char *errptr = NULL;
 
-  exp_p = MyMalloc(sizeof(regex_t));
-
-  if ((ecode = regcomp(exp_p, gecos, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
+  if (!(exp_gecos = ircd_pcre_compile(gecos, &errptr)))
   {
-    char errbuf[IRCD_BUFSIZE];
-
-    regerror(ecode, NULL, errbuf, sizeof(errbuf));
-
-    MyFree(exp_p);
     sendto_realops_flags(UMODE_ALL, L_ALL,
-           "Failed to add regular expression based X-Line: %s", errbuf);
+           "Failed to add regular expression based X-Line: %s", errptr);
     return;
   }
 
   conf = make_conf_item(RXLINE_TYPE);
-  conf->regexpname = exp_p;
+  conf->regexpname = exp_gecos;
 
   match_item = map_to_conf(conf);
 
@@ -375,7 +365,7 @@ static void
 remove_xline(struct Client *source_p, char *gecos)
 {
   /* XXX use common temporary un function later */
-  if (remove_txline_match(gecos))
+  if (remove_txline(gecos))
   {
     sendto_one(source_p,
                ":%s NOTICE %s :Un-rxlined [%s] from temporary RX-Lines",
@@ -410,7 +400,7 @@ remove_xline(struct Client *source_p, char *gecos)
  * Side effects: Any matching tklines are removed.
  */
 static int
-remove_txline_match(const char *gecos)
+remove_txline(const char *gecos)
 {
   dlink_node *ptr = NULL, *next_ptr = NULL;
 

@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.53 2005/08/19 14:56:44 michael Exp $
+ *  $Id: csvlib.c,v 7.54 2005/09/03 06:05:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -15,6 +15,7 @@
 #include "s_conf.h"
 #include "hostmask.h"
 #include "client.h"
+#include "pcre.h"
 #include "irc_string.h"
 #include "sprintf_irc.h"
 #include "memory.h"
@@ -68,7 +69,8 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
     case KLINE_TYPE:
       parse_csv_line(line, &user_field, &host_field, &reason_field, NULL);
       conf = make_conf_item(KLINE_TYPE);
-      aconf = (struct AccessItem *)map_to_conf(conf);
+      aconf = map_to_conf(conf);
+
       if (host_field != NULL)
 	DupString(aconf->host, host_field);
       if (reason_field != NULL)
@@ -80,31 +82,22 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
       break;
 
     case RKLINE_TYPE:
-#ifdef HAVE_REGEX_H
     {
-      int ecode = 0;
-      regex_t *exp_user = NULL, *exp_host = NULL;
+      const char *errptr = NULL;
+      pcre *exp_user = NULL, *exp_host = NULL;
 
       parse_csv_line(line, &user_field, &host_field, &reason_field, NULL);
-      exp_user = MyMalloc(sizeof(regex_t));
-      exp_host = MyMalloc(sizeof(regex_t));
-
-      if ((ecode = regcomp(exp_user, user_field, REG_EXTENDED|REG_ICASE|REG_NOSUB)) ||
-          (ecode = regcomp(exp_host, host_field, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
-      {
-        char errbuf[IRCD_BUFSIZE];
-
-        regerror(ecode, NULL, errbuf, sizeof(errbuf));
-        MyFree(exp_user);
-        MyFree(exp_host);
-
-        sendto_realops_flags(UMODE_ALL, L_ALL,
-                  "Failed to add regular expression based K-Line: %s", errbuf);
-        break;
-      }
 
       if (host_field == NULL || user_field == NULL)
         break;
+
+      if (!(exp_user = ircd_pcre_compile(user_field, &errptr)) ||
+          !(exp_host = ircd_pcre_compile(host_field, &errptr)))
+      {
+        sendto_realops_flags(UMODE_ALL, L_ALL,
+                  "Failed to add regular expression based K-Line: %s", errptr);
+        break;
+      }
 
       aconf = map_to_conf(make_conf_item(RKLINE_TYPE));
 
@@ -120,7 +113,6 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
         DupString(match_item->reason, "No reason");
 
     }
-#endif
       break;
 
     case DLINE_TYPE:
@@ -147,31 +139,26 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
     case RXLINE_TYPE:
 #ifdef HAVE_REGEX_H
     {
-      int ecode = 0;
-      regex_t *exp_p = NULL;
+      const char *errptr = NULL;
+      pcre *exp_p = NULL;
 
       parse_csv_line(line, &name_field, &reason_field, &oper_reason, NULL);
-      exp_p = MyMalloc(sizeof(regex_t));
-
-      if ((ecode = regcomp(exp_p, name_field, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
-      {
-        char errbuf[IRCD_BUFSIZE];
-
-        regerror(ecode, NULL, errbuf, sizeof(errbuf));
-        MyFree(exp_p);
-
-        sendto_realops_flags(UMODE_ALL, L_ALL,
-                             "Failed to add regular expression based X-Line: %s", errbuf);
-        break;
-      }
 
       if (name_field == NULL)
         break;
+
+      if (!(exp_p = ircd_pcre_compile(name_field, &errptr)))
+      {
+        sendto_realops_flags(UMODE_ALL, L_ALL,
+                             "Failed to add regular expression based X-Line: %s", errptr);
+        break;
+      }
 
       conf = make_conf_item(RXLINE_TYPE);
       conf->regexpname = exp_p;
       match_item = map_to_conf(conf);
       DupString(conf->name, name_field);
+
       if (reason_field != NULL)
         DupString(match_item->reason, reason_field);
       else

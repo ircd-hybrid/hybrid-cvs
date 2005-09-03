@@ -19,11 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.72 2005/08/12 19:53:38 michael Exp $
+ *  $Id: irc_string.c,v 7.73 2005/09/03 06:05:38 michael Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
+#include "pcre.h"
 #include "irc_string.h"
 #include "sprintf_irc.h"
 #include "client.h"
@@ -540,3 +541,22 @@ strlcpy(char *dst, const char *src, size_t siz)
   return s - src - 1; /* count does not include NUL */
 }
 #endif
+
+pcre *
+ircd_pcre_compile(const char *pattern, const char **errptr)
+{
+  int erroroffset = 0;
+  int options = PCRE_CASELESS|PCRE_EXTRA;
+
+  assert(pattern);
+
+  return pcre_compile(pattern, options, errptr, &erroroffset, NULL);
+}
+
+int
+ircd_pcre_exec(const pcre *code, const char *subject)
+{
+  assert(code && subject);
+
+  return pcre_exec(code, NULL, subject, strlen(subject), 0, 0, NULL, 0) < 0;
+}

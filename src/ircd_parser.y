@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.434 2005/09/01 22:58:43 db Exp $
+ *  $Id: ircd_parser.y,v 1.435 2005/09/03 06:05:38 michael Exp $
  */
 
 %{
@@ -36,6 +36,7 @@
 #include "event.h"
 #include "s_log.h"
 #include "client.h"	/* for UMODE_ALL only */
+#include "pcre.h"
 #include "irc_string.h"
 #include "irc_getaddrinfo.h"
 #include "ircdauth.h"
@@ -2698,21 +2699,14 @@ kill_entry: KILL
     {
       if (regex_ban)
       {
-#ifdef HAVE_REGEX_H
-        int ecode = 0;
-        regex_t *exp_user = MyMalloc(sizeof(regex_t));
-        regex_t *exp_host = MyMalloc(sizeof(regex_t));
+        pcre *exp_user = NULL;
+        pcre *exp_host = NULL;
+        const char *errptr = NULL;
 
-        if ((ecode = regcomp(exp_user, userbuf, REG_EXTENDED|REG_ICASE|REG_NOSUB)) ||
-            (ecode = regcomp(exp_host, hostbuf, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
+        if (!(exp_user = ircd_pcre_compile(userbuf, &errptr)) ||
+            !(exp_host = ircd_pcre_compile(hostbuf, &errptr)))
         {
-          char errbuf[IRCD_BUFSIZE];
-
-          regerror(ecode, NULL, errbuf, sizeof(errbuf));
-
-          MyFree(exp_user);
-          MyFree(exp_host);
-          ilog(L_ERROR, "Failed to add regular expression based K-Line: %s", errbuf);
+          ilog(L_ERROR, "Failed to add regular expression based K-Line: %s", errptr);
           break;
         }
 
@@ -2727,9 +2721,6 @@ kill_entry: KILL
           DupString(yy_aconf->reason, reasonbuf);
         else
           DupString(yy_aconf->reason, "No reason");
-#else
-        yyerror("Your system doesn't support regex");
-#endif
       }
       else
       {
@@ -2888,35 +2879,26 @@ gecos_entry: GECOS
   {
     if (gecos_name[0])
     {
-      int ecode = 0;
-
       if (regex_ban)
       {
-#ifdef HAVE_REGEX_H
-        regex_t *exp_p = MyMalloc(sizeof(regex_t));
+        pcre *exp_p = NULL;
+        const char *errptr = NULL;
 
-        if ((ecode = regcomp(exp_p, gecos_name, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
+        if (!(exp_p = ircd_pcre_compile(gecos_name, &errptr)))
         {
-          char errbuf[IRCD_BUFSIZE];
-
-          regerror(ecode, NULL, errbuf, sizeof(errbuf));
-
-          MyFree(exp_p);
-          ilog(L_ERROR, "Failed to add regular expression based X-Line: %s", errbuf);
+          ilog(L_ERROR, "Failed to add regular expression based X-Line: %s", errptr);
           break;
         }
 
         yy_conf = make_conf_item(RXLINE_TYPE);
         yy_conf->regexpname = exp_p;
-#else
-        yyerror("Your system doesn't support regex");
-#endif
       }
       else
         yy_conf = make_conf_item(XLINE_TYPE);
 
       yy_match_item = map_to_conf(yy_conf);
       DupString(yy_conf->name, gecos_name);
+
       if (reasonbuf[0])
         DupString(yy_match_item->reason, reasonbuf);
       else

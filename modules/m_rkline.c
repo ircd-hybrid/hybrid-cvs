@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rkline.c,v 1.3 2005/08/20 16:49:31 michael Exp $
+ *  $Id: m_rkline.c,v 1.4 2005/09/03 06:05:37 michael Exp $
  */
 
 #include "stdinc.h"
@@ -27,6 +27,7 @@
 #include "channel.h"
 #include "client.h"
 #include "common.h"
+#include "pcre.h"
 #include "irc_string.h"
 #include "sprintf_irc.h"
 #include "ircd.h"
@@ -88,7 +89,7 @@ _moddeinit(void)
   mod_del_cmd(&unrkline_msgtab);
 }
 
-const char *_version = "$Revision: 1.3 $";
+const char *_version = "$Revision: 1.4 $";
 #endif
 
 /* mo_rkline()
@@ -104,8 +105,8 @@ static void
 mo_rkline(struct Client *client_p, struct Client *source_p,
           int parc, char *parv[])
 {
-  regex_t *exp_user = NULL, *exp_host = NULL;
-  int ecode = 0;
+  pcre *exp_user = NULL, *exp_host = NULL;
+  const char *errptr = NULL;
   char *reason = NULL;
   char *oper_reason = NULL;
   char *user = NULL;
@@ -164,20 +165,11 @@ mo_rkline(struct Client *client_p, struct Client *source_p,
   if ((oper_reason = strchr(reason, '|')) != NULL)
     *oper_reason++ = '\0';
 
-  exp_user = MyMalloc(sizeof(regex_t));
-  exp_host = MyMalloc(sizeof(regex_t));
-
-  if ((ecode = regcomp(exp_user, user, REG_EXTENDED|REG_ICASE|REG_NOSUB)) ||
-      (ecode = regcomp(exp_host, host, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
+  if (!(exp_user = ircd_pcre_compile(user, &errptr)) ||
+      !(exp_host = ircd_pcre_compile(host, &errptr)))
   {
-    char errbuf[IRCD_BUFSIZE];
-
-    regerror(ecode, NULL, errbuf, sizeof(errbuf));
-
-    MyFree(exp_user);
-    MyFree(exp_host);
     sendto_realops_flags(UMODE_ALL, L_ALL,
-           "Failed to add regular expression based K-Line: %s", errbuf);
+           "Failed to add regular expression based K-Line: %s", errptr);
     return;
   }
 
@@ -225,7 +217,7 @@ me_rkline(struct Client *client_p, struct Client *source_p,
   time_t cur_time;
   char *kuser, *khost, *kreason, *oper_reason;
 
-  if (parc != 6)
+  if (parc != 6 || EmptyString(parv[5]))
     return;
 
   if (!match(parv[1], me.name))
@@ -246,27 +238,18 @@ me_rkline(struct Client *client_p, struct Client *source_p,
                               source_p->username, source_p->host,
                               SHARED_KLINE))
   {
-    regex_t *exp_user = NULL, *exp_host = NULL;
-    int ecode = 0;
+    pcre *exp_user = NULL, *exp_host = NULL;
+    const char *errptr = NULL;
 
     if (!IsClient(source_p) ||
         already_placed_rkline(source_p, kuser, khost))
       return;
 
-    exp_user = MyMalloc(sizeof(regex_t));
-    exp_host = MyMalloc(sizeof(regex_t));
-
-    if ((ecode = regcomp(exp_user, kuser, REG_EXTENDED|REG_ICASE|REG_NOSUB)) ||
-        (ecode = regcomp(exp_host, khost, REG_EXTENDED|REG_ICASE|REG_NOSUB)))
+    if (!(exp_user = ircd_pcre_compile(kuser, &errptr)) ||
+        !(exp_host = ircd_pcre_compile(khost, &errptr)))
     {
-      char errbuf[IRCD_BUFSIZE];
-
-      regerror(ecode, NULL, errbuf, sizeof(errbuf));
-
-      MyFree(exp_user);
-      MyFree(exp_host);
       sendto_realops_flags(UMODE_ALL, L_ALL,
-             "Failed to add regular expression based K-Line: %s", errbuf);
+             "Failed to add regular expression based K-Line: %s", errptr);
       return;
     }
 
@@ -278,7 +261,7 @@ me_rkline(struct Client *client_p, struct Client *source_p,
     aconf->regexuser = exp_user;
     aconf->regexhost = exp_host;
 
-    if (tkline_time != 0)
+    if (tkline_time)
     {
       ircsprintf(buffer, "Temporary RK-line %d min. - %s (%s)",
                  (int)(tkline_time/60), kreason, current_date);
@@ -304,7 +287,7 @@ static void
 ms_rkline(struct Client *client_p, struct Client *source_p,
           int parc, char *parv[])
 {
-  if (parc != 6)
+  if (parc != 6 || EmptyString(parv[5]))
     return;
 
   /* parv[0]  parv[1]        parv[2]      parv[3]  parv[4]  parv[5] */

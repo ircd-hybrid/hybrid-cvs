@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.375 2005/09/02 02:54:27 db Exp $
+ *  $Id: s_user.c,v 7.376 2005/09/03 06:05:38 michael Exp $
  */
 
 #include <sys/types.h>
@@ -56,6 +56,7 @@
 #include "hook.h"
 #include "s_misc.h"
 #include "msg.h"
+#include "pcre.h"
 
 int MaxClientCount     = 1;
 int MaxConnectionCount = 1;
@@ -1254,7 +1255,7 @@ check_regexp_xline(struct Client *source_p)
 
     assert(conf->regexpname);
 
-    if (!regexec(conf->regexpname, source_p->info, 0, NULL, 0))
+    if (!ircd_pcre_exec(conf->regexpname, source_p->info))
     {
       ++reg->count;
 

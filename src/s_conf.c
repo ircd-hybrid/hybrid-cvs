@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.584 2005/08/31 11:47:29 db Exp $
+ *  $Id: s_conf.c,v 7.585 2005/09/03 06:05:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -476,13 +476,8 @@ delete_conf_item(struct ConfItem *conf)
 
   case RKLINE_TYPE:
     aconf = map_to_conf(conf);
-#ifdef HAVE_REGEX_H
-    regfree(aconf->regexuser);
     MyFree(aconf->regexuser);
-
-    regfree(aconf->regexhost);
     MyFree(aconf->regexhost);
-#endif
     MyFree(aconf->user);
     MyFree(aconf->host);
     MyFree(aconf->reason);
@@ -492,10 +487,7 @@ delete_conf_item(struct ConfItem *conf)
     break;
 
   case RXLINE_TYPE:
-#ifdef HAVE_REGEX_H
-    regfree(conf->regexpname);
     MyFree(conf->regexpname);
-#endif
     match_item = map_to_conf(conf);
     MyFree(match_item->user);
     MyFree(match_item->host);
@@ -1636,6 +1628,9 @@ map_to_list(ConfType type)
 {
   switch(type)
   {
+  case RXLINE_TYPE:
+    return(&rxconf_items);
+    break;
   case XLINE_TYPE:
     return(&xconf_items);
     break;
@@ -1757,6 +1752,7 @@ find_exact_name_conf(ConfType type, const char *name,
 
   switch(type)
   {
+  case RXLINE_TYPE:
   case XLINE_TYPE:
   case ULINE_TYPE:
   case NRESV_TYPE:
@@ -2153,7 +2149,6 @@ conf_connect_allowed(struct irc_ssaddr *addr, int aftype)
 static struct AccessItem *
 find_regexp_kline(const char *uhi[])
 {
-#ifdef HAVE_REGEX_H
   const dlink_node *ptr = NULL;
 
   DLINK_FOREACH(ptr, rkconf_items.head)
@@ -2163,12 +2158,11 @@ find_regexp_kline(const char *uhi[])
     assert(aptr->regexuser);
     assert(aptr->regexhost);
 
-    if (!regexec(aptr->regexuser, uhi[0], 0, NULL, 0) &&
-        (!regexec(aptr->regexhost, uhi[1], 0, NULL, 0) ||
-         !regexec(aptr->regexhost, uhi[2], 0, NULL, 0)))
+    if (!ircd_pcre_exec(aptr->regexuser, uhi[0]) &&
+        (!ircd_pcre_exec(aptr->regexhost, uhi[1]) ||
+         !ircd_pcre_exec(aptr->regexhost, uhi[2])))
       return aptr;
   }
-#endif
 
   return NULL;
 }
