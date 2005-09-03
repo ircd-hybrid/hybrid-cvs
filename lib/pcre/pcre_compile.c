@@ -1,4 +1,4 @@
-/* $Id: pcre_compile.c,v 1.1 2005/09/03 06:05:37 michael Exp $ */
+/* $Id: pcre_compile.c,v 1.2 2005/09/03 06:34:40 michael Exp $ */
 
 /*************************************************
 *      Perl-Compatible Regular Expressions       *
@@ -5001,59 +5001,6 @@ if (reqbyte >= 0 &&
     compile_block.fcc[ch] == ch)? (reqbyte & ~REQ_CASELESS) : reqbyte;
   re->options |= PCRE_REQCHSET;
   }
-
-/* Print out the compiled data for debugging */
-
-#ifdef DEBUG
-
-printf("Length = %d top_bracket = %d top_backref = %d\n",
-  length, re->top_bracket, re->top_backref);
-
-if (re->options != 0)
-  {
-  printf("%s%s%s%s%s%s%s%s%s%s\n",
-    ((re->options & PCRE_NOPARTIAL) != 0)? "nopartial " : "",
-    ((re->options & PCRE_ANCHORED) != 0)? "anchored " : "",
-    ((re->options & PCRE_CASELESS) != 0)? "caseless " : "",
-    ((re->options & PCRE_ICHANGED) != 0)? "case state changed " : "",
-    ((re->options & PCRE_EXTENDED) != 0)? "extended " : "",
-    ((re->options & PCRE_MULTILINE) != 0)? "multiline " : "",
-    ((re->options & PCRE_DOTALL) != 0)? "dotall " : "",
-    ((re->options & PCRE_DOLLAR_ENDONLY) != 0)? "endonly " : "",
-    ((re->options & PCRE_EXTRA) != 0)? "extra " : "",
-    ((re->options & PCRE_UNGREEDY) != 0)? "ungreedy " : "");
-  }
-
-if ((re->options & PCRE_FIRSTSET) != 0)
-  {
-  int ch = re->first_byte & 255;
-  const char *caseless = ((re->first_byte & REQ_CASELESS) == 0)? "" : " (caseless)";
-  if (isprint(ch)) printf("First char = %c%s\n", ch, caseless);
-    else printf("First char = \\x%02x%s\n", ch, caseless);
-  }
-
-if ((re->options & PCRE_REQCHSET) != 0)
-  {
-  int ch = re->req_byte & 255;
-  const char *caseless = ((re->req_byte & REQ_CASELESS) == 0)? "" : " (caseless)";
-  if (isprint(ch)) printf("Req char = %c%s\n", ch, caseless);
-    else printf("Req char = \\x%02x%s\n", ch, caseless);
-  }
-
-_pcre_printint(re, stdout);
-
-/* This check is done here in the debugging case so that the code that
-was compiled can be seen. */
-
-if (code - codestart > length)
-  {
-  (pcre_free)(re);
-  *errorptr = error_texts[ERR23];
-  *erroroffset = ptr - (uschar *)pattern;
-  if (errorcodeptr != NULL) *errorcodeptr = ERR23;
-  return NULL;
-  }
-#endif
 
 return (pcre *)re;
 }

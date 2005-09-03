@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 2005/09/03 06:05:37 michael Exp $
+# $Id: Makefile.in,v 1.2 2005/09/03 06:34:40 michael Exp $
 
 CC		= @CC@
 AR		= @AR@
@@ -20,17 +20,12 @@ PCRE_SRCS = \
   pcre_compile.c      \
   pcre_exec.c         \
   pcre_globals.c      \
-  pcre_printint.c     \
   pcre_tables.c       \
   pcre_valid_utf8.c   \
   pcre_config.c       \
   pcre_fullinfo.c     \
-  pcre_refcount.c     \
   pcre_try_flipped.c  \
-  pcre_version.c      \
   pcre_chartables.c   \
-  pcre_dfa_exec.c     \
-  pcre_get.c          \
   pcre_ord2utf8.c     \
   pcre_study.c        \
   pcre_ucp_findchar.c \

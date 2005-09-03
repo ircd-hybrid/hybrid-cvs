@@ -1,4 +1,4 @@
-/* $Id: pcre.h,v 1.1 2005/09/03 06:05:37 michael Exp $ */
+/* $Id: pcre.h,v 1.2 2005/09/03 06:34:40 michael Exp $ */
 
 /*************************************************
 *       Perl-Compatible Regular Expressions      *
@@ -232,23 +232,13 @@ PCRE_DATA_SCOPE int  pcre_copy_named_substring(const pcre *, const char *,
                   int *, int, const char *, char *, int);
 PCRE_DATA_SCOPE int  pcre_copy_substring(const char *, int *, int, int, char *,
                   int);
-PCRE_DATA_SCOPE int  pcre_dfa_exec(const pcre *, const pcre_extra *,
-                  const char *, int, int, int, int *, int , int *, int);
 PCRE_DATA_SCOPE int  pcre_exec(const pcre *, const pcre_extra *, const char *,
                    int, int, int, int *, int);
 PCRE_DATA_SCOPE void pcre_free_substring(const char *);
 PCRE_DATA_SCOPE void pcre_free_substring_list(const char **);
 PCRE_DATA_SCOPE int  pcre_fullinfo(const pcre *, const pcre_extra *, int,
                   void *);
-PCRE_DATA_SCOPE int  pcre_get_named_substring(const pcre *, const char *,
-                  int *, int, const char *, const char **);
-PCRE_DATA_SCOPE int  pcre_get_stringnumber(const pcre *, const char *);
-PCRE_DATA_SCOPE int  pcre_get_substring(const char *, int *, int, int,
-                  const char **);
-PCRE_DATA_SCOPE int  pcre_get_substring_list(const char *, int *, int,
-                  const char ***);
 PCRE_DATA_SCOPE const unsigned char *pcre_maketables(void);
-PCRE_DATA_SCOPE int  pcre_refcount(pcre *, int);
 PCRE_DATA_SCOPE pcre_extra *pcre_study(const pcre *, int, const char **);
 PCRE_DATA_SCOPE const char *pcre_version(void);
 

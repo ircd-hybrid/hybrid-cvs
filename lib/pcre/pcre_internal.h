@@ -1,4 +1,4 @@
-/* $Id: pcre_internal.h,v 1.1 2005/09/03 06:05:37 michael Exp $ */
+/* $Id: pcre_internal.h,v 1.2 2005/09/03 06:34:40 michael Exp $ */
 
 /*************************************************
 *      Perl-Compatible Regular Expressions       *
@@ -604,25 +604,6 @@ i.e. 255 - OP_BRA. We actually set it a bit lower to leave room for additional
 opcodes. */
 
 #define EXTRACT_BASIC_MAX  100
-
-
-/* This macro defines textual names for all the opcodes. These are used only
-for debugging. The macro is referenced only in pcre_printint.c. */
-
-#define OP_NAME_LIST \
-  "End", "\\A", "\\G", "\\B", "\\b", "\\D", "\\d",                \
-  "\\S", "\\s", "\\W", "\\w", "Any", "Anybyte",                   \
-  "notprop", "prop", "extuni",                                    \
-  "\\Z", "\\z",                                                   \
-  "Opt", "^", "$", "char", "charnc", "not",                       \
-  "*", "*?", "+", "+?", "?", "??", "{", "{", "{",                 \
-  "*", "*?", "+", "+?", "?", "??", "{", "{", "{",                 \
-  "*", "*?", "+", "+?", "?", "??", "{", "{", "{",                 \
-  "*", "*?", "+", "+?", "?", "??", "{", "{",                      \
-  "class", "nclass", "xclass", "Ref", "Recurse", "Callout",       \
-  "Alt", "Ket", "KetRmax", "KetRmin", "Assert", "Assert not",     \
-  "AssertB", "AssertB not", "Reverse", "Once", "Cond", "Cond ref",\
-  "Brazero", "Braminzero", "Branumber", "Bra"
 
 
 /* This macro defines the length of fixed length operations in the compiled
