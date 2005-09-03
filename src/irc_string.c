@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.73 2005/09/03 06:05:38 michael Exp $
+ *  $Id: irc_string.c,v 7.74 2005/09/03 11:39:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -546,7 +546,7 @@ pcre *
 ircd_pcre_compile(const char *pattern, const char **errptr)
 {
   int erroroffset = 0;
-  int options = PCRE_CASELESS|PCRE_EXTRA;
+  int options = PCRE_EXTRA;
 
   assert(pattern);
 

@@ -1,4 +1,4 @@
-/* $Id: pcre_internal.h,v 1.4 2005/09/03 10:04:02 michael Exp $ */
+/* $Id: pcre_internal.h,v 1.5 2005/09/03 11:39:21 michael Exp $ */
 
 /*************************************************
 *      Perl-Compatible Regular Expressions       *
@@ -762,6 +762,5 @@ sense, but are not part of the PCRE public API. */
 extern void        _pcre_printint(pcre *, FILE *);
 extern real_pcre * _pcre_try_flipped(const real_pcre *, real_pcre *,
                      const pcre_study_data *, pcre_study_data *);
-extern BOOL        _pcre_xclass(int, const uschar *);
 
 /* End of pcre_internal.h */
