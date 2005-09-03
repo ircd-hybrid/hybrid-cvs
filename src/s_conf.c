@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.585 2005/09/03 06:05:38 michael Exp $
+ *  $Id: s_conf.c,v 7.586 2005/09/03 12:30:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1684,10 +1684,20 @@ find_matching_name_conf(ConfType type, const char *name, const char *user,
 
   switch (type)
   {
+    case RXLINE_TYPE:
+      DLINK_FOREACH(ptr, list_p->head)
+      {
+        conf = ptr->data;
+        assert(conf->regexpname);
+
+        if (!ircd_pcre_exec(conf->regexpname, name))
+          return conf;
+      }
+      break;
+
   case XLINE_TYPE:
   case ULINE_TYPE:
   case NRESV_TYPE:
-
     DLINK_FOREACH(ptr, list_p->head)
     {
       conf = ptr->data;

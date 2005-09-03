@@ -84,9 +84,6 @@
 /* Define to 1 if you have the `mmap' function. */
 #undef HAVE_MMAP
 
-/* Define to 1 if you have the <regex.h> header file. */
-#undef HAVE_REGEX_H
-
 /* Define if the shl_load function is available. */
 #undef HAVE_SHL_LOAD
 

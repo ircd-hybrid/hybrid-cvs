@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.376 2005/09/03 06:05:38 michael Exp $
+ *  $Id: s_user.c,v 7.377 2005/09/03 12:30:24 michael Exp $
  */
 
 #include <sys/types.h>
@@ -1244,38 +1244,30 @@ check_xline(struct Client *source_p)
 static int
 check_regexp_xline(struct Client *source_p)
 {
-#ifdef HAVE_REGEX_H
-  const dlink_node *ptr = NULL;
+  struct ConfItem *conf = NULL;
   const char *reason = NULL;
 
-  DLINK_FOREACH(ptr, rxconf_items.head)
+  if ((conf = find_matching_name_conf(RXLINE_TYPE, source_p->info, NULL, NULL, 0)))
   {
-    struct ConfItem *conf = ptr->data;
     struct MatchItem *reg = map_to_conf(conf);
 
-    assert(conf->regexpname);
+    ++reg->count;
 
-    if (!ircd_pcre_exec(conf->regexpname, source_p->info))
-    {
-      ++reg->count;
+    if (reg->reason != NULL)
+      reason = reg->reason;
+    else
+      reason = "No Reason";
 
-      if (reg->reason != NULL)
-        reason = reg->reason;
-      else
-        reason = "No Reason";
+    sendto_realops_flags(UMODE_REJ, L_ALL,
+                         "X-line (REGEX) Rejecting [%s] [%s], user %s [%s]",
+                         source_p->info, reason,
+                         get_client_name(source_p, HIDE_IP),
+                         source_p->sockhost);
 
-      sendto_realops_flags(UMODE_REJ, L_ALL,
-                           "X-line (REGEX) Rejecting [%s] [%s], user %s [%s]",
-                           source_p->info, reason,
-                           get_client_name(source_p, HIDE_IP),
-                           source_p->sockhost);
-
-      ServerStats->is_ref++;
-      exit_client(source_p, &me, "Bad user info");
-      return 1;
-    }
+    ServerStats->is_ref++;
+    exit_client(source_p, &me, "Bad user info");
+    return 1;
   }
-#endif
 
   return 0;
 }
