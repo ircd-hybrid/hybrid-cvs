@@ -1,4 +1,4 @@
-/* $Id: pcre_globals.c,v 1.1 2005/09/03 06:05:37 michael Exp $ */
+/* $Id: pcre_globals.c,v 1.2 2005/09/03 10:04:02 michael Exp $ */
 
 /*************************************************
 *      Perl-Compatible Regular Expressions       *
@@ -52,7 +52,6 @@ differently, and global variables are not used (see pcre.in). */
 #include "pcre_internal.h"
 
 
-#ifndef VPCOMPAT
 #ifdef __cplusplus
 extern "C" void *(*pcre_malloc)(size_t) = malloc;
 extern "C" void  (*pcre_free)(void *) = free;
@@ -65,7 +64,6 @@ void  (*pcre_free)(void *) = free;
 void *(*pcre_stack_malloc)(size_t) = malloc;
 void  (*pcre_stack_free)(void *) = free;
 int   (*pcre_callout)(pcre_callout_block *) = NULL;
-#endif
 #endif
 
 /* End of pcre_globals.c */

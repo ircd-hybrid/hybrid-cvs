@@ -1,4 +1,4 @@
-/* $Id: pcre.h,v 1.3 2005/09/03 08:57:57 michael Exp $ */
+/* $Id: pcre.h,v 1.4 2005/09/03 10:04:02 michael Exp $ */
 
 /*************************************************
 *       Perl-Compatible Regular Expressions      *
@@ -194,22 +194,13 @@ typedef struct pcre_callout_block {
 /* Indirection for store get and free functions. These can be set to
 alternative malloc/free functions if required. Special ones are used in the
 non-recursive case for "frames". There is also an optional callout function
-that is triggered by the (?) regex item. For Virtual Pascal, these definitions
-have to take another form. */
+that is triggered by the (?) regex item. */
 
-#ifndef VPCOMPAT
 PCRE_DATA_SCOPE void *(*pcre_malloc)(size_t);
 PCRE_DATA_SCOPE void  (*pcre_free)(void *);
 PCRE_DATA_SCOPE void *(*pcre_stack_malloc)(size_t);
 PCRE_DATA_SCOPE void  (*pcre_stack_free)(void *);
 PCRE_DATA_SCOPE int   (*pcre_callout)(pcre_callout_block *);
-#else   /* VPCOMPAT */
-PCRE_DATA_SCOPE void *pcre_malloc(size_t);
-PCRE_DATA_SCOPE void  pcre_free(void *);
-PCRE_DATA_SCOPE void *pcre_stack_malloc(size_t);
-PCRE_DATA_SCOPE void  pcre_stack_free(void *);
-PCRE_DATA_SCOPE int   pcre_callout(pcre_callout_block *);
-#endif  /* VPCOMPAT */
 
 /* Exported PCRE functions */
 
@@ -221,7 +212,6 @@ PCRE_DATA_SCOPE int  pcre_exec(const pcre *, const pcre_extra *, const char *,
                    int, int, int, int *, int);
 PCRE_DATA_SCOPE int  pcre_fullinfo(const pcre *, const pcre_extra *, int,
                   void *);
-PCRE_DATA_SCOPE const unsigned char *pcre_maketables(void);
 PCRE_DATA_SCOPE pcre_extra *pcre_study(const pcre *, int, const char **);
 
 #ifdef __cplusplus

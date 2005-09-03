@@ -1,4 +1,4 @@
-/* $Id: pcre_internal.h,v 1.3 2005/09/03 08:57:57 michael Exp $ */
+/* $Id: pcre_internal.h,v 1.4 2005/09/03 10:04:02 michael Exp $ */
 
 /*************************************************
 *      Perl-Compatible Regular Expressions       *
@@ -63,10 +63,6 @@ all, it had only been about 10 years then... */
 #endif
 
 
-/* Get the definitions provided by running "configure" */
-
-#include "config.h"
-
 /* Standard C headers plus the external interface definition. The only time
 setjmp and stdarg are used is when NO_RECURSE is set. */
 
@@ -82,6 +78,53 @@ setjmp and stdarg are used is when NO_RECURSE is set. */
 #ifndef PCRE_SPY
 #define PCRE_DEFINITION       /* Win32 __declspec(export) trigger for .dll */
 #endif
+
+/* If you are compiling for a system that needs some magic to be inserted
+before the definition of an exported function, define this macro to contain the
+relevant magic. It apears at the start of every exported function. */
+
+#define EXPORT
+
+/* The value of NEWLINE determines the newline character. The default is to
+leave it up to the compiler, but some sites want to force a particular value.
+On Unix systems, "configure" can be used to override this default. */
+
+#ifndef NEWLINE
+#define NEWLINE '\n'
+#endif
+
+/* The value of LINK_SIZE determines the number of bytes used to store
+links as offsets within the compiled regex. The default is 2, which allows for
+compiled patterns up to 64K long. This covers the vast majority of cases.
+However, PCRE can also be compiled to use 3 or 4 bytes instead. This allows for
+longer patterns in extreme cases. On Unix systems, "configure" can be used to
+override this default. */
+
+#ifndef LINK_SIZE
+#define LINK_SIZE   2
+#endif
+
+/* The value of MATCH_LIMIT determines the default number of times the match()
+function can be called during a single execution of pcre_exec(). (There is a
+runtime method of setting a different limit.) The limit exists in order to
+catch runaway regular expressions that take for ever to determine that they do
+not match. The default is set very large so that it does not accidentally catch
+legitimate cases. On Unix systems, "configure" can be used to override this
+default default. */
+
+#ifndef MATCH_LIMIT
+#define MATCH_LIMIT 10000000
+#endif
+
+/* PCRE uses recursive function calls to handle backtracking while matching.
+This can sometimes be a problem on systems that have stacks of limited size.
+Define NO_RECURSE to get a version that doesn't use recursion in the match()
+function; instead it creates its own stack by steam using pcre_recurse_malloc
+to get memory. For more detail, see comments and other stuff just above the
+match() function. On Unix systems, "configure" can be used to set this in the
+Makefile (use --disable-stack-for-recursion). */
+
+/* #define NO_RECURSE */
 
 /* We need to have types that specify unsigned 16-bit and 32-bit integers. We
 cannot determine these outside the compilation (e.g. by running a program as
@@ -117,43 +160,6 @@ typedef unsigned char uschar;
 /* Include the public PCRE header */
 
 #include "pcre.h"
-
-/* When compiling for use with the Virtual Pascal compiler, these functions
-need to have their names changed. PCRE must be compiled with the -DVPCOMPAT
-option on the command line. */
-
-#ifdef VPCOMPAT
-#define strncmp(s1,s2,m) _strncmp(s1,s2,m)
-#define memcpy(d,s,n)    _memcpy(d,s,n)
-#define memmove(d,s,n)   _memmove(d,s,n)
-#define memset(s,c,n)    _memset(s,c,n)
-#else  /* VPCOMPAT */
-
-/* To cope with SunOS4 and other systems that lack memmove() but have bcopy(),
-define a macro for memmove() if HAVE_MEMMOVE is false, provided that HAVE_BCOPY
-is set. Otherwise, include an emulating function for those systems that have
-neither (there some non-Unix environments where this is the case). This assumes
-that all calls to memmove are moving strings upwards in store, which is the
-case in PCRE. */
-
-#if ! HAVE_MEMMOVE
-#undef  memmove        /* some systems may have a macro */
-#if HAVE_BCOPY
-#define memmove(a, b, c) bcopy(b, a, c)
-#else  /* HAVE_BCOPY */
-void *
-pcre_memmove(unsigned char *dest, const unsigned char *src, size_t n)
-{
-int i;
-dest += n;
-src += n;
-for (i = 0; i < n; ++i) *(--dest) =  *(--src);
-}
-#define memmove(a, b, c) pcre_memmove(a, b, c)
-#endif   /* not HAVE_BCOPY */
-#endif   /* not HAVE_MEMMOVE */
-#endif   /* not VPCOMPAT */
-
 
 /* PCRE keeps offsets in its compiled code as 2-byte quantities (always stored
 in big-endian order) by default. These are used, for example, to link from the
@@ -235,118 +241,12 @@ capturing parenthesis numbers in back references. */
 byte. The macros for character handling generate simple sequences when used in
 byte-mode, and more complicated ones for UTF-8 characters. */
 
-#ifndef SUPPORT_UTF8
 #define GETCHAR(c, eptr) c = *eptr;
 #define GETCHARTEST(c, eptr) c = *eptr;
 #define GETCHARINC(c, eptr) c = *eptr++;
 #define GETCHARINCTEST(c, eptr) c = *eptr++;
 #define GETCHARLEN(c, eptr, len) c = *eptr;
 #define BACKCHAR(eptr)
-
-#else   /* SUPPORT_UTF8 */
-
-/* Get the next UTF-8 character, not advancing the pointer. This is called when
-we know we are in UTF-8 mode. */
-
-#define GETCHAR(c, eptr) \
-  c = *eptr; \
-  if ((c & 0xc0) == 0xc0) \
-    { \
-    int gcii; \
-    int gcaa = _pcre_utf8_table4[c & 0x3f];  /* Number of additional bytes */ \
-    int gcss = 6*gcaa; \
-    c = (c & _pcre_utf8_table3[gcaa]) << gcss; \
-    for (gcii = 1; gcii <= gcaa; gcii++) \
-      { \
-      gcss -= 6; \
-      c |= (eptr[gcii] & 0x3f) << gcss; \
-      } \
-    }
-
-/* Get the next UTF-8 character, testing for UTF-8 mode, and not advancing the
-pointer. */
-
-#define GETCHARTEST(c, eptr) \
-  c = *eptr; \
-  if (utf8 && (c & 0xc0) == 0xc0) \
-    { \
-    int gcii; \
-    int gcaa = _pcre_utf8_table4[c & 0x3f];  /* Number of additional bytes */ \
-    int gcss = 6*gcaa; \
-    c = (c & _pcre_utf8_table3[gcaa]) << gcss; \
-    for (gcii = 1; gcii <= gcaa; gcii++) \
-      { \
-      gcss -= 6; \
-      c |= (eptr[gcii] & 0x3f) << gcss; \
-      } \
-    }
-
-/* Get the next UTF-8 character, advancing the pointer. This is called when we
-know we are in UTF-8 mode. */
-
-#define GETCHARINC(c, eptr) \
-  c = *eptr++; \
-  if ((c & 0xc0) == 0xc0) \
-    { \
-    int gcaa = _pcre_utf8_table4[c & 0x3f];  /* Number of additional bytes */ \
-    int gcss = 6*gcaa; \
-    c = (c & _pcre_utf8_table3[gcaa]) << gcss; \
-    while (gcaa-- > 0) \
-      { \
-      gcss -= 6; \
-      c |= (*eptr++ & 0x3f) << gcss; \
-      } \
-    }
-
-/* Get the next character, testing for UTF-8 mode, and advancing the pointer */
-
-#define GETCHARINCTEST(c, eptr) \
-  c = *eptr++; \
-  if (utf8 && (c & 0xc0) == 0xc0) \
-    { \
-    int gcaa = _pcre_utf8_table4[c & 0x3f];  /* Number of additional bytes */ \
-    int gcss = 6*gcaa; \
-    c = (c & _pcre_utf8_table3[gcaa]) << gcss; \
-    while (gcaa-- > 0) \
-      { \
-      gcss -= 6; \
-      c |= (*eptr++ & 0x3f) << gcss; \
-      } \
-    }
-
-/* Get the next UTF-8 character, not advancing the pointer, incrementing length
-if there are extra bytes. This is called when we know we are in UTF-8 mode. */
-
-#define GETCHARLEN(c, eptr, len) \
-  c = *eptr; \
-  if ((c & 0xc0) == 0xc0) \
-    { \
-    int gcii; \
-    int gcaa = _pcre_utf8_table4[c & 0x3f];  /* Number of additional bytes */ \
-    int gcss = 6*gcaa; \
-    c = (c & _pcre_utf8_table3[gcaa]) << gcss; \
-    for (gcii = 1; gcii <= gcaa; gcii++) \
-      { \
-      gcss -= 6; \
-      c |= (eptr[gcii] & 0x3f) << gcss; \
-      } \
-    len += gcaa; \
-    }
-
-/* If the pointer is not at the start of a character, move it back until
-it is. Called only in UTF-8 mode. */
-
-#define BACKCHAR(eptr) while((*eptr & 0xc0) == 0x80) eptr--;
-
-#endif
-
-
-/* In case there is no definition of offsetof() provided - though any proper
-Standard C system should have one. */
-
-#ifndef offsetof
-#define offsetof(p_type,field) ((size_t)&(((p_type *)0)->field))
-#endif
 
 
 /* These are the public options that can change during matching. */
@@ -415,7 +315,7 @@ typedef int BOOL;
 #define TRUE    1
 
 /* Escape items that are just an encoding of a particular data value. Note that
-ESC_n is defined as yet another macro, which is set in config.h to either \n
+ESC_n is defined as yet another macro, which is set to either \n
 (the default) or \r (which some people want). */
 
 #ifndef ESC_e
@@ -852,19 +752,7 @@ of the exported public functions. They have to be "external" in the C sense,
 but are not part of the PCRE public API. The data for these tables is in the
 pcre_tables.c module. */
 
-extern const int    _pcre_utf8_table1[];
-extern const int    _pcre_utf8_table2[];
-extern const int    _pcre_utf8_table3[];
-extern const uschar _pcre_utf8_table4[];
-
-extern const int    _pcre_utf8_table1_size;
-
-extern const ucp_type_table _pcre_utt[];
-extern const int _pcre_utt_size;
-
 extern const uschar _pcre_default_tables[];
-
-extern const uschar _pcre_OP_lengths[];
 
 
 /* Internal shared functions. These are functions that are used by more than

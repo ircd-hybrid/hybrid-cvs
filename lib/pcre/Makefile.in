@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.3 2005/09/03 08:57:57 michael Exp $
+# $Id: Makefile.in,v 1.4 2005/09/03 10:04:02 michael Exp $
 
 CC		= @CC@
 AR		= @AR@
@@ -17,25 +17,25 @@ INCLUDES	= -I.
 CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
 
 PCRE_SRCS = \
-  pcre_compile.c      \
-  pcre_exec.c         \
-  pcre_globals.c      \
-  pcre_tables.c       \
-  pcre_fullinfo.c     \
-  pcre_try_flipped.c  \
-  pcre_chartables.c   \
-  pcre_study.c        \
+  pcre_chartables.c  \
+  pcre_compile.c     \
+  pcre_exec.c        \
+  pcre_globals.c     \
+  pcre_study.c       \
+  pcre_tables.c      \
+  pcre_fullinfo.c    \
+  pcre_try_flipped.c \
   pcre_xclass.c
 
-OBJS = ${PCRE_SRCS:.c=.o}
+PCRE_OBJS = ${PCRE_SRCS:.c=.o}
 
 default: build
 build: all
 all: .depend libpcre.a
 
-libpcre.a: $(OBJS)
+libpcre.a: $(PCRE_OBJS)
 	$(RM) -f $@
-	$(AR) csrv $@ $(OBJS) 
+	$(AR) csrv $@ $(PCRE_OBJS) 
 
 .c.o:
 	${CC} ${CPPFLAGS} ${CFLAGS} -c $< -o $@
@@ -48,7 +48,7 @@ libpcre.a: $(OBJS)
 	@${MV} Makefile.depend Makefile
 
 clean:
-	${RM} -f *~ *.o *.a
+	${RM} -f $(PCRE_OBJS) libpcre.a
 
 distclean: clean
 	${RM} -f Makefile .depend
