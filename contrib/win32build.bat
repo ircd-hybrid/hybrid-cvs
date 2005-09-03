@@ -1,4 +1,5 @@
 REM $Id$
+
 cd include
 del setup.h
 copy ..\contrib\setup-win32.h .\setup.h
@@ -19,7 +20,6 @@ cd ..\modules
 del *.obj
 del m_challenge.c
 del m_cryptlink.c
-del m_rxline.c m_rxline.c.bak
 cl /nologo /TC /ZI /MLd /c /w /I"..\include" *.c
 cd core
 del *.obj
