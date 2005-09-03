@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.122 2005/08/29 21:02:50 db Exp $
+ *   $Id: messages.tab,v 7.123 2005/09/03 19:57:50 michael Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -240,7 +240,7 @@ static struct NumericInfo replies[] = {
 /* 213 */  {"RPL_STATSCLINE", ":%s 213 %s %c %s %s %s %d %s", NULL},
 /* 214 */  {"RPL_STATSNLINE", ":%s 214 %s %c %s * %s %d %s", NULL},
 /* 215 */  {"RPL_STATSILINE", ":%s 215 %s %c %s * %s@%s %d %s", NULL},
-/* 216 */  {"RPL_STATSKLINE", ":%s 216 %s %c %s * %s :%s | %s", NULL},
+/* 216 */  {"RPL_STATSKLINE", ":%s 216 %s %s %s * %s :%s | %s", NULL},
 /* 217 */  {"RPL_STATSQLINE", ":%s 217 %s %c %s :%s", NULL},
 /* 218 */  {"RPL_STATSYLINE", ":%s 218 %s %c %s %d %d %d %lu", NULL},
 /* 219 */  {"RPL_ENDOFSTATS", ":%s 219 %s %c :End of /STATS report", NULL},
@@ -271,7 +271,7 @@ static struct NumericInfo replies[] = {
 /* 244 */  {"RPL_STATSHLINE", ":%s 244 %s %c %s * %s %d %s",  NULL},
 /* 245 */  {"RPL_STATSSLINE", NULL, NULL},
 /* 246 */  {NULL, NULL, NULL},
-/* 247 */  {"RPL_STATSXLINE", ":%s 247 %s %c %d %s :%s", NULL},
+/* 247 */  {"RPL_STATSXLINE", ":%s 247 %s %s %d %s :%s", NULL},
 /* 248 */  {"RPL_STATSULINE", ":%s 248 %s U %s %s@%s %s", NULL},
 /* 249 */  {NULL, NULL, NULL},
 /* 250 */  {"RPL_STATSCONN", ":%s 250 %s :Highest connection count: %d (%d clients) (%d connections received)", NULL},

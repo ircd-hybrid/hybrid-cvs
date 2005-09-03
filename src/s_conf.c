@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.586 2005/09/03 12:30:24 michael Exp $
+ *  $Id: s_conf.c,v 7.587 2005/09/03 19:57:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -607,7 +607,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
 
       sendto_one(source_p, form_str(RPL_STATSXLINE),
 		 me.name, source_p->name, 
-		 matchitem->hold ? 'x': 'X', matchitem->count,
+		 matchitem->hold ? "x": "X", matchitem->count,
 		 conf->name, matchitem->reason);
     }
     break;
@@ -620,7 +620,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
 
       sendto_one(source_p, form_str(RPL_STATSXLINE),
                  me.name, source_p->name,
-                 matchitem->hold ? 'x': 'X', matchitem->count,
+                 matchitem->hold ? "xR": "XR", matchitem->count,
                  conf->name, matchitem->reason);
     }
     break;
@@ -631,7 +631,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
       aconf = map_to_conf(ptr->data);
 
       sendto_one(source_p, form_str(RPL_STATSKLINE), me.name,
-                 source_p->name, 'K', aconf->host, aconf->user,
+                 source_p->name, "KR", aconf->host, aconf->user,
                  aconf->reason, aconf->oper_reason ? aconf->oper_reason : "");
     }
     break;

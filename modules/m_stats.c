@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.180 2005/08/19 14:56:44 michael Exp $
+ *  $Id: m_stats.c,v 1.181 2005/09/03 19:57:49 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ struct Message stats_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.180 $";
+const char *_version = "$Revision: 1.181 $";
 static struct Callback *stats_cb;
 
 void
@@ -180,7 +180,7 @@ do_stats(va_list args)
   struct Client *source_p = va_arg(args, struct Client *);
   int parc = va_arg(args, int);
   char **parv = va_arg(args, char **);
-  char statchar = parv[1][0];
+  char statchar = *parv[1];
   int i;
 
   if (statchar == '\0')
@@ -219,7 +219,7 @@ do_stats(va_list args)
 }
 
 /*
- * m_stats by fl_
+ * m_stats()
  *      parv[0] = sender prefix
  *      parv[1] = stat letter/command
  *      parv[2] = (if present) server/mask in stats L
@@ -273,7 +273,7 @@ m_stats(struct Client *client_p, struct Client *source_p,
 }
 
 /*
- * mo_stats by fl_
+ * mo_stats()
  *      parv[0] = sender prefix
  *      parv[1] = stat letter/command
  *      parv[2] = (if present) server/mask in stats L, or target
@@ -285,8 +285,8 @@ static void
 mo_stats(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  if (hunt_server(client_p, source_p, ":%s STATS %s :%s", 2, parc, parv) !=
-      HUNTED_ISME)
+  if (hunt_server(client_p, source_p, ":%s STATS %s :%s", 2,
+                  parc, parv) != HUNTED_ISME)
      return;
 
   if (!MyClient(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
@@ -850,8 +850,8 @@ stats_pending_glines(struct Client *source_p)
 static void
 stats_glines(struct Client *source_p)
 {
-  struct AddressRec *arec;
-  int i;
+  struct AddressRec *arec = NULL;
+  int i = 0;
 
   if (!ConfigFileEntry.glines)
   {
@@ -860,7 +860,7 @@ stats_glines(struct Client *source_p)
     return;
   }
 
-  for (i = 0; i < ATABLE_SIZE; ++i)
+  for (; i < ATABLE_SIZE; ++i)
   {
     for (arec = atable[i]; arec; arec=arec->next)
     {
@@ -869,7 +869,7 @@ stats_glines(struct Client *source_p)
         const struct AccessItem *aconf = arec->aconf;
 
         sendto_one(source_p, form_str(RPL_STATSKLINE),
-                   from, to, 'G',
+                   from, to, "G",
                    aconf->host ? aconf->host : "*",
                    aconf->user ? aconf->user : "*",
                    aconf->reason ? aconf->reason : "No reason", "" );
@@ -918,7 +918,7 @@ stats_auth(struct Client *source_p)
     struct ConfItem *conf;
     struct AccessItem *aconf;
 
-    if(MyConnect(source_p))
+    if (MyConnect(source_p))
       aconf = find_conf_by_address(source_p->host,
                                    &source_p->localClient->ip,
 				   CONF_CLIENT,
@@ -955,11 +955,11 @@ stats_tklines(struct Client *source_p)
                from, to);
 
   /* If unopered, Only return matching klines */
-  else if((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(source_p))
+  else if ((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(source_p))
   {
     struct AccessItem *aconf;
 
-    if(MyConnect(source_p))
+    if (MyConnect(source_p))
       aconf = find_conf_by_address(source_p->host,
                                    &source_p->localClient->ip,
 				   CONF_KILL,
@@ -969,7 +969,7 @@ stats_tklines(struct Client *source_p)
       aconf = find_conf_by_address(source_p->host, NULL, CONF_KILL,
                                    0, source_p->username, NULL);
 
-    if(aconf == NULL)
+    if (aconf == NULL)
       return;
 
     /* dont report a permanent kline as a tkline */
@@ -979,7 +979,7 @@ stats_tklines(struct Client *source_p)
     conf = unmap_conf_item(aconf);
 
     sendto_one(source_p, form_str(RPL_STATSKLINE), from,
-               to, 'k', aconf->host, aconf->user, aconf->reason, "");
+               to, "k", aconf->host, aconf->user, aconf->reason, "");
   }
   /* Theyre opered, or allowed to see all klines */
   else
@@ -990,7 +990,7 @@ static void
 stats_klines(struct Client *source_p)
 {
   /* Oper only, if unopered, return ERR_NOPRIVILEGES */
-  if((ConfigFileEntry.stats_k_oper_only == 2) && !IsOper(source_p))
+  if ((ConfigFileEntry.stats_k_oper_only == 2) && !IsOper(source_p))
     sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                from, to);
 
@@ -1018,7 +1018,7 @@ stats_klines(struct Client *source_p)
       return;
       
     sendto_one(source_p, form_str(RPL_STATSKLINE), from,
-               to, 'K', aconf->host, aconf->user, aconf->reason,
+               to, "K", aconf->host, aconf->user, aconf->reason,
 	       aconf->oper_reason);
   }
   /* Theyre opered, or allowed to see all klines */
@@ -1182,7 +1182,7 @@ stats_ziplinks(struct Client *source_p)
 {
   dlink_node *ptr;
   struct Client *target_p;
-  int sent_data = 0;
+  unsigned int sent_data = 0;
 
   DLINK_FOREACH(ptr, serv_list.head)
   {
@@ -1196,13 +1196,17 @@ stats_ziplinks(struct Client *source_p)
        */
       struct ZipStats zipstats;
       memcpy(&zipstats, &target_p->localClient->zipstats, sizeof (struct ZipStats));
-      sendto_one(source_p, ":%s %d %s Z :ZipLinks stats for %s send[%.2f%% compression (%lu bytes data/%lu bytes wire)] recv[%.2f%% compression (%lu bytes data/%lu bytes wire)]",
+
+      sendto_one(source_p, ":%s %d %s Z :ZipLinks stats for %s send[%.2f%% "
+                 "compression (%lu bytes data/%lu bytes wire)] recv[%.2f%% "
+                 "compression (%lu bytes data/%lu bytes wire)]",
                  from, RPL_STATSDEBUG, to, target_p->name,
 		 zipstats.out_ratio, zipstats.out, zipstats.out_wire,
 		 zipstats.in_ratio,  zipstats.in,  zipstats.in_wire);
-      sent_data++;
+      ++sent_data;
     }
   }
+
   sendto_one(source_p, ":%s %d %s Z :%u ziplink(s)",
              from, RPL_STATSDEBUG, to, sent_data);
 }
