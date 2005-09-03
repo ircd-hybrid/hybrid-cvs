@@ -1,4 +1,4 @@
-/* $Id: pcre_xclass.c,v 1.1 2005/09/03 06:05:37 michael Exp $ */
+/* $Id: pcre_xclass.c,v 1.2 2005/09/03 08:57:57 michael Exp $ */
 
 /*************************************************
 *      Perl-Compatible Regular Expressions       *
@@ -98,23 +98,6 @@ while ((t = *data++) != XCL_END)
     GETCHARINC(y, data);
     if (c >= x && c <= y) return !negated;
     }
-
-#ifdef SUPPORT_UCP
-  else  /* XCL_PROP & XCL_NOTPROP */
-    {
-    int chartype, othercase;
-    int rqdtype = *data++;
-    int category = ucp_findchar(c, &chartype, &othercase);
-    if (rqdtype >= 128)
-      {
-      if ((rqdtype - 128 == category) == (t == XCL_PROP)) return !negated;
-      }
-    else
-      {
-      if ((rqdtype == chartype) == (t == XCL_PROP)) return !negated;
-      }
-    }
-#endif  /* SUPPORT_UCP */
   }
 
 return negated;   /* char did not match */

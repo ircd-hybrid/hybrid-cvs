@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.54 2005/09/03 06:05:38 michael Exp $
+ *  $Id: csvlib.c,v 7.55 2005/09/03 08:57:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -567,13 +567,17 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
   char *found1;
   char *found2;
   int oldumask;
+  int (*cmpfunc)(const char *, const char *) = irccmp;
+
+  if (type == RXLINE_TYPE || type == RKLINE_TYPE)
+    cmpfunc = strcmp;
 
   filename = get_conf_name(type);
 
   if ((in = fbopen(filename, "r")) == NULL)
   {
     sendto_one(source_p, ":%s NOTICE %s :Cannot open %s", me.name,
-	       source_p->name, filename);
+               source_p->name, filename);
     return -1;
   }
 
@@ -605,7 +609,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
 
     if ((found1 = getfield(buff)) == NULL)
     {
-      if(flush_write(source_p, in, out, buf, temppath) < 0)
+      if (flush_write(source_p, in, out, buf, temppath) < 0)
 	return -1;
       continue;
     }
@@ -614,12 +618,12 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
     {
       if ((found2 = getfield(NULL)) == NULL)
       {
-	if(flush_write(source_p, in, out, buf, temppath) < 0)
+	if (flush_write(source_p, in, out, buf, temppath) < 0)
 	  return -1;
 	continue;
       }
-      
-      if ((irccmp(pat1, found1) == 0) && (irccmp(pat2, found2) == 0))
+
+      if (!cmpfunc(pat1, found1) && !cmpfunc(pat2, found2))
       {
 	pairme = 1;
 	continue;
@@ -633,7 +637,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
     }
     else
     {
-      if (irccmp(pat1, found1) == 0)
+      if (!cmpfunc(pat1, found1))
       {
 	pairme = 1;
 	continue;

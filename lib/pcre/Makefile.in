@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.2 2005/09/03 06:34:40 michael Exp $
+# $Id: Makefile.in,v 1.3 2005/09/03 08:57:57 michael Exp $
 
 CC		= @CC@
 AR		= @AR@
@@ -21,14 +21,10 @@ PCRE_SRCS = \
   pcre_exec.c         \
   pcre_globals.c      \
   pcre_tables.c       \
-  pcre_valid_utf8.c   \
-  pcre_config.c       \
   pcre_fullinfo.c     \
   pcre_try_flipped.c  \
   pcre_chartables.c   \
-  pcre_ord2utf8.c     \
   pcre_study.c        \
-  pcre_ucp_findchar.c \
   pcre_xclass.c
 
 OBJS = ${PCRE_SRCS:.c=.o}

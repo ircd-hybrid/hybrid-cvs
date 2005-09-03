@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rkline.c,v 1.4 2005/09/03 06:05:37 michael Exp $
+ *  $Id: m_rkline.c,v 1.5 2005/09/03 08:57:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -89,7 +89,7 @@ _moddeinit(void)
   mod_del_cmd(&unrkline_msgtab);
 }
 
-const char *_version = "$Revision: 1.4 $";
+const char *_version = "$Revision: 1.5 $";
 #endif
 
 /* mo_rkline()
@@ -357,7 +357,8 @@ already_placed_rkline(struct Client *source_p, const char *user, const char *hos
   {
     struct AccessItem *aptr = map_to_conf(ptr->data);
 
-    if (!irccmp(user, aptr->user) && !irccmp(aptr->host, host))
+    if (!strcmp(user, aptr->user) &&
+        !strcmp(aptr->host, host))
     {
       sendto_one(source_p,
                  ":%s NOTICE %s :[%s@%s] already RK-Lined by [%s@%s] - %s",
@@ -460,7 +461,7 @@ me_unrkline(struct Client *client_p, struct Client *source_p,
 {
   const char *user = NULL, *host = NULL;
 
-  if (parc != 4)
+  if (parc != 4 || EmptyString(parv[3]))
     return;
 
   user = parv[2];
@@ -508,7 +509,7 @@ static void
 ms_unrkline(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
-  if (parc != 4)
+  if (parc != 4 || EmptyString(parv[3]))
     return;
 
   sendto_match_servs(source_p, parv[1], CAP_UNKLN,
@@ -524,7 +525,8 @@ ms_unrkline(struct Client *client_p, struct Client *source_p,
  * Side effects: Any matching trklines are removed.
  */
 static int
-remove_trkline_match(const char *host, const char *user)
+remove_trkline_match(const char *const host,
+                     const char *const user)
 {
   dlink_node *ptr = NULL;
 
@@ -533,7 +535,8 @@ remove_trkline_match(const char *host, const char *user)
     struct ConfItem *conf = ptr->data;
     struct AccessItem *aptr = map_to_conf(ptr->data);
 
-    if (!irccmp(user, aptr->user) && !irccmp(aptr->host, host))
+    if (!strcmp(user, aptr->user) &&
+        !strcmp(aptr->host, host))
     {
       dlinkDelete(ptr, &temporary_rklines);
       free_dlink_node(ptr);

@@ -1,4 +1,4 @@
-/* $Id: pcre_exec.c,v 1.1 2005/09/03 06:05:37 michael Exp $ */
+/* $Id: pcre_exec.c,v 1.2 2005/09/03 08:57:57 michael Exp $ */
 
 /*************************************************
 *      Perl-Compatible Regular Expressions       *
@@ -278,16 +278,6 @@ typedef struct heapframe {
 
   unsigned long int Xoriginal_ims;
 
-#ifdef SUPPORT_UCP
-  int Xprop_type;
-  int Xprop_fail_result;
-  int Xprop_category;
-  int Xprop_chartype;
-  int Xprop_othercase;
-  int Xprop_test_against;
-  int *Xprop_test_variable;
-#endif
-
   int Xctype;
   int Xfc;
   int Xfi;
@@ -399,9 +389,6 @@ HEAP_RECURSE:
 
 /* Ditto for the local variables */
 
-#ifdef SUPPORT_UTF8
-#define charptr            frame->Xcharptr
-#endif
 #define callpat            frame->Xcallpat
 #define data               frame->Xdata
 #define next               frame->Xnext
@@ -417,16 +404,6 @@ HEAP_RECURSE:
 #define prev_is_word       frame->Xprev_is_word
 
 #define original_ims       frame->Xoriginal_ims
-
-#ifdef SUPPORT_UCP
-#define prop_type          frame->Xprop_type
-#define prop_fail_result   frame->Xprop_fail_result
-#define prop_category      frame->Xprop_category
-#define prop_chartype      frame->Xprop_chartype
-#define prop_othercase     frame->Xprop_othercase
-#define prop_test_against  frame->Xprop_test_against
-#define prop_test_variable frame->Xprop_test_variable
-#endif
 
 #define ctype              frame->Xctype
 #define fc                 frame->Xfc
@@ -454,9 +431,6 @@ i, and fc and c, can be the same variables. */
 #define fc c
 
 
-#ifdef SUPPORT_UTF8                /* Many of these variables are used ony */
-const uschar *charptr;             /* small blocks of the code. My normal  */
-#endif                             /* style of coding would have declared  */
 const uschar *callpat;             /* them within each of those blocks.    */
 const uschar *data;                /* However, in order to accommodate the */
 const uschar *next;                /* version of this code that uses an    */
@@ -473,15 +447,6 @@ BOOL prev_is_word;
 
 unsigned long int original_ims;
 
-#ifdef SUPPORT_UCP
-int prop_type;
-int prop_fail_result;
-int prop_category;
-int prop_chartype;
-int prop_othercase;
-int prop_test_against;
-int *prop_test_variable;
-#endif
 
 int ctype;
 int length;
@@ -495,15 +460,6 @@ int save_offset1, save_offset2, save_offset3;
 int stacksave[REC_STACK_SAVE_MAX];
 
 eptrblock newptrb;
-#endif
-
-/* These statements are here to stop the compiler complaining about unitialized
-variables. */
-
-#ifdef SUPPORT_UCP
-prop_fail_result = 0;
-prop_test_against = 0;
-prop_test_variable = NULL;
 #endif
 
 /* OK, now we can get on with the real code of the function. Recursion is
@@ -765,20 +721,6 @@ for (;;)
     back a number of characters, not bytes. */
 
     case OP_REVERSE:
-#ifdef SUPPORT_UTF8
-    if (utf8)
-      {
-      c = GET(ecode,1);
-      for (i = 0; i < c; i++)
-        {
-        eptr--;
-        if (eptr < md->start_subject) RRETURN(MATCH_NOMATCH);
-        BACKCHAR(eptr)
-        }
-      }
-    else
-#endif
-
     /* No UTF-8 support, or not in UTF-8 mode: count is byte count */
 
       {
@@ -1206,29 +1148,6 @@ for (;;)
     case OP_WORD_BOUNDARY:
       {
 
-      /* Find out if the previous and current characters are "word" characters.
-      It takes a bit more work in UTF-8 mode. Characters > 255 are assumed to
-      be "non-word" characters. */
-
-#ifdef SUPPORT_UTF8
-      if (utf8)
-        {
-        if (eptr == md->start_subject) prev_is_word = FALSE; else
-          {
-          const uschar *lastptr = eptr - 1;
-          while((*lastptr & 0xc0) == 0x80) lastptr--;
-          GETCHAR(c, lastptr);
-          prev_is_word = c < 256 && (md->ctypes[c] & ctype_word) != 0;
-          }
-        if (eptr >= md->end_subject) cur_is_word = FALSE; else
-          {
-          GETCHAR(c, eptr);
-          cur_is_word = c < 256 && (md->ctypes[c] & ctype_word) != 0;
-          }
-        }
-      else
-#endif
-
       /* More streamlined when not in UTF-8 mode */
 
         {
@@ -1252,10 +1171,6 @@ for (;;)
     if ((ims & PCRE_DOTALL) == 0 && eptr < md->end_subject && *eptr == NEWLINE)
       RRETURN(MATCH_NOMATCH);
     if (eptr++ >= md->end_subject) RRETURN(MATCH_NOMATCH);
-#ifdef SUPPORT_UTF8
-    if (utf8)
-      while (eptr < md->end_subject && (*eptr & 0xc0) == 0x80) eptr++;
-#endif
     ecode++;
     break;
 
@@ -1270,12 +1185,7 @@ for (;;)
     case OP_NOT_DIGIT:
     if (eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
     GETCHARINCTEST(c, eptr);
-    if (
-#ifdef SUPPORT_UTF8
-       c < 256 &&
-#endif
-       (md->ctypes[c] & ctype_digit) != 0
-       )
+    if ((md->ctypes[c] & ctype_digit) != 0)
       RRETURN(MATCH_NOMATCH);
     ecode++;
     break;
@@ -1283,12 +1193,7 @@ for (;;)
     case OP_DIGIT:
     if (eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
     GETCHARINCTEST(c, eptr);
-    if (
-#ifdef SUPPORT_UTF8
-       c >= 256 ||
-#endif
-       (md->ctypes[c] & ctype_digit) == 0
-       )
+    if ((md->ctypes[c] & ctype_digit) == 0)
       RRETURN(MATCH_NOMATCH);
     ecode++;
     break;
@@ -1296,12 +1201,7 @@ for (;;)
     case OP_NOT_WHITESPACE:
     if (eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
     GETCHARINCTEST(c, eptr);
-    if (
-#ifdef SUPPORT_UTF8
-       c < 256 &&
-#endif
-       (md->ctypes[c] & ctype_space) != 0
-       )
+    if ((md->ctypes[c] & ctype_space) != 0)
       RRETURN(MATCH_NOMATCH);
     ecode++;
     break;
@@ -1309,12 +1209,7 @@ for (;;)
     case OP_WHITESPACE:
     if (eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
     GETCHARINCTEST(c, eptr);
-    if (
-#ifdef SUPPORT_UTF8
-       c >= 256 ||
-#endif
-       (md->ctypes[c] & ctype_space) == 0
-       )
+    if ((md->ctypes[c] & ctype_space) == 0)
       RRETURN(MATCH_NOMATCH);
     ecode++;
     break;
@@ -1322,12 +1217,7 @@ for (;;)
     case OP_NOT_WORDCHAR:
     if (eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
     GETCHARINCTEST(c, eptr);
-    if (
-#ifdef SUPPORT_UTF8
-       c < 256 &&
-#endif
-       (md->ctypes[c] & ctype_word) != 0
-       )
+    if ((md->ctypes[c] & ctype_word) != 0)
       RRETURN(MATCH_NOMATCH);
     ecode++;
     break;
@@ -1335,71 +1225,10 @@ for (;;)
     case OP_WORDCHAR:
     if (eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
     GETCHARINCTEST(c, eptr);
-    if (
-#ifdef SUPPORT_UTF8
-       c >= 256 ||
-#endif
-       (md->ctypes[c] & ctype_word) == 0
-       )
+    if ((md->ctypes[c] & ctype_word) == 0)
       RRETURN(MATCH_NOMATCH);
     ecode++;
     break;
-
-#ifdef SUPPORT_UCP
-    /* Check the next character by Unicode property. We will get here only
-    if the support is in the binary; otherwise a compile-time error occurs. */
-
-    case OP_PROP:
-    case OP_NOTPROP:
-    if (eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
-    GETCHARINCTEST(c, eptr);
-      {
-      int chartype, rqdtype;
-      int othercase;
-      int category = ucp_findchar(c, &chartype, &othercase);
-
-      rqdtype = *(++ecode);
-      ecode++;
-
-      if (rqdtype >= 128)
-        {
-        if ((rqdtype - 128 != category) == (op == OP_PROP))
-          RRETURN(MATCH_NOMATCH);
-        }
-      else
-        {
-        if ((rqdtype != chartype) == (op == OP_PROP))
-          RRETURN(MATCH_NOMATCH);
-        }
-      }
-    break;
-
-    /* Match an extended Unicode sequence. We will get here only if the support
-    is in the binary; otherwise a compile-time error occurs. */
-
-    case OP_EXTUNI:
-    if (eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
-    GETCHARINCTEST(c, eptr);
-      {
-      int chartype;
-      int othercase;
-      int category = ucp_findchar(c, &chartype, &othercase);
-      if (category == ucp_M) RRETURN(MATCH_NOMATCH);
-      while (eptr < md->end_subject)
-        {
-        int len = 1;
-        if (!utf8) c = *eptr; else
-          {
-          GETCHARLEN(c, eptr, len);
-          }
-        category = ucp_findchar(c, &chartype, &othercase);
-        if (category != ucp_M) break;
-        eptr += len;
-        }
-      }
-    ecode++;
-    break;
-#endif
 
 
     /* Match a back reference, possibly repeatedly. Look past the end of the
@@ -1562,26 +1391,6 @@ for (;;)
 
       /* First, ensure the minimum number of matches are present. */
 
-#ifdef SUPPORT_UTF8
-      /* UTF-8 mode */
-      if (utf8)
-        {
-        for (i = 1; i <= min; i++)
-          {
-          if (eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
-          GETCHARINC(c, eptr);
-          if (c > 255)
-            {
-            if (op == OP_CLASS) RRETURN(MATCH_NOMATCH);
-            }
-          else
-            {
-            if ((data[c/8] & (1 << (c&7))) == 0) RRETURN(MATCH_NOMATCH);
-            }
-          }
-        }
-      else
-#endif
       /* Not UTF-8 mode */
         {
         for (i = 1; i <= min; i++)
@@ -1602,28 +1411,6 @@ for (;;)
 
       if (minimize)
         {
-#ifdef SUPPORT_UTF8
-        /* UTF-8 mode */
-        if (utf8)
-          {
-          for (fi = min;; fi++)
-            {
-            RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-            if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-            if (fi >= max || eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
-            GETCHARINC(c, eptr);
-            if (c > 255)
-              {
-              if (op == OP_CLASS) RRETURN(MATCH_NOMATCH);
-              }
-            else
-              {
-              if ((data[c/8] & (1 << (c&7))) == 0) RRETURN(MATCH_NOMATCH);
-              }
-            }
-          }
-        else
-#endif
         /* Not UTF-8 mode */
           {
           for (fi = min;; fi++)
@@ -1644,35 +1431,6 @@ for (;;)
         {
         pp = eptr;
 
-#ifdef SUPPORT_UTF8
-        /* UTF-8 mode */
-        if (utf8)
-          {
-          for (i = min; i < max; i++)
-            {
-            int len = 1;
-            if (eptr >= md->end_subject) break;
-            GETCHARLEN(c, eptr, len);
-            if (c > 255)
-              {
-              if (op == OP_CLASS) break;
-              }
-            else
-              {
-              if ((data[c/8] & (1 << (c&7))) == 0) break;
-              }
-            eptr += len;
-            }
-          for (;;)
-            {
-            RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-            if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-            if (eptr-- == pp) break;        /* Stop if tried at original pos */
-            BACKCHAR(eptr);
-            }
-          }
-        else
-#endif
           /* Not UTF-8 mode */
           {
           for (i = min; i < max; i++)
@@ -1696,116 +1454,9 @@ for (;;)
     /* Control never gets here */
 
 
-    /* Match an extended character class. This opcode is encountered only
-    in UTF-8 mode, because that's the only time it is compiled. */
-
-#ifdef SUPPORT_UTF8
-    case OP_XCLASS:
-      {
-      data = ecode + 1 + LINK_SIZE;                /* Save for matching */
-      ecode += GET(ecode, 1);                      /* Advance past the item */
-
-      switch (*ecode)
-        {
-        case OP_CRSTAR:
-        case OP_CRMINSTAR:
-        case OP_CRPLUS:
-        case OP_CRMINPLUS:
-        case OP_CRQUERY:
-        case OP_CRMINQUERY:
-        c = *ecode++ - OP_CRSTAR;
-        minimize = (c & 1) != 0;
-        min = rep_min[c];                 /* Pick up values from tables; */
-        max = rep_max[c];                 /* zero for max => infinity */
-        if (max == 0) max = INT_MAX;
-        break;
-
-        case OP_CRRANGE:
-        case OP_CRMINRANGE:
-        minimize = (*ecode == OP_CRMINRANGE);
-        min = GET2(ecode, 1);
-        max = GET2(ecode, 3);
-        if (max == 0) max = INT_MAX;
-        ecode += 5;
-        break;
-
-        default:               /* No repeat follows */
-        min = max = 1;
-        break;
-        }
-
-      /* First, ensure the minimum number of matches are present. */
-
-      for (i = 1; i <= min; i++)
-        {
-        if (eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
-        GETCHARINC(c, eptr);
-        if (!_pcre_xclass(c, data)) RRETURN(MATCH_NOMATCH);
-        }
-
-      /* If max == min we can continue with the main loop without the
-      need to recurse. */
-
-      if (min == max) continue;
-
-      /* If minimizing, keep testing the rest of the expression and advancing
-      the pointer while it matches the class. */
-
-      if (minimize)
-        {
-        for (fi = min;; fi++)
-          {
-          RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-          if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-          if (fi >= max || eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
-          GETCHARINC(c, eptr);
-          if (!_pcre_xclass(c, data)) RRETURN(MATCH_NOMATCH);
-          }
-        /* Control never gets here */
-        }
-
-      /* If maximizing, find the longest possible run, then work backwards. */
-
-      else
-        {
-        pp = eptr;
-        for (i = min; i < max; i++)
-          {
-          int len = 1;
-          if (eptr >= md->end_subject) break;
-          GETCHARLEN(c, eptr, len);
-          if (!_pcre_xclass(c, data)) break;
-          eptr += len;
-          }
-        for(;;)
-          {
-          RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-          if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-          if (eptr-- == pp) break;        /* Stop if tried at original pos */
-          BACKCHAR(eptr)
-          }
-        RRETURN(MATCH_NOMATCH);
-        }
-
-      /* Control never gets here */
-      }
-#endif    /* End of XCLASS */
-
     /* Match a single character, casefully */
 
     case OP_CHAR:
-#ifdef SUPPORT_UTF8
-    if (utf8)
-      {
-      length = 1;
-      ecode++;
-      GETCHARLEN(fc, ecode, length);
-      if (length > md->end_subject - eptr) RRETURN(MATCH_NOMATCH);
-      while (length-- > 0) if (*ecode++ != *eptr++) RRETURN(MATCH_NOMATCH);
-      }
-    else
-#endif
-
     /* Non-UTF-8 mode */
       {
       if (md->end_subject - eptr < 1) RRETURN(MATCH_NOMATCH);
@@ -1817,50 +1468,6 @@ for (;;)
     /* Match a single character, caselessly */
 
     case OP_CHARNC:
-#ifdef SUPPORT_UTF8
-    if (utf8)
-      {
-      length = 1;
-      ecode++;
-      GETCHARLEN(fc, ecode, length);
-
-      if (length > md->end_subject - eptr) RRETURN(MATCH_NOMATCH);
-
-      /* If the pattern character's value is < 128, we have only one byte, and
-      can use the fast lookup table. */
-
-      if (fc < 128)
-        {
-        if (md->lcc[*ecode++] != md->lcc[*eptr++]) RRETURN(MATCH_NOMATCH);
-        }
-
-      /* Otherwise we must pick up the subject character */
-
-      else
-        {
-        int dc;
-        GETCHARINC(dc, eptr);
-        ecode += length;
-
-        /* If we have Unicode property support, we can use it to test the other
-        case of the character, if there is one. The result of ucp_findchar() is
-        < 0 if the char isn't found, and othercase is returned as zero if there
-        isn't one. */
-
-        if (fc != dc)
-          {
-#ifdef SUPPORT_UCP
-          int chartype;
-          int othercase;
-          if (ucp_findchar(fc, &chartype, &othercase) < 0 || dc != othercase)
-#endif
-            RRETURN(MATCH_NOMATCH);
-          }
-        }
-      }
-    else
-#endif   /* SUPPORT_UTF8 */
-
     /* Non-UTF-8 mode */
       {
       if (md->end_subject - eptr < 1) RRETURN(MATCH_NOMATCH);
@@ -1901,96 +1508,6 @@ for (;;)
     the subject. */
 
     REPEATCHAR:
-#ifdef SUPPORT_UTF8
-    if (utf8)
-      {
-      length = 1;
-      charptr = ecode;
-      GETCHARLEN(fc, ecode, length);
-      if (min * length > md->end_subject - eptr) RRETURN(MATCH_NOMATCH);
-      ecode += length;
-
-      /* Handle multibyte character matching specially here. There is
-      support for caseless matching if UCP support is present. */
-
-      if (length > 1)
-        {
-        int oclength = 0;
-        uschar occhars[8];
-
-#ifdef SUPPORT_UCP
-        int othercase;
-        int chartype;
-        if ((ims & PCRE_CASELESS) != 0 &&
-             ucp_findchar(fc, &chartype, &othercase) >= 0 &&
-             othercase > 0)
-          oclength = _pcre_ord2utf8(othercase, occhars);
-#endif  /* SUPPORT_UCP */
-
-        for (i = 1; i <= min; i++)
-          {
-          if (memcmp(eptr, charptr, length) == 0) eptr += length;
-          /* Need braces because of following else */
-          else if (oclength == 0) { RRETURN(MATCH_NOMATCH); }
-          else
-            {
-            if (memcmp(eptr, occhars, oclength) != 0) RRETURN(MATCH_NOMATCH);
-            eptr += oclength;
-            }
-          }
-
-        if (min == max) continue;
-
-        if (minimize)
-          {
-          for (fi = min;; fi++)
-            {
-            RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-            if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-            if (fi >= max || eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
-            if (memcmp(eptr, charptr, length) == 0) eptr += length;
-            /* Need braces because of following else */
-            else if (oclength == 0) { RRETURN(MATCH_NOMATCH); }
-            else
-              {
-              if (memcmp(eptr, occhars, oclength) != 0) RRETURN(MATCH_NOMATCH);
-              eptr += oclength;
-              }
-            }
-          /* Control never gets here */
-          }
-        else
-          {
-          pp = eptr;
-          for (i = min; i < max; i++)
-            {
-            if (eptr > md->end_subject - length) break;
-            if (memcmp(eptr, charptr, length) == 0) eptr += length;
-            else if (oclength == 0) break;
-            else
-              {
-              if (memcmp(eptr, occhars, oclength) != 0) break;
-              eptr += oclength;
-              }
-            }
-          while (eptr >= pp)
-           {
-           RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-           if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-           eptr -= length;
-           }
-          RRETURN(MATCH_NOMATCH);
-          }
-        /* Control never gets here */
-        }
-
-      /* If the length of a UTF-8 character is 1, we fall through here, and
-      obey the code as for non-UTF-8 characters below, though in this case the
-      value of fc will always be < 128. */
-      }
-    else
-#endif  /* SUPPORT_UTF8 */
-
     /* When not in UTF-8 mode, load a single-byte character. */
       {
       if (min > md->end_subject - eptr) RRETURN(MATCH_NOMATCH);
@@ -2091,9 +1608,6 @@ for (;;)
     GETCHARINCTEST(c, eptr);
     if ((ims & PCRE_CASELESS) != 0)
       {
-#ifdef SUPPORT_UTF8
-      if (c < 256)
-#endif
       c = md->lcc[c];
       if (md->lcc[*ecode++] == c) RRETURN(MATCH_NOMATCH);
       }
@@ -2158,21 +1672,6 @@ for (;;)
       {
       fc = md->lcc[fc];
 
-#ifdef SUPPORT_UTF8
-      /* UTF-8 mode */
-      if (utf8)
-        {
-        register int d;
-        for (i = 1; i <= min; i++)
-          {
-          GETCHARINC(d, eptr);
-          if (d < 256) d = md->lcc[d];
-          if (fc == d) RRETURN(MATCH_NOMATCH);
-          }
-        }
-      else
-#endif
-
       /* Not UTF-8 mode */
         {
         for (i = 1; i <= min; i++)
@@ -2183,23 +1682,6 @@ for (;;)
 
       if (minimize)
         {
-#ifdef SUPPORT_UTF8
-        /* UTF-8 mode */
-        if (utf8)
-          {
-          register int d;
-          for (fi = min;; fi++)
-            {
-            RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-            if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-            GETCHARINC(d, eptr);
-            if (d < 256) d = md->lcc[d];
-            if (fi >= max || eptr >= md->end_subject || fc == d)
-              RRETURN(MATCH_NOMATCH);
-            }
-          }
-        else
-#endif
         /* Not UTF-8 mode */
           {
           for (fi = min;; fi++)
@@ -2219,30 +1701,6 @@ for (;;)
         {
         pp = eptr;
 
-#ifdef SUPPORT_UTF8
-        /* UTF-8 mode */
-        if (utf8)
-          {
-          register int d;
-          for (i = min; i < max; i++)
-            {
-            int len = 1;
-            if (eptr >= md->end_subject) break;
-            GETCHARLEN(d, eptr, len);
-            if (d < 256) d = md->lcc[d];
-            if (fc == d) break;
-            eptr += len;
-            }
-          for(;;)
-            {
-            RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-            if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-            if (eptr-- == pp) break;        /* Stop if tried at original pos */
-            BACKCHAR(eptr);
-            }
-          }
-        else
-#endif
         /* Not UTF-8 mode */
           {
           for (i = min; i < max; i++)
@@ -2267,19 +1725,6 @@ for (;;)
 
     else
       {
-#ifdef SUPPORT_UTF8
-      /* UTF-8 mode */
-      if (utf8)
-        {
-        register int d;
-        for (i = 1; i <= min; i++)
-          {
-          GETCHARINC(d, eptr);
-          if (fc == d) RRETURN(MATCH_NOMATCH);
-          }
-        }
-      else
-#endif
       /* Not UTF-8 mode */
         {
         for (i = 1; i <= min; i++)
@@ -2290,22 +1735,6 @@ for (;;)
 
       if (minimize)
         {
-#ifdef SUPPORT_UTF8
-        /* UTF-8 mode */
-        if (utf8)
-          {
-          register int d;
-          for (fi = min;; fi++)
-            {
-            RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-            if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-            GETCHARINC(d, eptr);
-            if (fi >= max || eptr >= md->end_subject || fc == d)
-              RRETURN(MATCH_NOMATCH);
-            }
-          }
-        else
-#endif
         /* Not UTF-8 mode */
           {
           for (fi = min;; fi++)
@@ -2325,29 +1754,6 @@ for (;;)
         {
         pp = eptr;
 
-#ifdef SUPPORT_UTF8
-        /* UTF-8 mode */
-        if (utf8)
-          {
-          register int d;
-          for (i = min; i < max; i++)
-            {
-            int len = 1;
-            if (eptr >= md->end_subject) break;
-            GETCHARLEN(d, eptr, len);
-            if (fc == d) break;
-            eptr += len;
-            }
-          for(;;)
-            {
-            RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-            if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-            if (eptr-- == pp) break;        /* Stop if tried at original pos */
-            BACKCHAR(eptr);
-            }
-          }
-        else
-#endif
         /* Not UTF-8 mode */
           {
           for (i = min; i < max; i++)
@@ -2405,25 +1811,6 @@ for (;;)
     REPEATTYPE:
     ctype = *ecode++;      /* Code for the character type */
 
-#ifdef SUPPORT_UCP
-    if (ctype == OP_PROP || ctype == OP_NOTPROP)
-      {
-      prop_fail_result = ctype == OP_NOTPROP;
-      prop_type = *ecode++;
-      if (prop_type >= 128)
-        {
-        prop_test_against = prop_type - 128;
-        prop_test_variable = &prop_category;
-        }
-      else
-        {
-        prop_test_against = prop_type;
-        prop_test_variable = &prop_chartype;
-        }
-      }
-    else prop_type = -1;
-#endif
-
     /* First, ensure the minimum number of matches are present. Use inline
     code for maximizing the speed, and do the type test once at the start
     (i.e. keep it out of the loop). Also we can test that there are at least
@@ -2435,131 +1822,6 @@ for (;;)
     if (min > md->end_subject - eptr) RRETURN(MATCH_NOMATCH);
     if (min > 0)
       {
-#ifdef SUPPORT_UCP
-      if (prop_type > 0)
-        {
-        for (i = 1; i <= min; i++)
-          {
-          GETCHARINC(c, eptr);
-          prop_category = ucp_findchar(c, &prop_chartype, &prop_othercase);
-          if ((*prop_test_variable == prop_test_against) == prop_fail_result)
-            RRETURN(MATCH_NOMATCH);
-          }
-        }
-
-      /* Match extended Unicode sequences. We will get here only if the
-      support is in the binary; otherwise a compile-time error occurs. */
-
-      else if (ctype == OP_EXTUNI)
-        {
-        for (i = 1; i <= min; i++)
-          {
-          GETCHARINCTEST(c, eptr);
-          prop_category = ucp_findchar(c, &prop_chartype, &prop_othercase);
-          if (prop_category == ucp_M) RRETURN(MATCH_NOMATCH);
-          while (eptr < md->end_subject)
-            {
-            int len = 1;
-            if (!utf8) c = *eptr; else
-              {
-              GETCHARLEN(c, eptr, len);
-              }
-            prop_category = ucp_findchar(c, &prop_chartype, &prop_othercase);
-            if (prop_category != ucp_M) break;
-            eptr += len;
-            }
-          }
-        }
-
-      else
-#endif     /* SUPPORT_UCP */
-
-/* Handle all other cases when the coding is UTF-8 */
-
-#ifdef SUPPORT_UTF8
-      if (utf8) switch(ctype)
-        {
-        case OP_ANY:
-        for (i = 1; i <= min; i++)
-          {
-          if (eptr >= md->end_subject ||
-             (*eptr++ == NEWLINE && (ims & PCRE_DOTALL) == 0))
-            RRETURN(MATCH_NOMATCH);
-          while (eptr < md->end_subject && (*eptr & 0xc0) == 0x80) eptr++;
-          }
-        break;
-
-        case OP_ANYBYTE:
-        eptr += min;
-        break;
-
-        case OP_NOT_DIGIT:
-        for (i = 1; i <= min; i++)
-          {
-          if (eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
-          GETCHARINC(c, eptr);
-          if (c < 128 && (md->ctypes[c] & ctype_digit) != 0)
-            RRETURN(MATCH_NOMATCH);
-          }
-        break;
-
-        case OP_DIGIT:
-        for (i = 1; i <= min; i++)
-          {
-          if (eptr >= md->end_subject ||
-             *eptr >= 128 || (md->ctypes[*eptr++] & ctype_digit) == 0)
-            RRETURN(MATCH_NOMATCH);
-          /* No need to skip more bytes - we know it's a 1-byte character */
-          }
-        break;
-
-        case OP_NOT_WHITESPACE:
-        for (i = 1; i <= min; i++)
-          {
-          if (eptr >= md->end_subject ||
-             (*eptr < 128 && (md->ctypes[*eptr++] & ctype_space) != 0))
-            RRETURN(MATCH_NOMATCH);
-          while (eptr < md->end_subject && (*eptr & 0xc0) == 0x80) eptr++;
-          }
-        break;
-
-        case OP_WHITESPACE:
-        for (i = 1; i <= min; i++)
-          {
-          if (eptr >= md->end_subject ||
-             *eptr >= 128 || (md->ctypes[*eptr++] & ctype_space) == 0)
-            RRETURN(MATCH_NOMATCH);
-          /* No need to skip more bytes - we know it's a 1-byte character */
-          }
-        break;
-
-        case OP_NOT_WORDCHAR:
-        for (i = 1; i <= min; i++)
-          {
-          if (eptr >= md->end_subject ||
-             (*eptr < 128 && (md->ctypes[*eptr++] & ctype_word) != 0))
-            RRETURN(MATCH_NOMATCH);
-          while (eptr < md->end_subject && (*eptr & 0xc0) == 0x80) eptr++;
-          }
-        break;
-
-        case OP_WORDCHAR:
-        for (i = 1; i <= min; i++)
-          {
-          if (eptr >= md->end_subject ||
-             *eptr >= 128 || (md->ctypes[*eptr++] & ctype_word) == 0)
-            RRETURN(MATCH_NOMATCH);
-          /* No need to skip more bytes - we know it's a 1-byte character */
-          }
-        break;
-
-        default:
-        RRETURN(PCRE_ERROR_INTERNAL);
-        }  /* End switch(ctype) */
-
-      else
-#endif     /* SUPPORT_UTF8 */
-
       /* Code for the non-UTF-8 case for minimum matching of operators other
       than OP_PROP and OP_NOTPROP. */
 
@@ -2625,108 +1887,6 @@ for (;;)
 
     if (minimize)
       {
-#ifdef SUPPORT_UCP
-      if (prop_type > 0)
-        {
-        for (fi = min;; fi++)
-          {
-          RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-          if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-          if (fi >= max || eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
-          GETCHARINC(c, eptr);
-          prop_category = ucp_findchar(c, &prop_chartype, &prop_othercase);
-          if ((*prop_test_variable == prop_test_against) == prop_fail_result)
-            RRETURN(MATCH_NOMATCH);
-          }
-        }
-
-      /* Match extended Unicode sequences. We will get here only if the
-      support is in the binary; otherwise a compile-time error occurs. */
-
-      else if (ctype == OP_EXTUNI)
-        {
-        for (fi = min;; fi++)
-          {
-          RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-          if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-          if (fi >= max || eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
-          GETCHARINCTEST(c, eptr);
-          prop_category = ucp_findchar(c, &prop_chartype, &prop_othercase);
-          if (prop_category == ucp_M) RRETURN(MATCH_NOMATCH);
-          while (eptr < md->end_subject)
-            {
-            int len = 1;
-            if (!utf8) c = *eptr; else
-              {
-              GETCHARLEN(c, eptr, len);
-              }
-            prop_category = ucp_findchar(c, &prop_chartype, &prop_othercase);
-            if (prop_category != ucp_M) break;
-            eptr += len;
-            }
-          }
-        }
-
-      else
-#endif     /* SUPPORT_UCP */
-
-#ifdef SUPPORT_UTF8
-      /* UTF-8 mode */
-      if (utf8)
-        {
-        for (fi = min;; fi++)
-          {
-          RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-          if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-          if (fi >= max || eptr >= md->end_subject) RRETURN(MATCH_NOMATCH);
-
-          GETCHARINC(c, eptr);
-          switch(ctype)
-            {
-            case OP_ANY:
-            if ((ims & PCRE_DOTALL) == 0 && c == NEWLINE) RRETURN(MATCH_NOMATCH);
-            break;
-
-            case OP_ANYBYTE:
-            break;
-
-            case OP_NOT_DIGIT:
-            if (c < 256 && (md->ctypes[c] & ctype_digit) != 0)
-              RRETURN(MATCH_NOMATCH);
-            break;
-
-            case OP_DIGIT:
-            if (c >= 256 || (md->ctypes[c] & ctype_digit) == 0)
-              RRETURN(MATCH_NOMATCH);
-            break;
-
-            case OP_NOT_WHITESPACE:
-            if (c < 256 && (md->ctypes[c] & ctype_space) != 0)
-              RRETURN(MATCH_NOMATCH);
-            break;
-
-            case OP_WHITESPACE:
-            if  (c >= 256 || (md->ctypes[c] & ctype_space) == 0)
-              RRETURN(MATCH_NOMATCH);
-            break;
-
-            case OP_NOT_WORDCHAR:
-            if (c < 256 && (md->ctypes[c] & ctype_word) != 0)
-              RRETURN(MATCH_NOMATCH);
-            break;
-
-            case OP_WORDCHAR:
-            if (c >= 256 || (md->ctypes[c] & ctype_word) == 0)
-              RRETURN(MATCH_NOMATCH);
-            break;
-
-            default:
-            RRETURN(PCRE_ERROR_INTERNAL);
-            }
-          }
-        }
-      else
-#endif
       /* Not UTF-8 mode */
         {
         for (fi = min;; fi++)
@@ -2783,227 +1943,6 @@ for (;;)
     else
       {
       pp = eptr;  /* Remember where we started */
-
-#ifdef SUPPORT_UCP
-      if (prop_type > 0)
-        {
-        for (i = min; i < max; i++)
-          {
-          int len = 1;
-          if (eptr >= md->end_subject) break;
-          GETCHARLEN(c, eptr, len);
-          prop_category = ucp_findchar(c, &prop_chartype, &prop_othercase);
-          if ((*prop_test_variable == prop_test_against) == prop_fail_result)
-            break;
-          eptr+= len;
-          }
-
-        /* eptr is now past the end of the maximum run */
-
-        for(;;)
-          {
-          RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-          if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-          if (eptr-- == pp) break;        /* Stop if tried at original pos */
-          BACKCHAR(eptr);
-          }
-        }
-
-      /* Match extended Unicode sequences. We will get here only if the
-      support is in the binary; otherwise a compile-time error occurs. */
-
-      else if (ctype == OP_EXTUNI)
-        {
-        for (i = min; i < max; i++)
-          {
-          if (eptr >= md->end_subject) break;
-          GETCHARINCTEST(c, eptr);
-          prop_category = ucp_findchar(c, &prop_chartype, &prop_othercase);
-          if (prop_category == ucp_M) break;
-          while (eptr < md->end_subject)
-            {
-            int len = 1;
-            if (!utf8) c = *eptr; else
-              {
-              GETCHARLEN(c, eptr, len);
-              }
-            prop_category = ucp_findchar(c, &prop_chartype, &prop_othercase);
-            if (prop_category != ucp_M) break;
-            eptr += len;
-            }
-          }
-
-        /* eptr is now past the end of the maximum run */
-
-        for(;;)
-          {
-          RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-          if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-          if (eptr-- == pp) break;        /* Stop if tried at original pos */
-          for (;;)                        /* Move back over one extended */
-            {
-            int len = 1;
-            BACKCHAR(eptr);
-            if (!utf8) c = *eptr; else
-              {
-              GETCHARLEN(c, eptr, len);
-              }
-            prop_category = ucp_findchar(c, &prop_chartype, &prop_othercase);
-            if (prop_category != ucp_M) break;
-            eptr--;
-            }
-          }
-        }
-
-      else
-#endif   /* SUPPORT_UCP */
-
-#ifdef SUPPORT_UTF8
-      /* UTF-8 mode */
-
-      if (utf8)
-        {
-        switch(ctype)
-          {
-          case OP_ANY:
-
-          /* Special code is required for UTF8, but when the maximum is unlimited
-          we don't need it, so we repeat the non-UTF8 code. This is probably
-          worth it, because .* is quite a common idiom. */
-
-          if (max < INT_MAX)
-            {
-            if ((ims & PCRE_DOTALL) == 0)
-              {
-              for (i = min; i < max; i++)
-                {
-                if (eptr >= md->end_subject || *eptr == NEWLINE) break;
-                eptr++;
-                while (eptr < md->end_subject && (*eptr & 0xc0) == 0x80) eptr++;
-                }
-              }
-            else
-              {
-              for (i = min; i < max; i++)
-                {
-                eptr++;
-                while (eptr < md->end_subject && (*eptr & 0xc0) == 0x80) eptr++;
-                }
-              }
-            }
-
-          /* Handle unlimited UTF-8 repeat */
-
-          else
-            {
-            if ((ims & PCRE_DOTALL) == 0)
-              {
-              for (i = min; i < max; i++)
-                {
-                if (eptr >= md->end_subject || *eptr == NEWLINE) break;
-                eptr++;
-                }
-              break;
-              }
-            else
-              {
-              c = max - min;
-              if (c > md->end_subject - eptr) c = md->end_subject - eptr;
-              eptr += c;
-              }
-            }
-          break;
-
-          /* The byte case is the same as non-UTF8 */
-
-          case OP_ANYBYTE:
-          c = max - min;
-          if (c > md->end_subject - eptr) c = md->end_subject - eptr;
-          eptr += c;
-          break;
-
-          case OP_NOT_DIGIT:
-          for (i = min; i < max; i++)
-            {
-            int len = 1;
-            if (eptr >= md->end_subject) break;
-            GETCHARLEN(c, eptr, len);
-            if (c < 256 && (md->ctypes[c] & ctype_digit) != 0) break;
-            eptr+= len;
-            }
-          break;
-
-          case OP_DIGIT:
-          for (i = min; i < max; i++)
-            {
-            int len = 1;
-            if (eptr >= md->end_subject) break;
-            GETCHARLEN(c, eptr, len);
-            if (c >= 256 ||(md->ctypes[c] & ctype_digit) == 0) break;
-            eptr+= len;
-            }
-          break;
-
-          case OP_NOT_WHITESPACE:
-          for (i = min; i < max; i++)
-            {
-            int len = 1;
-            if (eptr >= md->end_subject) break;
-            GETCHARLEN(c, eptr, len);
-            if (c < 256 && (md->ctypes[c] & ctype_space) != 0) break;
-            eptr+= len;
-            }
-          break;
-
-          case OP_WHITESPACE:
-          for (i = min; i < max; i++)
-            {
-            int len = 1;
-            if (eptr >= md->end_subject) break;
-            GETCHARLEN(c, eptr, len);
-            if (c >= 256 ||(md->ctypes[c] & ctype_space) == 0) break;
-            eptr+= len;
-            }
-          break;
-
-          case OP_NOT_WORDCHAR:
-          for (i = min; i < max; i++)
-            {
-            int len = 1;
-            if (eptr >= md->end_subject) break;
-            GETCHARLEN(c, eptr, len);
-            if (c < 256 && (md->ctypes[c] & ctype_word) != 0) break;
-            eptr+= len;
-            }
-          break;
-
-          case OP_WORDCHAR:
-          for (i = min; i < max; i++)
-            {
-            int len = 1;
-            if (eptr >= md->end_subject) break;
-            GETCHARLEN(c, eptr, len);
-            if (c >= 256 || (md->ctypes[c] & ctype_word) == 0) break;
-            eptr+= len;
-            }
-          break;
-
-          default:
-          RRETURN(PCRE_ERROR_INTERNAL);
-          }
-
-        /* eptr is now past the end of the maximum run */
-
-        for(;;)
-          {
-          RMATCH(rrc, eptr, ecode, offset_top, md, ims, eptrb, 0);
-          if (rrc != MATCH_NOMATCH) RRETURN(rrc);
-          if (eptr-- == pp) break;        /* Stop if tried at original pos */
-          BACKCHAR(eptr);
-          }
-        }
-      else
-#endif
 
       /* Not UTF-8 mode */
         {
@@ -3316,26 +2255,6 @@ moment. */
 if (match_block.partial && (re->options & PCRE_NOPARTIAL) != 0)
   return PCRE_ERROR_BADPARTIAL;
 
-/* Check a UTF-8 string if required. Unfortunately there's no way of passing
-back the character offset. */
-
-#ifdef SUPPORT_UTF8
-if (match_block.utf8 && (options & PCRE_NO_UTF8_CHECK) == 0)
-  {
-  if (_pcre_valid_utf8((uschar *)subject, length) >= 0)
-    return PCRE_ERROR_BADUTF8;
-  if (start_offset > 0 && start_offset < length)
-    {
-    int tb = ((uschar *)subject)[start_offset];
-    if (tb > 127)
-      {
-      tb &= 0xc0;
-      if (tb != 0 && tb != 0xc0) return PCRE_ERROR_BADUTF8_OFFSET;
-      }
-    }
-  }
-#endif
-
 /* The ims options can vary during the matching as a result of the presence
 of (?ims) items in the pattern. They are kept in a local variable so that
 restoring at the exit of a group is easy. */
@@ -3565,11 +2484,6 @@ do
     {
     if (firstline && *start_match == NEWLINE) break;
     start_match++;
-#ifdef SUPPORT_UTF8
-    if (match_block.utf8)
-      while(start_match < end_subject && (*start_match & 0xc0) == 0x80)
-        start_match++;
-#endif
     continue;
     }
 

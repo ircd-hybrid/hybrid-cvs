@@ -1,4 +1,4 @@
-/* $Id: pcre.h,v 1.2 2005/09/03 06:34:40 michael Exp $ */
+/* $Id: pcre.h,v 1.3 2005/09/03 08:57:57 michael Exp $ */
 
 /*************************************************
 *       Perl-Compatible Regular Expressions      *
@@ -144,16 +144,6 @@ extern "C" {
 #define PCRE_INFO_STUDYSIZE         10
 #define PCRE_INFO_DEFAULT_TABLES    11
 
-/* Request types for pcre_config() */
-
-#define PCRE_CONFIG_UTF8                    0
-#define PCRE_CONFIG_NEWLINE                 1
-#define PCRE_CONFIG_LINK_SIZE               2
-#define PCRE_CONFIG_POSIX_MALLOC_THRESHOLD  3
-#define PCRE_CONFIG_MATCH_LIMIT             4
-#define PCRE_CONFIG_STACKRECURSE            5
-#define PCRE_CONFIG_UNICODE_PROPERTIES      6
-
 /* Bit flags for the pcre_extra structure */
 
 #define PCRE_EXTRA_STUDY_DATA          0x0001
@@ -227,20 +217,12 @@ PCRE_DATA_SCOPE pcre *pcre_compile(const char *, int, const char **, int *,
                   const unsigned char *);
 PCRE_DATA_SCOPE pcre *pcre_compile2(const char *, int, int *, const char **,
                   int *, const unsigned char *);
-PCRE_DATA_SCOPE int  pcre_config(int, void *);
-PCRE_DATA_SCOPE int  pcre_copy_named_substring(const pcre *, const char *,
-                  int *, int, const char *, char *, int);
-PCRE_DATA_SCOPE int  pcre_copy_substring(const char *, int *, int, int, char *,
-                  int);
 PCRE_DATA_SCOPE int  pcre_exec(const pcre *, const pcre_extra *, const char *,
                    int, int, int, int *, int);
-PCRE_DATA_SCOPE void pcre_free_substring(const char *);
-PCRE_DATA_SCOPE void pcre_free_substring_list(const char **);
 PCRE_DATA_SCOPE int  pcre_fullinfo(const pcre *, const pcre_extra *, int,
                   void *);
 PCRE_DATA_SCOPE const unsigned char *pcre_maketables(void);
 PCRE_DATA_SCOPE pcre_extra *pcre_study(const pcre *, int, const char **);
-PCRE_DATA_SCOPE const char *pcre_version(void);
 
 #ifdef __cplusplus
 }  /* extern "C" */

@@ -1,4 +1,4 @@
-/* $Id: pcre_compile.c,v 1.2 2005/09/03 06:34:40 michael Exp $ */
+/* $Id: pcre_compile.c,v 1.3 2005/09/03 08:57:57 michael Exp $ */
 
 /*************************************************
 *      Perl-Compatible Regular Expressions       *
@@ -457,35 +457,6 @@ else
     which can be greater than 0xff, but only if the ddd are hex digits. */
 
     case 'x':
-#ifdef SUPPORT_UTF8
-    if (ptr[1] == '{' && (options & PCRE_UTF8) != 0)
-      {
-      const uschar *pt = ptr + 2;
-      register int count = 0;
-      c = 0;
-      while ((digitab[*pt] & ctype_xdigit) != 0)
-        {
-        int cc = *pt++;
-        count++;
-#if !EBCDIC    /* ASCII coding */
-        if (cc >= 'a') cc -= 32;               /* Convert to upper case */
-        c = c * 16 + cc - ((cc < 'A')? '0' : ('A' - 10));
-#else          /* EBCDIC coding */
-        if (cc >= 'a' && cc <= 'z') cc += 64;  /* Convert to upper case */
-        c = c * 16 + cc - ((cc >= '0')? '0' : ('A' - 10));
-#endif
-        }
-      if (*pt == '}')
-        {
-        if (c < 0 || count > 8) *errorcodeptr = ERR34;
-        ptr = pt;
-        break;
-        }
-      /* If the sequence of hex digits does not end with '}', then we don't
-      recognize this construct; fall through to the normal \x handling. */
-      }
-#endif
-
     /* Read just a single hex char */
 
     c = 0;
@@ -546,101 +517,6 @@ else
 *ptrptr = ptr;
 return c;
 }
-
-
-
-#ifdef SUPPORT_UCP
-/*************************************************
-*               Handle \P and \p                 *
-*************************************************/
-
-/* This function is called after \P or \p has been encountered, provided that
-PCRE is compiled with support for Unicode properties. On entry, ptrptr is
-pointing at the P or p. On exit, it is pointing at the final character of the
-escape sequence.
-
-Argument:
-  ptrptr         points to the pattern position pointer
-  negptr         points to a boolean that is set TRUE for negation else FALSE
-  errorcodeptr   points to the error code variable
-
-Returns:     value from ucp_type_table, or -1 for an invalid type
-*/
-
-static int
-get_ucp(const uschar **ptrptr, BOOL *negptr, int *errorcodeptr)
-{
-int c, i, bot, top;
-const uschar *ptr = *ptrptr;
-char name[4];
-
-c = *(++ptr);
-if (c == 0) goto ERROR_RETURN;
-
-*negptr = FALSE;
-
-/* \P or \p can be followed by a one- or two-character name in {}, optionally
-preceded by ^ for negation. */
-
-if (c == '{')
-  {
-  if (ptr[1] == '^')
-    {
-    *negptr = TRUE;
-    ptr++;
-    }
-  for (i = 0; i <= 2; i++)
-    {
-    c = *(++ptr);
-    if (c == 0) goto ERROR_RETURN;
-    if (c == '}') break;
-    name[i] = c;
-    }
-  if (c !='}')   /* Try to distinguish error cases */
-    {
-    while (*(++ptr) != 0 && *ptr != '}');
-    if (*ptr == '}') goto UNKNOWN_RETURN; else goto ERROR_RETURN;
-    }
-  name[i] = 0;
-  }
-
-/* Otherwise there is just one following character */
-
-else
-  {
-  name[0] = c;
-  name[1] = 0;
-  }
-
-*ptrptr = ptr;
-
-/* Search for a recognized property name using binary chop */
-
-bot = 0;
-top = _pcre_utt_size;
-
-while (bot < top)
-  {
-  i = (bot + top)/2;
-  c = strcmp(name, _pcre_utt[i].name);
-  if (c == 0) return _pcre_utt[i].value;
-  if (c > 0) bot = i + 1; else top = i;
-  }
-
-UNKNOWN_RETURN:
-*errorcodeptr = ERR47;
-*ptrptr = ptr;
-return -1;
-
-ERROR_RETURN:
-*errorcodeptr = ERR46;
-*ptrptr = ptr;
-return -1;
-}
-#endif
-
-
-
 
 /*************************************************
 *            Check for counted repeat            *
@@ -899,12 +775,6 @@ for (;;)
     case OP_CHARNC:
     branchlength++;
     cc += 2;
-#ifdef SUPPORT_UTF8
-    if ((options & PCRE_UTF8) != 0)
-      {
-      while ((*cc & 0xc0) == 0x80) cc++;
-      }
-#endif
     break;
 
     /* Handle exact repetitions. The count is already in characters, but we
@@ -913,12 +783,6 @@ for (;;)
     case OP_EXACT:
     branchlength += GET2(cc,1);
     cc += 4;
-#ifdef SUPPORT_UTF8
-    if ((options & PCRE_UTF8) != 0)
-      {
-      while((*cc & 0x80) == 0x80) cc++;
-      }
-#endif
     break;
 
     case OP_TYPEEXACT:
@@ -950,12 +814,6 @@ for (;;)
     return -2;
 
     /* Check a class for variable quantification */
-
-#ifdef SUPPORT_UTF8
-    case OP_XCLASS:
-    cc += GET(cc, 1) - 33;
-    /* Fall through */
-#endif
 
     case OP_CLASS:
     case OP_NCLASS:
@@ -1011,9 +869,7 @@ Returns:      pointer to the opcode for the bracket, or NULL if not found
 static const uschar *
 find_bracket(const uschar *code, BOOL utf8, int number)
 {
-#ifndef SUPPORT_UTF8
 utf8 = utf8;               /* Stop pedantic compilers complaining */
-#endif
 
 for (;;)
   {
@@ -1029,39 +885,6 @@ for (;;)
   else
     {
     code += _pcre_OP_lengths[c];
-
-#ifdef SUPPORT_UTF8
-
-    /* In UTF-8 mode, opcodes that are followed by a character may be followed
-    by a multi-byte character. The length in the table is a minimum, so we have
-    to scan along to skip the extra bytes. All opcodes are less than 128, so we
-    can use relatively efficient code. */
-
-    if (utf8) switch(c)
-      {
-      case OP_CHAR:
-      case OP_CHARNC:
-      case OP_EXACT:
-      case OP_UPTO:
-      case OP_MINUPTO:
-      case OP_STAR:
-      case OP_MINSTAR:
-      case OP_PLUS:
-      case OP_MINPLUS:
-      case OP_QUERY:
-      case OP_MINQUERY:
-      while ((*code & 0xc0) == 0x80) code++;
-      break;
-
-      /* XCLASS is used for classes that cannot be represented just by a bit
-      map. This includes negated single high-valued characters. The length in
-      the table is zero; the actual length is stored in the compiled code. */
-
-      case OP_XCLASS:
-      code += GET(code, 1) + 1;
-      break;
-      }
-#endif
     }
   }
 }
@@ -1085,9 +908,7 @@ Returns:      pointer to the opcode for OP_RECURSE, or NULL if not found
 static const uschar *
 find_recurse(const uschar *code, BOOL utf8)
 {
-#ifndef SUPPORT_UTF8
 utf8 = utf8;               /* Stop pedantic compilers complaining */
-#endif
 
 for (;;)
   {
@@ -1101,39 +922,6 @@ for (;;)
   else
     {
     code += _pcre_OP_lengths[c];
-
-#ifdef SUPPORT_UTF8
-
-    /* In UTF-8 mode, opcodes that are followed by a character may be followed
-    by a multi-byte character. The length in the table is a minimum, so we have
-    to scan along to skip the extra bytes. All opcodes are less than 128, so we
-    can use relatively efficient code. */
-
-    if (utf8) switch(c)
-      {
-      case OP_CHAR:
-      case OP_CHARNC:
-      case OP_EXACT:
-      case OP_UPTO:
-      case OP_MINUPTO:
-      case OP_STAR:
-      case OP_MINSTAR:
-      case OP_PLUS:
-      case OP_MINPLUS:
-      case OP_QUERY:
-      case OP_MINQUERY:
-      while ((*code & 0xc0) == 0x80) code++;
-      break;
-
-      /* XCLASS is used for classes that cannot be represented just by a bit
-      map. This includes negated single high-valued characters. The length in
-      the table is zero; the actual length is stored in the compiled code. */
-
-      case OP_XCLASS:
-      code += GET(code, 1) + 1;
-      break;
-      }
-#endif
     }
   }
 }
@@ -1194,19 +982,9 @@ for (code = first_significant_code(code + 1 + LINK_SIZE, NULL, 0, TRUE);
     {
     /* Check for quantifiers after a class */
 
-#ifdef SUPPORT_UTF8
-    case OP_XCLASS:
-    ccode = code + GET(code, 1);
-    goto CHECK_CLASS_REPEAT;
-#endif
-
     case OP_CLASS:
     case OP_NCLASS:
     ccode = code + 33;
-
-#ifdef SUPPORT_UTF8
-    CHECK_CLASS_REPEAT:
-#endif
 
     switch (*ccode)
       {
@@ -1262,20 +1040,6 @@ for (code = first_significant_code(code + 1 + LINK_SIZE, NULL, 0, TRUE);
     case OP_KETRMIN:
     case OP_ALT:
     return TRUE;
-
-    /* In UTF-8 mode, STAR, MINSTAR, QUERY, MINQUERY, UPTO, and MINUPTO  may be
-    followed by a multibyte character */
-
-#ifdef SUPPORT_UTF8
-    case OP_STAR:
-    case OP_MINSTAR:
-    case OP_QUERY:
-    case OP_MINQUERY:
-    case OP_UPTO:
-    case OP_MINUPTO:
-    if (utf8) while ((code[2] & 0xc0) == 0x80) code++;
-    break;
-#endif
     }
   }
 
@@ -1468,57 +1232,6 @@ PUT(previous_callout, 2 + LINK_SIZE, length);
 
 
 
-#ifdef SUPPORT_UCP
-/*************************************************
-*           Get othercase range                  *
-*************************************************/
-
-/* This function is passed the start and end of a class range, in UTF-8 mode
-with UCP support. It searches up the characters, looking for internal ranges of
-characters in the "other" case. Each call returns the next one, updating the
-start address.
-
-Arguments:
-  cptr        points to starting character value; updated
-  d           end value
-  ocptr       where to put start of othercase range
-  odptr       where to put end of othercase range
-
-Yield:        TRUE when range returned; FALSE when no more
-*/
-
-static BOOL
-get_othercase_range(int *cptr, int d, int *ocptr, int *odptr)
-{
-int c, chartype, othercase, next;
-
-for (c = *cptr; c <= d; c++)
-  {
-  if (_pcre_ucp_findchar(c, &chartype, &othercase) == ucp_L && othercase != 0)
-    break;
-  }
-
-if (c > d) return FALSE;
-
-*ocptr = othercase;
-next = othercase + 1;
-
-for (++c; c <= d; c++)
-  {
-  if (_pcre_ucp_findchar(c, &chartype, &othercase) != ucp_L ||
-        othercase != next)
-    break;
-  next++;
-  }
-
-*odptr = next - 1;
-*cptr = c;
-
-return TRUE;
-}
-#endif  /* SUPPORT_UCP */
-
-
 /*************************************************
 *           Compile one branch                   *
 *************************************************/
@@ -1568,14 +1281,7 @@ uschar *previous = NULL;
 uschar *previous_callout = NULL;
 uschar classbits[32];
 
-#ifdef SUPPORT_UTF8
-BOOL class_utf8;
-BOOL utf8 = (options & PCRE_UTF8) != 0;
-uschar *class_utf8data;
-uschar utf8_char[6];
-#else
 BOOL utf8 = FALSE;
-#endif
 
 /* Set up the default and non-default settings for greediness */
 
@@ -1768,11 +1474,6 @@ for (;; ptr++)
     class_charcount = 0;
     class_lastchar = -1;
 
-#ifdef SUPPORT_UTF8
-    class_utf8 = FALSE;                       /* No chars >= 256 */
-    class_utf8data = code + LINK_SIZE + 34;   /* For UTF-8 items */
-#endif
-
     /* Initialize the 32-char bit map to all zeros. We have to build the
     map in a temporary bit of store, in case the class contains only 1
     character (< 256), because in that case the compiled code doesn't use the
@@ -1788,12 +1489,6 @@ for (;; ptr++)
 
     do
       {
-#ifdef SUPPORT_UTF8
-      if (utf8 && c > 127)
-        {                           /* Braces are required because the */
-        GETCHARLEN(c, ptr, ptr);    /* macro generates multiple statements */
-        }
-#endif
 
       /* Inside \Q...\E everything is literal except \E */
 
@@ -1936,22 +1631,6 @@ for (;; ptr++)
             classbits[1] |= 0x08;    /* Perl 5.004 onwards omits VT from \s */
             continue;
 
-#ifdef SUPPORT_UCP
-            case ESC_p:
-            case ESC_P:
-              {
-              BOOL negated;
-              int property = get_ucp(&ptr, &negated, errorcodeptr);
-              if (property < 0) goto FAILED;
-              class_utf8 = TRUE;
-              *class_utf8data++ = ((-c == ESC_p) != negated)?
-                XCL_PROP : XCL_NOTPROP;
-              *class_utf8data++ = property;
-              class_charcount -= 2;   /* Not a < 256 character */
-              }
-            continue;
-#endif
-
             /* Unrecognized escapes are faulted if PCRE is running in its
             strict mode. By default, for compatibility with Perl, they are
             treated as literals. */
@@ -1981,13 +1660,6 @@ for (;; ptr++)
         int d;
         ptr += 2;
 
-#ifdef SUPPORT_UTF8
-        if (utf8)
-          {                           /* Braces are required because the */
-          GETCHARLEN(d, ptr, ptr);    /* macro generates multiple statements */
-          }
-        else
-#endif
         d = *ptr;  /* Not UTF-8 mode */
 
         /* The second part of a range can be a single-character escape, but
@@ -2018,78 +1690,6 @@ for (;; ptr++)
 
         if (d == c) goto LONE_SINGLE_CHARACTER;  /* A few lines below */
 
-        /* In UTF-8 mode, if the upper limit is > 255, or > 127 for caseless
-        matching, we have to use an XCLASS with extra data items. Caseless
-        matching for characters > 127 is available only if UCP support is
-        available. */
-
-#ifdef SUPPORT_UTF8
-        if (utf8 && (d > 255 || ((options & PCRE_CASELESS) != 0 && d > 127)))
-          {
-          class_utf8 = TRUE;
-
-          /* With UCP support, we can find the other case equivalents of
-          the relevant characters. There may be several ranges. Optimize how
-          they fit with the basic range. */
-
-#ifdef SUPPORT_UCP
-          if ((options & PCRE_CASELESS) != 0)
-            {
-            int occ, ocd;
-            int cc = c;
-            int origd = d;
-            while (get_othercase_range(&cc, origd, &occ, &ocd))
-              {
-              if (occ >= c && ocd <= d) continue;  /* Skip embedded ranges */
-
-              if (occ < c  && ocd >= c - 1)        /* Extend the basic range */
-                {                                  /* if there is overlap,   */
-                c = occ;                           /* noting that if occ < c */
-                continue;                          /* we can't have ocd > d  */
-                }                                  /* because a subrange is  */
-              if (ocd > d && occ <= d + 1)         /* always shorter than    */
-                {                                  /* the basic range.       */
-                d = ocd;
-                continue;
-                }
-
-              if (occ == ocd)
-                {
-                *class_utf8data++ = XCL_SINGLE;
-                }
-              else
-                {
-                *class_utf8data++ = XCL_RANGE;
-                class_utf8data += _pcre_ord2utf8(occ, class_utf8data);
-                }
-              class_utf8data += _pcre_ord2utf8(ocd, class_utf8data);
-              }
-            }
-#endif  /* SUPPORT_UCP */
-
-          /* Now record the original range, possibly modified for UCP caseless
-          overlapping ranges. */
-
-          *class_utf8data++ = XCL_RANGE;
-          class_utf8data += _pcre_ord2utf8(c, class_utf8data);
-          class_utf8data += _pcre_ord2utf8(d, class_utf8data);
-
-          /* With UCP support, we are done. Without UCP support, there is no
-          caseless matching for UTF-8 characters > 127; we can use the bit map
-          for the smaller ones. */
-
-#ifdef SUPPORT_UCP
-          continue;    /* With next character in the class */
-#else
-          if ((options & PCRE_CASELESS) == 0 || c > 127) continue;
-
-          /* Adjust upper limit and fall through to set up the map */
-
-          d = 127;
-
-#endif  /* SUPPORT_UCP */
-          }
-#endif  /* SUPPORT_UTF8 */
 
         /* We use the bit map for all cases when not in UTF-8 mode; else
         ranges that lie entirely within 0-127 when there is UCP support; else
@@ -2115,33 +1715,6 @@ for (;; ptr++)
       apparent range that isn't. */
 
       LONE_SINGLE_CHARACTER:
-
-      /* Handle a character that cannot go in the bit map */
-
-#ifdef SUPPORT_UTF8
-      if (utf8 && (c > 255 || ((options & PCRE_CASELESS) != 0 && c > 127)))
-        {
-        class_utf8 = TRUE;
-        *class_utf8data++ = XCL_SINGLE;
-        class_utf8data += _pcre_ord2utf8(c, class_utf8data);
-
-#ifdef SUPPORT_UCP
-        if ((options & PCRE_CASELESS) != 0)
-          {
-          int chartype;
-          int othercase;
-          if (_pcre_ucp_findchar(c, &chartype, &othercase) >= 0 &&
-               othercase > 0)
-            {
-            *class_utf8data++ = XCL_SINGLE;
-            class_utf8data += _pcre_ord2utf8(othercase, class_utf8data);
-            }
-          }
-#endif  /* SUPPORT_UCP */
-
-        }
-      else
-#endif  /* SUPPORT_UTF8 */
 
       /* Handle a single-byte character */
         {
@@ -2175,14 +1748,7 @@ for (;; ptr++)
     this item is first, whatever repeat count may follow. In the case of
     reqbyte, save the previous value for reinstating. */
 
-#ifdef SUPPORT_UTF8
-    if (class_charcount == 1 &&
-          (!utf8 ||
-          (!class_utf8 && (!negate_class || class_lastchar < 128))))
-
-#else
     if (class_charcount == 1)
-#endif
       {
       zeroreqbyte = reqbyte;
 
@@ -2200,11 +1766,6 @@ for (;; ptr++)
       /* For a single, positive character, get the value into mcbuffer, and
       then we can handle this with the normal one-character code. */
 
-#ifdef SUPPORT_UTF8
-      if (utf8 && class_lastchar > 127)
-        mclength = _pcre_ord2utf8(class_lastchar, mcbuffer);
-      else
-#endif
         {
         mcbuffer[0] = class_lastchar;
         mclength = 1;
@@ -2220,44 +1781,6 @@ for (;; ptr++)
     if (firstbyte == REQ_UNSET) firstbyte = REQ_NONE;
     zerofirstbyte = firstbyte;
     zeroreqbyte = reqbyte;
-
-    /* If there are characters with values > 255, we have to compile an
-    extended class, with its own opcode. If there are no characters < 256,
-    we can omit the bitmap. */
-
-#ifdef SUPPORT_UTF8
-    if (class_utf8)
-      {
-      *class_utf8data++ = XCL_END;    /* Marks the end of extra data */
-      *code++ = OP_XCLASS;
-      code += LINK_SIZE;
-      *code = negate_class? XCL_NOT : 0;
-
-      /* If the map is required, install it, and move on to the end of
-      the extra data */
-
-      if (class_charcount > 0)
-        {
-        *code++ |= XCL_MAP;
-        memcpy(code, classbits, 32);
-        code = class_utf8data;
-        }
-
-      /* If the map is not required, slide down the extra data. */
-
-      else
-        {
-        int len = class_utf8data - (code + 33);
-        memmove(code + 1, code + 33, len);
-        code += len + 1;
-        }
-
-      /* Now fill in the complete length of the item */
-
-      PUT(previous, 1, code - previous);
-      break;   /* End of class handling */
-      }
-#endif
 
     /* If there are no characters > 255, negate the 32-byte map if necessary,
     and copy it into the code vector. If this is the first thing in the branch,
@@ -2366,23 +1889,6 @@ for (;; ptr++)
 
     if (*previous == OP_CHAR || *previous == OP_CHARNC)
       {
-      /* Deal with UTF-8 characters that take up more than one byte. It's
-      easier to write this out separately than try to macrify it. Use c to
-      hold the length of the character in bytes, plus 0x80 to flag that it's a
-      length rather than a small character. */
-
-#ifdef SUPPORT_UTF8
-      if (utf8 && (code[-1] & 0x80) != 0)
-        {
-        uschar *lastchar = code - 1;
-        while((*lastchar & 0xc0) == 0x80) lastchar--;
-        c = code - lastchar;            /* Length of UTF-8 character */
-        memcpy(utf8_char, lastchar, c); /* Save the char */
-        c |= 0x80;                      /* Flag c as a length */
-        }
-      else
-#endif
-
       /* Handle the case of a single byte - either with no UTF8 support, or
       with UTF-8 disabled, or for a UTF-8 character < 128. */
 
@@ -2489,14 +1995,6 @@ for (;; ptr++)
 
         if (repeat_max < 0)
           {
-#ifdef SUPPORT_UTF8
-          if (utf8 && c >= 128)
-            {
-            memcpy(code, utf8_char, c & 7);
-            code += c & 7;
-            }
-          else
-#endif
             {
             *code++ = c;
             if (prop_type >= 0) *code++ = prop_type;
@@ -2509,14 +2007,6 @@ for (;; ptr++)
 
         else if (repeat_max != repeat_min)
           {
-#ifdef SUPPORT_UTF8
-          if (utf8 && c >= 128)
-            {
-            memcpy(code, utf8_char, c & 7);
-            code += c & 7;
-            }
-          else
-#endif
           *code++ = c;
           if (prop_type >= 0) *code++ = prop_type;
           repeat_max -= repeat_min;
@@ -2526,23 +2016,7 @@ for (;; ptr++)
         }
 
       /* The character or character type itself comes last in all cases. */
-
-#ifdef SUPPORT_UTF8
-      if (utf8 && c >= 128)
-        {
-        memcpy(code, utf8_char, c & 7);
-        code += c & 7;
-        }
-      else
-#endif
       *code++ = c;
-
-      /* For a repeated Unicode property match, there is an extra byte that
-      defines the required property. */
-
-#ifdef SUPPORT_UCP
-      if (prop_type >= 0) *code++ = prop_type;
-#endif
       }
 
     /* If previous was a character class or a back reference, we put the repeat
@@ -2550,9 +2024,6 @@ for (;; ptr++)
 
     else if (*previous == OP_CLASS ||
              *previous == OP_NCLASS ||
-#ifdef SUPPORT_UTF8
-             *previous == OP_XCLASS ||
-#endif
              *previous == OP_REF)
       {
       if (repeat_max == 0)
@@ -3276,20 +2747,6 @@ for (;; ptr++)
         PUT2INC(code, 0, number);
         }
 
-      /* So are Unicode property matches, if supported. We know that get_ucp
-      won't fail because it was tested in the pre-pass. */
-
-#ifdef SUPPORT_UCP
-      else if (-c == ESC_P || -c == ESC_p)
-        {
-        BOOL negated;
-        int value = get_ucp(&ptr, &negated, errorcodeptr);
-        previous = code;
-        *code++ = ((-c == ESC_p) != negated)? OP_PROP : OP_NOTPROP;
-        *code++ = value;
-        }
-#endif
-
       /* For the rest, we can obtain the OP value by negating the escape
       value */
 
@@ -3301,20 +2758,8 @@ for (;; ptr++)
       continue;
       }
 
-    /* We have a data character whose value is in c. In UTF-8 mode it may have
-    a value > 127. We set its representation in the length/buffer, and then
-    handle it as a data character. */
-
-#ifdef SUPPORT_UTF8
-    if (utf8 && c > 127)
-      mclength = _pcre_ord2utf8(c, mcbuffer);
-    else
-#endif
-
-     {
      mcbuffer[0] = c;
      mclength = 1;
-     }
 
     goto ONE_CHAR;
 
@@ -3326,14 +2771,6 @@ for (;; ptr++)
     NORMAL_CHAR:
     mclength = 1;
     mcbuffer[0] = c;
-
-#ifdef SUPPORT_UTF8
-    if (utf8 && (c & 0xc0) == 0xc0)
-      {
-      while ((ptr[1] & 0xc0) == 0x80)
-        mcbuffer[mclength++] = *(++ptr);
-      }
-#endif
 
     /* At this point we have the character's bytes in mcbuffer, and the length
     in mclength. When not in UTF-8 mode, the length is always 1. */
@@ -3864,10 +3301,6 @@ int name_count = 0;
 int max_name_size = 0;
 int lastitemlength = 0;
 int errorcode = 0;
-#ifdef SUPPORT_UTF8
-BOOL utf8;
-BOOL class_utf8;
-#endif
 BOOL inescq = FALSE;
 BOOL capturing;
 unsigned int brastackptr = 0;
@@ -3902,23 +3335,11 @@ if (erroroffset == NULL)
 
 *erroroffset = 0;
 
-/* Can't support UTF8 unless PCRE has been compiled to include the code. */
-
-#ifdef SUPPORT_UTF8
-utf8 = (options & PCRE_UTF8) != 0;
-if (utf8 && (options & PCRE_NO_UTF8_CHECK) == 0 &&
-     (*erroroffset = _pcre_valid_utf8((uschar *)pattern, -1)) >= 0)
-  {
-  errorcode = ERR44;
-  goto PCRE_EARLY_ERROR_RETURN;
-  }
-#else
 if ((options & PCRE_UTF8) != 0)
   {
   errorcode = ERR32;
   goto PCRE_EARLY_ERROR_RETURN;
   }
-#endif
 
 if ((options & ~PUBLIC_OPTIONS) != 0)
   {
@@ -4008,18 +3429,6 @@ while ((c = *(++ptr)) != 0)
     if (c >= 0)             /* Data character */
       {
       length += 2;          /* For a one-byte character */
-
-#ifdef SUPPORT_UTF8
-      if (utf8 && c > 127)
-        {
-        int i;
-        for (i = 0; i < _pcre_utf8_table1_size; i++)
-          if (c <= _pcre_utf8_table1[i]) break;
-        length += i;
-        lastitemlength += i;
-        }
-#endif
-
       continue;
       }
 
@@ -4033,29 +3442,19 @@ while ((c = *(++ptr)) != 0)
 
     /* \X is supported only if Unicode property support is compiled */
 
-#ifndef SUPPORT_UCP
     if (-c == ESC_X)
       {
       errorcode = ERR45;
       goto PCRE_ERROR_RETURN;
       }
-#endif
 
     /* \P and \p are for Unicode properties, but only when the support has
     been compiled. Each item needs 2 bytes. */
 
     else if (-c == ESC_P || -c == ESC_p)
       {
-#ifdef SUPPORT_UCP
-      BOOL negated;
-      length += 2;
-      lastitemlength = 2;
-      if (get_ucp(&ptr, &negated, &errorcode) < 0) goto PCRE_ERROR_RETURN;
-      continue;
-#else
       errorcode = ERR45;
       goto PCRE_ERROR_RETURN;
-#endif
       }
 
     /* Other escapes need one byte */
@@ -4160,10 +3559,6 @@ while ((c = *(++ptr)) != 0)
       }
     else class_optcount = 0;
 
-#ifdef SUPPORT_UTF8
-    class_utf8 = FALSE;
-#endif
-
     /* Written as a "do" so that an initial ']' is taken as data */
 
     if (*ptr != 0) do
@@ -4208,17 +3603,6 @@ while ((c = *(++ptr)) != 0)
         else
           {
           class_optcount = 10;         /* \d, \s etc; make sure > 1 */
-#ifdef SUPPORT_UTF8
-          if (-c == ESC_p || -c == ESC_P)
-            {
-            if (!class_utf8)
-              {
-              class_utf8 = TRUE;
-              length += LINK_SIZE + 2;
-              }
-            length += 2;
-            }
-#endif
           }
         }
 
@@ -4242,18 +3626,7 @@ while ((c = *(++ptr)) != 0)
         int d;
 
         GET_ONE_CHARACTER:
-
-#ifdef SUPPORT_UTF8
-        if (utf8)
-          {
-          int extra = 0;
-          GETCHARLEN(c, ptr, extra);
-          ptr += extra;
-          }
-        else c = *ptr;
-#else
         c = *ptr;
-#endif
 
         /* Come here from handling \ above when it escapes to a char value */
 
@@ -4275,15 +3648,6 @@ while ((c = *(++ptr)) != 0)
           else if (ptr[1] != 0 && ptr[1] != ']')
             {
             ptr++;
-#ifdef SUPPORT_UTF8
-            if (utf8)
-              {
-              int extra = 0;
-              GETCHARLEN(d, ptr, extra);
-              ptr += extra;
-              }
-            else
-#endif
             d = *ptr;
             }
           if (d < 0) ptr = hyptr;      /* go back to hyphen as data */
@@ -4300,85 +3664,6 @@ while ((c = *(++ptr)) != 0)
             errorcode = ERR8;
             goto PCRE_ERROR_RETURN;
             }
-
-#ifdef SUPPORT_UTF8
-          if (utf8 && (d > 255 || ((options & PCRE_CASELESS) != 0 && d > 127)))
-            {
-            uschar buffer[6];
-            if (!class_utf8)         /* Allow for XCLASS overhead */
-              {
-              class_utf8 = TRUE;
-              length += LINK_SIZE + 2;
-              }
-
-#ifdef SUPPORT_UCP
-            /* If we have UCP support, find out how many extra ranges are
-            needed to map the other case of characters within this range. We
-            have to mimic the range optimization here, because extending the
-            range upwards might push d over a boundary that makes is use
-            another byte in the UTF-8 representation. */
-
-            if ((options & PCRE_CASELESS) != 0)
-              {
-              int occ, ocd;
-              int cc = c;
-              int origd = d;
-              while (get_othercase_range(&cc, origd, &occ, &ocd))
-                {
-                if (occ >= c && ocd <= d) continue;   /* Skip embedded */
-
-                if (occ < c  && ocd >= c - 1)  /* Extend the basic range */
-                  {                            /* if there is overlap,   */
-                  c = occ;                     /* noting that if occ < c */
-                  continue;                    /* we can't have ocd > d  */
-                  }                            /* because a subrange is  */
-                if (ocd > d && occ <= d + 1)   /* always shorter than    */
-                  {                            /* the basic range.       */
-                  d = ocd;
-                  continue;
-                  }
-
-                /* An extra item is needed */
-
-                length += 1 + _pcre_ord2utf8(occ, buffer) +
-                  ((occ == ocd)? 0 : _pcre_ord2utf8(ocd, buffer));
-                }
-              }
-#endif  /* SUPPORT_UCP */
-
-            /* The length of the (possibly extended) range */
-
-            length += 1 + _pcre_ord2utf8(c, buffer) + _pcre_ord2utf8(d, buffer);
-            }
-#endif  /* SUPPORT_UTF8 */
-
-          }
-
-        /* We have a single character. There is nothing to be done unless we
-        are in UTF-8 mode. If the char is > 255, or 127 when caseless, we must
-        allow for an XCL_SINGLE item, doubled for caselessness if there is UCP
-        support. */
-
-        else
-          {
-#ifdef SUPPORT_UTF8
-          if (utf8 && (c > 255 || ((options & PCRE_CASELESS) != 0 && c > 127)))
-            {
-            uschar buffer[6];
-            class_optcount = 10;     /* Ensure > 1 */
-            if (!class_utf8)         /* Allow for XCLASS overhead */
-              {
-              class_utf8 = TRUE;
-              length += LINK_SIZE + 2;
-              }
-#ifdef SUPPORT_UCP
-            length += (((options & PCRE_CASELESS) != 0)? 2 : 1) *
-              (1 + _pcre_ord2utf8(c, buffer));
-#else   /* SUPPORT_UCP */
-            length += 1 + _pcre_ord2utf8(c, buffer);
-#endif  /* SUPPORT_UCP */
-            }
-#endif  /* SUPPORT_UTF8 */
           }
         }
       }
@@ -4842,20 +4127,6 @@ while ((c = *(++ptr)) != 0)
 
     length += 2;          /* For a one-byte character */
     lastitemlength = 1;   /* Default length of last item for repeats */
-
-    /* In UTF-8 mode, check for additional bytes. */
-
-#ifdef SUPPORT_UTF8
-    if (utf8 && (c & 0xc0) == 0xc0)
-      {
-      while ((ptr[1] & 0xc0) == 0x80)         /* Can't flow over the end */
-        {                                     /* because the end is marked */
-        lastitemlength++;                     /* by a zero byte. */
-        length++;
-        ptr++;
-        }
-      }
-#endif
 
     continue;
     }

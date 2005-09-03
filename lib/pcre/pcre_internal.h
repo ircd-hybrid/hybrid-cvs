@@ -1,4 +1,4 @@
-/* $Id: pcre_internal.h,v 1.2 2005/09/03 06:34:40 michael Exp $ */
+/* $Id: pcre_internal.h,v 1.3 2005/09/03 08:57:57 michael Exp $ */
 
 /*************************************************
 *      Perl-Compatible Regular Expressions       *
@@ -117,12 +117,6 @@ typedef unsigned char uschar;
 /* Include the public PCRE header */
 
 #include "pcre.h"
-
-/* Include the (copy of) the public ucp header, changing the external name into
-a private one. This does no harm, even if we aren't compiling UCP support. */
-
-#define ucp_findchar _pcre_ucp_findchar
-#include "ucp.h"
 
 /* When compiling for use with the Virtual Pascal compiler, these functions
 need to have their names changed. PCRE must be compiled with the -DVPCOMPAT
@@ -877,12 +871,9 @@ extern const uschar _pcre_OP_lengths[];
 one of the exported public functions. They have to be "external" in the C
 sense, but are not part of the PCRE public API. */
 
-extern int         _pcre_ord2utf8(int, uschar *);
 extern void        _pcre_printint(pcre *, FILE *);
 extern real_pcre * _pcre_try_flipped(const real_pcre *, real_pcre *,
                      const pcre_study_data *, pcre_study_data *);
-extern int         _pcre_ucp_findchar(const int, int *, int *);
-extern int         _pcre_valid_utf8(const uschar *, int);
 extern BOOL        _pcre_xclass(int, const uschar *);
 
 /* End of pcre_internal.h */

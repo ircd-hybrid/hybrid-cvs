@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rxline.c,v 1.21 2005/09/03 06:05:37 michael Exp $
+ *  $Id: m_rxline.c,v 1.22 2005/09/03 08:57:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -83,9 +83,30 @@ _moddeinit(void)
   mod_del_cmd(&unrxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.21 $";
+const char *_version = "$Revision: 1.22 $";
 #endif
 
+static int
+already_placed_rxline(struct Client *source_p, const char *gecos)
+{
+  const dlink_node *ptr = NULL;
+
+  DLINK_FOREACH(ptr, rxconf_items.head)
+  {
+    struct ConfItem *aptr = ptr->data;
+    const struct MatchItem *match_item = map_to_conf(aptr);
+
+    if (!strcmp(gecos, aptr->name))
+    {
+      sendto_one(source_p, ":%s NOTICE %s :[%s] already RX-Lined by [%s] - %s",
+                 me.name, source_p->name, gecos,
+                 aptr->name, match_item->reason);
+      return 1;
+    }
+  }
+
+  return 0;
+}
 
 /* mo_rxline()
  *
@@ -103,8 +124,6 @@ mo_rxline(struct Client *client_p, struct Client *source_p,
 {
   char *reason = NULL;
   char *gecos = NULL;
-  struct ConfItem *conf = NULL;
-  struct MatchItem *match_item = NULL;
   char *target_server = NULL;
   time_t tkline_time = 0;
 
@@ -138,17 +157,8 @@ mo_rxline(struct Client *client_p, struct Client *source_p,
   if (!valid_xline(source_p, gecos, reason, 0))
     return;
 
-  if ((conf = find_exact_name_conf(RXLINE_TYPE, gecos, NULL, NULL)) != NULL)
-  {
-    match_item = map_to_conf(conf);
-
-    sendto_one(source_p, ":%s NOTICE %s :[%s] already RX-Lined by [%s] - %s",
-               me.name, source_p->name, gecos,
-               conf->name, match_item->reason);
-    return;
-  }
-
-  write_rxline(source_p, gecos, reason, tkline_time);
+  if (!already_placed_rxline(source_p, gecos))
+    write_rxline(source_p, gecos, reason, tkline_time);
 }
 
 /* ms_rxline()
@@ -161,10 +171,8 @@ mo_rxline(struct Client *client_p, struct Client *source_p,
  */
 static void
 ms_rxline(struct Client *client_p, struct Client *source_p,
-         int parc, char *parv[])
+          int parc, char *parv[])
 {
-  struct ConfItem *conf = NULL;
-  struct MatchItem *match_item = NULL;
   int t_sec = 0;
 
   if (parc != 5 || EmptyString(parv[4]))
@@ -191,19 +199,8 @@ ms_rxline(struct Client *client_p, struct Client *source_p,
   if (find_matching_name_conf(ULINE_TYPE, source_p->servptr->name,
                               source_p->username, source_p->host,
                               SHARED_XLINE))
-  {
-    if ((conf = find_exact_name_conf(RXLINE_TYPE, parv[2], NULL, NULL)))
-    {
-      match_item = map_to_conf(conf);
-      sendto_one(source_p, ":%s NOTICE %s :[%s] already RX-Lined by [%s] - %s",
-                 ID_or_name(&me, source_p->from),
-                 ID_or_name(source_p, source_p->from),
-                 parv[2], conf->name, match_item->reason);
-      return;
-    }
-
-    write_rxline(source_p, parv[2], parv[4], t_sec);
-  }
+    if (!already_placed_rxline(source_p, parv[2]))
+      write_rxline(source_p, parv[2], parv[4], t_sec);
 }
 
 static void
@@ -341,18 +338,18 @@ write_rxline(struct Client *source_p, const char *gecos, char *reason,
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
 
-  if (tkline_time != 0)
+  if (tkline_time)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
-			 "%s added temporary %d min. RX-Line for [%s] [%s]",
-			 get_oper_name(source_p), (int)tkline_time/60,
-			 conf->name, match_item->reason);
+                         "%s added temporary %d min. RX-Line for [%s] [%s]",
+                         get_oper_name(source_p), (int)tkline_time/60,
+                         conf->name, match_item->reason);
     sendto_one(source_p, ":%s NOTICE %s :Added temporary %d min. RX-Line [%s]",
-	       MyConnect(source_p) ? me.name : ID_or_name(&me, source_p->from),
-	       source_p->name, (int)tkline_time/60, conf->name);
+               MyConnect(source_p) ? me.name : ID_or_name(&me, source_p->from),
+               source_p->name, (int)tkline_time/60, conf->name);
     ilog(L_TRACE, "%s added temporary %d min. RX-Line for [%s] [%s]",
-	 source_p->name, (int)tkline_time/60,
-	 conf->name, match_item->reason);
+         source_p->name, (int)tkline_time/60,
+         conf->name, match_item->reason);
     match_item->hold = CurrentTime + tkline_time;
     add_temp_line(conf);
   }
@@ -400,15 +397,15 @@ remove_xline(struct Client *source_p, char *gecos)
  * Side effects: Any matching tklines are removed.
  */
 static int
-remove_txline(const char *gecos)
+remove_txline(const char *const gecos)
 {
-  dlink_node *ptr = NULL, *next_ptr = NULL;
+  dlink_node *ptr = NULL;
 
-  DLINK_FOREACH_SAFE(ptr, next_ptr, temporary_rxlines.head)
+  DLINK_FOREACH(ptr, temporary_rxlines.head)
   {
     struct ConfItem *conf = ptr->data;
 
-    if (!irccmp(gecos, conf->name))
+    if (!strcmp(gecos, conf->name))
     {
       dlinkDelete(ptr, &temporary_rxlines);
       free_dlink_node(ptr);
