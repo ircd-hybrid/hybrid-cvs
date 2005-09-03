@@ -1,4 +1,4 @@
-# $Id: rkline,v 1.4 2005/08/20 18:12:54 knight Exp $
+# $Id: rkline,v 1.5 2005/09/03 15:21:51 michael Exp $
 RKLINE [time] <mask> [ON <server>] :[reason]
 
 [time] if present, gives number of minutes for temporary RXLINE
@@ -13,8 +13,9 @@ rkline ^O[[:alpha:]]?[[:digit:]]+(x\.o|\.xo)$@^[[:alnum:]]{4}\.evilnet.org$
 
 Note: The mask has to be a valid regular expression based on user@host mask
 
-See http://en.wikipedia.org/wiki/Regular_expression
+See: http://en.wikipedia.org/wiki/Regular_expression
+     http://www.pcre.org/pcre.txt
 
 If ON server is present, the RKLINE is propagated to given server.
 
-- Requires Oper Priv: K
+- Requires Oper Priv: admin, kline
