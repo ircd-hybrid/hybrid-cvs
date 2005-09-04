@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.17 2005/08/27 14:18:24 knight Exp $
+ *  $Id: m_services.c,v 1.18 2005/09/04 19:13:56 db Exp $
  */
 
 /* MODULE CONFIGURATION FOLLOWS -- please read!! */
@@ -206,7 +206,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.17 $";
+const char *_version = "$Revision: 1.18 $";
 #endif
 
 /*
@@ -286,17 +286,17 @@ services_function(m_operserv, "OperServ", "OPERSERV")
 services_function(m_seenserv, "SeenServ", "SEENSERV")
 services_function(m_statserv, "StatServ", "STATSERV")
 
+/* 
+ * code here contributed by bane, Dragan Dosen <bane@idolnet.org>
+ */
 /*
  * GetString()
  *
  * Reverse the array parv back into a normal string assuming
  * there are "parc" indicies in the array.
  *
- * Thanks to kre.
- *
- * kre should be shot if he really wrote the previous version
- * of this function -Michael
- */
+ * GetString() written by sidewndr
+*/
 static void
 get_string(int parc, char *parv[], char *buf)
 {
