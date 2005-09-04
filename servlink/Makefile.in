@@ -1,7 +1,7 @@
 #
 # Makefile.in for servlink/src
 #
-# $Id: Makefile.in,v 1.24 2004/01/23 03:48:21 joshk Exp $
+# $Id: Makefile.in,v 1.25 2005/09/04 08:41:26 michael Exp $
 #
 
 CC              = @CC@
@@ -26,7 +26,7 @@ ZIP_LIB		= @ZLIB_LD@
 
 IRCDLIBS        = @LIBS@ $(SSL_LIBS) $(ZIP_LIB)
 
-INCLUDES        = -I../include $(SSL_INCLUDES)
+INCLUDES        = -I. -I../include $(SSL_INCLUDES)
 CPPFLAGS        = ${INCLUDES} @CPPFLAGS@
 
 PROGS		= servlink
@@ -67,7 +67,7 @@ install: build
 	@${MV} Makefile.depend Makefile
 
 clean:
-	${RM} -f *.o *~ *core servlink
+	${RM} -f $(OBJECTS) servlink
 
 distclean: clean
 	${RM} -f Makefile .depend

@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.2 2003/05/26 00:55:47 joshk Exp $
+ *   $Id: servlink.h,v 1.23 2005/09/04 08:41:26 michael Exp $
  */
 
 #ifndef INCLUDED_servlink_servlink_h
