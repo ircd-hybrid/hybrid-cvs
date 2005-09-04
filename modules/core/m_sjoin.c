@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.191.2.2 2005/08/02 05:33:47 adx Exp $
+ *  $Id: m_sjoin.c,v 1.191.2.3 2005/09/04 14:52:54 adx Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.191.2.2 $";
+const char *_version = "$Revision: 1.191.2.3 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -880,9 +880,8 @@ remove_ban_list(struct Channel *chptr, struct Client *source_p,
  
     if(count >= MAXMODEPARAMS || (cur_len + plen) > BUFSIZE - 4)
     {
-      /* remove trailing space */
-      *(pbuf - 1) = '\0';
-
+      /* NUL-terminate and remove trailing space */
+      *mbuf = *(pbuf - 1) = '\0';
       sendto_channel_local(ALL_MEMBERS, NO, chptr, "%s %s",
                lmodebuf, lparabuf);
       sendto_server(source_p, NULL, chptr, cap, CAP_TS6, NOFLAGS,
@@ -891,12 +890,11 @@ remove_ban_list(struct Channel *chptr, struct Client *source_p,
       cur_len = mlen;
       mbuf = lmodebuf + mlen;
       pbuf = lparabuf;
-      *mbuf = *pbuf = '\0';
       count = 0;
     }     
 
-    *mbuf++ = c;
     cur_len += plen;
+    *mbuf++ = c;
     pbuf += ircsprintf(pbuf, "%s ", banptr->banstr);
     count++;
 
@@ -907,7 +905,7 @@ remove_ban_list(struct Channel *chptr, struct Client *source_p,
     BlockHeapFree(ban_heap, banptr);
   }
 
-  *(pbuf - 1) = *mbuf = '\0';
+  *mbuf = *(pbuf - 1) = '\0';
   sendto_channel_local(ALL_MEMBERS, NO, chptr, "%s %s", lmodebuf, lparabuf);
   sendto_server(source_p, NULL, chptr, cap, CAP_TS6, NOFLAGS,
 		"%s %s", lmodebuf, lparabuf);
