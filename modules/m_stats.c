@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.181 2005/09/03 19:57:49 michael Exp $
+ *  $Id: m_stats.c,v 1.182 2005/09/04 12:08:40 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ struct Message stats_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.181 $";
+const char *_version = "$Revision: 1.182 $";
 static struct Callback *stats_cb;
 
 void
@@ -673,7 +673,7 @@ stats_dns_servers(struct Client *source_p)
 static void
 stats_connect(struct Client *source_p)
 {
-  report_confitem_types(source_p, SERVER_TYPE);
+  report_confitem_types(source_p, SERVER_TYPE, 0);
 }
 
 /* stats_deny()
@@ -894,14 +894,14 @@ stats_gdeny(struct Client *source_p)
     return;
   }
 
-  report_confitem_types(source_p, GDENY_TYPE);
+  report_confitem_types(source_p, GDENY_TYPE, 0);
 }
 
 static void
 stats_hubleaf(struct Client *source_p)
 {
-  report_confitem_types(source_p, HUB_TYPE);
-  report_confitem_types(source_p, LEAF_TYPE);
+  report_confitem_types(source_p, HUB_TYPE, 0);
+  report_confitem_types(source_p, LEAF_TYPE, 0);
 }
 
 static void
@@ -982,8 +982,10 @@ stats_tklines(struct Client *source_p)
                to, "k", aconf->host, aconf->user, aconf->reason, "");
   }
   /* Theyre opered, or allowed to see all klines */
-  else
+  else {
     report_Klines(source_p, 1);
+    report_confitem_types(source_p, RKLINE_TYPE, 1);
+  }
 }
 
 static void
@@ -995,7 +997,7 @@ stats_klines(struct Client *source_p)
                from, to);
 
   /* If unopered, Only return matching klines */
-  else if((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(source_p))
+  else if ((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(source_p))
   {
     struct AccessItem *aconf;
 
@@ -1024,7 +1026,7 @@ stats_klines(struct Client *source_p)
   /* Theyre opered, or allowed to see all klines */
   else {
     report_Klines(source_p, 0);
-    report_confitem_types(source_p, RKLINE_TYPE);
+    report_confitem_types(source_p, RKLINE_TYPE, 0);
   }
 }
 
@@ -1041,7 +1043,7 @@ stats_oper(struct Client *source_p)
     sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                from, to);
   else
-    report_confitem_types(source_p, OPER_TYPE);
+    report_confitem_types(source_p, OPER_TYPE, 0);
 }
 
 /* stats_operedup()
@@ -1125,7 +1127,7 @@ stats_uptime(struct Client *source_p)
 static void
 stats_shared(struct Client *source_p)
 {
-  report_confitem_types(source_p, ULINE_TYPE);
+  report_confitem_types(source_p, ULINE_TYPE, 0);
 }
 
 /* stats_servers()
@@ -1161,14 +1163,14 @@ stats_servers(struct Client *source_p)
 static void
 stats_gecos(struct Client *source_p)
 {
-  report_confitem_types(source_p, XLINE_TYPE);
-  report_confitem_types(source_p, RXLINE_TYPE);
+  report_confitem_types(source_p, XLINE_TYPE, 0);
+  report_confitem_types(source_p, RXLINE_TYPE, 0);
 }
 
 static void
 stats_class(struct Client *source_p)
 {
-  report_confitem_types(source_p, CLASS_TYPE);
+  report_confitem_types(source_p, CLASS_TYPE, 0);
 }
 
 static void
@@ -1432,7 +1434,7 @@ parse_stats_args(int parc, char *parv[], int *doall, int *wilds)
   {
     name = parv[2];
 
-    if (irccmp(name, from) == 0)
+    if (!irccmp(name, from))
       *doall = 2;
     else if (match(name, from))
       *doall = 1;

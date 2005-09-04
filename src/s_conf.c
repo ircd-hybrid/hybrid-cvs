@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.587 2005/09/03 19:57:50 michael Exp $
+ *  $Id: s_conf.c,v 7.588 2005/09/04 12:08:40 michael Exp $
  */
 
 #include "stdinc.h"
@@ -562,14 +562,15 @@ static const unsigned int shared_bit_table[] =
  * side effects	-
  */
 void
-report_confitem_types(struct Client *source_p, ConfType type)
+report_confitem_types(struct Client *source_p, ConfType type, int temp)
 {
-  dlink_node *ptr;
+  dlink_node *ptr = NULL;
   struct ConfItem *conf = NULL;
-  struct AccessItem *aconf;
-  struct MatchItem *matchitem;
-  struct ClassItem *classitem;
-  char buf[12], *p = NULL;
+  struct AccessItem *aconf = NULL;
+  struct MatchItem *matchitem = NULL;
+  struct ClassItem *classitem = NULL;
+  char buf[12];
+  char *p = NULL;
 
   switch (type)
   {
@@ -626,12 +627,17 @@ report_confitem_types(struct Client *source_p, ConfType type)
     break;
 
   case RKLINE_TYPE:
+    p = temp ? "Rk" : "RK";
+
     DLINK_FOREACH(ptr, rkconf_items.head)
     {
-      aconf = map_to_conf(ptr->data);
+      aconf = map_to_conf((conf = ptr->data));
+
+      if (temp && !(conf->flags & CONF_FLAGS_TEMPORARY))
+        continue;
 
       sendto_one(source_p, form_str(RPL_STATSKLINE), me.name,
-                 source_p->name, "KR", aconf->host, aconf->user,
+                 source_p->name, p, aconf->host, aconf->user,
                  aconf->reason, aconf->oper_reason ? aconf->oper_reason : "");
     }
     break;
