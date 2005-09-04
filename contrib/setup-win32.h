@@ -214,19 +214,19 @@
 #define PACKAGE_NAME "ircd-hybrid"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "ircd-hybrid 7.1"
+#define PACKAGE_STRING "ircd-hybrid 7.2"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "ircd-hybrid"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "7.1"
+#define PACKAGE_VERSION "7.2"
 
 /* Path to /dev/null */
 #define PATH_DEVNULL "nul"
 
 /* This is the type of IO loop we are using */
-#define SELECT_TYPE "select"
+#define SELECT_TYPE "WSAAsyncSelect"
 
 /* Suffix for shared libraries on this platform. */
 /* #undef SHARED_SUFFIX */
