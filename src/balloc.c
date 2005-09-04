@@ -27,7 +27,7 @@
 
 /*! \file balloc.c
  * \brief A block allocator
- * \version $Id: balloc.c,v 7.59 2005/08/06 11:01:15 michael Exp $
+ * \version $Id: balloc.c,v 7.60 2005/09/04 09:17:23 michael Exp $
  * 
  * About the block allocator
  *
@@ -329,7 +329,7 @@ BlockHeapFree(BlockHeap *bh, void *ptr)
       outofmemory();
     }
     /* Is this block really on the used list? */
-    assert(dlinkFind(&memblock->block->used_list, memblock) == NULL); 
+    assert(dlinkFind(&memblock->block->used_list, ptr) != NULL); 
 
     block = memblock->block;
     bh->freeElems++;
