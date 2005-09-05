@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.69 2005/09/05 12:03:04 db Exp $
+ *  $Id: s_log.c,v 7.70 2005/09/05 12:08:12 db Exp $
  */
 
 #include "stdinc.h"
@@ -272,7 +272,8 @@ user_log_resync(void *notused)
  *
  * inputs	- type of oper log entry
  *		- pointer to oper
- *              - log_message (var_arg)
+ *              - const char *pattern == format string
+ *		- var args for format string
  * output	- none
  * side effects - corresponding log is written to, if its present.
  *
