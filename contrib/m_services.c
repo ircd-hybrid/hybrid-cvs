@@ -19,7 +19,23 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.18 2005/09/04 19:13:56 db Exp $
+ *  $Id: m_services.c,v 1.19 2005/09/05 09:45:20 db Exp $
+ */
+/*
+ *
+ * With code from 'bane' the URL following is valid as of this date.
+ * http://hybserv2.net/file/trunk/contrib/hybrid_services.c
+ *
+ *
+ *   Copyright (C) 2002, 2003, 2004, 2005 by Dragan 'bane' Dosen and the
+ *   Hybrid Development Team.
+ *
+ *   Based on m_services.c, originally from bahamut ircd.
+ *
+ *   Contact info:
+ *
+ *     E-mail : bane@idolnet.org
+ *     IRC    : (*) bane, idolNET, irc.idolnet.org, #twilight_zone
  */
 
 /* MODULE CONFIGURATION FOLLOWS -- please read!! */
@@ -206,7 +222,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.18 $";
+const char *_version = "$Revision: 1.19 $";
 #endif
 
 /*
@@ -285,10 +301,6 @@ services_function(m_nickserv, "NickServ", "NICKSERV")
 services_function(m_operserv, "OperServ", "OPERSERV")
 services_function(m_seenserv, "SeenServ", "SEENSERV")
 services_function(m_statserv, "StatServ", "STATSERV")
-
-/* 
- * code here contributed by bane, Dragan Dosen <bane@idolnet.org>
- */
 /*
  * GetString()
  *
