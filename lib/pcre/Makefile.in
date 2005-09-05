@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.5 2005/09/03 11:39:21 michael Exp $
+# $Id: Makefile.in,v 1.6 2005/09/05 11:19:44 db Exp $
 
 CC		= @CC@
 AR		= @AR@
@@ -52,4 +52,6 @@ clean:
 distclean: clean
 	${RM} -f Makefile .depend
 
+install:
+	
 .PHONY: clean distclean install build
