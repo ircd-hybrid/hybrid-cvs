@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.322 2005/09/05 14:53:56 db Exp $
+ *  $Id: s_conf.h,v 7.323 2005/09/05 15:37:38 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -438,8 +438,6 @@ struct logging_entry
 
 extern unsigned int scount;
 extern int ypass;
-extern int specific_ipv4_vhost; /* used in s_bsd.c */
-extern int specific_ipv6_vhost;
 extern dlink_list class_items;
 extern dlink_list server_items;
 extern dlink_list cluster_items;
