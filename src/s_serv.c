@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.433 2005/08/17 16:02:52 michael Exp $
+ *  $Id: s_serv.c,v 7.434 2005/09/05 17:38:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -2076,7 +2076,7 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
   {
     case AF_INET:
       v4 = (struct sockaddr_in*)&aconf->my_ipnum;
-      if (v4->sin_addr.s_addr)
+      if (v4->sin_addr.s_addr != 0)
       {
         struct irc_ssaddr ipn;
         memset(&ipn, 0, sizeof(struct irc_ssaddr));
@@ -2107,21 +2107,44 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
       break;
 #ifdef IPV6
     case AF_INET6:
-      if (ServerInfo.specific_ipv6_vhost)
       {
-        struct irc_ssaddr ipn;
-        memset(&ipn, 0, sizeof(struct irc_ssaddr));
-        ipn.ss.ss_family = AF_INET6;
-        ipn.ss_port = 0;
-        memcpy(&ipn, &ServerInfo.ip6, sizeof(struct irc_ssaddr));
-        comm_connect_tcp(&client_p->localClient->fd, aconf->host, aconf->port,
-  		         (struct sockaddr *)&ipn, ipn.ss_len,
-        serv_connect_callback, client_p, aconf->aftype, CONNECTTIMEOUT);
+	struct irc_ssaddr ipn;
+	struct sockaddr_in6 *v6;
+	struct sockaddr_in6 *v6conf;
+
+	memset(&ipn, 0, sizeof(struct irc_ssaddr));
+	v6conf = (struct sockaddr_in6 *)&aconf->my_ipnum;
+	v6 = (struct sockaddr_in6 *)&ipn;
+
+	if (memcmp(&v6conf->sin6_addr, &v6->sin6_addr,
+		   sizeof(struct in6_addr)) != 0)
+	{
+	  memcpy(&ipn, &aconf->my_ipnum, sizeof(struct irc_ssaddr));
+	  ipn.ss.ss_family = AF_INET6;
+	  ipn.ss_port = 0;
+	  comm_connect_tcp(&client_p->localClient->fd,
+			   aconf->host, aconf->port,
+			   (struct sockaddr *)&ipn, ipn.ss_len, 
+			   serv_connect_callback, client_p,
+			   aconf->aftype, CONNECTTIMEOUT);
+	}
+	else if (ServerInfo.specific_ipv6_vhost)
+        {
+	  memcpy(&ipn, &ServerInfo.ip6, sizeof(struct irc_ssaddr));
+	  ipn.ss.ss_family = AF_INET6;
+	  ipn.ss_port = 0;
+	  comm_connect_tcp(&client_p->localClient->fd,
+			   aconf->host, aconf->port,
+			   (struct sockaddr *)&ipn, ipn.ss_len,
+			   serv_connect_callback, client_p,
+			   aconf->aftype, CONNECTTIMEOUT);
+	}
+	else
+	  comm_connect_tcp(&client_p->localClient->fd,
+			   aconf->host, aconf->port, 
+			   NULL, 0, serv_connect_callback, client_p,
+			   aconf->aftype, CONNECTTIMEOUT);
       }
-      else
-	comm_connect_tcp(&client_p->localClient->fd, aconf->host, aconf->port, 
-        		 NULL, 0, serv_connect_callback, client_p, aconf->aftype, 
-            		 CONNECTTIMEOUT);
 #endif
   }
   return (1);

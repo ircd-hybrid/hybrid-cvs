@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.437 2005/09/05 14:53:57 db Exp $
+ *  $Id: ircd_parser.y,v 1.438 2005/09/05 17:38:02 db Exp $
  */
 
 %{
@@ -2416,8 +2416,9 @@ connect_entry: CONNECT
 
 connect_name_b: | connect_name_t;
 connect_items:  connect_items connect_item | connect_item;
-connect_item:   connect_name | connect_host | connect_send_password |
-                connect_accept_password | connect_port | connect_aftype | 
+connect_item:   connect_name | connect_host | connect_vhost |
+		connect_send_password | connect_accept_password |
+		connect_aftype | connect_port |
  		connect_fakename | connect_flags | connect_hub_mask | 
 		connect_leaf_mask | connect_class | connect_auto |
 		connect_encrypted | connect_compressed | connect_cryptlink |
@@ -2454,6 +2455,32 @@ connect_host: HOST '=' QSTRING ';'
   {
     MyFree(yy_aconf->host);
     DupString(yy_aconf->host, yylval.string);
+  }
+};
+
+connect_vhost: VHOST '=' QSTRING ';' 
+{
+  if (ypass == 2)
+  {
+    struct addrinfo hints, *res;
+
+    memset(&hints, 0, sizeof(hints));
+
+    hints.ai_family   = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags    = AI_PASSIVE | AI_NUMERICHOST;
+
+    if (irc_getaddrinfo(yylval.string, NULL, &hints, &res))
+      ilog(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
+    else
+    {
+      assert(res != NULL);
+
+      memcpy(&yy_aconf->my_ipnum, res->ai_addr, res->ai_addrlen);
+      yy_aconf->my_ipnum.ss.ss_family = res->ai_family;
+      yy_aconf->my_ipnum.ss_len = res->ai_addrlen;
+      irc_freeaddrinfo(res);
+    }
   }
 };
  
