@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.182 2005/09/04 12:08:40 michael Exp $
+ *  $Id: m_stats.c,v 1.183 2005/09/05 23:38:31 knight Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ struct Message stats_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.182 $";
+const char *_version = "$Revision: 1.183 $";
 static struct Callback *stats_cb;
 
 void
@@ -136,7 +136,9 @@ static const struct StatsStruct
   { 'E',	stats_events,		1,	1,	},
   { 'f',	fd_dump,		1,	1,	},
   { 'F',	fd_dump,		1,	1,	},
+#ifdef GLINE_VOTING
   { 'g',	stats_pending_glines,	1,	0,	},
+#endif /* GLINE_VOTING */
   { 'G',	stats_glines,		1,	0,	},
   { 'h',	stats_hubleaf,		1,	0,	},
   { 'H',	stats_hubleaf,		1,	0,	},

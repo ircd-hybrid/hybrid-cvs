@@ -18,6 +18,9 @@
 /* Define if this ircd will be an EFnet server. */
 #undef EFNET
 
+/* Define this if you want to enable gline voting. */
+#undef GLINE_VOTING
+
 /* Define if you want halfops support. */
 #undef HALFOPS
 

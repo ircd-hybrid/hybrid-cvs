@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.111 2005/09/03 12:30:24 michael Exp $
+dnl $Id: configure.ac,v 7.112 2005/09/05 23:38:31 knight Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.111 2005/09/03 12:30:24 michael Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.112 2005/09/05 23:38:31 knight Exp $])
 
 AC_INIT([ircd-hybrid],[7.2])
 
@@ -780,6 +780,15 @@ else
 	EXAMPLE_CONF=example.conf
 fi
 
+AC_ARG_ENABLE(gline_voting,
+AC_HELP_STRING([--enable-gline-voting],[Enable GLine voting.]),
+[gline_voting=$enableval], [gline_voting=no])
+
+if test "$gline_voting" = yes; then
+	AC_DEFINE(GLINE_VOTING, 1, [Define this if you want to enable gline voting.])
+	echo "Building ircd with G-Line voting support"
+fi
+
 AC_ARG_ENABLE(halfops,
 AC_HELP_STRING([--enable-halfops],[Enable halfops support.]),
 [halfops=$enableval], [halfops=no])
@@ -1118,6 +1127,7 @@ fi
 echo "EFnet server ............ $tmpresult"
 echo "Halfops support ......... $halfops"
 echo "Small network ........... $small_net"
+echo "G-Line Voting ........... $gline_voting"
 echo
 echo "Configured limits:"
 echo "NICKLEN ................. $NICKLEN"

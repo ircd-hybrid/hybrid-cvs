@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.137 2005/09/05 12:03:04 db Exp $
+ *  $Id: m_gline.c,v 1.138 2005/09/05 23:38:31 knight Exp $
  */
 
 #include "stdinc.h"
@@ -49,7 +49,9 @@
 #include "s_log.h"
 
 #define GLINE_NOT_PLACED     0
+#ifdef GLINE_VOTING
 #define GLINE_ALREADY_VOTED -1
+#endif /* GLINE_VOTING */
 #define GLINE_PLACED         1
 
 extern dlink_list gdeny_items;
@@ -58,12 +60,13 @@ extern dlink_list gdeny_items;
 static void set_local_gline(const struct Client *,
                             const char *, const char *, const char *);
 
-
+#ifdef GLINE_VOTING
 static int check_majority_gline(const struct Client *,
 				const char *, const char *, const char *);
 
 static void add_new_majority_gline(const struct Client *,
                                    const char *, const char *, const char *);
+#endif /* GLINE_VOTING */
 
 static void do_sgline(struct Client *, struct Client *, int, char **, int);
 
@@ -104,7 +107,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.137 $";
+const char *_version = "$Revision: 1.138 $";
 #endif
 
 /* mo_gline()
@@ -160,7 +163,8 @@ mo_gline(struct Client *client_p, struct Client *source_p,
       return;
     }
   }
-
+  
+#ifdef GLINE_VOTING
   /* If at least 3 opers agree this user should be G lined then do it */
   if (check_majority_gline(source_p, user, host, reason) ==
       GLINE_ALREADY_VOTED)
@@ -181,7 +185,8 @@ mo_gline(struct Client *client_p, struct Client *source_p,
   ilog(L_TRACE, "#gline for %s@%s [%s] requested by %s!%s@%s",
        user, host, reason, source_p->name, source_p->username,
        source_p->host);
-
+#endif /* GLINE_VOTING */
+  
   /* 4 param version for hyb-7 servers */
   sendto_server(NULL, source_p, NULL, CAP_GLN|CAP_TS6, NOCAPS,
 		LL_ICLIENT, ":%s GLINE %s %s :%s",
@@ -360,6 +365,7 @@ do_sgline(struct Client *client_p, struct Client *source_p,
       }
     }
 
+#ifdef GLINE_VOTING
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s requesting G-Line for [%s@%s] [%s]",
                          get_oper_name(source_p),
@@ -375,6 +381,8 @@ do_sgline(struct Client *client_p, struct Client *source_p,
 
      ilog(L_TRACE, "#gline for %s@%s [%s] requested by %s",
           user, host, reason, get_oper_name(source_p));
+#endif /* GLINE_VOTING */
+     
   }
 }
 
@@ -424,6 +432,7 @@ set_local_gline(const struct Client *source_p, const char *user,
   rehashed_klines = 1;
 }
 
+#define GLINE_VOTING
 /* add_new_majority_gline()
  * 
  * inputs       - operator requesting gline
@@ -549,6 +558,7 @@ check_majority_gline(const struct Client *source_p,
   add_new_majority_gline(source_p, user, host, reason);
   return(GLINE_NOT_PLACED);
 }
+#endif /* GLINE_VOTING */
 
 static int
 remove_gline_match(const char *user, const char *host)
