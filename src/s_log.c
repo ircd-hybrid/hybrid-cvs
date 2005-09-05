@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.68 2005/08/17 16:02:52 michael Exp $
+ *  $Id: s_log.c,v 7.69 2005/09/05 12:03:04 db Exp $
  */
 
 #include "stdinc.h"
@@ -268,75 +268,97 @@ user_log_resync(void *notused)
 }
 #endif
 
-/* XXX log_oper and log_failed_oper should be combined in future */
-/* log_oper()
+/* log_oper_action()
  *
- * inputs	- pointer to client being opered up
- *              - oper name
+ * inputs	- type of oper log entry
+ *		- pointer to oper
+ *              - log_message (var_arg)
  * output	- none
- * side effects - foperlog is written to, if its present
+ * side effects - corresponding log is written to, if its present.
+ *
+ * rewritten sept 5 2005 - Dianora
  */
 void
-log_oper(struct Client *source_p, const char *name)
+log_oper_action(int log_type, struct Client *source_p, 
+		const char *pattern, ...)
 {
-  if (ConfigLoggingEntry.operlog[0] == '\0')
-    return;
+  va_list args;
+  char linebuf[IRCD_BUFSIZE];
+  FBFILE *log_fb;
+  char *logfile;
+  char *log_message;
+  size_t nbytes;
+  size_t n_preamble;
+  char *p;
 
-  if (IsClient(source_p))
+  switch(log_type)
   {
-    FBFILE *oper_fb;
-
-    if ((oper_fb = fbopen(ConfigLoggingEntry.operlog, "r")) != NULL)
-    {
-      fbclose(oper_fb);
-      oper_fb = fbopen(ConfigLoggingEntry.operlog, "a");
-    }
-
-    if (oper_fb != NULL)
-    {
-      char linebuf[IRCD_BUFSIZE];
-      size_t nbytes = ircsprintf(linebuf,
-                                 "%s OPER (%s) by (%s!%s@%s)\n",
-                                 myctime(CurrentTime), name, source_p->name,
-                                 source_p->username, source_p->host);
-      fbputs(linebuf, oper_fb, nbytes);
-      fbclose(oper_fb);
-    }
+  case LOG_OPER_TYPE:
+    logfile = ConfigLoggingEntry.operlog;
+    log_message = "OPER";
+    break;
+  case LOG_FAILED_OPER_TYPE:
+    logfile = ConfigLoggingEntry.failed_operlog;
+    log_message = "FAILED OPER";
+    break;
+  case LOG_KLINE_TYPE:
+    logfile = ConfigLoggingEntry.klinelog;
+    log_message = "KLINE";
+    break;
+  case LOG_RKLINE_TYPE:
+    logfile = ConfigLoggingEntry.klinelog;
+    log_message = "RKLINE";
+    break;
+  case LOG_DLINE_TYPE:
+    logfile = ConfigLoggingEntry.klinelog;
+    log_message = "DLINE";
+    break;
+  case LOG_TEMP_DLINE_TYPE:
+    logfile = ConfigLoggingEntry.klinelog;
+    log_message = "TEMP DLINE";
+    break;
+  case LOG_TEMP_KLINE_TYPE:
+    logfile = ConfigLoggingEntry.klinelog;
+    log_message = "TEMP KLINE";
+    break;
+  case LOG_GLINE_TYPE:
+    logfile = ConfigLoggingEntry.glinelog;
+    log_message = "GLINE";
+    break;
+  case LOG_KILL_TYPE:
+    logfile = ConfigLoggingEntry.killlog;
+    log_message = "KILL";
+    break;
+  default:
+    break;
   }
-}
 
-/* log_failed_oper()
- *
- * inputs	- pointer to client that failed to oper up
- *              - oper name
- * output	- none
- * side effects - ffailed_operlog is written to, if its present
- */
-void
-log_failed_oper(struct Client *source_p, const char *name)
-{
-  if (ConfigLoggingEntry.failed_operlog[0] == '\0')
+  if (*logfile == '\0')
     return;
+
+  p = linebuf;
+  n_preamble = ircsprintf(linebuf, "%s %s by (%s!%s@%s) :",
+			  myctime(CurrentTime), log_message,
+			  source_p->name, source_p->username, source_p->host);
+  p += n_preamble;
 
   if (IsClient(source_p))
   {
-    FBFILE *oper_fb;
-
-    if ((oper_fb = fbopen(ConfigLoggingEntry.failed_operlog, "r")) != NULL)
+    if ((log_fb = fbopen(logfile, "r")) != NULL)
     {
-      fbclose(oper_fb);
-      oper_fb = fbopen(ConfigLoggingEntry.failed_operlog, "a");
+      fbclose(log_fb);
+      log_fb = fbopen(logfile, "a");
     }
 
-    if (oper_fb != NULL)
+    if (log_fb != NULL)
     {
-      char linebuf[IRCD_BUFSIZE];
-      size_t nbytes = ircsprintf(linebuf,
-                                 "%s FAILED OPER (%s) by (%s!%s@%s)\n",
-                                 myctime(CurrentTime), name, source_p->name,
-                                 source_p->username, source_p->host);
-      fbputs(linebuf, oper_fb, nbytes);
-      fbclose(oper_fb);
+      va_start(args, pattern);
+      /* XXX add check for IRCD_BUFSIZE-n_preamble+1 < 0 ? -db */
+      nbytes = vsnprintf(p, IRCD_BUFSIZE-n_preamble+1, pattern, args);
+      nbytes += n_preamble;
+      va_end(args);
+      fbputs(linebuf, log_fb, nbytes);
+      fbclose(log_fb);
     }
   }
 }

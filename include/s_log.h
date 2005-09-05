@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.h,v 7.18 2003/09/21 09:59:00 michael Exp $
+ *  $Id: s_log.h,v 7.19 2005/09/05 12:03:04 db Exp $
  */
 
 #ifndef INCLUDED_s_log_h
@@ -46,6 +46,18 @@ extern void ilog(const int, const char *, ...);
 #endif
 extern const char *get_log_level_as_string(int);
 extern void log_user_exit(struct Client *);
-extern void log_oper(struct Client *, const char *);
-extern void log_failed_oper(struct Client *, const char *);
+extern void log_oper_action(int type, struct Client *, const char *, ...);
+
+enum {
+  LOG_OPER_TYPE,
+  LOG_FAILED_OPER_TYPE,
+  LOG_KLINE_TYPE,
+  LOG_RKLINE_TYPE,
+  LOG_TEMP_KLINE_TYPE,
+  LOG_DLINE_TYPE,
+  LOG_TEMP_DLINE_TYPE,
+  LOG_GLINE_TYPE,
+  LOG_KILL_TYPE
+};
+
 #endif /* INCLUDED_s_log_h */

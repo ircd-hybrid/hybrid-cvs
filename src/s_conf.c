@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.588 2005/09/04 12:08:40 michael Exp $
+ *  $Id: s_conf.c,v 7.589 2005/09/05 12:03:04 db Exp $
  */
 
 #include "stdinc.h"
@@ -1939,6 +1939,10 @@ set_default_conf(void)
   ConfigLoggingEntry.use_logging = 1;
   ConfigLoggingEntry.operlog[0] = '\0';
   ConfigLoggingEntry.userlog[0] = '\0';
+  ConfigLoggingEntry.klinelog[0] = '\0';
+  ConfigLoggingEntry.glinelog[0] = '\0';
+  ConfigLoggingEntry.killlog[0] = '\0';
+  ConfigLoggingEntry.operspylog[0] = '\0';
   ConfigLoggingEntry.failed_operlog[0] = '\0';
   
   ConfigChannel.disable_local_channels = NO;

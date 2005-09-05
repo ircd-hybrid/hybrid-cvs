@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.55 2005/09/03 08:57:58 michael Exp $
+ *  $Id: csvlib.c,v 7.56 2005/09/05 12:03:04 db Exp $
  */
 
 #include "stdinc.h"
@@ -282,6 +282,8 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
                from, to, aconf->user, aconf->host);
     ilog(L_TRACE, "%s added K-Line for [%s@%s] [%s]",
          source_p->name, aconf->user, aconf->host, aconf->reason);
+    log_oper_action(LOG_KLINE_TYPE, source_p, "[%s@%s] [%s]\n",
+		    aconf->user, aconf->host, aconf->reason);
     write_csv_line(out, "%s%s%s%s%s%s%d",
 		   aconf->user, aconf->host,
 		   aconf->reason, aconf->oper_reason, current_date,
@@ -298,6 +300,8 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
                from, to, aconf->user, aconf->host);
     ilog(L_TRACE, "%s added K-Line for [%s@%s] [%s]",
          source_p->name, aconf->user, aconf->host, aconf->reason);
+    log_oper_action(LOG_RKLINE_TYPE, source_p, "[%s@%s] [%s]\n",
+		    aconf->user, aconf->host, aconf->reason);
     write_csv_line(out, "%s%s%s%s%s%s%d",
                    aconf->user, aconf->host,
                    aconf->reason, aconf->oper_reason, current_date,
@@ -313,6 +317,8 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
                from, to, aconf->host, filename);
     ilog(L_TRACE, "%s added D-Line for [%s] [%s]",
          get_oper_name(source_p), aconf->host, aconf->reason);
+    log_oper_action(LOG_DLINE_TYPE, source_p, "[%s] [%s]\n",
+		    aconf->host, aconf->reason);
     write_csv_line(out, "%s%s%s%s%s%d",
 		   aconf->host, aconf->reason, aconf->oper_reason, 
 		   current_date,

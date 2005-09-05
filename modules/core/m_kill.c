@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.95 2005/08/30 03:54:08 db Exp $
+ *  $Id: m_kill.c,v 1.96 2005/09/05 12:03:04 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.95 $";
+const char *_version = "$Revision: 1.96 $";
 #endif
 
 /* mo_kill()
@@ -157,6 +157,8 @@ mo_kill(struct Client *client_p, struct Client *source_p,
 
   ilog(L_INFO, "KILL From %s For %s Path %s (%s)",
        source_p->name, target_p->name, me.name, reason);
+  log_oper_action(LOG_KILL_TYPE, source_p, "%s %s\n",
+		  me.name, reason);
 
   /*
   ** And pass on the message to other servers. Note, that if KILL

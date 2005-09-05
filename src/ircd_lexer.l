@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.210 2005/09/01 22:58:43 db Exp $
+ *  $Id: ircd_lexer.l,v 1.211 2005/09/05 12:03:04 db Exp $
  */
 
 %option case-insensitive
@@ -173,8 +173,16 @@ exempt		{ return EXEMPT; }
 fakename	{ return FAKENAME; }
 flags           { return IRCD_FLAGS; }
 flatten_links	{ return FLATTEN_LINKS; }
+fglinelog 	{ return FGLINELOG; }
+fname_glinelog  { return FGLINELOG; }
+fkilllog	{ return FKILLLOG; }
+fname_killlog	{ return FKILLLOG; }
+fklinelog	{ return FKLINELOG; }
+fname_klinelog	{ return FKLINELOG; }
 ffailed_operlog	{ return FFAILED_OPERLOG; }
+fname_operlog	{ return FOPERLOG; }
 foperlog   	{ return FOPERLOG; }
+fname_userlog	{ return FUSERLOG; }
 fuserlog   	{ return FUSERLOG; }
 gecos		{ return GECOS; }
 general		{ return GENERAL; }
@@ -219,6 +227,7 @@ lazylink	{ return LAZYLINK; }
 leaf_mask	{ return LEAF_MASK; }
 listen		{ return LISTEN; }
 log_level	{ return LOG_LEVEL; }
+log		{ return LOGGING; }
 logging         { return LOGGING; }
 logpath         { return T_LOGPATH; }
 masked		{ return TMASKED; }
@@ -454,8 +463,12 @@ cinclude(void)
   {
     FBFILE *tmp_fbfile_in;
     char filenamebuf[IRCD_BUFSIZE];
+
+    if (*p == '/')  /* if it is an absolute path */
+      snprintf(filenamebuf, sizeof(filenamebuf), "%s/%s", ETCPATH, p);
+    else
+      snprintf(filenamebuf, sizeof(filenamebuf), "%s", p);
     
-    snprintf(filenamebuf, sizeof(filenamebuf), "%s/%s", ETCPATH, p);
     tmp_fbfile_in = fbopen(filenamebuf, "r");
     
     if (tmp_fbfile_in == NULL)

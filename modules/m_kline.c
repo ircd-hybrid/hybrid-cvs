@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.208 2005/08/20 15:03:15 michael Exp $
+ *  $Id: m_kline.c,v 1.209 2005/09/05 12:03:04 db Exp $
  */
 
 #include "stdinc.h"
@@ -107,7 +107,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.208 $";
+const char *_version = "$Revision: 1.209 $";
 #endif
 
 /* Local function prototypes */
@@ -340,6 +340,8 @@ apply_tkline(struct Client *source_p, struct ConfItem *conf,
   ilog(L_TRACE, "%s added temporary %d min. K-Line for [%s@%s] [%s]",
        source_p->name, tkline_time/60,
        aconf->user, aconf->host, aconf->reason);
+  log_oper_action(LOG_TEMP_KLINE_TYPE, source_p, "[%s@%s] [%s]\n",
+		  aconf->user, aconf->host, aconf->reason);
   rehashed_klines = 1;
 }
 
@@ -369,6 +371,8 @@ apply_tdline(struct Client *source_p, struct ConfItem *conf,
              source_p->name, tkline_time/60, aconf->host);
   ilog(L_TRACE, "%s added temporary %d min. D-Line for [%s] [%s]",
        source_p->name, tkline_time/60, aconf->host, aconf->reason);
+  log_oper_action(LOG_TEMP_DLINE_TYPE, source_p, "[%s@%s] [%s]\n",
+		  aconf->user, aconf->host, aconf->reason);
   rehashed_klines = 1;
 }
 

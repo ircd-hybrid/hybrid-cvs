@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.435 2005/09/03 06:05:38 michael Exp $
+ *  $Id: ircd_parser.y,v 1.436 2005/09/05 12:03:04 db Exp $
  */
 
 %{
@@ -185,7 +185,11 @@ unhook_hub_leaf_confs(void)
 %token  IRCD_FLAGS
 %token  FLATTEN_LINKS
 %token  FFAILED_OPERLOG
+%token  FKILLLOG
+%token  FKLINELOG
+%token  FGLINELOG
 %token  FOPERLOG
+%token  FOPERSPYLOG
 %token  FUSERLOG
 %token  GECOS
 %token  GENERAL
@@ -223,6 +227,7 @@ unhook_hub_leaf_confs(void)
 %token  LEAF_MASK
 %token  LINKS_DELAY
 %token  LISTEN
+%token  T_LOG
 %token  LOGGING
 %token  LOG_LEVEL
 %token  MAXIMUM_LINKS
@@ -816,9 +821,11 @@ logging_items:          logging_items logging_item |
                         logging_item ;
 
 logging_item:           logging_path | logging_oper_log |
-                        logging_gline_log | logging_log_level |
+			logging_log_level |
 			logging_use_logging | logging_fuserlog |
-			logging_foperlog | logging_ffailed_operlog |
+			logging_foperlog | logging_fglinelog |
+			logging_fklinelog | logging_killlog |
+			logging_ffailed_operlog |
 			error ';' ;
 
 logging_path:           T_LOGPATH '=' QSTRING ';' 
@@ -826,10 +833,6 @@ logging_path:           T_LOGPATH '=' QSTRING ';'
                         };
 
 logging_oper_log:	OPER_LOG '=' QSTRING ';'
-                        {
-                        };
-
-logging_gline_log:	GLINE_LOG '=' QSTRING ';'
                         {
                         };
 
@@ -852,6 +855,27 @@ logging_foperlog: FOPERLOG '=' QSTRING ';'
   if (ypass == 2)
     strlcpy(ConfigLoggingEntry.operlog, yylval.string,
             sizeof(ConfigLoggingEntry.operlog));
+};
+
+logging_fglinelog: FGLINELOG '=' QSTRING ';'
+{
+  if (ypass == 2)
+    strlcpy(ConfigLoggingEntry.glinelog, yylval.string,
+            sizeof(ConfigLoggingEntry.glinelog));
+};
+
+logging_fklinelog: FKLINELOG '=' QSTRING ';'
+{
+  if (ypass == 2)
+    strlcpy(ConfigLoggingEntry.klinelog, yylval.string,
+            sizeof(ConfigLoggingEntry.klinelog));
+};
+
+logging_killlog: FKILLLOG '=' QSTRING ';'
+{
+  if (ypass == 2)
+    strlcpy(ConfigLoggingEntry.killlog, yylval.string,
+            sizeof(ConfigLoggingEntry.killlog));
 };
 
 logging_log_level: LOG_LEVEL '=' T_L_CRIT ';'

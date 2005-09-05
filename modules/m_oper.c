@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.80 2005/08/07 08:48:55 michael Exp $
+ *  $Id: m_oper.c,v 1.81 2005/09/05 12:03:04 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.80 $";
+const char *_version = "$Revision: 1.81 $";
 #endif
 
 /*
@@ -100,7 +100,7 @@ m_oper(struct Client *client_p, struct Client *source_p,
     conf = find_exact_name_conf(OPER_TYPE, name, NULL, NULL);
     failed_oper_notice(source_p, name, (conf != NULL) ?
                        "host mismatch" : "no oper {} block");
-    log_failed_oper(source_p, name);
+    log_oper_action(LOG_FAILED_OPER_TYPE, source_p, "%s", name);
     return;
   }
 
@@ -113,7 +113,7 @@ m_oper(struct Client *client_p, struct Client *source_p,
       sendto_one(source_p, ":%s NOTICE %s :Can't attach conf!",
                  me.name, source_p->name);
       failed_oper_notice(source_p, name, "can't attach conf!");
-      log_failed_oper(source_p, name);
+      log_oper_action(LOG_FAILED_OPER_TYPE, source_p, "%s", name);
       return;
     }
 
@@ -121,13 +121,13 @@ m_oper(struct Client *client_p, struct Client *source_p,
 
     ilog(L_TRACE, "OPER %s by %s!%s@%s",
          name, source_p->name, source_p->username, source_p->host);
-    log_oper(source_p, name);
+    log_oper_action(LOG_OPER_TYPE, source_p, "%s", name);
   }
   else
   {
     sendto_one(source_p, form_str(ERR_PASSWDMISMATCH), me.name, parv[0]);
     failed_oper_notice(source_p, name, "password mismatch");
-    log_failed_oper(source_p, name);
+    log_oper_action(LOG_FAILED_OPER_TYPE, source_p, "%s", name);
   }
 }
 

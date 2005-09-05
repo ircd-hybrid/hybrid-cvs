@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.57 2005/07/16 12:19:43 michael Exp $
+ *  $Id: m_challenge.c,v 1.58 2005/09/05 12:03:04 db Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.57 $";
+const char *_version = "$Revision: 1.58 $";
 #endif
 
 /*
@@ -109,7 +109,8 @@ m_challenge(struct Client *client_p, struct Client *source_p,
 				   )) == NULL)
     {
       sendto_one (source_p, form_str(ERR_NOOPERHOST), me.name, parv[0]);
-      log_failed_oper(source_p, source_p->localClient->auth_oper);
+      log_oper_action(LOG_FAILED_OPER_TYPE, source_p, "%s",
+		      source_p->localClient->auth_oper);
       return;
     }
 
@@ -118,7 +119,8 @@ m_challenge(struct Client *client_p, struct Client *source_p,
       sendto_one(source_p,":%s NOTICE %s :Can't attach conf!",
 		 me.name, source_p->name);   
       failed_challenge_notice(source_p, conf->name, "can't attach conf!");
-      log_failed_oper(source_p, source_p->localClient->auth_oper);
+      log_oper_action(LOG_FAILED_OPER_TYPE, source_p, "%s", 
+		      source_p->localClient->auth_oper);
       return;
     }
 
@@ -127,7 +129,8 @@ m_challenge(struct Client *client_p, struct Client *source_p,
     ilog(L_TRACE, "OPER %s by %s!%s@%s",
 	 source_p->localClient->auth_oper, source_p->name, source_p->username,
 	 source_p->host);
-    log_oper(source_p, source_p->localClient->auth_oper);
+    log_oper_action(LOG_OPER_TYPE, source_p,
+		    "%s", source_p->localClient->auth_oper);
 
     MyFree(source_p->localClient->response);
     MyFree(source_p->localClient->auth_oper);
@@ -160,7 +163,7 @@ m_challenge(struct Client *client_p, struct Client *source_p,
     conf = find_exact_name_conf(OPER_TYPE, parv[1], NULL, NULL);
     failed_challenge_notice(source_p, parv[1], (conf != NULL)
                             ? "host mismatch" : "no oper {} block");
-    log_failed_oper(source_p, parv[1]);
+    log_oper_action(LOG_FAILED_OPER_TYPE, source_p, "%s", parv[1]);
     return;
   }
 
