@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.70 2005/09/05 12:08:12 db Exp $
+ *  $Id: s_log.c,v 7.71 2005/09/05 14:16:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -354,8 +354,8 @@ log_oper_action(int log_type, struct Client *source_p,
     if (log_fb != NULL)
     {
       va_start(args, pattern);
-      /* XXX add check for IRCD_BUFSIZE-n_preamble+1 < 0 ? -db */
-      nbytes = vsnprintf(p, IRCD_BUFSIZE-n_preamble+1, pattern, args);
+      /* XXX add check for IRCD_BUFSIZE-(n_preamble+1) < 0 ? -db */
+      nbytes = vsnprintf(p, IRCD_BUFSIZE-(n_preamble+1), pattern, args);
       nbytes += n_preamble;
       va_end(args);
       fbputs(linebuf, log_fb, nbytes);
