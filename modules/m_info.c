@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.95 2005/08/19 04:00:36 lusky Exp $
+ *  $Id: m_info.c,v 1.96 2005/09/05 19:39:08 knight Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,7 @@ struct Message info_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.95 $";
+const char *_version = "$Revision: 1.96 $";
 static struct Callback *info_cb;
 
 void
@@ -113,6 +113,12 @@ static struct InfoStruct info_table[] =
     OUTPUT_DECIMAL,
     &ConfigFileEntry.caller_id_wait,
     "Minimum delay between notifying UMODE +g users of messages"
+  },
+  {
+    "opers_bypass_callerid",
+    OUTPUT_BOOLEAN,
+    &ConfigFileEntry.opers_bypass_callerid,
+    "Allows IRC operators to message users who are +g (callerid)"
   },
   {
     "client_flood",
