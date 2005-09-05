@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.321 2005/09/05 12:03:04 db Exp $
+ *  $Id: s_conf.h,v 7.322 2005/09/05 14:53:56 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -428,6 +428,7 @@ struct logging_entry
   char operlog[PATH_MAX + 1];
   char userlog[PATH_MAX + 1];
   char glinelog[PATH_MAX + 1];
+  char ioerrlog[PATH_MAX + 1];
   char klinelog[PATH_MAX + 1];
   char killlog[PATH_MAX + 1];
   char operspylog[PATH_MAX + 1];

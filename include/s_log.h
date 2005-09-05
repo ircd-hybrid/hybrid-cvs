@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.h,v 7.19 2005/09/05 12:03:04 db Exp $
+ *  $Id: s_log.h,v 7.20 2005/09/05 14:53:56 db Exp $
  */
 
 #ifndef INCLUDED_s_log_h
@@ -57,7 +57,9 @@ enum {
   LOG_DLINE_TYPE,
   LOG_TEMP_DLINE_TYPE,
   LOG_GLINE_TYPE,
-  LOG_KILL_TYPE
+  LOG_KILL_TYPE,
+  LOG_OPERSPY_TYPE,
+  LOG_IOERR_TYPE
 };
 
 #endif /* INCLUDED_s_log_h */

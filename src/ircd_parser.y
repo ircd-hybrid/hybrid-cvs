@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.436 2005/09/05 12:03:04 db Exp $
+ *  $Id: ircd_parser.y,v 1.437 2005/09/05 14:53:57 db Exp $
  */
 
 %{
@@ -188,6 +188,7 @@ unhook_hub_leaf_confs(void)
 %token  FKILLLOG
 %token  FKLINELOG
 %token  FGLINELOG
+%token  FIOERRLOG
 %token  FOPERLOG
 %token  FOPERSPYLOG
 %token  FUSERLOG
@@ -825,6 +826,7 @@ logging_item:           logging_path | logging_oper_log |
 			logging_use_logging | logging_fuserlog |
 			logging_foperlog | logging_fglinelog |
 			logging_fklinelog | logging_killlog |
+			logging_foperspylog | logging_ioerrlog |
 			logging_ffailed_operlog |
 			error ';' ;
 
@@ -857,6 +859,13 @@ logging_foperlog: FOPERLOG '=' QSTRING ';'
             sizeof(ConfigLoggingEntry.operlog));
 };
 
+logging_foperspylog: FOPERSPYLOG '=' QSTRING ';'
+{
+  if (ypass == 2)
+    strlcpy(ConfigLoggingEntry.operspylog, yylval.string,
+            sizeof(ConfigLoggingEntry.operspylog));
+};
+
 logging_fglinelog: FGLINELOG '=' QSTRING ';'
 {
   if (ypass == 2)
@@ -869,6 +878,13 @@ logging_fklinelog: FKLINELOG '=' QSTRING ';'
   if (ypass == 2)
     strlcpy(ConfigLoggingEntry.klinelog, yylval.string,
             sizeof(ConfigLoggingEntry.klinelog));
+};
+
+logging_ioerrlog: FIOERRLOG '=' QSTRING ';'
+{
+  if (ypass == 2)
+    strlcpy(ConfigLoggingEntry.ioerrlog, yylval.string,
+            sizeof(ConfigLoggingEntry.ioerrlog));
 };
 
 logging_killlog: FKILLLOG '=' QSTRING ';'
