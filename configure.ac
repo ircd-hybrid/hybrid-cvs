@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.112 2005/09/05 23:38:31 knight Exp $
+dnl $Id: configure.ac,v 7.113 2005/09/05 23:45:12 adx Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.112 2005/09/05 23:38:31 knight Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.113 2005/09/05 23:45:12 adx Exp $])
 
 AC_INIT([ircd-hybrid],[7.2])
 
@@ -780,9 +780,9 @@ else
 	EXAMPLE_CONF=example.conf
 fi
 
-AC_ARG_ENABLE(gline_voting,
-AC_HELP_STRING([--enable-gline-voting],[Enable GLine voting.]),
-[gline_voting=$enableval], [gline_voting=no])
+AC_ARG_ENABLE(gline-voting,
+AC_HELP_STRING([--disable-gline-voting],[Disable G-line voting.]),
+[gline_voting=$enableval], [gline_voting=yes])
 
 if test "$gline_voting" = yes; then
 	AC_DEFINE(GLINE_VOTING, 1, [Define this if you want to enable gline voting.])
