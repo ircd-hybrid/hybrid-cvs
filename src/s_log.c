@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.71 2005/09/05 14:16:59 db Exp $
+ *  $Id: s_log.c,v 7.72 2005/09/05 18:49:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -280,7 +280,7 @@ user_log_resync(void *notused)
  * rewritten sept 5 2005 - Dianora
  */
 void
-log_oper_action(int log_type, struct Client *source_p, 
+log_oper_action(int log_type, const struct Client *source_p, 
 		const char *pattern, ...)
 {
   va_list args;
