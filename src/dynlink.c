@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: dynlink.c,v 7.17 2005/03/28 00:56:13 michael Exp $
+ * $Id: dynlink.c,v 7.18 2005/09/06 13:08:19 michael Exp $
  *
  */
 #include "stdinc.h"
@@ -35,7 +35,6 @@
 #endif
 
 extern dlink_list mod_list;
-extern int num_mods;
 
 static char unknown_ver[] = "<unknown>";
 
@@ -192,15 +191,16 @@ dlsym(void *myModule, char *mySymbolName)
 int
 unload_one_module(char *name, int warn)
 {
-  dlink_node *ptr;
-  struct module *modp;
+  dlink_node *ptr = NULL;
+  struct module *modp = NULL;
 
   if ((ptr = findmodule_byname(name)) == NULL) 
-    return(-1);
+    return -1;
 
   modp = ptr->data;
 
-  if (modp->modremove) (*(modp->modremove))();
+  if (modp->modremove)
+    (*modp->modremove)();
 
 #ifdef HAVE_SHL_LOAD
     /* shl_* and friends have a slightly different format than dl*. But it does not
@@ -217,21 +217,18 @@ unload_one_module(char *name, int warn)
    */
   dlclose(modp->address);
 #endif
-
+  assert(dlink_list_length(&mod_list) > 0);
   dlinkDelete(ptr, &mod_list);
   MyFree(modp->name);
   MyFree(modp);
 
-  if (num_mods != 0)
-    num_mods--;
-
   if (warn == 1)
   {
     ilog(L_INFO, "Module %s unloaded", name);
-    sendto_realops_flags(UMODE_ALL, L_ALL,"Module %s unloaded", name);
+    sendto_realops_flags(UMODE_ALL, L_ALL, "Module %s unloaded", name);
   }
 
-  return(0);
+  return 0;
 }
 
 /* load_a_module()
@@ -354,7 +351,6 @@ load_a_module(char *path, int warn, int core)
   modp->modremove = mod_deinit;
   DupString(modp->name, mod_basename);
   dlinkAdd(modp, &modp->node, &mod_list);
-  num_mods++;
 
   initfunc();
 

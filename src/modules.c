@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.168 2005/08/17 14:56:16 knight Exp $
+ *  $Id: modules.c,v 7.169 2005/09/06 13:08:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -70,8 +70,6 @@ static const char *core_module_table[] =
   "m_squit",
   NULL
 };
-
-int num_mods = 0;
 
 static dlink_list mod_paths = { NULL, NULL, 0 };
 static dlink_list conf_modules = { NULL, NULL, 0 };
@@ -587,7 +585,7 @@ mo_modlist(struct Client *client_p, struct Client *source_p,
 static void
 mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
-  int modnum;
+  unsigned int modnum = 0;
   dlink_node *ptr;
   dlink_node *tptr;
   struct module *modp;
@@ -602,7 +600,7 @@ mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *
   sendto_one(source_p, ":%s NOTICE %s :Reloading all modules",
              me.name, source_p->name);
 
-  modnum = num_mods;
+  modnum = dlink_list_length(&mod_list);
 
   DLINK_FOREACH_SAFE(ptr, tptr, mod_list.head)
   {
@@ -615,10 +613,10 @@ mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *
   load_core_modules(0);
 
   sendto_realops_flags(UMODE_ALL, L_ALL,
-              "Module Restart: %d modules unloaded, %d modules loaded",
-			modnum, num_mods);
-  ilog(L_WARN, "Module Restart: %d modules unloaded, %d modules loaded",
-       modnum, num_mods);
+              "Module Restart: %u modules unloaded, %lu modules loaded",
+			modnum, dlink_list_length(&mod_list));
+  ilog(L_WARN, "Module Restart: %u modules unloaded, %lu modules loaded",
+       modnum, dlink_list_length(&mod_list));
 }
 
 #else /* STATIC_MODULES */
