@@ -15,15 +15,15 @@ del s_bsd_kqueue.c
 del s_bsd_poll.c
 del s_bsd_select.c
 del s_bsd_sigio.c
-cl /nologo /TC /ZI /MLd /c /w /I"..\include" *.c
+cl /nologo /TC /ZI /MLd /c /w /I"..\include" /I"..\lib\pcre" *.c
 cd ..\modules
 del *.obj
 del m_challenge.c
 del m_cryptlink.c
-cl /nologo /TC /ZI /MLd /c /w /I"..\include" *.c
+cl /nologo /TC /ZI /MLd /c /w /I"..\include" /I"..\lib\pcre" *.c
 cd core
 del *.obj
-cl /nologo /TC /ZI /MLd /c /w /I"..\..\include" *.c
+cl /nologo /TC /ZI /MLd /c /w /I"..\..\include" /I"..\..\lib\pcre" *.c
 cd ..\..
 link /nologo /debug src/*.obj modules/*.obj modules/core/*.obj wsock32.lib user32.lib /subsystem:windows /out:ircd.exe
 

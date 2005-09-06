@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.183 2005/09/05 23:38:31 knight Exp $
+ *  $Id: m_stats.c,v 1.184 2005/09/06 15:51:58 adx Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ struct Message stats_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.183 $";
+const char *_version = "$Revision: 1.184 $";
 static struct Callback *stats_cb;
 
 void
@@ -1245,9 +1245,9 @@ stats_servlinks(struct Client *source_p)
                get_client_name(target_p, IsAdmin(source_p) ? SHOW_IP : MASK_IP),
                dbuf_length(&target_p->localClient->buf_sendq),
                target_p->localClient->send.messages,
-               (unsigned long long)(target_p->localClient->send.bytes>>10),
+               target_p->localClient->send.bytes >> 10,
                target_p->localClient->recv.messages,
-               (unsigned long long)(target_p->localClient->recv.bytes>>10),
+               target_p->localClient->recv.bytes >> 10,
                (unsigned)(CurrentTime - target_p->firsttime),
                (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since): 0,
                IsOper(source_p) ? show_capabilities(target_p) : "TS");

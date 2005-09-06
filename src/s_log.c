@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.74 2005/09/06 11:54:15 db Exp $
+ *  $Id: s_log.c,v 7.75 2005/09/06 15:51:58 adx Exp $
  */
 
 #include "stdinc.h"
@@ -207,8 +207,8 @@ log_user_exit(struct Client *source_p)
 	  (signed long) (on_for % 3600)/60,
 	  (signed long) on_for % 60,
 	  source_p->name, source_p->username, source_p->host,
-	  (unsigned long long)(source_p->localClient->send.bytes>>10),
-	  (unsigned long long)(source_p->localClient->recv.bytes>>10));
+	  source_p->localClient->send.bytes>>10,
+	  source_p->localClient->recv.bytes>>10);
     }
 #else
   {
@@ -241,8 +241,8 @@ log_user_exit(struct Client *source_p)
 		   (signed long) (on_for % 3600)/60,
 		   (signed long) on_for % 60,
 		   source_p->name, source_p->username, source_p->host,
-		   (unsigned long long)(source_p->localClient->send.bytes>>10),
-		   (unsigned long long)(source_p->localClient->recv.bytes>>10));
+		   source_p->localClient->send.bytes>>10,
+		   source_p->localClient->recv.bytes>>10);
 	fbputs(linebuf, user_log_fb, nbytes);
       }
     }

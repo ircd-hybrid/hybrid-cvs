@@ -187,7 +187,7 @@
 /* #undef NDEBUG */
 
 /* Nickname length */
-#define NICKLEN (9+1)
+#define NICKLEN (20+1)
 
 /* Size of the WHOWAS array. */
 #define NICKNAMEHISTORYLENGTH 1500
