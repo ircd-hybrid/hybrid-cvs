@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.72 2005/09/05 18:49:43 db Exp $
+ *  $Id: s_log.c,v 7.73 2005/09/06 02:25:14 db Exp $
  */
 
 #include "stdinc.h"
@@ -330,6 +330,10 @@ log_oper_action(int log_type, const struct Client *source_p,
     logfile = ConfigLoggingEntry.killlog;
     log_message = "KILL";
     break;
+  case LOG_IOERR_TYPE:
+    logfile = ConfigLoggingEntry.ioerrlog;
+    log_message = "IO ERR";
+    break;
   default:
     break;
   }
@@ -338,28 +342,34 @@ log_oper_action(int log_type, const struct Client *source_p,
     return;
 
   p = linebuf;
-  n_preamble = ircsprintf(linebuf, "%s %s by (%s!%s@%s) :",
-			  myctime(CurrentTime), log_message,
-			  source_p->name, source_p->username, source_p->host);
+  if (source_p != NULL)
+  {
+    n_preamble = ircsprintf(linebuf, "%s %s by (%s!%s@%s) :",
+			    myctime(CurrentTime), log_message,
+			    source_p->name, source_p->username, source_p->host);
+
+  }
+  else
+  {
+    n_preamble = ircsprintf(linebuf, "%s %s :",
+			    myctime(CurrentTime), log_message);
+  }
+
   p += n_preamble;
 
-  if (IsClient(source_p))
+  if ((log_fb = fbopen(logfile, "r")) != NULL)
   {
-    if ((log_fb = fbopen(logfile, "r")) != NULL)
-    {
-      fbclose(log_fb);
-      log_fb = fbopen(logfile, "a");
-    }
-
-    if (log_fb != NULL)
-    {
-      va_start(args, pattern);
-      /* XXX add check for IRCD_BUFSIZE-(n_preamble+1) < 0 ? -db */
-      nbytes = vsnprintf(p, IRCD_BUFSIZE-(n_preamble+1), pattern, args);
-      nbytes += n_preamble;
-      va_end(args);
-      fbputs(linebuf, log_fb, nbytes);
-      fbclose(log_fb);
-    }
+    fbclose(log_fb);
+    log_fb = fbopen(logfile, "a");
+    if (log_fb == NULL)
+      return;
   }
+
+  va_start(args, pattern);
+  /* XXX add check for IRCD_BUFSIZE-(n_preamble+1) < 0 ? -db */
+  nbytes = vsnprintf(p, IRCD_BUFSIZE-(n_preamble+1), pattern, args);
+  nbytes += n_preamble;
+  va_end(args);
+  fbputs(linebuf, log_fb, nbytes);
+  fbclose(log_fb);
 }
