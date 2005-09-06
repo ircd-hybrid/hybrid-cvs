@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.10 2005/08/19 04:00:36 lusky Exp $
+ *  $Id: s_bsd_win32.c,v 7.11 2005/09/06 15:30:20 adx Exp $
  */
 
 #include "stdinc.h"
@@ -28,6 +28,7 @@
 #include "s_bsd.h"
 #include "common.h"
 #include "client.h"
+#include "restart.h"
 
 HWND wndhandle;
 static dlink_list dns_queries = {NULL, NULL, 0};
@@ -268,7 +269,7 @@ comm_select(void)
   MSG msg;
 
   if (!GetMessage(&msg, NULL, 0, 0))
-    exit(1);
+    server_die("received message WM_QUIT");
 
   set_time();
 
