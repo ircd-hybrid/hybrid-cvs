@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.212 2005/09/05 14:53:57 db Exp $
+ *  $Id: ircd_lexer.l,v 1.213 2005/09/06 14:36:00 db Exp $
  */
 
 %option case-insensitive
@@ -141,6 +141,7 @@ can_idle        { return CAN_IDLE; }
 caller_id_wait	{ return CALLER_ID_WAIT; }
 opers_bypass_callerid  { return OPERS_BYPASS_CALLERID; }
 channel		{ return CHANNEL; }
+cidr_bitlen	{ return CIDR_BITLEN; }
 cipher_preference { return CIPHER_PREFERENCE; }
 class		{ return CLASS; }
 client_flood	{ return T_CLIENT_FLOOD; }
@@ -254,6 +255,7 @@ no_join_on_split   { return NO_JOIN_ON_SPLIT; }
 no_oper_flood   { return NO_OPER_FLOOD; }
 no_tilde	{ return NO_TILDE; }
 number_per_ip	{ return NUMBER_PER_IP; }
+number_per_cidr	{ return NUMBER_PER_CIDR; }
 oper		{ return OPERATOR; }
 oper_log        { return OPER_LOG; }
 oper_pass_resv	{ return OPER_PASS_RESV; }
@@ -467,10 +469,10 @@ cinclude(void)
     char filenamebuf[IRCD_BUFSIZE];
 
     if (*p == '/')  /* if it is an absolute path */
-      snprintf(filenamebuf, sizeof(filenamebuf), "%s/%s", ETCPATH, p);
-    else
       snprintf(filenamebuf, sizeof(filenamebuf), "%s", p);
-    
+    else
+      snprintf(filenamebuf, sizeof(filenamebuf), "%s/%s", ETCPATH, p);
+
     tmp_fbfile_in = fbopen(filenamebuf, "r");
     
     if (tmp_fbfile_in == NULL)
