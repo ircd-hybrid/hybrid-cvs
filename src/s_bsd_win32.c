@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.11 2005/09/06 15:30:20 adx Exp $
+ *  $Id: s_bsd_win32.c,v 7.12 2005/09/06 17:35:01 adx Exp $
  */
 
 #include "stdinc.h"
@@ -441,9 +441,11 @@ uname (struct utsname *uts)
             case PROCESSOR_ARCHITECTURE_IA64:
               sprintf (uts->machine, "ia64(%d)", sysinfo.wProcessorLevel);
               break;
+#ifdef PROCESSOR_ARCHITECTURE_AMD64
             case PROCESSOR_ARCHITECTURE_AMD64:
               sprintf (uts->machine, "x86_64(%d)", sysinfo.wProcessorLevel);
               break;
+#endif
             default:
               sprintf (uts->machine, "unknown(%d)", sysinfo.wProcessorLevel);
               break;
