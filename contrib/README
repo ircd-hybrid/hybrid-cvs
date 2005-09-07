@@ -1,13 +1,13 @@
-$Id: README,v 1.44 2005/08/20 02:52:55 knight Exp $
+$Id: README,v 1.45 2005/09/07 14:57:10 knight Exp $
 -----------------------------------------------
 
 ircd-hybrid contributive add-ons ::
 
 This directory contains contributive modules, patches and other add-ons 
-that have been created by other people, or are not suitable to be 
-included into the main ircd-hybrid tree for various reasons. The coding
-team does not officially support modules, patches and add-ons nor do they
-guarantee that any of them will work to their intended capacity.
+that have been created by other people, or are not suitable to be included
+into the main ircd-hybrid tree for various reasons. The coding team does
+not officially support modules, patches and add-ons nor do they guarantee
+that any of them will work to their intended capacity.
 
 It is to be noted WITH feeling, that not all of these modules, patches
 or add-ons have been thoroughly tested, only that they've been tested
@@ -72,7 +72,8 @@ m_clearchan.c    --  Similar to the OperServ command CLEARCHAN, this module
 
 
 m_ctrace.c       --  This module will perform a trace on a certain class. Valid
-                     classes would be servers, users, operators or any custom one
+                     classes would be servers, users, operators or any custom
+one
                      you defined in class {} blocks.
 
                      Syntax: CTRACE <class>
@@ -80,7 +81,8 @@ m_ctrace.c       --  This module will perform a trace on a certain class. Valid
                      Example: CTRACE users
 
 
-m_etrace.c       --  This module will give a list of all clients connected to the
+m_etrace.c       --  This module will give a list of all clients connected to
+the
                      local server, both users and operators.
 
                      Syntax: ETRACE <mask>
@@ -88,8 +90,10 @@ m_etrace.c       --  This module will give a list of all clients connected to th
                      Example: ETRACE *
 
 
-m_flags.c        --  This module adds csircd like support for changing usermodes.
-                     If passed without any arguments, it will show what flags are
+m_flags.c        --  This module adds csircd like support for changing
+usermodes.
+                     If passed without any arguments, it will show what flags
+are
                      enabled and which are available.
 
                      Syntax: FLAGS [+|-FLAG]
@@ -97,7 +101,8 @@ m_flags.c        --  This module adds csircd like support for changing usermodes
                      Example: FLAGS +CALLERID
 
 
-m_force.c        --  This module will force a user to either part or join a channel
+m_force.c        --  This module will force a user to either part or join a
+channel
                      with an optional status (@%+)
 
                      Syntax: FORCEJOIN <nickname> [status]<channel>
@@ -117,7 +122,8 @@ m_jupe.c         --  Similar to the OperServ command JUPE, this module adds the
                      Example: JUPE node.server.net :get lost
 
 
-m_killhost.c     --  Similar to the OperServ command KILLHOST, allows you to issue
+m_killhost.c     --  Similar to the OperServ command KILLHOST, allows you to
+issue
                      (mass) KILLs to a specific hostname or hostmask that is 
                      connected to the server.
 
@@ -126,7 +132,8 @@ m_killhost.c     --  Similar to the OperServ command KILLHOST, allows you to iss
                      Example: KILLHOST *@cloners.com clones
 
 
-m_ltrace.c       --  This module will give a limited trace. This is similar to TRACE
+m_ltrace.c       --  This module will give a limited trace. This is similar to
+TRACE
                      except that it only reports current operators and servers.
 
                      Syntax: LTRACE [nick|mask [server]]
@@ -135,19 +142,22 @@ m_ltrace.c       --  This module will give a limited trace. This is similar to T
                               LTRACE node.server.com
 
 
-m_map.c          --  This module will display the server routing graph in a format
+m_map.c          --  This module will display the server routing graph in a
+format
                      visually pleasing to the eye.
 
                      Syntax: MAP
 
 
-m_mkpasswd.c     --  This module will generate a DES or MD5 encrypted password similar
+m_mkpasswd.c     --  This module will generate a DES or MD5 encrypted password
+similar
                      to the console version bundled with hybrid.
 
                      Syntax: MKPASSWD <plaintext> [MD5|DES]
 
 
-m_ojoin.c        --  This module will add the ability to join any channel no matter
+m_ojoin.c        --  This module will add the ability to join any channel no
+matter
                      what modes or limits are set with an optional status (@%+)
                      It should be noted that this command can be abused heavily.
 
@@ -161,7 +171,8 @@ m_omotd.c        --  This module will display the operator Message of the Day.
                      Syntax: OMOTD [server]
 
 
-m_operspy.c      --  This module will allow operators with access to spy on users.
+m_operspy.c      --  This module will allow operators with access to spy on
+users.
                      It should be noted the notion of this module practically
                      invalidates any form of privacy ala Unreal IRCd.
 
@@ -259,7 +270,8 @@ ircd.init.in     -- rc-init style file used with the spec file to allow system
                     loading of ircd-hybrid.
 
 
-setup-win32.h    -- This header file is a win32 compatible include/setup.h suitable
+setup-win32.h    -- This header file is a win32 compatible include/setup.h
+suitable
                     for building ircd-hybrid on Windows with MSVC.
 
 
