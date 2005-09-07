@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.19 2005/09/05 09:45:20 db Exp $
+ *  $Id: m_services.c,v 1.20 2005/09/07 12:58:48 knight Exp $
  */
 /*
  *
@@ -222,7 +222,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.19 $";
+const char *_version = "$Revision: 1.20 $";
 #endif
 
 /*
@@ -269,9 +269,9 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if ((hunt_server(client_p, source_p, ":%s SVSNICK %s %s", 1,
-                   parc, parv)) != HUNTED_ISME)
-    return;
+  sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
+                ":%s ENCAP * SVSNICK %s :%s",
+                parv[0], target_p->name, parv[2]);
 
   if (!IsClient(target_p))
     return;
