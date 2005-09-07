@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.184 2005/09/06 15:51:58 adx Exp $
+ *  $Id: m_stats.c,v 1.185 2005/09/07 00:50:04 knight Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ struct Message stats_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.184 $";
+const char *_version = "$Revision: 1.185 $";
 static struct Callback *stats_cb;
 
 void
@@ -91,7 +91,9 @@ static void stats_deny(struct Client *);
 static void stats_tdeny(struct Client *);
 static void stats_exempt(struct Client *);
 static void stats_events(struct Client *);
+#ifdef GLINE_VOTING
 static void stats_pending_glines(struct Client *);
+#endif /* GLINE_VOTING */
 static void stats_glines(struct Client *);
 static void stats_gdeny(struct Client *);
 static void stats_hubleaf(struct Client *);
@@ -788,6 +790,7 @@ stats_events(struct Client *source_p)
   show_events(source_p);
 }
 
+#ifdef GLINE_VOTING
 /* stats_pending_glines()
  *
  * input        - client pointer
@@ -842,6 +845,7 @@ stats_pending_glines(struct Client *source_p)
   sendto_one(source_p, ":%s NOTICE %s :End of Pending G-lines",
              from, to);
 }
+#endif /* GLINE_VOTING */
 
 /* stats_glines()
  *
