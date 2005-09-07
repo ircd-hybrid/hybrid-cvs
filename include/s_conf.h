@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.326 2005/09/07 13:45:06 michael Exp $
+ *  $Id: s_conf.h,v 7.327 2005/09/07 16:40:10 adx Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -337,7 +337,7 @@ struct config_file_entry
   int tkline_expire_notices;
   int opers_bypass_callerid;
   int ignore_bogus_ts;
-  int *kline_reason;
+  char *kline_reason;
   int pace_wait;
   int pace_wait_simple;
   int gline_time;
