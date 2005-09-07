@@ -1,8 +1,8 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.47 2005/07/11 23:19:34 metalrock Exp $
+   $Id: INSTALL,v 7.48 2005/09/07 20:28:47 knight Exp $
 
-   Copyright (c) 2001, 2002, 2003, 2004, 2005 by ircd-hybrid team
+   Copyright (c) 1997-2005 IRCD-Hybrid Development Team
 
      ----------------------------------------------------------------------
 
@@ -17,8 +17,6 @@
    |   the possible options you can pass to configure.                      |
    |                                                                        |
    | - Important: The old config format WILL NOT WORK. Please see point 6!  |
-   |                                                                        |
-   | - The old kline format WILL NOT WORK. Please see point 7!              |
    +------------------------------------------------------------------------+
 
    ***** EFNET NOTE *****
@@ -47,7 +45,7 @@
        with the --prefix option to configure.
        /usr/local/ircd is the default if no prefix is specified.
 
-       ./configure --prefix="/usr/local/ircd"
+       ./configure --prefix=/usr/local/ircd
 
        The script will determine whichever of the following is best for 
        your system, but you may (unsupported) force their usage with 
@@ -85,13 +83,20 @@
        These are optional or have default values that may be overridden:
    
           * --disable-shared-modules - Disable module support. This option is
-            more secure, but reduces a lot of the flexibility in Hybrid 7.
+            more secure, but reduces a lot of the flexibility in hybrid-7.
             This may need to be used on some systems without a working
             dlopen/dlsym.
 
           * --enable-assert - Enable use of numerous debugging checks. This
             should not be used on any production servers for maximum speed
 	    so as to prevent cores from things that shouldn't normally happen.
+
+	  * --enable-efence - Enable ElectricFence which is a memory debugger.
+
+	  * --enable-profile - Enable profiling support in ircd-hybrid.
+
+	  * --disable-block-alloc - Disable block allocations (only works with
+            ElectricFence).
 
 	  * --enable-halfops - Enable halfops (%, mode +h) usage. Halfops
 	    are similar to plain ops, but can't kick/deop plain ops. Halfops
@@ -126,22 +131,21 @@
 
 	  * --disable-zlib - Build the ircd without ziplinks support.
 
-   3.  make should build ircd.
+	  * --disable-gline-voting - This is good for small networks or where
+	    G-Line voting is not necessary. Please understand that by disabling
+	    this, it will allow any operator with G-Line permissions to G-Line
+	    someone without requiring the approval of 2 other operators. However
+	    it is useful if you use proxy scanners that do G-Lines or OperServ. 
 
-   4.  make install will install the server, modules(1), and tools in the
-       path with the prefix specified when configure was run.
+   3.  Run 'make'; this should build the ircd.
 
-       (1) Unless the server was compiled without module support.
+   4.  Run 'make install'; this will install the server, modules(1), and tools
+       in the path with the prefix specified when configure was ran.
 
-   5.  If you wish to enable the user log, oper log, and failed oper log,
-       issue these commands at the shell prompt (in the prefix directory)
+           (1) Unless the server was compiled without module support.
 
- $ touch logs/userlog
- $ touch logs/operlog
- $ touch logs/foperlog
-
-         Note: If you use different names in ircd.conf, you must 'touch' the
-         specific names.
+   5.  If you wish to install the contrib modules, run 'make install' in the
+       contrib/ folder to compile and install the modules and help pages.
 
    6.  If you are upgrading from Hybrid 5 or Hybrid 6, the config files
        have changed drastically...
@@ -167,7 +171,7 @@
    bugs@ircd-hybrid.org ASAP with a backtrace of the core. The Hybrid
    team can't fix bugs if no one tells us about them!
 
-   - http://www.forum.ircd-hybrid.org/
+   - http://forum.ircd-hybrid.org/
    We decided to create a phpBB-like forum about ircd-hybrid, where you can
    get help from coders and admins, post your suggestions, modules etc.
 
@@ -187,7 +191,8 @@
        installation, an example command line is below (in the /usr/local/ircd
        directory)
 
- $ gdb bin/ircd ircd.core
+       $ gdb bin/ircd ircd.core
+
 
    3.  At the "(gdb)" prompt, enter the command "bt full"
 
