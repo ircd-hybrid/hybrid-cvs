@@ -1,6 +1,6 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.48 2005/09/07 20:28:47 knight Exp $
+   $Id: INSTALL,v 7.49 2005/09/07 20:39:29 knight Exp $
 
    Copyright (c) 1997-2005 IRCD-Hybrid Development Team
 
@@ -16,7 +16,7 @@
    |   minimum. Try ./configure --help or read this file for more info on   |
    |   the possible options you can pass to configure.                      |
    |                                                                        |
-   | - Important: The old config format WILL NOT WORK. Please see point 6!  |
+   | - Important: The old config format WILL NOT WORK. Please see point 7!  |
    +------------------------------------------------------------------------+
 
    ***** EFNET NOTE *****
@@ -147,7 +147,17 @@
    5.  If you wish to install the contrib modules, run 'make install' in the
        contrib/ folder to compile and install the modules and help pages.
 
-   6.  If you are upgrading from Hybrid 5 or Hybrid 6, the config files
+   6.  If you wish to enable the user log, oper log, and failed oper log,
+       issue these commands at the shell prompt (in the prefix directory).
+
+       $ touch logs/userlog
+       $ touch logs/operlog
+       $ touch logs/foperlog
+
+       Note: If you use different names in ircd.conf, you must 'touch'
+             their specific names.
+
+   7.  If you are upgrading from Hybrid 5 or Hybrid 6, the config files
        have changed drastically...
 
        By default, the kline file is named kline.conf, the dline file is 
