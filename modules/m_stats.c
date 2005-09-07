@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.185 2005/09/07 00:50:04 knight Exp $
+ *  $Id: m_stats.c,v 1.186 2005/09/07 12:48:06 knight Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ struct Message stats_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.185 $";
+const char *_version = "$Revision: 1.186 $";
 static struct Callback *stats_cb;
 
 void
@@ -91,9 +91,7 @@ static void stats_deny(struct Client *);
 static void stats_tdeny(struct Client *);
 static void stats_exempt(struct Client *);
 static void stats_events(struct Client *);
-#ifdef GLINE_VOTING
 static void stats_pending_glines(struct Client *);
-#endif /* GLINE_VOTING */
 static void stats_glines(struct Client *);
 static void stats_gdeny(struct Client *);
 static void stats_hubleaf(struct Client *);
@@ -138,9 +136,7 @@ static const struct StatsStruct
   { 'E',	stats_events,		1,	1,	},
   { 'f',	fd_dump,		1,	1,	},
   { 'F',	fd_dump,		1,	1,	},
-#ifdef GLINE_VOTING
   { 'g',	stats_pending_glines,	1,	0,	},
-#endif /* GLINE_VOTING */
   { 'G',	stats_glines,		1,	0,	},
   { 'h',	stats_hubleaf,		1,	0,	},
   { 'H',	stats_hubleaf,		1,	0,	},
@@ -790,7 +786,6 @@ stats_events(struct Client *source_p)
   show_events(source_p);
 }
 
-#ifdef GLINE_VOTING
 /* stats_pending_glines()
  *
  * input        - client pointer
@@ -800,6 +795,7 @@ stats_events(struct Client *source_p)
 static void
 stats_pending_glines(struct Client *source_p)
 {
+#ifdef GLINE_VOTING
   dlink_node *pending_node;
   struct gline_pending *glp_ptr;
   char timebuffer[MAX_DATE_STRING];
@@ -844,8 +840,12 @@ stats_pending_glines(struct Client *source_p)
 
   sendto_one(source_p, ":%s NOTICE %s :End of Pending G-lines",
              from, to);
+#else
+  sendto_one(source_p, ":%s NOTICE %s :This server does not support G-Line "
+                       "voting",
+                       from, to);
+#endif /* GLINE VOTING */
 }
-#endif /* GLINE_VOTING */
 
 /* stats_glines()
  *
