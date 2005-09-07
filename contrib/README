@@ -1,4 +1,4 @@
-$Id: README,v 1.45 2005/09/07 14:57:10 knight Exp $
+$Id: README,v 1.46 2005/09/07 15:03:40 knight Exp $
 -----------------------------------------------
 
 ircd-hybrid contributive add-ons ::
@@ -73,8 +73,7 @@ m_clearchan.c    --  Similar to the OperServ command CLEARCHAN, this module
 
 m_ctrace.c       --  This module will perform a trace on a certain class. Valid
                      classes would be servers, users, operators or any custom
-one
-                     you defined in class {} blocks.
+                     one you defined in class {} blocks.
 
                      Syntax: CTRACE <class>
 
@@ -82,8 +81,7 @@ one
 
 
 m_etrace.c       --  This module will give a list of all clients connected to
-the
-                     local server, both users and operators.
+                     the local server, both users and operators.
 
                      Syntax: ETRACE <mask>
 
@@ -91,10 +89,8 @@ the
 
 
 m_flags.c        --  This module adds csircd like support for changing
-usermodes.
-                     If passed without any arguments, it will show what flags
-are
-                     enabled and which are available.
+                     usermodes. If passed without any arguments, it will
+                     show what flags are enabled and which are available.
 
                      Syntax: FLAGS [+|-FLAG]
 
@@ -102,8 +98,7 @@ are
 
 
 m_force.c        --  This module will force a user to either part or join a
-channel
-                     with an optional status (@%+)
+                     channel with an optional status (@%+)
 
                      Syntax: FORCEJOIN <nickname> [status]<channel>
                              FORCEPART <nickname> <channel>
@@ -123,8 +118,7 @@ m_jupe.c         --  Similar to the OperServ command JUPE, this module adds the
 
 
 m_killhost.c     --  Similar to the OperServ command KILLHOST, allows you to
-issue
-                     (mass) KILLs to a specific hostname or hostmask that is 
+                     issue (mass) KILLs to a specific hostname or hostmask that is 
                      connected to the server.
 
                      Syntax: KILLHOST <hostmask> [reason]
@@ -133,8 +127,7 @@ issue
 
 
 m_ltrace.c       --  This module will give a limited trace. This is similar to
-TRACE
-                     except that it only reports current operators and servers.
+                     TRACE except that it only reports current operators and servers.
 
                      Syntax: LTRACE [nick|mask [server]]
 
@@ -142,24 +135,16 @@ TRACE
                               LTRACE node.server.com
 
 
-m_map.c          --  This module will display the server routing graph in a
-format
-                     visually pleasing to the eye.
-
-                     Syntax: MAP
-
-
 m_mkpasswd.c     --  This module will generate a DES or MD5 encrypted password
-similar
-                     to the console version bundled with hybrid.
+                     similar to the console version bundled with hybrid.
 
                      Syntax: MKPASSWD <plaintext> [MD5|DES]
 
 
 m_ojoin.c        --  This module will add the ability to join any channel no
-matter
-                     what modes or limits are set with an optional status (@%+)
-                     It should be noted that this command can be abused heavily.
+                     matter what modes or limits are set with an optional 
+                     status (@%+) It should be noted that this command can be
+                     abused heavily.
 
                      Syntax: OJOIN [status]<channel>
 
@@ -172,9 +157,8 @@ m_omotd.c        --  This module will display the operator Message of the Day.
 
 
 m_operspy.c      --  This module will allow operators with access to spy on
-users.
-                     It should be noted the notion of this module practically
-                     invalidates any form of privacy ala Unreal IRCd.
+                     users. It should be noted the notion of this module
+                     practically invalidates any form of privacy ala Unreal IRCd.
 
                      Syntax: OPERSPY <LIST/WHO/MODE/WHOIS/NAMES> <parameter>
 
