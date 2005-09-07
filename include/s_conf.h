@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.325 2005/09/07 13:08:02 michael Exp $
+ *  $Id: s_conf.h,v 7.326 2005/09/07 13:45:06 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -355,10 +355,10 @@ struct config_file_entry
   int client_flood;
   /* 0 == don't use throttle... */
   int throttle_time;
-  char use_egd:1;
-  char ping_cookie:1;
-  char disable_auth:1;
-  char disable_remote:1;
+  int use_egd;
+  int ping_cookie;
+  int disable_auth;
+  int disable_remote;
 #ifdef HAVE_LIBCRYPTO
   struct EncCapability *default_cipher_preference;
 #endif
