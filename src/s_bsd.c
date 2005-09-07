@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.249 2005/09/06 02:25:14 db Exp $
+ *  $Id: s_bsd.c,v 7.250 2005/09/07 18:04:39 adx Exp $
  */
 
 #include "stdinc.h"
@@ -310,7 +310,8 @@ close_connection(struct Client *client_p)
   if (client_p->localClient->fd.ssl)
     SSL_shutdown(client_p->localClient->fd.ssl);
 #endif
-  fd_close(&client_p->localClient->fd);
+  if (client_p->localClient->fd.flags.open)
+    fd_close(&client_p->localClient->fd);
 
   if (HasServlink(client_p))
   {
@@ -323,7 +324,7 @@ close_connection(struct Client *client_p)
 #endif
     }
   }
-  
+
   dbuf_clear(&client_p->localClient->buf_sendq);
   dbuf_clear(&client_p->localClient->buf_recvq);
   
