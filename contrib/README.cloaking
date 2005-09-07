@@ -1,6 +1,6 @@
 ircd-hybrid IP/hostname cloaking README:
 -----------------------------------------------
-$Id: README.cloaking,v 1.8 2005/09/07 14:49:28 knight Exp $
+$Id: README.cloaking,v 1.9 2005/09/07 14:51:25 knight Exp $
 
 Copyright (c) 2005 by Alan 'knight-' LeVee of ChatJunkies IRC Network
 -----------------------------------------------
@@ -70,8 +70,7 @@ the following user mode:
 
 You should then recieve a message:
 
---- 36cc6673-5813df1c-ec6f50f-8f92678.ypwest01.mi.comcast.net :is your visible
-host
+--- ec6f50f-8f92678.ypwest01.mi.comcast.net :is your visible host
 
 This means that anyone who runs WHOIS on you will receive that as the host
 response. However, if hide_spoof_ips is set to no yourself and IRC operators can
