@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.439 2005/09/07 02:21:19 adx Exp $
+ *  $Id: ircd_parser.y,v 1.440 2005/09/07 16:59:12 db Exp $
  */
 
 %{
@@ -142,17 +142,16 @@ unhook_hub_leaf_confs(void)
 %token	T_ALLOW
 %token  ANTI_NICK_FLOOD
 %token  ANTI_SPAM_EXIT_MESSAGE_TIME
-%token  IRCD_AUTH
 %token  AUTOCONN
 %token	T_BLOCK
 %token  BURST_AWAY
 %token  BURST_TOPICWHO
 %token  BYTES KBYTES MBYTES GBYTES TBYTES
 %token  CALLER_ID_WAIT
-%token  OPERS_BYPASS_CALLERID
 %token  CAN_FLOOD
 %token  CAN_IDLE
 %token  CHANNEL
+%token	CIDR_BITLEN
 %token  CIPHER_PREFERENCE
 %token  CLASS
 %token  COMPRESSED
@@ -202,6 +201,7 @@ unhook_hub_leaf_confs(void)
 %token  GLINE_MIN_CIDR
 %token  GLINE_MIN_CIDR6
 %token  GLOBAL_KILL
+%token  IRCD_AUTH
 %token  NEED_IDENT
 %token  HAVENT_READ_CONF
 %token  HIDDEN
@@ -261,9 +261,11 @@ unhook_hub_leaf_confs(void)
 %token  NOT
 %token  NUMBER
 %token  NUMBER_PER_IDENT
+%token  NUMBER_PER_CIDR
 %token  NUMBER_PER_IP
 %token  NUMBER_PER_IP_GLOBAL
 %token  OPERATOR
+%token  OPERS_BYPASS_CALLERID
 %token  OPER_LOG
 %token  OPER_ONLY_UMODES
 %token  OPER_PASS_RESV
@@ -1436,8 +1438,10 @@ class_name_b: | class_name_t;
 
 class_items:    class_items class_item | class_item;
 class_item:     class_name |
+		class_cidr_bitlen |
                 class_ping_time |
 		class_ping_warning |
+		class_number_per_cidr |
                 class_number_per_ip |
                 class_connectfreq |
                 class_max_number |
@@ -1594,6 +1598,18 @@ class_sendq: SENDQ '=' sizespec ';'
   if (ypass == 1)
     MaxSendq(yy_class) = $3;
 };
+
+class_cidr_bitlen: CIDR_BITLEN '=' NUMBER ';'
+{
+  if (ypass == 2)
+    CidrBitlen(yy_class) = $3;
+}
+
+class_number_per_cidr: NUMBER_PER_CIDR '=' NUMBER ';'
+{
+  if (ypass == 2)
+    NumberPerCidr(yy_class) = $3;
+}
 
 /***************************************************************************
  *  section listen

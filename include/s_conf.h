@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.327 2005/09/07 16:40:10 adx Exp $
+ *  $Id: s_conf.h,v 7.328 2005/09/07 16:59:12 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -130,6 +130,8 @@ struct ClassItem
   int max_ident;
   int max_perip;
   int curr_user_count;
+  int cidr_bitlen;
+  int number_per_cidr;
 };
 
 #define ConFreq(x)	((x)->con_freq)
@@ -142,6 +144,8 @@ struct ClassItem
 #define MaxPerIp(x)	((x)->max_perip)
 #define MaxSendq(x)	((x)->max_sendq)
 #define CurrUserCount(x) ((x)->curr_user_count)
+#define CidrBitlen(x)	((x)->cidr_bitlen)
+#define NumberPerCidr(x) ((x)->number_per_cidr)
 
 #define ClassPtr(x)      ((x)->class_ptr)
 
