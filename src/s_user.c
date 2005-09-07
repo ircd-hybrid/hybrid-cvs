@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.377 2005/09/03 12:30:24 michael Exp $
+ *  $Id: s_user.c,v 7.378 2005/09/07 02:21:19 adx Exp $
  */
 
 #include <sys/types.h>
@@ -435,7 +435,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   if (IsDead(source_p))
     return;
 
-  source_p->umodes |= UMODE_INVISIBLE;
+  if (ConfigFileEntry.invisible_on_connect)
+    source_p->umodes |= UMODE_INVISIBLE;
   Count.invisi++;
 
   if ((++Count.local) > Count.max_loc)

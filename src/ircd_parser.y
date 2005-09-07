@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.438 2005/09/05 17:38:02 db Exp $
+ *  $Id: ircd_parser.y,v 1.439 2005/09/07 02:21:19 adx Exp $
  */
 
 %{
@@ -215,6 +215,7 @@ unhook_hub_leaf_confs(void)
 %token  HUB_MASK
 %token  IDLETIME
 %token  IGNORE_BOGUS_TS
+%token  INVISIBLE_ON_CONNECT
 %token  IP
 %token  KILL
 %token	KILL_CHASE_TIME_LIMIT
@@ -3013,7 +3014,7 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
 		    general_max_accept | general_anti_spam_exit_message_time |
                     general_ts_warn_delta | general_ts_max_delta |
                     general_kill_chase_time_limit | general_kline_with_reason |
-                    general_kline_reason |
+                    general_kline_reason | general_invisible_on_connect |
                     general_warn_no_nline | general_dots_in_ident |
                     general_stats_o_oper_only | general_stats_k_oper_only |
                     general_pace_wait | general_stats_i_oper_only |
@@ -3043,20 +3044,17 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
 
 general_gline_min_cidr: GLINE_MIN_CIDR '=' NUMBER ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.gline_min_cidr = $3;
+  ConfigFileEntry.gline_min_cidr = $3;
 };
 
 general_gline_min_cidr6: GLINE_MIN_CIDR6 '=' NUMBER ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.gline_min_cidr6 = $3;
+  ConfigFileEntry.gline_min_cidr6 = $3;
 };
 
 general_burst_away: BURST_AWAY '=' TBOOL ';'
 {
-  if (ypass == 1) /* must be set in the 1st pass */
-    ConfigFileEntry.burst_away = yylval.number;
+  ConfigFileEntry.burst_away = yylval.number;
 };
 
 general_use_whois_actually: USE_WHOIS_ACTUALLY '=' TBOOL ';'
@@ -3086,68 +3084,57 @@ general_tkline_expire_notices: TKLINE_EXPIRE_NOTICES '=' TBOOL ';'
 
 general_kill_chase_time_limit: KILL_CHASE_TIME_LIMIT '=' NUMBER ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.kill_chase_time_limit = $3;
+  ConfigFileEntry.kill_chase_time_limit = $3;
 };
 
 general_hide_spoof_ips: HIDE_SPOOF_IPS '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.hide_spoof_ips = yylval.number;
+  ConfigFileEntry.hide_spoof_ips = yylval.number;
 };
 
 general_ignore_bogus_ts: IGNORE_BOGUS_TS '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.ignore_bogus_ts = yylval.number;
+  ConfigFileEntry.ignore_bogus_ts = yylval.number;
 };
 
 general_disable_remote_commands: DISABLE_REMOTE_COMMANDS '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.disable_remote = yylval.number;
+  ConfigFileEntry.disable_remote = yylval.number;
 };
 
 general_failed_oper_notice: FAILED_OPER_NOTICE '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.failed_oper_notice = yylval.number;
+  ConfigFileEntry.failed_oper_notice = yylval.number;
 };
 
 general_anti_nick_flood: ANTI_NICK_FLOOD '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.anti_nick_flood = yylval.number;
+  ConfigFileEntry.anti_nick_flood = yylval.number;
 };
 
 general_max_nick_time: MAX_NICK_TIME '=' timespec ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.max_nick_time = $3; 
+  ConfigFileEntry.max_nick_time = $3; 
 };
 
 general_max_nick_changes: MAX_NICK_CHANGES '=' NUMBER ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.max_nick_changes = $3;
+  ConfigFileEntry.max_nick_changes = $3;
 };
 
 general_max_accept: MAX_ACCEPT '=' NUMBER ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.max_accept = $3;
+  ConfigFileEntry.max_accept = $3;
 };
 
 general_anti_spam_exit_message_time: ANTI_SPAM_EXIT_MESSAGE_TIME '=' timespec ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.anti_spam_exit_message_time = $3;
+  ConfigFileEntry.anti_spam_exit_message_time = $3;
 };
 
 general_ts_warn_delta: TS_WARN_DELTA '=' timespec ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.ts_warn_delta = $3;
+  ConfigFileEntry.ts_warn_delta = $3;
 };
 
 general_ts_max_delta: TS_MAX_DELTA '=' timespec ';'
@@ -3169,8 +3156,7 @@ general_havent_read_conf: HAVENT_READ_CONF '=' NUMBER ';'
 
 general_kline_with_reason: KLINE_WITH_REASON '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.kline_with_reason = yylval.number;
+  ConfigFileEntry.kline_with_reason = yylval.number;
 };
 
 general_kline_reason: KLINE_REASON '=' QSTRING ';'
@@ -3182,90 +3168,80 @@ general_kline_reason: KLINE_REASON '=' QSTRING ';'
   }
 };
 
+general_invisible_on_connect: INVISIBLE_ON_CONNECT '=' TBOOL ';'
+{
+  ConfigFileEntry.invisible_on_connect = yylval.number;
+};
+
 general_warn_no_nline: WARN_NO_NLINE '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.warn_no_nline = yylval.number;
+  ConfigFileEntry.warn_no_nline = yylval.number;
 };
 
 general_stats_o_oper_only: STATS_O_OPER_ONLY '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.stats_o_oper_only = yylval.number;
+  ConfigFileEntry.stats_o_oper_only = yylval.number;
 };
 
 general_stats_P_oper_only: STATS_P_OPER_ONLY '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.stats_P_oper_only = yylval.number;
+  ConfigFileEntry.stats_P_oper_only = yylval.number;
 };
 
 general_stats_k_oper_only: STATS_K_OPER_ONLY '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.stats_k_oper_only = 2 * yylval.number;
+  ConfigFileEntry.stats_k_oper_only = 2 * yylval.number;
 } | STATS_K_OPER_ONLY '=' TMASKED ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.stats_k_oper_only = 1;
+  ConfigFileEntry.stats_k_oper_only = 1;
 };
 
 general_stats_i_oper_only: STATS_I_OPER_ONLY '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.stats_i_oper_only = 2 * yylval.number;
+  ConfigFileEntry.stats_i_oper_only = 2 * yylval.number;
 } | STATS_I_OPER_ONLY '=' TMASKED ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.stats_i_oper_only = 1;
+  ConfigFileEntry.stats_i_oper_only = 1;
 };
 
 general_pace_wait: PACE_WAIT '=' timespec ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.pace_wait = $3;
+  ConfigFileEntry.pace_wait = $3;
 };
 
 general_caller_id_wait: CALLER_ID_WAIT '=' timespec ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.caller_id_wait = $3;
+  ConfigFileEntry.caller_id_wait = $3;
 };
 
 general_opers_bypass_callerid: OPERS_BYPASS_CALLERID '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.opers_bypass_callerid = yylval.number;
+  ConfigFileEntry.opers_bypass_callerid = yylval.number;
 };
 
 general_pace_wait_simple: PACE_WAIT_SIMPLE '=' timespec ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.pace_wait_simple = $3;
+  ConfigFileEntry.pace_wait_simple = $3;
 };
 
 general_short_motd: SHORT_MOTD '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.short_motd = yylval.number;
+  ConfigFileEntry.short_motd = yylval.number;
 };
   
 general_no_oper_flood: NO_OPER_FLOOD '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.no_oper_flood = yylval.number;
+  ConfigFileEntry.no_oper_flood = yylval.number;
 };
 
 general_true_no_oper_flood: TRUE_NO_OPER_FLOOD '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.true_no_oper_flood = yylval.number;
+  ConfigFileEntry.true_no_oper_flood = yylval.number;
 };
 
 general_oper_pass_resv: OPER_PASS_RESV '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_pass_resv = yylval.number;
+  ConfigFileEntry.oper_pass_resv = yylval.number;
 };
 
 general_message_locale: MESSAGE_LOCALE '=' QSTRING ';'
@@ -3281,26 +3257,22 @@ general_message_locale: MESSAGE_LOCALE '=' QSTRING ';'
 
 general_idletime: IDLETIME '=' timespec ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.idletime = $3;
+  ConfigFileEntry.idletime = $3;
 };
 
 general_dots_in_ident: DOTS_IN_IDENT '=' NUMBER ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.dots_in_ident = $3;
+  ConfigFileEntry.dots_in_ident = $3;
 };
 
 general_maximum_links: MAXIMUM_LINKS '=' NUMBER ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.maximum_links = $3;
+  ConfigFileEntry.maximum_links = $3;
 };
 
 general_max_targets: MAX_TARGETS '=' NUMBER ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.max_targets = $3;
+  ConfigFileEntry.max_targets = $3;
 };
 
 general_servlink_path: SERVLINK_PATH '=' QSTRING ';'
@@ -3364,8 +3336,7 @@ general_compression_level: COMPRESSION_LEVEL '=' NUMBER ';'
 
 general_use_egd: USE_EGD '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.use_egd = yylval.number;
+  ConfigFileEntry.use_egd = yylval.number;
 };
 
 general_egdpool_path: EGDPOOL_PATH '=' QSTRING ';'
@@ -3379,8 +3350,7 @@ general_egdpool_path: EGDPOOL_PATH '=' QSTRING ';'
 
 general_ping_cookie: PING_COOKIE '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.ping_cookie = yylval.number;
+  ConfigFileEntry.ping_cookie = yylval.number;
 };
 
 general_disable_auth: DISABLE_AUTH '=' TBOOL ';'
@@ -3390,200 +3360,156 @@ general_disable_auth: DISABLE_AUTH '=' TBOOL ';'
 
 general_throttle_time: THROTTLE_TIME '=' timespec ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.throttle_time = yylval.number;
+  ConfigFileEntry.throttle_time = yylval.number;
 };
 
 general_oper_umodes: OPER_UMODES
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes = 0;
+  ConfigFileEntry.oper_umodes = 0;
 } '='  umode_oitems ';' ;
 
 umode_oitems:    umode_oitems ',' umode_oitem | umode_oitem;
 umode_oitem:     T_BOTS
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_BOTS;
+  ConfigFileEntry.oper_umodes |= UMODE_BOTS;
 } | T_CCONN
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_CCONN;
+  ConfigFileEntry.oper_umodes |= UMODE_CCONN;
 } | T_DEAF
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_DEAF;
+  ConfigFileEntry.oper_umodes |= UMODE_DEAF;
 } | T_DEBUG
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_DEBUG;
+  ConfigFileEntry.oper_umodes |= UMODE_DEBUG;
 } | T_FULL
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_FULL;
+  ConfigFileEntry.oper_umodes |= UMODE_FULL;
 } | T_SKILL
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_SKILL;
+  ConfigFileEntry.oper_umodes |= UMODE_SKILL;
 } | T_NCHANGE
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_NCHANGE;
+  ConfigFileEntry.oper_umodes |= UMODE_NCHANGE;
 } | T_REJ
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_REJ;
+  ConfigFileEntry.oper_umodes |= UMODE_REJ;
 } | T_UNAUTH
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_UNAUTH;
+  ConfigFileEntry.oper_umodes |= UMODE_UNAUTH;
 } | T_SPY
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_SPY;
+  ConfigFileEntry.oper_umodes |= UMODE_SPY;
 } | T_EXTERNAL
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_EXTERNAL;
+  ConfigFileEntry.oper_umodes |= UMODE_EXTERNAL;
 } | T_OPERWALL
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_OPERWALL;
+  ConfigFileEntry.oper_umodes |= UMODE_OPERWALL;
 } | T_SERVNOTICE
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_SERVNOTICE;
+  ConfigFileEntry.oper_umodes |= UMODE_SERVNOTICE;
 } | T_INVISIBLE
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_INVISIBLE;
+  ConfigFileEntry.oper_umodes |= UMODE_INVISIBLE;
 } | T_WALLOP
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_WALLOP;
+  ConfigFileEntry.oper_umodes |= UMODE_WALLOP;
 } | T_SOFTCALLERID
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_SOFTCALLERID;
+  ConfigFileEntry.oper_umodes |= UMODE_SOFTCALLERID;
 } | T_CALLERID
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_CALLERID;
+  ConfigFileEntry.oper_umodes |= UMODE_CALLERID;
 } | T_LOCOPS
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_umodes |= UMODE_LOCOPS;
+  ConfigFileEntry.oper_umodes |= UMODE_LOCOPS;
 };
 
 general_oper_only_umodes: OPER_ONLY_UMODES 
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes = 0;
+  ConfigFileEntry.oper_only_umodes = 0;
 } '='  umode_items ';' ;
 
 umode_items:	umode_items ',' umode_item | umode_item;
 umode_item:	T_BOTS 
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_BOTS;
+  ConfigFileEntry.oper_only_umodes |= UMODE_BOTS;
 } | T_CCONN
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_CCONN;
+  ConfigFileEntry.oper_only_umodes |= UMODE_CCONN;
 } | T_DEAF
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_DEAF;
+  ConfigFileEntry.oper_only_umodes |= UMODE_DEAF;
 } | T_DEBUG
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_DEBUG;
+  ConfigFileEntry.oper_only_umodes |= UMODE_DEBUG;
 } | T_FULL
 { 
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_FULL;
+  ConfigFileEntry.oper_only_umodes |= UMODE_FULL;
 } | T_SKILL
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_SKILL;
+  ConfigFileEntry.oper_only_umodes |= UMODE_SKILL;
 } | T_NCHANGE
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_NCHANGE;
+  ConfigFileEntry.oper_only_umodes |= UMODE_NCHANGE;
 } | T_REJ
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_REJ;
+  ConfigFileEntry.oper_only_umodes |= UMODE_REJ;
 } | T_UNAUTH
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_UNAUTH;
+  ConfigFileEntry.oper_only_umodes |= UMODE_UNAUTH;
 } | T_SPY
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_SPY;
+  ConfigFileEntry.oper_only_umodes |= UMODE_SPY;
 } | T_EXTERNAL
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_EXTERNAL;
+  ConfigFileEntry.oper_only_umodes |= UMODE_EXTERNAL;
 } | T_OPERWALL
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_OPERWALL;
+  ConfigFileEntry.oper_only_umodes |= UMODE_OPERWALL;
 } | T_SERVNOTICE
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_SERVNOTICE;
+  ConfigFileEntry.oper_only_umodes |= UMODE_SERVNOTICE;
 } | T_INVISIBLE
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_INVISIBLE;
+  ConfigFileEntry.oper_only_umodes |= UMODE_INVISIBLE;
 } | T_WALLOP
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_WALLOP;
+  ConfigFileEntry.oper_only_umodes |= UMODE_WALLOP;
 } | T_SOFTCALLERID
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_SOFTCALLERID;
+  ConfigFileEntry.oper_only_umodes |= UMODE_SOFTCALLERID;
 } | T_CALLERID
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_CALLERID;
+  ConfigFileEntry.oper_only_umodes |= UMODE_CALLERID;
 } | T_LOCOPS
 {
-  if (ypass == 2)
-    ConfigFileEntry.oper_only_umodes |= UMODE_LOCOPS;
+  ConfigFileEntry.oper_only_umodes |= UMODE_LOCOPS;
 };
 
 general_min_nonwildcard: MIN_NONWILDCARD '=' NUMBER ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.min_nonwildcard = $3;
+  ConfigFileEntry.min_nonwildcard = $3;
 };
 
 general_min_nonwildcard_simple: MIN_NONWILDCARD_SIMPLE '=' NUMBER ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.min_nonwildcard_simple = $3;
+  ConfigFileEntry.min_nonwildcard_simple = $3;
 };
 
 general_default_floodcount: DEFAULT_FLOODCOUNT '=' NUMBER ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.default_floodcount = $3;
+  ConfigFileEntry.default_floodcount = $3;
 };
 
 general_client_flood: T_CLIENT_FLOOD '=' sizespec ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.client_flood = $3;
+  ConfigFileEntry.client_flood = $3;
 };
 
 general_dot_in_ip6_addr: DOT_IN_IP6_ADDR '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigFileEntry.dot_in_ip6_addr = yylval.number;
+  ConfigFileEntry.dot_in_ip6_addr = yylval.number;
 };
 
 /*************************************************************************** 

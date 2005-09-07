@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.590 2005/09/05 14:53:57 db Exp $
+ *  $Id: s_conf.c,v 7.591 2005/09/07 02:21:19 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1971,6 +1971,7 @@ set_default_conf(void)
 
   ConfigFileEntry.gline_min_cidr = 16;
   ConfigFileEntry.gline_min_cidr6 = 48;
+  ConfigFileEntry.invisible_on_connect = YES;
   ConfigFileEntry.burst_away = NO;
   ConfigFileEntry.use_whois_actually = YES;
   ConfigFileEntry.tkline_expire_notices = YES;

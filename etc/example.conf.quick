@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.35 2005/08/29 09:10:24 adx Exp $
+ * $Id: example.conf.quick,v 1.36 2005/09/07 02:21:19 adx Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -318,6 +318,7 @@ general {
 	kline_with_reason = yes;
 	kline_with_connection_closed = no;
 
+	invisible_on_connect = yes;
 	warn_no_nline = yes;
 	stats_o_oper_only=yes;
 	stats_P_oper_only=no;

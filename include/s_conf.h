@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.323 2005/09/05 15:37:38 db Exp $
+ *  $Id: s_conf.h,v 7.324 2005/09/07 02:21:19 adx Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -312,41 +312,42 @@ struct config_file_entry
   int dot_in_ip6_addr;
   int dots_in_ident;
   int failed_oper_notice;
-  int anti_nick_flood;
   int anti_spam_exit_message_time;
   int max_accept;
   int max_nick_time;
   int max_nick_changes;
   int ts_max_delta;
   int ts_warn_delta;
-  int kline_with_reason;
+  char anti_nick_flood:1;
+  char kline_with_reason:1;
+  char warn_no_nline:1;
+  char invisible_on_connect:1;
+  char stats_o_oper_only:2;
+  char stats_k_oper_only:2;
+  char stats_i_oper_only:2;
+  char stats_P_oper_only:2;
+  char short_motd:1;
+  char no_oper_flood:1;
+  char true_no_oper_flood:1;
+  char oper_pass_resv:1;
+  char glines:1;
+  char hide_spoof_ips:1;
+  char burst_away:1;
+  char use_whois_actually:1;
+  char tkline_expire_notices:1;
+  char opers_bypass_callerid:1;
+  char ignore_bogus_ts:1;
   char *kline_reason;
-  int warn_no_nline;
-  int stats_o_oper_only;
-  int stats_k_oper_only;
-  int stats_i_oper_only;
-  int stats_P_oper_only;
   int pace_wait;
   int pace_wait_simple;
-  int short_motd;
-  int no_oper_flood;
-  int true_no_oper_flood;
-  int oper_pass_resv;
-  int glines;
   int gline_time;
   int gline_logging;
-  int hide_spoof_ips;
-  int burst_away;
-  int use_whois_actually;
-  int tkline_expire_notices;
   int idletime;
-  int ignore_bogus_ts;
   int maximum_links;
   int oper_only_umodes;
   int oper_umodes;
   int max_targets;
   int caller_id_wait;
-  int opers_bypass_callerid;
   int min_nonwildcard;
   int min_nonwildcard_simple;
   int kill_chase_time_limit;
@@ -354,10 +355,10 @@ struct config_file_entry
   int client_flood;
   /* 0 == don't use throttle... */
   int throttle_time;
-  int use_egd;
-  int ping_cookie;
-  int disable_auth;
-  int disable_remote;
+  char use_egd:1;
+  char ping_cookie:1;
+  char disable_auth:1;
+  char disable_remote:1;
 #ifdef HAVE_LIBCRYPTO
   struct EncCapability *default_cipher_preference;
 #endif
