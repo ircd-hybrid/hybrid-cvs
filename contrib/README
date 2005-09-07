@@ -1,4 +1,4 @@
-$Id: README,v 1.46 2005/09/07 15:03:40 knight Exp $
+$Id: README,v 1.47 2005/09/07 15:08:50 knight Exp $
 -----------------------------------------------
 
 ircd-hybrid contributive add-ons ::
@@ -158,7 +158,7 @@ m_omotd.c        --  This module will display the operator Message of the Day.
 
 m_operspy.c      --  This module will allow operators with access to spy on
                      users. It should be noted the notion of this module
-                     practically invalidates any form of privacy ala Unreal IRCd.
+                     practically invalidates any form of privacy.
 
                      Syntax: OPERSPY <LIST/WHO/MODE/WHOIS/NAMES> <parameter>
 
