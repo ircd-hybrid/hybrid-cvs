@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.186 2005/09/07 12:48:06 knight Exp $
+ *  $Id: m_stats.c,v 1.187 2005/09/07 14:20:35 knight Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ struct Message stats_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.186 $";
+const char *_version = "$Revision: 1.187 $";
 static struct Callback *stats_cb;
 
 void
@@ -841,9 +841,8 @@ stats_pending_glines(struct Client *source_p)
   sendto_one(source_p, ":%s NOTICE %s :End of Pending G-lines",
              from, to);
 #else
-  sendto_one(source_p, ":%s NOTICE %s :This server does not support G-Line "
-                       "voting",
-                       from, to);
+  sendto_one(source_p, ":%s NOTICE %s :This server does not support G-Line voting",
+             from, to);
 #endif /* GLINE VOTING */
 }
 
