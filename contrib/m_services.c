@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.20 2005/09/07 12:58:48 knight Exp $
+ *  $Id: m_services.c,v 1.21 2005/09/08 03:52:11 metalrock Exp $
  */
 /*
  *
@@ -40,9 +40,7 @@
 
 /* MODULE CONFIGURATION FOLLOWS -- please read!! */
 
-/*
- * Change this #define to point to the name of the server
- * your services run on. For example services.yournet.net
+/* Change this to the name of your services server
  * otherwise the services aliases will not work!
  */
 #define SERVICES_NAME "services.yournet.net"
@@ -222,7 +220,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.20 $";
+const char *_version = "$Revision: 1.21 $";
 #endif
 
 /*
