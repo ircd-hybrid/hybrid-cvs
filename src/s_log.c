@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.76 2005/09/08 02:43:41 adx Exp $
+ *  $Id: s_log.c,v 7.77 2005/09/08 03:10:55 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -287,7 +287,7 @@ log_oper_action(int log_type, const struct Client *source_p,
   char linebuf[IRCD_BUFSIZE];
   FBFILE *log_fb;
   char *logfile;
-  char *log_message;
+  const char *log_message;
   size_t nbytes;
   size_t n_preamble;
   char *p;
