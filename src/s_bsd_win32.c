@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.12 2005/09/06 17:35:01 adx Exp $
+ *  $Id: s_bsd_win32.c,v 7.13 2005/09/08 04:43:07 adx Exp $
  */
 
 #include "stdinc.h"
@@ -105,7 +105,7 @@ hybrid_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	    F->write_handler = NULL;
 
             if (hdl != NULL)
-	      hdl(F, F->write_handler);
+	      hdl(F, F->write_data);
 
             if (hdl == NULL)
 	      update_winsock_events(F);
