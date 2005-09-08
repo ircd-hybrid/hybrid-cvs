@@ -41,9 +41,6 @@ echo exit >>bcc.bat
 %COMSPEC% /k prompt Your choice? 
 del bcc.bat
 del msvc.bat
-
-echo.
-echo ------------------------------------------------
 goto end2
 
 :build
