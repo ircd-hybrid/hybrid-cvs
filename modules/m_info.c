@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.98 2005/09/07 13:45:06 michael Exp $
+ *  $Id: m_info.c,v 1.99 2005/09/08 04:02:54 adx Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,7 @@ struct Message info_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.98 $";
+const char *_version = "$Revision: 1.99 $";
 static struct Callback *info_cb;
 
 void
@@ -703,47 +703,47 @@ send_conf_options(struct Client *source_p)
       /* For "char *" references */
       case OUTPUT_STRING:
       {
-        const char *option = *((char **)info_table->option);
+        const char *option = *((char **)iptr->option);
 
         sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
                    from, RPL_INFO, to,
-                   info_table->name, option ? option : "NONE",
-                   info_table->desc ? info_table->desc : "<none>");
+                   iptr->name, option ? option : "NONE",
+                   iptr->desc ? iptr->desc : "<none>");
         break;
       }
 
       /* For "char foo[]" references */
       case OUTPUT_STRING_PTR:
       {
-        const char *option = info_table->option;
+        const char *option = iptr->option;
 
         sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
                    from, RPL_INFO, to,
-                   info_table->name, option ? option : "NONE",
-                   info_table->desc ? info_table->desc : "<none>");
+                   iptr->name, option ? option : "NONE",
+                   iptr->desc ? iptr->desc : "<none>");
         break;
       }
 
       /* Output info_table[i].option as a decimal value. */
       case OUTPUT_DECIMAL:
       {
-        const int option = *((int *)info_table->option);
+        const int option = *((int *)iptr->option);
 
         sendto_one(source_p, ":%s %d %s :%-30s %-5d [%-30s]",
-                   from, RPL_INFO, to, info_table->name,
-                   option, info_table->desc ? info_table->desc : "<none>");
+                   from, RPL_INFO, to, iptr->name,
+                   option, iptr->desc ? iptr->desc : "<none>");
         break;
       }
 
       /* Output info_table[i].option as "ON" or "OFF" */
       case OUTPUT_BOOLEAN:
       {
-        const int option = *((int *)info_table->option);
+        const int option = *((int *)iptr->option);
 
         sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
                    from, RPL_INFO, to,
-                   info_table->name, option ? "ON" : "OFF",
-                   info_table->desc ? info_table->desc : "<none>");
+                   iptr->name, option ? "ON" : "OFF",
+                   iptr->desc ? iptr->desc : "<none>");
 
         break;
       }
@@ -751,23 +751,23 @@ send_conf_options(struct Client *source_p)
       /* Output info_table[i].option as "YES" or "NO" */
       case OUTPUT_BOOLEAN_YN:
       {
-        int option = *((int *)info_table->option);
+        int option = *((int *)iptr->option);
 
         sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
                    from, RPL_INFO, to,
-                   info_table->name, option ? "YES" : "NO",
-                   info_table->desc ? info_table->desc : "<none>");
+                   iptr->name, option ? "YES" : "NO",
+                   iptr->desc ? iptr->desc : "<none>");
         break;
       }
 
       case OUTPUT_BOOLEAN2:
       {
-        int option = *((int *)info_table->option);
+        int option = *((int *)iptr->option);
 
         sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
                    from, RPL_INFO, to,
-                   info_table->name, option ? ((option == 1) ? "MASK" : "YES") : "NO",
-                   info_table->desc ? info_table->desc : "<none>");
+                   iptr->name, option ? ((option == 1) ? "MASK" : "YES") : "NO",
+                   iptr->desc ? iptr->desc : "<none>");
         break;
       }
     }
