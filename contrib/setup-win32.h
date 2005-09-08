@@ -2,6 +2,31 @@
 /* $Id$ */
 
 
+/*** BEGIN OF STANDARD CONFIGURATION SETTINGS ***/
+
+
+/* Maximum number of network connections */
+#define MAXCONN 500
+
+/* Set up your maximum allowed nickname length here. */
+#define _NICKLEN 20
+
+/* Maximum topic length (<=390) */
+#define TOPICLEN 160
+
+/* If you plan to move your installed ircd from C:\ircd to
+ * some other directory, modify the setting here.
+ * Remember to escape backslashes by typing them twice! */
+#define IRCD_PREFIX "C:\\ircd"
+
+/* If you want %halfops (chanmode +h) support on your network,
+ * uncomment the following line. */
+/* #define HALFOPS 1 */
+
+
+/*** END OF STANDARD CONFIGURATION SETTINGS ***/
+
+
 #ifndef _WIN32
 #define _WIN32
 #endif
@@ -23,9 +48,6 @@
 
 /* Define if this ircd will be an EFnet server. */
 /* #undef EFNET */
-
-/* Define if you want halfops support. */
-/* #undef HALFOPS */
 
 /* Define to 1 if you have the `basename' function. */
 #define HAVE_BASENAME 1
@@ -171,23 +193,17 @@
 /* Define if IPv6 support is present and available. */
 /* #undef IPV6 */
 
-/* Prefix where the ircd is installed. */
-#define IRCD_PREFIX "C:\\ircd"
-
 /* Size of the local client heap. */
 #define LCLIENT_HEAP_SIZE 128
 
 /* Log facility to use for syslog() */
 /* #undef LOG_FACILITY */
 
-/* Maximum number of network connections */
-#define MAXCONN 500
-
 /* Define this to disable debugging support. */
 /* #undef NDEBUG */
 
 /* Nickname length */
-#define NICKLEN (20+1)
+#define NICKLEN (_NICKLEN+1)
 
 /* Size of the WHOWAS array. */
 #define NICKNAMEHISTORYLENGTH 1500
@@ -263,9 +279,6 @@
 
 /* Send user log stuff to syslog */
 /* #undef SYSLOG_USERS */
-
-/* Maximum topic length (<=390) */
-#define TOPICLEN 160
 
 /* Size of the topic heap. */
 #define TOPIC_HEAP_SIZE 256
