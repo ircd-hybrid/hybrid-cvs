@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.94 2005/08/29 21:02:50 db Exp $
+$Id: Hybrid-team,v 7.95 2005/09/08 01:34:00 adx Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -17,7 +17,6 @@ billy-jon, William Bierman III <bill@mu.org>
 cryogen, Stuart Walsh <stu@ipng.org.uk>
 Dianora, Diane Bruce <db@db.net>
 joshk, Joshua Kwan <joshk@triplehelix.org>
-kire, Erik Small <smalle@hawaii.edu>
 knight, Alan LeVee <alan.levee@prometheus-designs.net>
 metalrock, Jack Low <jclow@csupomona.edu>
 Michael, Michael Wobst <michael.wobst@gmail.com>
@@ -40,6 +39,7 @@ Hwy101, W. Campbell <wcampbel@botbay.net>
 jmallett, Juli Mallett <jmallett@FreeBSD.org>
 jv, Jakub Vlasek <jv@pilsedu.cz>
 k9, Jeremy Chadwick <ircd@jdc.parodius.com>
+kire, Erik Small <smalle@hawaii.edu>
 kre, Dinko Korunic <kreator@fly.srk.fer.hr>
 madmax, Paul Lomax <madmax@efnet.org>
 nenolod, William Pitcock <nenolod@nenolod.net>
