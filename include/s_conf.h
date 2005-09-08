@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.328 2005/09/07 16:59:12 db Exp $
+ *  $Id: s_conf.h,v 7.329 2005/09/08 03:02:12 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -440,7 +440,6 @@ struct logging_entry
   char failed_operlog[PATH_MAX + 1];
 };
 
-
 extern unsigned int scount;
 extern int ypass;
 extern dlink_list class_items;
@@ -464,8 +463,6 @@ extern struct server_info ServerInfo;       /* defined in ircd.c */
 extern struct admin_info AdminInfo;        /* defined in ircd.c */
 extern int valid_wild_card(struct Client *, int, int, ...);
 /* End GLOBAL section */
-
-
 
 extern unsigned long get_sendq(struct Client *);
 extern int get_con_freq(struct ClassItem *);

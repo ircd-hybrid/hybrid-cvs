@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.359 2005/09/01 23:18:43 db Exp $
+ *  $Id: ircd.c,v 7.360 2005/09/08 03:02:12 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -81,8 +81,7 @@ struct server_info ServerInfo;
 struct admin_info AdminInfo = { NULL, NULL, NULL };
 struct Counter Count = { 0, 0, 0, 0, 0, 0, 0, 0 };
 struct ServerState_t server_state = { 0 };
-struct logging_entry ConfigLoggingEntry = { 1, {0}, {0}, {0} };
-
+struct logging_entry ConfigLoggingEntry = { 1, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0} }; 
 struct timeval SystemTime;
 struct Client me;             /* That's me */
 struct LocalUser meLocalUser; /* That's also part of me */
