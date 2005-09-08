@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.99 2005/09/08 04:02:54 adx Exp $
+ *  $Id: m_info.c,v 1.100 2005/09/08 04:14:04 adx Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,7 @@ struct Message info_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.99 $";
+const char *_version = "$Revision: 1.100 $";
 static struct Callback *info_cb;
 
 void
@@ -696,7 +696,7 @@ send_conf_options(struct Client *source_p)
   /*
    * Parse the info_table[] and do the magic.
    */
-  for (iptr = info_table; iptr; ++iptr)
+  for (iptr = info_table; iptr->name; ++iptr)
   {
     switch (iptr->output_type)
     {
