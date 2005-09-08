@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.h,v 7.77 2005/08/20 23:48:42 adx Exp $
+ *  $Id: send.h,v 7.78 2005/09/08 15:44:21 michael Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -30,7 +30,7 @@
 /* For those unfamiliar with GNU format attributes, a is the 1 based
  * argument number of the format string, and b is the 1 based argument
  * number of the variadic ... */
-#ifdef __GNUC__
+#ifdef 0 /* __GNUC__ */
 #define AFP(a,b) __attribute__((format (printf, a, b)))
 #else
 #define AFP(a,b)
