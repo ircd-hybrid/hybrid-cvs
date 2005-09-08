@@ -73,6 +73,7 @@ for %%a in (*.obj) do del %%a
 echo.
 echo *** Installing ircd-hybrid into %IRCD_PREFIX% ...
 echo.
+if not exist %IRCD_PREFIX% md %IRCD_PREFIX%
 for %%a in (bin etc help help\opers help\users logs messages) do if not exist %IRCD_PREFIX%\%%a md %IRCD_PREFIX%\%%a
 copy ircd.exe %IRCD_PREFIX%\bin >nul
 for %%a in (etc\*) do copy %%a %IRCD_PREFIX%\etc >nul
