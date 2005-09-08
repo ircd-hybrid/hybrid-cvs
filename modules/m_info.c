@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.100 2005/09/08 04:14:04 adx Exp $
+ *  $Id: m_info.c,v 1.101 2005/09/08 04:50:33 adx Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,7 @@ struct Message info_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.100 $";
+const char *_version = "$Revision: 1.101 $";
 static struct Callback *info_cb;
 
 void
@@ -779,7 +779,7 @@ send_conf_options(struct Client *source_p)
 #ifndef EFNET
   /* jdc -- Only send compile information to admins. */
   if (IsAdmin(source_p))
-    sendto_one(source_p, ":%s %d %s :Compiled on [%s]",
+    sendto_one(source_p, ":%s %d %s :Running on [%s]",
                from, RPL_INFO, to, ircd_platform); 
 #endif
   sendto_one(source_p, form_str(RPL_INFO),
