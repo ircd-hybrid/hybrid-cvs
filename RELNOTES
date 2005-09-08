@@ -1,3 +1,6 @@
+-- ircd-hybrid-7.2beta2 RELNOTES
+
+
 -- ircd-hybrid-7.2beta1 RELNOTES
 o) Usermode +G, like +g, but allow messaging from people on common channels
 o) Usermode +D - "deaf", don't receive channel messages
@@ -56,4 +59,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.114 2005/08/31 11:05:32 adx Exp $
+$Id: RELNOTES,v 1.115 2005/09/08 17:37:17 lusky Exp $
