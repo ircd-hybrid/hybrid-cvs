@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  *
- * $Id: ip_cloaking.c,v 1.5 2005/08/25 17:39:11 adx Exp $
+ * $Id: ip_cloaking.c,v 1.6 2005/09/08 02:43:41 adx Exp $
  */
 
 /*
@@ -67,7 +67,7 @@ static int vhost_ipv6_err;
 static dlink_node *prev_enter_umode;
 static dlink_node *prev_umode;
 
-const char *_version = "$Revision: 1.5 $";
+const char *_version = "$Revision: 1.6 $";
 
 static void *reset_ipv6err_flag(va_list);
 static void *h_set_user_mode(va_list);
@@ -109,11 +109,11 @@ void _modinit(void)
 
 void _moddeinit(void)
 {
-  dlink_node *ptr;
-
   if (umode_vhost)
   {
-    DLINK_FOREACH(local_client_list.head, ptr)
+    dlink_node *ptr;
+
+    DLINK_FOREACH(ptr, local_client_list.head)
     {
       struct Client *cptr = ptr->data;
       cptr->umodes &= ~umode_vhost;

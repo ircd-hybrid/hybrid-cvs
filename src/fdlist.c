@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.46 2005/08/19 15:29:42 db Exp $
+ *  $Id: fdlist.c,v 7.47 2005/09/08 02:43:41 adx Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -178,12 +178,12 @@ fd_note(fde_t *F, const char *format, ...)
 void
 close_standard_fds(void)
 {
-  int i, fd;
+  int i;
 
   for (i = 0; i < LOWEST_SAFE_FD; i++)
   {
-    close(fd);
-    if ((fd = open(PATH_DEVNULL, O_RDWR)) < 0)
+    close(i);
+    if (open(PATH_DEVNULL, O_RDWR) < 0)
       exit(-1); /* we're hosed if we can't even open /dev/null */
   }
 }

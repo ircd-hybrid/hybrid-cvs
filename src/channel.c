@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.449 2005/09/02 01:37:01 db Exp $
+ * \version $Id: channel.c,v 7.450 2005/09/08 02:43:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -235,7 +235,7 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
   char pbuf[IRCD_BUFSIZE];
   int tlen, mlen, cur_len;
   int count = 0;
-  char *mp, *pp = pbuf;
+  char *mp = NULL, *pp = pbuf;
 
   if (top == NULL || top->length == 0)
     return;

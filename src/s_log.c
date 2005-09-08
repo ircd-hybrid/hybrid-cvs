@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.75 2005/09/06 15:51:58 adx Exp $
+ *  $Id: s_log.c,v 7.76 2005/09/08 02:43:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -335,7 +335,7 @@ log_oper_action(int log_type, const struct Client *source_p,
     log_message = "IO ERR";
     break;
   default:
-    break;
+    return;
   }
 
   if (*logfile == '\0')
