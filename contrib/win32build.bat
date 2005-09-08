@@ -49,7 +49,7 @@ goto end2
 :build
 echo.
 echo *** Building ircd-hybrid
-copy contrib\setup-win32.h include >nul
+copy contrib\setup-win32.h include\setup.h >nul
 if exist ircd.exe del ircd.exe
 if exist src\blalloc.c del src\blalloc.c
 if exist src\dynlink.c del src\dynlink.c
@@ -105,7 +105,7 @@ echo The compilation has failed. Make sure the %COMPILER% compiler you choose
 echo is actually installed, and that you haven't accidentally corrupted
 echo your setup.h file. A common problem is also not having the directory of
 echo compiler binary in PATH environment variable.
-if %COMPILER%=MSVC goto end
+if %COMPILER%==MSVC goto end
 echo.
 echo Borland C++ Compiler 5.5 users please remember to set up BCC32.CFG
 echo in your C:\BCC\BIN directory (or wherever you installed it)!
