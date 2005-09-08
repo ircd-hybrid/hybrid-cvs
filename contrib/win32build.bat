@@ -82,14 +82,14 @@ for %%a in (*.obj) do del %%a
 echo.
 echo *** Installing ircd-hybrid into C:\IRCD ...
 echo.
-if exist c:\ircd\bin md c:\ircd\bin
+if not exist c:\ircd\bin md c:\ircd\bin
 copy ircd.exe c:\ircd\bin >nul
 if not exist c:\ircd\etc md c:\ircd\etc
-for %%a in (etc\*) do if not exist c:\ircd\%%a copy %%a c:\ircd\etc >nul
+for %%a in (etc\*) do copy %%a c:\ircd\etc >nul
 if not exist c:\ircd\help md c:\ircd\help
 if not exist c:\ircd\help\opers md c:\ircd\help\opers
 if not exist c:\ircd\help\users md c:\ircd\help\users
-for %%a in (help\opers\* help\users\*) do if not exist c:\ircd\%%a copy %%a c:\ircd\%%a >nul
+for %%a in (help\opers\* help\users\*) do copy %%a c:\ircd\%%a >nul
 if not exist c:\ircd\logs md c:\ircd\logs
 echo *** Installation complete!
 echo.
