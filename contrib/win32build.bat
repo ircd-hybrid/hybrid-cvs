@@ -1,5 +1,8 @@
 @echo off
 
+rem Don't change it unless you edit IRCD_PREFIX in setup-win32.h too!
+set IRCD_PREFIX=C:\IRCD
+
 if exist src\ircd.c goto start
 if exist ..\src\ircd.c goto start2
 echo Are you sure you are executing this from ircd-hybrid sources directory?
@@ -47,20 +50,8 @@ goto end2
 echo.
 echo *** Building ircd-hybrid
 copy contrib\setup-win32.h include\setup.h >nul
-if exist ircd.exe del ircd.exe
-if exist src\blalloc.c del src\blalloc.c
-if exist src\dynlink.c del src\dynlink.c
-if exist src\irc_res.c del src\irc_res.c
-if exist src\irc_reslib.c del src\irc_reslib.c
-if exist src\ircd_signal.c del src\ircd_signal.c
-if exist src\rsa.c del src\rsa.c
-if exist src\s_bsd_devpoll.c del src\s_bsd_devpoll.c
-if exist src\s_bsd_kqueue.c del src\s_bsd_kqueue.c
-if exist src\s_bsd_poll.c del src\s_bsd_poll.c
-if exist src\s_bsd_select.c del src\s_bsd_select.c
-if exist src\s_bsd_sigio.c del src\s_bsd_sigio.c
-if exist modules\m_challenge.c del modules\m_challenge.c
-if exist modules\m_cryptlink.c del modules\m_cryptlink.c
+for %%a in (ircd.exe src\blalloc.c src\dynlink.c src\irc_res.c src\irc_reslib.c src\ircd_signal.c src\rsa.c src\s_bsd_devpoll.c s_bsd_kqueue.c) do if exist %%a del %%a
+for %%a in (src\s_bsd_poll.c src\s_bsd_select.c src\s_bsd_sigio.c modules\m_challenge.c modules\m_cryptlink.c) do if exist %%a del %%a
 
 if %1'==msvc' goto msvc
 set COMPILER=BCC
@@ -80,17 +71,14 @@ for %%a in (lib\pcre\*.obj) do del %%a
 for %%a in (*.obj) do del %%a
 
 echo.
-echo *** Installing ircd-hybrid into C:\IRCD ...
+echo *** Installing ircd-hybrid into %IRCD_PREFIX% ...
 echo.
-if not exist c:\ircd\bin md c:\ircd\bin
-copy ircd.exe c:\ircd\bin >nul
-if not exist c:\ircd\etc md c:\ircd\etc
-for %%a in (etc\*) do copy %%a c:\ircd\etc >nul
-if not exist c:\ircd\help md c:\ircd\help
-if not exist c:\ircd\help\opers md c:\ircd\help\opers
-if not exist c:\ircd\help\users md c:\ircd\help\users
-for %%a in (help\opers\* help\users\*) do copy %%a c:\ircd\%%a >nul
-if not exist c:\ircd\logs md c:\ircd\logs
+for %%a in (bin etc help help\opers help\users logs messages) do if not exist %IRCD_PREFIX%\%%a md %IRCD_PREFIX%\%%a
+copy ircd.exe %IRCD_PREFIX%\bin >nul
+for %%a in (etc\*) do copy %%a %IRCD_PREFIX%\etc >nul
+for %%a in (cresv.conf dline.conf nresv.conf rkline.conf rxline.conf xline.conf) do type nul >>%IRCD_PREFIX%\etc\%%a
+for %%a in (help\opers\* help\users\*) do copy %%a %IRCD_PREFIX%\%%a >nul
+for %%a in (messages\*.lang messages\README) do copy %%a %IRCD_PREFIX%\%%a >nul
 echo *** Installation complete!
 echo.
 echo Remember to create the 'ircd.conf' file before actually starting the IRCD.
