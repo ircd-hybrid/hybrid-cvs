@@ -20,9 +20,9 @@ SPARC        gcc              Solaris       Joan Touzet <joant@ieee.org>
 x86          gcc              Linux         Joshua Kwan <joshk@triplehelix.org>
 x86          MS Visual C++    Windows       Piotr Nizynski <adx@irc7.pl>
 x86          Borland C++ 5.5  Windows       Piotr Nizynski <adx@irc7.pl>
-SPARC        gcc              Linux         Aaron Sethman <androsyn@ratbox.org>
+SPARC        gcc              Linux         Alan LeVee <alan.levee@prometheus-designs.net>
 Alpha        cc               Tru64 5.2b    Joshua Kwan <joshk@triplehelix.org>
 PA-RISC 2.0  cc		      HP-UX B.11    Yusuf Iskenderoglu 
 						<uhc0@stud.uni-karlsruhe.de>
 
-$Id: README.PLATFORMS,v 7.28 2005/07/27 00:24:01 adx Exp $
+$Id: README.PLATFORMS,v 7.29 2005/09/08 02:30:36 knight Exp $
