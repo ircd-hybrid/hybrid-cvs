@@ -17,7 +17,7 @@ echo.
 echo IRCD-Hybrid Windows build script
 echo (C) Copyright 2005 by the past and present ircd coders, and others.
 echo.
-echo Do you want to edit ircd settings now? [Type YES or NO]
+echo Do you want to edit default ircd settings now? [Type YES or NO]
 echo @echo off >yes.bat
 echo edit contrib\setup-win32.h >>yes.bat
 echo exit >>yes.bat
