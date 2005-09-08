@@ -103,10 +103,13 @@ goto end
 echo.
 echo The compilation has failed. Make sure the %COMPILER% compiler you choose 
 echo is actually installed, and that you haven't accidentally corrupted
-echo your setup.h file.
+echo your setup.h file. A common problem is also not having the directory of
+echo compiler binary in PATH environment variable.
+if %COMPILER%=MSVC goto end
 echo.
-echo Borland C++ Compiler 5.5 users please remember to set up BCC32.CFG in your
-echo C:\BCC\BIN directory (or wherever you installed it)!
+echo Borland C++ Compiler 5.5 users please remember to set up BCC32.CFG
+echo in your C:\BCC\BIN directory (or wherever you installed it)!
+echo It should contain two lines like -IC:\BCC\INCLUDE and -LC:\BCC\LIB.
 
 :end
 echo.
