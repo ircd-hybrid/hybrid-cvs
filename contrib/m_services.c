@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.21 2005/09/08 03:52:11 metalrock Exp $
+ *  $Id: m_services.c,v 1.22 2005/09/09 18:00:13 knight Exp $
  */
 /*
  *
@@ -220,7 +220,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.21 $";
+const char *_version = "$Revision: 1.22 $";
 #endif
 
 /*
@@ -269,7 +269,7 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
 
   sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
                 ":%s ENCAP * SVSNICK %s :%s",
-                parv[0], target_p->name, parv[2]);
+                source_p->name, target_p->name, parv[2]);
 
   if (!IsClient(target_p))
     return;
@@ -281,7 +281,16 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  change_local_nick(target_p, target_p, parv[2]);
+  if (MyClient(target_p))
+  {
+    change_local_nick(&me, target_p, parv[2]);
+  }
+  else
+  {
+    sendto_one(source_p, form_str(ERR_NOSUCHNICK),
+               me.name, source_p->name, parv[2]);
+    return;
+  }
 }
 
   
