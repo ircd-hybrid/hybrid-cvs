@@ -1,4 +1,4 @@
-$Id: README,v 1.48 2005/09/09 18:00:13 knight Exp $
+$Id: README,v 1.49 2005/09/09 20:06:54 adx Exp $
 -----------------------------------------------
 
 ircd-hybrid contributive add-ons ::
@@ -34,9 +34,11 @@ ip_cloaking.c    --  This module enables IP/hostname cloaking support for
 m_capture.c      --  This module will essentially capture a client (making it
                      impossible for a user to send commands to the server).
 
-                     Syntax: CAPTURE <nickname>
+                     Syntax: CAPTURE <nickname/mask>
+		             UNCAPTURE <nickname/mask>
 
-                     Example: CAPTURE scriptkiddie
+                     Example: (UN)CAPTURE scriptkiddie
+		              (UN)CAPTURE *!*@abuser.host
 
 
 m_change.c       --  This module will allow IRC operators to alter the ident,
@@ -240,15 +242,11 @@ challange.irc    -- ircII script that works in conjunction with rsa_respond
 ircd-hybrid.spec -- RPM specifications file that can be used to build an RPM of
                     ircd-hybrid.
 
-
 ircd.init.in     -- rc-init style file used with the spec file to allow system
                     loading of ircd-hybrid.
 
-
 setup-win32.h    -- This header file is a win32 compatible include/setup.h
-suitable
-                    for building ircd-hybrid on Windows with MSVC.
-
+                    suitable for building ircd-hybrid on Windows with MSVC/BCC.
 
 win32build.bat   -- Automated BATCH script designed to aid in the building of
-                    ircd-hybrid on Windows with MSVC.
+                    ircd-hybrid on Windows with MSVC/BCC

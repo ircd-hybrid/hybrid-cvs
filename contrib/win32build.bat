@@ -24,10 +24,14 @@ echo Do you want to edit default ircd settings now? [Type YES or NO]
 echo @echo off >yes.bat
 echo edit contrib\setup-win32.h >>yes.bat
 echo exit >>yes.bat
+copy yes.bat y.bat >nul
 echo @exit >no.bat
+echo @exit >n.bat
 %COMSPEC% /k prompt Your choice? 
 del yes.bat
 del no.bat
+del y.bat
+del n.bat
 
 echo.
 echo ------------------------------------------------
