@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.360 2005/09/08 03:02:12 metalrock Exp $
+ *  $Id: ircd.c,v 7.361 2005/09/09 04:10:32 adx Exp $
  */
 
 #include "stdinc.h"
@@ -255,35 +255,28 @@ set_time(void)
   static char to_send[200];
   struct timeval newtime;
 #ifdef _WIN32
-  SYSTEMTIME st;
   FILETIME ft;
 
-  /* do a conversion to unix ts. Is it fast? I doubt.. -adx */
+  GetSystemTimeAsFileTime(&ft);
+  if (ft.dwLowDateTime < 0xd53e8000)
+    ft.dwHighDateTime--;
+  ft.dwLowDateTime -= 0xd53e8000;
+  ft.dwHighDateTime -= 0x19db1de;
 
-  GetSystemTime(&st);
-  if (SystemTimeToFileTime(&st, &ft))
-  {
-    if (ft.dwLowDateTime < 0xd53e8000)
-      ft.dwHighDateTime--;
-    ft.dwLowDateTime -= 0xd53e8000;
-    ft.dwHighDateTime -= 0x19db1de;
-
-    newtime.tv_sec  = (*(uint64_t *) &ft) / 10000000;
-    newtime.tv_usec = (*(uint64_t *) &ft) / 10 % 1000000;
-  }
-  else
+  newtime.tv_sec  = (*(uint64_t *) &ft) / 10000000;
+  newtime.tv_usec = (*(uint64_t *) &ft) / 10 % 1000000;
 #else
   newtime.tv_sec  = 0;
   newtime.tv_usec = 0;
 
   if (gettimeofday(&newtime, NULL) == -1)
-#endif
   {
     ilog(L_ERROR, "Clock Failure (%d)", errno);
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "Clock Failure (%d), TS can be corrupted", errno);
     restart("Clock Failure");
   }
+#endif
 
   if (newtime.tv_sec < CurrentTime)
   {
