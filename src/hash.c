@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.104 2005/08/19 04:29:01 lusky Exp $
+ *  $Id: hash.c,v 7.105 2005/09/09 04:40:34 adx Exp $
  */
 
 #include "stdinc.h"
@@ -81,11 +81,7 @@ init_hash(void)
   userhost_heap = BlockHeapCreate("userhost", sizeof(struct UserHost), CLIENT_HEAP_SIZE);
   namehost_heap = BlockHeapCreate("namehost", sizeof(struct NameHost), CLIENT_HEAP_SIZE);
 
-#ifndef _WIN32
-  ircd_random_key = random() % 256;  /* better than nothing --adx */
-#else
-  ircd_random_key = rand() % 256;
-#endif
+  ircd_random_key = rand() % 256;  /* better than nothing --adx */
 
   /* Clear the hash tables first */
   for (i = 0; i < HASHSIZE; ++i)
