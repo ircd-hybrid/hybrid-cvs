@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: example_module.c,v 1.11 2005/04/26 13:36:07 michael Exp $
+ *   $Id: example_module.c,v 1.12 2005/09/09 17:37:13 adx Exp $
  */
 
 /* List of ircd includes from ../include/ 
@@ -30,6 +30,8 @@
 #include "send.h" /* sendto_one, most useful function of all time */
 
 #include "modules.h" /* includes msg.h; use for the msgtab */
+
+#include "handlers.h" /* m_ignore */
 
 /* OTHER USEFUL INCLUDES:
  * 
@@ -131,7 +133,7 @@ _moddeinit(void)
 
 /* When we last modified the file (shown in /modlist), this is usually:
  */
-const char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 #endif
 
 /*

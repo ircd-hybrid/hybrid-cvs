@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_change.c,v 1.7 2005/08/27 14:18:24 knight Exp $
+ *  $Id: m_change.c,v 1.8 2005/09/09 17:37:13 adx Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -61,6 +61,7 @@ struct Message chgname_msgtab = {
   {m_unregistered, m_not_oper, mo_chgname, mo_chgname, mo_chgname, m_ignore}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -77,7 +78,8 @@ _moddeinit(void)
   mod_del_cmd(&chgident_msgtab);
 }
 
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
+#endif
 
 static void
 mo_chgident(struct Client *client_p, struct Client *source_p,

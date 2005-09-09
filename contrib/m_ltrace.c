@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.19 2005/08/16 09:27:45 adx Exp $
+ *  $Id: m_ltrace.c,v 1.20 2005/09/09 17:37:13 adx Exp $
  */
 
 #include "stdinc.h"
@@ -40,6 +40,7 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "irc_getnameinfo.h"
 
 static void *do_ltrace(va_list);
 static void m_ltrace(struct Client *, struct Client *, int, char **);
@@ -51,7 +52,7 @@ struct Message ltrace_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.19 $";
+const char *_version = "$Revision: 1.20 $";
 static struct Callback *ltrace_cb;
 
 void
@@ -155,7 +156,7 @@ do_ltrace(va_list args)
     {
       name = get_client_name(target_p, HIDE_IP);
       /* Should this be sockhost? - stu */
-      getnameinfo((struct sockaddr*)&target_p->localClient->ip,
+      irc_getnameinfo((struct sockaddr*)&target_p->localClient->ip,
                   target_p->localClient->ip.ss_len, ipaddr,
                   HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
       class_name = get_client_class(target_p);
@@ -267,7 +268,7 @@ report_this_status(struct Client *source_p, struct Client *target_p,
   char ip[HOSTIPLEN];
 
   /* Should this be sockhost? - stu */
-  getnameinfo((struct sockaddr *)&target_p->localClient->ip,
+  irc_getnameinfo((struct sockaddr *)&target_p->localClient->ip,
               target_p->localClient->ip.ss_len, ip,
               HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
 

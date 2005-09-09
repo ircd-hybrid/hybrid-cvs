@@ -19,10 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_info_notice.c,v 1.13 2005/08/20 17:19:57 adx Exp $
+ *  $Id: spy_info_notice.c,v 1.14 2005/09/09 17:37:13 adx Exp $
  */
 
 #include "stdinc.h"
+#ifndef STATIC_MODULES
 #include "tools.h"
 #include "modules.h"
 #include "hook.h"
@@ -49,7 +50,7 @@ _moddeinit(void)
     uninstall_hook(info_cb, show_info);
 }
 
-const char *_version = "$Revision: 1.13 $";
+const char *_version = "$Revision: 1.14 $";
 
 static void *
 show_info(va_list args)
@@ -66,3 +67,4 @@ show_info(va_list args)
 
   return pass_callback(prev_hook, source_p, parc, parv);
 }
+#endif

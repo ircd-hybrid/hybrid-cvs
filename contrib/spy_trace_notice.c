@@ -19,10 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_trace_notice.c,v 1.14 2005/08/20 17:19:57 adx Exp $
+ *  $Id: spy_trace_notice.c,v 1.15 2005/09/09 17:37:13 adx Exp $
  */
 
 #include "stdinc.h"
+#ifndef STATIC_MODULES
 #include "tools.h"
 #include "modules.h"
 #include "hook.h"
@@ -69,7 +70,7 @@ _moddeinit(void)
     uninstall_hook(ctrace_cb, show_ctrace);
 }
 
-const char *_version = "$Revision: 1.14 $";
+const char *_version = "$Revision: 1.15 $";
 
 static void *
 show_trace(va_list args)
@@ -118,3 +119,4 @@ show_ctrace(va_list args)
 
   return pass_callback(prev_ctrace, source_p, parc, parv);
 }
+#endif

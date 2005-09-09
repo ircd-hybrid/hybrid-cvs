@@ -51,15 +51,15 @@ echo.
 echo *** Building ircd-hybrid
 copy contrib\setup-win32.h include\setup.h >nul
 for %%a in (ircd.exe src\blalloc.c src\dynlink.c src\irc_res.c src\irc_reslib.c src\ircd_signal.c src\rsa.c src\s_bsd_devpoll.c src\s_bsd_kqueue.c) do if exist %%a del %%a
-for %%a in (src\s_bsd_poll.c src\s_bsd_select.c src\s_bsd_sigio.c modules\m_challenge.c modules\m_cryptlink.c) do if exist %%a del %%a
+for %%a in (src\s_bsd_poll.c src\s_bsd_select.c src\s_bsd_sigio.c modules\m_challenge.c modules\m_cryptlink.c contrib\libc_vprintf.c contrib\m_mkpasswd.c) do if exist %%a del %%a
 
 if %1'==msvc' goto msvc
 set COMPILER=BCC
-bcc32 -tW -6 -O -w- -eircd.exe -I"include" -I"lib\pcre" src\*.c modules\*.c modules\core\*.c lib\pcre\*.c
+bcc32 -tW -6 -O -w- -eircd.exe -I"include" -I"lib\pcre" src\*.c modules\*.c modules\core\*.c lib\pcre\*.c contrib\*.c
 goto built
 :msvc
 set COMPILER=MSVC
-cl /nologo /O2 /w /Feircd.exe /I"include" /I"lib\pcre" src\*.c modules\*.c modules\core\*.c lib\pcre\*.c user32.lib wsock32.lib /link /subsystem:windows
+cl /nologo /O2 /w /Feircd.exe /I"include" /I"lib\pcre" src\*.c modules\*.c modules\core\*.c lib\pcre\*.c contrib\*.c user32.lib wsock32.lib /link /subsystem:windows
 
 :built
 if errorlevel 1 goto error

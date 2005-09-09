@@ -23,6 +23,10 @@
  * uncomment the following line. */
 /* #define HALFOPS 1 */
 
+/* If you need additional non standard features provided in
+ * contrib/ modules, uncomment the following line. */
+/* #define BUILD_CONTRIB 1 */
+
 
 /*** END OF STANDARD CONFIGURATION SETTINGS ***/
 

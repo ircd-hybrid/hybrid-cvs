@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_whois_notice.c,v 1.15 2005/08/20 17:19:57 adx Exp $
+ *  $Id: spy_whois_notice.c,v 1.16 2005/09/09 17:37:13 adx Exp $
  */
 #include "stdinc.h"
+#ifndef STATIC_MODULES
 #include "tools.h"
 #include "modules.h"
 #include "hash.h"
@@ -49,7 +50,7 @@ _moddeinit(void)
     uninstall_hook(whois_cb, show_notice);
 }
 
-const char *_version = "$Revision: 1.15 $";
+const char *_version = "$Revision: 1.16 $";
 
 /* show_notice
  *
@@ -78,3 +79,4 @@ show_notice(va_list args)
 
   return pass_callback(prev_hook, source_p, parc, parv);
 }
+#endif
