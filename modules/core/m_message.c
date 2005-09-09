@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.148 2005/08/31 01:11:28 db Exp $
+ *  $Id: m_message.c,v 1.149 2005/09/09 00:07:53 adx Exp $
  */
 
 #include "stdinc.h"
@@ -102,10 +102,10 @@ struct Message notice_msgtab = {
   {m_unregistered, m_notice, m_notice, m_ignore, m_notice, m_ignore}
 };
 
+#ifndef STATIC_MODULES
 struct Callback *client_message;
 struct Callback *channel_message;
 
-#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -122,7 +122,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.148 $";
+const char *_version = "$Revision: 1.149 $";
 #endif
 
 /*
@@ -485,7 +485,9 @@ msg_channel(int p_or_n, const char *command, struct Client *client_p,
       source_p->localClient->last = CurrentTime;
   }
 
+#ifndef STATIC_MODULES
   execute_callback(channel_message, source_p, chptr, text);
+#endif
 
   /* chanops and voiced can flood their own channel with impunity */
   if ((result = can_send(chptr, source_p)))
@@ -604,7 +606,9 @@ msg_client(int p_or_n, const char *command, struct Client *source_p,
       source_p->localClient->last = CurrentTime;
   }
 
+#ifndef STATIC_MODULES
   execute_callback(client_message, source_p, target_p, text);
+#endif
 
   if (MyConnect(source_p) && (p_or_n != NOTICE) && target_p->away)
     sendto_one(source_p, form_str(RPL_AWAY), me.name,
