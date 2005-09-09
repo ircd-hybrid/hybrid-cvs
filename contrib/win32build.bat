@@ -50,8 +50,8 @@ goto end2
 echo.
 echo *** Building ircd-hybrid
 copy contrib\setup-win32.h include\setup.h >nul
-for %%a in (ircd.exe src\blalloc.c src\dynlink.c src\irc_res.c src\irc_reslib.c src\ircd_signal.c src\rsa.c src\s_bsd_devpoll.c src\s_bsd_kqueue.c) do if exist %%a del %%a
-for %%a in (src\s_bsd_poll.c src\s_bsd_select.c src\s_bsd_sigio.c modules\m_challenge.c modules\m_cryptlink.c contrib\libc_vprintf.c contrib\m_mkpasswd.c) do if exist %%a del %%a
+for %%a in (ircd.exe src\blalloc.c src\dynlink.c src\irc_res.c src\irc_reslib.c src\ircd_signal.c src\rsa.c src\s_bsd_devpoll.c src\s_bsd_kqueue.c src\s_bsd_poll.c) do if exist %%a del %%a
+for %%a in (src\s_bsd_select.c src\s_bsd_sigio.c modules\m_challenge.c modules\m_cryptlink.c contrib\libc_vprintf.c contrib\m_mkpasswd.c contrib\example_module.c) do if exist %%a del %%a
 
 if %1'==msvc' goto msvc
 set COMPILER=BCC
