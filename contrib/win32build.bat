@@ -86,6 +86,11 @@ echo Remember to create the 'ircd.conf' file before actually starting the IRCD.
 goto end
 
 :error
+for %%a in (src\*.obj) do del %%a
+for %%a in (modules\*.obj) do del %%a
+for %%a in (modules\core\*.obj) do del %%a
+for %%a in (lib\pcre\*.obj) do del %%a
+for %%a in (*.obj) do del %%a
 echo.
 echo The compilation has failed. Make sure the %COMPILER% compiler you choose 
 echo is actually installed, and that you haven't accidentally corrupted
