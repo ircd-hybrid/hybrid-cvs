@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.172 2005/09/09 17:37:14 adx Exp $
+ *  $Id: modules.c,v 7.173 2005/09/09 17:48:00 adx Exp $
  */
 
 #include "stdinc.h"
@@ -721,6 +721,8 @@ load_all_modules(int warn)
   mod_add_cmd(&whois_msgtab);
   mod_add_cmd(&whowas_msgtab);
   mod_add_cmd(&xline_msgtab);
+  mod_add_cmd(&help_msgtab);
+  mod_add_cmd(&uhelp_msgtab);
 #ifdef BUILD_CONTRIB
   mod_add_cmd(&botserv_msgtab);
   mod_add_cmd(&capture_msgtab);
@@ -739,6 +741,7 @@ load_all_modules(int warn)
   mod_add_cmd(&forcepart_msgtab);
   mod_add_cmd(&global_msgtab);
   mod_add_cmd(&help_msgtab);
+  mod_add_cmd(&uhelp_msgtab);
   mod_add_cmd(&helpserv_msgtab);
   mod_add_cmd(&hostserv_msgtab);
   mod_add_cmd(&identify_msgtab);
@@ -762,8 +765,6 @@ load_all_modules(int warn)
   mod_add_cmd(&spoof_msgtab);
   mod_add_cmd(&statserv_msgtab);
   mod_add_cmd(&svsnick_msgtab);
-  mod_add_cmd(&test_msgtab);
-  mod_add_cmd(&uhelp_msgtab);
   mod_add_cmd(&uncapture_msgtab);
   /* FIXME: what about spy*? */
 #endif
