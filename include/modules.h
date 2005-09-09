@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.68 2005/08/18 02:40:50 db Exp $
+ *  $Id: modules.h,v 7.69 2005/09/09 00:50:32 knight Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -141,8 +141,11 @@ extern struct Message quit_msgtab;
 extern struct Message rehash_msgtab;
 extern struct Message restart_msgtab;
 extern struct Message resv_msgtab;
+extern struct Message rkline_msgtab;
+extern struct Message rxline_msgtab;
 extern struct Message server_msgtab;
 extern struct Message set_msgtab;
+extern struct Message sid_msgtab;
 extern struct Message sjoin_msgtab;
 extern struct Message squit_msgtab;
 extern struct Message stats_msgtab;
@@ -154,6 +157,7 @@ extern struct Message testmask_msgtab;
 extern struct Message time_msgtab;
 extern struct Message topic_msgtab;
 extern struct Message trace_msgtab;
+extern struct Message uid_msgtab;
 extern struct Message unresv_msgtab;
 extern struct Message unxline_msgtab;
 extern struct Message user_msgtab;
@@ -167,9 +171,7 @@ extern struct Message whowas_msgtab;
 extern struct Message xline_msgtab;
 extern struct Message get_msgtab;
 extern struct Message put_msgtab;
-#ifdef HAVE_REGEX_H
 extern struct Message rxline_msgtab;
-#endif
 
 #ifdef BUILD_CONTRIB
 extern struct Message botserv_msgtab;

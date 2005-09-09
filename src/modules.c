@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.169 2005/09/06 13:08:19 michael Exp $
+ *  $Id: modules.c,v 7.170 2005/09/09 00:50:32 knight Exp $
  */
 
 #include "stdinc.h"
@@ -690,9 +690,12 @@ load_all_modules(int warn)
   mod_add_cmd(&quit_msgtab);
   mod_add_cmd(&rehash_msgtab);
   mod_add_cmd(&restart_msgtab);
-  mod_add_cmd(&resv_msgtab);  
+  mod_add_cmd(&resv_msgtab);
+  mod_add_cmd(&rkline_msgtab);
+  mod_add_cmd(&rxline_msgtab);
   mod_add_cmd(&server_msgtab);
   mod_add_cmd(&set_msgtab);
+  mod_add_cmd(&sid_msgtab);
   mod_add_cmd(&sjoin_msgtab);
   mod_add_cmd(&squit_msgtab);
   mod_add_cmd(&stats_msgtab);
@@ -706,6 +709,7 @@ load_all_modules(int warn)
   mod_add_cmd(&topic_msgtab);
   mod_add_cmd(&trace_msgtab);
   add_capability("UNKLN", CAP_UNKLN, 1);
+  mod_add_cmd(&uid_msgtab);
   mod_add_cmd(&unresv_msgtab);
   mod_add_cmd(&unxline_msgtab);
   mod_add_cmd(&user_msgtab);
@@ -717,9 +721,6 @@ load_all_modules(int warn)
   mod_add_cmd(&whois_msgtab);
   mod_add_cmd(&whowas_msgtab);
   mod_add_cmd(&xline_msgtab);
-#ifdef HAVE_REGEX_H
-  mod_add_cmd(&rxline_msgtab);
-#endif
 #ifdef BUILD_CONTRIB
   mod_add_cmd(&botserv_msgtab);
   mod_add_cmd(&capture_msgtab);
