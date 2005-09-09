@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.57 2005/09/08 02:43:41 adx Exp $
+ *  $Id: csvlib.c,v 7.58 2005/09/09 01:12:27 knight Exp $
  */
 
 #include "stdinc.h"
@@ -137,7 +137,6 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
       break;
 
     case RXLINE_TYPE:
-#ifdef HAVE_REGEX_H
     {
       const char *errptr = NULL;
       pcre *exp_p = NULL;
@@ -164,7 +163,6 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
       else
         DupString(match_item->reason, "No reason");
     }
-#endif
       break;
 
     case CRESV_TYPE:
