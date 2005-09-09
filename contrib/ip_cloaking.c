@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  *
- * $Id: ip_cloaking.c,v 1.6 2005/09/08 02:43:41 adx Exp $
+ * $Id: ip_cloaking.c,v 1.7 2005/09/09 17:10:51 adx Exp $
  */
 
 /*
@@ -67,7 +67,7 @@ static int vhost_ipv6_err;
 static dlink_node *prev_enter_umode;
 static dlink_node *prev_umode;
 
-const char *_version = "$Revision: 1.6 $";
+const char *_version = "$Revision: 1.7 $";
 
 static void *reset_ipv6err_flag(va_list);
 static void *h_set_user_mode(va_list);
@@ -407,6 +407,7 @@ h_set_user_mode(va_list args)
        * IPv6 could potentially core the server if a user connected via IPv6 sets +h
        * so we need to check and break before that happens. -- knight-
        */
+#ifdef IPV6
       if (target_p->localClient->aftype == AF_INET6)
       {
         if (!vhost_ipv6_err)
@@ -417,6 +418,7 @@ h_set_user_mode(va_list args)
         }
       }
       else
+#endif
         set_vhost(client_p, target_p, target_p);
     }
 
