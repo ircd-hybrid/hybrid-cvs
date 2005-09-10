@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.174 2005/09/10 09:48:55 michael Exp $
+ *  $Id: modules.c,v 7.175 2005/09/10 13:51:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -262,9 +262,9 @@ load_all_modules(int warn)
 
   while ((ldirent = readdir(system_module_dir)) != NULL)
   {
-    int len = strlen(ldirent->d_name);
+    const char *offset = strrchr(ldirent->d_name, '.');
 
-    if ((len > 3) && !strcmp(ldirent->d_name+len-3, SHARED_SUFFIX))
+    if (offset && !strcmp(offset, SHARED_SUFFIX))
     {
        snprintf(module_fq_name, sizeof(module_fq_name), "%s/%s",
                 AUTOMODPATH, ldirent->d_name);
@@ -284,8 +284,8 @@ load_all_modules(int warn)
 void
 load_conf_modules(void)
 {
-  dlink_node *ptr;
-  struct module_path *mpath;
+  dlink_node *ptr = NULL;
+  struct module_path *mpath = NULL;
 
   DLINK_FOREACH(ptr, conf_modules.head)
   {
