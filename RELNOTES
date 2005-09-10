@@ -3,6 +3,7 @@ o) Updated example configuration files
 o) Fixed clustering not worked as being advertised
 o) Fixed a m_capture MODUNLOAD bug
 o) Various RESV cleanups
+o) Fixed some SJOIN issues
 
 
 -- ircd-hybrid-7.1.1 RELNOTES
@@ -122,4 +123,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.105.2.12 2005/08/22 13:47:37 michael Exp $
+$Id: RELNOTES,v 1.105.2.13 2005/09/10 18:05:20 adx Exp $
