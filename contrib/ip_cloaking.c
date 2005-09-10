@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  *
- * $Id: ip_cloaking.c,v 1.7 2005/09/09 17:10:51 adx Exp $
+ * $Id: ip_cloaking.c,v 1.8 2005/09/10 19:38:01 adx Exp $
  */
 
 /*
@@ -67,7 +67,7 @@ static int vhost_ipv6_err;
 static dlink_node *prev_enter_umode;
 static dlink_node *prev_umode;
 
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 
 static void *reset_ipv6err_flag(va_list);
 static void *h_set_user_mode(va_list);
@@ -366,8 +366,10 @@ set_vhost(struct Client *client_p, struct Client *source_p,
   SetIPSpoof(target_p);
   make_virthost(target_p->host, target_p->sockhost, target_p->host);
 
-  sendto_server(client_p, source_p, NULL, CAP_ENCAP, NOCAPS, LL_ICLIENT,
-          ":%s ENCAP * CHGHOST %s %s", me.name, target_p->name, target_p->host);
+  if (IsClient(target_p))
+    sendto_server(client_p, source_p, NULL, CAP_ENCAP, NOCAPS, LL_ICLIENT,
+                  ":%s ENCAP * CHGHOST %s %s",
+		  me.name, target_p->name, target_p->host);
 
   sendto_one(target_p, ":%s NOTICE %s :%s :is now your visible host",
           me.name, target_p->name, target_p->host);
