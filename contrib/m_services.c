@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.22 2005/09/09 18:00:13 knight Exp $
+ *  $Id: m_services.c,v 1.23 2005/09/10 14:02:08 knight Exp $
  */
 /*
  *
@@ -220,7 +220,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.22 $";
+const char *_version = "$Revision: 1.23 $";
 #endif
 
 /*
@@ -293,7 +293,6 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
   }
 }
 
-  
 /*
  * These generate the services functions through
  * a macro.
@@ -308,6 +307,7 @@ services_function(m_nickserv, "NickServ", "NICKSERV")
 services_function(m_operserv, "OperServ", "OPERSERV")
 services_function(m_seenserv, "SeenServ", "SEENSERV")
 services_function(m_statserv, "StatServ", "STATSERV")
+
 /*
  * GetString()
  *
@@ -360,24 +360,24 @@ static void
 m_identify(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
-  struct Client *acptr = NULL;
+  struct Client *target_p;
 
   if (parc == 3)
   {
-      if (!(acptr = find_server(SERVICES_NAME))) /* Michael suggested; Thanks! -- knight- */
+      if (!(target_p = find_server(SERVICES_NAME))) /* Michael suggested; Thanks! -- knight- */
         sendto_one(source_p, form_str(ERR_SERVICESDOWN),
 		   me.name, source_p->name);
       else
-        sendto_one(acptr, ":%s PRIVMSG ChanServ@%s :IDENTIFY %s %s",
+        sendto_one(target_p, ":%s PRIVMSG ChanServ@%s :IDENTIFY %s %s",
                    source_p->name, SERVICES_NAME, parv[1], parv[2]);
   }
   else if (parc == 2)
   {
-    if (!(acptr = find_server(SERVICES_NAME))) /* Michael suggested; Thanks! -- knight- */
+    if (!(target_p = find_server(SERVICES_NAME))) /* Michael suggested; Thanks! -- knight- */
       sendto_one(source_p, form_str(ERR_SERVICESDOWN),
                  me.name, source_p->name);
     else
-      sendto_one(acptr, ":%s PRIVMSG NickServ@%s :IDENTIFY %s",
+      sendto_one(target_p, ":%s PRIVMSG NickServ@%s :IDENTIFY %s",
                  source_p->name, SERVICES_NAME, parv[1]);
   }
   else
@@ -402,7 +402,7 @@ deliver_services_msg(const char *service, const char *command,
                      struct Client *client_p,
                      struct Client *source_p, int parc, char *parv[])
 {
-  struct Client *acptr = NULL;
+  struct Client *target_p;
   char buf[IRCD_BUFSIZE] = { '\0' };
 
   if (parc < 2 || *parv[1] == '\0')
@@ -412,13 +412,13 @@ deliver_services_msg(const char *service, const char *command,
     return;
   }
 
-  if (!(acptr = find_server(SERVICES_NAME))) /* Michael suggested; Thanks! -- knight- */
+  if (!(target_p = find_server(SERVICES_NAME))) /* Michael suggested; Thanks! -- knight- */
     sendto_one(source_p, form_str(ERR_SERVICESDOWN),
                me.name, source_p->name);
   else
   {
     get_string(parc - 1, parv + 1, buf);
-    sendto_one(acptr, ":%s PRIVMSG %s@%s :%s",
+    sendto_one(target_p, ":%s PRIVMSG %s@%s :%s",
 	       source_p->name, service, SERVICES_NAME, buf);
   }
 }
