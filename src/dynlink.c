@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: dynlink.c,v 7.18 2005/09/06 13:08:19 michael Exp $
+ * $Id: dynlink.c,v 7.19 2005/09/10 12:05:01 michael Exp $
  *
  */
 #include "stdinc.h"
@@ -344,11 +344,12 @@ load_a_module(char *path, int warn, int core)
     ver = *verp;
 #endif
 
-  modp = MyMalloc(sizeof(struct module));
-  modp->address = tmpptr;
-  modp->version = ver;
-  modp->core    = core;
+  modp            = MyMalloc(sizeof(struct module));
+  modp->address   = tmpptr;
+  modp->version   = ver;
+  modp->core      = core;
   modp->modremove = mod_deinit;
+
   DupString(modp->name, mod_basename);
   dlinkAdd(modp, &modp->node, &mod_list);
 
@@ -357,12 +358,11 @@ load_a_module(char *path, int warn, int core)
   if (warn == 1)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "Module %s [version: %s] loaded at 0x%lx",
-                         mod_basename, ver, (unsigned long)tmpptr);
-    ilog(L_WARN, "Module %s [version: %s] loaded at 0x%lx",
-         mod_basename, ver, (unsigned long)tmpptr);
+                         "Module %s [version: %s] loaded at %p",
+                         mod_basename, ver, tmpptr);
+    ilog(L_WARN, "Module %s [version: %s] loaded at %p",
+         mod_basename, ver, tmpptr);
   }
 
   return(0);
 }
-
