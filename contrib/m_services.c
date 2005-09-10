@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.23 2005/09/10 14:02:08 knight Exp $
+ *  $Id: m_services.c,v 1.24 2005/09/10 19:08:55 adx Exp $
  */
 /*
  *
@@ -220,7 +220,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.23 $";
+const char *_version = "$Revision: 1.24 $";
 #endif
 
 /*
@@ -239,58 +239,48 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name, "SVSNICK");
+               me.name, parv[0], "SVSNICK");
     return;
   }
 
   if (parc < 3 || *parv[2] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, source_p->name, "SVSNICK");
+               me.name, parv[0], "SVSNICK");
+    return;
+  }
+
+  if ((target_p = find_person(parv[1])) == NULL)
+  {
+    sendto_one(source_p, form_str(ERR_NOSUCHNICK),
+               me.name, parv[0], parv[1]);
     return;
   }
 
   if (!clean_nick_name(parv[2]))
   {
-    sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Invalid new nickname %s",
-               me.name, source_p->name, parv[2]);
+    if (IsClient(source_p))
+      sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Invalid new "
+                 "nickname: %s", me.name, parv[0], parv[2]);
     return;
   }
 
   if (strlen(parv[2]) > NICKLEN - 1)
     parv[2][NICKLEN - 1] = '\0';
 
-  if ((target_p = find_client(parv[1])) == NULL)
-  {
-    sendto_one(source_p, ":%s NOTICE %s :*** Notice -- No such nickname %s",
-               me.name, source_p->name, parv[1]);
-    return;
-  }
-
-  sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
-                ":%s ENCAP * SVSNICK %s :%s",
-                source_p->name, target_p->name, parv[2]);
-
-  if (!IsClient(target_p))
-    return;
-
   if (find_client(parv[2]) != NULL)
   {
-    sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Nickname %s is in use",
-               me.name, source_p->name, parv[2]);
+    if (IsClient(source_p))
+      sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Nickname %s is "
+                 "in use", me.name, parv[0], parv[2]);
     return;
   }
 
-  if (MyClient(target_p))
-  {
+  if (MyConnect(target_p))
     change_local_nick(&me, target_p, parv[2]);
-  }
   else
-  {
-    sendto_one(source_p, form_str(ERR_NOSUCHNICK),
-               me.name, source_p->name, parv[2]);
-    return;
-  }
+    sendto_one(target_p, ":%s ENCAP %s SVSNICK %s %s",
+               me.name, target_p->servptr->name, parv[1], parv[2]);
 }
 
 /*
