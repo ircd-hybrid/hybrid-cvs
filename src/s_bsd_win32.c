@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.13 2005/09/08 04:43:07 adx Exp $
+ *  $Id: s_bsd_win32.c,v 7.14 2005/09/10 17:44:12 michael Exp $
  */
 
 #include "stdinc.h"
@@ -337,7 +337,7 @@ report_dns_servers(struct Client *source_p)
  */
 
 int
-uname (struct utsname *uts)
+uname(struct utsname *uts)
 {
   enum { WinNT, Win95, Win98, WinUnknown };
   OSVERSIONINFO osver;
@@ -345,7 +345,7 @@ uname (struct utsname *uts)
   DWORD sLength;
   DWORD os = WinUnknown;
 
-  memset (uts, 0, sizeof (*uts));
+  memset(uts, 0, sizeof(*uts));
 
   osver.dwOSVersionInfoSize = sizeof (osver);
   GetVersionEx (&osver);
@@ -358,9 +358,11 @@ uname (struct utsname *uts)
         strcpy (uts->sysname, "Windows NT4x"); /* NT4x */
       else if (osver.dwMajorVersion <= 3)
         strcpy (uts->sysname, "Windows NT3x"); /* NT3x */
-      else if (osver.dwMajorVersion == 5 && osver.dwMinorVersion < 1)
+      else if (osver.dwMajorVersion == 5 && osver.dwMinorVersion  < 1)
         strcpy (uts->sysname, "Windows 2000"); /* 2k */
-      else if (osver.dwMajorVersion >= 5)
+      else if (osver.dwMajorVersion == 5 && osver.dwMinorVersion == 2)
+        strcpy (uts->sysname, "Windows 2003"); /* 2003 */
+      else if (osver.dwMajorVersion == 5 && osver.dwMinorVersion == 1)
         strcpy (uts->sysname, "Windows XP");   /* XP */
       os = WinNT;
       break;
