@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.361 2005/09/09 04:10:32 adx Exp $
+ *  $Id: ircd.c,v 7.362 2005/09/10 09:48:55 michael Exp $
  */
 
 #include "stdinc.h"
@@ -725,7 +725,7 @@ main(int argc, char *argv[])
     ilog (L_CRIT, "Could not load core modules. Terminating!");
     exit(EXIT_FAILURE);
   }
-  mod_set_base();
+
   load_all_modules(1);
   load_conf_modules();
   load_core_modules(1);

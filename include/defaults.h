@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.19 2005/08/19 14:56:44 michael Exp $
+ *  $Id: defaults.h,v 7.20 2005/09/10 09:48:55 michael Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -37,21 +37,24 @@
  *       BE INSTALLED TO.  IF YOU CHANGE THESE, DO NOT USE MAKE INSTALL,
  *       BUT COPY THE FILES MANUALLY TO WHERE YOU WANT THEM.
  *
- * IRCD_PREFIX = prefix for all directories,
- * DPATH       = root directory of installation,
- * BINPATH     = directory for binary files,
- * ETCPATH     = directory for configuration files,
- * LOGPATH     = directory for logfiles,
- * MSGPATH     = directory for language files.
+ * IRCD_PREFIX = prefix for all directories
+ * DPATH       = root directory of installation
+ * BINPATH     = directory for binary files
+ * MSGPATH     = directory for language files
+ * ETCPATH     = directory for configuration files
+ * LOGPATH     = directory for logfiles
+ * MODPATH     = directory for modules
+ * AUTOMODPATH = directory for autoloaded modules
  */
 
 /* dirs */
-#define DPATH   IRCD_PREFIX                                                     
-#define BINPATH IRCD_PREFIX "/bin/"
-#define MSGPATH IRCD_PREFIX "/messages/"
-#define ETCPATH IRCD_PREFIX "/etc"
-#define LOGPATH IRCD_PREFIX "/logs"
-#define MODPATH IRCD_PREFIX "/modules/"
+#define DPATH       IRCD_PREFIX                                                     
+#define BINPATH     IRCD_PREFIX "/bin/"
+#define MSGPATH     IRCD_PREFIX "/messages/"
+#define ETCPATH     IRCD_PREFIX "/etc"
+#define LOGPATH     IRCD_PREFIX "/logs"
+#define MODPATH     IRCD_PREFIX "/modules/"
+#define AUTOMODPATH IRCD_PREFIX "/modules/autoload/"
 
 /* files */
 #define SPATH   BINPATH "/ircd"                 /* ircd executable */

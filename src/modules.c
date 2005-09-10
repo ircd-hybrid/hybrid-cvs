@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.173 2005/09/09 17:48:00 adx Exp $
+ *  $Id: modules.c,v 7.174 2005/09/10 09:48:55 michael Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,6 @@
 #ifndef STATIC_MODULES
 
 dlink_list mod_list = { NULL, NULL, 0 };
-static char *base_autoload = NULL;
 
 static const char *core_module_table[] =
 {
@@ -74,11 +73,11 @@ static const char *core_module_table[] =
 static dlink_list mod_paths = { NULL, NULL, 0 };
 static dlink_list conf_modules = { NULL, NULL, 0 };
 
-static void mo_modload(struct Client *, struct Client *, int, char **);
-static void mo_modlist(struct Client *, struct Client *, int, char **);
-static void mo_modreload(struct Client *, struct Client *, int, char **);
-static void mo_modunload(struct Client *, struct Client *, int, char **);
-static void mo_modrestart(struct Client *, struct Client *, int, char **);
+static void mo_modload(struct Client *, struct Client *, int, char *[]);
+static void mo_modlist(struct Client *, struct Client *, int, char *[]);
+static void mo_modreload(struct Client *, struct Client *, int, char *[]);
+static void mo_modunload(struct Client *, struct Client *, int, char *[]);
+static void mo_modrestart(struct Client *, struct Client *, int, char *[]);
 
 struct Message modload_msgtab = {
  "MODLOAD", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -143,32 +142,10 @@ mod_find_path(const char *path)
     mpath = ptr->data;
 
     if (!strcmp(path, mpath->path))
-      return(mpath);
+      return mpath;
   }
 
-  return(NULL);
-}
-
-/* mod_set_base()
- * Defines the base path to find the official hybrid modules.
- * I.E., all core/ modules MUST be in this directory. Specified in ircd.conf.
- * 
- * input 	- path
- * output 	- none
- * side effects - sets the base path to path
- */
-void
-mod_set_base(void)
-{
-  unsigned int len;
-
-  MyFree (base_autoload);
-
-  len = strlen(MODPATH) + 9;
-  /* whatever MODPATH + "autoload/" */
-  
-  base_autoload = MyMalloc(len + 1);
-  snprintf(base_autoload, len, "%sautoload/", MODPATH);
+  return NULL;
 }
 
 /* mod_add_path()
@@ -180,16 +157,14 @@ mod_set_base(void)
 void
 mod_add_path(const char *path)
 {
-  unsigned int len = strlen (path);
   struct module_path *pathst;
 
   if (mod_find_path(path))
     return;
 
   pathst = MyMalloc(sizeof(struct module_path));
-  pathst->path = MyMalloc (len + 1);
-  
-  strlcpy(pathst->path, path, len + 1);
+
+  strlcpy(pathst->path, path, sizeof(pathst->path));
   dlinkAdd(pathst, &pathst->node, &mod_paths);
 }
 
@@ -205,7 +180,8 @@ add_conf_module(const char *name)
   struct module_path *pathst;
 
   pathst = MyMalloc(sizeof(struct module_path));
-  DupString(pathst->path, name);
+
+  strlcpy(pathst->path, name, sizeof(pathst->path));
   dlinkAdd(pathst, &pathst->node, &conf_modules);
 }
 
@@ -227,7 +203,6 @@ mod_clear_paths(void)
     pathst = ptr->data;
 
     dlinkDelete(&pathst->node, &mod_paths);
-    MyFree(pathst->path);
     MyFree(pathst);
   }
 
@@ -236,7 +211,6 @@ mod_clear_paths(void)
     pathst = ptr->data;
 
     dlinkDelete(&pathst->node, &conf_modules);
-    MyFree(pathst->path);
     MyFree(pathst);
   }
 }
@@ -256,11 +230,12 @@ findmodule_byname(const char *name)
   DLINK_FOREACH(ptr, mod_list.head)
   {
     modp = ptr->data;
-    if (irccmp(modp->name, name) == 0)
-      return(ptr);
+
+    if (!irccmp(modp->name, name))
+      return ptr;
   }
 
-  return(NULL);
+  return NULL;
 }
 
 /* load_all_modules()
@@ -274,44 +249,26 @@ load_all_modules(int warn)
 {
   DIR *system_module_dir = NULL;
   struct dirent *ldirent = NULL;
-  char* module_fq_name;
-  int len;
-  unsigned int mq_len;
-  
-  modules_init();
-  system_module_dir = opendir(base_autoload);
+  char module_fq_name[PATH_MAX + 1];
 
-  if (system_module_dir == NULL)
+  modules_init();
+
+  if ((system_module_dir = opendir(AUTOMODPATH)) == NULL)
   {
     ilog(L_WARN, "Could not load modules from %s: %s",
-         base_autoload, strerror (errno));
+         AUTOMODPATH, strerror(errno));
     return;
   }
 
   while ((ldirent = readdir(system_module_dir)) != NULL)
   {
-    len = strlen(ldirent->d_name);
+    int len = strlen(ldirent->d_name);
 
-    /* On HPUX, we have *.sl as shared library extension
-     * -TimeMr14C
-     */
-    if ((len > 3) && (ldirent->d_name[len-3] == '.') &&
-        (ldirent->d_name[len-2] == 's') &&
-        ((ldirent->d_name[len-1] == 'o') ||
-        (ldirent->d_name[len-1] == 'l')))
+    if ((len > 3) && !strcmp(ldirent->d_name+len-3, SHARED_SUFFIX))
     {
-       if ((mq_len = strlen(base_autoload) + len + 1) > PATH_MAX)
-       {
-          ilog(L_ERROR, "Module path for %s truncated, module not loaded!",
-                  ldirent->d_name);
-       }
-       else /* Guaranteed the path fits into a string of PATH_MAX now */
-       {
-         module_fq_name = MyMalloc(mq_len + 1);
-         snprintf(module_fq_name, mq_len + 1, "%s/%s", base_autoload, ldirent->d_name);
-         load_a_module(module_fq_name, warn, 0);
-         MyFree(module_fq_name);
-       }
+       snprintf(module_fq_name, sizeof(module_fq_name), "%s/%s",
+                AUTOMODPATH, ldirent->d_name);
+       load_a_module(module_fq_name, warn, 0);
     }
   }
 
@@ -348,28 +305,19 @@ load_conf_modules(void)
 void
 load_core_modules(int warn)
 {
-  char *module_name;
-  int i;
-  unsigned int m_len;
+  char module_name[PATH_MAX + 1];
+  int i = 0;
 
-  for (i = 0; core_module_table[i]; i++)
+  for (; core_module_table[i]; ++i)
   {
-    if ((m_len = (strlen(MODPATH) + strlen(core_module_table[i]) + strlen(SHARED_SUFFIX) + 2)) > PATH_MAX)
-    {
-       ilog (L_ERROR, "Path for %s%s was truncated, the module was not loaded.",
-               core_module_table[i], SHARED_SUFFIX);
-    }
-    else
-    {
-      module_name = MyMalloc(m_len + 1);
-      snprintf(module_name, m_len + 1, "%s%s%s", MODPATH, core_module_table[i], SHARED_SUFFIX);
-      if (load_a_module(module_name, warn, 1) == -1)
-      {
-        ilog(L_CRIT, "Error loading core module %s%s: terminating ircd",
+    snprintf(module_name, sizeof(module_name), "%s%s%s", MODPATH,
              core_module_table[i], SHARED_SUFFIX);
-        exit (EXIT_FAILURE);
-      }
-      MyFree (module_name);
+
+    if (load_a_module(module_name, warn, 1) == -1)
+    {
+      ilog(L_CRIT, "Error loading core module %s%s: terminating ircd",
+           core_module_table[i], SHARED_SUFFIX);
+      exit(EXIT_FAILURE);
     }
   }
 }
@@ -384,37 +332,25 @@ load_core_modules(int warn)
 int
 load_one_module(char *path, int coremodule)
 {
-  char* modpath;
-  dlink_node *ptr;
-  struct module_path *mpath;
+  dlink_node *ptr = NULL;
+  char modpath[PATH_MAX + 1];
   struct stat statbuf;
-  unsigned int m_len;
 
   DLINK_FOREACH(ptr, mod_paths.head)
   {
-    mpath = ptr->data;
+    const struct module_path *mpath = ptr->data;
 
-    if ((m_len = strlen(mpath->path) + strlen(path) + 1) > PATH_MAX)
-    {
-      ilog(L_ERROR, "Path for %s/%s was truncated, not loading module from there",
-           mpath->path, path);
-      continue;
-    }
-    else
-    {
-      modpath = MyMalloc(m_len + 1);
-      snprintf(modpath, m_len + 1, "%s/%s", mpath->path, path);
+    snprintf(modpath, sizeof(modpath), "%s/%s", mpath->path, path);
 
-      if ((strstr(modpath, "../") == NULL) &&
-          (strstr(modpath, "/..") == NULL)) 
+    if (strstr(modpath, "../") == NULL &&
+        strstr(modpath, "/..") == NULL) 
+    {
+      if (!stat(modpath, &statbuf))
       {
-        if (stat(modpath, &statbuf) == 0)
+        if (S_ISREG(statbuf.st_mode))
         {
-          if (S_ISREG(statbuf.st_mode))
-          {
-            /* Regular files only please */
-            return(load_a_module(modpath, 1, coremodule));
-          }
+          /* Regular files only please */
+          return load_a_module(modpath, 1, coremodule);
         }
       }
     }
@@ -423,7 +359,7 @@ load_one_module(char *path, int coremodule)
   sendto_realops_flags(UMODE_ALL, L_ALL,
                        "Cannot locate module %s", path);
   ilog(L_WARN, "Cannot locate module %s", path);
-  return(-1);
+  return -1;
 }
 
 /* load a module .. */
@@ -583,7 +519,8 @@ mo_modlist(struct Client *client_p, struct Client *source_p,
 
 /* unload and reload all modules */
 static void
-mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
+mo_modrestart(struct Client *client_p, struct Client *source_p,
+              int parc, char *parv[])
 {
   unsigned int modnum = 0;
   dlink_node *ptr;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.70 2005/09/09 17:55:05 adx Exp $
+ *  $Id: modules.h,v 7.71 2005/09/10 09:48:55 michael Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -53,18 +53,15 @@ struct module
 struct module_path
 {
   dlink_node node;
-  char* path;
+  char path[PATH_MAX + 1];
 };
 
-/* set base path */
-extern void mod_set_base(void);
-
 /* add a path */
-extern void mod_add_path(const char *path);
+extern void mod_add_path(const char *);
 extern void mod_clear_paths(void);
 
 /* load all modules */
-extern void load_all_modules(int warn);
+extern void load_all_modules(int);
 
 /* load core modules */
 extern void load_core_modules(int);
