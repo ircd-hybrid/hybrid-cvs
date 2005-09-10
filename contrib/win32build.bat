@@ -81,7 +81,7 @@ if not exist %IRCD_PREFIX% md %IRCD_PREFIX%
 for %%a in (bin etc help help\opers help\users logs messages) do if not exist %IRCD_PREFIX%\%%a md %IRCD_PREFIX%\%%a
 copy ircd.exe %IRCD_PREFIX%\bin >nul
 for %%a in (etc\*.conf etc\*.conf.quick) do copy %%a %IRCD_PREFIX%\etc >nul
-for %%a in (cresv.conf dline.conf nresv.conf rkline.conf rxline.conf xline.conf) do type nul >>%IRCD_PREFIX%\etc\%%a
+for %%a in (cresv.conf dline.conf nresv.conf rkline.conf rxline.conf xline.conf kline.conf) do type nul >>%IRCD_PREFIX%\etc\%%a
 for %%a in (help\opers\* help\users\*) do copy %%a %IRCD_PREFIX%\%%a >nul
 for %%a in (messages\*.lang messages\README) do copy %%a %IRCD_PREFIX%\%%a >nul
 echo *** Installation complete!
