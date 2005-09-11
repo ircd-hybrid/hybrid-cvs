@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.24 2005/09/10 19:08:55 adx Exp $
+ *  $Id: m_services.c,v 1.25 2005/09/11 08:04:41 adx Exp $
  */
 /*
  *
@@ -220,7 +220,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.24 $";
+const char *_version = "$Revision: 1.25 $";
 #endif
 
 /*
@@ -250,7 +250,7 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if ((target_p = find_person(parv[1])) == NULL)
+  if ((target_p = find_person(client_p, parv[1])) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                me.name, parv[0], parv[1]);
@@ -272,7 +272,7 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
   {
     if (IsClient(source_p))
       sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Nickname %s is "
-                 "in use", me.name, parv[0], parv[2]);
+                 "already in use", me.name, parv[0], parv[2]);
     return;
   }
 
@@ -280,7 +280,7 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
     change_local_nick(&me, target_p, parv[2]);
   else
     sendto_one(target_p, ":%s ENCAP %s SVSNICK %s %s",
-               me.name, target_p->servptr->name, parv[1], parv[2]);
+               me.name, target_p->servptr->name, ID(target_p), parv[2]);
 }
 
 /*

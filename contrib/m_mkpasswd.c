@@ -6,7 +6,7 @@
  *
  *  You can use this code in any way as long as these names remain.
  *
- *  $Id: m_mkpasswd.c,v 1.14 2004/07/08 00:27:16 erik Exp $
+ *  $Id: m_mkpasswd.c,v 1.15 2005/09/11 08:04:41 adx Exp $
  */
 
 #include "handlers.h"
@@ -43,7 +43,7 @@ void _moddeinit(void)
   mod_del_cmd(&mkpasswd_msgtab);
 }
 
-const char *_version = "$Revision: 1.14 $";
+const char *_version = "$Revision: 1.15 $";
 #endif
 
 static void
@@ -122,8 +122,8 @@ des(void)
 {
   static char salt[3];
 
-  salt[0] = saltChars[random() % 64];
-  salt[1] = saltChars[random() % 64];
+  salt[0] = saltChars[rand() % 64];
+  salt[1] = saltChars[rand() % 64];
   salt[2] = '\0';
   return(salt);
 }
@@ -139,7 +139,7 @@ md5(void)
   salt[2] = '$';
 
   for (i=3; i<11; i++)
-    salt[i] = saltChars[random() % 64];
+    salt[i] = saltChars[rand() % 64];
 
   salt[11] = '$';
   salt[12] = '\0';

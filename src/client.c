@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.474 2005/09/06 15:51:58 adx Exp $
+ *  $Id: client.c,v 7.475 2005/09/11 08:04:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -579,7 +579,7 @@ update_client_exit_stats(struct Client *client_p)
  */
 /* XXX - ugly wrapper */
 struct Client *
-find_person(const struct Client *const client_p, const char *name)
+find_person(const struct Client *client_p, const char *name)
 {
   struct Client *c2ptr;
 
