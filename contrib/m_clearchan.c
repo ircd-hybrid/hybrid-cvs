@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_clearchan.c,v 1.56 2005/08/30 18:28:39 adx Exp $
+ *  $Id: m_clearchan.c,v 1.57 2005/09/11 15:38:05 michael Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,7 @@
 #include "common.h"
 
 static void mo_clearchan(struct Client *, struct Client *, int, char *[]);
-static void kick_list(struct Client *, struct Client *, struct Channel *);
+static void kick_list(struct Client *, struct Channel *);
 static void remove_our_modes(struct Channel *);
 static void remove_a_mode(struct Channel *, int, char);
 
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 
 /*
@@ -145,39 +145,38 @@ mo_clearchan(struct Client *client_p, struct Client *source_p,
   chptr->mode.key[0] = '\0';
 
   /* Kick the users out and join the oper */
-  kick_list(client_p, source_p, chptr);
+  kick_list(source_p, chptr);
 }
 
 static void
-kick_list(struct Client *client_p, struct Client *source_p,
-          struct Channel *chptr)
+kick_list(struct Client *source_p, struct Channel *chptr)
 {
-  dlink_node *m, *next_m;
-  struct Membership *ms;
+  dlink_node *m = NULL, *next_m = NULL;
 
-  DLINK_FOREACH(m, chptr->members.head)
+  add_user_to_channel(chptr, source_p, CHFL_CHANOP, NO);
+
+  DLINK_FOREACH_SAFE(m, next_m, chptr->members.head)
   {
-    ms = m->data;
-    sendto_channel_local(ALL_MEMBERS, NO, chptr,
-                         ":%s!%s@%s KICK %s %s :CLEARCHAN",
-                         source_p->name, source_p->username, source_p->host,
-                         chptr->chname, ms->client_p->name);
+    struct Membership *ms = m->data;
+
+    if (ms->client_p == source_p)
+      continue;
+
+    if (MyConnect(ms->client_p))
+      sendto_one(ms->client_p, ":%s!%s@%s KICK %s %s :CLEARCHAN",
+                 source_p->name, source_p->username,
+                 source_p->host,
+                 chptr->chname, ms->client_p->name);
+
     sendto_server(NULL, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
                   ":%s KICK %s %s :CLEARCHAN", source_p->name,
                   chptr->chname, ms->client_p->name);
   }
 
-  /* Join the user themselves to the channel down here, so they dont see a nicklist 
-   * or people being kicked */
-  add_user_to_channel(chptr, source_p, CHFL_CHANOP, NO);
-
-  DLINK_FOREACH_SAFE(m, next_m, chptr->members.head)
-  {
-    ms = m->data;
-    if (ms->client_p != source_p)
-      remove_user_from_channel(ms);
-  }
-
+  /*
+   * Join the user themselves to the channel down here, so they dont see a nicklist
+   * or people being kicked
+   */
   sendto_one(source_p, ":%s!%s@%s JOIN %s",
              source_p->name, source_p->username,
              source_p->host, chptr->chname);
