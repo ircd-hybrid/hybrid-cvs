@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.592 2005/09/11 10:40:56 michael Exp $
+ *  $Id: s_conf.c,v 7.593 2005/09/11 12:13:11 knight Exp $
  */
 
 #include "stdinc.h"
@@ -2589,7 +2589,7 @@ parse_conf_file(int type, int cold)
     else
       sendto_realops_flags(UMODE_ALL, L_ALL,
                     "Unable to read configuration file '%s': %s",
-                           filename. strerror(errno));
+                           filename, strerror(errno));
   }
   else
   {
