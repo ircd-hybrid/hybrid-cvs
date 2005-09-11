@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.187 2005/09/07 14:20:35 knight Exp $
+ *  $Id: m_stats.c,v 1.188 2005/09/11 10:40:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ struct Message stats_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.187 $";
+const char *_version = "$Revision: 1.188 $";
 static struct Callback *stats_cb;
 
 void
@@ -339,7 +339,7 @@ send_usage(struct Client *source_p)
 
   if (getrusage(RUSAGE_SELF, &rus) == -1)
   {
-    sendto_one(source_p, ":%s NOTICE %s :Getruseage error: %s.",
+    sendto_one(source_p, ":%s NOTICE %s :Getruseage error: %s",
                me.name, source_p->name, strerror(errno));
     return;
   }

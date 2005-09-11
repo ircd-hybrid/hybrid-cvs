@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.591 2005/09/07 02:21:19 adx Exp $
+ *  $Id: s_conf.c,v 7.592 2005/09/11 10:40:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2514,14 +2514,14 @@ read_conf_files(int cold)
   {
     if (cold)
     {
-      ilog(L_CRIT, "Failed in reading configuration file %s (%s)",
+      ilog(L_CRIT, "Unable to read configuration file '%s': %s",
            filename, strerror(errno));
       exit(-1);
     }
     else
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
-			   "Can't open file '%s' (%s) - aborting rehash!",
+			   "Unable to read configuration file '%s': %s",
 			   filename, strerror(errno));
       return;
     }
@@ -2578,17 +2578,18 @@ read_conf_files(int cold)
 static void
 parse_conf_file(int type, int cold)
 {
-  const char *filename;
-  FBFILE *file;
-
-  filename = get_conf_name(type);
+  FBFILE *file = NULL;
+  const char *filename = get_conf_name(type);
 
   if ((file = fbopen(filename, "r")) == NULL)
   {
     if (cold)
-      ilog(L_ERROR, "Failed reading file %s", filename);
+      ilog(L_ERROR, "Unable to read configuration file '%s': %s",
+           filename, strerror(errno));
     else
-      sendto_realops_flags(UMODE_ALL, L_ALL, "Can't open %s file ", filename);
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+                    "Unable to read configuration file '%s': %s",
+                           filename. strerror(errno));
   }
   else
   {

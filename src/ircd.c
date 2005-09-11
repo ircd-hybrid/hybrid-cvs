@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.362 2005/09/10 09:48:55 michael Exp $
+ *  $Id: ircd.c,v 7.363 2005/09/11 10:40:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -271,9 +271,11 @@ set_time(void)
 
   if (gettimeofday(&newtime, NULL) == -1)
   {
-    ilog(L_ERROR, "Clock Failure (%d)", errno);
+    ilog(L_ERROR, "Clock Failure (%d), TS can be corrupted",
+         strerror(errno));
     sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "Clock Failure (%d), TS can be corrupted", errno);
+                         "Clock Failure (%s), TS can be corrupted",
+                         strerror(errno));
     restart("Clock Failure");
   }
 #endif

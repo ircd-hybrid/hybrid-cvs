@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.215 2005/09/07 16:40:10 adx Exp $
+ *  $Id: ircd_lexer.l,v 1.216 2005/09/11 10:40:56 michael Exp $
  */
 
 %option case-insensitive
@@ -450,7 +450,7 @@ ccomment(void)
 static void
 cinclude(void)
 {
-  char *p;
+  char *p = NULL;
 
   if ((p = strchr(yytext, '<')) == NULL)
     *strchr(p = strchr(yytext, '"') + 1, '"') = '\0';
@@ -464,7 +464,7 @@ cinclude(void)
     ilog(L_ERROR, "Includes nested too deep in %s", p);
   else
   {
-    FBFILE *tmp_fbfile_in;
+    FBFILE *tmp_fbfile_in = NULL;
     char filenamebuf[IRCD_BUFSIZE];
 
     if (*p == '/')  /* if it is an absolute path */
@@ -476,7 +476,7 @@ cinclude(void)
     
     if (tmp_fbfile_in == NULL)
     {
-      ilog(L_ERROR, "Cannot include %s (%s)",
+      ilog(L_ERROR, "Unable to read configuration file '%s': %s",
            filenamebuf, strerror(errno));
       return;
     }
