@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_misc.c,v 7.36 2005/08/22 10:48:08 michael Exp $
+ *  $Id: s_misc.c,v 7.37 2005/09/11 11:31:43 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,23 +67,29 @@ date(time_t lclock)
   gm = &gmbuf;
   lt = localtime(&lclock);
 
-  if (lt->tm_yday == gm->tm_yday)
-    minswest = (gm->tm_hour - lt->tm_hour) * 60 +
-      (gm->tm_min - lt->tm_min);
-  else if (lt->tm_yday > gm->tm_yday)
-    minswest = (gm->tm_hour - (lt->tm_hour + 24)) * 60;
-  else
-    minswest = ((gm->tm_hour + 24) - lt->tm_hour) * 60;
+  /*
+   * There is unfortunately no clean portable way to extract time zone
+   * offset information, so do ugly things.
+   */
+  minswest = (gm->tm_hour - lt->tm_hour) * 60 + (gm->tm_min - lt->tm_min);
+
+  if (lt->tm_yday != gm->tm_yday)
+  {
+    if ((lt->tm_yday > gm->tm_yday && lt->tm_year == gm->tm_year) ||
+        (lt->tm_yday < gm->tm_yday && lt->tm_year != gm->tm_year))
+      minswest -= 24 * 60;
+    else
+      minswest += 24 * 60;
+  }
 
   plus = (minswest > 0) ? '-' : '+';
   if (minswest < 0)
     minswest = -minswest;
 
   ircsprintf(buf, "%s %s %d %d -- %02u:%02u:%02u %c%02u:%02u",
-          weekdays[lt->tm_wday], months[lt->tm_mon],lt->tm_mday,
-          lt->tm_year + 1900, lt->tm_hour, lt->tm_min, lt->tm_sec,
-          plus, minswest/60, minswest%60);
-
+             weekdays[lt->tm_wday], months[lt->tm_mon],lt->tm_mday,
+             lt->tm_year + 1900, lt->tm_hour, lt->tm_min, lt->tm_sec,
+             plus, minswest/60, minswest%60);
   return buf;
 }
 
