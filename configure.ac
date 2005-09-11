@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.97.2.1 2005/07/22 16:21:24 db Exp $
+dnl $Id: configure.ac,v 7.97.2.2 2005/09/11 02:02:56 lusky Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.97.2.1 2005/07/22 16:21:24 db Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.97.2.2 2005/09/11 02:02:56 lusky Exp $])
 
 AC_INIT([ircd-hybrid],[7.1])
 
@@ -109,7 +109,7 @@ esac
 if test "$ac_cv_c_compiler_gnu" = yes; then
 	AC_MSG_CHECKING(if $CC is Apple GCC)
 	
-	if expr "`$CC -v 2>&1 | tail -n 1`" : ".*Apple" >/dev/null; then
+	if expr "`$CC -v 2>&1 | tail -1`" : ".*Apple" >/dev/null; then
 		AppleGCC=yes
 	else
 		AppleGCC=no
