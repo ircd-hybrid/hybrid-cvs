@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_clearchan.c,v 1.57 2005/09/11 15:38:05 michael Exp $
+ *  $Id: m_clearchan.c,v 1.58 2005/09/11 15:59:35 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.57 $";
+const char *_version = "$Revision: 1.58 $";
 #endif
 
 /*
@@ -162,15 +162,21 @@ kick_list(struct Client *source_p, struct Channel *chptr)
     if (ms->client_p == source_p)
       continue;
 
-    if (MyConnect(ms->client_p))
-      sendto_one(ms->client_p, ":%s!%s@%s KICK %s %s :CLEARCHAN",
+    /* can reuse m here */
+    DLINK_FOREACH(m, chptr->locmembers.head)
+    {
+      if (((struct Membership *)m->data)->client_p == source_p)
+        continue;
+      sendto_one(m->data, ":%s!%s@%s KICK %s %s :CLEARCHAN",
                  source_p->name, source_p->username,
                  source_p->host,
                  chptr->chname, ms->client_p->name);
+    }
 
     sendto_server(NULL, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
                   ":%s KICK %s %s :CLEARCHAN", source_p->name,
                   chptr->chname, ms->client_p->name);
+    remove_user_from_channel(ms);
   }
 
   /*
