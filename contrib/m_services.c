@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.27 2005/09/12 17:03:12 knight Exp $
+ *  $Id: m_services.c,v 1.28 2005/09/12 20:04:52 db Exp $
  */
 /*
  *
@@ -223,7 +223,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 #endif
 
 /*
@@ -260,10 +260,6 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
                me.name, parv[0], parv[1]);
     return;
   }
-
-  /* mark end of grace period, to prevent nickflooding */
-  if (!IsFloodDone(source_p))
-    flood_endgrace(source_p);
 
   /* terminate nick to NICKLEN */
   strlcpy(newnick, parv[2], sizeof(newnick));
