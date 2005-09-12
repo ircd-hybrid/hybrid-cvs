@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.127 2005/09/12 19:47:53 knight Exp $
+ *   $Id: messages.tab,v 7.128 2005/09/12 20:08:46 db Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -420,7 +420,7 @@ static struct NumericInfo replies[] = {
 /* 393 */  {NULL, NULL, NULL},
 /* 394 */  {NULL, NULL, NULL},
 /* 395 */  {NULL, NULL, NULL},
-/* 396 */  {RPL_HOSTHIDDEN, ":%s 396 %s %s :is now your hidden host", NULL},
+/* 396 */  {"RPL_HOSTHIDDEN", ":%s 396 %s %s :is now your hidden host", NULL},
 /* 397 */  {NULL, NULL, NULL},
 /* 398 */  {NULL, NULL, NULL},
 /* 399 */  {NULL, NULL, NULL},
