@@ -1,6 +1,6 @@
 ; ircd-hybrid-7 standard message file - for reference only
 ; Copyright (C) 2003 Joshua Kwan <joshk@triplehelix.org>
-; $Id: ircd-standard.example.lang,v 1.14 2005/09/12 01:57:45 adx Exp $
+; $Id: ircd-standard.example.lang,v 1.15 2005/09/12 17:41:02 knight Exp $
 
 ; Use this file as a starting point for translating everything into the
 ; language you need. This file contains all of the defined events in 
@@ -69,6 +69,7 @@ RPL_MOTDSTART:		 :%s 375 %s :- %s Message of the Day -
 RPL_ENDOFMOTD:		 :%s 376 %s :End of /MOTD command.
 RPL_YOUREOPER:		 :%s 381 %s :You have entered... the Twilight Zone!
 RPL_REHASHING:		 :%s 382 %s %s :Rehashing
+RPL_HOSTHIDDEN:      :%s 396 %s :is now your hidden host
 ERR_NOSUCHNICK:		 :%s 401 %s %s :No such nick/channel
 ERR_NOSUCHSERVER:	 :%s 402 %s %s :No such server
 ERR_NOSUCHCHANNEL:	 :%s 403 %s %s :No such channel

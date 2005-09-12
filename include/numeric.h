@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.51 2005/09/12 01:57:45 adx Exp $
+ *  $Id: numeric.h,v 7.52 2005/09/12 17:41:02 knight Exp $
  */
 
 #ifndef INCLUDED_numeric_h
@@ -303,6 +303,7 @@ extern const char *get_locale(void);
 #define RPL_USERS            393
 #define RPL_ENDOFUSERS       394
 #define RPL_NOUSERS          395
+#define RPL_HOSTHIDDEN       396
 
 /*
  * Errors are in the range from 400-599 currently and are grouped by what
