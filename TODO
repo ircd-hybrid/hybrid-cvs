@@ -1,4 +1,4 @@
-$Id: TODO,v 7.100 2005/09/12 00:24:33 adx Exp $
+$Id: TODO,v 7.101 2005/09/12 21:59:50 knight Exp $
 
 - dynamically extensible parser for modules
 
@@ -53,3 +53,11 @@ it's a leaf.
 
 -- metalrock's list
 * Don't show local channels in a remote whois.
+
+-- knight's list
+* Finish the Czechoslovakian translation file.
+* Work on database authentication (iauth).
+* Revive VMS (VAX) port *eg*.
+* More AMD64 testing on other distributions.
+* Work on nickname collision code to change nickname 
+  ONLY when nicknames collide, not UIDs.
