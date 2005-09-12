@@ -1,36 +1,21 @@
-$Id: TODO,v 7.99 2005/08/31 11:05:32 adx Exp $
+$Id: TODO,v 7.100 2005/09/12 00:24:33 adx Exp $
 
-- add more stderr debugging (ircd -s)... one for every place we syslog()
-- ircd -s doesn't work through a restart
-- change nick instead of kill on nick collide
 - dynamically extensible parser for modules
+
 - modularize channel, network code etc (not just commands)
-    we can use override_function() or similar for this
+  we can use override_function() or similar for this
+  => means prepared, now just make use of them
+
 - username/passwords (iauth ?)
-- Make stats p just notice opers, rather than return a list, when
-  server_hide is on (#13)
-- Definable server region or 'global' (open I) for /links output (#20)
+
 - make the reserved FD limit run-time tunable, esp from comm_open()
   This involves making fd_table[] a dynamically growing/(don't bother with
   shrinking) list.. have the max fd list configurable in the conf file..
-
-- Fix the anti-client flood code to not be so anal when people connect -
-  I've counted all lines from a client as being a flood, so if a client
-  connects and issues JOIN's to a whole bunch of channels the flood
-  protection stops everything coming through at once .. (not that I mind.. :)
-
-- In the server outbound connection code, make the sendto_realops()
-  logging more sane. Ie, if there's an error, also log the errno string.
-
-- look at the old Listener code in s_bsd.c before I chopped it. Notice
-  the anti-flood code in there. Make sure the same load-checking stuff
-  is in listener.c
-
-- get send_message(), replace comm_setselect() with send_queued_write(), see
-  if the optimization works
+  => partially done, just turn HARD_FDLIMIT into a variable
 
 - Add the IRCnet(?) split logic for nick collisions - on a nick collision,
   change to "%d-%s", random, nick
+  => this is rather equal to their /nick 0, ie set nick to user's UID
 
 ------------------------------------------------------------------------------
 Little things to be done given enough time and initiative -Hwy
@@ -46,28 +31,18 @@ Little things to be done given enough time and initiative -Hwy
    Also add support for server-side notify with the list stored in the
    auth database.  This would make ircd an awesome instant messaging
    back-end.
-
-
--- jdc's list
-  *  Re-write m_stats.c to be table-based, similar to m_set.  Also change
-     to support funtion exit code values (int), so that STATS output can
-     be "successful" or "unsuccessful" (eg. "STATS i requested by <nick>
-     [unsuccessful]" vs. "STATS i requested by <nick>").
-     --> Table part I know is done, what about the success status?
-  *  Re-write proper startup procedure for daemon; procedure should be
-     done in stages, similar to boot0/1/2 stages in FreeBSD.
+   => currently possible to do as a module
 
 
 -- Diane's list
-
 * add logging to ircd.log of possible channel floods
 
 * add code to log a minute worth of flooding if the ircd gets n possible
   flood messages on a channel in t seconds.. This log would be available
   to hand to authorities if requested.
 
--- Josh's list
 
+-- Josh's list
 * Find out the status of the build with IRIX64/MIPSpro.
 * Make modules.c more flexible in anticipation of Win32 modules usability.
 * LAZY LINKS ARE BROKEN!!!
@@ -75,7 +50,6 @@ Little things to be done given enough time and initiative -Hwy
 * Fix lack of error message for oper initiating /connect that fails because
 it's a leaf.
 
--- metalrock's list
 
+-- metalrock's list
 * Don't show local channels in a remote whois.
-* Write documentation for example.conf changes.
