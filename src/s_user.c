@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.379 2005/09/11 10:40:56 michael Exp $
+ *  $Id: s_user.c,v 7.380 2005/09/12 01:57:45 adx Exp $
  */
 
 #include "stdinc.h"
@@ -407,7 +407,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   if (IsDead(client_p))
     return;
 
-  if (source_p->id[0] == '\0') 
+  if (source_p->id[0] == '\0' && me.id[0])
   {
     char *id;
 
@@ -1171,6 +1171,10 @@ static const char built_date[] = "unknown";
 	     me.name, source_p->name, built_date);
   sendto_one(source_p, form_str(RPL_MYINFO),
              me.name, source_p->name, me.name, ircd_version);
+
+  if (source_p->id[0])
+    sendto_one(source_p, form_str(RPL_YOURID), me.name, source_p->name,
+               source_p->id);
 
   show_isupport(source_p);
   show_lusers(source_p);

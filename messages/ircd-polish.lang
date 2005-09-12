@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2003-2005, Piotr Ni¿yñski <adx@irc7.pl>
 ; Coding: ISO-8859-2 * CP-1250
-; $Id: ircd-polish.lang,v 1.9 2005/07/31 03:32:12 adx Exp $
+; $Id: ircd-polish.lang,v 1.10 2005/09/12 01:57:45 adx Exp $
 
 RPL_WELCOME:            :%s 001 %s :Witaj w sieci IRC %s, %s
 RPL_YOURHOST:           :%s 002 %s :Twój host to %s, obecna wersja %s
@@ -9,6 +9,7 @@ RPL_CREATED:            :%s 003 %s :Ten serwer zosta³ utworzony %s
 RPL_ISUPPORT:           :%s 005 %s %s :sa obs³ugiwane przez ten serwer
 RPL_REDIR:              :%s 010 %s %s %d :Proszê u¿ywaæ tego serwera/portu
 RPL_MAPEND:             :%s 017 %s :Koniec /MAP
+RPL_YOURID:		:%s 042 %s %s :Twój unikalny ID
 RPL_ENDOFSTATS:         :%s 219 %s %c :Koniec raportu /STATS
 RPL_STATSUPTIME:        :%s 242 %s :Serwer dzia³a %d dni, %d:%02d:%02d
 RPL_STATSCONN:          :%s 250 %s :Najwy¿sza liczba po³aczeñ: %d (%d klientów) (%d od startu serwera)
