@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.125 2005/09/12 17:41:02 knight Exp $
+ *   $Id: messages.tab,v 7.126 2005/09/12 18:17:51 knight Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -464,7 +464,7 @@ static struct NumericInfo replies[] = {
 /* 437 */  {"ERR_UNAVAILRESOURCE", ":%s 437 %s %s :Nick/channel is temporarily unavailable", NULL},
 /* 438 */  {"ERR_NICKTOOFAST", ":%s 438 %s %s %s :Nick change too fast. Please wait %d seconds.", NULL},
 /* 439 */  {NULL, NULL, NULL},
-/* 440 */  {"ERR_SERVICESDOWN", ":%s 440 %s :Services are currently down, please try your request again later.", NULL},
+/* 440 */  {"ERR_SERVICESDOWN", ":%s 440 %s :Services is currently down.", NULL},
 /* 441 */  {"ERR_USERNOTINCHANNEL", ":%s 441 %s %s %s :They aren't on that channel", NULL},
 /* 442 */  {"ERR_NOTONCHANNEL", ":%s 442 %s %s :You're not on that channel", NULL},
 /* 443 */  {"ERR_USERONCHANNEL", ":%s 443 %s %s %s :is already on channel", NULL},
