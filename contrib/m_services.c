@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.25 2005/09/11 08:04:41 adx Exp $
+ *  $Id: m_services.c,v 1.26 2005/09/12 12:04:29 adx Exp $
  */
 /*
  *
@@ -220,7 +220,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
 
 /*
@@ -236,7 +236,7 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
 {
   struct Client *target_p;
 
-  if (MyConnect(source_p) && !IsOperAdmin(source_p))
+  if (MyClient(source_p) && !IsOperAdmin(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
                me.name, parv[0], "SVSNICK");
