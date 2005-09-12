@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.476 2005/09/12 03:07:46 adx Exp $
+ *  $Id: client.c,v 7.477 2005/09/12 13:34:34 adx Exp $
  */
 
 #include "stdinc.h"
@@ -585,10 +585,12 @@ find_person(const struct Client *client_p, const char *name)
 
   if (IsDigit(*name))
   {
-    c2ptr = hash_find_id(name);
-    /* invisible users shall not be found by UID guessing */
-    if (IsInvisible(c2ptr) && !IsServer(client_p))
-      c2ptr = NULL;
+    if ((c2ptr = hash_find_id(name)) != NULL)
+    {
+      /* invisible users shall not be found by UID guessing */
+      if (IsInvisible(c2ptr) && !IsServer(client_p))
+        c2ptr = NULL;
+    }
   }
   else
     c2ptr = find_client(name);

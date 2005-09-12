@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.105 2005/09/09 04:40:34 adx Exp $
+ *  $Id: hash.c,v 7.106 2005/09/12 13:34:34 adx Exp $
  */
 
 #include "stdinc.h"
@@ -413,6 +413,8 @@ hash_find_id(const char *name)
     }
   }
 
+sendto_realops_flags(UMODE_ALL, L_ALL, "%x", client_p);
+send_queued_all();
   return(client_p);
 }
 
