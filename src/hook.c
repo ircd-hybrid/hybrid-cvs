@@ -20,15 +20,18 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.30 2005/08/20 17:19:58 adx Exp $
+ *  $Id: hook.c,v 7.31 2005/09/12 04:33:30 adx Exp $
  */
 
 #include "stdinc.h"
 #include "hook.h"
+#include "ircd.h"
 #include "list.h"
 #include "memory.h"
+#include "numeric.h"
 #include "tools.h"
 #include "irc_string.h"
+#include "send.h"
 
 dlink_list callback_list = {NULL, NULL, 0};
 
@@ -94,6 +97,8 @@ execute_callback(struct Callback *cb, ...)
 {
   void *res;
   va_list args;
+
+  cb->last = CurrentTime;
 
   if (!is_callback_present(cb))
     return (NULL);
@@ -197,4 +202,43 @@ uninstall_hook(struct Callback *cb, CBFUNC *hook)
 
   dlinkDelete(ptr, &cb->chain);
   free_dlink_node(ptr);
+}
+
+/*
+ * stats_hooks()
+ *
+ * Displays registered callbacks and lengths of their hook chains.
+ * (This is the handler of /stats h)
+ *
+ * inputs:
+ *   source_p  -  pointer to struct Client
+ * output: none
+ */
+void
+stats_hooks(struct Client *source_p)
+{
+  dlink_node *ptr;
+  struct Callback *cb;
+  char namelen[29];
+  char lastused[32];
+
+  sendto_one(source_p, ":%s %d %s h :Callback [chain length]      Last Execution",
+             me.name, RPL_STATSDEBUG, source_p->name);
+
+  DLINK_FOREACH(ptr, callback_list.head)
+  {
+    cb = ptr->data;
+
+    snprintf(namelen, sizeof(namelen), "%s [%d]",
+             cb->name, (int) dlink_list_length(&cb->chain));
+
+    if (!cb->last)
+      strcpy(lastused, "Never");
+    else
+      snprintf(lastused, sizeof(lastused), "%-4d seconds ago",
+               (int) (CurrentTime - cb->last));
+
+    sendto_one(source_p, ":%s %d %s h :%-28s %s",
+               me.name, RPL_STATSDEBUG, source_p->name, namelen, lastused);
+  }
 }
