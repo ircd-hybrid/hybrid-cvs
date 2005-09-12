@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.148 2005/08/15 17:54:48 adx Exp $
+ *  $Id: m_nick.c,v 1.149 2005/09/12 04:41:53 adx Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ static int check_clean_user(struct Client *client_p, char *nick, char *user,
 static int check_clean_host(struct Client *client_p, char *nick, char *host,
 			    struct Client *server_p);
 
-static int clean_nick_name(char *);
+static int clean_nick_name(char *, int);
 static int clean_user_name(char *);
 static int clean_host_name(char *);
 static void perform_nick_collides(struct Client *, struct Client *, struct Client *,
@@ -93,7 +93,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.148 $";
+const char *_version = "$Revision: 1.149 $";
 #endif
 
 /* mr_nick()
@@ -126,7 +126,7 @@ mr_nick(struct Client *client_p, struct Client *source_p,
   strlcpy(nick, parv[1], sizeof(nick));
 
   /* check the nickname is ok */
-  if (!clean_nick_name(nick))
+  if (!clean_nick_name(nick, 1))
   {
     sendto_one(source_p, form_str(ERR_ERRONEUSNICKNAME),
                me.name, EmptyString(parv[0]) ? "*" : parv[0], parv[1]);
@@ -216,7 +216,7 @@ m_nick(struct Client *client_p, struct Client *source_p,
   strlcpy(nick, parv[1], sizeof(nick));
 
   /* check the nickname is ok */
-  if (!clean_nick_name(nick))
+  if (!clean_nick_name(nick, 1))
   {
     sendto_one(source_p, form_str(ERR_ERRONEUSNICKNAME),
                me.name, parv[0], nick);
@@ -503,7 +503,7 @@ check_clean_nick(struct Client *client_p, struct Client *source_p,
   /* the old code did some wacky stuff here, if the nick is invalid, kill it
    * and dont bother messing at all
    */
-  if (!clean_nick_name(nick) || strcmp(nick, newnick))
+  if (!clean_nick_name(nick, 0) || strcmp(nick, newnick))
   {
     ServerStats->is_kill++;
     sendto_realops_flags(UMODE_DEBUG, L_ALL,
@@ -600,11 +600,12 @@ check_clean_host(struct Client *client_p, char *nick,
 /* clean_nick_name()
  *
  * input	- nickname
+ *              - whether it's a local nick (1) or remote (0)
  * output	- none
  * side effects - walks through the nickname, returning 0 if erroneous
  */
 static int
-clean_nick_name(char *nick)
+clean_nick_name(char *nick, int local)
 {
   assert(nick);
   if (nick == NULL)
@@ -613,7 +614,7 @@ clean_nick_name(char *nick)
   /* nicks cant start with a digit or - or be 0 length */
   /* This closer duplicates behaviour of hybrid-6 */
 
-  if (*nick == '-' || IsDigit(*nick) || *nick == '\0')
+  if (*nick == '-' || (IsDigit(*nick) && local) || *nick == '\0')
     return (0);
 
   for(; *nick; nick++)
