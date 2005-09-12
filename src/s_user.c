@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.380 2005/09/12 01:57:45 adx Exp $
+ *  $Id: s_user.c,v 7.381 2005/09/12 02:06:40 adx Exp $
  */
 
 #include "stdinc.h"
@@ -60,12 +60,14 @@ int MaxClientCount     = 1;
 int MaxConnectionCount = 1;
 struct Callback *entering_umode_cb = NULL;
 struct Callback *umode_cb = NULL;
+struct Callback *uid_get_cb = NULL;
 
 static void user_welcome(struct Client *);
 static void report_and_set_user_flags(struct Client *, const struct AccessItem *);
 static int check_xline(struct Client *);
 static int check_regexp_xline(struct Client *);
 static void introduce_client(struct Client *, struct Client *);
+static void *uid_get(va_list);
 
 /* Used for building up the isupport string,
  * used with init_isupport, add_isupport, delete_isupport
@@ -409,10 +411,9 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   if (source_p->id[0] == '\0' && me.id[0])
   {
-    char *id;
-
-    for (id = uid_get(); hash_find_id(id); id = uid_get())
-      ; /* nothing */
+    char *id = (char *) execute_callback(uid_get_cb, source_p);
+    while (hash_find_id(id) != NULL)
+      id = uid_get(NULL);
 
     strlcpy(source_p->id, id, sizeof(source_p->id));
     hash_add_id(source_p);
@@ -1369,21 +1370,21 @@ init_uid(void)
 
   entering_umode_cb = register_callback("entering_umode", NULL);
   umode_cb = register_callback("changing_umode", change_simple_umode);
+  uid_get_cb = register_callback("uid_get", uid_get);
 }
 
 /*
  * uid_get
  *
- * inputs	- NONE
- * output	- new UID is returned to called
+ * inputs	- struct Client *
+ * output	- new UID is returned to caller
  * side effects	- new_uid is incremented by one.
  */
-
-char *
-uid_get(void)
+static void *
+uid_get(va_list args)
 {
   add_one_to_uid(TOTALSIDUID-1);	/* index from 0 */
-  return(new_uid);
+  return ((void *) new_uid);
 }
 
 /*
@@ -1394,7 +1395,6 @@ uid_get(void)
  * side effects	- new_uid is incremented by one
  *		  note this is a recursive function
  */
-
 static void
 add_one_to_uid(int i)
 {

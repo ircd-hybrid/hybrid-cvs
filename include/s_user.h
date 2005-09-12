@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.49 2005/08/16 08:01:40 adx Exp $
+ *  $Id: s_user.h,v 7.50 2005/09/12 02:06:40 adx Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -36,6 +36,7 @@ extern int MaxClientCount;     /* GLOBAL - highest number of clients     */
 extern int MaxConnectionCount; /* GLOBAL - highest number of connections */
 extern struct Callback *entering_umode_cb;
 extern struct Callback *umode_cb;
+extern struct Callback *uid_get_cb;
 extern unsigned int user_modes[];
 
 void set_user_mode(struct Client *, struct Client *, int, char **);
@@ -55,7 +56,6 @@ void do_local_user(const char *, struct Client *, struct Client *,
                    const char *, const char *, const char *,
                    const char *);
 void init_uid(void);
-char *uid_get(void);
 int valid_hostname(const char *);
 int valid_username(const char *);
 void add_isupport(const char *, const char *, int);
