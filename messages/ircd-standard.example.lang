@@ -1,6 +1,6 @@
 ; ircd-hybrid-7 standard message file - for reference only
 ; Copyright (C) 2003 Joshua Kwan <joshk@triplehelix.org>
-; $Id: ircd-standard.example.lang,v 1.16 2005/09/12 17:50:38 knight Exp $
+; $Id: ircd-standard.example.lang,v 1.17 2005/09/12 18:05:46 knight Exp $
 
 ; Use this file as a starting point for translating everything into the
 ; language you need. This file contains all of the defined events in 
@@ -94,7 +94,7 @@ ERR_NICKTOOFAST:	 :%s 438 %s %s %s :Nick change too fast. Please wait %d seconds
 ERR_USERNOTINCHANNEL:	 :%s 441 %s %s %s :They aren't on that channel
 ERR_NOTONCHANNEL:	 :%s 442 %s %s :You're not on that channel
 ERR_USERONCHANNEL:	 :%s 443 %s %s %s :is already on channel
-ERR_SERVICESDOWN:	 :%s 440 %s :Services are currently down, please try your request again later.
+ERR_SERVICESDOWN:	 :%s 440 %s :Services is currently down.
 ERR_NOTREGISTERED:	 :%s 451 %s :You have not registered
 ERR_ACCEPTFULL:		 :%s 456 %s :Accept list is full
 ERR_ACCEPTEXIST:	 :%s 457 %s %s :is already on your accept list
