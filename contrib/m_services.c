@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.26 2005/09/12 12:04:29 adx Exp $
+ *  $Id: m_services.c,v 1.27 2005/09/12 17:03:12 knight Exp $
  */
 /*
  *
@@ -48,26 +48,29 @@
 /* END OF MODULE CONFIGURATION */
 
 #include "stdinc.h"
-#include "tools.h"
 #include "handlers.h"
 #include "client.h"
-#include "common.h"     /* FALSE bleah */
 #include "hash.h"
-#include "hostmask.h"
-#include "ircd.h"
-#include "irc_string.h"
-#include "sprintf_irc.h"
-#include "numeric.h"
 #include "fdlist.h"
-#include "s_bsd.h"
+#include "irc_string.h"
+#include "ircd.h"
+#include "numeric.h"
 #include "s_conf.h"
-#include "s_log.h"
+#include "s_stats.h"
+#include "s_user.h"
+#include "whowas.h"
 #include "s_serv.h"
 #include "send.h"
+#include "list.h"
+#include "channel.h"
+#include "s_log.h"
+#include "resv.h"
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-#include "s_user.h"
+#include "common.h"
+#include "packet.h"
+#include "sprintf_irc.h"
 
 /* Custom Macros */
 #define services_function(a,b,c) static void a(struct Client *client_p,\
@@ -90,7 +93,7 @@ static void m_seenserv(struct Client *, struct Client *, int, char *[]);
 static void m_statserv(struct Client *, struct Client *, int, char *[]);
 
 static void get_string(int, char *[], char *);
-static int clean_nick_name(char *);
+static int clean_nick_name(char *, int);
 static void deliver_services_msg(const char *, const char *, struct Client *,
 				 struct Client *, int, char *[]);
 
@@ -220,7 +223,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
 
 /*
@@ -234,6 +237,7 @@ static void
 mo_svsnick(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
+  char newnick[NICKLEN];
   struct Client *target_p;
 
   if (MyClient(source_p) && !IsOperAdmin(source_p))
@@ -257,30 +261,34 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (!clean_nick_name(parv[2]))
+  /* mark end of grace period, to prevent nickflooding */
+  if (!IsFloodDone(source_p))
+    flood_endgrace(source_p);
+
+  /* terminate nick to NICKLEN */
+  strlcpy(newnick, parv[2], sizeof(newnick));
+
+  if (!clean_nick_name(newnick, 1))
   {
     if (IsClient(source_p))
-      sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Invalid new "
-                 "nickname: %s", me.name, parv[0], parv[2]);
+      sendto_one(source_p, form_str(ERR_ERRONEUSNICKNAME),
+                 me.name, parv[0], newnick);
     return;
   }
 
-  if (strlen(parv[2]) > NICKLEN - 1)
-    parv[2][NICKLEN - 1] = '\0';
-
-  if (find_client(parv[2]) != NULL)
+  if (find_client(newnick) != NULL)
   {
     if (IsClient(source_p))
-      sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Nickname %s is "
-                 "already in use", me.name, parv[0], parv[2]);
+      sendto_one(source_p, form_str(ERR_NICKNAMEINUSE),
+                 me.name, parv[0], newnick);
     return;
   }
 
   if (MyConnect(target_p))
-    change_local_nick(&me, target_p, parv[2]);
+    change_local_nick(&me, target_p, newnick);
   else
     sendto_one(target_p, ":%s ENCAP %s SVSNICK %s %s",
-               me.name, target_p->servptr->name, ID(target_p), parv[2]);
+               me.name, target_p->servptr->name, ID(target_p), newnick);
 }
 
 /*
@@ -325,21 +333,23 @@ get_string(int parc, char *parv[], char *buf)
  * side effects - walks through the nickname, returning 0 if erroneous
  */
 static int
-clean_nick_name(char *nick)
+clean_nick_name(char *nick, int local)
 {
   assert(nick);
+  if (nick == NULL)
+    return (0);
 
   /* nicks can't start with a digit or - or be 0 length */
   /* This closer duplicates behaviour of hybrid-6 */
 
-  if (*nick == '-' || IsDigit(*nick) || *nick == '\0')
-    return 0;
+  if (*nick == '-' || (IsDigit(*nick) && local) || *nick == '\0')
+    return (0);
 
   for (; *nick; ++nick)
     if (!IsNickChar(*nick))
-      return 0;
+      return (0);
 
-  return 1;
+  return (1);
 }
 
 /*
