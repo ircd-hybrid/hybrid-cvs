@@ -1,4 +1,4 @@
-$Id: TODO,v 7.103 2005/09/13 05:18:18 adx Exp $
+$Id: TODO,v 7.104 2005/09/13 05:24:18 adx Exp $
 
 - dynamically extensible parser for modules
 
@@ -69,3 +69,4 @@ it's a leaf.
 -- adx's list
 * modularise parser, channel modes, member flags and more
 * implement ND/CD split logic
+* more I/O backends (epoll ..)
