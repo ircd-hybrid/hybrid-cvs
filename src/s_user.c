@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.381 2005/09/12 02:06:40 adx Exp $
+ *  $Id: s_user.c,v 7.382 2005/09/13 08:05:46 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1164,20 +1164,17 @@ static const char built_date[] = "unknown";
 
   sendto_one(source_p, form_str(RPL_WELCOME), me.name, source_p->name, 
              ServerInfo.network_name, source_p->name);
-  /* This is a duplicate of the NOTICE but see below...*/
   sendto_one(source_p, form_str(RPL_YOURHOST), me.name, source_p->name,
 	     get_listener_name(source_p->localClient->listener), ircd_version);
-
   sendto_one(source_p, form_str(RPL_CREATED),
 	     me.name, source_p->name, built_date);
   sendto_one(source_p, form_str(RPL_MYINFO),
              me.name, source_p->name, me.name, ircd_version);
-
+  show_isupport(source_p);
   if (source_p->id[0])
     sendto_one(source_p, form_str(RPL_YOURID), me.name, source_p->name,
                source_p->id);
 
-  show_isupport(source_p);
   show_lusers(source_p);
 
   if (ConfigFileEntry.short_motd)
