@@ -1,4 +1,4 @@
-$Id: TODO,v 7.102 2005/09/12 22:07:29 knight Exp $
+$Id: TODO,v 7.103 2005/09/13 05:18:18 adx Exp $
 
 - dynamically extensible parser for modules
 
@@ -54,6 +54,7 @@ it's a leaf.
 -- metalrock's list
 * Don't show local channels in a remote whois.
 
+
 -- knight's list
 * Finish the Czechoslovakian translation file.
 * Work on database authentication (iauth).
@@ -63,3 +64,8 @@ it's a leaf.
 * NetBSD porting.
 * Work on nickname collision code to change nickname 
   ONLY when nicknames collide, not UIDs.
+
+
+-- adx's list
+* modularise parser, channel modes, member flags and more
+* implement ND/CD split logic
