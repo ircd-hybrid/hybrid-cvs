@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.28 2005/09/12 20:04:52 db Exp $
+ *  $Id: m_services.c,v 1.29 2005/09/13 14:40:36 knight Exp $
  */
 /*
  *
@@ -223,7 +223,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 
 /*
@@ -267,16 +267,16 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
   if (!clean_nick_name(newnick, 1))
   {
     if (IsClient(source_p))
-      sendto_one(source_p, form_str(ERR_ERRONEUSNICKNAME),
-                 me.name, parv[0], newnick);
+      sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Invalid new ",
+                 "nickname: %s", me.name, parv[0], newnick);
     return;
   }
 
   if (find_client(newnick) != NULL)
   {
     if (IsClient(source_p))
-      sendto_one(source_p, form_str(ERR_NICKNAMEINUSE),
-                 me.name, parv[0], newnick);
+      sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Nickname %s is "
+                 "already in use", me.name, parv[0], newnick);
     return;
   }
 
