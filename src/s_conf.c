@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.593 2005/09/11 12:13:11 knight Exp $
+ *  $Id: s_conf.c,v 7.594 2005/09/13 03:53:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -2943,21 +2943,6 @@ get_client_ping(struct Client *target_p, int *pingwarn)
 
   *pingwarn = 0;
   return DEFAULT_PINGFREQUENCY;
-}
-
-/* get_con_freq()
- *
- * inputs	- pointer to class struct
- * output	- connection frequency
- * side effects - NONE
- */
-int
-get_con_freq(struct ClassItem *clptr)
-{
-  if (clptr != NULL)
-    return ConFreq(clptr);
-
-  return DEFAULT_CONNECTFREQUENCY;
 }
 
 /* find_class()

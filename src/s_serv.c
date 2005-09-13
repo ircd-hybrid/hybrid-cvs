@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.434 2005/09/05 17:38:02 db Exp $
+ *  $Id: s_serv.c,v 7.435 2005/09/13 03:53:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -522,8 +522,14 @@ try_connections(void *unused)
     if (aconf->hold > CurrentTime)
       continue;
 
-    if ((confrq = get_con_freq(cltmp)) < MIN_CONN_FREQ )
-      confrq = MIN_CONN_FREQ;
+    if (cltmp == NULL)
+      confrq = DEFAULT_CONNECTFREQUENCY;
+    else
+    {
+      confrq = ConFreq(cltmp);
+      if (confrq < MIN_CONN_FREQ )
+	confrq = MIN_CONN_FREQ;
+    }
 
     aconf->hold = CurrentTime + confrq;
 

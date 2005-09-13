@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.329 2005/09/08 03:02:12 metalrock Exp $
+ *  $Id: s_conf.h,v 7.330 2005/09/13 03:53:20 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -465,7 +465,6 @@ extern int valid_wild_card(struct Client *, int, int, ...);
 /* End GLOBAL section */
 
 extern unsigned long get_sendq(struct Client *);
-extern int get_con_freq(struct ClassItem *);
 extern const char *get_client_class(struct Client *);
 extern int get_client_ping(struct Client *, int *);
 extern void check_class(void);
