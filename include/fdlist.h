@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.h,v 7.38 2005/08/19 10:54:50 adx Exp $
+ *  $Id: fdlist.h,v 7.39 2005/09/13 18:15:56 adx Exp $
  */
 
 #ifndef INCLUDED_fdlist_h
@@ -58,6 +58,7 @@ typedef struct _fde {
    */
   int fd;		/* So we can use the fde_t as a callback ptr */
   int comm_index;	/* where in the poll list we live */
+  int evcache;          /* current fd events as set up by the underlying I/O */
   char desc[FD_DESC_SZ];
   PF *read_handler;
   void *read_data;

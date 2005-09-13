@@ -1,9 +1,9 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  s_bsd_devpoll.c: /dev/poll compatible network routines.
+ *  s_bsd_poll.c: Linux epoll() compatible network routines.
  *
- *  Originally by Adrian Chadd <adrian@creative.net.au>
- *  Copyright (C) 2002 Hybrid Development Team
+ *  Copyright (C) 2002-2005 Hybrid Development Team
+ *  Based also on work of Adrian Chadd, Aaron Sethman and others.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,44 +20,26 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_devpoll.c,v 7.28 2005/09/13 18:15:56 adx Exp $
+ *  $Id: s_bsd_epoll.c,v 7.1 2005/09/13 18:15:56 adx Exp $
  */
 
+#define _GNU_SOURCE 1
 #include "stdinc.h"
+#include <sys/epoll.h>
 
-/* HPUX uses devpoll.h and not sys/devpoll.h */
-#ifdef HAVE_DEVPOLL_H
-# include <devpoll.h>
-#else
-# ifdef HAVE_SYS_DEVPOLL_H
-#  include <sys/devpoll.h>
-# else
-#  error "No devpoll.h found! Try ./configuring and letting the script choose for you."
-# endif
+static fde_t efd;
+static int epmax;
+static struct epoll_event *ep_fdlist;
+
+#ifndef HAVE_EPOLL_CTL
+#include <sys/syscall.h>
+
+_syscall1(int, epoll_create, int, maxfds);
+_syscall4(int, epoll_ctl, int, epfd, int, op, int, fd,
+          struct epoll_event *, events);
+_syscall4(int, epoll_wait, int, epfd, struct epoll_event *, pevents,
+          int, maxevents, int, timeout);
 #endif
-
-#include "fdlist.h"
-#include "s_bsd.h"
-#include "client.h"
-#include "common.h"
-#include "irc_string.h"
-#include "ircdauth.h"
-#include "ircd.h"
-#include "list.h"
-#include "listener.h"
-#include "numeric.h"
-#include "packet.h"
-#include "irc_res.h"
-#include "restart.h"
-#include "s_auth.h"
-#include "s_conf.h"
-#include "s_log.h"
-#include "s_serv.h"
-#include "s_stats.h"
-#include "send.h"
-#include "memory.h"
-
-static fde_t dpfd;
 
 /*
  * init_netio
@@ -70,36 +52,17 @@ init_netio(void)
 {
   int fd;
 
-  if ((fd = open("/dev/poll", O_RDWR)) < 0)
+  epmax = getdtablesize();
+  ep_fdlist = MyMalloc(sizeof(struct epoll_event) * epmax);
+
+  if ((fd = epoll_create(HARD_FDLIMIT)) < 0)
   {
-    ilog(L_CRIT, "init_netio: Couldn't open /dev/poll - %d: %s",
+    ilog(L_CRIT, "init_netio: Couldn't open epoll fd - %d: %s",
          errno, strerror(errno));
     exit(115); /* Whee! */
   }
 
-  fd_open(&dpfd, fd, 0, "/dev/poll file descriptor");
-}
-
-/*
- * Write an update to the devpoll filter.
- * See, we end up having to do a seperate (?) remove before we do an
- * add of a new polltype, so we have to have this function seperate from
- * the others.
- */
-static void
-devpoll_write_update(int fd, int events)
-{
-  struct pollfd pfd;
-
-  /* Build the pollfd entry */
-  pfd.revents = 0;
-  pfd.fd = fd;
-  pfd.events = events;
-
-  /* Write the thing to our poll fd */
-  if (write(dpfd.fd, pfd, sizeof(pfd)) != sizeof(pfd))
-    ilog(L_NOTICE, "devpoll_write_update: dpfd write failed %d: %s",
-         errno, strerror(errno));
+  fd_open(&efd, fd, 0, "epoll file descriptor");
 }
 
 /*
@@ -112,7 +75,8 @@ void
 comm_setselect(fde_t *F, unsigned int type, PF *handler,
                void *client_data, time_t timeout)
 {
-  int new_events;
+  int new_events, op;
+  struct epoll_event ep_event;
 
   if ((type & COMM_SELECT_READ))
   {
@@ -126,24 +90,36 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
     F->write_data = client_data;
   }
 
-  new_events = (F->read_handler ? POLLRDNORM : 0) |
-    (F->write_handler ? POLLWRNORM : 0);
+  new_events = (F->read_handler ? EPOLLIN : 0) |
+    (F->write_handler ? EPOLLOUT : 0);
 
   if (timeout != 0)
     F->timeout = CurrentTime + (timeout / 1000);
 
   if (new_events != F->evcache)
   {
-    devpoll_write_update(F->fd, POLLREMOVE);
-    if ((F->evcache = new_events))
-      devpoll_write_update(F->fd, new_events);
+    if (new_events == 0)
+      op = EPOLL_CTL_DEL;
+    else if (F->evcache == 0)
+      op = EPOLL_CTL_ADD;
+    else
+      op = EPOLL_CTL_MOD;
+
+    ep_event.events = F->evcache = new_events;
+    ep_event.data.ptr = F;
+
+    if (epoll_ctl(efd.fd, op, F->fd, &ep_event) != 0)
+    {
+      ilog(L_CRIT, "comm_setselect: epoll_ctl() failed: %s", strerror(errno));
+      abort();
+    }
   }
 }
 
 /*
- * comm_select
+ * comm_select()
  *
- * Called to do the new-style IO, courtesy of squid (like most of this
+ * Called to do the new-style IO, courtesy of of squid (like most of this
  * new IO code). This routine handles the stuff we've hidden in
  * comm_setselect and fd_table[] and calls callbacks for IO ready
  * events.
@@ -152,15 +128,11 @@ void
 comm_select(void)
 {
   int num, i;
-  struct pollfd pollfds[HARD_FDLIMIT];
-  struct dvpoll dopoll;
   PF *hdl;
   fde_t *F;
+  struct epoll_event ep_event;
 
-  dopoll.dp_timeout = SELECT_DELAY;
-  dopoll.dp_nfds = HARD_FDLIMIT;
-  dopoll.dp_fds = &pollfds[0];
-  num = ioctl(dpfd.fd, DP_POLL, &dopoll);
+  num = epoll_wait(efd.fd, ep_fdlist, epmax, SELECT_DELAY);
 
   set_time();
 
@@ -174,11 +146,11 @@ comm_select(void)
 
   for (i = 0; i < num; i++)
   {
-    F = lookup_fd(dopoll.dp_fds[i].fd);
+    F = lookup_fd(ep_fdlist[i].data.fd);
     if (F == NULL || !F->flags.open)
       continue;
 
-    if ((dopoll.dp_fds[i].revents & (POLLRDNORM | POLLIN | POLLHUP | POLLERR)))
+    if ((ep_fdlist[i].events & (EPOLLIN | EPOLLHUP | EPOLLERR)))
       if ((hdl = F->read_handler) != NULL)
       {
         F->read_handler = NULL;
@@ -187,8 +159,8 @@ comm_select(void)
 	  continue;
       }
 
-    if ((dopoll.dp_fds[i].revents & (POLLWRNORM | POLLOUT | POLLHUP | POLLERR)))
-      if ((hdl = F->write_handler) != NULL) 
+    if ((ep_fdlist[i].events & (EPOLLOUT | EPOLLHUP | EPOLLERR)))
+      if ((hdl = F->write_handler) != NULL)
       {
         F->write_handler = NULL;
         hdl(F, F->write_data);

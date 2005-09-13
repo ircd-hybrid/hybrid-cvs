@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_select.c,v 7.38 2005/07/26 21:01:15 adx Exp $
+ *  $Id: s_bsd_select.c,v 7.39 2005/09/13 18:15:56 adx Exp $
  */
 
 #include "stdinc.h"
@@ -55,48 +55,9 @@
  *   -- adrian
  */
 
-static fd_set select_readfds;
-static fd_set select_writefds;
+static fd_set select_readfds, tmpreadfds;
+static fd_set select_writefds, tmpwritefds;
 static int highest_fd = -1;
-
-/*
- * You know, I'd rather have these local to comm_select but for some
- * reason my gcc decides that I can't modify them at all..
- *   -- adrian
- */
-static fd_set tmpreadfds;
-static fd_set tmpwritefds;
-
-static void select_update_selectfds(int fd, short, PF *);
-
-/* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
-/* Private functions */
-
-/*
- * set and clear entries in the select array ..
- */ 
-static void
-select_update_selectfds(int fd, short event, PF *handler)
-{
-  /* Update the read / write set */
-  if (event & COMM_SELECT_READ)
-  {
-    if (handler)
-      FD_SET(fd, &select_readfds);
-    else
-      FD_CLR(fd, &select_readfds);
-  }
-  if (event & COMM_SELECT_WRITE)
-  {
-    if (handler)
-      FD_SET(fd, &select_writefds);
-    else
-      FD_CLR(fd, &select_writefds);
-  }
-}
-
-/* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
-/* Public functions */
 
 /*
  * init_netio
@@ -121,85 +82,120 @@ void
 comm_setselect(fde_t *F, unsigned int type, PF *handler,
                void *client_data, time_t timeout)
 {
-  assert(F->flags.open);
+  int new_events;
 
-  if (type & COMM_SELECT_READ)
+  if ((type & COMM_SELECT_READ))
   {
     F->read_handler = handler;
     F->read_data = client_data;
-    select_update_selectfds(F->fd, COMM_SELECT_READ, handler);
   }
-  if (type & COMM_SELECT_WRITE)
+
+  if ((type & COMM_SELECT_WRITE))
   {
     F->write_handler = handler;
     F->write_data = client_data;
-    select_update_selectfds(F->fd, COMM_SELECT_WRITE, handler);
   }
 
-  if (F->read_handler == NULL && F->write_handler == NULL)
-  {
-    if (F->fd == highest_fd)
-      do {
-        --highest_fd;
-      }
-      while (highest_fd > -1 && lookup_fd(highest_fd) == NULL);
-  }
-  else if (F->fd > highest_fd)
-    highest_fd = F->fd;
+  new_events = (F->read_handler ? COMM_SELECT_READ : 0) |
+    (F->write_handler ? COMM_SELECT_WRITE : 0);
 
-  if (timeout)
+  if (timeout != 0)
     F->timeout = CurrentTime + (timeout / 1000);
+
+  if (new_events != F->evcache)
+  {
+    if ((new_events & COMM_SELECT_READ))
+      FD_SET(F->fd, &select_readfds);
+    else
+    {
+      FD_CLEAR(F->fd, &select_readfds);
+      FD_CLEAR(F->fd, &tmpreadfds);
+    }
+
+    if ((new_events & COMM_SELECT_WRITE))
+      FD_SET(F->fd, &select_writefds);
+    else
+    {
+      FD_CLEAR(F->fd, &select_writefds);
+      FD_CLEAR(F->fd, &tmpwritefds);
+    }
+
+    if (new_events == 0)
+    {
+      if (highest_fd == F->fd)
+        while (highest_fd >= 0 && (FD_ISSET(highest_fd, &select_readfds) ||
+	                           FD_ISSET(highest_fd, &select_writefds)))
+          highest_fd--;
+    }
+    else if (F->evcache == 0)
+      if (F->fd > highest_fd)
+        highest_fd = F->fd;
+
+    F->evcache = new_events;
+  }
 }
- 
+
 /*
- * void comm_select(void)
+ * comm_select
  *
- * Check all connections for new connections and input data that is to be
- * processed. Also check for connections with data queued and whether we can
- * write it out.
- *
+ * Called to do the new-style IO, courtesy of squid (like most of this
+ * new IO code). This routine handles the stuff we've hidden in
+ * comm_setselect and fd_table[] and calls callbacks for IO ready
+ * events.
  */
 void
 comm_select(void)
 {
-  int num, fd;
-  PF *hdl;
   struct timeval to;
+  int num, fd;
+  fde_t *F;
+  PF *hdl;
 
   /* Copy over the read/write sets so we don't have to rebuild em */
   memcpy(&tmpreadfds, &select_readfds, sizeof(fd_set));
   memcpy(&tmpwritefds, &select_writefds, sizeof(fd_set));
 
-  do {
-    to.tv_sec = 0;
-    to.tv_usec = SELECT_DELAY * 1000;
-  }
-  while ((num = select(highest_fd + 1, &tmpreadfds, &tmpwritefds, NULL, &to)) < 0
-         && ignoreErrno(errno));
+  to.tv_sec = 0;
+  to.tv_usec = SELECT_DELAY * 1000;
+  num = select(highest_fd + 1, &tmpreadfds, &tmpwritefds, NULL, &to);
 
   set_time();
 
-  if (num > 0)
-    for (fd = 0; fd <= highest_fd; fd++)
-      if (FD_ISSET(fd, &tmpreadfds) || FD_ISSET(fd, &tmpwritefds))
-      {
-        fde_t *F = lookup_fd(fd);
+  if (num < 0)
+  {
+#ifdef HAVE_USLEEP
+    usleep(50000);
+#endif
+    return;
+  }
 
-        if (FD_ISSET(fd, &tmpreadfds))
+  for (fd = 0; fd <= highest_fd && num > 0; fd++)
+    if (FD_ISSET(fd, &tmpreadfds) || FD_ISSET(fd, &tmpwritefds))
+    {
+      num--;
+
+      F = lookup_fd(fd);
+      if (F == NULL || !F->flags.open)
+        continue;
+
+      if (FD_ISSET(fd, &tmpreadfds))
+        if ((hdl = F->read_handler) != NULL)
         {
-          hdl = F->read_handler;
           F->read_handler = NULL;
-          select_update_selectfds(fd, COMM_SELECT_READ, NULL);
-          if (hdl != NULL)
-            hdl(F, F->read_data);
+          hdl(F, F->read_data);
+          if (!F->flags.open)
+            continue;
         }
-        if (FD_ISSET(fd, &tmpwritefds))
+
+      if (FD_ISSET(fd, &tmpwritefds))
+        if ((hdl = F->write_handler) != NULL)
         {
-          hdl = F->write_handler;
           F->write_handler = NULL;
-          select_update_selectfds(fd, COMM_SELECT_WRITE, NULL);
-          if (hdl != NULL)
-            hdl(F, F->write_data);
+          hdl(F, F->write_data);
+          if (!F->flags.open)
+            continue;
         }
-      }
+
+      comm_setselect(F, 0, NULL, NULL, 0);
+    }
 }

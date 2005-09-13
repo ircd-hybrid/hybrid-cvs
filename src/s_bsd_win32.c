@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.14 2005/09/10 17:44:12 michael Exp $
+ *  $Id: s_bsd_win32.c,v 7.15 2005/09/13 18:15:56 adx Exp $
  */
 
 #include "stdinc.h"
@@ -30,7 +30,7 @@
 #include "client.h"
 #include "restart.h"
 
-HWND wndhandle;
+static HWND wndhandle;
 static dlink_list dns_queries = {NULL, NULL, 0};
 
 extern int main(int, char *[]);
@@ -54,23 +54,6 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 }
 
 /*
- * Updates monitored network events on a given fde_t.
- */
-static void
-update_winsock_events(fde_t *F)
-{
-  int events = 0;
-
-  if (F->read_handler != NULL)
-    events |= FD_ACCEPT | FD_CLOSE | FD_READ;
-
-  if (F->write_handler != NULL)
-    events |= FD_CONNECT | FD_WRITE;
-
-  WSAAsyncSelect(F->fd, wndhandle, WM_SOCKET, events);
-}
-
-/*
  * Handler for Win32 messages.
  */
 static LRESULT CALLBACK
@@ -83,32 +66,30 @@ hybrid_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       fde_t *F = lookup_fd((int) wParam);
       PF *hdl;
 
-      if (F != NULL)
+      if (F != NULL && F->flags.open)
         switch (WSAGETSELECTEVENT(lParam))
 	{
 	  case FD_ACCEPT:
 	  case FD_CLOSE:
 	  case FD_READ:
-	    hdl = F->read_handler;
-	    F->read_handler = NULL;
-
-	    if (hdl != NULL)
+	    if ((hdl = F->read_handler) != NULL)
+	    {
+	      F->read_handler = NULL;
               hdl(F, F->read_data);
-
-            if (hdl == NULL)
-	      update_winsock_events(F);
+	      if (F->flags.open)
+	        comm_setselect(F, 0, NULL, NULL, 0);
+	    }
 	    break;
 
           case FD_CONNECT:
           case FD_WRITE:
-	    hdl = F->write_handler;
-	    F->write_handler = NULL;
-
-            if (hdl != NULL)
+	    if ((hdl = F->write_handler) != NULL)
+	    {
+	      F->write_handler = NULL;
 	      hdl(F, F->write_data);
-
-            if (hdl == NULL)
-	      update_winsock_events(F);
+	      if (F->flags.open)
+	        comm_setselect(F, 0, NULL, NULL, 0);
+	    }
         }
 
       return 0;
@@ -236,28 +217,31 @@ void
 comm_setselect(fde_t *F, unsigned int type, PF *handler,
                void *client_data, time_t timeout)
 {
-  int do_update = NO;
+  int new_events = 0;
 
-  switch (type)
+  if ((type & COMM_SELECT_READ))
   {
-    case COMM_SELECT_READ:
-      if (!F->read_handler != !handler)
-        do_update = YES;
-
-      F->read_handler = handler;
-      F->read_data = client_data;
-      break;
-
-    case COMM_SELECT_WRITE:
-      if (!F->write_handler != !handler)
-        do_update = YES;
-
-      F->write_handler = handler;
-      F->write_data = client_data;
+    F->read_handler = handler;
+    F->read_data = data;
   }
 
-  if (do_update)
-    update_winsock_events(F);
+  if ((type & COMM_SELECT_WRITE))
+  {
+    F->write_handler = handler;
+    F->write_data = data;
+  }
+
+  new_events = (F->read_handler ? (FD_ACCEPT | FD_CLOSE | FD_READ) : 0) |
+    (F->write_handler ? (FD_CONNECT | FD_WRITE) : 0);
+
+  if (timeout != 0)
+      F->timeout = CurrentTime + (timeout / 1000);
+
+  if (new_events != F->evcache)
+  {
+    WSAAsyncSelect(F->fd, wndhandle, WM_SOCKET, new_events);
+    F->evcache = new_events;
+  }
 }
 
 /*
