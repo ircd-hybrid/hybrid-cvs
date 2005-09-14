@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.116 2005/09/14 09:47:40 adx Exp $
+dnl $Id: configure.ac,v 7.117 2005/09/14 10:00:43 adx Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.116 2005/09/14 09:47:40 adx Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.117 2005/09/14 10:00:43 adx Exp $])
 
 AC_INIT([ircd-hybrid],[7.2])
 
@@ -616,41 +616,47 @@ else
 AC_CHECK_FUNC([kevent],
 [
 	SELECT_TYPE="kqueue"
-	AC_DEFINE(USE_KQUEUE, 1, [Use kqueue() for I/O loop])
 ],
 [
-	AC_MSG_CHECKING(for /dev/poll)
-	if test -c "/dev/poll"; then
-		AC_MSG_RESULT(yes)
-		AC_CHECK_HEADERS([devpoll.h sys/devpoll.h])
-		SELECT_TYPE="devpoll"
-	else
-		AC_MSG_RESULT(no)
-		AC_MSG_CHECKING(for RT Signal IO)
-
-		dnl check for rtsig readiness notification under Linux
-		dnl (but don't use it unless kernel 2.4 or higher)
-		AC_EGREP_CPP(YUP_HAVE_F_SETSIG,
-		[#define _GNU_SOURCE
-		#include <fcntl.h>
-		#ifdef F_SETSIG
-		 YUP_HAVE_F_SETSIG
-		#endif
-		],
-		[
-			SELECT_TYPE="sigio"
+	AC_MSG_CHECKING(for epoll)
+	AC_CHECK_HEADER(sys/epoll.h,
+	[
+		SELECT_TYPE="epoll"
+	],
+	[
+		AC_MSG_CHECKING(for /dev/poll)
+		if test -c "/dev/poll"; then
 			AC_MSG_RESULT(yes)
-		],
-		[
+			AC_CHECK_HEADERS([devpoll.h sys/devpoll.h])
+			SELECT_TYPE="devpoll"
+		else
 			AC_MSG_RESULT(no)
-			AC_CHECK_FUNC(poll, [SELECT_TYPE="poll"],
+			AC_MSG_CHECKING(for RT Signal IO)
+
+			dnl check for rtsig readiness notification under Linux
+			dnl (but don't use it unless kernel 2.4 or higher)
+			AC_EGREP_CPP(YUP_HAVE_F_SETSIG,
+			[#define _GNU_SOURCE
+			#include <fcntl.h>
+			#ifdef F_SETSIG
+			 YUP_HAVE_F_SETSIG
+			#endif
+			],
 			[
-				AC_CHECK_FUNC(select, [SELECT_TYPE="select"],
-				[AC_MSG_ERROR([Couldn't find anything to use for IO loop. Is your C environment POSIXly sane?])
+				SELECT_TYPE="sigio"
+				AC_MSG_RESULT(yes)
+			],
+			[
+				AC_MSG_RESULT(no)
+				AC_CHECK_FUNC(poll, [SELECT_TYPE="poll"],
+				[
+					AC_CHECK_FUNC(select, [SELECT_TYPE="select"],
+					[AC_MSG_ERROR([Couldn't find anything to use for IO loop. Is your C environment POSIXly sane?])
+					])
 				])
 			])
-		])
-	fi
+		fi
+	])
 ])
 
 fi

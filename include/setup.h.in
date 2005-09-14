@@ -42,6 +42,9 @@
 /* Define if the dlopen function is available. */
 #undef HAVE_DLOPEN
 
+/* Define to 1 if you have the `epoll_ctl' function. */
+#undef HAVE_EPOLL_CTL
+
 /* Define to 1 if you have the <errno.h> header file. */
 #undef HAVE_ERRNO_H
 
@@ -152,6 +155,9 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the `usleep' function. */
+#undef HAVE_USLEEP
 
 /* Define to 1 if you have the `vsnprintf' function. */
 #undef HAVE_VSNPRINTF
@@ -266,9 +272,6 @@
 
 /* If enabled, server links to your network must have a minimum of TS5. */
 #undef TS5_ONLY
-
-/* Use kqueue() for I/O loop */
-#undef USE_KQUEUE
 
 /* Using sigio futzes around with the ircd - if you want sigio to work, this
    has to be 1. */
