@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_sigio.c,v 7.35 2005/09/13 18:15:56 adx Exp $
+ *  $Id: s_bsd_sigio.c,v 7.36 2005/09/14 09:34:39 adx Exp $
  */
 
 #ifndef _GNU_SOURCE
@@ -103,10 +103,11 @@ init_netio(void)
 {
   int fd;
 
-  my_pid = getpid();
   for (fd = 0; fd < HARD_FDLIMIT; fd++)
-    pollfd_list.pollfds[fd].fd = -1;
-  pollfd_list.maxindex = 0;
+    pollfds[fd].fd = -1;
+  pollmax = 0;
+
+  my_pid = getpid();
   mask_our_signal(SIGIO_SIGNAL);
 }
 
@@ -121,7 +122,7 @@ poll_findslot(void)
 
   for (i = 0; i < HARD_FDLIMIT; i++)
   {
-    if (pollfd_list.pollfds[i].fd == -1)
+    if (pollfds[i].fd == -1)
     {
       /* MATCH!!#$*&$ */
       return i;
@@ -165,7 +166,7 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
 
   if (new_events != F->evcache)
   {
-    if (F->new_events == 0)
+    if (new_events == 0)
     {
       pollfds[F->comm_index].fd = -1;
       pollfds[F->comm_index].revents = 0;
@@ -261,8 +262,7 @@ comm_select(void)
 
   /* ..try polling instead */
 
-  while ((num = poll(pollfd_list.pollfds, pollfd_list.maxindex + 1, 0)) < 0
-         && ignoreErrno(errno))
+  while ((num = poll(pollfds, pollmax + 1, 0)) < 0 && ignoreErrno(errno))
     ;
 
   /* update current time again, eww.. */
@@ -274,7 +274,7 @@ comm_select(void)
       continue;
     num--;
 
-    F = lookup_fd(pollfd_list.pollfds[ci].fd);
+    F = lookup_fd(pollfds[i].fd);
     if (F == NULL || !F->flags.open)
       continue;
 
