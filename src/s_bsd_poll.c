@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_poll.c,v 7.67 2005/09/13 18:15:56 adx Exp $
+ *  $Id: s_bsd_poll.c,v 7.68 2005/09/14 09:35:09 adx Exp $
  */
 
 #include "stdinc.h"
@@ -187,7 +187,7 @@ comm_select(void)
       continue;
     num--;
 
-    F = lookup_fd(pollfd_list.pollfds[ci].fd);
+    F = lookup_fd(pollfds[ci].fd);
     if (F == NULL || !F->flags.open)
       continue;
 
