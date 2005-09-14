@@ -20,11 +20,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_devpoll.c,v 7.28 2005/09/13 18:15:56 adx Exp $
+ *  $Id: s_bsd_devpoll.c,v 7.29 2005/09/14 10:27:41 adx Exp $
  */
 
 #include "stdinc.h"
-
+#include <sys/ioctl.h>
 /* HPUX uses devpoll.h and not sys/devpoll.h */
 #ifdef HAVE_DEVPOLL_H
 # include <devpoll.h>
@@ -35,27 +35,10 @@
 #  error "No devpoll.h found! Try ./configuring and letting the script choose for you."
 # endif
 #endif
-
 #include "fdlist.h"
-#include "s_bsd.h"
-#include "client.h"
-#include "common.h"
-#include "irc_string.h"
-#include "ircdauth.h"
 #include "ircd.h"
-#include "list.h"
-#include "listener.h"
-#include "numeric.h"
-#include "packet.h"
-#include "irc_res.h"
-#include "restart.h"
-#include "s_auth.h"
-#include "s_conf.h"
+#include "s_bsd.h"
 #include "s_log.h"
-#include "s_serv.h"
-#include "s_stats.h"
-#include "send.h"
-#include "memory.h"
 
 static fde_t dpfd;
 
@@ -97,7 +80,7 @@ devpoll_write_update(int fd, int events)
   pfd.events = events;
 
   /* Write the thing to our poll fd */
-  if (write(dpfd.fd, pfd, sizeof(pfd)) != sizeof(pfd))
+  if (write(dpfd.fd, &pfd, sizeof(pfd)) != sizeof(pfd))
     ilog(L_NOTICE, "devpoll_write_update: dpfd write failed %d: %s",
          errno, strerror(errno));
 }

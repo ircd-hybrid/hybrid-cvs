@@ -20,30 +20,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_select.c,v 7.40 2005/09/14 09:47:40 adx Exp $
+ *  $Id: s_bsd_select.c,v 7.41 2005/09/14 10:27:41 adx Exp $
  */
 
 #include "stdinc.h"
 #include "fdlist.h"
-#include "s_bsd.h"
-#include "client.h"
-#include "common.h"
-#include "irc_string.h"
-#include "ircdauth.h"
 #include "ircd.h"
-#include "list.h"
-#include "listener.h"
-#include "numeric.h"
-#include "packet.h"
-#include "irc_res.h"
-#include "restart.h"
-#include "s_auth.h"
-#include "s_conf.h"
+#include "s_bsd.h"
 #include "s_log.h"
-#include "s_serv.h"
-#include "s_stats.h"
-#include "send.h"
-#include "memory.h"
 
 #if HARD_FDLIMIT >= FD_SETSIZE
 #error HARD_FDLIMIT must be less than FD_SETSIZE (try using poll instead of select)

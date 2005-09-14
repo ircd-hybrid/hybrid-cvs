@@ -20,11 +20,16 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_epoll.c,v 7.1 2005/09/13 18:15:56 adx Exp $
+ *  $Id: s_bsd_epoll.c,v 7.2 2005/09/14 10:27:41 adx Exp $
  */
 
 #define _GNU_SOURCE 1
 #include "stdinc.h"
+#include "fdlist.h"
+#include "ircd.h"
+#include "memory.h"
+#include "s_bsd.h"
+#include "s_log.h"
 #include <sys/epoll.h>
 
 static fde_t efd;
@@ -130,7 +135,6 @@ comm_select(void)
   int num, i;
   PF *hdl;
   fde_t *F;
-  struct epoll_event ep_event;
 
   num = epoll_wait(efd.fd, ep_fdlist, epmax, SELECT_DELAY);
 

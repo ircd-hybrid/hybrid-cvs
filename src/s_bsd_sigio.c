@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_sigio.c,v 7.36 2005/09/14 09:34:39 adx Exp $
+ *  $Id: s_bsd_sigio.c,v 7.37 2005/09/14 10:27:41 adx Exp $
  */
 
 #ifndef _GNU_SOURCE
@@ -30,27 +30,10 @@
 
 #include "stdinc.h"
 #include <sys/poll.h>
-
 #include "fdlist.h"
-#include "s_bsd.h"
-#include "client.h"
-#include "common.h"
-#include "irc_string.h"
-#include "ircdauth.h"
 #include "ircd.h"
-#include "list.h"
-#include "listener.h"
-#include "numeric.h"
-#include "packet.h"
-#include "irc_res.h"
-#include "restart.h"
-#include "s_auth.h"
-#include "s_conf.h"
+#include "s_bsd.h"
 #include "s_log.h"
-#include "s_serv.h"
-#include "s_stats.h"
-#include "send.h"
-#include "memory.h"
 
 #define SIGIO_SIGNAL SIGRTMIN
 

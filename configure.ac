@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.117 2005/09/14 10:00:43 adx Exp $
+dnl $Id: configure.ac,v 7.118 2005/09/14 10:27:41 adx Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.117 2005/09/14 10:00:43 adx Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.118 2005/09/14 10:27:41 adx Exp $])
 
 AC_INIT([ircd-hybrid],[7.2])
 
@@ -618,7 +618,6 @@ AC_CHECK_FUNC([kevent],
 	SELECT_TYPE="kqueue"
 ],
 [
-	AC_MSG_CHECKING(for epoll)
 	AC_CHECK_HEADER(sys/epoll.h,
 	[
 		SELECT_TYPE="epoll"
