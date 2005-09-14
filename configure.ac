@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.114 2005/09/08 02:27:21 adx Exp $
+dnl $Id: configure.ac,v 7.115 2005/09/14 09:40:21 adx Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.114 2005/09/08 02:27:21 adx Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.115 2005/09/14 09:40:21 adx Exp $])
 
 AC_INIT([ircd-hybrid],[7.2])
 
@@ -604,6 +604,10 @@ AC_CHECK_HEADERS([sys/devpoll.h devpoll.h])],)
 AC_ARG_ENABLE(rtsigio,
 AC_HELP_STRING([--enable-rtsigio],[Enable SIGIO with RT Signals (Linux only)]),
 [SELECT_TYPE_EXPLICIT="sigio"; echo "Forcing Linux RT Sigio to be enabled"],)
+
+AC_ARG_ENABLE(epoll,
+AC_HELP_STRING([--enable-epoll], [Enable Linux epoll support.]),
+[SELECT_TYPE_EXPLICIT="epoll"; echo "Forcing Linux epoll to be enabled"],)
 
 if test ! -z "$SELECT_TYPE_EXPLICIT"; then
 	SELECT_TYPE="$SELECT_TYPE_EXPLICIT"
