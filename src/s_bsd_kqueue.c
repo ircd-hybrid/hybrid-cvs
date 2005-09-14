@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_kqueue.c,v 1.40 2005/09/13 18:15:56 adx Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.41 2005/09/14 00:22:38 knight Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ init_netio(void)
   int fd;
 
   kqmax = getdtablesize();
-  kqlst = MyMalloc(sizeof(struct kevent) * kqmax);
+  kq_fdlist = MyMalloc(sizeof(struct kevent) * kqmax);
 
   if ((fd = kqueue()) < 0)
   {
@@ -97,13 +97,13 @@ static void
 kq_update_events(int fd, int filter, int what)
 {
   static struct timespec zero_timespec = {0, 0};
-  struct kevent *kep = kqlst + kqoff;
+  struct kevent *kep = kq_fdlist + kqoff;
 
   EV_SET(kep, (uintptr_t) fd, (short) filter, what, 0, 0, NULL);
 
   if (kqoff == kqmax)
   {
-    kevent(kqfd.fd, kqlst, kqoff, NULL, 0, &zero_timespec);
+    kevent(kqfd.fd, kq_fdlist, kqoff, NULL, 0, &zero_timespec);
     kqoff = 0;
   }
   else
@@ -176,7 +176,7 @@ comm_select(void)
    */
   poll_time.tv_sec = 0;
   poll_time.tv_nsec = SELECT_DELAY * 1000000;
-  num = kevent(kq, kqlst, kqoff, ke, KE_LENGTH, &poll_time);
+  num = kevent(kqfd.fd, kq_fdlist, kqoff, ke, KE_LENGTH, &poll_time);
   kqoff = 0;
 
   set_time();
@@ -191,7 +191,7 @@ comm_select(void)
 
   for (i = 0; i < num; i++)
   {
-    F = fd_lookup(ke[i].ident);
+    F = lookup_fd(ke[i].ident);
     if (F == NULL || !F->flags.open || (ke[i].flags & EV_ERROR))
       continue;
 
