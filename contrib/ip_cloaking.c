@@ -1,9 +1,3 @@
-/* CHANGE THESE PLEASE! */
-
-#define KEY  23857
-#define KEY2 38447
-#define KEY3 64709
-
 /*
  * ircd-hybrid: an advanced Internet Relay Chat Daemon (ircd).
  * ip_cloaking.c: Provides hostname (partial) cloaking for clients.
@@ -25,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  *
- * $Id: ip_cloaking.c,v 1.9 2005/09/12 17:41:02 knight Exp $
+ * $Id: ip_cloaking.c,v 1.10 2005/09/14 14:01:57 knight Exp $
  */
 
 /*
@@ -41,6 +35,18 @@
  * Additional ideas and code by ShadowMaster, [-Th3Dud3-] (RageIRCd), Solaris @ Demonkarma.net,
  * Alan 'knight-' LeVee of the ChatJunkies IRC Network and doughk_ff7.
  */
+
+/* MODULE CONFIGURATION FOLLOWS -- please read!! */
+
+/* Change these numbers to something else. Please
+ * make sure that they match on ALL servers
+ * to avoid problems!
+ */
+#define KEY  23857
+#define KEY2 38447
+#define KEY3 64709
+
+/* END OF MODULE CONFIGURATION */
 
 #include "stdinc.h"
 #include "whowas.h"
@@ -67,7 +73,7 @@ static int vhost_ipv6_err;
 static dlink_node *prev_enter_umode;
 static dlink_node *prev_umode;
 
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.10 $";
 
 static void *reset_ipv6err_flag(va_list);
 static void *h_set_user_mode(va_list);
@@ -247,15 +253,23 @@ crc32 (const unsigned char *s, unsigned int len)
   return crc32val;
 }
 
+/*
+ * str2arr()
+ *
+ * converts IPv4 address segments into arrays
+ * for encryption
+ *
+ * inputs - address parvs, strings and deliminator
+ * outputs - array
+ * side effects - not IPv6 friendly
+ */
 static int
 str2arr (char **pparv, char *string, char *delim)
 {
   char *tok;
   int pparc = 0;
 
-  /*
-   * Diane suggested this as a better method to my while loop. Thanks! -- knight
-   */
+  /* Diane had suggested to use this method rather than while() -- knight */
   for (tok = strtok (string, delim); tok != NULL; tok = strtok (NULL, delim))
   {
     pparv[pparc++] = tok;
@@ -264,6 +278,13 @@ str2arr (char **pparv, char *string, char *delim)
   return pparc;
 }
 
+/*
+ * make_virthost()
+ *
+ * curr = current hostname/ip
+ * host = current host socket
+ * new = encrypted hostname/ip
+ */
 static void
 make_virthost (char *curr, char *host, char *new)
 {
@@ -354,6 +375,7 @@ make_virthost (char *curr, char *host, char *new)
 
 /*
  * set_vhost()
+ * 
  * inputs - pointer to given client to set IP cloak.
  * outputs - NONE
  * side effects - NONE
@@ -369,10 +391,10 @@ set_vhost(struct Client *client_p, struct Client *source_p,
   if (IsClient(target_p))
     sendto_server(client_p, source_p, NULL, CAP_ENCAP, NOCAPS, LL_ICLIENT,
                   ":%s ENCAP * CHGHOST %s %s",
-		  me.name, target_p->name, target_p->host);
+		          me.name, target_p->name, target_p->host);
 
-  sendto_one(target_p, form_str(RPL_HOSTHIDDEN),
-             me.name, target_p->name, target_p->host);
+    sendto_one(target_p, form_str(RPL_HOSTHIDDEN),
+               me.name, target_p->name, target_p->host);
 }
 
 static void *

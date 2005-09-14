@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.29 2005/09/13 14:40:36 knight Exp $
+ *  $Id: m_services.c,v 1.30 2005/09/14 14:01:57 knight Exp $
  */
 /*
  *
@@ -223,7 +223,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 
 /*
@@ -303,12 +303,13 @@ services_function(m_seenserv, "SeenServ", "SEENSERV")
 services_function(m_statserv, "StatServ", "STATSERV")
 
 /*
- * GetString()
+ * get_string() 
  *
  * Reverse the array parv back into a normal string assuming
  * there are "parc" indicies in the array.
  *
- * GetString() written by sidewndr
+ * Originally GetString() written by sidewndr.
+ * Modified by Michael for use with hybrid-7.
 */
 static void
 get_string(int parc, char *parv[], char *buf)
@@ -350,7 +351,10 @@ clean_nick_name(char *nick, int local)
 
 /*
  * m_identify()
- * 
+ *
+ * parv[0] = sender prefix
+ * parv[1] = NickServ Password or Channel
+ * parv[2] = ChanServ Password
  */
 static void
 m_identify(struct Client *client_p, struct Client *source_p,
@@ -360,7 +364,7 @@ m_identify(struct Client *client_p, struct Client *source_p,
 
   if (parc == 3)
   {
-      if (!(target_p = find_server(SERVICES_NAME))) /* Michael suggested; Thanks! -- knight- */
+      if (!(target_p = find_server(SERVICES_NAME)))
         sendto_one(source_p, form_str(ERR_SERVICESDOWN),
 		   me.name, source_p->name);
       else
@@ -369,7 +373,7 @@ m_identify(struct Client *client_p, struct Client *source_p,
   }
   else if (parc == 2)
   {
-    if (!(target_p = find_server(SERVICES_NAME))) /* Michael suggested; Thanks! -- knight- */
+    if (!(target_p = find_server(SERVICES_NAME)))
       sendto_one(source_p, form_str(ERR_SERVICESDOWN),
                  me.name, source_p->name);
     else
@@ -408,7 +412,7 @@ deliver_services_msg(const char *service, const char *command,
     return;
   }
 
-  if (!(target_p = find_server(SERVICES_NAME))) /* Michael suggested; Thanks! -- knight- */
+  if (!(target_p = find_server(SERVICES_NAME)))
     sendto_one(source_p, form_str(ERR_SERVICESDOWN),
                me.name, source_p->name);
   else
