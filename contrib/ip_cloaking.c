@@ -1,3 +1,15 @@
+/* MODULE CONFIGURATION FOLLOWS -- please read!! */
+
+/* Change these numbers to something else. Please
+ * make sure that they match on ALL servers
+ * to avoid problems!
+ */
+#define KEY  23857
+#define KEY2 38447
+#define KEY3 64709
+
+/* END OF MODULE CONFIGURATION */
+
 /*
  * ircd-hybrid: an advanced Internet Relay Chat Daemon (ircd).
  * ip_cloaking.c: Provides hostname (partial) cloaking for clients.
@@ -19,7 +31,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  *
- * $Id: ip_cloaking.c,v 1.10 2005/09/14 14:01:57 knight Exp $
+ * $Id: ip_cloaking.c,v 1.11 2005/09/14 14:13:29 knight Exp $
  */
 
 /*
@@ -35,18 +47,6 @@
  * Additional ideas and code by ShadowMaster, [-Th3Dud3-] (RageIRCd), Solaris @ Demonkarma.net,
  * Alan 'knight-' LeVee of the ChatJunkies IRC Network and doughk_ff7.
  */
-
-/* MODULE CONFIGURATION FOLLOWS -- please read!! */
-
-/* Change these numbers to something else. Please
- * make sure that they match on ALL servers
- * to avoid problems!
- */
-#define KEY  23857
-#define KEY2 38447
-#define KEY3 64709
-
-/* END OF MODULE CONFIGURATION */
 
 #include "stdinc.h"
 #include "whowas.h"
@@ -73,7 +73,7 @@ static int vhost_ipv6_err;
 static dlink_node *prev_enter_umode;
 static dlink_node *prev_umode;
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 
 static void *reset_ipv6err_flag(va_list);
 static void *h_set_user_mode(va_list);
