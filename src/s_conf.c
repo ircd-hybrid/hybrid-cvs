@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.594 2005/09/13 03:53:20 db Exp $
+ *  $Id: s_conf.c,v 7.595 2005/09/14 23:36:55 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1967,6 +1967,7 @@ set_default_conf(void)
   ConfigServerHide.hidden = NO;
   ConfigServerHide.disable_hidden = NO;
   ConfigServerHide.hide_servers = NO;
+  DupString(ConfigServerHide.hidden_name, NETWORK_NAME_DEFAULT);
   ConfigServerHide.hide_server_ips = NO;
 
   ConfigFileEntry.gline_min_cidr = 16;

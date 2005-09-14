@@ -2,7 +2,7 @@
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  s_conf.h: A header for the configuration functions.
  *
- *  Copyright (C) 2002 by the past and present ircd coders, and others.
+ *  Copyright (C) 2005 by the past and present ircd coders, and others.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.330 2005/09/13 03:53:20 db Exp $
+ *  $Id: s_conf.h,v 7.331 2005/09/14 23:36:54 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -391,6 +391,7 @@ struct config_server_hide
 {
   int flatten_links;
   int hide_servers;
+  char *hidden_name;
   int links_delay;
   int links_disabled;
   int hidden;

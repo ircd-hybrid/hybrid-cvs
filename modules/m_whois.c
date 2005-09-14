@@ -2,7 +2,7 @@
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  m_whois.c: Shows who a user is.
  *
- *  Copyright (C) 2002 by the past and present ircd coders, and others.
+ *  Copyright (C) 2005 by the past and present ircd coders, and others.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.142 2005/08/29 21:02:50 db Exp $
+ *  $Id: m_whois.c,v 1.143 2005/09/14 23:36:55 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ struct Message whois_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.142 $";
+const char *_version = "$Revision: 1.143 $";
 static struct Callback *whois_cb;
 
 void
@@ -393,7 +393,7 @@ whois_person(struct Client *source_p, struct Client *target_p)
   else
     sendto_one(source_p, form_str(RPL_WHOISSERVER),
 	       me.name, source_p->name, target_p->name,
-               ServerInfo.network_name,
+               ConfigServerHide.hidden_name,
 	       ServerInfo.network_desc);
 
   if (target_p->away != NULL)

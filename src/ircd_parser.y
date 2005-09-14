@@ -2,7 +2,7 @@
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  ircd_parser.y: Parses the ircd configuration file.
  *
- *  Copyright (C) 2002 by the past and present ircd coders, and others.
+ *  Copyright (C) 2005 by the past and present ircd coders, and others.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.440 2005/09/07 16:59:12 db Exp $
+ *  $Id: ircd_parser.y,v 1.441 2005/09/14 23:36:55 metalrock Exp $
  */
 
 %{
@@ -206,6 +206,7 @@ unhook_hub_leaf_confs(void)
 %token  HAVENT_READ_CONF
 %token  HIDDEN
 %token  HIDDEN_ADMIN
+%token	HIDDEN_NAME
 %token  HIDDEN_OPER
 %token  HIDE_SERVER_IPS
 %token  HIDE_SERVERS
@@ -3800,7 +3801,7 @@ serverhide_items:   serverhide_items serverhide_item | serverhide_item;
 serverhide_item:    serverhide_flatten_links | serverhide_hide_servers |
 		    serverhide_links_delay |
 		    serverhide_disable_hidden |
-		    serverhide_hidden |
+		    serverhide_hidden | serverhide_hidden_name |
 		    serverhide_hide_server_ips |
                     error;
 
@@ -3814,6 +3815,15 @@ serverhide_hide_servers: HIDE_SERVERS '=' TBOOL ';'
 {
   if (ypass == 2)
     ConfigServerHide.hide_servers = yylval.number;
+};
+
+serverhide_hidden_name: HIDDEN_NAME '=' QSTRING ';'
+{
+  if (ypass == 2)
+  {
+    MyFree(ConfigServerHide.hidden_name);
+    DupString(ConfigServerHide.hidden_name, yylval.string);
+  }
 };
 
 serverhide_links_delay: LINKS_DELAY '=' timespec ';'
