@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_select.c,v 7.39 2005/09/13 18:15:56 adx Exp $
+ *  $Id: s_bsd_select.c,v 7.40 2005/09/14 09:47:40 adx Exp $
  */
 
 #include "stdinc.h"
@@ -108,16 +108,16 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
       FD_SET(F->fd, &select_readfds);
     else
     {
-      FD_CLEAR(F->fd, &select_readfds);
-      FD_CLEAR(F->fd, &tmpreadfds);
+      FD_CLR(F->fd, &select_readfds);
+      FD_CLR(F->fd, &tmpreadfds);
     }
 
     if ((new_events & COMM_SELECT_WRITE))
       FD_SET(F->fd, &select_writefds);
     else
     {
-      FD_CLEAR(F->fd, &select_writefds);
-      FD_CLEAR(F->fd, &tmpwritefds);
+      FD_CLR(F->fd, &select_writefds);
+      FD_CLR(F->fd, &tmpwritefds);
     }
 
     if (new_events == 0)

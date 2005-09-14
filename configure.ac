@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.115 2005/09/14 09:40:21 adx Exp $
+dnl $Id: configure.ac,v 7.116 2005/09/14 09:47:40 adx Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.115 2005/09/14 09:40:21 adx Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.116 2005/09/14 09:47:40 adx Exp $])
 
 AC_INIT([ircd-hybrid],[7.2])
 
@@ -429,7 +429,7 @@ AC_CHECK_TYPE([sa_family_t], [],
 #include <sys/socket.h>]])
 
 dnl check for various functions...
-AC_CHECK_FUNCS([socketpair basename mmap snprintf vsnprintf lrand48 srand48 strtok_r])
+AC_CHECK_FUNCS([socketpair basename mmap snprintf vsnprintf lrand48 srand48 strtok_r usleep])
 
 if test "$ac_cv_func_snprintf" = no -o "$ac_cv_func_vsnprintf" = no; then
 	SNPRINTF_C="snprintf.c"
@@ -660,6 +660,10 @@ dnl resurrected.
 
 if test "$SELECT_TYPE" = sigio; then
 	AC_DEFINE(USE_SIGIO, 1, [Using sigio futzes around with the ircd - if you want sigio to work, this has to be 1.])
+fi
+
+if test "$SELECT_TYPE" = epoll; then
+	AC_CHECK_FUNCS(epoll_ctl)
 fi
 
 echo "Using $SELECT_TYPE for select loop."

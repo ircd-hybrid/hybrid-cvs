@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_poll.c,v 7.68 2005/09/14 09:35:09 adx Exp $
+ *  $Id: s_bsd_poll.c,v 7.69 2005/09/14 09:47:40 adx Exp $
  */
 
 #include "stdinc.h"
@@ -127,7 +127,7 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
 
   if (new_events != F->evcache)
   {
-    if (F->new_events == 0)
+    if (new_events == 0)
     {
       pollfds[F->comm_index].fd = -1;
       pollfds[F->comm_index].revents = 0;
