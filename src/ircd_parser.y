@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.441 2005/09/14 23:36:55 metalrock Exp $
+ *  $Id: ircd_parser.y,v 1.442 2005/09/15 03:08:26 db Exp $
  */
 
 %{
@@ -1097,7 +1097,11 @@ oper_password: PASSWORD '=' QSTRING ';'
 
 oper_encrypted: ENCRYPTED '=' TBOOL ';'
 {
-  if (ypass == 2)
+  if (ypass == 1)
+  {
+    SetConfEncrypted(yy_aconf);
+  }
+  else
   {
     if (yylval.number)
       SetConfEncrypted(yy_aconf);
