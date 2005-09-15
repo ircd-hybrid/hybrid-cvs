@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.442 2005/09/15 03:08:26 db Exp $
+ *  $Id: ircd_parser.y,v 1.443 2005/09/15 10:43:29 adx Exp $
  */
 
 %{
@@ -1608,13 +1608,13 @@ class_cidr_bitlen: CIDR_BITLEN '=' NUMBER ';'
 {
   if (ypass == 2)
     CidrBitlen(yy_class) = $3;
-}
+};
 
 class_number_per_cidr: NUMBER_PER_CIDR '=' NUMBER ';'
 {
   if (ypass == 2)
     NumberPerCidr(yy_class) = $3;
-}
+};
 
 /***************************************************************************
  *  section listen
@@ -2919,26 +2919,7 @@ deny_reason: REASON '=' QSTRING ';'
 /***************************************************************************
  *  section exempt
  ***************************************************************************/
-exempt_entry: EXEMPT
-{
-  if (ypass == 2)
-  {
-    yy_conf = make_conf_item(EXEMPTDLINE_TYPE);
-    yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
-    DupString(yy_aconf->passwd, "*");
-  }
-} '{' exempt_items '}' ';'
-{
-  if (ypass == 2)
-  {
-    if (yy_aconf->host && parse_netmask(yy_aconf->host, NULL, NULL) != HM_HOST)
-      add_conf_by_address(CONF_EXEMPTDLINE, yy_aconf);
-    else
-      delete_conf_item(yy_conf);
-    yy_conf = NULL;
-    yy_aconf = NULL;
-  }
-};
+exempt_entry: EXEMPT '{' exempt_items '}' ';';
 
 exempt_items:     exempt_items exempt_item | exempt_item;
 exempt_item:      exempt_ip | error;
@@ -2946,10 +2927,17 @@ exempt_item:      exempt_ip | error;
 exempt_ip: IP '=' QSTRING ';'
 {
   if (ypass == 2)
-  {
-    MyFree(yy_aconf->host);
-    DupString(yy_aconf->host, yylval.string);
-  }
+    if (yylval.string[0] && parse_netmask(yylval.string, NULL, NULL) != HM_HOST)
+    {
+      yy_conf = make_conf_item(EXEMPTDLINE_TYPE);
+      yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
+      yy_aconf->host = yylval.string;
+
+      add_conf_by_address(CONF_EXEMPTDLINE, yy_aconf);
+
+      yy_conf = NULL;
+      yy_aconf = NULL;
+    }
 };
 
 /***************************************************************************
