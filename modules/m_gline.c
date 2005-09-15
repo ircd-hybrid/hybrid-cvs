@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.141 2005/09/15 17:56:29 knight Exp $
+ *  $Id: m_gline.c,v 1.142 2005/09/15 18:03:54 knight Exp $
  */
 
 #include "stdinc.h"
@@ -107,7 +107,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.141 $";
+const char *_version = "$Revision: 1.142 $";
 #endif
 
 /* mo_gline()
@@ -188,7 +188,7 @@ mo_gline(struct Client *client_p, struct Client *source_p,
 
   set_local_gline(source_p, user, host, reason);
 #else
-  set_local_gline(source_p, user, host, reason;
+  set_local_gline(source_p, user, host, reason);
 #endif /* GLINE_VOTING */
   
   /* 4 param version for hyb-7 servers */
