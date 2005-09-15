@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.443 2005/09/15 10:43:29 adx Exp $
+ *  $Id: ircd_parser.y,v 1.444 2005/09/15 11:46:54 adx Exp $
  */
 
 %{
@@ -233,7 +233,6 @@ unhook_hub_leaf_confs(void)
 %token  T_LOG
 %token  LOGGING
 %token  LOG_LEVEL
-%token  MAXIMUM_LINKS
 %token  MAX_ACCEPT
 %token  MAX_BANS
 %token  MAX_CHANS_PER_USER
@@ -3030,8 +3029,7 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
                     general_pace_wait_simple | general_stats_P_oper_only |
                     general_short_motd | general_no_oper_flood |
                     general_true_no_oper_flood | general_oper_pass_resv |
-                    general_idletime | general_maximum_links |
-                    general_message_locale |
+                    general_idletime | general_message_locale |
                     general_oper_only_umodes | general_max_targets |
                     general_use_egd | general_egdpool_path |
                     general_oper_umodes | general_caller_id_wait |
@@ -3272,11 +3270,6 @@ general_idletime: IDLETIME '=' timespec ';'
 general_dots_in_ident: DOTS_IN_IDENT '=' NUMBER ';'
 {
   ConfigFileEntry.dots_in_ident = $3;
-};
-
-general_maximum_links: MAXIMUM_LINKS '=' NUMBER ';'
-{
-  ConfigFileEntry.maximum_links = $3;
 };
 
 general_max_targets: MAX_TARGETS '=' NUMBER ';'

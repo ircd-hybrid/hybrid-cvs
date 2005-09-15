@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.597 2005/09/15 10:18:44 adx Exp $
+ *  $Id: s_conf.c,v 7.598 2005/09/15 11:46:54 adx Exp $
  */
 
 #include "stdinc.h"
@@ -338,7 +338,7 @@ make_conf_item(ConfType type)
     aclass = (struct ClassItem *)map_to_conf(conf);
     ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
     PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
-    MaxTotal(aclass) = ConfigFileEntry.maximum_links;
+    MaxTotal(aclass) = MAXIMUM_LINKS_DEFAULT;
     MaxSendq(aclass) = DEFAULT_SENDQ;
     CurrUserCount(aclass) = 0;
     break;
@@ -2013,7 +2013,6 @@ set_default_conf(void)
   ConfigFileEntry.glines = NO;            /* XXX */
   ConfigFileEntry.gline_time = 12 * 3600; /* XXX */
   ConfigFileEntry.idletime = 0;
-  ConfigFileEntry.maximum_links = MAXIMUM_LINKS_DEFAULT;
   ConfigFileEntry.max_targets = MAX_TARGETS_DEFAULT;
   ConfigFileEntry.client_flood = CLIENT_FLOOD_DEFAULT;
   ConfigFileEntry.oper_only_umodes = UMODE_DEBUG;  /* XXX */

@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.37 2005/09/14 23:36:54 metalrock Exp $
+ * $Id: example.conf.quick,v 1.38 2005/09/15 11:46:53 adx Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -334,7 +334,6 @@ general {
 	true_no_oper_flood = yes;
 	oper_pass_resv = yes;
 	idletime = 0;
-	maximum_links = 1;
 	/* REMOVE ME.  The following line checks you've been reading. */
 	havent_read_conf = 1;
 

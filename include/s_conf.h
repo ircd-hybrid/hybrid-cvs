@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.331 2005/09/14 23:36:54 metalrock Exp $
+ *  $Id: s_conf.h,v 7.332 2005/09/15 11:46:53 adx Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -347,7 +347,6 @@ struct config_file_entry
   int gline_time;
   int gline_logging;
   int idletime;
-  int maximum_links;
   int oper_only_umodes;
   int oper_umodes;
   int max_targets;

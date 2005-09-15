@@ -1,8 +1,9 @@
--- ircd-hybrid-7.2beta2 RELNOTES
+-- ircd-hybrid-7.2rc1 RELNOTES
 o) Added hidden_name which allows customized hidden server names.
 o) Local channels will not show up in remote /WHOIS.
 o) Added --disable-gline-voting to disable G-Line votes
    for small networks or people who don't want it.
+o) Allow accumulating more ip= entries in an exempt{} block
 
 -- ircd-hybrid-7.2beta1 RELNOTES
 o) Usermode +G, like +g, but allow messaging from people on common channels
@@ -62,4 +63,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.120 2005/09/15 01:37:24 knight Exp $
+$Id: RELNOTES,v 1.121 2005/09/15 11:46:53 adx Exp $

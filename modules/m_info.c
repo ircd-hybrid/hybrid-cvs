@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.103 2005/09/15 01:25:59 metalrock Exp $
+ *  $Id: m_info.c,v 1.104 2005/09/15 11:46:54 adx Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,7 @@ struct Message info_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.103 $";
+const char *_version = "$Revision: 1.104 $";
 static struct Callback *info_cb;
 
 void
@@ -227,12 +227,6 @@ static const struct InfoStruct info_table[] =
     OUTPUT_DECIMAL,
     &ConfigFileEntry.max_targets,
     "The maximum number of PRIVMSG/NOTICE targets"
-  },
-  {
-    "maximum_links",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.maximum_links,
-    "Class default maximum links count",
   },
   {
     "min_nonwildcard",
