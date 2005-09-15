@@ -1,6 +1,6 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.50 2005/09/07 20:44:47 knight Exp $
+   $Id: INSTALL,v 7.51 2005/09/15 02:09:17 metalrock Exp $
 
    Copyright (c) 1997-2005 IRCD-Hybrid Development Team
 
@@ -134,8 +134,8 @@
 	  * --disable-gline-voting - This is good for small networks or where
 	    G-Line voting is not necessary. Please understand that by disabling
 	    this, it will allow any operator with G-Line permissions to G-Line
-	    someone without requiring the approval of 2 other operators. However
-	    it is useful if you use proxy scanners that do G-Lines or OperServ. 
+	    someone without requiring the approval of 2 other operators. However,
+	    it is useful if you use proxy scanners or services that do G-Lines. 
 
    3.  Run 'make'; this should build the ircd.
 
