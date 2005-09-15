@@ -1,4 +1,4 @@
-# $Id: index.txt,v 1.20 2003/06/21 20:09:15 metalrock Exp $
+# $Id: index.txt,v 1.20.4.1 2005/09/15 03:37:16 metalrock Exp $
 Here is the overview of the documents in the doc/ directory.
 
 CIDR.txt		- Description of CIDR in IPv4
@@ -6,7 +6,6 @@ LazyLinks.txt		- The lazylinks leaf concept
 Tao-of-IRC.940110       - No comment...
 challenge.txt           - Overview of the challenge/response system for
                           obtaining operator status
-channels.txt		- General channel information.
 dline.conf              - A blank dline.conf file used by make install
 example.conf            - An example ircd.conf file describing most of the
                           user settable options
