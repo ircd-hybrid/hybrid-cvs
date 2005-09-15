@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.20 2005/09/10 09:48:55 michael Exp $
+ *  $Id: defaults.h,v 7.21 2005/09/15 09:21:57 adx Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -104,7 +104,7 @@
 #define NETWORK_DESC_DEFAULT "Eris Free Network" /* default for network_desc */
 
 /* General defaults */
-#define MAXIMUM_LINKS_DEFAULT 1         /* default for maximum_links */
+#define MAXIMUM_LINKS_DEFAULT 0         /* default for maximum_links */
 #define MAX_BUFFER 60
 
 

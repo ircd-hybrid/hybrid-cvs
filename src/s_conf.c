@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.595 2005/09/14 23:36:55 metalrock Exp $
+ *  $Id: s_conf.c,v 7.596 2005/09/15 09:21:57 adx Exp $
  */
 
 #include "stdinc.h"
@@ -3008,9 +3008,8 @@ init_class(void)
   DupString(class_default->name, "default");
   ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
   PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
-  MaxTotal(aclass) = ConfigFileEntry.maximum_links;
+  MaxTotal(aclass) = MAXIMUM_LINKS_DEFAULT;
   MaxSendq(aclass) = DEFAULT_SENDQ;
-  CurrUserCount(aclass) = 0;
 
   client_check_cb = register_callback("check_client", check_client);
 }
