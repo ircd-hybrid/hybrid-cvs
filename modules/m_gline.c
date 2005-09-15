@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.140 2005/09/15 16:50:49 db Exp $
+ *  $Id: m_gline.c,v 1.141 2005/09/15 17:56:29 knight Exp $
  */
 
 #include "stdinc.h"
@@ -107,7 +107,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.140 $";
+const char *_version = "$Revision: 1.141 $";
 #endif
 
 /* mo_gline()
@@ -185,10 +185,12 @@ mo_gline(struct Client *client_p, struct Client *source_p,
   ilog(L_TRACE, "#gline for %s@%s [%s] requested by %s!%s@%s",
        user, host, reason, source_p->name, source_p->username,
        source_p->host);
-#elseif 
-  set_local_gline(source_p, user, host, reason);
-#endif /* GLINE_VOTING */
 
+  set_local_gline(source_p, user, host, reason);
+#else
+  set_local_gline(source_p, user, host, reason;
+#endif /* GLINE_VOTING */
+  
   /* 4 param version for hyb-7 servers */
   sendto_server(NULL, source_p, NULL, CAP_GLN|CAP_TS6, NOCAPS,
 		LL_ICLIENT, ":%s GLINE %s %s :%s",
@@ -383,8 +385,10 @@ do_sgline(struct Client *client_p, struct Client *source_p,
 
      ilog(L_TRACE, "#gline for %s@%s [%s] requested by %s",
           user, host, reason, get_oper_name(source_p));
+
+     set_local_gline(source_p, user, host, reason);
 #else 
-  set_local_gline(source_p, user, host, reason);
+     set_local_gline(source_p, user, host, reason);
 #endif /* GLINE_VOTING */
      
   }
