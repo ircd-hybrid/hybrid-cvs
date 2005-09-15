@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.143 2005/09/14 23:36:55 metalrock Exp $
+ *  $Id: m_whois.c,v 1.144 2005/09/15 01:25:59 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ struct Message whois_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.143 $";
+const char *_version = "$Revision: 1.144 $";
 static struct Callback *whois_cb;
 
 void
@@ -360,11 +360,15 @@ whois_person(struct Client *source_p, struct Client *target_p)
 
   DLINK_FOREACH(lp, target_p->channel.head)
   {
-    ms    = lp->data;
+    ms = lp->data;
     chptr = ms->chptr;
 
     if (ShowChannel(source_p, chptr))
     {
+      /* Don't show local channels if user is doing a remote whois */
+      if (!MyConnect(source_p) && (chptr->chname[0] == '&'))
+	continue;
+
       if ((cur_len + 3 + strlen(chptr->chname) + 1) > (IRCD_BUFSIZE - 2))
       {
 	*(t - 1) = '\0';

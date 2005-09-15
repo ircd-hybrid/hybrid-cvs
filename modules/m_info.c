@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.102 2005/09/14 23:36:55 metalrock Exp $
+ *  $Id: m_info.c,v 1.103 2005/09/15 01:25:59 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,7 @@ struct Message info_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.102 $";
+const char *_version = "$Revision: 1.103 $";
 static struct Callback *info_cb;
 
 void
@@ -448,7 +448,7 @@ static const struct InfoStruct info_table[] =
     "disable_local_channels",
     OUTPUT_BOOLEAN_YN,
     &ConfigChannel.disable_local_channels,
-    "Prevent users joining &channels",
+    "Prevent users from joining &channels",
   },
   {
     "disable_remote_commands",
