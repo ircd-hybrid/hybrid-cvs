@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.596 2005/09/15 09:21:57 adx Exp $
+ *  $Id: s_conf.c,v 7.597 2005/09/15 10:18:44 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1465,7 +1465,7 @@ attach_conf(struct Client *client_p, struct ConfItem *conf)
 
       aclass = (struct ClassItem *)map_to_conf(aconf->class_ptr);
 
-      if (MaxTotal(aclass) > 0)
+      if (MaxTotal(aclass) >= 0)
       {
 	if (CurrUserCount(aclass) >= MaxTotal(aclass))
         {
