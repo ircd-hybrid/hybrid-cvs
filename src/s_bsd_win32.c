@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.15 2005/09/13 18:15:56 adx Exp $
+ *  $Id: s_bsd_win32.c,v 7.16 2005/09/15 07:17:03 adx Exp $
  */
 
 #include "stdinc.h"
@@ -222,13 +222,13 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
   if ((type & COMM_SELECT_READ))
   {
     F->read_handler = handler;
-    F->read_data = data;
+    F->read_data = client_data;
   }
 
   if ((type & COMM_SELECT_WRITE))
   {
     F->write_handler = handler;
-    F->write_data = data;
+    F->write_data = client_data;
   }
 
   new_events = (F->read_handler ? (FD_ACCEPT | FD_CLOSE | FD_READ) : 0) |
