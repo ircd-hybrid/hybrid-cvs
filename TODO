@@ -1,4 +1,4 @@
-$Id: TODO,v 7.105 2005/09/13 05:28:24 adx Exp $
+$Id: TODO,v 7.106 2005/09/15 01:20:33 knight Exp $
 
 - dynamically extensible parser for modules
 
@@ -49,10 +49,6 @@ Little things to be done given enough time and initiative -Hwy
 * TENDRA IS BROKEN! (Not quite our fault)
 * Fix lack of error message for oper initiating /connect that fails because
 it's a leaf.
-
-
--- metalrock's list
-* Don't show local channels in a remote whois.
 
 
 -- knight's list
