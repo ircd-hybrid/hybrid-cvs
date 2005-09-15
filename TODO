@@ -1,4 +1,4 @@
-$Id: TODO,v 7.106 2005/09/15 01:20:33 knight Exp $
+$Id: TODO,v 7.107 2005/09/15 01:27:58 metalrock Exp $
 
 - dynamically extensible parser for modules
 
@@ -36,7 +36,6 @@ Little things to be done given enough time and initiative -Hwy
 
 -- Diane's list
 * add logging to ircd.log of possible channel floods
-
 * add code to log a minute worth of flooding if the ircd gets n possible
   flood messages on a channel in t seconds.. This log would be available
   to hand to authorities if requested.
@@ -63,7 +62,7 @@ it's a leaf.
 
 
 -- adx's list
-* modularise parser, channel modes, member flags and more
+* modularize parser, channel modes, member flags and more
 * implement ND/CD split logic
 * more I/O backends (epoll ..)
 * fix broken resolving of connect{} hostnames
