@@ -1,4 +1,4 @@
-$Id: TODO,v 7.107 2005/09/15 01:27:58 metalrock Exp $
+$Id: TODO,v 7.108 2005/09/15 02:23:58 knight Exp $
 
 - dynamically extensible parser for modules
 
@@ -51,14 +51,14 @@ it's a leaf.
 
 
 -- knight's list
-* Finish the Czechoslovakian translation file.
-* Work on database authentication (iauth).
-* Revive VMS (VAX) port *eg*.
-* More AMD64 testing on other distributions.
-* More testing for Mac OS X.
-* NetBSD porting.
-* Work on nickname collision code to change nickname 
-  ONLY when nicknames collide, not UIDs.
+* Add Czechoslovakian support.
+* Database Authentication (IAUTH).
+* VMS, NetBSD, Mac OS X (testing and porting).
+* AMD64, Sparc(64) testing and development.
+* GCC4 testing and development
+* Re-work nickname collision code to change
+  nicknames on collide rather than issue a
+  server kill.
 
 
 -- adx's list
