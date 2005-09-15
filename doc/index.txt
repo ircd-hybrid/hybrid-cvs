@@ -1,4 +1,4 @@
-$Id: index.txt,v 1.21 2005/08/20 15:00:54 knight Exp $
+$Id: index.txt,v 1.22 2005/09/15 01:19:46 knight Exp $
 -----------------------------------------------
 
 Documentation for ircd-hybrid
@@ -7,8 +7,6 @@ CIDR.txt		- Description of CIDR in IPv4
 LazyLinks.txt		- The lazylinks leaf concept
 challenge.txt           - Overview of the challenge/response system for
                           obtaining operator status
-channels.txt		- General channel information.
-			  either been omitted or abridged.
 guidelines.txt		- Documentation guidelines
 index.txt		- This file
 ircd.8                  - The new revised manpage, read with the following
