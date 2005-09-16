@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.105 2005/09/16 12:35:52 knight Exp $
+ *  $Id: m_info.c,v 1.106 2005/09/16 15:28:18 knight Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,7 @@ struct Message info_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.105 $";
+const char *_version = "$Revision: 1.106 $";
 static struct Callback *info_cb;
 
 void
@@ -149,6 +149,12 @@ static const struct InfoStruct info_table[] =
     OUTPUT_STRING_PTR,
     &ConfigLoggingEntry.glinelog,
     "G-Line log file"
+  },
+  {
+    "restrict_channels",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigChannel.restrict_channels,
+    "Only reserved channels are allowed"
   },
   {
     "disable_local_channels",
