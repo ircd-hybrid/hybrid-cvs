@@ -1,5 +1,5 @@
 # Makefile to install help files
-# $Id: Makefile.in,v 1.9 2005/09/10 07:46:51 michael Exp $
+# $Id: Makefile.in,v 1.10 2005/09/16 14:07:25 knight Exp $
 
 INSTALL=	@INSTALL@
 INSTALL_DATA=	@INSTALL_DATA@
@@ -40,28 +40,28 @@ index:
 		| expand \
 		>> ../../help/users/index
 	rm -f ../../help/users/index.tmp
-	rm -f opers/index.tmp
+	rm -f ../../help/opers/index.tmp
 	rm -f ../../help/opers/index
 	@for help in opers/*; do \
 		if [ -f $$help ]; then \
-			echo $$help >> opers/index.tmp; \
+			echo $$help >> ../../help/opers/index.tmp; \
 		fi \
 	done
 	@for help in ../../help/opers/*; do \
 		if [ -f $$help ]; then \
-			echo $$help >> opers/index.tmp; \
+			echo $$help >> ../../help/opers/index.tmp; \
 		fi \
 	done
-	echo 'Help topics available to opers:' > opers/index
-	echo '' >> opers/index
-	cat opers/index.tmp \
+	echo 'Help topics available to opers:' > ../../help/opers/index
+	echo '' >> ../../help/opers/index
+	cat ../../help/opers/index.tmp \
 		| sed -e 's|^opers/||' \
 		| sed -e 's|^../../help/opers/||' \
 		| sort -u \
 		| tr a-z A-Z \
 		| expand \
-		>> opers/index
-	rm -f opers/index.tmp
+		>> ../../help/opers/index
+	rm -f ../../help/opers/index.tmp
 
 install: index
 	@echo installing help files...
