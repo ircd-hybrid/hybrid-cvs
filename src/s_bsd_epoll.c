@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_epoll.c,v 7.3 2005/09/16 16:24:42 knight Exp $
+ *  $Id: s_bsd_epoll.c,v 7.4 2005/09/16 20:07:27 knight Exp $
  */
 
 #define _GNU_SOURCE 1
@@ -37,7 +37,6 @@ static int epmax;
 static struct epoll_event *ep_fdlist;
 
 #ifndef HAVE_EPOLL_CTL
-#include <sys/epoll.h>
 #include <sys/syscall.h>
 
 _syscall1(int, epoll_create, int, maxfds);
