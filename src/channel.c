@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.452 2005/09/16 14:56:56 adx Exp $
+ * \version $Id: channel.c,v 7.453 2005/09/16 16:10:47 knight Exp $
  */
 
 #include "stdinc.h"
@@ -710,7 +710,7 @@ can_send(struct Channel *chptr, struct Client *source_p)
 
   if (MyClient(source_p) && !IsExemptResv(source_p) &&
       !(IsOper(source_p) && ConfigFileEntry.oper_pass_resv) &&
-      (!hash_find_resv(chptr->chname) == ConfigFileEntry.restrict_channels))
+      (!hash_find_resv(chptr->chname) == ConfigChannel.restrict_channels))
     return(CAN_SEND_NO);
 
   ms = find_channel_link(source_p, chptr);
