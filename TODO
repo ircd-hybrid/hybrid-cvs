@@ -1,4 +1,4 @@
-$Id: TODO,v 7.108 2005/09/15 02:23:58 knight Exp $
+$Id: TODO,v 7.109 2005/09/16 01:40:49 metalrock Exp $
 
 - dynamically extensible parser for modules
 
@@ -66,3 +66,7 @@ it's a leaf.
 * implement ND/CD split logic
 * more I/O backends (epoll ..)
 * fix broken resolving of connect{} hostnames
+
+
+-- metalrock's list
+* Fix that missing server connection timed out notice.
