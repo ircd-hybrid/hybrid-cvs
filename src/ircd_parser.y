@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.444 2005/09/15 11:46:54 adx Exp $
+ *  $Id: ircd_parser.y,v 1.445 2005/09/16 14:07:04 db Exp $
  */
 
 %{
@@ -942,6 +942,7 @@ oper_entry: OPERATOR
   {
     yy_conf = make_conf_item(OPER_TYPE);
     yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
+    SetConfEncrypted(yy_aconf);
   }
   else
   {
@@ -1096,13 +1097,9 @@ oper_password: PASSWORD '=' QSTRING ';'
 
 oper_encrypted: ENCRYPTED '=' TBOOL ';'
 {
-  if (ypass == 1)
+  if (ypass == 2)
   {
-    SetConfEncrypted(yy_aconf);
-  }
-  else
-  {
-    if (yylval.number)
+    if (yylval.number)			/* Yes, the default is encrypted */
       SetConfEncrypted(yy_aconf);
     else
       ClearConfEncrypted(yy_aconf);
