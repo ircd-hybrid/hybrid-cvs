@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_epoll.c,v 7.6 2005/09/16 20:13:24 michael Exp $
+ *  $Id: s_bsd_epoll.c,v 7.7 2005/09/16 20:42:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -106,7 +106,7 @@ init_netio(void)
   epmax = getdtablesize();
   ep_fdlist = MyMalloc(sizeof(struct epoll_event) * epmax);
 
-  if ((fd = epoll_create(HARD_FDLIMIT)) < 0)
+  if ((fd = epoll_create(epmax)) < 0)
   {
     ilog(L_CRIT, "init_netio: Couldn't open epoll fd - %d: %s",
          errno, strerror(errno));
@@ -157,7 +157,7 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
       op = EPOLL_CTL_MOD;
 
     ep_event.events = F->evcache = new_events;
-    ep_event.data.ptr = F;
+    ep_event.data.fd = F->fd;
 
     if (epoll_ctl(efd.fd, op, F->fd, &ep_event) != 0)
     {
