@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.16 2005/09/15 07:17:03 adx Exp $
+ *  $Id: s_bsd_win32.c,v 7.17 2005/09/16 09:39:20 adx Exp $
  */
 
 #include "stdinc.h"
@@ -30,7 +30,7 @@
 #include "client.h"
 #include "restart.h"
 
-static HWND wndhandle;
+HWND wndhandle;
 static dlink_list dns_queries = {NULL, NULL, 0};
 
 extern int main(int, char *[]);
