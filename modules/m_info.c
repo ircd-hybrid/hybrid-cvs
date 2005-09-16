@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.104 2005/09/15 11:46:54 adx Exp $
+ *  $Id: m_info.c,v 1.105 2005/09/16 12:35:52 knight Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,7 @@ struct Message info_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.104 $";
+const char *_version = "$Revision: 1.105 $";
 static struct Callback *info_cb;
 
 void
@@ -97,144 +97,6 @@ static const struct InfoStruct info_table[] =
 {
   /* --[  START OF TABLE  ]-------------------------------------------- */
   {
-    "anti_nick_flood",
-    OUTPUT_BOOLEAN,
-    &ConfigFileEntry.anti_nick_flood,
-    "NICK flood protection"
-  },
-  {
-    "anti_spam_exit_message_time",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.anti_spam_exit_message_time,
-    "Duration a client must be connected for to have an exit message"
-  },
-  {
-    "caller_id_wait",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.caller_id_wait,
-    "Minimum delay between notifying UMODE +g users of messages"
-  },
-  {
-    "opers_bypass_callerid",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigFileEntry.opers_bypass_callerid,
-    "Allows IRC operators to message users who are +g (callerid)"
-  },
-  {
-    "client_flood",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.client_flood,
-    "Maximum amount of data in a client's queue before they are disconnected",
-  },
-  {
-    "default_floodcount",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.default_floodcount,
-    "Startup value of FLOODCOUNT",
-  },
-  {
-    "dot_in_ip6_addr",
-    OUTPUT_BOOLEAN,
-    &ConfigFileEntry.dot_in_ip6_addr,
-    "Suffix a . to ip6 addresses",
-  },
-  {
-    "dots_in_ident",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.dots_in_ident,
-    "Number of permissable dots in an ident"
-  },
-  {
-    "failed_oper_notice",
-    OUTPUT_BOOLEAN,
-    &ConfigFileEntry.failed_oper_notice,
-    "Inform opers if someone /oper's with the wrong password"
-  },
-  {
-    "glines",
-    OUTPUT_BOOLEAN,
-    &ConfigFileEntry.glines,
-    "G-line (network-wide K-line) support"
-  },
-  {
-    "gline_time",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.gline_time,
-    "Expiry time for G-lines"
-  },
-  {
-    "hide_spoof_ips",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigFileEntry.hide_spoof_ips,
-    "Hide spoofed IP's"
-  },
-  {
-    "hub",
-    OUTPUT_BOOLEAN_YN,
-    &ServerInfo.hub,
-    "Server is a hub"
-  },
-  {
-    "idletime",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.idletime,
-    "Number of seconds before a client is considered idle"
-  },
-  {
-    "invite_ops_only",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigChannel.invite_ops_only,
-    "Restrict invite to ops only",
-  },
-  {
-    "kill_chase_time_limit",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.kill_chase_time_limit,
-    "Nick Change Tracker for KILL"
-  },
-  {
-    "kline_reason",
-    OUTPUT_STRING,
-    &ConfigFileEntry.kline_reason,
-    "Reason given to K-lined clients on sign off"
-  },
-  {
-    "kline_with_reason",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigFileEntry.kline_with_reason,
-    "Display K-line reason to client on disconnect"
-  },
-  {
-    "max_accept",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.max_accept,
-    "Maximum nicknames on accept list",
-  },
-  {
-    "max_nick_changes",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.max_nick_changes,
-    "NICK change threshhold setting"
-  },
-  {
-    "max_nick_time",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.max_nick_time,
-    "NICK flood protection time interval"
-  },
-  {
-    "max_targets",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.max_targets,
-    "The maximum number of PRIVMSG/NOTICE targets"
-  },
-  {
-    "min_nonwildcard",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.min_nonwildcard,
-    "Minimum non-wildcard chars in K/G lines",
-  },
-  {
     "network_name",
     OUTPUT_STRING,
     &ServerInfo.network_name,
@@ -247,166 +109,10 @@ static const struct InfoStruct info_table[] =
     "Network description"
   },
   {
-    "no_oper_flood",
-    OUTPUT_BOOLEAN,
-    &ConfigFileEntry.no_oper_flood,
-    "Reduce flood control for operators",
-  },
-  {
-    "true_no_oper_flood",
-    OUTPUT_BOOLEAN,
-    &ConfigFileEntry.true_no_oper_flood,
-    "Completely disable flood control for operators",
-  },
-  {
-    "pace_wait",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.pace_wait,
-    "Minimum delay between uses of certain commands"
-  },
-  {
-    "pace_wait_simple",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.pace_wait_simple,
-    "Minimum delay between less intensive commands"
-  },
-  {
-    "ping_cookie",
-    OUTPUT_BOOLEAN,
-    &ConfigFileEntry.ping_cookie,
-    "Require ping cookies to connect",
-  },
-  {
-    "short_motd",
+    "hub",
     OUTPUT_BOOLEAN_YN,
-    &ConfigFileEntry.short_motd,
-    "Do not show MOTD; only tell clients they should read it"
-  },
-  {
-    "stats_i_oper_only",
-    OUTPUT_BOOLEAN2,
-    &ConfigFileEntry.stats_i_oper_only,
-    "STATS I output is only shown to operators",
-  },
-  {
-    "stats_k_oper_only",
-    OUTPUT_BOOLEAN2,
-    &ConfigFileEntry.stats_k_oper_only,
-    "STATS K output is only shown to operators",
-  },
-  {
-    "stats_o_oper_only",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigFileEntry.stats_o_oper_only,
-    "STATS O output is only shown to operators",
-  },
-  {
-    "stats_P_oper_only",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigFileEntry.stats_P_oper_only,
-    "STATS P is only shown to operators",
-  },
-  {
-    "throttle_time",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.throttle_time,
-    "Minimum time between client reconnects",
-  },
-  {
-    "ts_max_delta",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.ts_max_delta,
-    "Maximum permitted TS delta from another server"
-  },
-  {
-    "ts_warn_delta",
-    OUTPUT_DECIMAL,
-    &ConfigFileEntry.ts_warn_delta,
-    "Maximum permitted TS delta before displaying a warning"
-  },
-  {
-    "warn_no_nline",
-    OUTPUT_BOOLEAN,
-    &ConfigFileEntry.warn_no_nline,
-    "Display warning if connecting server lacks N-line"
-  },
-  {
-    "default_split_server_count",
-    OUTPUT_DECIMAL,
-    &ConfigChannel.default_split_server_count,
-    "Startup value of SPLITNUM",
-  },
-  {
-    "default_split_user_count",
-    OUTPUT_DECIMAL,
-    &ConfigChannel.default_split_user_count,
-    "Startup value of SPLITUSERS",
-  },
-  {
-    "knock_delay",
-    OUTPUT_DECIMAL,
-    &ConfigChannel.knock_delay,
-    "Delay between a users KNOCK attempts"
-  },
-  {
-    "knock_delay_channel",
-    OUTPUT_DECIMAL,
-    &ConfigChannel.knock_delay_channel,
-    "Delay between KNOCK attempts to a channel",
-  },
-  {
-    "max_bans",
-    OUTPUT_DECIMAL,
-    &ConfigChannel.max_bans,
-    "Total +b/e/I modes allowed in a channel",
-  },
-  {
-    "max_chans_per_user",
-    OUTPUT_DECIMAL,
-    &ConfigChannel.max_chans_per_user,
-    "Maximum number of channels a user can join",
-  },
-  {
-    "no_create_on_split",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigChannel.no_create_on_split,
-    "Disallow creation of channels when split",
-  },
-  {
-    "no_join_on_split",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigChannel.no_join_on_split,
-    "Disallow joining channels when split",
-  },
-  {
-    "oper_pass_resv",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigFileEntry.oper_pass_resv,
-    "Opers can over-ride RESVs",
-  },
-  {
-    "quiet_on_ban",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigChannel.quiet_on_ban,
-    "Banned users may not send text to a channel"
-  },
-  {
-    "use_except",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigChannel.use_except,
-    "Enable chanmode +e (ban exceptions)",
-  },
-  {
-    "use_invex",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigChannel.use_invex,
-    "Enable chanmode +I (invite exceptions)",
-  },
-  {
-    "use_knock",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigChannel.use_knock,
-    "Enable /KNOCK",
+    &ServerInfo.hub,
+    "Server is a hub"
   },
   {
     "use_logging",
@@ -427,52 +133,430 @@ static const struct InfoStruct info_table[] =
     "Operator log file"
   },
   {
-    "ffailed_operlog",
+    "fkilllog",
     OUTPUT_STRING_PTR,
-    &ConfigLoggingEntry.failed_operlog,
-    "Failed operator log file"
+    &ConfigLoggingEntry.killlog,
+    "Kill log file"
   },
   {
-    "disable_hidden",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigServerHide.disable_hidden,
-    "Prevent servers from hiding themselves from a flattened /links",
+    "fklinelog",
+    OUTPUT_STRING_PTR,
+    &ConfigLoggingEntry.klinelog,
+    "K-Line log file"
+  },
+  {
+    "fglinelog",
+    OUTPUT_STRING_PTR,
+    &ConfigLoggingEntry.glinelog,
+    "G-Line log file"
   },
   {
     "disable_local_channels",
     OUTPUT_BOOLEAN_YN,
     &ConfigChannel.disable_local_channels,
-    "Prevent users from joining &channels",
+    "Prevent users from joining &channels"
+  },
+ {
+    "use_invex",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigChannel.use_invex,
+    "Enable chanmode +I (invite exceptions)"
   },
   {
-    "disable_remote_commands",
+    "use_except",
     OUTPUT_BOOLEAN_YN,
-    &ConfigFileEntry.disable_remote,
-    "Prevent users issuing commands on remote servers",
+    &ConfigChannel.use_except,
+    "Enable chanmode +e (ban exceptions)"
+  },
+  {
+    "use_knock",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigChannel.use_knock,
+    "Enable /KNOCK"
+  },
+  {
+    "knock_delay",
+    OUTPUT_DECIMAL,
+    &ConfigChannel.knock_delay,
+    "Delay between a users KNOCK attempts"
+  },
+  {
+    "knock_delay_channel",
+    OUTPUT_DECIMAL,
+    &ConfigChannel.knock_delay_channel,
+    "Delay between KNOCK attempts to a channel"
+  },
+  {
+    "invite_ops_only",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigChannel.invite_ops_only,
+    "Restrict invite to ops only"
+  },
+  {
+    "max_chans_per_user",
+    OUTPUT_DECIMAL,
+    &ConfigChannel.max_chans_per_user,
+    "Maximum number of channels a user can join"
+  },
+  {
+    "quiet_on_ban",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigChannel.quiet_on_ban,
+    "Banned users may not send text to a channel"
+  },
+  {
+    "max_bans",
+    OUTPUT_DECIMAL,
+    &ConfigChannel.max_bans,
+    "Total +b/e/I modes allowed in a channel"
+  },
+  {
+    "default_split_user_count",
+    OUTPUT_DECIMAL,
+    &ConfigChannel.default_split_user_count,
+    "Startup value of SPLITUSERS"
+  },
+  {
+    "default_split_server_count",
+    OUTPUT_DECIMAL,
+    &ConfigChannel.default_split_server_count,
+    "Startup value of SPLITNUM"
+  },
+  {
+    "no_create_on_split",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigChannel.no_create_on_split,
+    "Disallow creation of channels when split"
+  },
+  {
+    "no_join_on_split",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigChannel.no_join_on_split,
+    "Disallow joining channels when split"
+  },
+  {
+    "burst_topicwho",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigChannel.burst_topicwho,
+    "Enable sending of who set topic on topicburst"
   },
   {
     "flatten_links",
     OUTPUT_BOOLEAN_YN,
     &ConfigServerHide.flatten_links,
-    "Flatten /links list",
-  },
-  {
-    "hidden",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigServerHide.hidden,
-    "Hide this server from a flattened /links on remote servers",
-  },
-  {
-    "hide_servers",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigServerHide.hide_servers,
-    "Hide servernames from users",
+    "Flatten /links list"
   },
   {
     "links_delay",
     OUTPUT_DECIMAL,
     &ConfigServerHide.links_delay,
     "Links rehash delay"
+  },
+  {
+    "hidden",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigServerHide.hidden,
+    "Hide this server from a flattened /links on remote servers"
+  },
+  {
+    "disable_hidden",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigServerHide.disable_hidden,
+    "Prevent servers from hiding themselves from a flattened /links"
+  },
+  {
+    "hide_servers",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigServerHide.hide_servers,
+    "Hide servernames from users"
+  },
+  {
+    "hidden_name",
+    OUTPUT_STRING_PTR,
+    &ConfigServerHide.hidden_name,
+    "Server name users see if hide_servers = yes"
+  },
+  {
+    "hide_server_ips",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigServerHide.hide_server_ips,
+    "Prevent people from seeing server IPs"
+  },
+  {
+    "gline_min_cidr",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.gline_min_cidr,
+    "Minimum required length of a CIDR bitmask for IPv4 G-Lines"
+  },
+  {
+    "gline_min_cidr6",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.gline_min_cidr6,
+    "Minimum required length of a CIDR bitmask for IPv6 G-Lines"
+  },
+  {
+    "invisible_on_connect",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigFileEntry.invisible_on_connect,
+    "Automatically set mode +i on connecting users"
+  },
+  {
+    "burst_away",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigFileEntry.burst_away,
+    "Send /away string that users have set on the server burst"
+  },
+  {
+    "use_whois_actually",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigFileEntry.use_whois_actually,
+    "Show IP address on /WHOIS when possible"
+  },
+  {
+    "kill_chase_time_limit",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.kill_chase_time_limit,
+    "Nick Change Tracker for KILL"
+  },
+  {
+    "hide_spoof_ips",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigFileEntry.hide_spoof_ips,
+    "Hide spoofed IP's"
+  },
+  {
+    "ignore_bogus_ts",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigFileEntry.ignore_bogus_ts,
+    "Ignore bogus timestamps from other servers"
+  },
+  {
+    "disable_auth",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigFileEntry.disable_auth,
+    "Completely disable ident lookups"
+  },
+  {
+    "disable_remote_commands",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigFileEntry.disable_remote,
+    "Prevent users issuing commands on remote servers"
+  },
+  {
+    "tkline_expire_notices",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigFileEntry.tkline_expire_notices,
+    "Show temporary kline/xline expire notices"
+  },
+  {
+    "default_floodcount",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.default_floodcount,
+    "Startup value of FLOODCOUNT"
+  },
+  {
+    "failed_oper_notice",
+    OUTPUT_BOOLEAN,
+    &ConfigFileEntry.failed_oper_notice,
+    "Inform opers if someone /oper's with the wrong password"
+  },
+  {
+    "dots_in_ident",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.dots_in_ident,
+    "Number of permissable dots in an ident"
+  },
+  {
+    "dot_in_ip6_addr",
+    OUTPUT_BOOLEAN,
+    &ConfigFileEntry.dot_in_ip6_addr,
+    "Suffix a . to ip6 addresses (for linked servers still running hybrid-6)"
+  },
+  {
+    "min_nonwildcard",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.min_nonwildcard,
+    "Minimum non-wildcard chars in K/G lines"
+  },
+  {
+    "min_nonwildcard_simple",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.min_nonwildcard_simple,
+    "Minimum non-wildcards in gecos bans"
+  },
+  {
+    "max_accept",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.max_accept,
+    "Maximum nicknames on accept list"
+  },
+  {
+    "anti_nick_flood",
+    OUTPUT_BOOLEAN,
+    &ConfigFileEntry.anti_nick_flood,
+    "NICK flood protection"
+  },
+  {
+    "max_nick_time",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.max_nick_time,
+    "NICK flood protection time interval"
+  },
+  {
+    "max_nick_changes",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.max_nick_changes,
+    "NICK change threshhold setting"
+  },
+  {
+    "anti_spam_exit_message_time",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.anti_spam_exit_message_time,
+    "Duration a client must be connected for to have an exit message"
+  },
+  {
+    "ts_warn_delta",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.ts_warn_delta,
+    "Maximum permitted TS delta before displaying a warning"
+  },
+  {
+    "ts_max_delta",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.ts_max_delta,
+    "Maximum permitted TS delta from another server"
+  },
+  {
+    "kline_with_reason",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigFileEntry.kline_with_reason,
+    "Display K-line reason to client on disconnect"
+  },
+  {
+    "kline_reason",
+    OUTPUT_STRING,
+    &ConfigFileEntry.kline_reason,
+    "Reason given to K-lined clients on sign off"
+  },
+  {
+    "warn_no_nline",
+    OUTPUT_BOOLEAN,
+    &ConfigFileEntry.warn_no_nline,
+    "Display warning if connecting server lacks N-line"
+  },
+  {
+    "stats_o_oper_only",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigFileEntry.stats_o_oper_only,
+    "STATS O output is only shown to operators"
+  },
+  {
+    "stats_P_oper_only",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigFileEntry.stats_P_oper_only,
+    "STATS P is only shown to operators"
+  },
+  {
+    "stats_i_oper_only",
+    OUTPUT_BOOLEAN2,
+    &ConfigFileEntry.stats_i_oper_only,
+    "STATS I output is only shown to operators"
+  },
+  {
+    "stats_k_oper_only",
+    OUTPUT_BOOLEAN2,
+    &ConfigFileEntry.stats_k_oper_only,
+    "STATS K output is only shown to operators"
+  },
+  {
+    "caller_id_wait",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.caller_id_wait,
+    "Minimum delay between notifying UMODE +g users of messages"
+  },
+  {
+    "opers_bypass_callerid",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigFileEntry.opers_bypass_callerid,
+    "Allows IRC operators to message users who are +g (callerid)"
+  },
+  {
+    "pace_wait_simple",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.pace_wait_simple,
+    "Minimum delay between less intensive commands"
+  },
+  {
+    "pace_wait",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.pace_wait,
+    "Minimum delay between uses of certain commands"
+  },
+  {
+    "short_motd",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigFileEntry.short_motd,
+    "Do not show MOTD; only tell clients they should read it"
+  },
+  {
+    "ping_cookie",
+    OUTPUT_BOOLEAN,
+    &ConfigFileEntry.ping_cookie,
+    "Require ping cookies to connect"
+  },
+  {
+    "no_oper_flood",
+    OUTPUT_BOOLEAN,
+    &ConfigFileEntry.no_oper_flood,
+    "Reduce flood control for operators"
+  },
+  {
+    "true_no_oper_flood",
+    OUTPUT_BOOLEAN,
+    &ConfigFileEntry.true_no_oper_flood,
+    "Completely disable flood control for operators"
+  },
+  {
+    "oper_pass_resv",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigFileEntry.oper_pass_resv,
+    "Opers can over-ride RESVs"
+  },
+  {
+    "idletime",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.idletime,
+    "Number of seconds before a client is considered idle"
+  },
+  {
+    "max_targets",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.max_targets,
+    "The maximum number of PRIVMSG/NOTICE targets"
+  },
+  {
+    "client_flood",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.client_flood,
+    "Maximum amount of data in a client's queue before they are disconnected"
+  },
+  {
+    "throttle_time",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.throttle_time,
+    "Minimum time between client reconnects"
+  },
+  {
+    "glines",
+    OUTPUT_BOOLEAN,
+    &ConfigFileEntry.glines,
+    "G-line (network-wide K-line) support"
+  },
+  {
+    "duration",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.gline_time,
+    "Expiry time for G-lines"
   },
   /* --[  END OF TABLE  ]---------------------------------------------- */
   {
