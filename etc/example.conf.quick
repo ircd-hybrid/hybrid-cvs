@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.38 2005/09/15 11:46:53 adx Exp $
+ * $Id: example.conf.quick,v 1.39 2005/09/16 14:56:56 adx Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -267,6 +267,7 @@ gecos {
 };
 
 channel {
+	restrict_channels = no;
 	disable_local_channels = no;
 	use_invex = yes;
 	use_except = yes;

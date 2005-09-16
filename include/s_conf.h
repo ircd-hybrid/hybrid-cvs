@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.332 2005/09/15 11:46:53 adx Exp $
+ *  $Id: s_conf.h,v 7.333 2005/09/16 14:56:56 adx Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -369,6 +369,7 @@ struct config_file_entry
 
 struct config_channel_entry
 {
+  int restrict_channels;
   int disable_local_channels;
   int use_except;
   int use_invex;

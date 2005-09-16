@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.445 2005/09/16 14:07:04 db Exp $
+ *  $Id: ircd_parser.y,v 1.446 2005/09/16 14:56:56 adx Exp $
  */
 
 %{
@@ -292,6 +292,7 @@ unhook_hub_leaf_confs(void)
 %token  TREJECT_HOLD_TIME
 %token  REMOTE
 %token  REMOTEBAN
+%token  RESTRICT_CHANNELS
 %token  RESTRICTED
 %token  RSA_PRIVATE_KEY_FILE
 %token  RSA_PUBLIC_KEY_FILE
@@ -3666,12 +3667,10 @@ channel_entry: CHANNEL
   '{' channel_items '}' ';';
 
 channel_items:      channel_items channel_item | channel_item;
-channel_item:       channel_disable_local_channels |
-	            channel_use_except |
-                    channel_use_invex |
-                    channel_use_knock |
-                    channel_max_bans |
-                    channel_knock_delay |
+channel_item:       channel_restrict_channels |
+                    channel_disable_local_channels | channel_use_except |
+                    channel_use_invex | channel_use_knock |
+                    channel_max_bans | channel_knock_delay |
 		    channel_knock_delay_channel |
 		    channel_invite_ops_only |
                     channel_max_chans_per_user |
@@ -3683,94 +3682,84 @@ channel_item:       channel_disable_local_channels |
 		    channel_burst_topicwho |
 		    error;
 
+channel_restrict_channels: RESTRICT_CHANNELS '=' TBOOL ';'
+{
+  ConfigChannel.restrict_channels = yylval.number;
+};
+
 channel_disable_local_channels: DISABLE_LOCAL_CHANNELS '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigChannel.disable_local_channels = yylval.number;
+  ConfigChannel.disable_local_channels = yylval.number;
 };
 
 channel_use_except: USE_EXCEPT '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigChannel.use_except = yylval.number;
+  ConfigChannel.use_except = yylval.number;
 };
 
 channel_use_invex: USE_INVEX '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigChannel.use_invex = yylval.number;
+  ConfigChannel.use_invex = yylval.number;
 };
 
 channel_use_knock: USE_KNOCK '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigChannel.use_knock = yylval.number;
+  ConfigChannel.use_knock = yylval.number;
 };
 
 channel_knock_delay: KNOCK_DELAY '=' timespec ';'
 {
-  if (ypass == 2)
-    ConfigChannel.knock_delay = $3;
+  ConfigChannel.knock_delay = $3;
 };
 
 channel_knock_delay_channel: KNOCK_DELAY_CHANNEL '=' timespec ';'
 {
-  if (ypass == 2)
-    ConfigChannel.knock_delay_channel = $3;
+  ConfigChannel.knock_delay_channel = $3;
 };
 
 channel_invite_ops_only: INVITE_OPS_ONLY '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigChannel.invite_ops_only = yylval.number;
+  ConfigChannel.invite_ops_only = yylval.number;
 };
 
 channel_max_chans_per_user: MAX_CHANS_PER_USER '=' NUMBER ';'
 {
-  if (ypass == 2)
-    ConfigChannel.max_chans_per_user = $3;
+  ConfigChannel.max_chans_per_user = $3;
 };
 
 channel_quiet_on_ban: QUIET_ON_BAN '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigChannel.quiet_on_ban = yylval.number;
+  ConfigChannel.quiet_on_ban = yylval.number;
 };
 
 channel_max_bans: MAX_BANS '=' NUMBER ';'
 {
-  if (ypass == 2)
-    ConfigChannel.max_bans = $3;
+  ConfigChannel.max_bans = $3;
 };
 
 channel_default_split_user_count: DEFAULT_SPLIT_USER_COUNT '=' NUMBER ';'
 {
-  if (ypass == 2)
-    ConfigChannel.default_split_user_count = $3;
+  ConfigChannel.default_split_user_count = $3;
 };
 
 channel_default_split_server_count: DEFAULT_SPLIT_SERVER_COUNT '=' NUMBER ';'
 {
-  if (ypass == 2)
-    ConfigChannel.default_split_server_count = $3;
+  ConfigChannel.default_split_server_count = $3;
 };
 
 channel_no_create_on_split: NO_CREATE_ON_SPLIT '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigChannel.no_create_on_split = yylval.number;
+  ConfigChannel.no_create_on_split = yylval.number;
 };
 
 channel_no_join_on_split: NO_JOIN_ON_SPLIT '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigChannel.no_join_on_split = yylval.number;
+  ConfigChannel.no_join_on_split = yylval.number;
 };
 
 channel_burst_topicwho: BURST_TOPICWHO '=' TBOOL ';'
 {
-  if (ypass == 2)
-    ConfigChannel.burst_topicwho = yylval.number;
+  ConfigChannel.burst_topicwho = yylval.number;
 };
 
 /***************************************************************************

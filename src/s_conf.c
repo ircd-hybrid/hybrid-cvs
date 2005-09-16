@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.598 2005/09/15 11:46:54 adx Exp $
+ *  $Id: s_conf.c,v 7.599 2005/09/16 14:56:56 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1945,7 +1945,8 @@ set_default_conf(void)
   ConfigLoggingEntry.operspylog[0] = '\0';
   ConfigLoggingEntry.ioerrlog[0] = '\0';
   ConfigLoggingEntry.failed_operlog[0] = '\0';
-  
+
+  ConfigChannel.restrict_channels = NO;
   ConfigChannel.disable_local_channels = NO;
   ConfigChannel.use_invex = YES;
   ConfigChannel.use_except = YES;
