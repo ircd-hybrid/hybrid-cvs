@@ -20,10 +20,9 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_epoll.c,v 7.5 2005/09/16 20:09:44 adx Exp $
+ *  $Id: s_bsd_epoll.c,v 7.6 2005/09/16 20:13:24 michael Exp $
  */
 
-#define _GNU_SOURCE 1
 #include "stdinc.h"
 #include "fdlist.h"
 #include "ircd.h"
