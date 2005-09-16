@@ -1,6 +1,6 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  s_bsd_poll.c: Linux epoll() compatible network routines.
+ *  s_bsd_epoll.c: Linux epoll() compatible network routines.
  *
  *  Copyright (C) 2002-2005 Hybrid Development Team
  *  Based also on work of Adrian Chadd, Aaron Sethman and others.
@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_epoll.c,v 7.2 2005/09/14 10:27:41 adx Exp $
+ *  $Id: s_bsd_epoll.c,v 7.3 2005/09/16 16:24:42 knight Exp $
  */
 
 #define _GNU_SOURCE 1
@@ -37,6 +37,7 @@ static int epmax;
 static struct epoll_event *ep_fdlist;
 
 #ifndef HAVE_EPOLL_CTL
+#include <sys/epoll.h>
 #include <sys/syscall.h>
 
 _syscall1(int, epoll_create, int, maxfds);
