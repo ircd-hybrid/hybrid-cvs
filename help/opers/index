@@ -1,0 +1,25 @@
+# $Id: index,v 1.7 2005/09/17 18:32:58 knight Exp $
+Help topics available to opers:
+
+ACCEPT          ADMIN           AWAY            CAPAB
+CBURST          CHALLENGE       CLIENT          CLOSE
+CMODE           CONNECT         CRYPTLINK       DIE
+DLINE           DROP            EOB             ERROR
+GLINE           HASH            HELP            INFO
+INVITE          ISON            JOIN            KICK
+KILL            KLINE           KNOCK           KNOCKLL
+LINKS           LIST            LLJOIN          LLNICK
+LOCOPS          LUSERS          MAP             MODLIST
+MODLOAD         MODRESTART      MODUNLOAD       MOTD
+NAMES           NBURST          NICK            NOTICE
+OPER            OPERWALL        PART            PASS
+PING            PONG            POST            PRIVMSG
+QUIT            REHASH          RESTART         RESV
+RKLINE          RXLINE          SERVER          SET
+SJOIN           SQUIT           STATS           SVINFO
+TESTGECOS       TESTLINE        TESTMASK        TIME
+TOPIC           TRACE           UHELP           UMODE
+UNDLINE         UNGLINE         UNKLINE         UNRESV
+UNXLINE         USER            USERHOST        USERS
+VERSION         WALLOPS         WHO             WHOIS
+WHOWAS          XLINE

@@ -1,5 +1,5 @@
 # Makefile to install help files
-# $Id: Makefile.in,v 1.19 2005/09/17 17:51:44 knight Exp $
+# $Id: Makefile.in,v 1.20 2005/09/17 18:32:57 knight Exp $
 
 INSTALL=	@INSTALL@
 INSTALL_DATA=	@INSTALL_DATA@
@@ -19,59 +19,7 @@ build:
 clean:
 depend:
 
-index:
-	@echo building index files
-	rm -f users/index.tmp
-	rm -f ../../help/users/index
-	@for help in users/*; do \
-		if [ -f $$help ]; then \
-			echo $$help >> users/index.tmp; \
-		fi \
-	done
-	@for help in ../../help/users/*; do \
-		if [ -f $$help ]; then \
-			echo $$help >> users/index.tmp; \
-		fi \
-	done
-	@for help in $(SYMLINKS); do \
-		echo $$help >> users/index.tmp; \
-	done
-	echo 'Help topics available to users:' > users/index
-	echo '' >> users/index
-	cat users/index.tmp \
-		| sed -e 's|^users/||' \
-		| sed -e 's|^../../help/users/||' \
-		| sort -u \
-		| tr a-z A-Z \
-		| column -c 65 -s ' ' -x \
-		| expand \
-		>> users/index
-	rm -f users/index.tmp
-	rm -f opers/index.tmp
-	rm -f ../../help/opers/index
-	@for help in opers/*; do \
-		if [ -f $$help ]; then \
-			echo $$help >> opers/index.tmp; \
-		fi \
-	done
-	@for help in ../../help/opers/*; do \
-		if [ -f $$help ]; then \
-			echo $$help >> opers/index.tmp; \
-		fi \
-	done
-	echo 'Help topics available to opers:' > opers/index
-	echo '' >> opers/index
-	cat opers/index.tmp \
-		| sed -e 's|^opers/||' \
-		| sed -e 's|^../../help/opers/||' \
-		| sort -u \
-		| tr a-z A-Z \
-		| column -c 65 -s ' ' -x \
-		| expand \
-		>> opers/index
-	rm -f opers/index.tmp
-
-install: index
+install: 
 	@echo installing help files...
 	-@if test ! -d $(prefix)/help; then \
 		echo "mkdir $(prefix)/help"; \
