@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_kqueue.c,v 1.42 2005/09/14 10:27:41 adx Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.43 2005/09/17 22:16:38 adx Exp $
  */
 
 #include "stdinc.h"
@@ -131,7 +131,7 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
       (new_events & COMM_SELECT_READ) ? EV_ADD : EV_DELETE);
   if ((diff & COMM_SELECT_WRITE))
     kq_update_events(F->fd, EVFILT_WRITE,
-      (new_events & COMM_SELECT_READ) ? EV_ADD : EV_DELETE);
+      (new_events & COMM_SELECT_WRITE) ? EV_ADD : EV_DELETE);
 
   F->evcache = new_events;
 }
