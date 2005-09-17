@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.454 2005/09/17 20:32:06 adx Exp $
+ * \version $Id: channel.c,v 7.455 2005/09/17 20:43:36 adx Exp $
  */
 
 #include "stdinc.h"
@@ -406,7 +406,8 @@ get_or_create_channel(struct Client *client_p, const char *chname, int *isnew)
     *isnew = 1;
 
   chptr = BlockHeapAlloc(channel_heap);
-  chptr->channelts = CurrentTime;    /* doesn't hurt to set it here */
+  /* doesn't hurt to set it here */
+  chptr->channelts = chptr->last_join_time = CurrentTime;
 
   strlcpy(chptr->chname, chname, sizeof(chptr->chname));
   dlinkAdd(chptr, &chptr->node, &global_channel_list);
