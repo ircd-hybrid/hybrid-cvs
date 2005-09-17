@@ -1,25 +1,29 @@
-# $Id: index,v 1.7 2005/09/17 18:32:58 knight Exp $
-Help topics available to opers:
+# $Id: index,v 1.8 2005/09/17 19:11:58 adx Exp $
+Help topics available to opers only:
 
-ACCEPT          ADMIN           AWAY            CAPAB
-CBURST          CHALLENGE       CLIENT          CLOSE
-CMODE           CONNECT         CRYPTLINK       DIE
-DLINE           DROP            EOB             ERROR
-GLINE           HASH            HELP            INFO
-INVITE          ISON            JOIN            KICK
-KILL            KLINE           KNOCK           KNOCKLL
-LINKS           LIST            LLJOIN          LLNICK
-LOCOPS          LUSERS          MAP             MODLIST
-MODLOAD         MODRESTART      MODUNLOAD       MOTD
-NAMES           NBURST          NICK            NOTICE
-OPER            OPERWALL        PART            PASS
-PING            PONG            POST            PRIVMSG
-QUIT            REHASH          RESTART         RESV
-RKLINE          RXLINE          SERVER          SET
-SJOIN           SQUIT           STATS           SVINFO
-TESTGECOS       TESTLINE        TESTMASK        TIME
-TOPIC           TRACE           UHELP           UMODE
+CAPAB           CBURST          CLIENT          CLOSE
+CONNECT         CRYPTLINK       DIE             DLINE
+DROP            EOB             GLINE           HASH
+KILL            KLINE           KNOCKLL         LLJOIN
+LLNICK          LOCOPS          MODLIST         MODLOAD
+MODRESTART      MODUNLOAD       NBURST          NOTICE
+OPERWALL        POST            PRIVMSG         REHASH
+RESTART         RESV            RKLINE          RXLINE
+SERVER          SET             SJOIN           SQUIT
+STATS           SVINFO          TESTGECOS       TESTLINE
+TESTMASK        TRACE           UHELP           UMODE
 UNDLINE         UNGLINE         UNKLINE         UNRESV
-UNXLINE         USER            USERHOST        USERS
-VERSION         WALLOPS         WHO             WHOIS
-WHOWAS          XLINE
+UNXLINE         WALLOPS         XLINE
+
+Help topics available to users:
+
+ACCEPT          ADMIN           AWAY            CHALLENGE
+CMODE           ERROR           HELP            INFO
+INVITE          ISON            JOIN            KICK
+KNOCK           LINKS           LIST            LUSERS
+MAP             MOTD            NAMES           NICK
+NOTICE          OPER            PART            PASS
+PING            PONG            PRIVMSG         QUIT
+STATS           TIME            TOPIC           UMODE
+USER            USERHOST        USERS           VERSION
+WHO             WHOIS           WHOWAS
