@@ -1,5 +1,5 @@
 # Makefile to install help files
-# $Id: Makefile.in,v 1.23 2005/09/17 01:22:17 metalrock Exp $
+# $Id: Makefile.in,v 1.24 2005/09/17 13:10:13 knight Exp $
 
 INSTALL=	@INSTALL@
 INSTALL_DATA=	@INSTALL_DATA@
@@ -36,6 +36,7 @@ index:
 		| sed -e 's|^users/||' \
 		| sort -u \
 		| tr a-z A-Z \
+		| column -c 65 -s ' ' -x \
 		| expand \
 		>> users/index
 	rm -f users/index.tmp
@@ -51,6 +52,7 @@ index:
 		| sed -e 's|^opers/||' \
 		| sort -u \
 		| tr a-z A-Z \
+		| column -c 65 -s ' ' -x \
 		| expand \
 		>> opers/index
 	rm -f opers/index.tmp
