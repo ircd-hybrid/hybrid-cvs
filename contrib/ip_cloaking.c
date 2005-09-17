@@ -31,7 +31,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  *
- * $Id: ip_cloaking.c,v 1.11 2005/09/14 14:13:29 knight Exp $
+ * $Id: ip_cloaking.c,v 1.12 2005/09/17 10:30:21 michael Exp $
  */
 
 /*
@@ -73,7 +73,7 @@ static int vhost_ipv6_err;
 static dlink_node *prev_enter_umode;
 static dlink_node *prev_umode;
 
-const char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 
 static void *reset_ipv6err_flag(va_list);
 static void *h_set_user_mode(va_list);
@@ -100,6 +100,7 @@ void _modinit(void)
     }
 
     user_modes['h'] = umode_vhost;
+    assemble_umode_buffer();
   }
   else
   {
@@ -126,6 +127,7 @@ void _moddeinit(void)
     }
 
     user_modes['h'] = 0;
+    assemble_umode_buffer();
 
     uninstall_hook(entering_umode_cb, reset_ipv6err_flag);
     uninstall_hook(umode_cb, h_set_user_mode);

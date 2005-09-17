@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.382 2005/09/13 08:05:46 adx Exp $
+ *  $Id: s_user.c,v 7.383 2005/09/17 10:30:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -61,6 +61,8 @@ int MaxConnectionCount = 1;
 struct Callback *entering_umode_cb = NULL;
 struct Callback *umode_cb = NULL;
 struct Callback *uid_get_cb = NULL;
+
+static char umode_buffer[IRCD_BUFSIZE];
 
 static void user_welcome(struct Client *);
 static void report_and_set_user_flags(struct Client *, const struct AccessItem *);
@@ -157,6 +159,19 @@ unsigned int user_modes[256] =
   /* 0xE0 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0xEF */
   /* 0xF0 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0  /* 0xFF */
 };
+
+void
+assemble_umode_buffer(void)
+{
+  unsigned int idx = 0;
+  char *umode_buffer_ptr = umode_buffer;
+
+  for (; idx < (sizeof(user_modes) / sizeof(int)); ++idx)
+    if (user_modes[idx])
+      *umode_buffer_ptr++ = idx;
+
+  *umode_buffer_ptr = '\0';
+}
 
 /* show_lusers()
  *
@@ -1111,9 +1126,8 @@ void
 send_umode_out(struct Client *client_p, struct Client *source_p,
                unsigned int old)
 {
-  struct Client *target_p;
   char buf[IRCD_BUFSIZE];
-  dlink_node *ptr;
+  dlink_node *ptr = NULL;
 
   send_umode(NULL, source_p, old, IsOperHiddenAdmin(source_p) ?
              SEND_UMODES & ~UMODE_ADMIN : SEND_UMODES, buf);
@@ -1122,7 +1136,7 @@ send_umode_out(struct Client *client_p, struct Client *source_p,
   {
     DLINK_FOREACH(ptr, serv_list.head)
     {
-      target_p = ptr->data;
+      struct Client *target_p = ptr->data;
 
       if ((target_p != client_p) && (target_p != source_p))
       {
@@ -1150,9 +1164,9 @@ static void
 user_welcome(struct Client *source_p)
 {
 #if defined(__TIME__) && defined(__DATE__)
-static const char built_date[] = __DATE__ " at " __TIME__;
+  static const char built_date[] = __DATE__ " at " __TIME__;
 #else
-static const char built_date[] = "unknown";
+  static const char built_date[] = "unknown";
 #endif
 
 #ifdef HAVE_LIBCRYPTO
@@ -1169,11 +1183,12 @@ static const char built_date[] = "unknown";
   sendto_one(source_p, form_str(RPL_CREATED),
 	     me.name, source_p->name, built_date);
   sendto_one(source_p, form_str(RPL_MYINFO),
-             me.name, source_p->name, me.name, ircd_version);
+             me.name, source_p->name, me.name, ircd_version, umode_buffer);
   show_isupport(source_p);
-  if (source_p->id[0])
-    sendto_one(source_p, form_str(RPL_YOURID), me.name, source_p->name,
-               source_p->id);
+
+  if (source_p->id[0] != '\0')
+    sendto_one(source_p, form_str(RPL_YOURID), me.name,
+               source_p->name, source_p->id);
 
   show_lusers(source_p);
 
@@ -1212,7 +1227,7 @@ check_xline(struct Client *source_p)
   if ((conf = find_matching_name_conf(XLINE_TYPE, source_p->info,
                                       NULL, NULL, 0)) != NULL)
   {
-    xconf = (struct MatchItem *)map_to_conf(conf);
+    xconf = map_to_conf(conf);
     xconf->count++;
 
     if (xconf->reason != NULL)

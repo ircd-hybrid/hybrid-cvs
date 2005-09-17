@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.364 2005/09/11 10:44:09 michael Exp $
+ *  $Id: ircd.c,v 7.365 2005/09/17 10:30:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -736,6 +736,11 @@ main(int argc, char *argv[])
 #else
   load_all_modules(1);
 #endif
+  /*
+   * assemble_umode_buffer() has to be called after
+   * reading conf/loading modules.
+   */
+  assemble_umode_buffer();
 
   write_pidfile(pidFileName);
 
