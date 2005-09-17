@@ -1,8 +1,8 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  m_rxline.c: xlines an user with regular expression support.
+ *  m_rxline.c: xlines a user with regular expression support.
  *
- *  Copyright (C) 2002 by the past and present ircd coders, and others.
+ *  Copyright (C) 2005 by the past and present ircd coders, and others.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rxline.c,v 1.22 2005/09/03 08:57:58 michael Exp $
+ *  $Id: m_rxline.c,v 1.23 2005/09/17 04:40:46 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -83,7 +83,7 @@ _moddeinit(void)
   mod_del_cmd(&unrxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.22 $";
+const char *_version = "$Revision: 1.23 $";
 #endif
 
 static int
@@ -130,7 +130,7 @@ mo_rxline(struct Client *client_p, struct Client *source_p,
   if (!IsOperX(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name, "xline");
+               me.name, source_p->name, "rxline");
     return;
   }
 
@@ -213,7 +213,7 @@ mo_unrxline(struct Client *client_p, struct Client *source_p,
   if (!IsOperX(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
-               me.name, source_p->name, "unxline");
+               me.name, source_p->name, "unrxline");
     return;
   }
 
