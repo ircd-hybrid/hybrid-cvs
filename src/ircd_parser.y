@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.446 2005/09/16 14:56:56 adx Exp $
+ *  $Id: ircd_parser.y,v 1.447 2005/09/17 15:00:14 michael Exp $
  */
 
 %{
@@ -2924,17 +2924,19 @@ exempt_item:      exempt_ip | error;
 exempt_ip: IP '=' QSTRING ';'
 {
   if (ypass == 2)
+  {
     if (yylval.string[0] && parse_netmask(yylval.string, NULL, NULL) != HM_HOST)
     {
       yy_conf = make_conf_item(EXEMPTDLINE_TYPE);
-      yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
-      yy_aconf->host = yylval.string;
+      yy_aconf = map_to_conf(yy_conf);
+      DupString(yy_aconf->host, yylval.string);
 
       add_conf_by_address(CONF_EXEMPTDLINE, yy_aconf);
 
       yy_conf = NULL;
       yy_aconf = NULL;
     }
+  }
 };
 
 /***************************************************************************
