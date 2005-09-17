@@ -1,5 +1,5 @@
 # Makefile to install help files
-# $Id: Makefile.in,v 1.18 2005/09/17 17:28:10 knight Exp $
+# $Id: Makefile.in,v 1.19 2005/09/17 17:51:44 knight Exp $
 
 INSTALL=	@INSTALL@
 INSTALL_DATA=	@INSTALL_DATA@
@@ -21,8 +21,8 @@ depend:
 
 index:
 	@echo building index files
+	rm -f users/index.tmp
 	rm -f ../../help/users/index
-	touch users/index.tmp;
 	@for help in users/*; do \
 		if [ -f $$help ]; then \
 			echo $$help >> users/index.tmp; \
@@ -46,8 +46,9 @@ index:
 		| column -c 65 -s ' ' -x \
 		| expand \
 		>> users/index
+	rm -f users/index.tmp
+	rm -f opers/index.tmp
 	rm -f ../../help/opers/index
-	touch opers/index.tmp
 	@for help in opers/*; do \
 		if [ -f $$help ]; then \
 			echo $$help >> opers/index.tmp; \
@@ -68,7 +69,6 @@ index:
 		| column -c 65 -s ' ' -x \
 		| expand \
 		>> opers/index
-	rm -f users/index.tmp
 	rm -f opers/index.tmp
 
 install: index
