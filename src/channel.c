@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.455 2005/09/17 20:43:36 adx Exp $
+ * \version $Id: channel.c,v 7.456 2005/09/17 22:33:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -95,7 +95,7 @@ add_user_to_channel(struct Channel *chptr, struct Client *who,
     if (flood_ctrl)
       chptr->number_joined++;
 
-    chptr->number_joined -= (chptr->last_join_time - CurrentTime) *
+    chptr->number_joined -= (CurrentTime - chptr->last_join_time) *
       (((float)GlobalSetOptions.joinfloodcount) /
        (float)GlobalSetOptions.joinfloodtime);
 
