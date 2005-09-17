@@ -2,7 +2,7 @@
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  channel_mode.c: Controls modes on channels.
  *
- *  Copyright (C) 2002 by the past and present ircd coders, and others.
+ *  Copyright (C) 2005 by the past and present ircd coders, and others.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.160 2005/08/26 13:42:07 db Exp $
+ *  $Id: channel_mode.c,v 7.161 2005/09/17 04:46:19 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -49,23 +49,18 @@ static char *check_string(char *s);
 static char *fix_key(char *);
 static char *fix_key_old(char *);
 static void clear_ban_cache(struct Channel *chptr);
-
 static void chm_nosuch(struct Client *, struct Client *,
                        struct Channel *, int, int *, char **, int *, int,
                        int, char, void *, const char *);
-
 static void chm_simple(struct Client *, struct Client *, struct Channel *,
                        int, int *, char **, int *, int, int, char, void *,
                        const char *);
-
 static void chm_limit(struct Client *, struct Client *, struct Channel *,
                       int, int *, char **, int *, int, int, char, void *,
                       const char *);
-
 static void chm_key(struct Client *, struct Client *, struct Channel *,
                     int, int *, char **, int *, int, int, char, void *,
                     const char *);
-
 static void chm_op(struct Client *, struct Client *, struct Channel *, int,
                    int *, char **, int *, int, int, char, void *,
                    const char *);
@@ -77,47 +72,35 @@ static void chm_hop(struct Client *, struct Client *, struct Channel *, int,
 static void chm_voice(struct Client *, struct Client *, struct Channel *,
                       int, int *, char **, int *, int, int, char, void *,
                       const char *);
-
 static void chm_ban(struct Client *, struct Client *, struct Channel *, int,
                     int *, char **, int *, int, int, char, void *,
                     const char *);
-
 static void chm_except(struct Client *, struct Client *, struct Channel *,
                        int, int *, char **, int *, int, int, char, void *,
                        const char *);
-
 static void chm_invex(struct Client *, struct Client *, struct Channel *,
                       int, int *, char **, int *, int, int, char, void *,
                       const char *);
-
 static void send_cap_mode_changes(struct Client *, struct Client *,
                                   struct Channel *, int, int);
-
 static void send_mode_changes(struct Client *, struct Client *,
                               struct Channel *, char *);
+
+/* 10 is a magic number in hybrid 6 NFI where it comes from -db */
+#define BAN_FUDGE	10
+#define NCHCAPS         (sizeof(channel_capabs)/sizeof(int))
+#define NCHCAP_COMBOS   (1 << NCHCAPS)
 
 /* some buffers for rebuilding channel/nick lists with ,'s */
 static char modebuf[IRCD_BUFSIZE];
 static char parabuf[MODEBUFLEN];
-
-/* 10 is a magic number in hybrid 6 NFI where it comes from -db */
-#define BAN_FUDGE	10
-
 static struct ChModeChange mode_changes[IRCD_BUFSIZE];
 static int mode_count;
-
 static int mode_limit;		/* number of modes set other than simple */
 static int simple_modes_mask;	/* bit mask of simple modes already set */
-
 static int channel_capabs[] = { CAP_EX, CAP_IE, CAP_TS6 };
-
-#define NCHCAPS         (sizeof(channel_capabs)/sizeof(int))
-#define NCHCAP_COMBOS   (1 << NCHCAPS)
-
 static struct ChCapCombo chcap_combos[NCHCAP_COMBOS];
-
 extern BlockHeap *ban_heap;
-
 
 /* XXX check_string is propably not longer required in add_id and del_id */
 /* check_string()
