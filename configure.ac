@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.119 2005/09/17 15:00:14 michael Exp $
+dnl $Id: configure.ac,v 7.120 2005/09/17 19:38:01 adx Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.119 2005/09/17 15:00:14 michael Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.120 2005/09/17 19:38:01 adx Exp $])
 
 AC_INIT([ircd-hybrid],[7.2])
 
@@ -618,11 +618,47 @@ AC_CHECK_FUNC([kevent],
 	SELECT_TYPE="kqueue"
 ],
 [
-	AC_CHECK_HEADER(sys/epoll.h,
-	[
-		SELECT_TYPE="epoll"
-	],
-	[
+	AC_CHECK_HEADER(sys/epoll.h, [HAS_EPOLL=1], [HAS_EPOLL=0])
+	if test $HAS_EPOLL -eq 1; then
+		AC_MSG_CHECKING(for epoll support in kernel)
+		AC_TRY_RUN(
+#include <sys/epoll.h>
+#include <sys/syscall.h>
+#if defined(__stub_epoll_create) || defined(__stub___epoll_create) || defined(EPOLL_NEED_BODY)
+#if !defined(__NR_epoll_create)
+#if defined(__ia64__)
+#define __NR_epoll_create 1243
+#elif defined(__x86_64__)
+#define __NR_epoll_create 214
+#elif defined(__sparc64__) || defined(__sparc__)
+#define __NR_epoll_create 193
+#elif defined(__s390__) || defined(__m68k__)
+#define __NR_epoll_create 249
+#elif defined(__ppc64__) || defined(__ppc__)
+#define __NR_epoll_create 236
+#elif defined(__parisc__) || defined(__arm26__) || defined(__arm__)
+#define __NR_epoll_create 224
+#elif defined(__alpha__)
+#define __NR_epoll_create 407
+#elif defined(__sh64__)
+#define __NR_epoll_create 282
+#elif defined(__i386__) || defined(__sh__) || defined(__m32r__) || defined(__h8300__) || defined(__frv__)
+#define __NR_epoll_create 254
+#else
+#error No system call numbers defined for epoll family.
+#endif
+#endif
+_syscall1(int, epoll_create, int, size)
+#endif
+main() { return epoll_create(256) == -1 ? 1 : 0; },
+		[AC_MSG_RESULT(yes)
+		SELECT_TYPE="epoll"],
+		[AC_MSG_RESULT(no)
+		HAS_EPOLL=0],
+		[AC_MSG_RESULT(no)
+		HAS_EPOLL=0])
+	fi
+	if test $HAS_EPOLL -eq 0; then
 		AC_MSG_CHECKING(for /dev/poll)
 		if test -c "/dev/poll"; then
 			AC_MSG_RESULT(yes)
@@ -655,7 +691,7 @@ AC_CHECK_FUNC([kevent],
 				])
 			])
 		fi
-	])
+	fi
 ])
 
 fi
