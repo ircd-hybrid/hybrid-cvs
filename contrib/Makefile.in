@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.74 2005/09/07 16:40:10 adx Exp $
+# $Id: Makefile.in,v 1.75 2005/09/17 13:51:21 knight Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -141,4 +141,4 @@ distclean: clean
 	${RM} -f Makefile .depend
 	cd help && ${MAKE} distclean || exit; cd ..;
 
-.PHONY: depend clean distclean install_hpux_shared install_libmodules.a shared_modules install hpux_shared build
+.PHONY: depend clean distclean install_hpux_shared install_libmodules.a install_help shared_modules install hpux_shared build
