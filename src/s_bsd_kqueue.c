@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_kqueue.c,v 1.43 2005/09/17 22:16:38 adx Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.44 2005/09/18 14:46:02 adx Exp $
  */
 
 #include "stdinc.h"
@@ -47,9 +47,8 @@
 #endif
 
 static fde_t kqfd;
-static struct kevent *kq_fdlist;  /* kevent buffer */
-static int kqmax;                 /* max structs to buffer */
-static int kqoff;                 /* offset into the buffer */
+static struct kevent kq_fdlist[KE_LENGTH];  /* kevent buffer */
+static int kqoff;      /* offset into the buffer */
 
 /*
  * init_netio
@@ -61,9 +60,6 @@ void
 init_netio(void)
 {
   int fd;
-
-  kqmax = getdtablesize();
-  kq_fdlist = MyMalloc(sizeof(struct kevent) * kqmax);
 
   if ((fd = kqueue()) < 0)
   {
@@ -85,7 +81,7 @@ kq_update_events(int fd, int filter, int what)
 
   EV_SET(kep, (uintptr_t) fd, (short) filter, what, 0, 0, NULL);
 
-  if (kqoff == kqmax)
+  if (kqoff == KE_LENGTH)
   {
     kevent(kqfd.fd, kq_fdlist, kqoff, NULL, 0, &zero_timespec);
     kqoff = 0;

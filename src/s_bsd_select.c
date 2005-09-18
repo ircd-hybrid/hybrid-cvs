@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_select.c,v 7.41 2005/09/14 10:27:41 adx Exp $
+ *  $Id: s_bsd_select.c,v 7.42 2005/09/18 14:46:02 adx Exp $
  */
 
 #include "stdinc.h"
@@ -28,10 +28,6 @@
 #include "ircd.h"
 #include "s_bsd.h"
 #include "s_log.h"
-
-#if HARD_FDLIMIT >= FD_SETSIZE
-#error HARD_FDLIMIT must be less than FD_SETSIZE (try using poll instead of select)
-#endif
 
 /*
  * Note that this is only a single list - multiple lists is kinda pointless

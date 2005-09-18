@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_epoll.c,v 7.7 2005/09/16 20:42:55 adx Exp $
+ *  $Id: s_bsd_epoll.c,v 7.8 2005/09/18 14:46:02 adx Exp $
  */
 
 #include "stdinc.h"
@@ -33,8 +33,6 @@
 #include <sys/syscall.h>
 
 static fde_t efd;
-static int epmax;
-static struct epoll_event *ep_fdlist;
 
 /* Thanks to ircu for the following ifdefs. */
 
@@ -103,10 +101,7 @@ init_netio(void)
 {
   int fd;
 
-  epmax = getdtablesize();
-  ep_fdlist = MyMalloc(sizeof(struct epoll_event) * epmax);
-
-  if ((fd = epoll_create(epmax)) < 0)
+  if ((fd = epoll_create(hard_fdlimit)) < 0)
   {
     ilog(L_CRIT, "init_netio: Couldn't open epoll fd - %d: %s",
          errno, strerror(errno));
@@ -178,11 +173,12 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
 void
 comm_select(void)
 {
+  struct epoll_event ep_fdlist[128];
   int num, i;
   PF *hdl;
   fde_t *F;
 
-  num = epoll_wait(efd.fd, ep_fdlist, epmax, SELECT_DELAY);
+  num = epoll_wait(efd.fd, ep_fdlist, 128, SELECT_DELAY);
 
   set_time();
 

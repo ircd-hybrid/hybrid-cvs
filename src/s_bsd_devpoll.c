@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_devpoll.c,v 7.29 2005/09/14 10:27:41 adx Exp $
+ *  $Id: s_bsd_devpoll.c,v 7.30 2005/09/18 14:46:02 adx Exp $
  */
 
 #include "stdinc.h"
@@ -135,13 +135,13 @@ void
 comm_select(void)
 {
   int num, i;
-  struct pollfd pollfds[HARD_FDLIMIT];
+  struct pollfd pollfds[128];
   struct dvpoll dopoll;
   PF *hdl;
   fde_t *F;
 
   dopoll.dp_timeout = SELECT_DELAY;
-  dopoll.dp_nfds = HARD_FDLIMIT;
+  dopoll.dp_nfds = 128;
   dopoll.dp_fds = &pollfds[0];
   num = ioctl(dpfd.fd, DP_POLL, &dopoll);
 
