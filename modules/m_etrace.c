@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_etrace.c,v 1.4 2005/08/16 09:27:45 adx Exp $
+ *  $Id: m_etrace.c,v 1.1 2005/09/18 23:07:29 adx Exp $
  */
 
 #include "stdinc.h"
@@ -53,7 +53,7 @@ struct Message etrace_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.4 $";
+const char *_version = "$Revision: 1.1 $";
 static struct Callback *etrace_cb;
 
 void

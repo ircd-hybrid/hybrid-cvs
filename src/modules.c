@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.177 2005/09/18 22:36:58 adx Exp $
+ *  $Id: modules.c,v 7.178 2005/09/18 23:07:29 adx Exp $
  */
 
 #include "stdinc.h"
@@ -583,6 +583,7 @@ load_all_modules(int warn)
   mod_add_cmd(&die_msgtab);
   mod_add_cmd(&drop_msgtab);
   mod_add_cmd(&eob_msgtab);
+  mod_add_cmd(&etrace_msgtab);
   mod_add_cmd(&gline_msgtab);
   add_capability("GLN", CAP_GLN, 1);
   mod_add_cmd(&hash_msgtab);
@@ -673,7 +674,6 @@ load_all_modules(int warn)
   mod_add_cmd(&cs_msgtab);
   mod_add_cmd(&ctrace_msgtab);
   mod_add_cmd(&delspoof_msgtab);
-  mod_add_cmd(&etrace_msgtab);
   mod_add_cmd(&flags_msgtab);
   mod_add_cmd(&forcejoin_msgtab);
   mod_add_cmd(&forcepart_msgtab);

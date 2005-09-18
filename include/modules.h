@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.72 2005/09/18 22:36:58 adx Exp $
+ *  $Id: modules.h,v 7.73 2005/09/18 23:07:29 adx Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -98,6 +98,7 @@ extern struct Message die_msgtab;
 extern struct Message drop_msgtab;
 extern struct Message eob_msgtab;
 extern struct Message error_msgtab;
+extern struct Message etrace_msgtab;
 extern struct Message gline_msgtab;
 extern struct Message hash_msgtab;
 extern struct Message ungline_msgtab;
@@ -185,7 +186,6 @@ extern struct Message clearchan_msgtab;
 extern struct Message cs_msgtab;
 extern struct Message ctrace_msgtab;
 extern struct Message delspoof_msgtab;
-extern struct Message etrace_msgtab;
 extern struct Message flags_msgtab;
 extern struct Message forcejoin_msgtab;
 extern struct Message forcepart_msgtab;

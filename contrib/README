@@ -1,4 +1,4 @@
-$Id: README,v 1.50 2005/09/18 22:36:57 adx Exp $
+$Id: README,v 1.51 2005/09/18 23:07:29 adx Exp $
 -----------------------------------------------
 
 ircd-hybrid contributive add-ons ::
@@ -80,14 +80,6 @@ m_ctrace.c       --  This module will perform a trace on a certain class. Valid
                      Syntax: CTRACE <class>
 
                      Example: CTRACE users
-
-
-m_etrace.c       --  This module will give a list of all clients connected to
-                     the local server, both users and operators.
-
-                     Syntax: ETRACE <mask>
-
-                     Example: ETRACE *
 
 
 m_flags.c        --  This module adds csircd like support for changing

@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.76 2005/09/18 22:36:57 adx Exp $
+# $Id: Makefile.in,v 1.77 2005/09/18 23:07:29 adx Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -36,7 +36,6 @@ SRCS = \
   m_clearchan.c \
   m_classlist.c \
   m_ctrace.c \
-  m_etrace.c \
   m_flags.c     \
   m_force.c     \
   m_jupe.c      \
