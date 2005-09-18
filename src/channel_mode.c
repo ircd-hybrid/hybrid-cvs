@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.161 2005/09/17 04:46:19 metalrock Exp $
+ *  $Id: channel_mode.c,v 7.162 2005/09/18 10:56:34 michael Exp $
  */
 
 #include "stdinc.h"
@@ -206,6 +206,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
   }
 
   actualBan = BlockHeapAlloc(ban_heap);
+  actualBan->when = CurrentTime;
   actualBan->name = name;
   actualBan->username = user;
   actualBan->host = host;
@@ -221,11 +222,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
                client_p->name, client_p->username, client_p->host);
   }
   else
-  {
     DupString(actualBan->who, client_p->name);
-  }
-
-  actualBan->when = CurrentTime;
 
   dlinkAdd(actualBan, &actualBan->node, list);
 
@@ -248,7 +245,7 @@ del_id(struct Channel *chptr, char *banid, int type)
   char *name = NULL, *user = NULL, *host = NULL;
 
   if (banid == NULL)
-    return(0);
+    return 0;
 
   split_nuh(check_string(banid), &name, &user, &host);
 
@@ -290,14 +287,14 @@ del_id(struct Channel *chptr, char *banid, int type)
       MyFree(name);
       MyFree(user);
       MyFree(host);
-      return(1);
+      return 1;
     }
   }
 
   MyFree(name);
   MyFree(user);
   MyFree(host);
-  return(0);
+  return 0;
 }
 
 static const struct mode_letter
@@ -522,8 +519,10 @@ chm_nosuch(struct Client *client_p, struct Client *source_p,
 {
   if (*errors & SM_ERR_UNKNOWN)
     return;
+
   *errors |= SM_ERR_UNKNOWN;
-  sendto_one(source_p, form_str(ERR_UNKNOWNMODE), me.name, source_p->name, c);
+  sendto_one(source_p, form_str(ERR_UNKNOWNMODE), me.name,
+             source_p->name, c);
 }
 
 static void
@@ -607,7 +606,7 @@ chm_ban(struct Client *client_p, struct Client *source_p,
 
     DLINK_FOREACH(ptr, chptr->banlist.head)
     {
-      struct Ban *banptr = ptr->data;
+      const struct Ban *banptr = ptr->data;
       sendto_one(client_p, form_str(RPL_BANLIST),
                  me.name, client_p->name, chname,
                  banptr->name, banptr->username, banptr->host,
@@ -662,6 +661,7 @@ chm_ban(struct Client *client_p, struct Client *source_p,
 
   if (ConfigChannel.quiet_on_ban)
     clear_ban_cache(chptr);
+
   mode_changes[mode_count].letter = c;
   mode_changes[mode_count].dir = dir;
   mode_changes[mode_count].caps = 0;
@@ -714,7 +714,7 @@ chm_except(struct Client *client_p, struct Client *source_p,
 
     DLINK_FOREACH(ptr, chptr->exceptlist.head)
     {
-      struct Ban *banptr = ptr->data;
+      const struct Ban *banptr = ptr->data;
       sendto_one(client_p, form_str(RPL_EXCEPTLIST),
                  me.name, client_p->name, chname,
                  banptr->name, banptr->username, banptr->host,
@@ -751,6 +751,7 @@ chm_except(struct Client *client_p, struct Client *source_p,
 
   if (ConfigChannel.quiet_on_ban)
     clear_ban_cache(chptr);
+
   mode_changes[mode_count].letter = c;
   mode_changes[mode_count].dir = dir;
   mode_changes[mode_count].caps = CAP_EX;
@@ -808,7 +809,7 @@ chm_invex(struct Client *client_p, struct Client *source_p,
 
     DLINK_FOREACH(ptr, chptr->invexlist.head)
     {
-      struct Ban *banptr = ptr->data;
+      const struct Ban *banptr = ptr->data;
       sendto_one(client_p, form_str(RPL_INVITELIST), me.name,
                  client_p->name, chname,
 		 banptr->name, banptr->username, banptr->host,
@@ -865,12 +866,11 @@ chm_invex(struct Client *client_p, struct Client *source_p,
 static void
 clear_ban_cache(struct Channel *chptr)
 {
-  dlink_node *cptr;
-  struct Membership *ms;
+  dlink_node *ptr = NULL;
 
-  DLINK_FOREACH(cptr, chptr->locmembers.head)
+  DLINK_FOREACH(ptr, chptr->locmembers.head)
   {
-    ms = (struct Membership *) cptr->data;
+    struct Membership *ms = ptr->data;
     ms->flags &= ~(CHFL_BAN_SILENCED|CHFL_BAN_CHECKED);
   }
 }
@@ -1314,23 +1314,23 @@ get_channel_access(struct Client *source_p, struct Membership *member)
 {
   /* Let hacked servers in for now... */
   if (!MyClient(source_p))
-    return (CHACCESS_CHANOP);
+    return CHACCESS_CHANOP;
 
   if (member == NULL)
-    return (CHACCESS_NOTONCHAN);
+    return CHACCESS_NOTONCHAN;
 
   /* just to be sure.. */
   assert(source_p == member->client_p);
 
   if (has_member_flags(member, CHFL_CHANOP))
-    return (CHACCESS_CHANOP);
+    return CHACCESS_CHANOP;
 
 #ifdef HALFOPS
   if (has_member_flags(member, CHFL_HALFOP))
-    return (CHACCESS_HALFOP);
+    return CHACCESS_HALFOP;
 #endif
 
-  return (CHACCESS_PEON);
+  return CHACCESS_PEON;
 }
 
 /* void send_cap_mode_changes(struct Client *client_p,

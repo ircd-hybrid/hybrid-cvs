@@ -21,7 +21,7 @@
 
 /*! \file channel.h
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.h,v 7.165 2005/08/31 01:11:28 db Exp $
+ * \version $Id: channel.h,v 7.166 2005/09/18 10:56:33 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -120,7 +120,7 @@ extern void free_topic(struct Channel *);
 extern void destroy_channel(struct Channel *);
 extern void set_channel_topic(struct Channel *, const char *, const char *, time_t);
 
-extern const char *get_member_status(struct Membership *, int);
+extern const char *get_member_status(const struct Membership *, int);
 
 extern struct Channel *get_or_create_channel(struct Client *, const char *, int *);
 extern struct Membership *find_channel_link(struct Client *, struct Channel *);

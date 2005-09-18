@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.456 2005/09/17 22:33:41 adx Exp $
+ * \version $Id: channel.c,v 7.457 2005/09/18 10:56:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -88,7 +88,7 @@ void
 add_user_to_channel(struct Channel *chptr, struct Client *who,
                     unsigned int flags, int flood_ctrl)
 {
-  struct Membership *ms;
+  struct Membership *ms = NULL;
 
   if (GlobalSetOptions.joinfloodtime > 0)
   {
@@ -107,15 +107,17 @@ add_user_to_channel(struct Channel *chptr, struct Client *who,
     else if (chptr->number_joined >= GlobalSetOptions.joinfloodcount)
     {
       chptr->number_joined = GlobalSetOptions.joinfloodcount;
+
       if (!IsSetJoinFloodNoticed(chptr))
       {
         SetJoinFloodNoticed(chptr);
         sendto_realops_flags(UMODE_BOTS, L_ALL,
                              "Possible Join Flooder %s on %s target: %s",
-			     get_client_name(who, HIDE_IP),
-	  		     who->servptr->name, chptr->chname);
+                             get_client_name(who, HIDE_IP),
+                             who->servptr->name, chptr->chname);
       }
     }
+
     chptr->last_join_time = CurrentTime;
   }
 
@@ -184,6 +186,7 @@ send_members(struct Client *client_p, struct Channel *chptr,
 
     tlen = strlen(IsCapable(client_p, CAP_TS6) ?
       ID(ms->client_p) : ms->client_p->name) + 1;  /* nick + space */
+
     if (ms->flags & CHFL_CHANOP)
       tlen++;
 #ifdef HALFOPS
@@ -205,6 +208,7 @@ send_members(struct Client *client_p, struct Channel *chptr,
 
     strcpy(t, get_member_status(ms, YES));
     t += strlen(t);
+
     if (IsCapable(client_p, CAP_TS6))
       strcpy(t, ID(ms->client_p));
     else
@@ -327,16 +331,14 @@ send_channel_modes(struct Client *client_p, struct Channel *chptr)
 int
 check_channel_name(const char *name)
 {
+  const unsigned char *p = (const unsigned char *)name;
   assert(name != NULL);
 
-  if (name == NULL)
-    return(0);
+  for (; *p; ++p)
+    if (!IsChanChar(*p))
+      return 0;
 
-  for (; *name; ++name)
-    if (!IsChanChar(*name))
-      return(0);
-
-  return(1);
+  return 1;
 }
 
 void
@@ -383,7 +385,7 @@ get_or_create_channel(struct Client *client_p, const char *chname, int *isnew)
   int len;
 
   if (EmptyString(chname))
-    return(NULL);
+    return NULL;
 
   if ((len = strlen(chname)) > CHANNELLEN)
   {
@@ -391,7 +393,7 @@ get_or_create_channel(struct Client *client_p, const char *chname, int *isnew)
       sendto_realops_flags(UMODE_DEBUG, L_ALL,
                            "*** Long channel name from %s (%d > %d): %s",
                            client_p->name, len, CHANNELLEN, chname);
-    return(NULL);
+    return NULL;
   }
 
   if ((chptr = hash_find_channel(chname)) != NULL)
@@ -399,7 +401,7 @@ get_or_create_channel(struct Client *client_p, const char *chname, int *isnew)
     if (isnew != NULL)
       *isnew = 0;
 
-    return(chptr);
+    return chptr;
   }
 
   if (isnew != NULL)
@@ -414,7 +416,7 @@ get_or_create_channel(struct Client *client_p, const char *chname, int *isnew)
 
   hash_add_channel(chptr);
 
-  return(chptr);
+  return chptr;
 }
 
 /*! \brief walk through this channel, and destroy it.
@@ -439,7 +441,7 @@ destroy_channel(struct Channel *chptr)
   dlinkDelete(&chptr->node, &global_channel_list);
   hash_del_channel(chptr);
 
-  if (ServerInfo.hub == 1)
+  if (ServerInfo.hub)
     if ((ptr = dlinkFindDelete(&lazylink_channels, chptr)))
       free_dlink_node(ptr);
 
@@ -495,13 +497,14 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
         continue;
 
       tlen = strlen(target_p->name) + 1;  /* nick + space */
+
       if (ms->flags & (CHFL_CHANOP | CHFL_HALFOP | CHFL_VOICE))
         ++tlen;
       if (t + tlen - lbuf > IRCD_BUFSIZE)
       {
         *(t - 1) = '\0';
-	sendto_one(source_p, "%s", lbuf);
-	t = start;
+        sendto_one(source_p, "%s", lbuf);
+        t = start;
       }
 
       t += ircsprintf(t, "%s%s ", get_member_status(ms, NO),
@@ -528,6 +531,7 @@ void
 add_invite(struct Channel *chptr, struct Client *who)
 {
   del_invite(chptr, who);
+
   /*
    * delete last link in chain if the list is max length
    */
@@ -571,13 +575,13 @@ del_invite(struct Channel *chptr, struct Client *who)
  * (like in get_client_name)
  */
 const char *
-get_member_status(struct Membership *ms, int combine)
+get_member_status(const struct Membership *ms, int combine)
 {
   static char buffer[4];
   char *p = NULL;
 
   if (ms == NULL)
-    return("");
+    return "";
   p = buffer;
 
   if (ms->flags & CHFL_CHANOP)
@@ -600,7 +604,7 @@ get_member_status(struct Membership *ms, int combine)
     *p++ = '+';
   *p = '\0';
 
-  return(buffer);
+  return buffer;
 }
 
 /*!
@@ -619,14 +623,14 @@ find_bmask(const struct Client *who, const dlink_list *const list)
     const struct Ban *bp = ptr->data;
 
     if (match(bp->name, who->name) &&
-	match(bp->username, who->username) &&
-	(match(bp->host, who->host) ||
-	 match(bp->host, who->sockhost) ||
-	 match_cidr(bp->host, who->sockhost)))
-      return(1);
+        match(bp->username, who->username) &&
+        (match(bp->host, who->host) ||
+         match(bp->host, who->sockhost) ||
+         match_cidr(bp->host, who->sockhost)))
+      return 1;
   }
 
-  return(0);
+  return 0;
 }
 
 /*!
@@ -639,8 +643,8 @@ is_banned(struct Channel *chptr, struct Client *who)
 {
   assert(IsClient(who));
 
-  return(find_bmask(who, &chptr->banlist) && (!ConfigChannel.use_except ||
-         !find_bmask(who, &chptr->exceptlist)));
+  return find_bmask(who, &chptr->banlist) && (!ConfigChannel.use_except ||
+         !find_bmask(who, &chptr->exceptlist));
 }
 
 /*!
@@ -655,29 +659,29 @@ can_join(struct Client *source_p, struct Channel *chptr, const char *key)
 {
   if (find_bmask(source_p, &chptr->banlist))
     if (!ConfigChannel.use_except || !find_bmask(source_p, &chptr->exceptlist))
-      return(ERR_BANNEDFROMCHAN);
+      return ERR_BANNEDFROMCHAN;
 
   if (chptr->mode.mode & MODE_INVITEONLY)
     if (!dlinkFind(&source_p->invited, chptr))
       if (!ConfigChannel.use_invex || !find_bmask(source_p, &chptr->invexlist))
-        return(ERR_INVITEONLYCHAN);
+        return ERR_INVITEONLYCHAN;
 
   if (chptr->mode.key[0] && (EmptyString(key) || irccmp(chptr->mode.key, key)))
-    return(ERR_BADCHANNELKEY);
+    return ERR_BADCHANNELKEY;
 
   if (chptr->mode.limit && dlink_list_length(&chptr->members) >=
       chptr->mode.limit)
-    return(ERR_CHANNELISFULL);
+    return ERR_CHANNELISFULL;
 
-  return(0);
+  return 0;
 }
 
 int
 has_member_flags(struct Membership *ms, unsigned int flags)
 {
   if (ms != NULL)
-    return(ms->flags & flags);
-  return(0);
+    return ms->flags & flags;
+  return 0;
 }
 
 struct Membership *
@@ -686,13 +690,13 @@ find_channel_link(struct Client *client_p, struct Channel *chptr)
   dlink_node *ptr = NULL;
 
   if (!IsClient(client_p))
-    return(NULL);
+    return NULL;
 
   DLINK_FOREACH(ptr, client_p->channel.head)
     if (((struct Membership *)ptr->data)->chptr == chptr)
-      return((struct Membership *)ptr->data);
+      return (struct Membership *)ptr->data;
 
-  return(NULL);
+  return NULL;
 }
 
 /*!
@@ -708,47 +712,46 @@ can_send(struct Channel *chptr, struct Client *source_p)
   struct Membership *ms = NULL;
 
   if (IsServer(source_p))
-    return(CAN_SEND_OPV);
+    return CAN_SEND_OPV;
 
   if (MyClient(source_p) && !IsExemptResv(source_p) &&
       !(IsOper(source_p) && ConfigFileEntry.oper_pass_resv) &&
       (!hash_find_resv(chptr->chname) == ConfigChannel.restrict_channels))
-    return(CAN_SEND_NO);
+    return CAN_SEND_NO;
 
-  ms = find_channel_link(source_p, chptr);
-
-  if (ms == NULL)
+  if ((ms = find_channel_link(source_p, chptr)) == NULL)
   {
-    if(chptr->mode.mode & MODE_NOPRIVMSGS)
-      return(CAN_SEND_NO);
+    if (chptr->mode.mode & MODE_NOPRIVMSGS)
+      return CAN_SEND_NO;
   }
   else
   {
     if (ms->flags & (CHFL_CHANOP|CHFL_HALFOP|CHFL_VOICE))
-      return(CAN_SEND_OPV);
+      return CAN_SEND_OPV;
 
     /* cache can send if quiet_on_ban and banned */
     if (ConfigChannel.quiet_on_ban && MyClient(source_p))
     {
       if (ms->flags & CHFL_BAN_SILENCED)
-	return(CAN_SEND_NO);
-      if ((ms->flags & CHFL_BAN_CHECKED) == 0)
+        return CAN_SEND_NO;
+
+      if (!(ms->flags & CHFL_BAN_CHECKED))
       {
-	if (is_banned(chptr, source_p))
-	{
-	  ms->flags |= (CHFL_BAN_CHECKED|CHFL_BAN_SILENCED);
-	  return(CAN_SEND_NO);
-	}
-	else
-	  ms->flags |= CHFL_BAN_CHECKED;
+        if (is_banned(chptr, source_p))
+        {
+          ms->flags |= (CHFL_BAN_CHECKED|CHFL_BAN_SILENCED);
+          return CAN_SEND_NO;
+        }
+
+        ms->flags |= CHFL_BAN_CHECKED;
       }
     }
   }
 
   if (chptr->mode.mode & MODE_MODERATED)
-    return(CAN_SEND_NO);
+    return CAN_SEND_NO;
 
-  return(CAN_SEND_NONOP);
+  return CAN_SEND_NONOP;
 }
 
 /*! \brief Checks to see if given client can send a part message
@@ -761,16 +764,16 @@ can_send_part(struct Membership *member, struct Channel *chptr,
               struct Client *source_p)
 {
   if (has_member_flags(member, CHFL_CHANOP|CHFL_HALFOP))
-    return(CAN_SEND_OPV);
+    return CAN_SEND_OPV;
 
   if (chptr->mode.mode & MODE_MODERATED)
-    return(CAN_SEND_NO);
+    return CAN_SEND_NO;
 
   if (ConfigChannel.quiet_on_ban && MyClient(source_p) &&
       is_banned(chptr, source_p))
-    return(CAN_SEND_NO);
+    return CAN_SEND_NO;
 
-  return(CAN_SEND_NONOP);
+  return CAN_SEND_NONOP;
 }
 
 /*! \brief Updates the client's oper_warn_count_down, warns the
@@ -793,6 +796,7 @@ check_spambot_warning(struct Client *source_p, const char *name)
       source_p->localClient->oper_warn_count_down--;
     else
       source_p->localClient->oper_warn_count_down = 0;
+
     if (source_p->localClient->oper_warn_count_down == 0)
     {
       /* Its already known as a possible spambot */
@@ -829,6 +833,7 @@ check_spambot_warning(struct Client *source_p, const char *name)
         source_p->localClient->join_leave_count++;
       }
     }
+
     if (name != NULL)
       source_p->localClient->last_join_time = CurrentTime;
     else
