@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.h,v 7.40 2005/09/18 14:25:12 adx Exp $
+ *  $Id: fdlist.h,v 7.41 2005/09/18 15:35:07 adx Exp $
  */
 
 #ifndef INCLUDED_fdlist_h
@@ -98,6 +98,7 @@ extern int number_fd;
 extern int hard_fdlimit;
 extern fde_t *fd_hash[];
 extern fde_t *fd_next_in_loop;
+extern struct Callback *fdlimit_cb;
 
 void fdlist_init(void);
 fde_t *lookup_fd(int);

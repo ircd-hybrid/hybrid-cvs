@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.48 2005/09/18 14:25:13 adx Exp $
+ *  $Id: fdlist.c,v 7.49 2005/09/18 15:35:07 adx Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -37,12 +37,35 @@
 fde_t *fd_hash[FD_HASH_SIZE];
 fde_t *fd_next_in_loop = NULL;
 int number_fd = LEAKED_FDS;
-int hard_fdlimit;
+int hard_fdlimit = 0;
+struct Callback *fdlimit_cb = NULL;
+
+static void *
+changing_fdlimit(va_list args)
+{
+  int old_fdlimit = hard_fdlimit;
+
+  hard_fdlimit = va_arg(args, int);
+
+  if (ServerInfo.max_clients > MAXCLIENTS_MAX)
+  {
+    if (old_fdlimit != 0)
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+        "HARD_FDLIMIT changed to %d, adjusting MAXCLIENTS to %d",
+        hard_fdlimit, MAXCLIENTS_MAX);
+
+    ServerInfo.max_clients = MAXCLIENTS_MAX;
+  }
+
+  return NULL;
+}
 
 void
 fdlist_init(void)
 {
   memset(&fd_hash, 0, sizeof(fd_hash));
+
+  fdlimit_cb = register_callback("changing_fdlimit", changing_fdlimit);
   recalc_fdlimit();
 }
 
@@ -58,11 +81,11 @@ recalc_fdlimit(void)
   /* allow MAXCLIENTS_MIN clients even at the cost of MAX_BUFFER and
    * some not really LEAKED_FDS */
   int fdmax = getdtablesize();
-  hard_fdlimit = IRCD_MAX(fdmax, LEAKED_FDS + MAX_BUFFER + MAXCLIENTS_MIN);
-#endif
+  fdmax = IRCD_MAX(fdmax, LEAKED_FDS + MAX_BUFFER + MAXCLIENTS_MIN);
 
-  if (ServerInfo.max_clients > MAXCLIENTS_MAX)
-    ServerInfo.max_clients = MAXCLIENTS_MAX;
+  if (fdmax != hard_fdlimit)
+    execute_callback(fdlimit_cb, fdmax);
+#endif
 }
 
 static inline unsigned int
