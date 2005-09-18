@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.163 2005/09/18 11:41:28 michael Exp $
+ *  $Id: channel_mode.c,v 7.164 2005/09/18 12:07:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -182,6 +182,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
       break;
     case CHFL_EXCEPTION:
       list = &chptr->exceptlist;
+      clear_ban_cache(chptr);
       break;
     case CHFL_INVEX:
       list = &chptr->invexlist;

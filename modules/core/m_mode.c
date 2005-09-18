@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.80 2005/08/17 16:02:52 michael Exp $
+ *  $Id: m_mode.c,v 1.81 2005/09/18 12:07:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -51,10 +51,12 @@ struct Message mode_msgtab = {
   "MODE", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_mode, m_mode, m_ignore, m_mode, m_ignore}
 };
+
 struct Message tmode_msgtab = { 
   "TMODE", 0, 0, 4, 0, MFLG_SLOW, 0,
   {m_ignore, m_ignore, ms_tmode, m_ignore, m_ignore, m_ignore}
 };
+
 struct Message bmask_msgtab = {
   "BMASK", 0, 0, 5, 0, MFLG_SLOW, 0,
   {m_ignore, m_ignore, ms_bmask, m_ignore, m_ignore, m_ignore}
@@ -77,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&bmask_msgtab);
 }
 
-const char *_version = "$Revision: 1.80 $";
+const char *_version = "$Revision: 1.81 $";
 #endif
 
 /*
@@ -204,14 +206,7 @@ static void
 ms_tmode(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
   struct Channel *chptr = NULL;
-  struct Membership *member;
-
-  if (!IsChanPrefix(parv[2][0]) || !check_channel_name(parv[2]))
-  {
-    sendto_one(source_p, form_str(ERR_BADCHANNAME),
-               ID_or_name(&me, client_p), ID_or_name(source_p, client_p), parv[2]);
-    return;
-  }
+  struct Membership *member = NULL;
 
   if ((chptr = hash_find_channel(parv[2])) == NULL)
   {
@@ -262,9 +257,6 @@ ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[
   int mlen, tlen;
   int modecount = 0;
   int needcap = NOCAPS;
-
-  if (!IsChanPrefix(*parv[2]) || !check_channel_name(parv[2]))
-    return;
 
   if ((chptr = hash_find_channel(parv[2])) == NULL)
     return;
@@ -351,6 +343,6 @@ ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[
   /* assumption here is that since the server sent BMASK, they are TS6, so they have an ID */
   sendto_server(client_p, NULL, chptr, CAP_TS6|needcap, NOCAPS, NOFLAGS,
                 ":%s BMASK %lu %s %s :%s",
-                 source_p->id, (unsigned long)chptr->channelts, chptr->chname,
-                 parv[3], parv[4]);
+                source_p->id, (unsigned long)chptr->channelts, chptr->chname,
+                parv[3], parv[4]);
 }
