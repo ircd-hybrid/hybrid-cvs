@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.162 2005/09/18 10:56:34 michael Exp $
+ *  $Id: channel_mode.c,v 7.163 2005/09/18 11:41:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -45,10 +45,9 @@
 #include "s_log.h"
 
 /* some small utility functions */
-static char *check_string(char *s);
+static char *check_string(char *);
 static char *fix_key(char *);
 static char *fix_key_old(char *);
-static void clear_ban_cache(struct Channel *chptr);
 static void chm_nosuch(struct Client *, struct Client *,
                        struct Channel *, int, int *, char **, int *, int,
                        int, char, void *, const char *);
@@ -101,6 +100,7 @@ static int simple_modes_mask;	/* bit mask of simple modes already set */
 static int channel_capabs[] = { CAP_EX, CAP_IE, CAP_TS6 };
 static struct ChCapCombo chcap_combos[NCHCAP_COMBOS];
 extern BlockHeap *ban_heap;
+
 
 /* XXX check_string is propably not longer required in add_id and del_id */
 /* check_string()
@@ -259,9 +259,11 @@ del_id(struct Channel *chptr, char *banid, int type)
   {
     case CHFL_BAN:
       list = &chptr->banlist;
+      clear_ban_cache(chptr);
       break;
     case CHFL_EXCEPTION:
       list = &chptr->exceptlist;
+      clear_ban_cache(chptr);
       break;
     case CHFL_INVEX:
       list = &chptr->invexlist;
@@ -659,9 +661,6 @@ chm_ban(struct Client *client_p, struct Client *source_p,
       assert(0);
   }
 
-  if (ConfigChannel.quiet_on_ban)
-    clear_ban_cache(chptr);
-
   mode_changes[mode_count].letter = c;
   mode_changes[mode_count].dir = dir;
   mode_changes[mode_count].caps = 0;
@@ -748,9 +747,6 @@ chm_except(struct Client *client_p, struct Client *source_p,
     default:
       assert(0);
   }
-
-  if (ConfigChannel.quiet_on_ban)
-    clear_ban_cache(chptr);
 
   mode_changes[mode_count].letter = c;
   mode_changes[mode_count].dir = dir;
@@ -863,7 +859,7 @@ chm_invex(struct Client *client_p, struct Client *source_p,
  * output	- none
  * side effects	- clear ban cache
  */
-static void
+void
 clear_ban_cache(struct Channel *chptr)
 {
   dlink_node *ptr = NULL;

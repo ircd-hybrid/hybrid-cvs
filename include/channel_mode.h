@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.35 2005/08/26 13:42:07 db Exp $
+ *  $Id: channel_mode.h,v 7.36 2005/09/18 11:41:28 michael Exp $
  */
 
 
@@ -36,7 +36,7 @@
 extern int add_id(struct Client *, struct Channel *, char *, int);
 extern void set_channel_mode(struct Client *, struct Client *, struct Channel *,
                              struct Membership *, int, char **, char *);
-
+extern void clear_ban_cache(struct Channel *);
 extern void init_chcap_usage_counts(void);
 extern void set_chcap_usage_counts(struct Client *);
 extern void unset_chcap_usage_counts(struct Client *);
