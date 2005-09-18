@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.30 2005/09/14 14:01:57 knight Exp $
+ *  $Id: m_services.c,v 1.31 2005/09/18 00:59:54 knight Exp $
  */
 /*
  *
@@ -223,7 +223,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 
 /*
@@ -362,30 +362,32 @@ m_identify(struct Client *client_p, struct Client *source_p,
 {
   struct Client *target_p;
 
-  if (parc == 3)
+  switch (parc)
   {
+    case 2:
       if (!(target_p = find_server(SERVICES_NAME)))
         sendto_one(source_p, form_str(ERR_SERVICESDOWN),
-		   me.name, source_p->name);
+                   me.name, source_p->name);
+      else
+        sendto_one(target_p, ":%s PRIVMSG NickServ@%s :IDENTIFY %s",
+                   source_p->name, SERVICES_NAME, parv[1]);
+      break;
+
+    case 3:
+      if (!(target_p = find_server(SERVICES_NAME)))
+        sendto_one(source_p, form_str(ERR_SERVICESDOWN),
+                   me.name, source_p->name);
       else
         sendto_one(target_p, ":%s PRIVMSG ChanServ@%s :IDENTIFY %s %s",
                    source_p->name, SERVICES_NAME, parv[1], parv[2]);
-  }
-  else if (parc == 2)
-  {
-    if (!(target_p = find_server(SERVICES_NAME)))
-      sendto_one(source_p, form_str(ERR_SERVICESDOWN),
-                 me.name, source_p->name);
-    else
-      sendto_one(target_p, ":%s PRIVMSG NickServ@%s :IDENTIFY %s",
-                 source_p->name, SERVICES_NAME, parv[1]);
-  }
-  else
-  {
-    sendto_one(source_p, ":%s NOTICE %s :Syntax: IDENTIFY <password> - for nickname",
-               me.name, source_p->name);
-    sendto_one(source_p, ":%s NOTICE %s :Syntax: IDENTIFY <channel> <password> - for channel",
-               me.name, source_p->name);
+      break;
+
+    default:
+      sendto_one(source_p, ":%s NOTICE %s :Syntax: IDENTIFY <password> "
+                 "- for nickname", me.name, source_p->name);
+      sendto_one(source_p, ":%s NOTICE %s :Syntax: IDENTIFY <channel> "
+                 "<password> - for channel", me.name, source_p->name);
+      break;
   }
 }
 
