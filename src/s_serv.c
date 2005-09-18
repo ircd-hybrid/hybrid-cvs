@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.437 2005/09/18 20:09:03 adx Exp $
+ *  $Id: s_serv.c,v 7.438 2005/09/18 20:23:37 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1390,9 +1390,6 @@ fork_server(struct Client *server)
     return -1;
   }
 
-  fd_open(&server->localClient->ctrlfd, slink_fds[0][1], 1, "slink ctrl");
-  fd_open(&server->localClient->fd, slink_fds[1][1], 1, "slink data");
-
   if (i == 0)
   {
     char fd_str[3][6];   /* store 3x sizeof("65535") */
@@ -1403,6 +1400,8 @@ fork_server(struct Client *server)
           fcntl(server->localClient->fd.fd, F_GETFL, 0) & ~O_ASYNC);
 #endif
     close_fds(&server->localClient->fd);
+    close(slink_fds[0][1]);
+    close(slink_fds[1][1]);
 
     sprintf(fd_str[0], "%d", slink_fds[0][0]);
     sprintf(fd_str[1], "%d", slink_fds[1][0]);
@@ -1424,8 +1423,11 @@ fork_server(struct Client *server)
   close(slink_fds[0][0]);
   close(slink_fds[1][0]);
 
-  execute_callback(setup_socket_cb, server->localClient->fd.fd);
-  execute_callback(setup_socket_cb, server->localClient->ctrlfd.fd);
+  execute_callback(setup_socket_cb, slink_fds[0][1]);
+  execute_callback(setup_socket_cb, slink_fds[1][1]);
+
+  fd_open(&server->localClient->ctrlfd, slink_fds[0][1], 1, "slink ctrl");
+  fd_open(&server->localClient->fd, slink_fds[1][1], 1, "slink data");
 
   read_ctrl_packet(&server->localClient->ctrlfd, server);
   read_packet(&server->localClient->fd, server);
