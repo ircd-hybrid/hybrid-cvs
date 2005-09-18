@@ -1,4 +1,4 @@
-# $Id: index,v 1.8 2005/09/17 19:11:58 adx Exp $
+# $Id: index,v 1.9 2005/09/18 22:36:58 adx Exp $
 Help topics available to opers only:
 
 CAPAB           CBURST          CLIENT          CLOSE
@@ -7,13 +7,13 @@ DROP            EOB             GLINE           HASH
 KILL            KLINE           KNOCKLL         LLJOIN
 LLNICK          LOCOPS          MODLIST         MODLOAD
 MODRESTART      MODUNLOAD       NBURST          NOTICE
-OPERWALL        POST            PRIVMSG         REHASH
-RESTART         RESV            RKLINE          RXLINE
-SERVER          SET             SJOIN           SQUIT
-STATS           SVINFO          TESTGECOS       TESTLINE
-TESTMASK        TRACE           UHELP           UMODE
-UNDLINE         UNGLINE         UNKLINE         UNRESV
-UNXLINE         WALLOPS         XLINE
+OMOTD           OPERWALL        POST            PRIVMSG
+REHASH          RESTART         RESV            RKLINE
+RXLINE          SERVER          SET             SJOIN
+SQUIT           STATS           SVINFO          TESTGECOS
+TESTLINE        TESTMASK        TRACE           UHELP
+UMODE           UNDLINE         UNGLINE         UNKLINE
+UNRESV          UNXLINE         WALLOPS         XLINE
 
 Help topics available to users:
 

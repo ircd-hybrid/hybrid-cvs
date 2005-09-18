@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.176 2005/09/18 21:48:54 adx Exp $
+ *  $Id: modules.c,v 7.177 2005/09/18 22:36:58 adx Exp $
  */
 
 #include "stdinc.h"
@@ -615,6 +615,7 @@ load_all_modules(int warn)
   mod_add_cmd(&names_msgtab);
   mod_add_cmd(&nburst_msgtab);
   mod_add_cmd(&nick_msgtab);
+  mod_add_cmd(&omotd_msgtab);
   mod_add_cmd(&oper_msgtab);
   mod_add_cmd(&operwall_msgtab);
   mod_add_cmd(&part_msgtab);
@@ -691,7 +692,6 @@ load_all_modules(int warn)
   mod_add_cmd(&nickserv_msgtab);
   mod_add_cmd(&ns_msgtab);
   mod_add_cmd(&ojoin_msgtab);
-  mod_add_cmd(&omotd_msgtab);
   mod_add_cmd(&operserv_msgtab);
   mod_add_cmd(&operspy_msgtab);
   mod_add_cmd(&opme_msgtab);

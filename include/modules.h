@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.71 2005/09/10 09:48:55 michael Exp $
+ *  $Id: modules.h,v 7.72 2005/09/18 22:36:58 adx Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -127,6 +127,7 @@ extern struct Message motd_msgtab;
 extern struct Message names_msgtab;
 extern struct Message nburst_msgtab;
 extern struct Message nick_msgtab;
+extern struct Message omotd_msgtab;
 extern struct Message oper_msgtab;
 extern struct Message operwall_msgtab;
 extern struct Message part_msgtab;
@@ -201,7 +202,6 @@ extern struct Message ms_msgtab;
 extern struct Message nickserv_msgtab;
 extern struct Message ns_msgtab;
 extern struct Message ojoin_msgtab;
-extern struct Message omotd_msgtab;
 extern struct Message operserv_msgtab;
 extern struct Message operspy_msgtab;
 extern struct Message opme_msgtab;

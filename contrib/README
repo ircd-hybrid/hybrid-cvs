@@ -1,4 +1,4 @@
-$Id: README,v 1.49 2005/09/09 20:06:54 adx Exp $
+$Id: README,v 1.50 2005/09/18 22:36:57 adx Exp $
 -----------------------------------------------
 
 ircd-hybrid contributive add-ons ::
@@ -151,11 +151,6 @@ m_ojoin.c        --  This module will add the ability to join any channel no
                      Syntax: OJOIN [status]<channel>
 
                      Example: OJOIN @#private
-
-
-m_omotd.c        --  This module will display the operator Message of the Day.
-
-                     Syntax: OMOTD [server]
 
 
 m_operspy.c      --  This module will allow operators with access to spy on
