@@ -5,9 +5,6 @@
 /*** BEGIN OF STANDARD CONFIGURATION SETTINGS ***/
 
 
-/* Maximum number of network connections */
-#define MAXCONN 500
-
 /* Set up your maximum allowed nickname length here. */
 #define _NICKLEN 20
 

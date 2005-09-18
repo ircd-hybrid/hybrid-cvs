@@ -19,10 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_signal.c,v 7.17 2005/08/30 11:42:02 michael Exp $
+ *  $Id: ircd_signal.c,v 7.18 2005/09/18 14:25:13 adx Exp $
  */
 
 #include "stdinc.h"
+#include "common.h"
 #include "ircd_signal.h"
 #include "ircd.h"         /* dorehash */
 #include "restart.h"      /* server_reboot */
@@ -36,7 +37,7 @@
 static void 
 sigterm_handler(int sig)  
 {
-  server_die("received signal SIGTERM");
+  server_die("received signal SIGTERM", NO);
 }
 
 /* 
@@ -77,23 +78,10 @@ sigchld_handler(int sig)
 static void 
 sigint_handler(int sig)
 {
-  static int restarting = 0;
-
-  if (server_state.foreground) 
-  {
-    ilog(L_WARN, "Server exiting on SIGINT");
-    exit(0);
-  }
+  if (server_state.foreground)
+    server_die("SIGINT received", NO);
   else
-  {
-    ilog(L_WARN, "Server Restarting on SIGINT");
-
-    if (restarting == 0) 
-    {
-      restarting = 1;
-      server_reboot();
-    }
-  }
+    restart("SIGINT received");
 }
 
 /*

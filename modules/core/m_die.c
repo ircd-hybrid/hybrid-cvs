@@ -19,13 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_die.c,v 1.34 2005/08/30 11:42:02 michael Exp $
+ *  $Id: m_die.c,v 1.35 2005/09/18 14:25:12 adx Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "client.h"
+#include "common.h"
 #include "ircd.h"
 #include "irc_string.h"
 #include "numeric.h"
@@ -61,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&die_msgtab);
 }
 
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 
 /*
@@ -95,6 +96,6 @@ mo_die(struct Client *client_p, struct Client *source_p,
   }
 
   ircsprintf(buf, "received DIE command from %s",
-             get_client_name(source_p, HIDE_IP));
-  server_die(buf);
+             get_oper_name(source_p));
+  server_die(buf, NO);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rehash.c,v 1.54 2005/08/16 18:34:46 knight Exp $
+ *  $Id: m_rehash.c,v 1.55 2005/09/18 14:25:12 adx Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&rehash_msgtab);
 }
 
-const char *_version = "$Revision: 1.54 $";
+const char *_version = "$Revision: 1.55 $";
 #endif
 
 /*
@@ -88,6 +88,15 @@ mo_rehash(struct Client *client_p, struct Client *source_p,
                            get_oper_name(source_p));
       restart_resolver();   /* re-read /etc/resolv.conf AGAIN?
                                and close/re-open res socket */
+      found = 1;
+    }
+    else if (irccmp(parv[1], "FDLIMIT") == 0)
+    {
+      sendto_one(source_p, form_str(RPL_REHASHING), me.name,
+                 parv[0], "FDLIMIT");
+      sendto_realops_flags(UMODE_ALL, L_ALL, "%s is updating FDLIMIT",
+                           get_oper_name(source_p));
+      recalc_fdlimit();
       found = 1;
     }
     else
@@ -121,8 +130,8 @@ mo_rehash(struct Client *client_p, struct Client *source_p,
       sendto_one(source_p, ":%s NOTICE %s :rehash one of :MOTD OMOTD",
                  me.name, source_p->name);
 #else
-      sendto_one(source_p, ":%s NOTICE %s :rehash one of :DNS MOTD OMOTD",
-                 me.name, source_p->name);
+      sendto_one(source_p, ":%s NOTICE %s :rehash one of :DNS FDLIMIT "
+                 "MOTD OMOTD", me.name, source_p->name);
 #endif
       return;
     }

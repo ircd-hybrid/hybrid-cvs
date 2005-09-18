@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.17 2005/09/16 09:39:20 adx Exp $
+ *  $Id: s_bsd_win32.c,v 7.18 2005/09/18 14:25:13 adx Exp $
  */
 
 #include "stdinc.h"
@@ -253,7 +253,7 @@ comm_select(void)
   MSG msg;
 
   if (!GetMessage(&msg, NULL, 0, 0))
-    server_die("received message WM_QUIT");
+    server_die("WM_QUIT received", NO);
 
   set_time();
 

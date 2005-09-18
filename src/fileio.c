@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.38 2005/08/01 14:18:05 db Exp $
+ *  $Id: fileio.c,v 7.39 2005/09/18 14:25:13 adx Exp $
  */
 
 #include "stdinc.h"
@@ -41,20 +41,19 @@
 int
 file_open(fde_t *F, const char *filename, int mode, int fmode)
 {
-  int fd = open(filename, mode, fmode);
+  int fd;
 
-  if (fd < 0)
-    return (-1);
-
-  if (fd == MASTER_MAX)
+  if (number_fd == hard_fdlimit)
   {
-    close(fd);  /* Too many FDs! */
     errno = ENFILE;
-    return (-1);
+    return -1;
   }
 
+  if ((fd = open(filename, mode, fmode)) < 0)
+    return -1;
+
   fd_open(F, fd, 0, filename);
-  return (0);
+  return 0;
 }
 
 void

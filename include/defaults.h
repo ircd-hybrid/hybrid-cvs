@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.21 2005/09/15 09:21:57 adx Exp $
+ *  $Id: defaults.h,v 7.22 2005/09/18 14:25:12 adx Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -83,10 +83,15 @@
 #define MAX_TDKLINE_TIME	(24*60*10)
 #define HANGONGOODLINK 3600     /* Recommended value: 30-60 minutes */
 
-/* 10 FDs reserved for logging and name resolution */
-#define HARD_FDLIMIT    MAXCONN + MAX_BUFFER + 10
+/* tests show that about 7 fds are not registered by fdlist.c, these
+ * include std* descriptors + some others (by OpenSSL etc.). Note this is
+ * intentionally too high, we don't want to eat fds up to the last one */
+#define LEAKED_FDS       10
+/* how many (privileged) clients can exceed max_clients */
+#define MAX_BUFFER       60
 
-#define MASTER_MAX      (HARD_FDLIMIT - MAX_BUFFER)
+#define MAXCLIENTS_MAX   (hard_fdlimit - LEAKED_FDS - MAX_BUFFER)
+#define MAXCLIENTS_MIN   32
 
 /* class {} default values */
 #define DEFAULT_SENDQ 9000000           /* default max SendQ */
@@ -105,8 +110,6 @@
 
 /* General defaults */
 #define MAXIMUM_LINKS_DEFAULT 0         /* default for maximum_links */
-#define MAX_BUFFER 60
-
 
 #define CLIENT_FLOOD_DEFAULT 2560       /* default for client_flood */
 #define CLIENT_FLOOD_MAX     8000

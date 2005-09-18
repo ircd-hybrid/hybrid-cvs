@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.447 2005/09/17 15:00:14 michael Exp $
+ *  $Id: ircd_parser.y,v 1.448 2005/09/18 14:25:13 adx Exp $
  */
 
 %{
@@ -39,6 +39,7 @@
 #include "pcre.h"
 #include "irc_string.h"
 #include "irc_getaddrinfo.h"
+#include "sprintf_irc.h"
 #include "ircdauth.h"
 #include "memory.h"
 #include "modules.h"
@@ -721,15 +722,20 @@ serverinfo_max_clients: T_MAX_CLIENTS '=' NUMBER ';'
 {
   if (ypass == 2)
   {
-    if (MAXCONN >= $3)
+    if ($3 < MAXCLIENTS_MIN)
     {
-      ServerInfo.max_clients = $3;
+      char buf[IRCD_BUFSIZE];
+      ircsprintf(buf, "MAXCLIENTS too low, setting to %d", MAXCLIENTS_MIN);
+      yyerror(buf);
+    }
+    else if ($3 > MAXCLIENTS_MAX)
+    {
+      char buf[IRCD_BUFSIZE];
+      ircsprintf(buf, "MAXCLIENTS too high, setting to %d", MAXCLIENTS_MAX);
+      yyerror(buf);
     }
     else
-    {
-      ilog(L_ERROR, "Setting serverinfo_max_clients to MAXCONN");
-      ServerInfo.max_clients = MAXCONN;
-    }
+      ServerInfo.max_clients = $3;
   }
 };
 

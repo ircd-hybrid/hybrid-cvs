@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.250 2005/09/07 18:04:39 adx Exp $
+ *  $Id: s_bsd.c,v 7.251 2005/09/18 14:25:13 adx Exp $
  */
 
 #include "stdinc.h"
@@ -547,7 +547,7 @@ comm_checktimeouts(void *notused)
   PF *hdl;
   void *data;
 
-  for (i = 0; i < HARD_FDLIMIT; i++)
+  for (i = 0; i < FD_HASH_SIZE; i++)
     for (F = fd_hash[i]; F != NULL; F = fd_next_in_loop)
     {
       assert(F->flags.open);
@@ -798,7 +798,7 @@ comm_open(fde_t *F, int family, int sock_type, int proto, const char *note)
   int fd;
 
   /* First, make sure we aren't going to run out of file descriptors */
-  if (number_fd >= MASTER_MAX)
+  if (number_fd >= hard_fdlimit)
   {
     errno = ENFILE;
     return -1;
@@ -850,7 +850,7 @@ comm_accept(struct Listener *lptr, struct irc_ssaddr *pn)
   int newfd;
   socklen_t addrlen = sizeof(struct irc_ssaddr);
 
-  if (number_fd >= MASTER_MAX)
+  if (number_fd >= hard_fdlimit)
   {
     errno = ENFILE;
     return -1;

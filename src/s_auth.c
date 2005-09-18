@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.158 2005/08/23 18:00:35 db Exp $
+ *  $Id: s_auth.c,v 7.159 2005/09/18 14:25:13 adx Exp $
  */
 
 /*
@@ -267,15 +267,6 @@ start_auth_query(struct AuthRequest *auth)
         get_client_name(auth->client, SHOW_IP), errno);
     ilog(L_ERROR, "Unable to create auth socket for %s",
         get_client_name(auth->client, SHOW_IP));
-    ++ServerStats->is_abad;
-    return 0;
-  }
-
-  if (number_fd >= HARD_FDLIMIT - 10)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,"Can't allocate fd for auth on %s",
-        get_client_name(auth->client, SHOW_IP));
-    fd_close(&auth->fd);
     ++ServerStats->is_abad;
     return 0;
   }

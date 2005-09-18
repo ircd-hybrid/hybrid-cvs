@@ -19,36 +19,59 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.47 2005/09/08 02:43:41 adx Exp $
+ *  $Id: fdlist.c,v 7.48 2005/09/18 14:25:13 adx Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
 #include "client.h"  /* struct Client */
+#include "common.h"
 #include "event.h"
 #include "ircd.h"    /* GlobalSetOptions */
 #include "irc_string.h"
 #include "s_bsd.h"   /* comm_setselect */
+#include "s_conf.h"  /* ServerInfo */
 #include "send.h"
 #include "memory.h"
 #include "numeric.h"
 
-fde_t *fd_hash[HARD_FDLIMIT];
+fde_t *fd_hash[FD_HASH_SIZE];
 fde_t *fd_next_in_loop = NULL;
-int number_fd = 0;
+int number_fd = LEAKED_FDS;
+int hard_fdlimit;
 
 void
 fdlist_init(void)
 {
   memset(&fd_hash, 0, sizeof(fd_hash));
+  recalc_fdlimit();
+}
+
+void
+recalc_fdlimit(void)
+{
+#ifdef _WIN32
+  /* this is what WSAStartup() usually returns. Even though they say
+   * the value is for compatibility reasons and should be ignored,
+   * we actually can create even more sockets... */
+  hard_fdlimit = 32767;
+#else
+  /* allow MAXCLIENTS_MIN clients even at the cost of MAX_BUFFER and
+   * some not really LEAKED_FDS */
+  int fdmax = getdtablesize();
+  hard_fdlimit = IRCD_MAX(fdmax, LEAKED_FDS + MAX_BUFFER + MAXCLIENTS_MIN);
+#endif
+
+  if (ServerInfo.max_clients > MAXCLIENTS_MAX)
+    ServerInfo.max_clients = MAXCLIENTS_MAX;
 }
 
 static inline unsigned int
 hash_fd(int fd)
 {
 #ifdef _WIN32
-  return ((((unsigned) fd) >> 2) % HARD_FDLIMIT);
+  return ((((unsigned) fd) >> 2) % FD_HASH_SIZE);
 #else
-  return (((unsigned) fd) % HARD_FDLIMIT);
+  return (((unsigned) fd) % FD_HASH_SIZE);
 #endif
 }
 
@@ -143,7 +166,7 @@ fd_dump(struct Client *source_p)
   int i;
   fde_t *F;
 
-  for (i = 0; i < HARD_FDLIMIT; i++)
+  for (i = 0; i < FD_HASH_SIZE; i++)
     for (F = fd_hash[i]; F != NULL; F = F->hnext)
       sendto_one(source_p, ":%s %d %s :fd %-5d desc '%s'",
                  me.name, RPL_STATSDEBUG, source_p->name,
@@ -188,3 +211,13 @@ close_standard_fds(void)
   }
 }
 #endif
+
+void
+close_all_fds(void)
+{
+  int i;
+
+  for (i = 0; i < FD_HASH_SIZE; i++)
+    while (fd_hash[i] != NULL)
+      fd_close(fd_hash[i]);
+}

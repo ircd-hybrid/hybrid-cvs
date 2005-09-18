@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.120 2005/09/17 19:38:01 adx Exp $
+dnl $Id: configure.ac,v 7.121 2005/09/18 14:25:12 adx Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.120 2005/09/17 19:38:01 adx Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.121 2005/09/18 14:25:12 adx Exp $])
 
 AC_INIT([ircd-hybrid],[7.2])
 
@@ -930,23 +930,8 @@ AC_HELP_STRING([--with-topiclen=NUMBER],[Set the max topic length to NUMBER (def
  fi
 ], [TOPICLEN=160])
 
-AC_ARG_WITH(maxconn,
-AC_HELP_STRING([--with-maxconn=NUMBER],[Maximum number of connections the ircd can handle]),
-        MAXCONN="$withval", MAXCONN=`ulimit -Hn`)
-
-
-if test "$MAXCONN" = unlimited; then
-	MAXCONN=65536
-fi
-
-if test $MAXCONN -gt 65536; then
-	MAXCONN=65536
-	AC_MSG_WARN([Max connections cannot be larger than 65536!])
-fi
-
 AC_DEFINE_UNQUOTED(TOPICLEN, ${TOPICLEN}, [Maximum topic length (<=390)])
 AC_DEFINE_UNQUOTED(NICKLEN, (${NICKLEN}+1), [Nickname length])
-AC_DEFINE_UNQUOTED(MAXCONN, ${MAXCONN}, [Maximum number of network connections])
 
 AC_ARG_ENABLE(shared-modules,
 AC_HELP_STRING([--disable-shared-modules],[ Disable shared modules.]),
@@ -1181,5 +1166,4 @@ echo
 echo "Configured limits:"
 echo "NICKLEN ................. $NICKLEN"
 echo "TOPICLEN ................ $TOPICLEN"
-echo "MAXCONN ................. $MAXCONN"
 echo

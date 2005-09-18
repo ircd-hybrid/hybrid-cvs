@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.h,v 7.39 2005/09/13 18:15:56 adx Exp $
+ *  $Id: fdlist.h,v 7.40 2005/09/18 14:25:12 adx Exp $
  */
 
 #ifndef INCLUDED_fdlist_h
@@ -92,8 +92,11 @@ typedef struct _fde {
   struct _fde *hnext;
 } fde_t;
 
+#define FD_HASH_SIZE CLIENT_HEAP_SIZE
+
 extern int number_fd;
-extern fde_t *fd_hash[HARD_FDLIMIT];
+extern int hard_fdlimit;
+extern fde_t *fd_hash[];
 extern fde_t *fd_next_in_loop;
 
 void fdlist_init(void);
@@ -108,5 +111,7 @@ void  fd_note(fde_t *, const char *format, ...)
   __attribute__((format (printf, 2, 3)));
 #endif
 void close_standard_fds(void);
+void close_all_fds(void);
+void recalc_fdlimit(void);
 
 #endif /* INCLUDED_fdlist_h */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.82 2005/08/31 02:13:18 db Exp $
+ *  $Id: ircd.h,v 7.83 2005/09/18 14:25:12 adx Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -35,7 +35,6 @@ struct dlink_list;
 
 struct SetOptions
 {
-  int maxclients;    /* max clients allowed               */
   int autoconn;      /* autoconn enabled for all servers? */
   int idletime;
   int floodcount;    /* Number of messages in 1 second    */
@@ -104,4 +103,5 @@ extern dlink_list lazylink_channels;  /* known about lazylink channels on HUB   
 extern int rehashed_klines;
 extern unsigned long get_maxrss(void);
 extern void set_time(void);
+
 #endif

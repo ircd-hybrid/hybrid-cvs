@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.435 2005/09/13 03:53:20 db Exp $
+ *  $Id: s_serv.c,v 7.436 2005/09/18 14:25:13 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1428,7 +1428,7 @@ fork_server(struct Client *server)
     fde_t *F;
 
     /* set our fds as non blocking and close everything else */
-    for (i = 0; i < HARD_FDLIMIT; i++)
+    for (i = 0; i < FD_HASH_SIZE; i++)
       for (F = fd_hash[i]; F != NULL; F = F->hnext)
 	if (F->fd >= LOWEST_SAFE_FD)
         {

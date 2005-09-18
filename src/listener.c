@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.105 2005/08/18 18:36:51 adx Exp $
+ *  $Id: listener.c,v 7.106 2005/09/18 14:25:13 adx Exp $
  */
 
 #include "stdinc.h"
@@ -164,14 +164,6 @@ inetport(struct Listener *listener)
   irc_getnameinfo((struct sockaddr*)&lsin, lsin.ss_len, listener->vhost, 
         HOSTLEN, NULL, 0, NI_NUMERICHOST);
   listener->name = listener->vhost;
-
-  if (number_fd >= HARD_FDLIMIT - 10)
-  {
-    report_error(L_ALL, "no more connections left for listener %s",
-                 get_listener_name(listener), errno);
-    fd_close(&listener->fd);
-    return 0;
-  }
 
   /*
    * XXX - we don't want to do all this crap for a listener
@@ -419,7 +411,7 @@ accept_connection(fde_t *pfd, void *data)
     /*
      * check for connection limit
      */
-    if (number_fd >= HARD_FDLIMIT - 10)
+    if (number_fd > hard_fdlimit - 10)
     {
       ++ServerStats->is_ref;
       /*

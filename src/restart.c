@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: restart.c,v 7.29 2005/08/30 11:42:02 michael Exp $
+ *  $Id: restart.c,v 7.30 2005/09/18 14:25:13 adx Exp $
  */
 
 #include "stdinc.h"
@@ -28,11 +28,11 @@
 #include "common.h"
 #include "fdlist.h"
 #include "ircd.h"
+#include "irc_string.h"
 #include "send.h"
 #include "s_log.h"
 #include "client.h" /* for UMODE_ALL */
 #include "memory.h"
-
 
 void
 restart(const char *mesg)
@@ -43,64 +43,50 @@ restart(const char *mesg)
     abort();
   was_here = 1;
 
-  ilog(L_NOTICE, "Restarting Server because: %s, memory data limit: %ld",
-       mesg, get_maxrss());
-
-  server_reboot();
+  server_die(mesg, YES);
 }
 
 void
-server_reboot(void)
+server_die(const char *mesg, int reboot)
 {
-  int i;
-
-  sendto_realops_flags(UMODE_ALL, L_ALL,
-                       "Restarting server...");
-
-  ilog(L_NOTICE, "Restarting server... (%s)", SPATH);
-  send_queued_all();
-
-  for (i = 0; i < HARD_FDLIMIT; ++i)
-    while (fd_hash[i] != NULL)
-      fd_close(fd_hash[i]);
-
-  unlink(pidFileName);
-  execv(SPATH, myargv);
-  fprintf(stderr, "ircd: execv() failed: %s\n",
-          strerror(errno));
-  exit(-1);
-}
-
-void
-server_die(const char *mesg)
-{
-  int i = 0;
-  struct Client *target_p = NULL;
+  char buffer[IRCD_BUFSIZE];
   dlink_node *ptr = NULL;
+  struct Client *target_p = NULL;
+
+  if (EmptyString(mesg))
+    snprintf(buffer, sizeof(buffer), "Server %s",
+             reboot ? "Restarting" : "Terminating");
+  else
+    snprintf(buffer, sizeof(buffer), "Server %s: %s",
+             reboot ? "Restarting" : "Terminating", mesg);
 
   DLINK_FOREACH(ptr, local_client_list.head)
   {
     target_p = ptr->data;
 
-    sendto_one(target_p, ":%s NOTICE %s :Server terminating: %s",
-               me.name, target_p->name, mesg);
+    sendto_one(target_p, ":%s NOTICE %s :%s",
+               me.name, target_p->name, buffer);
   }
 
   DLINK_FOREACH(ptr, serv_list.head)
   {
     target_p = ptr->data;
 
-    sendto_one(target_p, ":%s ERROR :Server terminating: %s",
-               me.name, mesg);
+    sendto_one(target_p, ":%s ERROR :%s", me.name, buffer);
   }
 
-  ilog(L_NOTICE, "Server terminating: %s", mesg);
-  send_queued_all();
+  ilog(L_NOTICE, buffer);
 
-  for (i = 0; i < HARD_FDLIMIT; ++i)
-    while (fd_hash[i] != NULL)
-      fd_close(fd_hash[i]);
+  send_queued_all();
+  close_all_fds();
 
   unlink(pidFileName);
-  exit(0);
+
+  if (reboot)
+  {
+    execv(SPATH, myargv);
+    exit(1);
+  }
+  else
+    exit(0);
 }

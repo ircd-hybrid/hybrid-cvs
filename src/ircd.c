@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.365 2005/09/17 10:30:21 michael Exp $
+ *  $Id: ircd.c,v 7.366 2005/09/18 14:25:13 adx Exp $
  */
 
 #include "stdinc.h"
@@ -360,9 +360,7 @@ initialize_global_set_options(void)
 {
   memset(&GlobalSetOptions, 0, sizeof(GlobalSetOptions));
 
-  GlobalSetOptions.maxclients = MAXCONN;
-  GlobalSetOptions.autoconn   = 1;
-
+  GlobalSetOptions.autoconn  = 1;
   GlobalSetOptions.spam_time = MIN_JOIN_LEAVE_TIME;
   GlobalSetOptions.spam_num  = MAX_JOIN_LEAVE_COUNT;
 

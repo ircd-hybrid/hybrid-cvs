@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.63 2005/08/31 11:47:29 db Exp $
+ *  $Id: m_set.c,v 1.64 2005/09/18 14:25:12 adx Exp $
  */
 
 /* rewritten by jdc */
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.63 $";
+const char *_version = "$Revision: 1.64 $";
 #endif
 
 /* Structure used for the SET table itself */
@@ -186,10 +186,8 @@ quote_autoconnall(struct Client *source_p, int newval)
     GlobalSetOptions.autoconn = newval;
   }
   else
-  {
     sendto_one(source_p, ":%s NOTICE %s :AUTOCONNALL is currently %i",
                me.name, source_p->name, GlobalSetOptions.autoconn);
-  }
 }
 
 /* SET FLOODCOUNT */
@@ -204,10 +202,8 @@ quote_floodcount(struct Client *source_p, int newval)
                          GlobalSetOptions.floodcount);
   }
   else
-  {
     sendto_one(source_p, ":%s NOTICE %s :FLOODCOUNT is currently %i",
                me.name, source_p->name, GlobalSetOptions.floodcount);
-  }
 }
 
 /* SET IDENTTIMEOUT */
@@ -296,40 +292,38 @@ quote_log( struct Client *source_p, int newval )
 
 /* SET MAX */
 static void
-quote_max( struct Client *source_p, int newval )
+quote_max (struct Client *source_p, int newval)
 {
   if (newval > 0)
   {
-    if (newval > MASTER_MAX)
+    recalc_fdlimit();
+
+    if (newval > MAXCLIENTS_MAX)
     {
       sendto_one(source_p,
-	":%s NOTICE %s :You cannot set MAXCLIENTS to > MASTER_MAX (%d)",
-	me.name, source_p->name, MASTER_MAX);
+        ":%s NOTICE %s :You cannot set MAXCLIENTS to > %d, restoring to %d",
+	me.name, source_p->name, MAXCLIENTS_MAX);
       return;
     }
 
-    if (newval < 32)
+    if (newval < MAXCLIENTS_MIN)
     {
       sendto_one(source_p,
-	":%s NOTICE %s :You cannot set MAXCLIENTS to < 32, restoring to %d",
-	me.name, source_p->name, GlobalSetOptions.maxclients);
+	":%s NOTICE %s :You cannot set MAXCLIENTS to < %d, restoring to %d",
+	me.name, source_p->name, MAXCLIENTS_MIN, ServerInfo.max_clients);
       return;
     }
 
-    GlobalSetOptions.maxclients = newval;
+    ServerInfo.max_clients = newval;
 
     sendto_realops_flags(UMODE_ALL, L_ALL,
 	"%s!%s@%s set new MAXCLIENTS to %d (%d current)",
 	source_p->name, source_p->username, source_p->host,
-	GlobalSetOptions.maxclients, Count.local);
-
-    return;
+	ServerInfo.max_clients, Count.local);
   }
   else
-  {
-    sendto_one(source_p, ":%s NOTICE %s :Current Maxclients = %d (%d)",
-               me.name, source_p->name, GlobalSetOptions.maxclients, Count.local);
-  }
+    sendto_one(source_p, ":%s NOTICE %s :Current MAXCLIENTS = %d (%d)",
+               me.name, source_p->name, ServerInfo.max_clients, Count.local);
 }
 
 /* SET MSGLOCALE */
@@ -344,10 +338,8 @@ quote_msglocale( struct Client *source_p, char *locale )
 	       me.name, source_p->name, get_locale());
   }
   else
-  {
     sendto_one(source_p, ":%s NOTICE %s :MSGLOCALE is currently '%s'",
 	       me.name, source_p->name, get_locale());
-  }
 }
 
 /* SET SPAMNUM */
@@ -363,23 +355,16 @@ quote_spamnum( struct Client *source_p, int newval )
       GlobalSetOptions.spam_num = newval;
       return;
     }
-    if (newval < MIN_SPAM_NUM)
-    {
-      GlobalSetOptions.spam_num = MIN_SPAM_NUM;
-    }
-    else /* if (newval < MIN_SPAM_NUM) */
-    {
-      GlobalSetOptions.spam_num = newval;
-    }
+
+    GlobalSetOptions.spam_num = IRCD_MAX(newval, MIN_SPAM_NUM);
+
     sendto_realops_flags(UMODE_ALL, L_ALL,"%s has changed SPAMNUM to %i",
 		source_p->name, GlobalSetOptions.spam_num);
   }
   else
-  {
     sendto_one(source_p, ":%s NOTICE %s :SPAMNUM is currently %i",
 		me.name,
 		source_p->name, GlobalSetOptions.spam_num);
-  }
 }
 
 /* SET SPAMTIME */
@@ -388,23 +373,14 @@ quote_spamtime( struct Client *source_p, int newval )
 {
   if (newval > 0)
   {
-    if (newval < MIN_SPAM_TIME)
-    {
-      GlobalSetOptions.spam_time = MIN_SPAM_TIME;
-    }
-    else /* if (newval < MIN_SPAM_TIME) */
-    {
-      GlobalSetOptions.spam_time = newval;
-    }
-    sendto_realops_flags(UMODE_ALL, L_ALL,"%s has changed SPAMTIME to %i",
+    GlobalSetOptions.spam_time = IRCD_MAX(newval, MIN_SPAM_TIME);
+    sendto_realops_flags(UMODE_ALL, L_ALL, "%s has changed SPAMTIME to %i",
 		source_p->name, GlobalSetOptions.spam_time);
   }
   else
-  {
     sendto_one(source_p, ":%s NOTICE %s :SPAMTIME is currently %i",
 		me.name,
 		source_p->name, GlobalSetOptions.spam_time);
-  }
 }
 
 /* this table is what splitmode may be set to */
