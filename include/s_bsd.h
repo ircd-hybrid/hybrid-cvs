@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.57 2005/08/19 04:00:36 lusky Exp $
+ *  $Id: s_bsd.h,v 7.58 2005/09/18 20:09:02 adx Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -27,9 +27,7 @@
 
 #include "setup.h"       
 #include "fdlist.h"
-
-/* Size of a read buffer */
-#define READBUF_SIZE    16384   /* used by src/packet.c and src/s_serv.c */
+#include "hook.h"
 
 /* Type of IO */
 #define	COMM_SELECT_READ		1
@@ -40,22 +38,16 @@
 
 struct Client;
 struct AccessItem;
-struct hostent;
 struct DNSReply;
 struct Listener;
 
-extern int readcalls;
-extern const char* const NONB_ERROR_MSG; 
-extern const char* const SETBUF_ERROR_MSG;
+extern struct Callback *setup_socket_cb;
 
 extern void add_connection(struct Listener *, int);
 extern void close_connection(struct Client *);
 extern int  connect_server(struct AccessItem *, struct Client *,
                            struct DNSReply *);
 extern void report_error(int, const char *, const char *, int);
-extern int set_non_blocking(int);
-extern int set_sock_buffers(int, int);
-extern void set_no_delay(int);
 
 extern int get_sockerr(int);
 extern int ignoreErrno(int);
@@ -72,38 +64,12 @@ extern int comm_accept(struct Listener *, struct irc_ssaddr *pn);
 
 /* These must be defined in the network IO loop code of your choice */
 extern void comm_setselect(fde_t *, unsigned int, PF *, void *, time_t);
-extern void init_netio(void);
+extern void init_comm(void);
 extern int read_message (time_t, unsigned char);
 extern void comm_select(void);
 extern void check_can_use_v6(void);
 #ifdef IPV6
 extern void remove_ipv6_mapping(struct irc_ssaddr *);
-#endif
-
-#ifdef USE_SIGIO
-void do_sigio(int);
-void setup_sigio_fd(int);
-#endif
-
-#ifdef _WIN32
-#define WM_SOCKET  (WM_USER + 0)
-#define WM_DNS     (WM_USER + 1)
-#define WM_REHASH  (WM_USER + 0x100)
-#define WM_REMOTD  (WM_USER + 0x101)
-extern HWND wndhandle;
-#define _UTSNAME_LENGTH 65
-#define _UTSNAME_NODENAME_LENGTH _UTSNAME_LENGTH
-#define _UTSNAME_DOMAIN_LENGTH _UTSNAME_LENGTH
-struct utsname
-{
-  char sysname[_UTSNAME_LENGTH];
-  char nodename[_UTSNAME_NODENAME_LENGTH];
-  char release[_UTSNAME_LENGTH];
-  char version[_UTSNAME_LENGTH];
-  char machine[_UTSNAME_LENGTH];
-  char domainname[_UTSNAME_DOMAIN_LENGTH];
-};
-int uname (struct utsname *);
 #endif
 
 #endif /* INCLUDED_s_bsd_h */

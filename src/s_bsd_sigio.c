@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_sigio.c,v 7.38 2005/09/18 18:08:17 adx Exp $
+ *  $Id: s_bsd_sigio.c,v 7.39 2005/09/18 20:09:03 adx Exp $
  */
 
 #ifndef _GNU_SOURCE
@@ -42,7 +42,7 @@ static pid_t my_pid;
 static sigset_t our_sigset;
 static struct pollfd *pollfds;
 static int pollmax = -1;  /* highest FD number */
-static dlink_node *hookptr;
+static dlink_node *fdlim_hook, *setupfd_hook;
 
 /*
  * static void mask_our_signal(int s)
@@ -67,12 +67,16 @@ mask_our_signal()
  * Output: None
  * Side Effect: Sets the FD up for SIGIO
  */
-void
-setup_sigio_fd(int fd)
+static void *
+setup_sigio_fd(va_list args)
 {
-  fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_ASYNC | O_NONBLOCK);
+  int fd = va_arg(args, int);
+
+  fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_ASYNC);
   fcntl(fd, F_SETSIG, SIGIO_SIGNAL);
   fcntl(fd, F_SETOWN, my_pid);
+
+  return pass_callback(setupfd_hook, fd);
 }
 
 /*
@@ -85,7 +89,7 @@ changing_fdlimit(va_list args)
 {
   int old_fdlimit = hard_fdlimit;
 
-  pass_callback(hookptr, va_arg(args, int));
+  pass_callback(fdlim_hook, va_arg(args, int));
 
   if (hard_fdlimit != old_fdlimit)
     pollfds = MyRealloc(pollfds, sizeof(struct pollfd) * hard_fdlimit);
@@ -111,7 +115,8 @@ init_netio(void)
   for (fd = 0; fd < hard_fdlimit; fd++)
     pollfds[fd].fd = -1;
 
-  hookptr = install_hook(fdlimit_cb, changing_fdlimit);
+  setupfd_hook = install_hook(setup_socket_cb, setup_sigio_fd);
+  fdlim_hook = install_hook(fdlimit_cb, changing_fdlimit);
 
   my_pid = getpid();
   mask_our_signal(SIGIO_SIGNAL);

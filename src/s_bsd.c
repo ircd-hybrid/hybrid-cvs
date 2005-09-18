@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.251 2005/09/18 14:25:13 adx Exp $
+ *  $Id: s_bsd.c,v 7.252 2005/09/18 20:09:03 adx Exp $
  */
 
 #include "stdinc.h"
@@ -56,22 +56,18 @@
 #include "s_user.h"
 #include "hook.h"
 
-#ifndef IN_LOOPBACKNET
-#define IN_LOOPBACKNET        0x7f
-#endif
-
-const char* const NONB_ERROR_MSG   = "set_non_blocking failed for %s:%s"; 
-const char* const OPT_ERROR_MSG    = "disable_sock_options failed for %s:%s";
-const char* const SETBUF_ERROR_MSG = "set_sock_buffers failed for server %s:%s";
-
 static const char *comm_err_str[] = { "Comm OK", "Error during bind()",
   "Error during DNS lookup", "connect timeout", "Error during connect()",
   "Comm Error" };
+
+struct Callback *setup_socket_cb = NULL;
 
 static void comm_connect_callback(fde_t *fd, int status);
 static PF comm_connect_timeout;
 static void comm_connect_dns_callback(void *vptr, struct DNSReply *reply);
 static PF comm_connect_tryconnect;
+
+extern void init_netio(void);
 
 /* check_can_use_v6()
  *  Check if the system can open AF_INET6 sockets
@@ -156,85 +152,40 @@ report_error(int level, const char* text, const char* who, int error)
 }
 
 /*
- * set_sock_buffers - set send and receive buffers for socket
- * 
- * inputs	- fd file descriptor
- * 		- size to set
- * output       - returns true (1) if successful, false (0) otherwise
- * side effects -
- */
-int
-set_sock_buffers(int fd, int size)
-{
-  if (setsockopt(fd, SOL_SOCKET, SO_RCVBUF, (char*) &size, sizeof(size)) ||
-      setsockopt(fd, SOL_SOCKET, SO_SNDBUF, (char*) &size, sizeof(size)))
-  {
-#ifdef _WIN32
-    errno = WSAGetLastError();
-#endif
-    return 0;
-  }
-  return 1;
-}
-
-/*
- * set_non_blocking - Set the client connection into non-blocking mode. 
+ * setup_socket()
  *
- * inputs	- fd to set into non blocking mode
- * output	- 1 if successful 0 if not
- * side effects - use POSIX compliant non blocking and
- *                be done with it.
+ * Set the socket non-blocking, and other wonderful bits.
  */
-int
-set_non_blocking(int fd)
+static void *
+setup_socket(va_list args)
 {
-  int res;
-#ifdef _WIN32
-  u_long nonb = 1;
-
-  WSAAsyncSelect(fd, wndhandle, WM_SOCKET, 0);
-
-  res = ioctlsocket(fd, FIONBIO, &nonb);
-  if (res != 0)
-  {
-    errno = WSAGetLastError();
-    return 0;
-  }
-#else
-  int nonb = O_NONBLOCK;
-
-  #ifdef USE_SIGIO
-    setup_sigio_fd(fd);
-  #endif
-
-  res = fcntl(fd, F_GETFL, 0);
-  if (-1 == res || fcntl(fd, F_SETFL, res | nonb) == -1)
-    return 0;
-#endif
-
-#ifdef IPTOS_LOWDELAY
-  {
-    int tos = IPTOS_LOWDELAY;
-    setsockopt(fd, IPPROTO_IP, IP_TOS, &tos, sizeof(tos));
-  }
-#endif
-
-  return 1;
-}
-
-/*
- * set_no_delay()
- *
- * inputs       - fd
- * output       - NONE
- * side effects - disable Nagle algorithm if possible
- */
-void
-set_no_delay(int fd)
-{
+  int fd = va_arg(args, int);
   int opt = 1;
 
   setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (char *) &opt, sizeof(opt));
+
+#ifdef IPTOS_LOWDELAY
+  opt = IPTOS_LOWDELAY;
+  setsockopt(fd, IPPROTO_IP, IP_TOS, (char *) &opt, sizeof(opt));
+#endif
+
+#ifndef _WIN32
+  fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
+#endif
+
+  return NULL;
+}
+
+/*
+ * init_comm()
+ *
+ * Initializes comm subsystem.
+ */
+void
+init_comm(void)
+{
+  setup_socket_cb = register_callback("setup_socket", setup_socket);
+  init_netio();
 }
 
 /*
@@ -316,13 +267,7 @@ close_connection(struct Client *client_p)
   if (HasServlink(client_p))
   {
     if (client_p->localClient->ctrlfd.flags.open)
-    {
       fd_close(&client_p->localClient->ctrlfd);
-#ifndef HAVE_SOCKETPAIR
-      fd_close(&client_p->localClient->ctrlfd_r);
-      fd_close(&client_p->localClient->fd_r);
-#endif
-    }
   }
 
   dbuf_clear(&client_p->localClient->buf_sendq);
@@ -441,8 +386,6 @@ add_connection(struct Listener* listener, int fd)
 
   new_client->localClient->listener = listener;
   ++listener->ref_count;
-
-  set_no_delay(fd);
 
   connect_id++;
   new_client->connect_id = connect_id;
@@ -818,21 +761,9 @@ comm_open(fde_t *F, int family, int sock_type, int proto, const char *note)
     return -1; /* errno will be passed through, yay.. */
   }
 
-  /* Set the socket non-blocking, and other wonderful bits */
-  if (!set_non_blocking(fd))
-  {
-    ilog(L_CRIT, "comm_open: Couldn't set FD %d non blocking: %s",
-         fd, strerror(errno));
+  execute_callback(setup_socket_cb, fd);
 
-#ifdef _WIN32
-    closesocket(fd);
-#else
-    close(fd);
-#endif
-    return -1;
-  }
-
-  /* Next, update things in our fd tracking */
+  /* update things in our fd tracking */
   fd_open(F, fd, 1, note);
   return 0;
 }
@@ -876,18 +807,7 @@ comm_accept(struct Listener *lptr, struct irc_ssaddr *pn)
   pn->ss_len = addrlen;
 #endif
 
-  /* Set the socket non-blocking, and other wonderful bits */
-  if (!set_non_blocking(newfd))
-  {
-    ilog(L_CRIT, "comm_accept: Couldn't set FD %d non blocking!", newfd);
-
-#ifdef _WIN32
-    closesocket(newfd);
-#else
-    close(newfd);
-#endif
-    return -1;
-  }
+  execute_callback(setup_socket_cb, newfd);
 
   /* .. and return */
   return newfd;

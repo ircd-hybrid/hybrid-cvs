@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.50 2005/09/18 18:08:17 adx Exp $
+ *  $Id: fdlist.c,v 7.51 2005/09/18 20:09:03 adx Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -241,11 +241,18 @@ close_standard_fds(void)
 #endif
 
 void
-close_all_fds(void)
+close_fds(fde_t *one)
 {
   int i;
+  fde_t *F, *prev;
 
   for (i = 0; i < FD_HASH_SIZE; i++)
-    while (fd_hash[i] != NULL)
-      fd_close(fd_hash[i]);
+    for (prev = NULL, F = fd_hash[i]; F != NULL;
+         F = (prev != NULL ? prev->hnext : fd_hash[i]))
+    {
+      if (F == one)
+        prev = F;
+      else
+        fd_close(F);
+    }
 }

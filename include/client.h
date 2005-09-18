@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.247 2005/08/31 11:47:29 db Exp $
+ *  $Id: client.h,v 7.248 2005/09/18 20:09:02 adx Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -237,15 +237,8 @@ struct LocalUser
 #endif
 
   fde_t             fd;
-#ifndef HAVE_SOCKETPAIR
-  fde_t             fd_r;       /* fd for reading */
-#endif
-
   fde_t             ctrlfd;     /* For servers: control fd used for sending commands
                                    to servlink */
-#ifndef HAVE_SOCKETPAIR
-  fde_t             ctrlfd_r;    /* control fd for reading */
-#endif
 
   struct SlinkRpl  slinkrpl;    /* slink reply being parsed */
   char    *slinkq;              /* sendq for control data */

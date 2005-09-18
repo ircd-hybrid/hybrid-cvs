@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.18 2005/09/18 14:25:13 adx Exp $
+ *  $Id: s_bsd_win32.c,v 7.19 2005/09/18 20:09:03 adx Exp $
  */
 
 #include "stdinc.h"
@@ -30,8 +30,14 @@
 #include "client.h"
 #include "restart.h"
 
-HWND wndhandle;
+#define WM_SOCKET  (WM_USER + 0)
+#define WM_DNS     (WM_USER + 1)
+#define WM_REHASH  (WM_USER + 0x100)
+#define WM_REMOTD  (WM_USER + 0x101)
+
+static HWND wndhandle;
 static dlink_list dns_queries = {NULL, NULL, 0};
+static dlink_node *setupfd_hook;
 
 extern int main(int, char *[]);
 
@@ -160,6 +166,20 @@ hybrid_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 /*
+ * Associates a window message with the given socket.
+ * This will automagically switch it to nonblocking.
+ */
+static void *
+setup_winsock_fd(va_list args)
+{
+  int fd = va_arg(args, int);
+
+  WSAAsyncSelect(fd, wndhandle, WM_SOCKET, 0);
+
+  return pass_callback(setupfd_hook, fd);
+}
+
+/*
  * Initialize Winsock, create a window handle.
  */
 void
@@ -169,7 +189,6 @@ init_netio(void)
   WSADATA wsa;
 
   /* Initialize Winsock networking */
-
   if (WSAStartup(0x101, &wsa) != 0)
   {
     MessageBox(NULL, "Cannot initialize Winsock -- terminating ircd",
@@ -179,7 +198,6 @@ init_netio(void)
 
   /* First, we need a class for our window that has message handler
    * set to hybrid_wndproc() */
-
   memset(&wndclass, 0, sizeof(wndclass));
 
   wndclass.lpfnWndProc = hybrid_wndproc;
@@ -189,7 +207,6 @@ init_netio(void)
   RegisterClass(&wndclass);
 
   /* Now, initialize the window */
-
   wndhandle = CreateWindow(PACKAGE_NAME, NULL, 0,
     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
     NULL, NULL, wndclass.hInstance, NULL);
@@ -203,8 +220,9 @@ init_netio(void)
 
   /* Set up a timer which will periodically post a message to our queue.
    * This way, ircd won't wait infinitely for a network event */
-
   SetTimer(wndhandle, 0, SELECT_DELAY, NULL);
+
+  setupfd_hook = install_hook(setup_socket_cb, setup_winsock_fd);
 }
 
 /*
@@ -451,4 +469,3 @@ uname(struct utsname *uts)
   GetComputerName (uts->nodename, &sLength);
   return 0;
 }
-

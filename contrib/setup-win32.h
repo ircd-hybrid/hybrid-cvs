@@ -290,10 +290,6 @@
 /* Use kqueue() for I/O loop */
 /* #undef USE_KQUEUE */
 
-/* Using sigio futzes around with the ircd - if you want sigio to work, this
-   has to be 1. */
-/* #undef USE_SIGIO */
-
 /* Send vital ircd messages to syslog */
 /* #undef USE_SYSLOG */
 

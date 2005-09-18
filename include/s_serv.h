@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.96 2005/07/30 20:44:12 adx Exp $
+ *  $Id: s_serv.h,v 7.97 2005/09/18 20:09:02 adx Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -197,12 +197,6 @@ struct EncCapability
 #define SLINKCMD_INJECT_SENDQ                11      /* data */
 #define SLINKCMD_INIT                        12
 #define SLINKCMD_ZIPSTATS                    13
-
-#ifndef HAVE_SOCKETPAIR
-#define LAST_SLINK_FD   7
-#else
-#define LAST_SLINK_FD   5
-#endif
 
 #define SLINKRPL_FLAG_DATA      0x0001  /* reply has data following */
 #define SLINKRPL_ERROR          1

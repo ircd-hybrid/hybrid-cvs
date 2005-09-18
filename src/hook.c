@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.32 2005/09/18 16:52:49 adx Exp $
+ *  $Id: hook.c,v 7.33 2005/09/18 20:09:03 adx Exp $
  */
 
 #include "stdinc.h"
@@ -233,7 +233,7 @@ stats_hooks(struct Client *source_p)
 
     if (cb->last != 0)
       snprintf(lastused, sizeof(lastused), "%d seconds ago",
-               CurrentTime - cb->last);
+               (int) (CurrentTime - cb->last));
     else
       strcpy(lastused, "NEVER");
 

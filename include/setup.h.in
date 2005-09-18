@@ -42,9 +42,6 @@
 /* Define if the dlopen function is available. */
 #undef HAVE_DLOPEN
 
-/* Define to 1 if you have the `epoll_ctl' function. */
-#undef HAVE_EPOLL_CTL
-
 /* Define to 1 if you have the <errno.h> header file. */
 #undef HAVE_ERRNO_H
 
@@ -269,10 +266,6 @@
 
 /* If enabled, server links to your network must have a minimum of TS5. */
 #undef TS5_ONLY
-
-/* Using sigio futzes around with the ircd - if you want sigio to work, this
-   has to be 1. */
-#undef USE_SIGIO
 
 /* Send vital ircd messages to syslog */
 #undef USE_SYSLOG

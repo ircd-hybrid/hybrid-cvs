@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.121 2005/09/18 14:25:12 adx Exp $
+dnl $Id: configure.ac,v 7.122 2005/09/18 20:09:02 adx Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.121 2005/09/18 14:25:12 adx Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.122 2005/09/18 20:09:02 adx Exp $])
 
 AC_INIT([ircd-hybrid],[7.2])
 
@@ -694,17 +694,6 @@ main() { return epoll_create(256) == -1 ? 1 : 0; },
 	fi
 ])
 
-fi
-
-dnl Sigio kind of invades the code, so this legacy define has to be 
-dnl resurrected.
-
-if test "$SELECT_TYPE" = sigio; then
-	AC_DEFINE(USE_SIGIO, 1, [Using sigio futzes around with the ircd - if you want sigio to work, this has to be 1.])
-fi
-
-if test "$SELECT_TYPE" = epoll; then
-	AC_CHECK_FUNCS(epoll_ctl)
 fi
 
 echo "Using $SELECT_TYPE for select loop."

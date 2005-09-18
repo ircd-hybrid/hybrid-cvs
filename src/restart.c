@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: restart.c,v 7.30 2005/09/18 14:25:13 adx Exp $
+ *  $Id: restart.c,v 7.31 2005/09/18 20:09:03 adx Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ server_die(const char *mesg, int reboot)
   ilog(L_NOTICE, buffer);
 
   send_queued_all();
-  close_all_fds();
+  close_fds(NULL);
 
   unlink(pidFileName);
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.436 2005/09/18 14:25:13 adx Exp $
+ *  $Id: s_serv.c,v 7.437 2005/09/18 20:09:03 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1086,10 +1086,6 @@ server_estab(struct Client *client_p)
     send_queued_write(client_p);
   }
 
-  /* XXX - this should be in s_bsd */
-  if (!set_sock_buffers(client_p->localClient->fd.fd, READBUF_SIZE))
-    report_error(L_ALL, SETBUF_ERROR_MSG, get_client_name(client_p, SHOW_IP), errno);
-
   /* Hand the server off to servlink now */
   if (IsCapable(client_p, CAP_ENC) || IsCapable(client_p, CAP_ZIP))
   {
@@ -1181,19 +1177,8 @@ server_estab(struct Client *client_p)
     /* we won't overflow FD_DESC_SZ here, as it can hold
      * client_p->name + 64
      */
-#ifdef HAVE_SOCKETPAIR
     fd_note(&client_p->localClient->fd, "slink data: %s", client_p->name);
     fd_note(&client_p->localClient->ctrlfd, "slink ctrl: %s", client_p->name);
-#else
-    fd_note(&client_p->localClient->fd, "slink data (out): %s",
-            client_p->name);
-    fd_note(&client_p->localClient->ctrlfd, "slink ctrl (out): %s",
-            client_p->name);
-    fd_note(&client_p->localClient->fd_r, "slink data  (in): %s",
-            client_p->name);
-    fd_note(&client_p->localClient->ctrlfd_r, "slink ctrl  (in): %s",
-            client_p->name);
-#endif
   }
   else
     fd_note(&client_p->localClient->fd, "Server: %s", client_p->name);
@@ -1384,159 +1369,69 @@ start_io(struct Client *server)
 static int
 fork_server(struct Client *server)
 {
-#ifndef _WIN32
-  int i, ret;
-  int fd_temp[2];
-  int slink_fds[2][2][2] = { { { 0, 0 }, { 0, 0 } }, 
-                             { { 0, 0 }, { 0, 0 } } };
-                       /* [0][y][z] - ctrl  | [1][y][z] - data  
-                        * [x][0][z] - child | [x][1][z] - parent
-                        * [x][y][0] - read  | [x][y][1] - write
-                        */
-  char fd_str[5][6];   /* store 5x '6' '5' '5' '3' '5' '\0' */
-  char *kid_argv[7];
-  char slink_str[] = "-slink";
-#ifdef HAVE_SOCKETPAIR
-  /* ctrl */
-  if (socketpair(AF_UNIX, SOCK_STREAM, 0, fd_temp) < 0)
-    goto fork_error;
-
-  slink_fds[0][0][0] = fd_temp[0];
-  slink_fds[0][1][1] = fd_temp[1];
-  slink_fds[0][0][1] = fd_temp[0];
-  slink_fds[0][1][0] = fd_temp[1];
-
-  /* data */
-  if (socketpair(AF_UNIX, SOCK_STREAM, 0, fd_temp) < 0)
-    goto fork_error;
-
-  slink_fds[1][0][0] = fd_temp[0];
-  slink_fds[1][1][1] = fd_temp[1];
-  slink_fds[1][0][1] = fd_temp[0];
-  slink_fds[1][1][0] = fd_temp[1];
+#ifndef HAVE_SOCKETPAIR
+  return -1;
 #else
-  /* FIXME: use pipe() or sth and generate 4 handles, 2xRW
-   * Make sure it will work (we're using send, not write!) */
-#endif
+  int i;
+  int slink_fds[2][2];
+  /* 0? - ctrl  | 1? - data  
+   * ?0 - child | ?1 - parent */
 
-  if ((ret = fork()) < 0)
+  if (socketpair(AF_UNIX, SOCK_STREAM, 0, slink_fds[0]) < 0)
+    return -1;
+  if (socketpair(AF_UNIX, SOCK_STREAM, 0, slink_fds[1]) < 0)
+    goto free_ctrl_fds;
+
+  if ((i = fork()) < 0)
   {
-    goto fork_error;
+    close(slink_fds[1][0]);  close(slink_fds[1][1]);
+    free_ctrl_fds:
+    close(slink_fds[0][0]);  close(slink_fds[0][1]);
+    return -1;
   }
-  else if (ret == 0)
+
+  fd_open(&server->localClient->ctrlfd, slink_fds[0][1], 1, "slink ctrl");
+  fd_open(&server->localClient->fd, slink_fds[1][1], 1, "slink data");
+
+  if (i == 0)
   {
-    fde_t *F;
+    char fd_str[3][6];   /* store 3x sizeof("65535") */
+    char *kid_argv[7];
 
-    /* set our fds as non blocking and close everything else */
-    for (i = 0; i < FD_HASH_SIZE; i++)
-      for (F = fd_hash[i]; F != NULL; F = F->hnext)
-	if (F->fd >= LOWEST_SAFE_FD)
-        {
-          if ((F->fd == slink_fds[0][0][0]) || (F->fd == slink_fds[0][0][1]) ||
-              (F->fd == slink_fds[0][0][0]) || (F->fd == slink_fds[1][0][1]) ||
-              (F == &server->localClient->fd))
-          {
-            set_non_blocking(F->fd);
-#ifdef USE_SIGIO /* the servlink process doesn't need O_ASYNC */
-            {
-              int flags;
-              flags = fcntl(F->fd, F_GETFL, 0);
-              flags |= ~O_ASYNC;
-              fcntl(F->fd, F_SETFL, flags);
-            }
+#ifdef O_ASYNC
+    fcntl(server->localClient->fd.fd, F_SETFL,
+          fcntl(server->localClient->fd.fd, F_GETFL, 0) & ~O_ASYNC);
 #endif
-          }
-          else
-            close(F->fd);
-	}
+    close_fds(&server->localClient->fd);
 
-    sprintf(fd_str[0], "%d", slink_fds[0][0][0]); /* ctrl read */
-    sprintf(fd_str[1], "%d", slink_fds[0][0][1]); /* ctrl write */
-    sprintf(fd_str[2], "%d", slink_fds[1][0][0]); /* data read */
-    sprintf(fd_str[3], "%d", slink_fds[1][0][1]); /* data write */
-    sprintf(fd_str[4], "%d", server->localClient->fd.fd); /* network read/write */
+    sprintf(fd_str[0], "%d", slink_fds[0][0]);
+    sprintf(fd_str[1], "%d", slink_fds[1][0]);
+    sprintf(fd_str[2], "%d", server->localClient->fd.fd);
 
-    kid_argv[0] = slink_str;
-    kid_argv[1] = fd_str[0];
-    kid_argv[2] = fd_str[1];
-    kid_argv[3] = fd_str[2];
-    kid_argv[4] = fd_str[3];
-    kid_argv[5] = fd_str[4];
+    kid_argv[0] = "-slink";
+    kid_argv[1] = kid_argv[2] = fd_str[0];  /* ctrl */
+    kid_argv[3] = kid_argv[4] = fd_str[1];  /* data */
+    kid_argv[5] = fd_str[2];    /* network */
     kid_argv[6] = NULL;
 
-    /* exec servlink program */
     execv(ConfigFileEntry.servlink_path, kid_argv);
 
-    /* We're still here, abort. */
     _exit(1);
   }
-  else
-  {
-    fd_close(&server->localClient->fd);
 
-    /* close the childs end of the pipes */
-    close(slink_fds[0][0][0]);
-    close(slink_fds[0][0][1]);
-    close(slink_fds[1][0][0]);
-    close(slink_fds[1][0][1]);
+  /* close the network fd and the child ends of the pipes */
+  fd_close(&server->localClient->fd);
+  close(slink_fds[0][0]);
+  close(slink_fds[1][0]);
 
-    assert(server->localClient);
-    fd_open(&server->localClient->ctrlfd, slink_fds[0][1][1], 1, NULL);
-    fd_open(&server->localClient->fd, slink_fds[1][1][1], 1, NULL);
-#ifndef HAVE_SOCKETPAIR
-    fd_open(&server->localClient->ctrlfd_r, slink_fds[0][1][0], 1, NULL);
-    fd_open(&server->localClient->fd_r, slink_fds[1][1][0], 1, NULL);
-#endif
+  execute_callback(setup_socket_cb, server->localClient->fd.fd);
+  execute_callback(setup_socket_cb, server->localClient->ctrlfd.fd);
 
-    if (!set_non_blocking(server->localClient->fd.fd))
-    {
-      report_error(L_ADMIN, NONB_ERROR_MSG, get_client_name(server, SHOW_IP), errno);
-      report_error(L_OPER, NONB_ERROR_MSG, get_client_name(server, MASK_IP), errno);
-    }
-    if (!set_non_blocking(server->localClient->ctrlfd.fd))
-    {
-      report_error(L_ADMIN, NONB_ERROR_MSG, 
-                   get_client_name(server, SHOW_IP), errno);
-      report_error(L_OPER, NONB_ERROR_MSG, 
-                   get_client_name(server, MASK_IP), errno);
-    }
-#ifndef HAVE_SOCKETPAIR
-    if (!set_non_blocking(server->localClient->fd_r.fd))
-    {
-      report_error(L_ADMIN, NONB_ERROR_MSG, 
-                   get_client_name(server, SHOW_IP), errno);
-      report_error(L_OPER, NONB_ERROR_MSG,
-                   get_client_name(server, MASK_IP), errno);
-    }
-    if (!set_non_blocking(server->localClient->ctrlfd_r.fd))
-    {
-      report_error(L_ADMIN, NONB_ERROR_MSG, 
-                   get_client_name(server, SHOW_IP), errno);
-      report_error(L_OPER, NONB_ERROR_MSG,
-                   get_client_name(server, MASK_IP), errno);
-    }
-
-    read_ctrl_packet(&server->localClient->ctrlfd_r, server);
-    read_packet(&server->localClient->fd_r, server);
-#else
-    read_ctrl_packet(&server->localClient->ctrlfd, server);
-    read_packet(&server->localClient->fd, server);
-#endif
-  }
+  read_ctrl_packet(&server->localClient->ctrlfd, server);
+  read_packet(&server->localClient->fd, server);
 
   return 0;
-
-fork_error:
-  /* this is ugly, but nicer than repeating
-   * about 50 close() statements everywhre... */
-  for (i = 0; i < 4; i++)
-  {
-    close(slink_fds[i >> 1][i & 1][0]);
-    if (slink_fds[i >> 1][i & 1][1] != slink_fds[i >> 1][i & 1][0])
-      close(slink_fds[i >> 1][i & 1][1]);
-  }
 #endif
-  return -1;
 }
 
 /* server_burst()
@@ -2032,14 +1927,6 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
   /* servernames are always guaranteed under HOSTLEN chars */
   fd_note(&client_p->localClient->fd, "Server: %s", conf->name);
 
-  if (!set_sock_buffers(client_p->localClient->fd.fd, READBUF_SIZE))
-  {
-    report_error(L_ADMIN, SETBUF_ERROR_MSG,
-		 get_client_name(client_p, SHOW_IP), errno);
-    report_error(L_OPER, SETBUF_ERROR_MSG,
-		 get_client_name(client_p, MASK_IP), errno);
-  }
-
   /* Attach config entries to client here rather than in
    * serv_connect_callback(). This to avoid null pointer references.
    */
@@ -2174,8 +2061,6 @@ serv_connect_callback(fde_t *fd, int status, void *data)
   /* First, make sure its a real client! */
   assert(client_p != NULL);
   assert(&client_p->localClient->fd == fd);
-
-  set_no_delay(fd->fd);
 
   /* Next, for backward purposes, record the ip of the server */
   memcpy(&client_p->localClient->ip, &fd->connect.hostaddr,

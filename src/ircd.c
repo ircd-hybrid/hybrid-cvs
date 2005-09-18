@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.366 2005/09/18 14:25:13 adx Exp $
+ *  $Id: ircd.c,v 7.367 2005/09/18 20:09:03 adx Exp $
  */
 
 #include "stdinc.h"
@@ -656,7 +656,7 @@ main(int argc, char *argv[])
   fdlist_init();
   init_log(logFileName);
   check_can_use_v6();
-  init_netio();         /* This needs to be setup early ! -- adrian */
+  init_comm();         /* This needs to be setup early ! -- adrian */
   /* Check if there is pidfile and daemon already running */
   check_pidfile(pidFileName);
   /* Init the event subsystem */

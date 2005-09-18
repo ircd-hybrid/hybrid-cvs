@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.130 2005/08/20 23:48:43 adx Exp $
+ *  $Id: packet.c,v 7.131 2005/09/18 20:09:03 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -38,6 +38,8 @@
 #include "hook.h"
 #include "send.h"
 #include "irc_getnameinfo.h"
+
+#define READBUF_SIZE 16384
 
 struct Callback *iorecv_cb = NULL;
 struct Callback *iorecvctrl_cb = NULL;
