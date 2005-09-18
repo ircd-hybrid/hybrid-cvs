@@ -19,15 +19,17 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_win32.c,v 7.19 2005/09/18 20:09:03 adx Exp $
+ *  $Id: s_bsd_win32.c,v 7.20 2005/09/18 20:49:50 adx Exp $
  */
 
 #include "stdinc.h"
+#include <iphlpapi.h>
 #include "fdlist.h"
 #include "ircd.h"
 #include "s_bsd.h"
 #include "common.h"
 #include "client.h"
+#include "numeric.h"
 #include "restart.h"
 
 #define WM_SOCKET  (WM_USER + 0)
@@ -38,6 +40,7 @@
 static HWND wndhandle;
 static dlink_list dns_queries = {NULL, NULL, 0};
 static dlink_node *setupfd_hook;
+static DWORD (WINAPI * _GetNetworkParams) (PFIXED_INFO, PULONG) = NULL;
 
 extern int main(int, char *[]);
 
@@ -187,6 +190,7 @@ init_netio(void)
 {
   WNDCLASS wndclass;
   WSADATA wsa;
+  HMODULE lib;
 
   /* Initialize Winsock networking */
   if (WSAStartup(0x101, &wsa) != 0)
@@ -221,6 +225,9 @@ init_netio(void)
   /* Set up a timer which will periodically post a message to our queue.
    * This way, ircd won't wait infinitely for a network event */
   SetTimer(wndhandle, 0, SELECT_DELAY, NULL);
+
+  if ((lib = LoadLibrary("IPHLPAPI.DLL")) != NULL)
+    _GetNetworkParams = GetProcAddress(lib, "GetNetworkParams");
 
   setupfd_hook = install_hook(setup_socket_cb, setup_winsock_fd);
 }
@@ -330,14 +337,36 @@ gethost_byaddr(const struct irc_ssaddr *addr, struct DNSQuery *query)
 void
 report_dns_servers(struct Client *source_p)
 {
-  /* todo */
+  FIXED_INFO *FixedInfo;
+  ULONG ulOutBufLen;
+  IP_ADDR_STRING *ip;
+
+  if (_GetNetworkParams == NULL)
+    return;
+
+  FixedInfo = MyMalloc(sizeof(FIXED_INFO));
+  ulOutBufLen = sizeof(FIXED_INFO);
+
+  if (_GetNetworkParams(FixedInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW)
+  {
+    MyFree(FixedInfo);
+    FixedInfo = MyMalloc(ulOutBufLen);
+
+    if (_GetNetworkParams(FixedInfo, &ulOutBufLen) != ERROR_SUCCESS)
+      return;
+  }
+
+  for (ip = &FixedInfo->DnsServerList; ip != NULL; ip = ip->Next)
+    sendto_one(source_p, form_str(RPL_STATSALINE), me.name, source_p->name,
+               ip->IpAddress.String);
+
+  MyFree(FixedInfo);
 }
 
 /* Copyright (C) 2001 Free Software Foundation, Inc.
  *
  * Get name and information about current kernel.
  */
-
 int
 uname(struct utsname *uts)
 {
