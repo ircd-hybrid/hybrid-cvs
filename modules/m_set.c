@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.64 2005/09/18 14:25:12 adx Exp $
+ *  $Id: m_set.c,v 1.65 2005/09/18 22:24:37 adx Exp $
  */
 
 /* rewritten by jdc */
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.64 $";
+const char *_version = "$Revision: 1.65 $";
 #endif
 
 /* Structure used for the SET table itself */
@@ -296,7 +296,7 @@ quote_max (struct Client *source_p, int newval)
 {
   if (newval > 0)
   {
-    recalc_fdlimit();
+    recalc_fdlimit(NULL);
 
     if (newval > MAXCLIENTS_MAX)
     {

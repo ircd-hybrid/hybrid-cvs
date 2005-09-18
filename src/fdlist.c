@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.51 2005/09/18 20:09:03 adx Exp $
+ *  $Id: fdlist.c,v 7.52 2005/09/18 22:24:37 adx Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -28,6 +28,7 @@
 #include "event.h"
 #include "ircd.h"    /* GlobalSetOptions */
 #include "irc_string.h"
+#include "rlimits.h"
 #include "s_bsd.h"   /* comm_setselect */
 #include "s_conf.h"  /* ServerInfo */
 #include "send.h"
@@ -66,11 +67,12 @@ fdlist_init(void)
   memset(&fd_hash, 0, sizeof(fd_hash));
 
   fdlimit_cb = register_callback("changing_fdlimit", changing_fdlimit);
-  recalc_fdlimit();
+  eventAddIsh("recalc_fdlimit", recalc_fdlimit, NULL, 58);
+  recalc_fdlimit(NULL);
 }
 
 void
-recalc_fdlimit(void)
+recalc_fdlimit(void *unused)
 {
 #ifdef _WIN32
   /* this is what WSAStartup() usually returns. Even though they say
@@ -78,7 +80,16 @@ recalc_fdlimit(void)
    * we actually can create even more sockets... */
   hard_fdlimit = 32767;
 #else
-  int fdmax = getdtablesize();
+  int fdmax;
+  struct rlimit limit;
+
+  if (!getrlimit(RLIMIT_FD_MAX, &limit))
+  {
+    limit.rlim_cur = limit.rlim_max;
+    setrlimit(RLIMIT_FD_MAX, &limit);
+  }
+
+  fdmax = getdtablesize();
 
   /* allow MAXCLIENTS_MIN clients even at the cost of MAX_BUFFER and
    * some not really LEAKED_FDS */

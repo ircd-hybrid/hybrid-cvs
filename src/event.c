@@ -38,7 +38,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: event.c,v 7.38 2003/08/21 21:12:56 michael Exp $
+ *  $Id: event.c,v 7.39 2005/09/18 22:24:37 adx Exp $
  */
 
 /*
@@ -243,22 +243,31 @@ show_events(struct Client *source_p)
   int i;
 
   if (last_event_ran)
-    sendto_one(source_p, ":%s %d %s E :Last event to run: %s",
+  {
+    sendto_one(source_p, ":%s %d %s :Last event to run: %s",
                me.name, RPL_STATSDEBUG, source_p->name, last_event_ran);
+    sendto_one(source_p, ":%s %d %s : ",
+      me.name, RPL_STATSDEBUG, source_p->name);
+  }
 
   sendto_one(source_p,
-     ":%s %d %s E :Operation                    Next Execution",
-     me.name, RPL_STATSDEBUG, source_p->name);
+    ":%s %d %s : Operation                    Next Execution",
+    me.name, RPL_STATSDEBUG, source_p->name);
+  sendto_one(source_p,
+    ":%s %d %s : -------------------------------------------",
+    me.name, RPL_STATSDEBUG, source_p->name);
 
   for (i = 0; i < MAX_EVENTS; i++)
-  {
     if (event_table[i].active)
     {
-      sendto_one(source_p, ":%s %d %s E :%-28s %-4d seconds",
+      sendto_one(source_p, ":%s %d %s : %-28s %-4d seconds",
                  me.name, RPL_STATSDEBUG, source_p->name,
-                 event_table[i].name, (int)(event_table[i].when - CurrentTime));
+                 event_table[i].name,
+		 (int)(event_table[i].when - CurrentTime));
     }
-  }
+
+  sendto_one(source_p, ":%s %d %s : ",
+    me.name, RPL_STATSDEBUG, source_p->name);
 }
 
 /*

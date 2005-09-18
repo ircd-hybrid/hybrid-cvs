@@ -1,5 +1,5 @@
 /* A Bison parser, made from ircd_parser.y, by GNU bison 1.75.  */
-/* $Id: y.tab.c,v 7.76 2005/09/18 14:26:13 adx Exp $ */
+/* $Id: y.tab.c,v 7.77 2005/09/18 22:24:37 adx Exp $ */
 
 /* Skeleton parser for Yacc-like parsing with Bison,
    Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002 Free Software Foundation, Inc.
@@ -3305,7 +3305,7 @@ yyreduce:
     {
   if (ypass == 2)
   {
-    recalc_fdlimit();
+    recalc_fdlimit(NULL);
 
     if (yyvsp[-1].number < MAXCLIENTS_MIN)
     {

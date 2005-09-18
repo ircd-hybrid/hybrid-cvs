@@ -19,11 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.367 2005/09/18 20:09:03 adx Exp $
+ *  $Id: ircd.c,v 7.368 2005/09/18 22:24:37 adx Exp $
  */
 
 #include "stdinc.h"
-#include "rlimits.h"
 #include "s_user.h"
 #include "tools.h"
 #include "ircd.h"
@@ -188,41 +187,6 @@ get_maxrss(void)
   return (0);   /* FIXME */
 #else
   return (get_vm_top() - initialVMTop);
-#endif
-}
-
-/* init_sys()
- *
- * inputs	- NONE
- * output	- NONE
- * side effects	- if boot_daemon flag is not set, don't daemonize
- */
-static void 
-init_sys(void)
-{
-#if defined(RLIMIT_FD_MAX) && defined(HAVE_SYS_RLIMIT_H)
-  struct rlimit limit;
-
-  if (!getrlimit(RLIMIT_FD_MAX, &limit))
-  {
-    if (limit.rlim_max < HARD_FDLIMIT)
-    {
-      fprintf(stderr, "ircd fd table too big\n");
-      fprintf(stderr, "Hard Limit: %ld IRC max: %d\n",
-              (long)limit.rlim_max, HARD_FDLIMIT);
-      fprintf(stderr, "Fix HARD_FDLIMIT\n");
-      exit(-1);
-    }
-
-    limit.rlim_cur = limit.rlim_max; /* make soft limit the max */
-
-    if (setrlimit(RLIMIT_FD_MAX, &limit) == -1)
-    {
-      fprintf(stderr, "error setting max fd's to %ld\n",
-              (long)limit.rlim_cur);
-      exit(EXIT_FAILURE);
-    }
-  }
 #endif
 }
 
@@ -635,7 +599,6 @@ main(int argc, char *argv[])
     exit(EXIT_FAILURE);
   }
 
-  init_sys();
   init_ssl();
 
 #ifndef _WIN32
@@ -652,6 +615,8 @@ main(int argc, char *argv[])
 
   get_ircd_platform(ircd_platform);
 
+  /* Init the event subsystem */
+  eventInit();
   /* We need this to initialise the fd array before anything else */
   fdlist_init();
   init_log(logFileName);
@@ -659,8 +624,6 @@ main(int argc, char *argv[])
   init_comm();         /* This needs to be setup early ! -- adrian */
   /* Check if there is pidfile and daemon already running */
   check_pidfile(pidFileName);
-  /* Init the event subsystem */
-  eventInit();
 
 #ifndef NOBALLOC
   initBlockHeap();

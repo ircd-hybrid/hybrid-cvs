@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.449 2005/09/18 14:26:13 adx Exp $
+ *  $Id: ircd_parser.y,v 1.450 2005/09/18 22:24:37 adx Exp $
  */
 
 %{
@@ -722,7 +722,7 @@ serverinfo_max_clients: T_MAX_CLIENTS '=' NUMBER ';'
 {
   if (ypass == 2)
   {
-    recalc_fdlimit();
+    recalc_fdlimit(NULL);
 
     if ($3 < MAXCLIENTS_MIN)
     {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rehash.c,v 1.55 2005/09/18 14:25:12 adx Exp $
+ *  $Id: m_rehash.c,v 1.56 2005/09/18 22:24:37 adx Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&rehash_msgtab);
 }
 
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif
 
 /*
@@ -96,7 +96,7 @@ mo_rehash(struct Client *client_p, struct Client *source_p,
                  parv[0], "FDLIMIT");
       sendto_realops_flags(UMODE_ALL, L_ALL, "%s is updating FDLIMIT",
                            get_oper_name(source_p));
-      recalc_fdlimit();
+      recalc_fdlimit(NULL);
       found = 1;
     }
     else
