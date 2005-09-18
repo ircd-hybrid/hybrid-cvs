@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.49 2005/09/18 15:35:07 adx Exp $
+ *  $Id: fdlist.c,v 7.50 2005/09/18 18:08:17 adx Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -78,10 +78,15 @@ recalc_fdlimit(void)
    * we actually can create even more sockets... */
   hard_fdlimit = 32767;
 #else
+  int fdmax = getdtablesize();
+
   /* allow MAXCLIENTS_MIN clients even at the cost of MAX_BUFFER and
    * some not really LEAKED_FDS */
-  int fdmax = getdtablesize();
   fdmax = IRCD_MAX(fdmax, LEAKED_FDS + MAX_BUFFER + MAXCLIENTS_MIN);
+
+  /* under no condition shall this raise over 65536
+   * for example user ip heap is sized 2*hard_fdlimit */
+  fdmax = IRCD_MIN(fdmax, 65536);
 
   if (fdmax != hard_fdlimit)
     execute_callback(fdlimit_cb, fdmax);

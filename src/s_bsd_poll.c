@@ -20,12 +20,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_poll.c,v 7.70 2005/09/14 10:27:41 adx Exp $
+ *  $Id: s_bsd_poll.c,v 7.71 2005/09/18 18:08:17 adx Exp $
  */
 
 #include "stdinc.h"
 #include <sys/poll.h>
 #include "fdlist.h"
+#include "hook.h"
 #include "ircd.h"
 #include "s_bsd.h"
 #include "s_log.h"
@@ -38,8 +39,27 @@
 #define POLLWRNORM POLLOUT
 #endif
 
-static struct pollfd pollfds[HARD_FDLIMIT];
+static struct pollfd *pollfds;
 static int pollmax = -1;  /* highest FD number */
+static dlink_node *hookptr;
+
+/*
+ * changing_fdlimit
+ *
+ * Resize pollfds array if necessary.
+ */
+static void *
+changing_fdlimit(va_list args)
+{
+  int old_fdlimit = hard_fdlimit;
+
+  pass_callback(hookptr, va_arg(args, int));
+
+  if (hard_fdlimit != old_fdlimit)
+    pollfds = MyRealloc(pollfds, sizeof(struct pollfd) * hard_fdlimit);
+
+  return NULL;
+}
 
 /*
  * init_netio
@@ -52,10 +72,12 @@ init_netio(void)
 {
   int fd;
 
-  for (fd = 0; fd < HARD_FDLIMIT; fd++)
+  pollfds = MyMalloc(sizeof(struct pollfd) * hard_fdlimit);
+
+  for (fd = 0; fd < hard_fdlimit; fd++)
     pollfds[fd].fd = -1;
 
-  pollmax = 0;
+  hookptr = install_hook(fdlimit_cb, changing_fdlimit);
 }
 
 /*
@@ -67,7 +89,7 @@ poll_findslot(void)
 {
   int i;
 
-  for (i = 0; i < HARD_FDLIMIT; i++)
+  for (i = 0; i < hard_fdlimit; i++)
     if (pollfds[i].fd == -1)
     {
       /* MATCH!!#$*&$ */
@@ -131,6 +153,7 @@ comm_setselect(fde_t *F, unsigned int type, PF *handler,
 	pollfds[F->comm_index].fd = F->fd;
       }
       pollfds[F->comm_index].events = new_events;
+      pollfds[F->comm_index].revents = 0;
     }
 
     F->evcache = new_events;

@@ -20,11 +20,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_select.c,v 7.42 2005/09/18 14:46:02 adx Exp $
+ *  $Id: s_bsd_select.c,v 7.43 2005/09/18 18:08:17 adx Exp $
  */
 
 #include "stdinc.h"
 #include "fdlist.h"
+#include "hook.h"
 #include "ircd.h"
 #include "s_bsd.h"
 #include "s_log.h"
@@ -38,6 +39,23 @@
 static fd_set select_readfds, tmpreadfds;
 static fd_set select_writefds, tmpwritefds;
 static int highest_fd = -1;
+static dlink_node *hookptr;
+
+/*
+ * changing_fdlimit
+ *
+ * Make sure hard_fdlimit doesn't go too big.
+ */
+static void *
+changing_fdlimit(va_list args)
+{
+  int fdmax = va_arg(args, int);
+
+  if (fdmax > FD_SETSIZE)
+    fdmax = FD_SETSIZE;
+
+  return pass_callback(hookptr, fdmax);
+}
 
 /*
  * init_netio
@@ -50,6 +68,8 @@ init_netio(void)
 {
   FD_ZERO(&select_readfds);
   FD_ZERO(&select_writefds);
+
+  hookptr = install_hook(fdlimit_cb, changing_fdlimit);
 }
 
 /*
