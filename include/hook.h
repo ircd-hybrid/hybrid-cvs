@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.h,v 1.23 2005/09/12 04:33:30 adx Exp $
+ *  $Id: hook.h,v 1.24 2005/09/18 16:52:49 adx Exp $
  */
 
 #ifndef __HOOK_H_INCLUDED
@@ -34,6 +34,7 @@ struct Callback {
   char *name;
   dlink_list chain;
   dlink_node node;
+  unsigned int called;
   time_t last;
 };
 

@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.31 2005/09/12 04:33:30 adx Exp $
+ *  $Id: hook.c,v 7.32 2005/09/18 16:52:49 adx Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ register_callback(const char *name, CBFUNC *func)
       /* re-attaching an empty hook chain? */
       if (!is_callback_present(cb))
       {
-        dlinkAdd(func, make_dlink_node(), &cb->chain);
+        dlinkAdd(func, MyMalloc(sizeof(dlink_node)), &cb->chain);
 	return (cb);
       }
       return (NULL);
@@ -73,7 +73,7 @@ register_callback(const char *name, CBFUNC *func)
 
   cb = MyMalloc(sizeof(struct Callback));
   if (func != NULL)
-    dlinkAdd(func, make_dlink_node(), &cb->chain);
+    dlinkAdd(func, MyMalloc(sizeof(dlink_node)), &cb->chain);
   if (name != NULL)
   {
     DupString(cb->name, name);
@@ -98,6 +98,7 @@ execute_callback(struct Callback *cb, ...)
   void *res;
   va_list args;
 
+  cb->called++;
   cb->last = CurrentTime;
 
   if (!is_callback_present(cb))
@@ -178,7 +179,7 @@ find_callback(const char *name)
 dlink_node *
 install_hook(struct Callback *cb, CBFUNC *hook)
 {
-  dlink_node *node = make_dlink_node();
+  dlink_node *node = MyMalloc(sizeof(dlink_node));
 
   dlinkAdd(hook, node, &cb->chain);
   return (node);
@@ -201,7 +202,7 @@ uninstall_hook(struct Callback *cb, CBFUNC *hook)
   dlink_node *ptr = dlinkFind(&cb->chain, hook);
 
   dlinkDelete(ptr, &cb->chain);
-  free_dlink_node(ptr);
+  MyFree(ptr);
 }
 
 /*
@@ -219,26 +220,28 @@ stats_hooks(struct Client *source_p)
 {
   dlink_node *ptr;
   struct Callback *cb;
-  char namelen[29];
   char lastused[32];
 
-  sendto_one(source_p, ":%s %d %s h :Callback [chain length]      Last Execution",
-             me.name, RPL_STATSDEBUG, source_p->name);
+  sendto_one(source_p, ":%s %d %s : %-20s %-20s Used     Hooks", me.name,
+             RPL_STATSDEBUG, source_p->name, "Callback", "Last Execution");
+  sendto_one(source_p, ":%s %d %s : ------------------------------------"
+             "--------------------", me.name, RPL_STATSDEBUG, source_p->name);
 
   DLINK_FOREACH(ptr, callback_list.head)
   {
     cb = ptr->data;
 
-    snprintf(namelen, sizeof(namelen), "%s [%d]",
-             cb->name, (int) dlink_list_length(&cb->chain));
-
-    if (!cb->last)
-      strcpy(lastused, "Never");
+    if (cb->last != 0)
+      snprintf(lastused, sizeof(lastused), "%d seconds ago",
+               CurrentTime - cb->last);
     else
-      snprintf(lastused, sizeof(lastused), "%-4d seconds ago",
-               (int) (CurrentTime - cb->last));
+      strcpy(lastused, "NEVER");
 
-    sendto_one(source_p, ":%s %d %s h :%-28s %s",
-               me.name, RPL_STATSDEBUG, source_p->name, namelen, lastused);
+    sendto_one(source_p, ":%s %d %s : %-20s %-20s %-8u %d", me.name,
+               RPL_STATSDEBUG, source_p->name, cb->name, lastused, cb->called,
+	       dlink_list_length(&cb->chain));
   }
+
+  sendto_one(source_p, ":%s %d %s : ", me.name, RPL_STATSDEBUG,
+             source_p->name);
 }
