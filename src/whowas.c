@@ -2,7 +2,7 @@
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  whowas.c: WHOWAS user cache.
  *
- *  Copyright (C) 2002 by the past and present ircd coders, and others.
+ *  Copyright (C) 2005 by the past and present ircd coders, and others.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,11 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.c,v 7.30 2005/07/26 11:48:05 michael Exp $
+ *  $Id: whowas.c,v 7.31 2005/09/19 06:15:21 metalrock Exp $
  */
 
 #include "stdinc.h"
-
 #include "whowas.h"
 #include "client.h"
 #include "common.h"

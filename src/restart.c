@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: restart.c,v 7.31 2005/09/18 20:09:03 adx Exp $
+ *  $Id: restart.c,v 7.32 2005/09/19 06:15:21 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -47,7 +47,7 @@ restart(const char *mesg)
 }
 
 void
-server_die(const char *mesg, int reboot)
+server_die(const char *mesg, int rboot)
 {
   char buffer[IRCD_BUFSIZE];
   dlink_node *ptr = NULL;
@@ -55,10 +55,10 @@ server_die(const char *mesg, int reboot)
 
   if (EmptyString(mesg))
     snprintf(buffer, sizeof(buffer), "Server %s",
-             reboot ? "Restarting" : "Terminating");
+             rboot ? "Restarting" : "Terminating");
   else
     snprintf(buffer, sizeof(buffer), "Server %s: %s",
-             reboot ? "Restarting" : "Terminating", mesg);
+             rboot ? "Restarting" : "Terminating", mesg);
 
   DLINK_FOREACH(ptr, local_client_list.head)
   {
@@ -82,7 +82,7 @@ server_die(const char *mesg, int reboot)
 
   unlink(pidFileName);
 
-  if (reboot)
+  if (rboot)
   {
     execv(SPATH, myargv);
     exit(1);

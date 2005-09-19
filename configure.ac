@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.122 2005/09/18 20:09:02 adx Exp $
+dnl $Id: configure.ac,v 7.123 2005/09/19 06:15:21 metalrock Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.122 2005/09/18 20:09:02 adx Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.123 2005/09/19 06:15:21 metalrock Exp $])
 
 AC_INIT([ircd-hybrid],[7.2])
 
@@ -1150,7 +1150,7 @@ fi
 echo "EFnet server ............ $tmpresult"
 echo "Halfops support ......... $halfops"
 echo "Small network ........... $small_net"
-echo "G-Line Voting ........... $gline_voting"
+echo "G-Line voting ........... $gline_voting"
 echo
 echo "Configured limits:"
 echo "NICKLEN ................. $NICKLEN"
