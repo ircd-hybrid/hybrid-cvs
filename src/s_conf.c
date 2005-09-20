@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.601 2005/09/20 15:15:31 db Exp $
+ *  $Id: s_conf.c,v 7.602 2005/09/20 15:33:35 db Exp $
  */
 
 #include "stdinc.h"
@@ -1762,7 +1762,6 @@ find_exact_name_conf(ConfType type, const char *name,
   struct ConfItem *conf;
   struct AccessItem *aconf;
   struct MatchItem *match_item;
-  struct ClassItem *aclass;
   dlink_list *list_p;
 
   list_p = map_to_list(type);
@@ -1839,11 +1838,10 @@ find_exact_name_conf(ConfType type, const char *name,
     DLINK_FOREACH(ptr, list_p->head)
     {
       conf = ptr->data;
-      aclass = (struct ClassItem *)map_to_conf(conf);
       if (EmptyString(conf->name))
-	continue;
+        continue;
     
-      if ((irccmp(conf->name, name) == 0) && (MaxTotal(aclass) >= 0))
+      if (irccmp(conf->name, name) == 0)
         return (conf);
     }
     break;
