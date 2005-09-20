@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.451 2005/09/20 12:41:09 adx Exp $
+ *  $Id: ircd_parser.y,v 1.452 2005/09/20 15:15:31 db Exp $
  */
 
 %{
@@ -62,6 +62,7 @@ static struct ConfItem *yy_conf = NULL;
 static struct AccessItem *yy_aconf = NULL;
 static struct MatchItem *yy_match_item = NULL;
 static struct ClassItem *yy_class = NULL;
+static char *yy_class_name;
 
 static dlink_list col_conf_list  = { NULL, NULL, 0 };
 static dlink_list hub_conf_list  = { NULL, NULL, 0 };
@@ -1435,12 +1436,32 @@ class_entry: CLASS
 {
   if (ypass == 1)
   {
-    if ((yy_conf != NULL) && (yy_conf->name == NULL))
+    struct ConfItem *cconf;
+    struct ClassItem *class = NULL;
+
+    if (yy_class_name == NULL)
     {
       delete_conf_item(yy_conf);
-      yy_conf = NULL;
-      yy_class = NULL;
     }
+    else
+    {
+      cconf = find_exact_name_conf(CLASS_TYPE, yy_class_name, NULL, NULL);
+
+      if (cconf != NULL)		/* The class existed already */
+      {
+        class = (struct ClassItem *) map_to_conf(cconf);
+        *class = *yy_class;
+        delete_conf_item(yy_conf);
+        MyFree(cconf->name);            /* Allows case change of class name */
+        cconf->name = yy_class_name;
+      }
+      else	/* Brand new class */
+      {
+        MyFree(yy_conf->name);		/* just in case it was allocated */
+        yy_conf->name = yy_class_name;
+      }
+    }
+    yy_class_name = NULL;
   }
 };
 
@@ -1465,46 +1486,8 @@ class_name: NAME '=' QSTRING ';'
 {
   if (ypass == 1)
   {
-    struct ConfItem *cconf = find_exact_name_conf(CLASS_TYPE, yylval.string,
-                                                  NULL, NULL);
-    struct ClassItem *class = NULL;
-
-    if (cconf != NULL)
-    {
-      if (cconf == yy_conf)
-        cconf = NULL;
-      else
-        class = (struct ClassItem *) map_to_conf(cconf);
-    }
-
-    if (class != NULL && MaxTotal(class) >= 0)
-    {
-      yyerror("Multiple classes with the same name, using the first entry");
-      MyFree(yy_conf->name);
-      yy_conf->name = NULL;
-    }
-    else
-    {
-      if (class != NULL)
-      {
-        PingFreq(class) = PingFreq(yy_class);
-	PingWarning(class) = PingWarning(yy_class);
-        MaxPerIp(class) = MaxPerIp(yy_class);
-        ConFreq(class) = ConFreq(yy_class);
-        MaxTotal(class) = MaxTotal(yy_class);
-        MaxGlobal(class) = MaxGlobal(yy_class);
-        MaxLocal(class) = MaxLocal(yy_class);
-        MaxIdent(class) = MaxIdent(yy_class);
-        MaxSendq(class) = MaxSendq(yy_class);
-        delete_conf_item(yy_conf);
-        yy_conf = cconf;
-        yy_class = class;
-        /* allow changing case - replace old name */
-      }
-
-      MyFree(yy_conf->name);
-      DupString(yy_conf->name, yylval.string);
-    }
+    MyFree(yy_class_name);
+    DupString(yy_class_name, yylval.string);
   }
 };
 
@@ -1512,46 +1495,8 @@ class_name_t: QSTRING
 {
   if (ypass == 1)
   {
-    struct ConfItem *cconf = find_exact_name_conf(CLASS_TYPE, yylval.string,
-                                                  NULL, NULL);
-    struct ClassItem *class = NULL;
-
-    if (cconf != NULL)
-    {
-      if (cconf == yy_conf)
-        cconf = NULL;
-      else
-        class = (struct ClassItem *) map_to_conf(cconf);
-    }
-
-    if (class != NULL && MaxTotal(class) >= 0)
-    {
-      yyerror("Multiple classes with the same name, using the first entry");
-      MyFree(yy_conf->name);
-      yy_conf->name = NULL;
-    }
-    else
-    {
-      if (class != NULL)
-      {
-        PingFreq(class) = PingFreq(yy_class);
-	PingWarning(class) = PingWarning(yy_class);
-        MaxPerIp(class) = MaxPerIp(yy_class);
-        ConFreq(class) = ConFreq(yy_class);
-        MaxTotal(class) = MaxTotal(yy_class);
-        MaxGlobal(class) = MaxGlobal(yy_class);
-        MaxLocal(class) = MaxLocal(yy_class);
-        MaxIdent(class) = MaxIdent(yy_class);
-        MaxSendq(class) = MaxSendq(yy_class);
-        delete_conf_item(yy_conf);
-        yy_conf = cconf;
-        yy_class = class;
-        /* allow changing case - replace old name */
-      }
-
-      MyFree(yy_conf->name);
-      DupString(yy_conf->name, yylval.string);
-    }
+    MyFree(yy_class_name);
+    DupString(yy_class_name, yylval.string);
   }
 };
 
