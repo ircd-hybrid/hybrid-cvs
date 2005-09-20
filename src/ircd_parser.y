@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.450 2005/09/18 22:24:37 adx Exp $
+ *  $Id: ircd_parser.y,v 1.451 2005/09/20 12:41:09 adx Exp $
  */
 
 %{
@@ -3051,8 +3051,7 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
                     general_disable_auth | general_burst_away |
 		    general_tkline_expire_notices | general_gline_min_cidr |
                     general_gline_min_cidr6 | general_use_whois_actually |
-		    general_reject_hold_time | general_jflood_count |
-		    general_jflood_time |
+		    general_reject_hold_time |
 		    error;
 
 
@@ -3080,16 +3079,6 @@ general_use_whois_actually: USE_WHOIS_ACTUALLY '=' TBOOL ';'
 general_reject_hold_time: TREJECT_HOLD_TIME '=' NUMBER ';'
 {
   GlobalSetOptions.rejecttime = yylval.number;
-};
-
-general_jflood_count: JOIN_FLOOD_COUNT '=' NUMBER ';'
-{
-  GlobalSetOptions.joinfloodcount = yylval.number;
-};
-
-general_jflood_time: JOIN_FLOOD_TIME '=' NUMBER ';'
-{
-  GlobalSetOptions.joinfloodtime = yylval.number;
 };
 
 general_tkline_expire_notices: TKLINE_EXPIRE_NOTICES '=' TBOOL ';'
@@ -3677,19 +3666,16 @@ channel_entry: CHANNEL
   '{' channel_items '}' ';';
 
 channel_items:      channel_items channel_item | channel_item;
-channel_item:       channel_restrict_channels |
-                    channel_disable_local_channels | channel_use_except |
+channel_item:       channel_disable_local_channels | channel_use_except |
                     channel_use_invex | channel_use_knock |
                     channel_max_bans | channel_knock_delay |
-		    channel_knock_delay_channel |
-		    channel_invite_ops_only |
-                    channel_max_chans_per_user |
-                    channel_quiet_on_ban |
+		    channel_knock_delay_channel | channel_invite_ops_only |
+                    channel_max_chans_per_user | channel_quiet_on_ban |
 		    channel_default_split_user_count | 
 		    channel_default_split_server_count |
-		    channel_no_create_on_split | 
-		    channel_no_join_on_split |
-		    channel_burst_topicwho |
+		    channel_no_create_on_split | channel_restrict_channels |
+		    channel_no_join_on_split | channel_burst_topicwho |
+		    channel_jflood_count | channel_jflood_time |
 		    error;
 
 channel_restrict_channels: RESTRICT_CHANNELS '=' TBOOL ';'
@@ -3770,6 +3756,16 @@ channel_no_join_on_split: NO_JOIN_ON_SPLIT '=' TBOOL ';'
 channel_burst_topicwho: BURST_TOPICWHO '=' TBOOL ';'
 {
   ConfigChannel.burst_topicwho = yylval.number;
+};
+
+channel_jflood_count: JOIN_FLOOD_COUNT '=' NUMBER ';'
+{
+  GlobalSetOptions.joinfloodcount = yylval.number;
+};
+
+channel_jflood_time: JOIN_FLOOD_TIME '=' NUMBER ';'
+{
+  GlobalSetOptions.joinfloodtime = yylval.number;
 };
 
 /***************************************************************************

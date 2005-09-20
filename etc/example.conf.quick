@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.39 2005/09/16 14:56:56 adx Exp $
+ * $Id: example.conf.quick,v 1.40 2005/09/20 12:41:08 adx Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -199,7 +199,7 @@ cluster {
          *       the server receives a shared kline/unkline/etc, it
          *       will not be propagated to clustered servers.
          */
-        name = "*.arpa";  
+        name = "*.arpa";
         
         /* type: list of what to share, options are as follows:
          *      kline   - share klines
@@ -282,6 +282,8 @@ channel {
 	default_split_server_count = 0;
 	no_create_on_split = yes;
 	no_join_on_split = no;
+	join_flood_count = 16;
+	join_flood_time = 8 seconds;
 };
 
 serverhide {
@@ -319,6 +321,7 @@ general {
 
 	kline_with_reason = yes;
 	kline_with_connection_closed = no;
+	reject_hold_time = 0;
 
 	invisible_on_connect = yes;
 	warn_no_nline = yes;
