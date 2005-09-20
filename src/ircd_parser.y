@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.452 2005/09/20 15:15:31 db Exp $
+ *  $Id: ircd_parser.y,v 1.453 2005/09/20 15:47:57 db Exp $
  */
 
 %{
@@ -1457,7 +1457,7 @@ class_entry: CLASS
       }
       else	/* Brand new class */
       {
-        MyFree(yy_conf->name);		/* just in case it was allocated */
+        MyFree(yy_conf->name);          /* just in case it was allocated */
         yy_conf->name = yy_class_name;
       }
     }
@@ -1556,13 +1556,13 @@ class_sendq: SENDQ '=' sizespec ';'
 
 class_cidr_bitlen: CIDR_BITLEN '=' NUMBER ';'
 {
-  if (ypass == 2)
+  if (ypass == 1)
     CidrBitlen(yy_class) = $3;
 };
 
 class_number_per_cidr: NUMBER_PER_CIDR '=' NUMBER ';'
 {
-  if (ypass == 2)
+  if (ypass == 1)
     NumberPerCidr(yy_class) = $3;
 };
 
