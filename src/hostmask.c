@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.100 2005/09/03 19:57:50 michael Exp $
+ *  $Id: hostmask.c,v 7.101 2005/09/22 16:01:43 adx Exp $
  */
 
 #include "stdinc.h"
@@ -423,8 +423,8 @@ find_conf_by_address(const char *name, struct irc_ssaddr *addr, int type,
               match_ipv6(addr, &arec->Mask.ipa.addr,
                          arec->Mask.ipa.bits) &&
               (type & 0x1 || match(arec->username, username)) &&
-              (IsNeedPassword(arec->aconf) || (arec->aconf->passwd != NULL ?
-              !strcmp(arec->aconf->passwd, password) : *password == '\0')))
+	      (IsNeedPassword(arec->aconf) || arec->aconf->passwd == NULL ||
+	       !strcmp(arec->aconf->passwd, password)))
           {
             hprecv = arec->precedence;
             hprec = arec->aconf;
@@ -444,9 +444,8 @@ find_conf_by_address(const char *name, struct irc_ssaddr *addr, int type,
               match_ipv4(addr, &arec->Mask.ipa.addr,
                          arec->Mask.ipa.bits) &&
               (type & 0x1 || match(arec->username, username)) &&
-              (IsNeedPassword(arec->aconf) || (arec->aconf->passwd != NULL ?
-              !strcmp(arec->aconf->passwd, password) : *password == '\0')))
-
+	      (IsNeedPassword(arec->aconf) || arec->aconf->passwd == NULL ||
+	       !strcmp(arec->aconf->passwd, password)))
           {
             hprecv = arec->precedence;
             hprec = arec->aconf;
@@ -467,9 +466,8 @@ find_conf_by_address(const char *name, struct irc_ssaddr *addr, int type,
             (arec->masktype == HM_HOST) &&
             match(arec->Mask.hostname, name) &&
             (type & 0x1 || match(arec->username, username)) &&
-            (IsNeedPassword(arec->aconf) || (arec->aconf->passwd != NULL ?
-            !strcmp(arec->aconf->passwd, password) : *password == '\0')))
-
+            (IsNeedPassword(arec->aconf) || arec->aconf->passwd == NULL ||
+             !strcmp(arec->aconf->passwd, password)))
         {
           hprecv = arec->precedence;
           hprec = arec->aconf;
@@ -485,8 +483,8 @@ find_conf_by_address(const char *name, struct irc_ssaddr *addr, int type,
           arec->masktype == HM_HOST &&
           match(arec->Mask.hostname, name) &&
           (type & 0x1 || match(arec->username, username)) &&
-          (IsNeedPassword(arec->aconf) || (arec->aconf->passwd != NULL ?
-          !strcmp(arec->aconf->passwd, password) : *password == '\0')))
+          (IsNeedPassword(arec->aconf) || arec->aconf->passwd == NULL ||
+           !strcmp(arec->aconf->passwd, password)))
       {
         hprecv = arec->precedence;
         hprec = arec->aconf;
