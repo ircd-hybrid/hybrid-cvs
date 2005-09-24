@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.97 2005/09/18 20:09:02 adx Exp $
+ *  $Id: s_serv.h,v 7.98 2005/09/24 09:27:17 michael Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -226,6 +226,8 @@ extern struct Capability captab[];
 extern struct EncCapability CipherTable[];
 #endif
 
+extern struct Client *uplink; /* NON NULL if leaf and is this servers uplink */
+
 /*
  * return values for hunt_server() 
  */
@@ -233,43 +235,39 @@ extern struct EncCapability CipherTable[];
 #define HUNTED_ISME     0       /* if this server should execute the command */
 #define HUNTED_PASS     1       /* if message passed onwards successfully */
 
-extern int check_server(const char *name, struct Client *server, int cryptlink);
-extern int hunt_server(struct Client *client_p, struct Client *source_p,
-                       const char *command, int server, int parc, char **parv);
-extern const char *my_name_for_link(struct ConfItem* conf);
-extern void add_capability(const char *capab_name, int cap_flag, int defaults_flag);
-extern int delete_capability(const char *capab_name);
-extern int find_capability(const char *capab);
-extern void send_capabilities(struct Client *, struct AccessItem *conf, int, int);
+extern int check_server(const char *, struct Client *, int);
+extern int hunt_server(struct Client *, struct Client *,
+                       const char *, int, int, char **);
+extern const char *my_name_for_link(struct ConfItem *);
+extern void add_capability(const char *, int, int);
+extern int delete_capability(const char *);
+extern int find_capability(const char *);
+extern void send_capabilities(struct Client *, struct AccessItem *, int, int);
 extern void write_links_file(void *);
-extern void server_estab(struct Client *client_p);
+extern void server_estab(struct Client *);
 extern void set_autoconn(struct Client *, const char *, int);
-extern const char *show_capabilities(struct Client* client);
-extern void try_connections(void *unused);
-extern void collect_zipstats(void *unused);
+extern const char *show_capabilities(struct Client *);
+extern void try_connections(void *);
+extern void collect_zipstats(void *);
 extern void initServerMask(void);
-extern void burst_channel(struct Client *client_p, struct Channel *chptr);
+extern void burst_channel(struct Client *client_p, struct Channel *);
 extern void sendnick_TS(struct Client *, struct Client *);
 extern int serv_connect(struct AccessItem *, struct Client *);
-struct Client *find_servconn_in_progress(const char *);
+extern struct Client *find_servconn_in_progress(const char *);
 extern unsigned long nextFreeMask(void);
 extern void cryptlink_init(struct Client *, struct ConfItem *, fde_t *);
 extern void cryptlink_regen_key(void *);
-extern void cryptlink_error(struct Client *client_p, const char *type,
-                            const char *reason, const char *client_reason);
-
-extern struct Client *uplink; /* NON NULL if leaf and is this servers uplink */
-
-extern void remove_lazylink_flags(unsigned long mask);
-extern void client_burst_if_needed(struct Client *client_p, struct Client *target_p);
-extern struct EncCapability *check_cipher(struct Client *client_p,
-                                   struct AccessItem *aconf);
-extern void add_lazylinkclient(struct Client *client_p, struct Client *source_p);
+extern void cryptlink_error(struct Client *, const char *,
+                            const char *, const char *);
+extern void remove_lazylink_flags(unsigned long);
+extern void client_burst_if_needed(struct Client *, struct Client *);
+extern struct EncCapability *check_cipher(struct Client *, struct AccessItem *);
+extern void add_lazylinkclient(struct Client *, struct Client *);
 
 extern struct Server *make_server(struct Client *);
 
 /* XXX don't belong in the now gone md5, but do these belong in s_serv.c ? */
-extern int base64_block(unsigned char **output, char *data, int len);
-extern int unbase64_block(unsigned char **output, char *data, int len);
+extern int base64_block(unsigned char **, char *, int);
+extern int unbase64_block(unsigned char **, char *, int);
 #endif /* INCLUDED_s_serv_h */
 

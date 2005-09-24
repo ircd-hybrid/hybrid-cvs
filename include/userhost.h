@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: userhost.h,v 1.2 2003/06/01 22:10:10 metalrock Exp $
+ *  $Id: userhost.h,v 1.3 2005/09/24 09:27:17 michael Exp $
  */
 
 #ifndef INCLUDED_userhost_h
@@ -41,11 +41,7 @@ struct UserHost
   char host[HOSTLEN + 1];
 };
 
-extern void
-    count_user_host(const char *user, const char *host,
-		    int *global_p, int *local_p, int *icount_p);
-extern void add_user_host(char *user, const char *host, int global);
-void delete_user_host(char *user, const char *host, int global);
-
-
+extern void count_user_host(const char *, const char *, int *, int *, int *);
+extern void add_user_host(const char *, const char *, int);
+extern void delete_user_host(const char *, const char *, int global);
 #endif  /* INCLUDED_userhost_h */

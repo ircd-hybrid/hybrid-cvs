@@ -1,4 +1,4 @@
-/* $Id: y.tab.c,v 7.79 2005/09/20 15:47:57 db Exp $ */
+/* $Id: y.tab.c,v 7.80 2005/09/24 09:27:18 michael Exp $ */
 #include <stdlib.h>
 #ifndef lint
 #ifdef __unused
@@ -39,7 +39,6 @@ static int yygrowstack();
 #include "irc_string.h"
 #include "irc_getaddrinfo.h"
 #include "sprintf_irc.h"
-#include "ircdauth.h"
 #include "memory.h"
 #include "modules.h"
 #include "s_serv.h" /* for CAP_LL / IsCapable */

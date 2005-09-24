@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: rsa.h,v 7.13 2003/07/05 04:41:48 joshk Exp $
+ *  $Id: rsa.h,v 7.14 2005/09/24 09:27:17 michael Exp $
  */
 #ifndef INCLUDED_rsa_h
 #define INCLUDED_rsa_h
@@ -29,8 +29,8 @@
 #ifdef HAVE_LIBCRYPTO
 extern void report_crypto_errors(void);
 extern int verify_private_key(void);
-extern int generate_challenge( char ** r_challenge, char ** r_response, RSA * key );
-extern int get_randomness( unsigned char * buf, int length );
+extern int generate_challenge(char **, char **, RSA *);
+extern int get_randomness(unsigned char *, int);
 #endif
 
 #endif /* INCLUDED_rsa_h */

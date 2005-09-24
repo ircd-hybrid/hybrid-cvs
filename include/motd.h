@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.h,v 7.14 2005/07/11 19:06:16 db Exp $
+ *  $Id: motd.h,v 7.15 2005/09/24 09:27:17 michael Exp $
  */
 
 #ifndef INCLUDED_motd_h
@@ -27,8 +27,8 @@
 #include "ircd_defs.h"   
 
 
-/* XXX really, should be mallocing this on the fly but... */
 #define MESSAGELINELEN 256
+
 struct MessageFileLine
 {
   char line[MESSAGELINELEN + 1];
@@ -46,9 +46,9 @@ typedef enum {
   
 struct MessageFile
 {
-  char fileName[PATH_MAX + 1];
   MotdType motdType;
   MessageFileLine *contentsOfFile;
+  char fileName[PATH_MAX + 1];
   char lastChangedDate[MAX_DATE_STRING + 1];
 };
 
@@ -59,8 +59,8 @@ struct Client;
 extern void init_message_file(MotdType, const char *, struct MessageFile *);
 extern int send_message_file(struct Client *, struct MessageFile *);
 extern int read_message_file(MessageFile *);
-extern MessageFile * init_MessageLine(void);
-void addto_MessageLine(MessageFile *mf, const char *str);
-void destroy_MessageLine(MessageFile *mf);
+extern MessageFile *init_MessageLine(void);
+extern void addto_MessageLine(MessageFile *, const char *);
+extern void destroy_MessageLine(MessageFile *);
 
 #endif /* INCLUDED_motd_h */

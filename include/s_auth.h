@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.h,v 7.27 2005/08/23 18:00:35 db Exp $
+ *  $Id: s_auth.h,v 7.28 2005/09/24 09:27:17 michael Exp $
  */
 
 #ifndef INCLUDED_s_auth_h
@@ -70,11 +70,11 @@ struct AuthRequest
 
 extern struct Callback *auth_cb;
 
-void send_auth_query(struct AuthRequest* req);
-void remove_auth_request(struct AuthRequest *req);
-struct AuthRequest *FindAuthClient(long id);
-void init_auth(void);
-void delete_auth(struct Client *);
-void release_auth_client(struct Client *client);
+extern void send_auth_query(struct AuthRequest *);
+extern void remove_auth_request(struct AuthRequest *);
+extern struct AuthRequest *FindAuthClient(long);
+extern void init_auth(void);
+extern void delete_auth(struct Client *);
+extern void release_auth_client(struct Client *);
 
 #endif /* INCLUDED_s_auth_h */

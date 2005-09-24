@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.107 2005/09/12 13:35:53 adx Exp $
+ *  $Id: hash.c,v 7.108 2005/09/24 09:27:18 michael Exp $
  */
 
 #include "stdinc.h"
@@ -50,10 +50,10 @@ static struct UserHost *find_or_add_userhost(const char *);
 
 static unsigned int ircd_random_key = 0;
 
-/* The actual hash tables, both MUST be of the same HASHSIZE, variable
+/* The actual hash tables, They MUST be of the same HASHSIZE, variable
  * size tables could be supported but the rehash routine should also
  * rebuild the transformation maps, I kept the tables of equal size 
- * so that I can use one hash function and one transformation map
+ * so that I can use one hash function.
  */
 static struct Client *idTable[HASHSIZE];
 static struct Client *clientTable[HASHSIZE];
@@ -102,12 +102,13 @@ init_hash(void)
  * than FNV-1a.   -Michael
  */
 unsigned int
-strhash(const char *p)
+strhash(const char *name)
 {
+  const unsigned char *p = (const unsigned char *)name;
   unsigned int hval = FNV1_32_INIT;
 
   if (*p == '\0')
-    return(0);
+    return 0;
   for (; *p != '\0'; ++p)
   {
     hval += (hval << 1) + (hval <<  4) + (hval << 7) +
@@ -115,7 +116,7 @@ strhash(const char *p)
     hval ^= (ToLower(*p) ^ ircd_random_key);
   }
 
-  return((hval >> FNV1_32_BITS) ^ (hval & ((1 << FNV1_32_BITS) -1)));
+  return (hval >> FNV1_32_BITS) ^ (hval & ((1 << FNV1_32_BITS) -1));
 }
 
 /************************** Externally visible functions ********************/
@@ -385,7 +386,7 @@ find_client(const char *name)
     }
   }
 
-  return(client_p);
+  return client_p;
 }
 
 struct Client *
@@ -413,7 +414,7 @@ hash_find_id(const char *name)
     }
   }
 
-  return(client_p);
+  return client_p;
 }
 
 /*
@@ -431,11 +432,11 @@ hash_find_masked_server(const char *name)
 {
   char buf[HOSTLEN + 1];
   char *p = buf;
-  char *s;
+  char *s = NULL;
   struct Client *server = NULL;
 
-  if ('*' == *name || '.' == *name)
-    return(NULL);
+  if (*name == '*' || *name == '.')
+    return NULL;
 
   /*
    * copy the damn thing and be done with it
@@ -450,11 +451,11 @@ hash_find_masked_server(const char *name)
      * have *'s in them anyway.
      */
     if ((server = find_client(s)) != NULL)
-      return(server);
+      return server;
     p = s + 2;
   }
 
-  return(NULL);
+  return NULL;
 }
 
 struct Client *
@@ -487,7 +488,7 @@ find_server(const char *name)
     }
   }
 
-  return((client_p != NULL) ? client_p : hash_find_masked_server(name));
+  return (client_p != NULL) ? client_p : hash_find_masked_server(name);
 }
 
 /* hash_find_channel()
@@ -502,7 +503,7 @@ struct Channel *
 hash_find_channel(const char *name)
 {
   unsigned int hashv = strhash(name);
-  struct Channel *chptr;
+  struct Channel *chptr = NULL;
 
   if ((chptr = channelTable[hashv]) != NULL)
   {
@@ -523,7 +524,7 @@ hash_find_channel(const char *name)
     }
   }
 
-  return(chptr);
+  return chptr;
 }
 
 /* hash_get_bucket(int type, unsigned int hashv)
@@ -600,7 +601,7 @@ hash_find_resv(const char *name)
     }
   }
 
-  return(chptr);
+  return chptr;
 }
 
 struct UserHost *
@@ -628,7 +629,7 @@ hash_find_userhost(const char *host)
     }
   }
 
-  return(userhost);
+  return userhost;
 }
 
 /* count_user_host()
@@ -679,7 +680,7 @@ count_user_host(const char *user, const char *host, int *global_p,
  * side effects	- add given user@host to hash tables
  */
 void
-add_user_host(char *user, const char *host, int global)
+add_user_host(const char *user, const char *host, int global)
 {
   dlink_node *ptr;
   struct UserHost *found_userhost;
@@ -689,7 +690,7 @@ add_user_host(char *user, const char *host, int global)
   if (*user == '~')
   {
     hasident = 0;
-    user++;
+    ++user;
   }
 
   if ((found_userhost = find_or_add_userhost(host)) == NULL)
@@ -737,10 +738,9 @@ add_user_host(char *user, const char *host, int global)
  * side effects	- delete given user@host to hash tables
  */
 void
-delete_user_host(char *user, const char *host, int global)
+delete_user_host(const char *user, const char *host, int global)
 {
-  dlink_node *ptr;
-  dlink_node *next_ptr;
+  dlink_node *ptr = NULL, *next_ptr = NULL;
   struct UserHost *found_userhost;
   struct NameHost *nameh;
   int hasident = 1;
@@ -748,7 +748,7 @@ delete_user_host(char *user, const char *host, int global)
   if (*user == '~')
   {
     hasident = 0;
-    user++;
+    ++user;
   }
 
   if ((found_userhost = hash_find_userhost(host)) == NULL)
@@ -772,16 +772,19 @@ delete_user_host(char *user, const char *host, int global)
 	if (hasident && (nameh->icount > 0))
 	  nameh->icount--;
       }
+
       if ((nameh->gcount == 0) && (nameh->lcount == 0))
       {
 	dlinkDelete(&nameh->node, &found_userhost->list);
 	BlockHeapFree(namehost_heap, nameh);
       }
+
       if (dlink_list_length(&found_userhost->list) == 0)
       {
 	hash_del_userhost(found_userhost);
 	BlockHeapFree(userhost_heap, found_userhost);
       }
+
       return;
     }
   }
@@ -799,13 +802,13 @@ find_or_add_userhost(const char *host)
   struct UserHost *userhost;
 
   if ((userhost = hash_find_userhost(host)) != NULL)
-    return(userhost);
+    return userhost;
 
   userhost = BlockHeapAlloc(userhost_heap);
   strlcpy(userhost->host, host, sizeof(userhost->host));
   hash_add_userhost(userhost);
 
-  return(userhost);
+  return userhost;
 }
 
 /*
@@ -834,9 +837,9 @@ static int
 exceeding_sendq(struct Client *to)
 {
   if (dbuf_length(&to->localClient->buf_sendq) > (get_sendq(to) / 2))
-    return(1);
+    return 1;
   else
-    return(0);
+    return 0;
 }
 
 void
@@ -880,13 +883,13 @@ list_allow_channel(const char *chname, struct ListTask *lt)
 
   DLINK_FOREACH(dl, lt->show_mask.head)
     if (!match_chan(dl->data, chname))
-      return(0);
+      return 0;
 
   DLINK_FOREACH(dl, lt->hide_mask.head)
     if (match_chan(dl->data, chname))
-      return(0);
+      return 0;
 
-  return(1);
+  return 1;
 }
 
 /* list_one_channel()

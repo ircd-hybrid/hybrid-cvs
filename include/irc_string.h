@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.h,v 7.51 2005/09/03 06:05:36 michael Exp $
+ *  $Id: irc_string.h,v 7.52 2005/09/24 09:27:17 michael Exp $
  */
 
 #ifndef INCLUDED_irc_string_h
@@ -40,10 +40,10 @@ extern char *xstrldup(const char *, size_t);
  * match_chan - like match_esc with first character auto-escaped
  * match_cidr - compares u!h@addr with u!h@addr/cidr
  */
-extern int match(const char *mask, const char *name);
-extern int match_esc(const char *mask, const char *name);
-extern int match_chan(const char *mask, const char *name);
-extern int match_cidr(const char *mask, const char *name);
+extern int match(const char *, const char *);
+extern int match_esc(const char *, const char *);
+extern int match_chan(const char *, const char *);
+extern int match_cidr(const char *, const char *);
 
 /*
  * collapse - collapse a string in place, converts multiple adjacent *'s 
@@ -52,8 +52,8 @@ extern int match_cidr(const char *mask, const char *name);
  *
  * collapse_esc() - collapse with support for escaping chars
  */
-extern char* collapse(char *pattern);
-extern char *collapse_esc(char *pattern);
+extern char *collapse(char *);
+extern char *collapse_esc(char *);
 
 /*
  * NOTE: The following functions are NOT the same as strcasecmp
@@ -62,62 +62,63 @@ extern char *collapse_esc(char *pattern);
  * 
  * irccmp - case insensitive comparison of s1 and s2
  */
-extern int irccmp(const char *s1, const char *s2);
+extern int irccmp(const char *, const char *);
 
 /*
  * ircncmp - counted case insensitive comparison of s1 and s2
  */
-extern int ircncmp(const char *s1, const char *s2, size_t n);
+extern int ircncmp(const char *, const char *, size_t);
 
 /*
  * inetntoa - optimized inet_ntoa
  */
-const char* inetntoa(const char* in_addr);
+extern const char *inetntoa(const char *);
 
 /* XXX
  * inetntop() 
  * portable interface for inet_ntop(), kludge; please use inet_ntop if possible
  * since inet_misc has a more conformant one
  */
-const char *inetntop(int af, const void *src, char *dst, unsigned int size);
+extern const char *inetntop(int, const void *, char *, unsigned int);
    
 #ifndef HAVE_STRLCPY
-size_t strlcpy(char *dst, const char *src, size_t siz);
+extern size_t strlcpy(char *, const char *, size_t);
 #endif
 
 #ifndef HAVE_STRLCAT
-size_t strlcat(char *dst, const char *src, size_t siz);
+extern size_t strlcat(char *, const char *, size_t);
 #endif
 
 #ifndef HAVE_SNPRINTF
-int snprintf (char *str,size_t count,const char *fmt,...);
+extern int snprintf(char *, size_t, const char *,...);
 #endif
 
 #ifndef HAVE_VSNPRINTF
-int vsnprintf (char *str, size_t count, const char *fmt, va_list args);
+extern int vsnprintf(char *, size_t, const char *, va_list);
 #endif
 
 #ifndef HAVE_BASENAME
-char* basename (char *path);
+extern char *basename(char *);
 #endif
 
 /*
  * clean_string - cleanup control and high ascii characters
  * -Dianora
  */
-char* clean_string(char* dest, const unsigned char* src, size_t len);
+extern char *clean_string(char *, const unsigned char *, size_t);
+
 /*
  * strip_tabs - convert tabs to spaces
  * - jdc
  */
 extern void strip_tabs(char *, const char *, size_t);
 
-const char* myctime(time_t);
+const char *myctime(time_t);
 
 #define EmptyString(x) (!(x) || (*(x) == '\0'))
 
 #ifndef HAVE_STRTOK_R
-char*       strtoken(char** save, char* str, const char* fs);
+extern char *strtoken(char **, char *, const char *);
 #endif
 
 /*

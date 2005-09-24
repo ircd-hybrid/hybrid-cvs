@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.h,v 1.25 2005/09/18 18:08:16 adx Exp $
+ *  $Id: hook.h,v 1.26 2005/09/24 09:27:17 michael Exp $
  */
 
 #ifndef __HOOK_H_INCLUDED
@@ -30,7 +30,8 @@
 
 typedef void *CBFUNC(va_list);
 
-struct Callback {
+struct Callback
+{
   char *name;
   dlink_list chain;
   dlink_node node;
@@ -42,13 +43,13 @@ struct Client;
 
 extern dlink_list callback_list;  /* listing/debugging purposes */
 
-struct Callback *register_callback(const char *, CBFUNC *);
-void *execute_callback(struct Callback *, ...);
-struct Callback *find_callback(const char *);
-dlink_node *install_hook(struct Callback *, CBFUNC *);
-void uninstall_hook(struct Callback *, CBFUNC *);
-void *pass_callback(dlink_node *, ...);
-void stats_hooks(struct Client *);
+extern struct Callback *register_callback(const char *, CBFUNC *);
+extern void *execute_callback(struct Callback *, ...);
+extern struct Callback *find_callback(const char *);
+extern dlink_node *install_hook(struct Callback *, CBFUNC *);
+extern void uninstall_hook(struct Callback *, CBFUNC *);
+extern void *pass_callback(dlink_node *, ...);
+extern void stats_hooks(struct Client *);
 
 #define is_callback_present(c) (!!dlink_list_length(&c->chain))
 

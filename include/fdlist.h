@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.h,v 7.43 2005/09/18 22:24:37 adx Exp $
+ *  $Id: fdlist.h,v 7.44 2005/09/24 09:27:17 michael Exp $
  */
 
 #ifndef INCLUDED_fdlist_h
@@ -78,6 +78,7 @@ typedef struct _fde {
     unsigned int pending_read:1;
 #endif
   } flags;
+
   struct {
     /* We don't need the host here ? */
     struct irc_ssaddr S;
@@ -100,19 +101,19 @@ extern fde_t *fd_hash[];
 extern fde_t *fd_next_in_loop;
 extern struct Callback *fdlimit_cb;
 
-void fdlist_init(void);
-fde_t *lookup_fd(int);
-void fd_open(fde_t *, int, int, const char *);
-void fd_close(fde_t *);
-void fd_dump(struct Client *);
+extern void fdlist_init(void);
+extern fde_t *lookup_fd(int);
+extern void fd_open(fde_t *, int, int, const char *);
+extern void fd_close(fde_t *);
+extern void fd_dump(struct Client *);
 #ifndef __GNUC__
-void fd_note(fde_t *, const char *format, ...);
+extern void fd_note(fde_t *, const char *format, ...);
 #else
-void  fd_note(fde_t *, const char *format, ...)
+extern void  fd_note(fde_t *, const char *format, ...)
   __attribute__((format (printf, 2, 3)));
 #endif
-void close_standard_fds(void);
-void close_fds(fde_t *);
-void recalc_fdlimit(void *);
+extern void close_standard_fds(void);
+extern void close_fds(fde_t *);
+extern void recalc_fdlimit(void *);
 
 #endif /* INCLUDED_fdlist_h */

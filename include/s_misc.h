@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_misc.h,v 7.12 2005/07/26 23:44:12 adx Exp $
+ *  $Id: s_misc.h,v 7.13 2005/09/24 09:27:17 michael Exp $
  */
 
 #ifndef INCLUDED_s_misc_h
@@ -29,7 +29,7 @@ extern char *date(time_t);
 extern char *small_file_date(time_t);
 extern const char *smalldate(time_t);
 #ifdef HAVE_LIBCRYPTO
-char *ssl_get_cipher(SSL *ssl);
+extern char *ssl_get_cipher(SSL *);
 #endif
 
 #define _1MEG     (1024.0)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_stats.h,v 7.12 2005/05/30 13:19:09 michael Exp $
+ *  $Id: s_stats.h,v 7.13 2005/09/24 09:27:17 michael Exp $
  */
 
 #ifndef INCLUDED_s_stats_h
@@ -56,6 +56,6 @@ struct ServerStatistics {
 extern struct ServerStatistics *ServerStats;
 
 extern void init_stats(void);
-extern void tstats(struct Client *client);
+extern void tstats(struct Client *);
 
 #endif /* INCLUDED_s_stats_h */

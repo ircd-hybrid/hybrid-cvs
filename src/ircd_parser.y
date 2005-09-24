@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.453 2005/09/20 15:47:57 db Exp $
+ *  $Id: ircd_parser.y,v 1.454 2005/09/24 09:27:18 michael Exp $
  */
 
 %{
@@ -40,7 +40,6 @@
 #include "irc_string.h"
 #include "irc_getaddrinfo.h"
 #include "sprintf_irc.h"
-#include "ircdauth.h"
 #include "memory.h"
 #include "modules.h"
 #include "s_serv.h" /* for CAP_LL / IsCapable */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: dbuf.h,v 7.13 2003/05/27 17:45:51 joshk Exp $
+ *  $Id: dbuf.h,v 7.14 2005/09/24 09:27:17 michael Exp $
  */
 
 #ifndef __DBUF_H_INCLUDED
@@ -27,6 +27,9 @@
 #include "tools.h"
 
 #define DBUF_BLOCK_SIZE 1024  /* this is also our MTU used for sending */
+
+#define dbuf_length(x) ((x)->total_size)
+#define dbuf_clear(x) dbuf_delete(x, dbuf_length(x))
 
 struct dbuf_block
 {
@@ -43,7 +46,4 @@ struct dbuf_queue
 extern void dbuf_init(void);
 extern void dbuf_put(struct dbuf_queue *, char *, size_t);
 extern void dbuf_delete(struct dbuf_queue *, size_t);
-
-#define dbuf_length(x) ((x)->total_size)
-#define dbuf_clear(x) dbuf_delete(x, dbuf_length(x))
 #endif

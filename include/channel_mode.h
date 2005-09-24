@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.36 2005/09/18 11:41:28 michael Exp $
+ *  $Id: channel_mode.h,v 7.37 2005/09/24 09:27:17 michael Exp $
  */
 
 
@@ -32,18 +32,6 @@
 
 /* Maximum mode changes allowed per client, per server is different */
 #define MAXMODEPARAMS 4
-
-extern int add_id(struct Client *, struct Channel *, char *, int);
-extern void set_channel_mode(struct Client *, struct Client *, struct Channel *,
-                             struct Membership *, int, char **, char *);
-extern void clear_ban_cache(struct Channel *);
-extern void init_chcap_usage_counts(void);
-extern void set_chcap_usage_counts(struct Client *);
-extern void unset_chcap_usage_counts(struct Client *);
-
-/*
-** Channel Related macros follow
-*/
 
 /* can_send results */
 #define CAN_SEND_NO	0
@@ -106,4 +94,12 @@ struct ChCapCombo
   int cap_yes;
   int cap_no;
 };
+
+extern int add_id(struct Client *, struct Channel *, char *, int);
+extern void set_channel_mode(struct Client *, struct Client *, struct Channel *,
+                             struct Membership *, int, char **, char *);
+extern void clear_ban_cache(struct Channel *);
+extern void init_chcap_usage_counts(void);
+extern void set_chcap_usage_counts(struct Client *);
+extern void unset_chcap_usage_counts(struct Client *);
 #endif /* INCLUDED_channel_mode_h */

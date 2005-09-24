@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.159 2005/09/18 14:25:13 adx Exp $
+ *  $Id: s_auth.c,v 7.160 2005/09/24 09:27:18 michael Exp $
  */
 
 /*
@@ -45,7 +45,6 @@
 #include "irc_string.h"
 #include "sprintf_irc.h"
 #include "ircd.h"
-#include "ircdauth.h"
 #include "numeric.h"
 #include "packet.h"
 #include "irc_res.h"

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.h,v 7.17 2005/08/18 06:37:41 db Exp $
+ *  $Id: fileio.h,v 7.18 2005/09/24 09:27:17 michael Exp $
  */
 
 #ifndef INCLUDED_fileio_h
@@ -47,40 +47,40 @@ typedef struct FileBuf {
 } FBFILE;
 
 /* open a file and return a FBFILE*, see fopen(3) */
-FBFILE *fbopen(const char *, const char *);
+extern FBFILE *fbopen(const char *, const char *);
 
 /* Positions the file pointer at the beginning of the file */
-int fbrewind(FBFILE *);
+extern int fbrewind(FBFILE *);
 
 /* close a file opened with fbopen, see fclose(3) */
-void fbclose(FBFILE *);
+extern void fbclose(FBFILE *);
 
 /* 
  * return the next character from the file, EOF on end of file
  * see fgetc(3)
  */
-int fbgetc(FBFILE *);
+extern int fbgetc(FBFILE *);
 
 /*
  * return next string in a file up to and including the newline character
  * see fgets(3)
  */
-char *fbgets(char *, size_t, FBFILE *);
+extern char *fbgets(char *, size_t, FBFILE *);
 
 /* ungets c to fb see ungetc(3) */
-void fbungetc(char, FBFILE *);
+extern void fbungetc(char, FBFILE *);
 
 /* write a null terminated string to a file, see fputs(3) */
-int fbputs(const char *, FBFILE *, size_t);
+extern int fbputs(const char *, FBFILE *, size_t);
 
 /* return the status of the file associated with fb, see fstat(3) */
-int fbstat(struct stat *, FBFILE *);
+extern int fbstat(struct stat *, FBFILE *);
 
 /* popen a file. */
-FBFILE *fbpopen(const char *, const char *);
+extern FBFILE *fbpopen(const char *, const char *);
 
-int file_open(fde_t *, const char *, int, int);
-void file_close(fde_t *);
-int save_spare_fd(const char *);
+extern int file_open(fde_t *, const char *, int, int);
+extern void file_close(fde_t *);
+extern int save_spare_fd(const char *);
 
 #endif /* INCLUDED_fileio_h */
