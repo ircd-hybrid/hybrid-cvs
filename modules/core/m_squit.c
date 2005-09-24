@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_squit.c,v 1.60 2005/08/04 23:53:45 metalrock Exp $
+ *  $Id: m_squit.c,v 1.61 2005/09/24 12:38:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -39,8 +39,8 @@
 #include "modules.h"
 
 
-static void ms_squit(struct Client *, struct Client *, int, char **);
-static void mo_squit(struct Client *, struct Client *, int, char **);
+static void ms_squit(struct Client *, struct Client *, int, char *[]);
+static void mo_squit(struct Client *, struct Client *, int, char *[]);
 
 struct Message squit_msgtab = {
   "SQUIT", 0, 0, 1, 0, MFLG_SLOW, 0,
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&squit_msgtab);
 }
 
-const char *_version = "$Revision: 1.60 $";
+const char *_version = "$Revision: 1.61 $";
 #endif
 
 /* mo_squit - SQUIT message handler
@@ -121,8 +121,8 @@ mo_squit(struct Client *client_p, struct Client *source_p,
 
   comment = (parc > 2 && parv[2]) ? parv[2] : def_reason;
 
-  if (strlen(comment) > (size_t)TOPICLEN)
-    comment[TOPICLEN] = '\0';
+  if (strlen(comment) > (size_t)REASONLEN)
+    comment[REASONLEN] = '\0';
 
   if (MyConnect(target_p))
   {
@@ -166,8 +166,8 @@ ms_squit(struct Client *client_p, struct Client *source_p,
 
   comment = (parc > 2 && parv[2]) ? parv[2] : def_reason;
 
-  if (strlen(comment) > (size_t)TOPICLEN)
-    comment[TOPICLEN] = '\0';
+  if (strlen(comment) > (size_t)REASONLEN)
+    comment[REASONLEN] = '\0';
 
   if (MyConnect(target_p))
   {

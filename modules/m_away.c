@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_away.c,v 1.40 2005/07/16 12:19:43 michael Exp $
+ *  $Id: m_away.c,v 1.41 2005/09/24 12:38:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -51,7 +51,7 @@ void
 _modinit(void)
 {
   mod_add_cmd(&away_msgtab);
-  add_isupport("AWAYLEN", NULL, TOPICLEN);
+  add_isupport("AWAYLEN", NULL, AWAYLEN);
 }
 
 void
@@ -61,7 +61,7 @@ _moddeinit(void)
   delete_isupport("AWAYLEN");
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
 
 /***********************************************************************
@@ -85,7 +85,7 @@ m_away(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
   char *cur_away_msg = source_p->away;
-  char *new_away_msg;
+  char *new_away_msg = NULL;
   size_t nbytes = 0;
 
   if (!IsFloodDone(source_p))
@@ -123,9 +123,9 @@ m_away(struct Client *client_p, struct Client *source_p,
   new_away_msg = parv[1];
 
   nbytes = strlen(new_away_msg);
-  if (nbytes > (size_t)TOPICLEN) {
-    new_away_msg[TOPICLEN] = '\0';
-    nbytes = TOPICLEN;
+  if (nbytes > (size_t)AWAYLEN) {
+    new_away_msg[AWAYLEN] = '\0';
+    nbytes = AWAYLEN;
   }
 
   /* we now send this only if they
@@ -152,7 +152,7 @@ mo_away(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
   char *cur_away_msg = source_p->away;
-  char *new_away_msg;
+  char *new_away_msg = NULL;
   size_t nbytes = 0;
 
   if (!IsFloodDone(source_p))
@@ -181,9 +181,9 @@ mo_away(struct Client *client_p, struct Client *source_p,
   new_away_msg = parv[1];
 
   nbytes = strlen(new_away_msg);
-  if (nbytes > (size_t)TOPICLEN) {
-    new_away_msg[TOPICLEN] = '\0';
-    nbytes = TOPICLEN;
+  if (nbytes > (size_t)AWAYLEN) {
+    new_away_msg[AWAYLEN] = '\0';
+    nbytes = AWAYLEN;
   }
 
   /* we now send this only if they
@@ -209,8 +209,8 @@ static void
 ms_away(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
-  char *cur_away_msg;
-  char *new_away_msg;
+  char *cur_away_msg = NULL;
+  char *new_away_msg = NULL;
   size_t nbytes = 0;
 
   if (!IsClient(source_p))
@@ -239,9 +239,9 @@ ms_away(struct Client *client_p, struct Client *source_p,
   new_away_msg = parv[1];
 
   nbytes = strlen(new_away_msg);
-  if (nbytes > (size_t)TOPICLEN) {
-    new_away_msg[TOPICLEN] = '\0';
-    nbytes = TOPICLEN;
+  if (nbytes > (size_t)AWAYLEN) {
+    new_away_msg[AWAYLEN] = '\0';
+    nbytes = AWAYLEN;
   }
 
   /* we now send this only if they

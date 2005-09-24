@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_quit.c,v 1.41 2005/07/30 20:44:17 adx Exp $
+ *  $Id: m_quit.c,v 1.42 2005/09/24 12:38:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -34,8 +34,8 @@
 #include "modules.h"
 #include "s_conf.h"
 
-static void m_quit(struct Client *, struct Client *, int, char **);
-static void ms_quit(struct Client *, struct Client *, int, char **);
+static void m_quit(struct Client *, struct Client *, int, char *[]);
+static void ms_quit(struct Client *, struct Client *, int, char *[]);
 
 struct Message quit_msgtab = {
   "QUIT", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&quit_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 
 /*
@@ -68,14 +68,12 @@ m_quit(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
   char *comment = (parc > 1 && parv[1]) ? parv[1] : client_p->name;
-  char reason[TOPICLEN + 1] = "Quit: ";
+  char reason[KICKLEN + 1] = "Quit: ";
 
   if (comment[0] && (IsOper(source_p) ||
       (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time)
       < CurrentTime))
-  {
     strlcpy(reason+6, comment, sizeof(reason)-6);
-  }
   else
     strlcpy(reason, "Client Quit", sizeof(reason));
 
@@ -93,8 +91,8 @@ ms_quit(struct Client *client_p, struct Client *source_p,
 {
   char *comment = (parc > 1 && parv[1]) ? parv[1] : client_p->name;
 
-  if (strlen(comment) > (size_t)TOPICLEN)
-    comment[TOPICLEN] = '\0';
+  if (strlen(comment) > (size_t)KICKLEN)
+    comment[KICKLEN] = '\0';
 
   exit_client(source_p, source_p, comment);
 }

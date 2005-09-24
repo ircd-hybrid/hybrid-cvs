@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.74 2005/07/31 05:32:38 adx Exp $
+ *  $Id: m_kick.c,v 1.75 2005/09/24 12:38:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -41,7 +41,7 @@
 #include "s_serv.h"
 
 
-static void m_kick(struct Client *, struct Client *, int, char **);
+static void m_kick(struct Client *, struct Client *, int, char *[]);
 
 struct Message kick_msgtab = {
   "KICK", 0, 0, 3, 0, MFLG_SLOW, 0,
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.74 $";
+const char *_version = "$Revision: 1.75 $";
 #endif
 
 /* m_kick()
@@ -107,15 +107,16 @@ m_kick(struct Client *client_p, struct Client *source_p,
     flood_endgrace(source_p);
 
   comment = (EmptyString(parv[3])) ? parv[2] : parv[3];
-  if (strlen(comment) > (size_t) TOPICLEN)
-    comment[TOPICLEN] = '\0';
+  if (strlen(comment) > (size_t)KICKLEN)
+    comment[KICKLEN] = '\0';
 
   name = parv[1];
   while (*name == ',')
     name++;
+
   if ((p = strchr(name,',')) != NULL)
     *p = '\0';
-  if (!*name)
+  if (*name == '\0')
     return;
 
   if ((chptr = hash_find_channel(name)) == NULL)
@@ -184,10 +185,10 @@ m_kick(struct Client *client_p, struct Client *source_p,
   while (*user == ',')
     user++;
 
-  if ((p = strchr(user,',')) != NULL)
+  if ((p = strchr(user, ',')) != NULL)
     *p = '\0';
 
-  if (!*user)
+  if (*user == '\0')
     return;
 
   if ((who = find_chasing(client_p, source_p, user, &chasing)) == NULL)

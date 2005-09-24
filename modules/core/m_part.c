@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.79 2005/07/31 05:32:38 adx Exp $
+ *  $Id: m_part.c,v 1.80 2005/09/24 12:38:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,7 @@
 #include "s_conf.h"
 #include "packet.h"
 
-static void m_part(struct Client *, struct Client *, int, char **);
+static void m_part(struct Client *, struct Client *, int, char *[]);
 
 struct Message part_msgtab = {
   "PART", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -62,53 +62,9 @@ _moddeinit(void)
   mod_del_cmd(&part_msgtab);
 }
 
-const char *_version = "$Revision: 1.79 $";
+const char *_version = "$Revision: 1.80 $";
 #endif
 
-static void part_one_client(struct Client *client_p,
-                            struct Client *source_p,
-                            char *name, char *reason);
-
-/*
-** m_part
-**      parv[0] = sender prefix
-**      parv[1] = channel
-**      parv[2] = reason
-*/
-static void
-m_part(struct Client *client_p, struct Client *source_p,
-       int parc, char *parv[])
-{
-  char *p, *name;
-  char reason[TOPICLEN + 1];
-
-  if (IsServer(source_p))
-    return;
-
-  if (*parv[1] == '\0')
-  {
-    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, source_p->name, "PART");
-    return;
-  }
-
-  reason[0] = '\0';
-
-  if (parc > 2)
-    strlcpy(reason, parv[2], sizeof(reason));
-
-  name = strtoken(&p, parv[1], ",");
-
-  /* Finish the flood grace period... */
-  if (MyClient(source_p) && !IsFloodDone(source_p))
-    flood_endgrace(source_p);
-
-  while (name)
-  {
-    part_one_client(client_p, source_p, name, reason);
-    name = strtoken(&p, NULL, ",");
-  }
-}
 
 /* part_one_client()
  *
@@ -122,8 +78,8 @@ static void
 part_one_client(struct Client *client_p, struct Client *source_p,
                 char *name, char *reason)
 {
-  struct Channel *chptr;
-  struct Membership *ms;
+  struct Channel *chptr = NULL;
+  struct Membership *ms = NULL;
 
   if ((chptr = hash_find_channel(name)) == NULL)
   {
@@ -173,4 +129,45 @@ part_one_client(struct Client *client_p, struct Client *source_p,
   }
 
   remove_user_from_channel(ms);
+}
+
+/*
+** m_part
+**      parv[0] = sender prefix
+**      parv[1] = channel
+**      parv[2] = reason
+*/
+static void
+m_part(struct Client *client_p, struct Client *source_p,
+       int parc, char *parv[])
+{
+  char *p, *name;
+  char reason[KICKLEN + 1];
+
+  if (IsServer(source_p))
+    return;
+
+  if (*parv[1] == '\0')
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, source_p->name, "PART");
+    return;
+  }
+
+  reason[0] = '\0';
+
+  if (parc > 2)
+    strlcpy(reason, parv[2], sizeof(reason));
+
+  name = strtoken(&p, parv[1], ",");
+
+  /* Finish the flood grace period... */
+  if (MyClient(source_p) && !IsFloodDone(source_p))
+    flood_endgrace(source_p);
+
+  while (name)
+  {
+    part_one_client(client_p, source_p, name, reason);
+    name = strtoken(&p, NULL, ",");
+  }
 }

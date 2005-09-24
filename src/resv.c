@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.38 2005/08/14 07:26:45 michael Exp $
+ *  $Id: resv.c,v 7.39 2005/09/24 12:38:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,8 +60,8 @@ create_channel_resv(char *name, char *reason, int in_conf)
   if (hash_find_resv(name))
     return NULL;
 
-  if (strlen(reason) > TOPICLEN)
-    reason[TOPICLEN] = '\0';
+  if (strlen(reason) > REASONLEN)
+    reason[REASONLEN] = '\0';
 
   conf = make_conf_item(CRESV_TYPE);
   resv_p = map_to_conf(conf);
@@ -96,11 +96,11 @@ create_nick_resv(char *name, char *reason, int in_conf)
   if (find_matching_name_conf(NRESV_TYPE, name, NULL, NULL, 0))
     return NULL;
 
-  if (strlen(reason) > TOPICLEN)
-    reason[TOPICLEN] = '\0';
+  if (strlen(reason) > REASONLEN)
+    reason[REASONLEN] = '\0';
 
   conf = make_conf_item(NRESV_TYPE);
-  resv_p = (struct MatchItem *)map_to_conf(conf);
+  resv_p = map_to_conf(conf);
 
   DupString(conf->name, name);
   DupString(resv_p->reason, reason);
@@ -141,9 +141,6 @@ delete_channel_resv(struct ResvChannel *resv_p)
   struct ConfItem *conf;
   assert(resv_p != NULL);
 
-  if (resv_p == NULL)
-    return(0);
-
   hash_del_resv(resv_p);
   dlinkDelete(&resv_p->node, &resv_channel_list);
   MyFree(resv_p->reason);
@@ -166,7 +163,7 @@ match_find_resv(const char *name)
   dlink_node *ptr = NULL;
 
   if (EmptyString(name))
-    return 0;
+    return NULL;
 
   DLINK_FOREACH(ptr, resv_channel_list.head)
   {

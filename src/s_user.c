@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.384 2005/09/18 14:25:13 adx Exp $
+ *  $Id: s_user.c,v 7.385 2005/09/24 12:38:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1426,7 +1426,8 @@ add_one_to_uid(int i)
     /* XXX if IRC_MAXUID != 6, this will have to be rewritten */
     if (new_uid[i] == 'Z')
       memcpy(new_uid+IRC_MAXSID, "AAAAAA", IRC_MAXUID);
-    else new_uid[i] = new_uid[i] + 1;
+    else
+      new_uid[i] = new_uid[i] + 1;
   }
 }
 
@@ -1444,7 +1445,7 @@ init_isupport(void)
 
   add_isupport("CALLERID", NULL, -1);
   add_isupport("CASEMAPPING", CASEMAP, -1);
-  add_isupport("KICKLEN", NULL, TOPICLEN);
+  add_isupport("KICKLEN", NULL, KICKLEN);
   add_isupport("MODES", NULL, MAXMODEPARAMS);
   add_isupport("NICKLEN", NULL, NICKLEN-1);
 #ifdef HALFOPS
