@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.102 2005/09/25 18:43:19 michael Exp $
+ *  $Id: hostmask.c,v 7.103 2005/09/25 18:48:35 db Exp $
  */
 
 #include "stdinc.h"
@@ -495,7 +495,7 @@ find_conf_by_address(const char *name, struct irc_ssaddr *addr, int type,
 }
 
 /* struct AccessItem* find_address_conf(const char*, const char*,
- * 	                               struct irc_ssaddr*, int);
+ * 	                               struct irc_ssaddr*, int, char *);
  * Input: The hostname, username, address, address family.
  * Output: The applicable AccessItem.
  * Side-effects: None
