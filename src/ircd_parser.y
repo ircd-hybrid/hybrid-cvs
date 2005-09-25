@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.454 2005/09/24 09:27:18 michael Exp $
+ *  $Id: ircd_parser.y,v 1.455 2005/09/25 20:07:38 knight Exp $
  */
 
 %{
@@ -3707,7 +3707,7 @@ channel_jflood_count: JOIN_FLOOD_COUNT '=' NUMBER ';'
   GlobalSetOptions.joinfloodcount = yylval.number;
 };
 
-channel_jflood_time: JOIN_FLOOD_TIME '=' NUMBER ';'
+channel_jflood_time: JOIN_FLOOD_TIME '=' timespec ';'
 {
   GlobalSetOptions.joinfloodtime = yylval.number;
 };
