@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.603 2005/09/25 06:05:36 michael Exp $
+ *  $Id: s_conf.c,v 7.604 2005/09/25 18:12:06 michael Exp $
  */
 
 #include "stdinc.h"
@@ -3595,13 +3595,16 @@ valid_comment(struct Client *source_p, char *comment, int warn)
  *
  * inputs       - pointer to given password
  *              - pointer to Conf
- * output       - YES or NO if match
+ * output       - 1 or 0 if match
  * side effects - none
  */
 int
 match_conf_password(const char *password, const struct AccessItem *aconf)
 {
   const char *encr = NULL;
+
+  if (password == NULL || aconf->passwd == NULL)
+    return 0;
 
   if (aconf->flags & CONF_FLAGS_ENCRYPTED)
   {
@@ -3611,11 +3614,7 @@ match_conf_password(const char *password, const struct AccessItem *aconf)
      * glibc Linux, then this code will work fine on generating
      * the proper encrypted hash for comparison.
      */
-    /* passwd may be NULL pointer. Head it off at the pass... */
-    if (aconf->passwd == NULL)
-      return 0;
-
-    if (password && *aconf->passwd)
+    if (*aconf->passwd)
       encr = crypt(password, aconf->passwd);
     else
       encr = "";
