@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.455 2005/09/25 20:07:38 knight Exp $
+ *  $Id: ircd_parser.y,v 1.456 2005/09/25 20:10:39 knight Exp $
  */
 
 %{
@@ -3020,7 +3020,7 @@ general_use_whois_actually: USE_WHOIS_ACTUALLY '=' TBOOL ';'
   ConfigFileEntry.use_whois_actually = yylval.number;
 };
 
-general_reject_hold_time: TREJECT_HOLD_TIME '=' NUMBER ';'
+general_reject_hold_time: TREJECT_HOLD_TIME '=' timespec ';'
 {
   GlobalSetOptions.rejecttime = yylval.number;
 };
