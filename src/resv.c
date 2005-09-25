@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.40 2005/09/25 06:33:23 michael Exp $
+ *  $Id: resv.c,v 7.41 2005/09/25 08:17:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -221,19 +221,12 @@ int
 valid_wild_card_simple(const char *data)
 {
   const unsigned char *p = (const unsigned char *)data;
-  unsigned char tmpch = '\0';
   int nonwild = 0;
 
-  while ((tmpch = *p++))
-  {
-    if (tmpch == '\\')
-      ++p;
-    else if (!IsMWildChar(tmpch))
-    {
-      if (++nonwild >= ConfigFileEntry.min_nonwildcard_simple)
+  for (; *p; ++p)
+    if (*p == '\\' && *++p) || (*p && !IsMWildChar(*p))
+      if (++nonwild == ConfigFileEntry.min_nonwildcard_simple)
         return 1;
-    }
-  }
 
   return 0;
 }
