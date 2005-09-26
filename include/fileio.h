@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.h,v 7.18 2005/09/24 09:27:17 michael Exp $
+ *  $Id: fileio.h,v 7.19 2005/09/26 02:52:52 adx Exp $
  */
 
 #ifndef INCLUDED_fileio_h
@@ -72,12 +72,6 @@ extern void fbungetc(char, FBFILE *);
 
 /* write a null terminated string to a file, see fputs(3) */
 extern int fbputs(const char *, FBFILE *, size_t);
-
-/* return the status of the file associated with fb, see fstat(3) */
-extern int fbstat(struct stat *, FBFILE *);
-
-/* popen a file. */
-extern FBFILE *fbpopen(const char *, const char *);
 
 extern int file_open(fde_t *, const char *, int, int);
 extern void file_close(fde_t *);

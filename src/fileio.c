@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.40 2005/09/26 02:21:44 adx Exp $
+ *  $Id: fileio.c,v 7.41 2005/09/26 02:52:52 adx Exp $
  */
 
 #include "stdinc.h"
@@ -44,12 +44,17 @@ file_open(fde_t *F, const char *filename, int mode, int fmode)
 #ifdef _WIN32
   DWORD dwDesiredAccess = 0;
 
-  if ((mode & O_RDWR))
-    dwDesiredAccess = GENERIC_READ | GENERIC_WRITE;
-  else if ((mode & O_WRONLY))
-    dwDesiredAccess = GENERIC_WRITE;
-  else if ((mode & O_RDONLY))
-    dwDesiredAccess = GENERIC_READ;
+  switch (mode & ~(O_CREAT | O_TRUNC | O_APPEND))
+  {
+    case O_RDONLY:
+      dwDesiredAccess = GENERIC_READ;
+      break;
+    case O_WRONLY:
+      dwDesiredAccess = GENERIC_WRITE;
+      break;
+    case O_RDWR:
+      dwDesiredAccess = GENERIC_READ | GENERIC_WRITE;
+  }
 
   fd = (int) CreateFile(
     filename,
@@ -67,6 +72,9 @@ file_open(fde_t *F, const char *filename, int mode, int fmode)
     errno = GetLastError();
     return -1;
   }
+
+  if ((mode & O_APPEND))
+    SetFilePointer((HANDLE)fd, 0, NULL, FILE_END);
 #else
   if (number_fd == hard_fdlimit)
   {
@@ -133,7 +141,11 @@ fbrewind(FBFILE *fb)
   fb->flags = 0;
   fb->pbptr = NULL;
 
+#ifdef _WIN32
+  SetFilePointer((HANDLE)fb->F.fd, 0, NULL, FILE_BEGIN);
+#else
   lseek(fb->F.fd, 0, SEEK_SET);
+#endif
   return 0;
 }
 
@@ -154,7 +166,12 @@ fbfill(FBFILE *fb)
   if (fb->flags)
     return -1;
 
+#ifdef _WIN32
+  if (!ReadFile((HANDLE)fb->F.fd, fb->buf, BUFSIZ, (LPDWORD)&n, NULL))
+    n = -1;
+#else
   n = read(fb->F.fd, fb->buf, BUFSIZ);
+#endif
 
   if (n > 0)
   {
@@ -251,18 +268,17 @@ fbputs(const char *str, FBFILE *fb, size_t nbytes)
   if (0 == fb->flags)
   {
     assert(strlen(str) == nbytes);
+#ifdef _WIN32
+    if (!WriteFile((HANDLE)fb->F.fd, str, nbytes, (LPDWORD)&n, NULL))
+      n = -1;
+#else
     n = write(fb->F.fd, str, nbytes);
+#endif
     if (n == -1)
       fb->flags |= FB_FAIL;
   }
 
   return n;
-}
-
-int
-fbstat(struct stat *sb, FBFILE *fb)
-{
-  return fstat(fb->F.fd, sb);
 }
 
 int
@@ -284,4 +300,3 @@ save_spare_fd(const char *spare_purpose)
 
   return spare_fd;
 }
-
