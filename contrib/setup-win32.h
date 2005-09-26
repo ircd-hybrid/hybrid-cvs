@@ -14,7 +14,7 @@
 /* If you plan to move your installed ircd from C:\ircd to
  * some other directory, modify the setting here.
  * Remember to escape backslashes by typing them twice! */
-#define IRCD_PREFIX "C:\\ircd"
+#define IRCD_PREFIX "c:/ircd"
 
 /* If you want %halfops (chanmode +h) support on your network,
  * uncomment the following line. */
