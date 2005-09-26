@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.41 2005/09/26 02:52:52 adx Exp $
+ *  $Id: fileio.c,v 7.42 2005/09/26 02:57:12 adx Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ file_open(fde_t *F, const char *filename, int mode, int fmode)
     dwDesiredAccess,
     FILE_SHARE_READ | ((dwDesiredAccess & GENERIC_WRITE) ? 0:FILE_SHARE_WRITE),
     NULL,
-    (mode & O_CREAT == 0) ? OPEN_EXISTING :
+    ((mode & O_CREAT) == 0) ? OPEN_EXISTING :
     ((mode & O_TRUNC) ? CREATE_ALWAYS : OPEN_ALWAYS),
     FILE_ATTRIBUTE_NORMAL,
     NULL
