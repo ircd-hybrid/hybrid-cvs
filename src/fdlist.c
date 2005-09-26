@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.53 2005/09/26 01:13:05 adx Exp $
+ *  $Id: fdlist.c,v 7.54 2005/09/26 01:42:54 adx Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -256,15 +256,18 @@ void
 close_fds(fde_t *one)
 {
   int i;
-  fde_t *F, *prev;
+  fde_t *F;
 
   for (i = 0; i < FD_HASH_SIZE; i++)
-    for (prev = NULL, F = fd_hash[i]; F != NULL;
-         F = (prev != NULL ? prev->hnext : fd_hash[i]))
-    {
-      if (F == one)
-        prev = F;
-      else
-        fd_close(F);
-    }
+    for (F = fd_hash[i]; F != NULL; F = F->hnext)
+      if (F != one)
+      {
+#ifdef _WIN32
+        if (F->flags.is_socket)
+          closesocket(F->fd);
+        else
+#else
+          close(F->fd);
+#endif	 
+      }
 }
