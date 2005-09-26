@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.52 2005/09/18 22:24:37 adx Exp $
+ *  $Id: fdlist.c,v 7.53 2005/09/26 01:13:05 adx Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -159,7 +159,8 @@ fd_close(fde_t *F)
   if (F == fd_next_in_loop)
     fd_next_in_loop = F->hnext;
 
-  comm_setselect(F, COMM_SELECT_WRITE | COMM_SELECT_READ, NULL, NULL, 0);
+  if (F->flags.is_socket)
+    comm_setselect(F, COMM_SELECT_WRITE | COMM_SELECT_READ, NULL, NULL, 0);
 
   if (F->dns_query != NULL)
   {
