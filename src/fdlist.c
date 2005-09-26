@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.54 2005/09/26 01:42:54 adx Exp $
+ *  $Id: fdlist.c,v 7.55 2005/09/26 02:21:44 adx Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -189,8 +189,10 @@ fd_close(fde_t *F)
   if (F->flags.is_socket)
     closesocket(F->fd);
   else
+    CloseHandle((HANDLE)F->fd);
+#else
+  close(F->fd);
 #endif
-    close(F->fd);
   number_fd--;
 #ifdef INVARIANTS
   memset(F, '\0', sizeof(fde_t));
@@ -266,8 +268,9 @@ close_fds(fde_t *one)
         if (F->flags.is_socket)
           closesocket(F->fd);
         else
+	  CloseHandle((HANDLE)F->fd);
 #else
-          close(F->fd);
+        close(F->fd);
 #endif	 
       }
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.39 2005/09/18 14:25:13 adx Exp $
+ *  $Id: fileio.c,v 7.40 2005/09/26 02:21:44 adx Exp $
  */
 
 #include "stdinc.h"
@@ -37,12 +37,37 @@
  * code that should be using the fbopen() / fbclose() code isn't.
  * Grr. -- adrian
  */
-
 int
 file_open(fde_t *F, const char *filename, int mode, int fmode)
 {
   int fd;
+#ifdef _WIN32
+  DWORD dwDesiredAccess = 0;
 
+  if ((mode & O_RDWR))
+    dwDesiredAccess = GENERIC_READ | GENERIC_WRITE;
+  else if ((mode & O_WRONLY))
+    dwDesiredAccess = GENERIC_WRITE;
+  else if ((mode & O_RDONLY))
+    dwDesiredAccess = GENERIC_READ;
+
+  fd = (int) CreateFile(
+    filename,
+    dwDesiredAccess,
+    FILE_SHARE_READ | ((dwDesiredAccess & GENERIC_WRITE) ? 0:FILE_SHARE_WRITE),
+    NULL,
+    (mode & O_CREAT == 0) ? OPEN_EXISTING :
+    ((mode & O_TRUNC) ? CREATE_ALWAYS : OPEN_ALWAYS),
+    FILE_ATTRIBUTE_NORMAL,
+    NULL
+  );
+
+  if (fd == (int)INVALID_HANDLE_VALUE)
+  {
+    errno = GetLastError();
+    return -1;
+  }
+#else
   if (number_fd == hard_fdlimit)
   {
     errno = ENFILE;
@@ -51,6 +76,7 @@ file_open(fde_t *F, const char *filename, int mode, int fmode)
 
   if ((fd = open(filename, mode, fmode)) < 0)
     return -1;
+#endif
 
   fd_open(F, fd, 0, filename);
   return 0;
