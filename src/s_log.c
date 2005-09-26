@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.77 2005/09/08 03:10:55 metalrock Exp $
+ *  $Id: s_log.c,v 7.78 2005/09/26 03:10:16 adx Exp $
  */
 
 #include "stdinc.h"
@@ -112,7 +112,11 @@ write_log(const char *message)
   if (logFile == NULL)
     return;
 
+#ifdef _WIN32
+  nbytes = snprintf(buf, sizeof(buf), "[%s] %s\r\n",
+#else
   nbytes = snprintf(buf, sizeof(buf), "[%s] %s\n",
+#endif
                     smalldate(CurrentTime), message);
   fbputs(buf, logFile, nbytes);
 }
