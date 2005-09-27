@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.107 2005/09/27 12:43:33 adx Exp $
+ *  $Id: m_info.c,v 1.108 2005/09/27 21:49:31 knight Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,7 @@ struct Message info_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.107 $";
+const char *_version = "$Revision: 1.108 $";
 static struct Callback *info_cb;
 
 static void *
@@ -285,7 +285,7 @@ static const struct InfoStruct info_table[] =
   },
   {
     "hidden_name",
-    OUTPUT_STRING_PTR,
+    OUTPUT_STRING,
     &ConfigServerHide.hidden_name,
     "Server name users see if hide_servers = yes"
   },
