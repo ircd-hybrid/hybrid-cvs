@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ctrace.c,v 1.11 2005/08/16 09:27:45 adx Exp $
+ *  $Id: m_ctrace.c,v 1.12 2005/09/27 12:43:33 adx Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,7 @@
 #include "modules.h"
 #include "irc_getnameinfo.h"
 
-static void *do_ctrace(va_list);
+static void do_ctrace(struct Client *, char **);
 static void mo_ctrace(struct Client*, struct Client*, int, char**);
 
 struct Message ctrace_msgtab = {
@@ -51,13 +51,24 @@ struct Message ctrace_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 static struct Callback *ctrace_cb;
+
+static void *
+va_ctrace(va_list args)
+{
+  struct Client *source_p = va_arg(args, struct Client *);
+  va_arg(args, int);
+  char **parv = va_arg(args, char **);
+
+  do_ctrace(source_p, parv);
+  return NULL;
+}
 
 void
 _modinit(void)
 {
-  ctrace_cb = register_callback("doing_ctrace", do_ctrace);
+  ctrace_cb = register_callback("doing_ctrace", va_ctrace);
   mod_add_cmd(&ctrace_msgtab);
 }
 
@@ -65,7 +76,7 @@ void
 _moddeinit(void)
 {
   mod_del_cmd(&ctrace_msgtab);
-  uninstall_hook(ctrace_cb, do_ctrace);
+  uninstall_hook(ctrace_cb, va_ctrace);
 }
 #endif
 
@@ -88,13 +99,7 @@ mo_ctrace(struct Client *client_p, struct Client *source_p,
   }
 
 #ifdef STATIC_MODULES
-  {
-    va_list args;
-
-    va_start(args, client_p);
-    do_ctrace(args);
-    va_end(args);
-  }
+  do_ctrace(source_p, parv);
 #else
   execute_callback(ctrace_cb, source_p, parc, parv);
 #endif
@@ -103,18 +108,14 @@ mo_ctrace(struct Client *client_p, struct Client *source_p,
 /*
  * do_ctrace
  */
-static void *
-do_ctrace(va_list args)
+static void
+do_ctrace(struct Client *source_p, char **parv)
 {
-  struct Client *source_p = va_arg(args, struct Client *);
-  char **parv;
   struct Client *target_p = NULL;
   char *class_looking_for;
   const char *class_name;
   dlink_node *ptr;
 
-  va_arg(args, int);
-  parv = va_arg(args, char **);
   class_looking_for = parv[1];
 
   /* report all direct connections */
@@ -130,7 +131,6 @@ do_ctrace(va_list args)
 
   sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name,
 	     parv[0], class_looking_for);
-  return NULL;
 }
 
 /*

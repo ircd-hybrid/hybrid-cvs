@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_etrace.c,v 1.1 2005/09/18 23:07:29 adx Exp $
+ *  $Id: m_etrace.c,v 1.2 2005/09/27 12:43:33 adx Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,7 @@
 
 #define FORM_STR_RPL_ETRACE	":%s 709 %s %s %s %s %s %s :%s"
 
-static void *do_etrace(va_list);
+static void do_etrace(struct Client *, int, char **);
 static void mo_etrace(struct Client *, struct Client *, int, char *[]);
 
 struct Message etrace_msgtab = {
@@ -53,13 +53,24 @@ struct Message etrace_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.1 $";
+const char *_version = "$Revision: 1.2 $";
 static struct Callback *etrace_cb;
+
+static void *
+va_etrace(va_list args)
+{
+  struct Client *source_p = va_arg(args, struct Client *);
+  int parc = va_arg(args, int);
+  char **parv = va_arg(args, char **);
+
+  do_etrace(source_p, parc, parv);
+  return NULL;
+}
 
 void
 _modinit(void)
 {
-  etrace_cb = register_callback("doing_etrace", do_etrace);
+  etrace_cb = register_callback("doing_etrace", va_etrace);
   mod_add_cmd(&etrace_msgtab);
 }
 
@@ -67,7 +78,7 @@ void
 _moddeinit(void)
 {
   mod_del_cmd(&etrace_msgtab);
-  uninstall_hook(etrace_cb, do_etrace);
+  uninstall_hook(etrace_cb, va_etrace);
 }
 #endif
 
@@ -76,12 +87,9 @@ static void report_this_status(struct Client *, struct Client *);
 /*
  * do_etrace()
  */
-static void *
-do_etrace(va_list args)
+static void
+do_etrace(struct Client *source_p, int parc, char **parv)
 {
-  struct Client *source_p = va_arg(args, struct Client *);
-  int parc = va_arg(args, int);
-  char **parv = va_arg(args, char **);
   const char *tname = NULL;
   struct Client *target_p = NULL;
   int wilds = 0;
@@ -111,7 +119,7 @@ do_etrace(va_list args)
       
     sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name, 
 	       source_p->name, tname);
-    return NULL;
+    return;
   }
 
   DLINK_FOREACH(ptr, local_client_list.head)
@@ -124,14 +132,11 @@ do_etrace(va_list args)
 	report_this_status(source_p, target_p);
     }
     else
-    {
       report_this_status(source_p, target_p);
-    }
   }
 
   sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name,
 	     source_p->name, tname);
-  return NULL;
 }
 
 /* mo_etrace()
@@ -143,11 +148,7 @@ mo_etrace(struct Client *client_p, struct Client *source_p,
 	  int parc, char *parv[])
 {
 #ifdef STATIC_MODULES
-  va_list args;
-
-  va_start(args, client_p);
-  do_etrace(args);
-  va_end(args);
+  do_etrace(source_p, parc, parv);
 #else
   execute_callback(etrace_cb, source_p, parc, parv);
 #endif

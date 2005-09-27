@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.106 2005/09/16 15:28:18 knight Exp $
+ *  $Id: m_info.c,v 1.107 2005/09/27 12:43:33 adx Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,7 @@
 
 static void send_conf_options(struct Client *);
 static void send_birthdate_online_time(struct Client *);
-static void *send_info_text(va_list);
+static void send_info_text(struct Client *);
 
 static void m_info(struct Client *, struct Client *, int, char *[]);
 static void ms_info(struct Client *, struct Client *, int, char *[]);
@@ -56,13 +56,20 @@ struct Message info_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.106 $";
+const char *_version = "$Revision: 1.107 $";
 static struct Callback *info_cb;
+
+static void *
+va_send_info_text(va_list args)
+{
+  send_info_text(va_arg(args, struct Client *));
+  return NULL;
+}
 
 void
 _modinit(void)
 {
-  info_cb = register_callback("doing_info", send_info_text);
+  info_cb = register_callback("doing_info", va_send_info_text);
   mod_add_cmd(&info_msgtab);
 }
 
@@ -70,7 +77,7 @@ void
 _moddeinit(void)
 {
   mod_del_cmd(&info_msgtab);
-  uninstall_hook(info_cb, send_info_text);
+  uninstall_hook(info_cb, va_send_info_text);
 }
 #endif
 
@@ -604,13 +611,7 @@ m_info(struct Client *client_p, struct Client *source_p,
   }
 
 #ifdef STATIC_MODULES
-  {
-    va_list args;
-
-    va_start(args, client_p);
-    send_info_text(args);
-    va_end(args);
-  }
+  send_info_text(source_p);
 #else
   execute_callback(info_cb, source_p, parc, parv);
 #endif
@@ -630,13 +631,7 @@ mo_info(struct Client *client_p, struct Client *source_p,
     return;
 
 #ifdef STATIC_MODULES
-  {
-    va_list args;
-
-    va_start(args, client_p);
-    send_info_text(args);
-    va_end(args);
-  }
+  send_info_text(source_p);
 #else
   execute_callback(info_cb, source_p, parc, parv);
 #endif
@@ -659,13 +654,7 @@ ms_info(struct Client *client_p, struct Client *source_p,
     return;
 
 #ifdef STATIC_MODULES
-  {
-    va_list args;
-
-    va_start(args, client_p);
-    send_info_text(args);
-    va_end(args);
-  }
+  send_info_text(source_p);
 #else
   execute_callback(info_cb, source_p, parc, parv);
 #endif
@@ -677,10 +666,9 @@ ms_info(struct Client *client_p, struct Client *source_p,
  * output	- NONE
  * side effects	- info text is sent to client
  */
-static void *
-send_info_text(va_list args)
+static void
+send_info_text(struct Client *source_p)
 {
-  struct Client *source_p = va_arg(args, struct Client *);
   const char **text = infotext;
   char *source, *target;
   
@@ -708,7 +696,6 @@ send_info_text(va_list args)
 
   sendto_one(source_p, form_str(RPL_ENDOFINFO),
              me.name, source_p->name);
-  return NULL;
 }
 
 /* send_birthdate_online_time()

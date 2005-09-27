@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.144 2005/09/15 01:25:59 metalrock Exp $
+ *  $Id: m_whois.c,v 1.145 2005/09/27 12:43:33 adx Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,7 @@
 #include "modules.h"
 #include "hook.h"
 
-static void *do_whois(va_list);
+static void do_whois(struct Client *, int, char **);
 static int single_whois(struct Client *, struct Client *);
 static void whois_person(struct Client *, struct Client *);
 static int global_whois(struct Client *, const char *);
@@ -59,13 +59,24 @@ struct Message whois_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.144 $";
+const char *_version = "$Revision: 1.145 $";
 static struct Callback *whois_cb;
+
+static void *
+va_whois(va_list args)
+{
+  struct Client *source_p = va_arg(args, struct Client *);
+  int parc = va_arg(args, int);
+  char **parv = va_arg(args, char **);
+
+  do_whois(source_p, parc, parv);
+  return NULL;
+}
 
 void
 _modinit(void)
 {
-  whois_cb = register_callback("doing_whois", do_whois);
+  whois_cb = register_callback("doing_whois", va_whois);
   mod_add_cmd(&whois_msgtab);
 }
 
@@ -73,7 +84,7 @@ void
 _moddeinit(void)
 {
   mod_del_cmd(&whois_msgtab);
-  uninstall_hook(whois_cb, do_whois);
+  uninstall_hook(whois_cb, va_whois);
 }
 #endif
 
@@ -122,13 +133,7 @@ m_whois(struct Client *client_p, struct Client *source_p,
   }
 
 #ifdef STATIC_MODULES
-  {
-    va_list args;
-
-    va_start(args, client_p);
-    do_whois(args);
-    va_end(args);
-  }
+  do_whois(source_p, parc, parv);
 #else
   execute_callback(whois_cb, source_p, parc, parv);
 #endif
@@ -160,13 +165,7 @@ mo_whois(struct Client *client_p, struct Client *source_p,
   }
 
 #ifdef STATIC_MODULES
-  {
-    va_list args;
-
-    va_start(args, client_p);
-    do_whois(args);
-    va_end(args);
-  }
+  do_whois(source_p, parc, parv);
 #else
   execute_callback(whois_cb, source_p, parc, parv);
 #endif
@@ -174,16 +173,15 @@ mo_whois(struct Client *client_p, struct Client *source_p,
 
 /* do_whois()
  *
- * inputs	- pointer to va_list
+ * inputs	- pointer to /whois source
+ *              - number of parameters
+ *              - pointer to parameters array
  * output	- pointer to void
  * side effects - Does whois
  */
-static void *
-do_whois(va_list args)
+static void
+do_whois(struct Client *source_p, int parc, char **parv)
 {
-  struct Client *source_p = va_arg(args, struct Client *);
-  int parc = va_arg(args, int);
-  char **parv = va_arg(args, char **);
   struct Client *target_p;
   char *nick;
   char *p = NULL;
@@ -196,7 +194,7 @@ do_whois(va_list args)
     *p = '\0';
 
   if (*nick == '\0')
-    return NULL;
+    return;
 
   collapse(nick);
 
@@ -221,14 +219,14 @@ do_whois(va_list args)
       else
         sendto_one(uplink,":%s WHOIS %s",
                    source_p->name, nick);
-      return NULL;
+      return;
     }
   }
   else /* wilds is true */
   {
     /* disallow wild card whois on lazylink leafs for now */
     if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
-      return NULL;
+      return;
 
     /* Oh-oh wilds is true so have to do it the hard expensive way */
     if (MyClient(source_p))
@@ -244,7 +242,6 @@ do_whois(va_list args)
 
   sendto_one(source_p, form_str(RPL_ENDOFWHOIS),
              me.name, source_p->name, parv[1]);
-  return NULL;
 }
 
 /* global_whois()

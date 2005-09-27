@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_links.c,v 1.49 2005/08/15 20:50:02 adx Exp $
+ *  $Id: m_links.c,v 1.50 2005/09/27 12:43:33 adx Exp $
  */
 
 #include "stdinc.h"
@@ -37,7 +37,7 @@
 #include "modules.h"
 #include "hook.h"
 
-static void *do_links(va_list);
+static void do_links(struct Client *, int, char **);
 static void m_links(struct Client*, struct Client*, int, char**);
 static void mo_links(struct Client*, struct Client*, int, char**);
 static void ms_links(struct Client*, struct Client*, int, char**);
@@ -48,13 +48,24 @@ struct Message links_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 static struct Callback *links_cb;
+
+static void *
+va_links(va_list args)
+{
+  struct Client *source_p = va_arg(args, struct Client *);
+  int parc = va_arg(args, int);
+  char **parv = va_arg(args, char **);
+
+  do_links(source_p, parc, parv);
+  return NULL;
+}
 
 void
 _modinit(void)
 {
-  links_cb = register_callback("doing_links", do_links);
+  links_cb = register_callback("doing_links", va_links);
   mod_add_cmd(&links_msgtab);
 }
 
@@ -62,18 +73,14 @@ void
 _moddeinit(void)
 {
   mod_del_cmd(&links_msgtab);
-  uninstall_hook(links_cb, do_links);
+  uninstall_hook(links_cb, va_links);
 }
 
 #endif
 
-static void *
-do_links(va_list args)
+static void
+do_links(struct Client *source_p, int parc, char **parv)
 {
-  struct Client *source_p = va_arg(args, struct Client *);
-  int parc = va_arg(args, int);
-  char **parv = va_arg(args, char **);
-
   if (IsOper(source_p) || !ConfigServerHide.flatten_links)
   {
     char *mask = (parc > 2 ? parv[2] : parv[1]);
@@ -133,8 +140,6 @@ do_links(va_list args)
     sendto_one(source_p, form_str(RPL_ENDOFLINKS),
                ID_or_name(&me, source_p->from), "*");
   }
-
-  return NULL;
 }
 
 /*
@@ -157,13 +162,7 @@ m_links(struct Client *client_p, struct Client *source_p,
   }
 
 #ifdef STATIC_MODULES
-  {
-    va_list args;
-
-    va_start(args, client_p);
-    do_links(args);
-    va_end(args);
-  }
+  do_links(source_p, parc, parv);
 #else
   execute_callback(links_cb, source_p, parc, parv);
 #endif
@@ -182,13 +181,7 @@ mo_links(struct Client *client_p, struct Client *source_p,
     }
 
 #ifdef STATIC_MODULES
-  {
-    va_list args;
-
-    va_start(args, client_p);
-    do_links(args);
-    va_end(args);
-  }
+  do_links(source_p, parc, parv);
 #else
   execute_callback(links_cb, source_p, parc, parv);
 #endif

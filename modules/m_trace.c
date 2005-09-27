@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.82 2005/08/15 20:50:02 adx Exp $
+ *  $Id: m_trace.c,v 1.83 2005/09/27 12:43:33 adx Exp $
  */
 
 #include "stdinc.h"
@@ -45,8 +45,7 @@
 static void m_trace(struct Client *, struct Client *, int, char **);
 static void ms_trace(struct Client*, struct Client*, int, char**);
 static void mo_trace(struct Client*, struct Client*, int, char**);
-
-static void *do_actual_trace(va_list);
+static void do_actual_trace(struct Client *, int, char **);
 
 struct Message trace_msgtab = {
   "TRACE", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -54,13 +53,24 @@ struct Message trace_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.82 $";
+const char *_version = "$Revision: 1.83 $";
 static struct Callback *trace_cb;
+
+static void *
+va_actual_trace(va_list args)
+{
+  struct Client *source_p = va_arg(args, struct Client *);
+  int parc = va_arg(args, int);
+  char **parv = va_arg(args, char **);
+
+  do_actual_trace(source_p, parc, parv);
+  return NULL;
+}
 
 void
 _modinit(void)
 {
-  trace_cb = register_callback("doing_trace", do_actual_trace);
+  trace_cb = register_callback("doing_trace", va_actual_trace);
   mod_add_cmd(&trace_msgtab);
 }
 
@@ -68,7 +78,7 @@ void
 _moddeinit(void)
 {
   mod_del_cmd(&trace_msgtab);
-  uninstall_hook(trace_cb, do_actual_trace);
+  uninstall_hook(trace_cb, va_actual_trace);
 }
 #endif
 
@@ -158,13 +168,7 @@ mo_trace(struct Client *client_p, struct Client *source_p,
     }
     case HUNTED_ISME:
 #ifdef STATIC_MODULES
-      {
-        va_list args;
-
-        va_start(args, client_p);
-	do_actual_trace(args);
-	va_end(args);
-      }
+      do_actual_trace(source_p, parc, parv);
 #else
       execute_callback(trace_cb, source_p, parc, parv);
 #endif
@@ -174,12 +178,9 @@ mo_trace(struct Client *client_p, struct Client *source_p,
   }
 }
 
-static void *
-do_actual_trace(va_list args)
+static void
+do_actual_trace(struct Client *source_p, int parc, char **parv)
 {
-  struct Client *source_p = va_arg(args, struct Client *);
-  int parc = va_arg(args, int);
-  char **parv = va_arg(args, char **);
   struct Client *target_p = NULL;
   struct ConfItem *conf;
   struct ClassItem *cltmp;
@@ -255,7 +256,7 @@ do_actual_trace(va_list args)
       
     sendto_one(source_p, form_str(RPL_ENDOFTRACE),
                from, to, tname);
-    return NULL;
+    return;
   }
 
   /* report all direct connections */
@@ -311,7 +312,6 @@ do_actual_trace(va_list args)
   }
 
   sendto_one(source_p, form_str(RPL_ENDOFTRACE), from, to, tname);
-  return NULL;
 }
 
 

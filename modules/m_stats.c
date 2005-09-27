@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.189 2005/09/12 04:33:30 adx Exp $
+ *  $Id: m_stats.c,v 1.190 2005/09/27 12:43:33 adx Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,7 @@
 #include "whowas.h"
 #include "list.h"
 
-static void *do_stats(va_list);
+static void do_stats(struct Client *, int, char **);
 static void m_stats(struct Client *, struct Client *, int, char *[]);
 static void mo_stats(struct Client *, struct Client *, int, char *[]);
 static void ms_stats(struct Client *, struct Client *, int, char *[]);
@@ -63,13 +63,24 @@ struct Message stats_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.189 $";
+const char *_version = "$Revision: 1.190 $";
 static struct Callback *stats_cb;
+
+static void *
+va_stats(va_list args)
+{
+  struct Client *source_p = va_arg(args, struct Client *);
+  int parc = va_arg(args, int);
+  char **parv = va_arg(args, char **);
+
+  do_stats(source_p, parc, parv);
+  return NULL;
+}
 
 void
 _modinit(void)
 {
-  stats_cb = register_callback("doing_stats", do_stats);
+  stats_cb = register_callback("doing_stats", va_stats);
   mod_add_cmd(&stats_msgtab);
 }
 
@@ -77,7 +88,7 @@ void
 _moddeinit(void)
 {
   mod_del_cmd(&stats_msgtab);
-  uninstall_hook(stats_cb, do_stats);
+  uninstall_hook(stats_cb, va_stats);
 }
 #endif
 
@@ -174,12 +185,9 @@ static const struct StatsStruct
 
 const char *from, *to;
 
-static void *
-do_stats(va_list args)
+static void
+do_stats(struct Client *source_p, int parc, char **parv)
 {
-  struct Client *source_p = va_arg(args, struct Client *);
-  int parc = va_arg(args, int);
-  char **parv = va_arg(args, char **);
   char statchar = *parv[1];
   int i;
 
@@ -187,7 +195,7 @@ do_stats(va_list args)
   {
     sendto_one(source_p, form_str(RPL_ENDOFSTATS),
                from, to, '*');
-    return NULL;
+    return;
   }
 
   for (i = 0; stats_cmd_table[i].handler; i++)
@@ -215,7 +223,6 @@ do_stats(va_list args)
 
   sendto_one(source_p, form_str(RPL_ENDOFSTATS),
              from, to, statchar);
-  return NULL;
 }
 
 /*
@@ -260,13 +267,7 @@ m_stats(struct Client *client_p, struct Client *source_p,
     last_used = CurrentTime;
 
 #ifdef STATIC_MODULES
-  {
-    va_list args;
-
-    va_start(args, client_p);
-    do_stats(args);
-    va_end(args);
-  }
+  do_stats(source_p, parc, parv);
 #else
   execute_callback(stats_cb, source_p, parc, parv);
 #endif
@@ -301,13 +302,7 @@ mo_stats(struct Client *client_p, struct Client *source_p,
   }
 
 #ifdef STATIC_MODULES
-  {
-    va_list args;
-
-    va_start(args, client_p);
-    do_stats(args);
-    va_end(args);
-  }
+  do_stats(source_p, parc, parv);
 #else
   execute_callback(stats_cb, source_p, parc, parv);
 #endif

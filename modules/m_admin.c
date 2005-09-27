@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_admin.c,v 1.48 2005/08/15 20:50:02 adx Exp $
+ *  $Id: m_admin.c,v 1.49 2005/09/27 12:43:33 adx Exp $
  */
 
 #include "stdinc.h"
@@ -39,7 +39,7 @@
 static void m_admin(struct Client *, struct Client *, int, char **);
 static void mr_admin(struct Client *, struct Client *, int, char **);
 static void ms_admin(struct Client *, struct Client *, int, char **);
-static void *do_admin(va_list args);
+static void do_admin(struct Client *);
 
 struct Message admin_msgtab = {
   "ADMIN", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
@@ -48,12 +48,19 @@ struct Message admin_msgtab = {
 
 #ifndef STATIC_MODULES
 static struct Callback *admin_cb;
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
+
+static void *
+va_admin(va_list args)
+{
+  do_admin(va_arg(args, struct Client *));
+  return NULL;
+}
 
 void
 _modinit(void)
 {
-  admin_cb = register_callback("doing_admin", do_admin);
+  admin_cb = register_callback("doing_admin", va_admin);
   mod_add_cmd(&admin_msgtab);
 }
 
@@ -61,7 +68,7 @@ void
 _moddeinit(void)
 {
   mod_del_cmd(&admin_msgtab);
-  uninstall_hook(admin_cb, do_admin);
+  uninstall_hook(admin_cb, va_admin);
 }
 #endif
 
@@ -86,17 +93,7 @@ mr_admin(struct Client *client_p, struct Client *source_p,
     last_used = CurrentTime;
 
 #ifdef STATIC_MODULES
-  {
-    va_list args;
-
-    /* HACK! HACK! HACK!
-     * We really need a better solution for static modules..
-     * -adx
-     */
-    va_start(args, client_p);
-    do_admin(args);
-    va_end(args);
-  }
+  do_admin(client_p);
 #else
   execute_callback(admin_cb, source_p, parc, parv);
 #endif
@@ -129,13 +126,7 @@ m_admin(struct Client *client_p, struct Client *source_p,
   }
 
 #ifdef STATIC_MODULES
-  {
-    va_list args;
-
-    va_start(args, client_p);
-    do_admin(args);
-    va_end(args);
-  }
+  do_admin(client_p);
 #else
   execute_callback(admin_cb, source_p, parc, parv);
 #endif
@@ -155,13 +146,7 @@ ms_admin(struct Client *client_p, struct Client *source_p,
 
   if (IsClient(source_p))
 #ifdef STATIC_MODULES
-  {
-    va_list args;
-
-    va_start(args, client_p);
-    do_admin(args);
-    va_end(args);
-  }
+    do_admin(source_p);
 #else
     execute_callback(admin_cb, source_p, parc, parv);
 #endif
@@ -173,10 +158,9 @@ ms_admin(struct Client *client_p, struct Client *source_p,
  * output	- none
  * side effects	- admin info is sent to client given
  */
-static void *
-do_admin(va_list args)
+static void
+do_admin(struct Client *source_p)
 {
-  struct Client *source_p = va_arg(args, struct Client *);
   const char *me_name;
   const char *nick;
 
@@ -194,6 +178,4 @@ do_admin(va_list args)
   if (AdminInfo.email != NULL)
     sendto_one(source_p, form_str(RPL_ADMINEMAIL),
 	       me_name, nick, AdminInfo.email);
-
-  return NULL;
 }
