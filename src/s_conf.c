@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.604 2005/09/25 18:12:06 michael Exp $
+ *  $Id: s_conf.c,v 7.605 2005/09/27 15:29:47 adx Exp $
  */
 
 #include "stdinc.h"
@@ -3530,14 +3530,6 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
         find_chasing(source_p, source_p, user_host_or_nick, NULL)) == NULL)
       return 0;
 
-    if (IsServer(target_p))
-    {
-      sendto_one(source_p,
-	   ":%s NOTICE %s :Can't KLINE a server, use @'s where appropriate",
-		 me.name, source_p->name);
-      return 0;
-    }
-
     if (IsExemptKline(target_p))
     {
       if (!IsServer(source_p))
@@ -3556,7 +3548,8 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
     if (target_p->username[0] == '~')
       luser[0] = '*';
 
-    if (!irccmp(target_p->sockhost, "0"))
+    if (target_p->sockhost[0] == '\0' ||
+        (target_p->sockhost[0] == '0' && target_p->sockhost[1] == '\0'))
       strlcpy(lhost, target_p->host, HOSTLEN*4 + 1);
     else
       strlcpy(lhost, target_p->sockhost, HOSTLEN*4 + 1);
