@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.458 2005/09/27 20:10:47 adx Exp $
+ * \version $Id: channel.c,v 7.459 2005/09/27 20:15:54 adx Exp $
  */
 
 #include "stdinc.h"
@@ -292,7 +292,7 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
   }
 
   *(pp - 1) = '\0';  /* get rid of trailing space on buffer */
-  sendto_one(client_p, "%s%s", buf, ts5 ? " " : "", pbuf);
+  sendto_one(client_p, "%s%s%s", buf, ts5 ? " " : "", pbuf);
 }
 
 /*! \brief send "client_p" a full list of the modes for channel chptr
