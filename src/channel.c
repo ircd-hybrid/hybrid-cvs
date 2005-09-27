@@ -21,7 +21,7 @@
 
 /*! \file channel.c
  * \brief Responsible for managing channels, members, bans and topics
- * \version $Id: channel.c,v 7.457 2005/09/18 10:56:33 michael Exp $
+ * \version $Id: channel.c,v 7.458 2005/09/27 20:10:47 adx Exp $
  */
 
 #include "stdinc.h"
@@ -234,31 +234,32 @@ static void
 send_mode_list(struct Client *client_p, struct Channel *chptr,
                dlink_list *top, char flag)
 {
+  int ts5 = !IsCapable(client_p, CAP_TS6);
   dlink_node *lp;
   struct Ban *banptr;
   char pbuf[IRCD_BUFSIZE];
-  int tlen, mlen, cur_len;
-  int count = 0;
+  int tlen, mlen, cur_len, count = 0;
   char *mp = NULL, *pp = pbuf;
 
   if (top == NULL || top->length == 0)
     return;
 
-  if (IsCapable(client_p, CAP_TS6))
-    ircsprintf(buf, ":%s BMASK %lu %s %c :", me.id,
-               (unsigned long)chptr->channelts, chptr->chname, flag);
+  if (ts5)
+    mlen = ircsprintf(buf, ":%s MODE %s +", me.name, chptr->chname);
   else
-    mp = buf + ircsprintf(buf, ":%s MODE %s +", me.name, chptr->chname);
+    mlen = ircsprintf(buf, ":%s BMASK %lu %s %c :", me.id,
+                      (unsigned long)chptr->channelts, chptr->chname, flag);
 
   /* MODE needs additional one byte for space between buf and pbuf */
-  cur_len = mlen = strlen(buf) + !IsCapable(client_p, CAP_TS6);
+  cur_len = mlen + ts5;
+  mp = buf + mlen;
 
   DLINK_FOREACH(lp, top->head)
   {
     banptr = lp->data;
 
     /* must add another b/e/I letter if we use MODE */
-    tlen = banptr->len + 3 + !IsCapable(client_p, CAP_TS6);
+    tlen = banptr->len + 3 + ts5;
 
     /*
      * send buffer and start over if we cannot fit another ban,
@@ -269,21 +270,17 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
         (!IsCapable(client_p, CAP_TS6) &&
          (count >= MAXMODEPARAMS || pp - pbuf >= MODEBUFLEN)))
     {
-      *(pp-1) = '\0'; /* get rid of trailing space on buffer */
-   
-      if (IsCapable(client_p, CAP_TS6))
-        sendto_one(client_p, "%s%s", buf, pbuf);
-      else
-        sendto_one(client_p, "%s %s", buf, pbuf);
+      *(pp - 1) = '\0';  /* get rid of trailing space on buffer */
+      sendto_one(client_p, "%s%s%s", buf, ts5 ? " " : "", pbuf);
 
-      cur_len = mlen;
+      cur_len = mlen + ts5;
       mp = buf + mlen;
       pp = pbuf;
       count = 0;
     }
 
     count++;
-    if (!IsCapable(client_p, CAP_TS6))
+    if (ts5)
     {
       *mp++ = flag;
       *mp = '\0';
@@ -294,12 +291,8 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
     cur_len += tlen;
   }
 
-  *(pp-1) = '\0'; /* get rid of trailing space on buffer */
-
-  if (IsCapable(client_p, CAP_TS6))
-    sendto_one(client_p, "%s%s", buf, pbuf);
-  else
-    sendto_one(client_p, "%s %s", buf, pbuf);
+  *(pp - 1) = '\0';  /* get rid of trailing space on buffer */
+  sendto_one(client_p, "%s%s", buf, ts5 ? " " : "", pbuf);
 }
 
 /*! \brief send "client_p" a full list of the modes for channel chptr
