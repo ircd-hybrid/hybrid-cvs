@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_trace_notice.c,v 1.15 2005/09/09 17:37:13 adx Exp $
+ *  $Id: spy_trace_notice.c,v 1.16 2005/09/29 20:15:39 adx Exp $
  */
 
 #include "stdinc.h"
@@ -31,18 +31,15 @@
 #include "ircd.h"
 #include "send.h"
 
-static struct Callback *trace_cb = NULL;
-static dlink_node *prev_trace;
-
-static struct Callback *ltrace_cb = NULL;
-static dlink_node *prev_ltrace;
-
-static struct Callback *ctrace_cb = NULL;
-static dlink_node *prev_ctrace;
+static struct Callback *trace_cb = NULL, *ltrace_cb = NULL;
+static struct Callback *ctrace_cb = NULL, *etrace_cb = NULL;
+static dlink_node *prev_trace, *prev_ltrace;
+static dlink_node *prev_ctrace, *prev_etrace;
 
 static void *show_trace(va_list);
 static void *show_ltrace(va_list);
 static void *show_ctrace(va_list);
+static void *show_etrace(va_list);
 
 void
 _modinit(void)
@@ -55,6 +52,9 @@ _modinit(void)
 
   if ((ctrace_cb = find_callback("doing_ctrace")))
     prev_ctrace = install_hook(ctrace_cb, show_ctrace);
+
+  if ((etrace_cb = find_callback("doing_etrace")))
+    prev_etrace = install_hook(etrace_cb, show_etrace);
 }
 
 void
@@ -70,7 +70,7 @@ _moddeinit(void)
     uninstall_hook(ctrace_cb, show_ctrace);
 }
 
-const char *_version = "$Revision: 1.15 $";
+const char *_version = "$Revision: 1.16 $";
 
 static void *
 show_trace(va_list args)
@@ -118,5 +118,21 @@ show_ctrace(va_list args)
                          source_p->host, source_p->servptr->name);
 
   return pass_callback(prev_ctrace, source_p, parc, parv);
+}
+
+static void *
+show_etrace(va_list args)
+{
+  struct Client *source_p = va_arg(args, struct Client *);
+  int parc = va_arg(args, int);
+  char **parv = va_arg(args, char **);
+
+  if (IsClient(source_p))
+    sendto_realops_flags(UMODE_SPY, L_ALL,
+                         "etrace requested by %s (%s@%s) [%s]",
+                         source_p->name, source_p->username,
+                         source_p->host, source_p->servptr->name);
+
+  return pass_callback(prev_etrace, source_p, parc, parv);
 }
 #endif

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_spoof.c,v 1.10 2005/08/21 09:33:08 adx Exp $
+ *  $Id: m_spoof.c,v 1.11 2005/09/29 20:15:39 adx Exp $
  */
 
 /* MODULE CONFIGURATION FOLLOWS -- please read!! */
@@ -113,6 +113,7 @@ struct Message delspoof_msgtab = {
 #endif
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -127,7 +128,8 @@ _moddeinit(void)
   mod_del_cmd(&spoof_msgtab);
 }
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
+#endif
 
 #ifdef SPOOF_FILE
 static void
