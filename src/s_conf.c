@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.607 2005/09/29 00:46:55 adx Exp $
+ *  $Id: s_conf.c,v 7.608 2005/09/29 01:06:28 adx Exp $
  */
 
 #include "stdinc.h"
@@ -3724,12 +3724,12 @@ cidr_limit_reached(int over_rule,
   dlink_node *ptr = NULL;
   struct CidrItem *cidr;
 
-  if (NumberPerCidr(aclass) == 0)
+  if (NumberPerCidr(aclass) <= 0)
     return 0;
 
   if (ip->ss.ss_family == AF_INET)
   {
-    if (CidrBitlenIPV4(aclass) != 0)
+    if (CidrBitlenIPV4(aclass) > 0)
     {
       DLINK_FOREACH(ptr, aclass->list_ipv4.head)
       {
@@ -3752,7 +3752,7 @@ cidr_limit_reached(int over_rule,
 #ifdef IPV6
   else
   {
-    if(CidrBitlenIPV6(aclass) != 0)
+    if (CidrBitlenIPV6(aclass) > 0)
     {
       DLINK_FOREACH(ptr, aclass->list_ipv6.head)
       {
@@ -3794,7 +3794,7 @@ remove_from_cidr_check(struct irc_ssaddr *ip, struct ClassItem *aclass)
   if (NumberPerCidr(aclass) == 0)
     return;
 
-  if ((ip->ss.ss_family == AF_INET) && (CidrBitlenIPV4(aclass) != 0))
+  if (ip->ss.ss_family == AF_INET && CidrBitlenIPV4(aclass) > 0)
   {
     DLINK_FOREACH_SAFE(ptr, next_ptr, aclass->list_ipv4.head)
     {
@@ -3812,7 +3812,7 @@ remove_from_cidr_check(struct irc_ssaddr *ip, struct ClassItem *aclass)
     }
   }
 #ifdef IPV6
-  else if(CidrBitlenIPV6(aclass) != 0)
+  else if (CidrBitlenIPV6(aclass) > 0)
   {
     DLINK_FOREACH_SAFE(ptr, next_ptr, aclass->list_ipv6.head)
     {
