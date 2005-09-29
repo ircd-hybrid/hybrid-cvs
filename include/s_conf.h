@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.333 2005/09/16 14:56:56 adx Exp $
+ *  $Id: s_conf.h,v 7.334 2005/09/29 00:13:34 adx Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -481,7 +481,6 @@ extern int attach_conf(struct Client *, struct ConfItem *);
 extern int attach_connect_block(struct Client *, const char *, const char *);
 
 extern int detach_conf(struct Client *, ConfType);
-extern void detach_all_confs(struct Client *);
 
 extern struct ConfItem *find_conf_name(dlink_list *, const char *, ConfType);
 extern struct ConfItem *find_conf_exact(ConfType, const char *, const char *, const char *);

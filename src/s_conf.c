@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.605 2005/09/27 15:29:47 adx Exp $
+ *  $Id: s_conf.c,v 7.606 2005/09/29 00:13:34 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1004,71 +1004,48 @@ attach_iline(struct Client *client_p, struct ConfItem *conf)
   struct ClassItem *aclass;
   struct ip_entry *ip_found;
   int a_limit_reached = 0;
-  int max_limit_reached = 0;
-  int local=0;
-  int global=0;
-  int ident=0;
+  int local = 0, global = 0, ident = 0;
 
   ip_found = find_or_add_ip(&client_p->localClient->ip);
-
-  SetIpHash(client_p);
   ip_found->count++;
+  SetIpHash(client_p);
 
   aconf = (struct AccessItem *)map_to_conf(conf);
-  /* only check it if its non zero */
-  if (aconf->class_ptr != NULL)
+  if (aconf->class_ptr == NULL)
+    return NOT_AUTHORIZED;  /* If class is missing, this is best */
+
+  aclass = (struct ClassItem *)map_to_conf(aconf->class_ptr);
+
+  count_user_host(client_p->username, client_p->host,
+                  &global, &local, &ident);
+
+  /* XXX blah. go down checking the various silly limits
+   * setting a_limit_reached if any limit is reached.
+   * - Dianora
+   */
+  if (MaxTotal(aclass) != 0 && CurrUserCount(aclass) >= MaxTotal(aclass))
+    a_limit_reached = 1;
+  else if (MaxPerIp(aclass) != 0 && ip_found->count >= MaxPerIp(aclass))
+    a_limit_reached = 1;
+  else if (MaxLocal(aclass) != 0 && local >= MaxLocal(aclass))
+    a_limit_reached = 1;
+  else if (MaxGlobal(aclass) != 0 && global >= MaxGlobal(aclass))
+    a_limit_reached = 1;
+  else if (MaxIdent(aclass) != 0 && ident >= MaxIdent(aclass) &&
+           client_p->username[0] != '~')
+    a_limit_reached = 1;
+
+  if (a_limit_reached)
   {
-    aclass = (struct ClassItem *)map_to_conf(aconf->class_ptr);
+    if (!IsConfExemptLimits(aconf))
+      return TOO_MANY;  /* Already at maximum allowed */
 
-    count_user_host(client_p->username, client_p->host,
-		    &global, &local, &ident);
-
-    /* XXX blah. go down checking the various silly limits
-     * setting a_limit_reached if any limit is reached.
-     * - Dianora
-     */
-    if ((MaxTotal(aclass) != 0) &&
-	(CurrUserCount(aclass) > MaxTotal(aclass)))
-    {
-	max_limit_reached = 1;
-	a_limit_reached = 1;
-    }
-
-    if ((MaxPerIp(aclass) != 0) && (ip_found->count > MaxPerIp(aclass)))
-      a_limit_reached = 1;
-    else if ((MaxLocal(aclass) != 0) && (local > MaxLocal(aclass)))
-      a_limit_reached = 1;
-    else if ((MaxGlobal(aclass) != 0) && (global > MaxGlobal(aclass)))
-      a_limit_reached = 1;
-
-    /* XXX I am not sure of the logic here. This allows a client onto a server
-     * if it is idented, but has not exceed the max ident limit for 
-     * this class. But deny if it has exceed the max possible limit
-     * for this class. Is this what is wanted? *sigh*
-     * - Dianora
-     */
-
-    if ((MaxIdent(aclass) != 0) && ((*client_p->username != '~') &&
-				    ident < MaxIdent(aclass)) &&
-	!max_limit_reached)
-      a_limit_reached = 0;
-
-    if (a_limit_reached)
-    {
-      if (!IsConfExemptLimits(aconf))
-	return(TOO_MANY); /* Already at maximum allowed */
-      else
-      {
-	sendto_one(client_p,
-		   ":%s NOTICE %s :*** Your connection class is full, "
-		   "but you have exceed_limit = yes;", me.name, client_p->name);
-      }
-    }
+    sendto_one(client_p,
+               ":%s NOTICE %s :*** Your connection class is full, "
+               "but you have exceed_limit = yes;", me.name, client_p->name);
   }
-  else
-    return(NOT_AUTHORIZED);	/* If class is missing, this is best */
 
-  return(attach_conf(client_p, conf));
+  return attach_conf(client_p, conf);
 }
 
 /* init_ip_hash_table()
@@ -1312,18 +1289,18 @@ garbage_collect_ip_entries(void)
 int
 detach_conf(struct Client *client_p, ConfType type)
 {
-  dlink_node *ptr;
+  dlink_node *ptr, *next_ptr;
   struct ConfItem *conf;
   struct ClassItem *aclass;
   struct AccessItem *aconf;
   struct ConfItem *aclass_conf;
   struct MatchItem *match_item;
 
-  DLINK_FOREACH(ptr, client_p->localClient->confs.head)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->localClient->confs.head)
   {
     conf = ptr->data;
 
-    if (conf->type == type)
+    if (type == CONF_TYPE || conf->type == type)
     {
       dlinkDelete(ptr, &client_p->localClient->confs);
       free_dlink_node(ptr);
@@ -1342,9 +1319,7 @@ detach_conf(struct Client *client_p, ConfType type)
 	    aclass->curr_user_count--;
 
 	  if (MaxTotal(aclass) < 0 && CurrUserCount(aclass) <= 0)
-	  {
 	    delete_conf_item(aclass_conf);
-	  }
 	}
 
 	/* Please, no ioccc entries - Dianora */
@@ -1356,79 +1331,19 @@ detach_conf(struct Client *client_p, ConfType type)
       case LEAF_TYPE:
       case HUB_TYPE:
 	match_item = (struct MatchItem *)map_to_conf(conf);
-	if ((match_item->ref_count == 0) && (match_item->illegal))
+	if (match_item->ref_count == 0 && match_item->illegal)
 	  delete_conf_item(conf);
 	break;
       default:
 	break;
       }
 
-      return(0);
+      if (type != CONF_TYPE)
+        return 0;
     }
   }
-  return(-1);
-}
 
-/* detach_all_confs()
- *
- * inputs	- pointer to client to detach
- * output	- NONE
- * side effects	- Disassociate all configuration from the client.
- *		  Also removes a class from the list if marked for deleting.
- */
-void
-detach_all_confs(struct Client *client_p)
-{
-  dlink_node *ptr;
-  dlink_node *next_ptr;
-  struct ConfItem *conf;
-  struct ClassItem *aclass;
-  struct AccessItem *aconf;
-  struct ConfItem *aclass_conf;
-  struct MatchItem *match_item;
-
-  DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->localClient->confs.head)
-  {
-    conf = ptr->data;
-
-    dlinkDelete(ptr, &client_p->localClient->confs);
-    free_dlink_node(ptr);
-
-    switch(conf->type)
-    {
-    case CLIENT_TYPE:
-    case OPER_TYPE:
-    case SERVER_TYPE:
-      aconf = (struct AccessItem *)map_to_conf(conf);
-
-      if ((aclass_conf = ClassPtr(aconf)) != NULL)
-      {
-	aclass = (struct ClassItem *)map_to_conf(aclass_conf);
-	if (CurrUserCount(aclass) > 0)
-	  aclass->curr_user_count--;
-
-	if (MaxTotal(aclass) < 0 && CurrUserCount(aclass) <= 0)
-	{
-	  delete_conf_item(aclass_conf);
-	}
-      }
-
-      /* Please, no ioccc entries - Dianora */
-      if (aconf->clients > 0)
-	--aconf->clients;
-      if (aconf->clients == 0 && IsConfIllegal(aconf))
-	delete_conf_item(conf);
-      break;
-    case LEAF_TYPE:
-    case HUB_TYPE:
-      match_item = (struct MatchItem *)map_to_conf(conf);
-      if ((match_item->ref_count == 0) && (match_item->illegal))
-	delete_conf_item(conf);
-      break;
-    default:
-      break;
-    }
-  }
+  return -1;
 }
 
 /* attach_conf()
@@ -1448,45 +1363,28 @@ attach_conf(struct Client *client_p, struct ConfItem *conf)
   struct MatchItem *match_item;
 
   if (dlinkFind(&client_p->localClient->confs, conf) != NULL)
-    return(1);
+    return 1;
 
-  if ((conf->type == CLIENT_TYPE) ||
-      (conf->type == SERVER_TYPE) ||
-      (conf->type == OPER_TYPE))
+  if (conf->type == CLIENT_TYPE ||
+      conf->type == SERVER_TYPE ||
+      conf->type == OPER_TYPE)
   {
     aconf = (struct AccessItem *)map_to_conf(conf);
 
     if (IsConfIllegal(aconf))
-      return(NOT_AUTHORIZED);
+      return NOT_AUTHORIZED;
+
+    aconf->clients++;
 
     if (conf->type == CLIENT_TYPE)
     {
       struct ClassItem *aclass;
 
       aclass = (struct ClassItem *)map_to_conf(aconf->class_ptr);
-
-      if (MaxTotal(aclass) >= 0)
-      {
-	if (CurrUserCount(aclass) >= MaxTotal(aclass))
-        {
-	  if (!IsConfExemptLimits(aconf))
-	    return(I_LINE_FULL); 
-	  else
-	  {
-	    sendto_one(client_p, ":%s NOTICE %s :*** Your connection class is "
-		       "full, but you have exceed_limit = yes;",
-		       me.name, client_p->name);
-	    SetExemptLimits(client_p);
-	  }
-	}
-	CurrUserCount(aclass)++;
-      }
-      else
-	return(NOT_AUTHORIZED);
+      CurrUserCount(aclass)++;
     }
-    aconf->clients++;
   }
-  else if ((conf->type == HUB_TYPE) || (conf->type == LEAF_TYPE))
+  else if (conf->type == HUB_TYPE || conf->type == LEAF_TYPE)
   {
     match_item = (struct MatchItem *)map_to_conf(conf);
     match_item->ref_count++;
@@ -1494,7 +1392,7 @@ attach_conf(struct Client *client_p, struct ConfItem *conf)
 
   dlinkAdd(conf, make_dlink_node(), &client_p->localClient->confs);
 
-  return(0);
+  return 0;
 }
 
 /* attach_connect_block()
@@ -1517,22 +1415,21 @@ attach_connect_block(struct Client *client_p, const char *name,
   assert(host != NULL);
 
   if (client_p == NULL || host == NULL)
-    return(0);
+    return 0;
 
   DLINK_FOREACH(ptr, server_items.head)
   {
     conf = ptr->data;
     aconf = (struct AccessItem *)map_to_conf(conf);
 
-    if ((match(conf->name, name) == 0) ||
-        (match(aconf->host, host) == 0))
+    if (match(conf->name, name) == 0 || match(aconf->host, host) == 0)
       continue;
 
     attach_conf(client_p, conf);
-    return(-1);
+    return -1;
   }
 
-  return(0);
+  return 0;
 }
 
 /* find_conf_exact()
@@ -1664,7 +1561,7 @@ map_to_list(ConfType type)
   case DLINE_TYPE:
   case CRESV_TYPE:
   default:
-    return(NULL);
+    return NULL;
   }
 }
 
@@ -2815,38 +2712,37 @@ get_conf_name(ConfType type)
   switch (type)
   {
     case CONF_TYPE:
-      return(ConfigFileEntry.configfile);
+      return ConfigFileEntry.configfile;
       break;
     case KLINE_TYPE:
-      return(ConfigFileEntry.klinefile);
+      return ConfigFileEntry.klinefile;
       break;
     case RKLINE_TYPE:
-      return(ConfigFileEntry.rklinefile);
+      return ConfigFileEntry.rklinefile;
       break;
     case DLINE_TYPE:
-      return(ConfigFileEntry.dlinefile);
+      return ConfigFileEntry.dlinefile;
       break;
     case XLINE_TYPE:
-      return(ConfigFileEntry.xlinefile);
+      return ConfigFileEntry.xlinefile;
       break;
     case RXLINE_TYPE:
-      return(ConfigFileEntry.rxlinefile);
+      return ConfigFileEntry.rxlinefile;
       break;
     case CRESV_TYPE:
-      return(ConfigFileEntry.cresvfile);
+      return ConfigFileEntry.cresvfile;
       break;
     case NRESV_TYPE:
-      return(ConfigFileEntry.nresvfile);
+      return ConfigFileEntry.nresvfile;
       break;
     case GLINE_TYPE:
-      return(ConfigFileEntry.glinefile);
+      return ConfigFileEntry.glinefile;
       break;
 
     default:
-      return(NULL); /* This should NEVER HAPPEN since we call this function
+      return NULL;  /* This should NEVER HAPPEN since we call this function
                        only with the above values, this will cause us to core
                        at some point if this happens so we know where it was */
-      break;
   }
 }
 

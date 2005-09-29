@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.108 2005/09/24 09:27:18 michael Exp $
+ *  $Id: hash.c,v 7.109 2005/09/29 00:13:34 adx Exp $
  */
 
 #include "stdinc.h"
@@ -702,9 +702,8 @@ add_user_host(const char *user, const char *host, int global)
 
     if (!irccmp(user, nameh->name))
     {
-      if (global)
-	nameh->gcount++;
-      else
+      nameh->gcount++;
+      if (!global)
       {
 	if (hasident)
 	  nameh->icount++;
@@ -717,9 +716,8 @@ add_user_host(const char *user, const char *host, int global)
   nameh = BlockHeapAlloc(namehost_heap);
   strlcpy(nameh->name, user, sizeof(nameh->name));
 
-  if (global)
-    nameh->gcount = 1;
-  else
+  nameh->gcount = 1;
+  if (!global)
   {
     if (hasident)
       nameh->icount = 1;
@@ -760,20 +758,17 @@ delete_user_host(const char *user, const char *host, int global)
 
     if (!irccmp(user, nameh->name))
     {
-      if (global)
-      {
-	if (nameh->gcount > 0)
-	  nameh->gcount--;
-      }
-      else
+      if (nameh->gcount > 0)
+        nameh->gcount--;
+      if (!global)
       {
 	if (nameh->lcount > 0)
 	  nameh->lcount--;
-	if (hasident && (nameh->icount > 0))
+	if (hasident && nameh->icount > 0)
 	  nameh->icount--;
       }
 
-      if ((nameh->gcount == 0) && (nameh->lcount == 0))
+      if (nameh->gcount == 0 && nameh->lcount == 0)
       {
 	dlinkDelete(&nameh->node, &found_userhost->list);
 	BlockHeapFree(namehost_heap, nameh);

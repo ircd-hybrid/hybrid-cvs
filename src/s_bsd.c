@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.253 2005/09/24 09:27:18 michael Exp $
+ *  $Id: s_bsd.c,v 7.254 2005/09/29 00:13:34 adx Exp $
  */
 
 #include "stdinc.h"
@@ -273,7 +273,7 @@ close_connection(struct Client *client_p)
   dbuf_clear(&client_p->localClient->buf_recvq);
   
   MyFree(client_p->localClient->passwd);
-  detach_all_confs(client_p);
+  detach_conf(client_p, CONF_TYPE);
   client_p->from = NULL; /* ...this should catch them! >:) --msa */
 }
 
