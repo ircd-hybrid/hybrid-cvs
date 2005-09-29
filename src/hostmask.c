@@ -2,7 +2,7 @@
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  hostmask.c: Code to efficiently find IP & hostmask based configs.
  *
- *  Copyright (C) 2002 by the past and present ircd coders, and others.
+ *  Copyright (C) 2005 by the past and present ircd coders, and others.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.104 2005/09/29 01:50:00 adx Exp $
+ *  $Id: hostmask.c,v 7.105 2005/09/29 06:35:41 metalrock Exp $
  */
 
 #include "stdinc.h"

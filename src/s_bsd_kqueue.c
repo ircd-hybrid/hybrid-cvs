@@ -3,7 +3,7 @@
  *  s_bsd_kqueue.c: FreeBSD kqueue compatible network routines.
  *
  *  Originally by Adrian Chadd <adrian@creative.net.au>
- *  Copyright (C) 2002 Hybrid Development Team
+ *  Copyright (C) 2005 Hybrid Development Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_kqueue.c,v 1.44 2005/09/18 14:46:02 adx Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.45 2005/09/29 06:35:41 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -49,6 +49,7 @@
 static fde_t kqfd;
 static struct kevent kq_fdlist[KE_LENGTH];  /* kevent buffer */
 static int kqoff;      /* offset into the buffer */
+void init_netio(void);
 
 /*
  * init_netio

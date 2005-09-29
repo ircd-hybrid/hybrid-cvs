@@ -2,7 +2,7 @@
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  hostmask.h: A header for the hostmask code.
  *
- *  Copyright (C) 2002 by the past and present ircd coders, and others.
+ *  Copyright (C) 2005 by the past and present ircd coders, and others.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.h,v 1.32 2005/09/24 09:27:17 michael Exp $
+ *  $Id: hostmask.h,v 1.33 2005/09/29 06:35:41 metalrock Exp $
  */
 
 #ifndef INCLUDE_hostmask_h
@@ -43,6 +43,7 @@ struct HostMaskEntry
 
 extern int match_ipv6(struct irc_ssaddr *, struct irc_ssaddr *, int);
 extern int match_ipv4(struct irc_ssaddr *, struct irc_ssaddr *, int);
+extern void mask_addr(struct irc_ssaddr *, int);
 extern int parse_netmask(const char *, struct irc_ssaddr *, int *);
 
 extern void add_conf_by_address(int, struct AccessItem *);
