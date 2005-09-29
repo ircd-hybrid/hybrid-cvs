@@ -1,5 +1,5 @@
 /* A Bison parser, made from ircd_parser.y, by GNU bison 1.75.  */
-/* $Id: y.tab.h,v 7.75 2005/09/29 01:50:01 adx Exp $ */
+/* $Id: y.tab.h,v 7.76 2005/09/29 16:02:49 adx Exp $ */
 
 /* Skeleton parser for Yacc-like parsing with Bison,
    Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002 Free Software Foundation, Inc.

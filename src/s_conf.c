@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.610 2005/09/29 01:50:00 adx Exp $
+ *  $Id: s_conf.c,v 7.611 2005/09/29 16:02:49 adx Exp $
  */
 
 #include "stdinc.h"
@@ -3877,12 +3877,6 @@ void
 rebuild_cidr_class(struct ConfItem *conf, struct ClassItem *new_class)
 {
   struct ClassItem *old_class = map_to_conf(conf);
-
-  new_class->list_ipv4.head = new_class->list_ipv4.tail = NULL;
-  new_class->list_ipv4.length = 0;
-
-  new_class->list_ipv6.head = new_class->list_ipv6.tail = NULL;
-  new_class->list_ipv6.length = 0;
 
   if (NumberPerCidr(old_class) > 0 && NumberPerCidr(new_class) > 0)
   {

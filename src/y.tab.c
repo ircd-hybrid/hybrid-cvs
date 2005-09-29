@@ -1,5 +1,5 @@
 /* A Bison parser, made from ircd_parser.y, by GNU bison 1.75.  */
-/* $Id: y.tab.c,v 7.84 2005/09/29 01:50:00 adx Exp $ */
+/* $Id: y.tab.c,v 7.85 2005/09/29 16:02:49 adx Exp $ */
 
 /* Skeleton parser for Yacc-like parsing with Bison,
    Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002 Free Software Foundation, Inc.
@@ -4173,9 +4173,9 @@ yyreduce:
 
       if (cconf != NULL)		/* The class existed already */
       {
+        rebuild_cidr_class(cconf, yy_class);
         class = (struct ClassItem *) map_to_conf(cconf);
         *class = *yy_class;
-        rebuild_cidr_class(cconf, class);
         delete_conf_item(yy_conf);
 
         MyFree(cconf->name);            /* Allows case change of class name */
