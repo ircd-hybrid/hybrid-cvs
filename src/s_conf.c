@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.606 2005/09/29 00:13:34 adx Exp $
+ *  $Id: s_conf.c,v 7.607 2005/09/29 00:46:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -107,6 +107,15 @@ static void parse_conf_file(int, int);
 static dlink_list *map_to_list(ConfType);
 static struct AccessItem *find_regexp_kline(const char *[]);
 static int find_user_host(struct Client *, char *, char *, char *, unsigned int);
+
+/*
+ * bit_len
+ */
+static int cidr_limit_reached(int, struct irc_ssaddr *, struct ClassItem *);
+static void mask_addr(struct irc_ssaddr *, int);
+static void remove_from_cidr_check(struct irc_ssaddr *, struct ClassItem *);
+static void destroy_cidr_class(struct ClassItem *);
+static void destroy_cidr_list(dlink_list *list);
 
 static void flags_to_ascii(unsigned int, const unsigned int[], char *, int);
 
@@ -343,7 +352,6 @@ make_conf_item(ConfType type)
     break;
 
   default:
-
     conf = NULL;
     break;
   }
@@ -1101,7 +1109,7 @@ find_or_add_ip(struct irc_ssaddr *ip_in)
     if (res == 0)
     {
       /* Found entry already in hash, return it. */
-      return(ptr);
+      return ptr;
     }
   }
 
@@ -1115,7 +1123,7 @@ find_or_add_ip(struct irc_ssaddr *ip_in)
   newptr->next = ip_hash_table[hash_index];
   ip_hash_table[hash_index] = newptr;
 
-  return(newptr);
+  return newptr;
 }
 
 /* remove_one_ip()
@@ -1191,7 +1199,7 @@ hash_ip(struct irc_ssaddr *addr)
 
     ip   = ntohl(v4->sin_addr.s_addr);
     hash = ((ip >> 12) + ip) & (IP_HASH_SIZE-1);
-    return(hash);
+    return hash;
   }
 #ifdef IPV6
   else
@@ -1204,10 +1212,10 @@ hash_ip(struct irc_ssaddr *addr)
     hash ^= hash >> 16;  
     hash ^= hash >> 8;   
     hash  = hash & (IP_HASH_SIZE - 1);
-    return(hash);
+    return hash;
   }
 #else
-  return(0);
+  return 0;
 #endif
 }
 
@@ -1265,15 +1273,15 @@ garbage_collect_ip_entries(void)
       if (ptr->count == 0 &&
           (CurrentTime - ptr->last_attempt) >= ConfigFileEntry.throttle_time)
       {
-	if (last_ptr != NULL)
-	  last_ptr->next = ptr->next;
-	else
-	  ip_hash_table[i] = ptr->next;
-	BlockHeapFree(ip_entry_heap, ptr);
-	ip_entries_count--;
+        if (last_ptr != NULL)
+          last_ptr->next = ptr->next;
+        else
+          ip_hash_table[i] = ptr->next;
+        BlockHeapFree(ip_entry_heap, ptr);
+        ip_entries_count--;
       }
       else
-	last_ptr = ptr;
+        last_ptr = ptr;
     }
   }
 }
@@ -1310,32 +1318,34 @@ detach_conf(struct Client *client_p, ConfType type)
       case CLIENT_TYPE:
       case OPER_TYPE:
       case SERVER_TYPE:
-	aconf = (struct AccessItem *)map_to_conf(conf);
+        aconf = (struct AccessItem *)map_to_conf(conf);
+        if ((aclass_conf = ClassPtr(aconf)) != NULL)
+        {
+          aclass = (struct ClassItem *)map_to_conf(aclass_conf);
 
-	if ((aclass_conf = ClassPtr(aconf)) != NULL)
-	{
-	  aclass = (struct ClassItem *)map_to_conf(aclass_conf);
-	  if (CurrUserCount(aclass) > 0)
-	    aclass->curr_user_count--;
+          if (conf->type == CLIENT_TYPE)
+            remove_from_cidr_check(&client_p->localClient->ip, aclass);
 
-	  if (MaxTotal(aclass) < 0 && CurrUserCount(aclass) <= 0)
-	    delete_conf_item(aclass_conf);
-	}
+          if (CurrUserCount(aclass) > 0)
+            aclass->curr_user_count--;
+          if (MaxTotal(aclass) < 0 && CurrUserCount(aclass) <= 0)
+            delete_conf_item(aclass_conf);
+        }
 
-	/* Please, no ioccc entries - Dianora */
-	if (aconf->clients > 0)
-	  --aconf->clients;
-	if (aconf->clients == 0 && IsConfIllegal(aconf))
-	  delete_conf_item(conf);
-	break;
+        /* Please, no ioccc entries - Dianora */
+        if (aconf->clients > 0)
+          --aconf->clients;
+        if (aconf->clients == 0 && IsConfIllegal(aconf))
+          delete_conf_item(conf);
+        break;
       case LEAF_TYPE:
       case HUB_TYPE:
-	match_item = (struct MatchItem *)map_to_conf(conf);
-	if (match_item->ref_count == 0 && match_item->illegal)
-	  delete_conf_item(conf);
-	break;
+        match_item = (struct MatchItem *)map_to_conf(conf);
+        if (match_item->ref_count == 0 && match_item->illegal)
+          delete_conf_item(conf);
+        break;
       default:
-	break;
+        break;
       }
 
       if (type != CONF_TYPE)
@@ -1374,15 +1384,19 @@ attach_conf(struct Client *client_p, struct ConfItem *conf)
     if (IsConfIllegal(aconf))
       return NOT_AUTHORIZED;
 
-    aconf->clients++;
-
     if (conf->type == CLIENT_TYPE)
     {
       struct ClassItem *aclass;
-
       aclass = (struct ClassItem *)map_to_conf(aconf->class_ptr);
+
+      if (cidr_limit_reached(IsConfExemptLimits(aconf),
+                             &client_p->localClient->ip, aclass))
+        return TOO_MANY;  /* Already at maximum allowed */
+
       CurrUserCount(aclass)++;
     }
+
+    aconf->clients++;
   }
   else if (conf->type == HUB_TYPE || conf->type == LEAF_TYPE)
   {
@@ -1448,7 +1462,7 @@ find_conf_exact(ConfType type, const char *name, const char *user,
 {
   dlink_node *ptr;
   dlink_list *list_p;
-  struct ConfItem *conf=NULL;
+  struct ConfItem *conf = NULL;
   struct AccessItem *aconf;
 
   /* Only valid for OPER_TYPE and ...? */
@@ -1480,14 +1494,14 @@ find_conf_exact(ConfType type, const char *name, const char *user,
 
       aclass = (struct ClassItem *)aconf->class_ptr;
       if (aconf->clients < MaxTotal(aclass))
-	return(conf);
+	return conf;
       else
 	continue;
     }
     else
-      return(conf);
+      return conf;
   }
-  return(NULL);
+  return NULL;
 }
 
 /* find_conf_name()
@@ -1611,13 +1625,13 @@ find_matching_name_conf(ConfType type, const char *name, const char *user,
       if ((name != NULL) && match_esc(conf->name, name))
       {
 	if ((user == NULL && (host == NULL)))
-	  return(conf);
+	  return conf;
 	if ((match_item->action & action) != action)
           continue;
 	if (EmptyString(match_item->user) || EmptyString(match_item->host))
-	  return(conf);
+	  return conf;
 	if (match(match_item->user, user) && match(match_item->host, host))
-	  return(conf);
+	  return conf;
       }
     }
       break;
@@ -1629,16 +1643,16 @@ find_matching_name_conf(ConfType type, const char *name, const char *user,
       aconf = map_to_conf(conf);
 
       if ((name != NULL) && match_esc(name, conf->name))
-        return(conf);
+        return conf;
       else if ((host != NULL) && match_esc(host, aconf->host))
-        return(conf);
+        return conf;
     }
     break;
   
   default:
     break;
   }
-  return(NULL);
+  return NULL;
 }
 
 /* find_exact_name_conf()
@@ -1655,8 +1669,8 @@ find_exact_name_conf(ConfType type, const char *name,
                      const char *user, const char *host)
 {
   dlink_node *ptr = NULL;
-  struct ConfItem *conf;
   struct AccessItem *aconf;
+  struct ConfItem *conf;
   struct MatchItem *match_item;
   dlink_list *list_p;
 
@@ -2878,6 +2892,7 @@ check_class(void)
 
     if (MaxTotal(aclass) < 0)
     {
+      destroy_cidr_class(aclass);
       if (CurrUserCount(aclass) > 0)
         dlinkDelete(&conf->node, &class_items);
       else
@@ -3690,4 +3705,264 @@ flags_to_ascii(unsigned int flags, const unsigned int bit_table[], char *p,
       *p++ = ToLower(bit_table[i]);
   }
   *p = '\0';
+}
+
+/*
+ * cidr_limit_reached
+ *
+ * inputs	- int flag allowing over_rule of limits
+ *		- pointer to the ip to be added
+ *		- pointer to the class
+ * output	- non zero if limit reached
+ *		  0 if limit not reached
+ * side effects	-
+ */
+static int
+cidr_limit_reached(int over_rule,
+		   struct irc_ssaddr *ip, struct ClassItem *aclass)
+{
+  dlink_node *ptr = NULL;
+  struct CidrItem *cidr;
+
+  if (NumberPerCidr(aclass) == 0)
+    return 0;
+
+  if (ip->ss.ss_family == AF_INET)
+  {
+    if (CidrBitlenIPV4(aclass) != 0)
+    {
+      DLINK_FOREACH(ptr, aclass->list_ipv4.head)
+      {
+	cidr = ptr->data;
+	if (match_ipv4(ip, &cidr->mask, CidrBitlenIPV4(aclass)))
+	{
+	  if (!over_rule && (cidr->number_on_this_cidr >= NumberPerCidr(aclass)))
+	    return -1;
+	  cidr->number_on_this_cidr++;
+	  return 0;
+	}
+      }
+      cidr = MyMalloc(sizeof(struct CidrItem));
+      cidr->number_on_this_cidr = 1;
+      cidr->mask = *ip;
+      mask_addr(&cidr->mask, CidrBitlenIPV4(aclass));
+      dlinkAdd(cidr, &cidr->node, &aclass->list_ipv4);
+    }
+  }
+#ifdef IPV6
+  else
+  {
+    if(CidrBitlenIPV6(aclass) != 0)
+    {
+      DLINK_FOREACH(ptr, aclass->list_ipv6.head)
+      {
+	cidr = ptr->data;
+	if (match_ipv6(ip, &cidr->mask, CidrBitlenIPV6(aclass)))
+	{
+	  if (!over_rule && (cidr->number_on_this_cidr >= NumberPerCidr(aclass)))
+	    return -1;
+	  cidr->number_on_this_cidr++;
+	  return 0;
+	}
+      }
+      cidr = MyMalloc(sizeof(struct CidrItem));
+      cidr->number_on_this_cidr = 1;
+      cidr->mask = *ip;
+      mask_addr(&cidr->mask, CidrBitlenIPV6(aclass));
+      dlinkAdd(cidr, &cidr->node, &aclass->list_ipv6);
+    }
+  }
+#endif
+  return 0;
+}
+
+/*
+ * remove_from_cidr_check
+ *
+ * inputs	- pointer to the ip to be removed
+ *		- pointer to the class
+ * output	- NONE
+ * side effects	-
+ */
+static void
+remove_from_cidr_check(struct irc_ssaddr *ip, struct ClassItem *aclass)
+{
+  dlink_node *ptr = NULL;
+  dlink_node *next_ptr = NULL;
+  struct CidrItem *cidr;
+
+  if (NumberPerCidr(aclass) == 0)
+    return;
+
+  if ((ip->ss.ss_family == AF_INET) && (CidrBitlenIPV4(aclass) != 0))
+  {
+    DLINK_FOREACH_SAFE(ptr, next_ptr, aclass->list_ipv4.head)
+    {
+      cidr = ptr->data;
+      if (match_ipv4(ip, &cidr->mask, CidrBitlenIPV4(aclass)))
+      {
+	cidr->number_on_this_cidr--;
+	if (cidr->number_on_this_cidr == 0)
+	{
+	  dlinkDelete(ptr, &aclass->list_ipv4);
+	  MyFree(cidr);
+	  return;
+	}
+      }
+    }
+  }
+#ifdef IPV6
+  else if(CidrBitlenIPV6(aclass) != 0)
+  {
+    DLINK_FOREACH_SAFE(ptr, next_ptr, aclass->list_ipv6.head)
+    {
+      cidr = ptr->data;
+      if (match_ipv6(ip, &cidr->mask, CidrBitlenIPV6(aclass)))
+      {
+	cidr->number_on_this_cidr--;
+	if (cidr->number_on_this_cidr == 0)
+	{
+	  dlinkDelete(ptr, &aclass->list_ipv6);
+	  MyFree(cidr);
+	  return;
+	}
+      }
+    }
+  }
+#endif
+}
+
+
+/*
+ * mask_addr
+ *
+ * inputs	- pointer to the ip to mask
+ *		- bitlen
+ * output	- NONE
+ * side effects	-
+ */
+static void
+mask_addr(struct irc_ssaddr *ip, int bits)
+{
+  int mask;
+#ifdef IPV6
+  struct sockaddr_in6 *v6_base_ip;
+  int i, m, n;
+#endif
+  struct sockaddr_in *v4_base_ip;
+
+#ifdef IPV6
+  if (ip->ss.ss_family != AF_INET6)
+#endif
+  {
+    v4_base_ip = (struct sockaddr_in*)ip;
+    mask = ~((1 << (32 - bits)) - 1);
+    v4_base_ip->sin_addr.s_addr = 
+      htonl(ntohl(v4_base_ip->sin_addr.s_addr) & mask);
+  }
+#ifdef IPV6
+  else
+  {
+    n = bits / 8;
+    m = bits % 8;
+    v6_base_ip = (struct sockaddr_in6*)ip;
+
+    mask = ~((1 << (8 - m)) -1 );
+    v6_base_ip->sin6_addr.s6_addr[n] = v6_base_ip->sin6_addr.s6_addr[n] & mask;
+    for (i = n + 1; n < 16; i++)
+      v6_base_ip->sin6_addr.s6_addr[n] = 0;
+  }
+#endif
+}
+
+/*
+ * rebuild_cidr_class
+ *
+ * inputs	- pointer to old conf
+ *		- pointer to new_class
+ * output	- none
+ * side effects	- rebuilds the class link list of cidr blocks
+ */
+void
+rebuild_cidr_class(struct ConfItem *conf, struct ClassItem *new_class)
+{
+  struct Client *client_p;
+  dlink_node *ptr = NULL;
+  struct ClassItem *old_class = NULL;
+
+  old_class = (struct ClassItem *)map_to_conf(conf);
+  new_class->list_ipv4.head = 0;
+  new_class->list_ipv4.tail = 0;
+  new_class->list_ipv4.length = 0;
+  new_class->list_ipv6.head = 0;
+  new_class->list_ipv6.tail = 0;
+  new_class->list_ipv6.length = 0;
+  if (NumberPerCidr(new_class) == 0)
+  {
+    destroy_cidr_class(old_class);
+    return;
+  }
+
+  destroy_cidr_list(&old_class->list_ipv4);
+  if (CidrBitlenIPV4(new_class) != 0)
+  {
+    DLINK_FOREACH(ptr, local_client_list.head)
+    {
+      client_p = ptr->data;
+      if (dlinkFind(&client_p->localClient->confs, conf) != NULL)
+	cidr_limit_reached(1, &client_p->localClient->ip, new_class);
+    }
+  }
+
+#ifdef IPV6
+  destroy_cidr_list(&old_class->list_ipv6);
+
+  if (CidrBitlenIPV6(new_class) != 0)
+  {
+    DLINK_FOREACH(ptr, local_client_list.head)
+    {
+      client_p = ptr->data;
+      if (dlinkFind(&client_p->localClient->confs, conf) != NULL)
+	cidr_limit_reached(1, &client_p->localClient->ip, new_class);
+    }
+  }
+#endif
+}
+
+/*
+ * destroy_cidr_class
+ *
+ * inputs	- pointer to class
+ * output	- none
+ * side effects	- completely destroys the class link list of cidr blocks
+ */
+static void
+destroy_cidr_class(struct ClassItem *aclass)
+{
+  destroy_cidr_list(&aclass->list_ipv4);
+#ifdef IPV6
+  destroy_cidr_list(&aclass->list_ipv6);
+#endif
+}
+
+/*
+ * destroy_cidr_list
+ *
+ * inputs	- pointer to class dlink list of cidr blocks
+ * output	- none
+ * side effects	- completely destroys the class link list of cidr blocks
+ */
+static void
+destroy_cidr_list(dlink_list *list)
+{
+  dlink_node *ptr = NULL;
+  dlink_node *next_ptr = NULL;
+  struct CidrItem *cidr;
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, list->head)
+  {
+    cidr = ptr->data;
+    dlinkDelete(ptr, list);
+    MyFree(cidr);
+  }
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.456 2005/09/25 20:10:39 knight Exp $
+ *  $Id: ircd_parser.y,v 1.457 2005/09/29 00:46:55 adx Exp $
  */
 
 %{
@@ -152,7 +152,8 @@ unhook_hub_leaf_confs(void)
 %token  CAN_FLOOD
 %token  CAN_IDLE
 %token  CHANNEL
-%token	CIDR_BITLEN
+%token	CIDR_BITLEN_IPV4
+%token	CIDR_BITLEN_IPV6
 %token  CIPHER_PREFERENCE
 %token  CLASS
 %token  COMPRESSED
@@ -1449,7 +1450,18 @@ class_entry: CLASS
       if (cconf != NULL)		/* The class existed already */
       {
         class = (struct ClassItem *) map_to_conf(cconf);
-        *class = *yy_class;
+
+	if (CidrBitlenIPV4(class) != CidrBitlenIPV4(yy_class)
+#ifdef IPV6
+	    || CidrBitlenIPV6(class) != CidrBitlenIPV6(yy_class)
+#endif
+	    )
+	  {
+	    *class = *yy_class;
+	    rebuild_cidr_class(cconf, class);
+	  }
+	else
+	  *class = *yy_class;
         delete_conf_item(yy_conf);
         MyFree(cconf->name);            /* Allows case change of class name */
         cconf->name = yy_class_name;
@@ -1468,7 +1480,7 @@ class_name_b: | class_name_t;
 
 class_items:    class_items class_item | class_item;
 class_item:     class_name |
-		class_cidr_bitlen |
+		class_cidr_bitlen_ipv4 | class_cidr_bitlen_ipv6 |
                 class_ping_time |
 		class_ping_warning |
 		class_number_per_cidr |
@@ -1553,10 +1565,16 @@ class_sendq: SENDQ '=' sizespec ';'
     MaxSendq(yy_class) = $3;
 };
 
-class_cidr_bitlen: CIDR_BITLEN '=' NUMBER ';'
+class_cidr_bitlen_ipv4: CIDR_BITLEN_IPV4 '=' NUMBER ';'
 {
   if (ypass == 1)
-    CidrBitlen(yy_class) = $3;
+    CidrBitlenIPV4(yy_class) = $3;
+};
+
+class_cidr_bitlen_ipv6: CIDR_BITLEN_IPV6 '=' NUMBER ';'
+{
+  if (ypass == 1)
+    CidrBitlenIPV6(yy_class) = $3;
 };
 
 class_number_per_cidr: NUMBER_PER_CIDR '=' NUMBER ';'

@@ -1,4 +1,4 @@
-$Id: TODO,v 7.111 2005/09/27 12:43:33 adx Exp $
+$Id: TODO,v 7.112 2005/09/29 00:46:55 adx Exp $
 
 - dynamically extensible parser for modules
 
@@ -68,6 +68,7 @@ it's a leaf.
 * implement /nick 0 and uid addressing
 * more I/O backends (ports)
 * make STATIC_MODULES more flexible
+* get rid of conf attaching as much as possible
 
 
 -- metalrock's list

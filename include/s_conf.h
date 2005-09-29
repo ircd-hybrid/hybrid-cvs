@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.334 2005/09/29 00:13:34 adx Exp $
+ *  $Id: s_conf.h,v 7.335 2005/09/29 00:46:55 adx Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -130,8 +130,18 @@ struct ClassItem
   int max_ident;
   int max_perip;
   int curr_user_count;
-  int cidr_bitlen;
+  int cidr_bitlen_ipv4;
+  int cidr_bitlen_ipv6;
   int number_per_cidr;
+  dlink_list list_ipv4;         /* base of per cidr ipv4 client link list */
+  dlink_list list_ipv6;         /* base of per cidr ipv6 client link list */
+};
+
+struct CidrItem
+{
+  struct irc_ssaddr mask;
+  int number_on_this_cidr;
+  dlink_node node;
 };
 
 #define ConFreq(x)	((x)->con_freq)
@@ -144,7 +154,8 @@ struct ClassItem
 #define MaxPerIp(x)	((x)->max_perip)
 #define MaxSendq(x)	((x)->max_sendq)
 #define CurrUserCount(x) ((x)->curr_user_count)
-#define CidrBitlen(x)	((x)->cidr_bitlen)
+#define CidrBitlenIPV4(x)	((x)->cidr_bitlen_ipv4)
+#define CidrBitlenIPV6(x)	((x)->cidr_bitlen_ipv6)
 #define NumberPerCidr(x) ((x)->number_per_cidr)
 
 #define ClassPtr(x)      ((x)->class_ptr)
@@ -543,5 +554,6 @@ extern int match_conf_password(const char *, const struct AccessItem *);
 
 extern void cluster_a_line(struct Client *,
 			   const char *, int, int, const char *,...);
+extern void rebuild_cidr_class(struct ConfItem *, struct ClassItem *);
 
 #endif /* INCLUDED_s_conf_h */
