@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.609 2005/09/29 01:11:41 adx Exp $
+ *  $Id: s_conf.c,v 7.610 2005/09/29 01:50:00 adx Exp $
  */
 
 #include "stdinc.h"
@@ -112,10 +112,8 @@ static int find_user_host(struct Client *, char *, char *, char *, unsigned int)
  * bit_len
  */
 static int cidr_limit_reached(int, struct irc_ssaddr *, struct ClassItem *);
-static void mask_addr(struct irc_ssaddr *, int);
 static void remove_from_cidr_check(struct irc_ssaddr *, struct ClassItem *);
 static void destroy_cidr_class(struct ClassItem *);
-static void destroy_cidr_list(dlink_list *list);
 
 static void flags_to_ascii(unsigned int, const unsigned int[], char *, int);
 
@@ -3730,7 +3728,7 @@ cidr_limit_reached(int over_rule,
   if (ip->ss.ss_family == AF_INET)
   {
     if (CidrBitlenIPV4(aclass) <= 0)
-      return;
+      return 0;
 
     DLINK_FOREACH(ptr, aclass->list_ipv4.head)
     {
@@ -3832,47 +3830,39 @@ remove_from_cidr_check(struct irc_ssaddr *ip, struct ClassItem *aclass)
 #endif
 }
 
-
-/*
- * mask_addr
- *
- * inputs	- pointer to the ip to mask
- *		- bitlen
- * output	- NONE
- * side effects	-
- */
 static void
-mask_addr(struct irc_ssaddr *ip, int bits)
+rebuild_cidr_list(int aftype, struct ConfItem *oldcl, struct ClassItem *newcl,
+                  dlink_list *old_list, dlink_list *new_list, int changed)
 {
-  int mask;
-#ifdef IPV6
-  struct sockaddr_in6 *v6_base_ip;
-  int i, m, n;
-#endif
-  struct sockaddr_in *v4_base_ip;
+  dlink_node *ptr;
+  struct Client *client_p;
+  struct ConfItem *conf;
+  struct AccessItem *aconf;
 
-#ifdef IPV6
-  if (ip->ss.ss_family != AF_INET6)
-#endif
+  if (!changed)
   {
-    v4_base_ip = (struct sockaddr_in*)ip;
-    mask = ~((1 << (32 - bits)) - 1);
-    v4_base_ip->sin_addr.s_addr = 
-      htonl(ntohl(v4_base_ip->sin_addr.s_addr) & mask);
+    *new_list = *old_list;
+    old_list->head = old_list->tail = NULL;
+    old_list->length = 0;
+    return;
   }
-#ifdef IPV6
-  else
-  {
-    n = bits / 8;
-    m = bits % 8;
-    v6_base_ip = (struct sockaddr_in6*)ip;
 
-    mask = ~((1 << (8 - m)) -1 );
-    v6_base_ip->sin6_addr.s6_addr[n] = v6_base_ip->sin6_addr.s6_addr[n] & mask;
-    for (i = n + 1; n < 16; i++)
-      v6_base_ip->sin6_addr.s6_addr[n] = 0;
+  DLINK_FOREACH(ptr, local_client_list.head)
+  {
+    client_p = ptr->data;
+    if (client_p->localClient->aftype != aftype)
+      continue;
+    if (dlink_list_length(&client_p->localClient->confs) == 0)
+      continue;
+
+    conf = client_p->localClient->confs.tail->data;
+    if (conf->type == CLIENT_TYPE)
+    {
+      aconf = map_to_conf(conf);
+      if (aconf->class_ptr == oldcl)
+        cidr_limit_reached(1, &client_p->localClient->ip, newcl);
+    }
   }
-#endif
 }
 
 /*
@@ -3886,61 +3876,30 @@ mask_addr(struct irc_ssaddr *ip, int bits)
 void
 rebuild_cidr_class(struct ConfItem *conf, struct ClassItem *new_class)
 {
-  struct Client *client_p;
-  dlink_node *ptr = NULL;
-  struct ClassItem *old_class = NULL;
+  struct ClassItem *old_class = map_to_conf(conf);
 
-  old_class = (struct ClassItem *)map_to_conf(conf);
-  new_class->list_ipv4.head = 0;
-  new_class->list_ipv4.tail = 0;
+  new_class->list_ipv4.head = new_class->list_ipv4.tail = NULL;
   new_class->list_ipv4.length = 0;
-  new_class->list_ipv6.head = 0;
-  new_class->list_ipv6.tail = 0;
-  new_class->list_ipv6.length = 0;
-  if (NumberPerCidr(new_class) == 0)
-  {
-    destroy_cidr_class(old_class);
-    return;
-  }
 
-  destroy_cidr_list(&old_class->list_ipv4);
-  if (CidrBitlenIPV4(new_class) != 0)
+  new_class->list_ipv6.head = new_class->list_ipv6.tail = NULL;
+  new_class->list_ipv6.length = 0;
+
+  if (NumberPerCidr(old_class) > 0 && NumberPerCidr(new_class) > 0)
   {
-    DLINK_FOREACH(ptr, local_client_list.head)
-    {
-      client_p = ptr->data;
-      if (dlinkFind(&client_p->localClient->confs, conf) != NULL)
-	cidr_limit_reached(1, &client_p->localClient->ip, new_class);
-    }
-  }
+    if (CidrBitlenIPV4(old_class) > 0 && CidrBitlenIPV4(new_class) > 0)
+      rebuild_cidr_list(AF_INET, conf, new_class,
+                        &old_class->list_ipv4, &new_class->list_ipv4,
+                        CidrBitlenIPV4(old_class) != CidrBitlenIPV4(new_class));
 
 #ifdef IPV6
-  destroy_cidr_list(&old_class->list_ipv6);
-
-  if (CidrBitlenIPV6(new_class) != 0)
-  {
-    DLINK_FOREACH(ptr, local_client_list.head)
-    {
-      client_p = ptr->data;
-      if (dlinkFind(&client_p->localClient->confs, conf) != NULL)
-	cidr_limit_reached(1, &client_p->localClient->ip, new_class);
-    }
-  }
+    if (CidrBitlenIPV6(old_class) > 0 && CidrBitlenIPV6(new_class) > 0)
+      rebuild_cidr_list(AF_INET6, conf, new_class,
+                        &old_class->list_ipv6, &new_class->list_ipv6,
+                        CidrBitlenIPV6(old_class) != CidrBitlenIPV6(new_class));
 #endif
-}
+  }
 
-/*
- * destroy_cidr_class
- *
- * inputs	- pointer to class
- * output	- none
- * side effects	- completely destroys the class link list of cidr blocks
- */
-static void
-destroy_cidr_class(struct ClassItem *aclass)
-{
-  destroy_cidr_list(&aclass->list_ipv4);
-  destroy_cidr_list(&aclass->list_ipv6);
+  destroy_cidr_class(old_class);
 }
 
 /*
@@ -3963,4 +3922,18 @@ destroy_cidr_list(dlink_list *list)
     dlinkDelete(ptr, list);
     MyFree(cidr);
   }
+}
+
+/*
+ * destroy_cidr_class
+ *
+ * inputs	- pointer to class
+ * output	- none
+ * side effects	- completely destroys the class link list of cidr blocks
+ */
+static void
+destroy_cidr_class(struct ClassItem *aclass)
+{
+  destroy_cidr_list(&aclass->list_ipv4);
+  destroy_cidr_list(&aclass->list_ipv6);
 }

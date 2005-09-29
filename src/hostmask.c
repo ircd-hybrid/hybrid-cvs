@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.103 2005/09/25 18:48:35 db Exp $
+ *  $Id: hostmask.c,v 7.104 2005/09/29 01:50:00 adx Exp $
  */
 
 #include "stdinc.h"
@@ -287,6 +287,48 @@ match_ipv4(struct irc_ssaddr *addr, struct irc_ssaddr *mask, int bits)
       ntohl(v4mask->sin_addr.s_addr))
     return 0;
   return -1;
+}
+
+/*
+ * mask_addr
+ *
+ * inputs       - pointer to the ip to mask
+ *              - bitlen
+ * output       - NONE
+ * side effects -
+ */
+void
+mask_addr(struct irc_ssaddr *ip, int bits)
+{
+  int mask;
+#ifdef IPV6
+  struct sockaddr_in6 *v6_base_ip;
+  int i, m, n;
+#endif
+  struct sockaddr_in *v4_base_ip;
+
+#ifdef IPV6
+  if (ip->ss.ss_family != AF_INET6)
+#endif
+  {
+    v4_base_ip = (struct sockaddr_in*)ip;
+    mask = ~((1 << (32 - bits)) - 1);
+    v4_base_ip->sin_addr.s_addr =
+      htonl(ntohl(v4_base_ip->sin_addr.s_addr) & mask);
+  }
+#ifdef IPV6
+  else
+  {
+    n = bits / 8;
+    m = bits % 8;
+    v6_base_ip = (struct sockaddr_in6*)ip;
+
+    mask = ~((1 << (8 - m)) -1 );
+    v6_base_ip->sin6_addr.s6_addr[n] = v6_base_ip->sin6_addr.s6_addr[n] & mask;
+    for (i = n + 1; n < 16; i++)
+      v6_base_ip->sin6_addr.s6_addr[n] = 0;
+  }
+#endif
 }
 
 /* Hashtable stuff...now external as its used in m_stats.c */

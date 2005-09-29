@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.457 2005/09/29 00:46:55 adx Exp $
+ *  $Id: ircd_parser.y,v 1.458 2005/09/29 01:50:00 adx Exp $
  */
 
 %{
@@ -1450,19 +1450,10 @@ class_entry: CLASS
       if (cconf != NULL)		/* The class existed already */
       {
         class = (struct ClassItem *) map_to_conf(cconf);
-
-	if (CidrBitlenIPV4(class) != CidrBitlenIPV4(yy_class)
-#ifdef IPV6
-	    || CidrBitlenIPV6(class) != CidrBitlenIPV6(yy_class)
-#endif
-	    )
-	  {
-	    *class = *yy_class;
-	    rebuild_cidr_class(cconf, class);
-	  }
-	else
-	  *class = *yy_class;
+        *class = *yy_class;
+        rebuild_cidr_class(cconf, class);
         delete_conf_item(yy_conf);
+
         MyFree(cconf->name);            /* Allows case change of class name */
         cconf->name = yy_class_name;
       }
