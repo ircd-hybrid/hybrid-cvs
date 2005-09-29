@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.608 2005/09/29 01:06:28 adx Exp $
+ *  $Id: s_conf.c,v 7.609 2005/09/29 01:11:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -3729,48 +3729,45 @@ cidr_limit_reached(int over_rule,
 
   if (ip->ss.ss_family == AF_INET)
   {
-    if (CidrBitlenIPV4(aclass) > 0)
+    if (CidrBitlenIPV4(aclass) <= 0)
+      return;
+
+    DLINK_FOREACH(ptr, aclass->list_ipv4.head)
     {
-      DLINK_FOREACH(ptr, aclass->list_ipv4.head)
+      cidr = ptr->data;
+      if (match_ipv4(ip, &cidr->mask, CidrBitlenIPV4(aclass)))
       {
-	cidr = ptr->data;
-	if (match_ipv4(ip, &cidr->mask, CidrBitlenIPV4(aclass)))
-	{
-	  if (!over_rule && (cidr->number_on_this_cidr >= NumberPerCidr(aclass)))
-	    return -1;
-	  cidr->number_on_this_cidr++;
-	  return 0;
-	}
+        if (!over_rule && (cidr->number_on_this_cidr >= NumberPerCidr(aclass)))
+          return -1;
+        cidr->number_on_this_cidr++;
+        return 0;
       }
-      cidr = MyMalloc(sizeof(struct CidrItem));
-      cidr->number_on_this_cidr = 1;
-      cidr->mask = *ip;
-      mask_addr(&cidr->mask, CidrBitlenIPV4(aclass));
-      dlinkAdd(cidr, &cidr->node, &aclass->list_ipv4);
     }
+    cidr = MyMalloc(sizeof(struct CidrItem));
+    cidr->number_on_this_cidr = 1;
+    cidr->mask = *ip;
+    mask_addr(&cidr->mask, CidrBitlenIPV4(aclass));
+    dlinkAdd(cidr, &cidr->node, &aclass->list_ipv4);
   }
 #ifdef IPV6
-  else
+  else if (CidrBitlenIPV6(aclass) > 0)
   {
-    if (CidrBitlenIPV6(aclass) > 0)
+    DLINK_FOREACH(ptr, aclass->list_ipv6.head)
     {
-      DLINK_FOREACH(ptr, aclass->list_ipv6.head)
+      cidr = ptr->data;
+      if (match_ipv6(ip, &cidr->mask, CidrBitlenIPV6(aclass)))
       {
-	cidr = ptr->data;
-	if (match_ipv6(ip, &cidr->mask, CidrBitlenIPV6(aclass)))
-	{
-	  if (!over_rule && (cidr->number_on_this_cidr >= NumberPerCidr(aclass)))
-	    return -1;
-	  cidr->number_on_this_cidr++;
-	  return 0;
-	}
+        if (!over_rule && (cidr->number_on_this_cidr >= NumberPerCidr(aclass)))
+          return -1;
+        cidr->number_on_this_cidr++;
+        return 0;
       }
-      cidr = MyMalloc(sizeof(struct CidrItem));
-      cidr->number_on_this_cidr = 1;
-      cidr->mask = *ip;
-      mask_addr(&cidr->mask, CidrBitlenIPV6(aclass));
-      dlinkAdd(cidr, &cidr->node, &aclass->list_ipv6);
     }
+    cidr = MyMalloc(sizeof(struct CidrItem));
+    cidr->number_on_this_cidr = 1;
+    cidr->mask = *ip;
+    mask_addr(&cidr->mask, CidrBitlenIPV6(aclass));
+    dlinkAdd(cidr, &cidr->node, &aclass->list_ipv6);
   }
 #endif
   return 0;
@@ -3794,8 +3791,11 @@ remove_from_cidr_check(struct irc_ssaddr *ip, struct ClassItem *aclass)
   if (NumberPerCidr(aclass) == 0)
     return;
 
-  if (ip->ss.ss_family == AF_INET && CidrBitlenIPV4(aclass) > 0)
+  if (ip->ss.ss_family == AF_INET)
   {
+    if (CidrBitlenIPV4(aclass) <= 0)
+      return;
+
     DLINK_FOREACH_SAFE(ptr, next_ptr, aclass->list_ipv4.head)
     {
       cidr = ptr->data;
@@ -3940,9 +3940,7 @@ static void
 destroy_cidr_class(struct ClassItem *aclass)
 {
   destroy_cidr_list(&aclass->list_ipv4);
-#ifdef IPV6
   destroy_cidr_list(&aclass->list_ipv6);
-#endif
 }
 
 /*
