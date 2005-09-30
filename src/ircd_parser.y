@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.459 2005/09/29 16:02:49 adx Exp $
+ *  $Id: ircd_parser.y,v 1.460 2005/09/30 14:20:03 michael Exp $
  */
 
 %{
@@ -61,7 +61,7 @@ static struct ConfItem *yy_conf = NULL;
 static struct AccessItem *yy_aconf = NULL;
 static struct MatchItem *yy_match_item = NULL;
 static struct ClassItem *yy_class = NULL;
-static char *yy_class_name;
+static char *yy_class_name = NULL;
 
 static dlink_list col_conf_list  = { NULL, NULL, 0 };
 static dlink_list hub_conf_list  = { NULL, NULL, 0 };
@@ -73,10 +73,10 @@ static char hostbuf[IRCD_BUFSIZE];
 static char reasonbuf[REASONLEN + 1];
 static char gecos_name[REALLEN * 4];
 
-extern dlink_list gdeny_items;
+extern dlink_list gdeny_items; /* XXX */
 
-static char *resv_reason;
-static char *listener_address;
+static char *resv_reason = NULL;
+static char *listener_address = NULL;
 static int not_atom = 0;
 
 struct CollectItem {
@@ -951,8 +951,8 @@ oper_entry: OPERATOR
   if (ypass == 2)
   {
     yy_conf = make_conf_item(OPER_TYPE);
-    yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
-    SetConfEncrypted(yy_aconf);
+    yy_aconf = map_to_conf(yy_conf);
+    SetConfEncrypted(yy_aconf); /* Yes, the default is encrypted */
   }
   else
   {
@@ -1046,7 +1046,7 @@ oper_item:      oper_name | oper_user | oper_password | oper_hidden_admin |
 		oper_class | oper_global_kill | oper_remote |
                 oper_kline | oper_xline | oper_unkline |
 		oper_gline | oper_nick_changes | oper_remoteban |
-                oper_die | oper_rehash | oper_admin |
+                oper_die | oper_rehash | oper_admin | oper_operwall |
 		oper_encrypted | oper_rsa_public_key_file |
                 oper_flags | error ';' ;
 
@@ -1109,21 +1109,10 @@ oper_encrypted: ENCRYPTED '=' TBOOL ';'
 {
   if (ypass == 2)
   {
-    if (yylval.number)			/* Yes, the default is encrypted */
+    if (yylval.number)
       SetConfEncrypted(yy_aconf);
     else
       ClearConfEncrypted(yy_aconf);
-  }
-};
-
-oper_hidden_admin: HIDDEN_ADMIN '=' TBOOL ';'
-{
-  if (ypass == 2)
-  {
-    if (yylval.number)
-      yy_aconf->port |= OPER_FLAG_HIDDEN_ADMIN;
-    else
-      yy_aconf->port &= ~OPER_FLAG_HIDDEN_ADMIN;
   }
 };
 
@@ -1296,6 +1285,28 @@ oper_admin: ADMIN '=' TBOOL ';'
       yy_aconf->port |= OPER_FLAG_ADMIN;
     else
       yy_aconf->port &= ~OPER_FLAG_ADMIN;
+  }
+};
+
+oper_hidden_admin: HIDDEN_ADMIN '=' TBOOL ';'
+{
+  if (ypass == 2)
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_HIDDEN_ADMIN;
+    else
+      yy_aconf->port &= ~OPER_FLAG_HIDDEN_ADMIN;
+  }
+};
+
+oper_operwall: T_OPERWALL '=' TBOOL ';'
+{
+  if (ypass == 2)
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_OPERWALL;
+    else
+      yy_aconf->port &= ~OPER_FLAG_OPERWALL;
   }
 };
 
