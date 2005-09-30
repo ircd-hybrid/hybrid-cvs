@@ -1,3 +1,7 @@
+-- ircd-hybrid-7.2rc2 RELNOTES
+o) Fixed broken operwall = yes;
+
+
 -- ircd-hybrid-7.2rc1 RELNOTES
 o) ircd can dynamically change all its client/fd limits at runtime
 o) Added epoll as the primary I/O engine under Linux
@@ -70,4 +74,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.123 2005/09/25 10:15:18 michael Exp $
+$Id: RELNOTES,v 1.124 2005/09/30 14:28:33 michael Exp $
