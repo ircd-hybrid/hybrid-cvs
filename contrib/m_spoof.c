@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_spoof.c,v 1.11 2005/09/29 20:15:39 adx Exp $
+ *  $Id: m_spoof.c,v 1.12 2005/10/01 14:29:47 michael Exp $
  */
 
 /* MODULE CONFIGURATION FOLLOWS -- please read!! */
@@ -128,7 +128,7 @@ _moddeinit(void)
   mod_del_cmd(&spoof_msgtab);
 }
 
-const char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 #endif
 
 #ifdef SPOOF_FILE
@@ -427,31 +427,31 @@ mo_delspoof(struct Client *client_p, struct Client *source_p,
         ;
       if (*tmp == '=') {
         for (++tmp; *tmp == '\t' || *tmp == ' '; tmp++)
-	  ;
+          ;
         if (*tmp == '\"')
-	{
+        {
           /* yuppi, we've just reached the user="..."; field */
           int matches;
           char *tmp2 = strchr(++tmp, '\"');
 
           if (tmp2 != NULL)
-	    *tmp2 = '\0';
+            *tmp2 = '\0';
           tmp2 = strchr(tmp, '@');
 
           /* is it matching our mask? */
           if (tmp2 == NULL)
-	    matches = !irccmp(user, "*") && !irccmp(host, tmp);
+            matches = !irccmp(user, "*") && !irccmp(host, tmp);
           else
-	  {
+          {
             *tmp2++ = '\0';
             matches = !irccmp(user, tmp) && !irccmp(host, tmp2);
           }
 
           if (!matches)
-	  {
+          {
             /* no.. so leave it unchanged */
             if (ignore_it)
-	    {
+            {
               ignore_it = 0;
               fbputs("auth {\n", fout, 7);
               /* user="..." should be the first field in the auth {}; block,
@@ -461,18 +461,18 @@ mo_delspoof(struct Client *client_p, struct Client *source_p,
 
             fbputs("\tuser = \"", fout, 9);
             if (tmp2 == NULL)
-	      fbputs("*", fout, 1);
+              fbputs("*", fout, 1);
             else
-	      fbputs(tmp, fout, strlen(tmp));
+              fbputs(tmp, fout, strlen(tmp));
             fbputs("@", fout, 1);
             fbputs(tmp2, fout, strlen(tmp2));
             fbputs("\";\n", fout, 3);
           }
           else
-	  {
-	    /* we've got it! - omit and continue working */
-	    spoof_found = 1;
-	  }
+          {
+            /* we've got it! - omit and continue working */
+            spoof_found = 1;
+          }
 
           continue;
         }

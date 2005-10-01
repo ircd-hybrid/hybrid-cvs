@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capture.c,v 1.16 2005/08/20 04:43:15 michael Exp $
+ *  $Id: m_capture.c,v 1.17 2005/10/01 14:29:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&uncapture_msgtab);
 }
 
-const char *_version = "$Revision: 1.16 $";
+const char *_version = "$Revision: 1.17 $";
 #endif
 
 /* mo_capture
@@ -100,7 +100,7 @@ mo_capture(struct Client *client_p, struct Client *source_p,
   if (MyClient(source_p) && !IsAdmin(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVS),
-	       me.name, source_p->name, "CAPTURE");
+               me.name, source_p->name, "CAPTURE");
     return;
   }
 

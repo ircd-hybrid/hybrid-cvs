@@ -31,7 +31,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  *
- * $Id: ip_cloaking.c,v 1.12 2005/09/17 10:30:21 michael Exp $
+ * $Id: ip_cloaking.c,v 1.13 2005/10/01 14:29:47 michael Exp $
  */
 
 /*
@@ -73,7 +73,7 @@ static int vhost_ipv6_err;
 static dlink_node *prev_enter_umode;
 static dlink_node *prev_umode;
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 
 static void *reset_ipv6err_flag(va_list);
 static void *h_set_user_mode(va_list);
@@ -295,11 +295,11 @@ make_virthost (char *curr, char *host, char *new)
   int parc = 0, parc2 = 0, len = 0;
   unsigned long hash[8];
 
-  strlcpy (s2, curr, HOSTLEN + 1);
-  strlcpy (s, host, HOSTLEN + 1);
+  strlcpy(s2, curr, HOSTLEN + 1);
+  strlcpy(s, host, HOSTLEN + 1);
 
-  parc  = str2arr (parv, s, ".");
-  parc2 = str2arr (parv2, s2, ".");
+  parc  = str2arr(parv, s, ".");
+  parc2 = str2arr(parv2, s2, ".");
 
   hash[0] = ((crc32 (parv[3], strlen (parv[3])) + KEY) ^ KEY2) ^ KEY3;
   hash[1] = ((KEY2 ^ crc32 (parv[2], strlen (parv[2]))) + KEY3) ^ KEY;
@@ -328,16 +328,17 @@ make_virthost (char *curr, char *host, char *new)
   {
     len = strlen (parv2[3]);
 
-    if (strchr ("0123456789", parv2[3][len - 1]) || parc2 < 2)
+    if (strchr("0123456789", parv2[3][len - 1]) || parc2 < 2)
     {
-      ircsprintf (mask, "%s.%s.%s.%lx",
-            parv2[parc2 - 4], parv2[parc2 - 3], parv2[parc2 - 2], hash[3]);
+      ircsprintf(mask, "%s.%s.%s.%lx",
+                 parv2[parc2 - 4], parv2[parc2 - 3],
+                 parv2[parc2 - 2], hash[3]);
     }
     else
     {
       /* isp.tld */
-      ircsprintf (mask, "%lx-%lx.%s.%s",
-            hash[0], hash[3], parv2[parc2 - 2], parv2[parc2 - 1]);
+      ircsprintf(mask, "%lx-%lx.%s.%s",
+                 hash[0], hash[3], parv2[parc2 - 2], parv2[parc2 - 1]);
     }
   }
   else
@@ -345,34 +346,33 @@ make_virthost (char *curr, char *host, char *new)
     if (parc2 >= 4)
     {
       /* isp.sub.tld or district.isp.tld */
-      ircsprintf (mask, "%lx-%lx.%s.%s.%s",
+      ircsprintf(mask, "%lx-%lx.%s.%s.%s",
             hash[3], hash[1], parv2[parc2 - 3], parv2[parc2 - 2],
             parv2[parc2 - 1]);
     }
     else
     {
       /* isp.tld */
-      ircsprintf (mask, "%lx-%lx.%s.%s",
+      ircsprintf(mask, "%lx-%lx.%s.%s",
             hash[0], hash[3], parv2[parc2 - 2], parv2[parc2 - 1]);
     }
     
     if (parc2 >= 5)
     {
       /* zone.district.isp.tld or district.isp.sub.tld */
-      ircsprintf (mask, "%lx-%lx.%s.%s.%s.%s",
+      ircsprintf(mask, "%lx-%lx.%s.%s.%s.%s",
             hash[1], hash[0], parv2[parc2 - 4], parv2[parc2 - 3],
             parv2[parc2 - 2], parv2[parc2 - 1]);
     }
     else
     { 
       /* isp.tld */
-      ircsprintf (mask, "%lx-%lx.%s.%s",
+      ircsprintf(mask, "%lx-%lx.%s.%s",
             hash[0], hash[3], parv2[parc2 - 2], parv2[parc2 - 1]);
     }
   }
 
   strlcpy(new, mask, HOSTLEN + 1);
-  return;
 }
 
 /*
@@ -393,7 +393,7 @@ set_vhost(struct Client *client_p, struct Client *source_p,
   if (IsClient(target_p))
     sendto_server(client_p, source_p, NULL, CAP_ENCAP, NOCAPS, LL_ICLIENT,
                   ":%s ENCAP * CHGHOST %s %s",
-		          me.name, target_p->name, target_p->host);
+                  me.name, target_p->name, target_p->host);
 
     sendto_one(target_p, form_str(RPL_HOSTHIDDEN),
                me.name, target_p->name, target_p->host);
@@ -439,7 +439,7 @@ h_set_user_mode(va_list args)
         if (!vhost_ipv6_err)
         {
           sendto_one(target_p, ":%s NOTICE %s :*** Sorry, IP cloaking "
-	             "does not support IPv6 users!", me.name, target_p->name);
+                     "does not support IPv6 users!", me.name, target_p->name);
           vhost_ipv6_err = YES;
         }
       }

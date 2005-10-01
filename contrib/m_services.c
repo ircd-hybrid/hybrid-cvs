@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_services.c,v 1.31 2005/09/18 00:59:54 knight Exp $
+ *  $Id: m_services.c,v 1.32 2005/10/01 14:29:47 michael Exp $
  */
 /*
  *
@@ -95,7 +95,7 @@ static void m_statserv(struct Client *, struct Client *, int, char *[]);
 static void get_string(int, char *[], char *);
 static int clean_nick_name(char *, int);
 static void deliver_services_msg(const char *, const char *, struct Client *,
-				 struct Client *, int, char *[]);
+                                 struct Client *, int, char *[]);
 
 /* SVS commands */
 struct Message svsnick_msgtab = {
@@ -223,7 +223,7 @@ _moddeinit(void)
   mod_del_cmd(&os_msgtab);
 }
 
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.32 $";
 #endif
 
 /*
@@ -238,7 +238,7 @@ mo_svsnick(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
   char newnick[NICKLEN];
-  struct Client *target_p;
+  struct Client *target_p = NULL;
 
   if (MyClient(source_p) && !IsOperAdmin(source_p))
   {
@@ -333,20 +333,18 @@ static int
 clean_nick_name(char *nick, int local)
 {
   assert(nick);
-  if (nick == NULL)
-    return (0);
 
   /* nicks can't start with a digit or - or be 0 length */
   /* This closer duplicates behaviour of hybrid-6 */
 
   if (*nick == '-' || (IsDigit(*nick) && local) || *nick == '\0')
-    return (0);
+    return 0;
 
   for (; *nick; ++nick)
     if (!IsNickChar(*nick))
-      return (0);
+      return 0;
 
-  return (1);
+  return 1;
 }
 
 /*
@@ -360,7 +358,7 @@ static void
 m_identify(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
-  struct Client *target_p;
+  struct Client *target_p = NULL;
 
   switch (parc)
   {
@@ -404,7 +402,7 @@ deliver_services_msg(const char *service, const char *command,
                      struct Client *client_p,
                      struct Client *source_p, int parc, char *parv[])
 {
-  struct Client *target_p;
+  struct Client *target_p = NULL;
   char buf[IRCD_BUFSIZE] = { '\0' };
 
   if (parc < 2 || *parv[1] == '\0')
@@ -421,6 +419,6 @@ deliver_services_msg(const char *service, const char *command,
   {
     get_string(parc - 1, parv + 1, buf);
     sendto_one(target_p, ":%s PRIVMSG %s@%s :%s",
-	       source_p->name, service, SERVICES_NAME, buf);
+               source_p->name, service, SERVICES_NAME, buf);
   }
 }

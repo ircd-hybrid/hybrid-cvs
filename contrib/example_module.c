@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: example_module.c,v 1.12 2005/09/09 17:37:13 adx Exp $
+ *   $Id: example_module.c,v 1.13 2005/10/01 14:29:47 michael Exp $
  */
 
 /* List of ircd includes from ../include/ 
@@ -57,16 +57,13 @@
  * parc     == the number of parameters
  * parv     == an array of the parameters
  */
-static void mr_test(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[]);
-static void m_test(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[]);
-static void ms_test(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[]);
-static void mo_test(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[]);
+static void mr_test(struct Client *, struct Client *, int, char *[]);
+static void m_test(struct Client *, struct Client *, int, char *[]);
+static void ms_test(struct Client *, struct Client *, int, char *[]);
+static void mo_test(struct Client *, struct Client *, int, char *[]);
 
-/* Show the commands this module can handle in a msgtab
+/*
+ * Show the commands this module can handle in a msgtab
  * and give the msgtab a name, here its test_msgtab
  */
 struct Message test_msgtab = {
@@ -133,7 +130,7 @@ _moddeinit(void)
 
 /* When we last modified the file (shown in /modlist), this is usually:
  */
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 #endif
 
 /*
@@ -151,7 +148,7 @@ mr_test(struct Client *client_p, struct Client *source_p,
 {
   if (parc == 1)
     sendto_one(source_p, ":%s NOTICE %s :You are unregistered and sent no parameters",
-    	       me.name, source_p->name);
+               me.name, source_p->name);
   else
     sendto_one(source_p, ":%s NOTICE %s :You are unregistered and sent parameter: %s", 
                me.name, source_p->name, parv[1]);
@@ -168,7 +165,7 @@ m_test(struct Client *client_p, struct Client *source_p,
 {
   if (parc == 1)
     sendto_one(source_p, ":%s NOTICE %s :You are a normal user, and sent no parameters",
-    	       me.name, source_p->name);
+               me.name, source_p->name);
   else
     sendto_one(source_p, ":%s NOTICE %s :You are a normal user, and send parameters: %s",
                me.name, source_p->name, parv[1]);
@@ -190,7 +187,7 @@ ms_test(struct Client *client_p, struct Client *source_p,
                  me.name, source_p->name);
     else
       sendto_one(source_p, ":%s NOTICE %s :You are a remote client, and sent no parameters",
-      	         me.name, source_p->name);
+                 me.name, source_p->name);
   }
   else
   {
@@ -202,7 +199,7 @@ ms_test(struct Client *client_p, struct Client *source_p,
                  me.name, source_p->name, parv[1]);
   }
 }
-	  
+
 /*
  * mo_test
  *      parv[0] = sender prefix
@@ -211,7 +208,7 @@ ms_test(struct Client *client_p, struct Client *source_p,
 static void
 mo_test(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
-{		 
+{
   if (parc == 1)
     sendto_one(source_p, ":%s NOTICE %s :You are an operator, and sent no parameters",
                me.name, source_p->name);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ctrace.c,v 1.12 2005/09/27 12:43:33 adx Exp $
+ *  $Id: m_ctrace.c,v 1.13 2005/10/01 14:29:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -43,7 +43,7 @@
 #include "irc_getnameinfo.h"
 
 static void do_ctrace(struct Client *, char **);
-static void mo_ctrace(struct Client*, struct Client*, int, char**);
+static void mo_ctrace(struct Client *, struct Client *, int, char *[]);
 
 struct Message ctrace_msgtab = {
   "CTRACE", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -51,7 +51,7 @@ struct Message ctrace_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 static struct Callback *ctrace_cb;
 
 static void *
@@ -80,7 +80,7 @@ _moddeinit(void)
 }
 #endif
 
-static int report_this_status(struct Client *source_p, struct Client *target_p);
+static int report_this_status(struct Client *, struct Client *);
 
 /*
 ** mo_ctrace
@@ -89,7 +89,7 @@ static int report_this_status(struct Client *source_p, struct Client *target_p);
 */
 static void
 mo_ctrace(struct Client *client_p, struct Client *source_p,
-	 int parc, char *parv[])
+          int parc, char *parv[])
 {
   if (EmptyString(parv[1]))
   {
@@ -126,11 +126,11 @@ do_ctrace(struct Client *source_p, char **parv)
 
     class_name = get_client_class(target_p);
     if ((class_name != NULL) && match(class_looking_for, class_name))
-      (void)report_this_status(source_p, target_p);
+      report_this_status(source_p, target_p);
   }
 
   sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name,
-	     parv[0], class_looking_for);
+             parv[0], class_looking_for);
 }
 
 /*
@@ -144,10 +144,10 @@ do_ctrace(struct Client *source_p, char **parv)
 static int
 report_this_status(struct Client *source_p, struct Client *target_p)
 {
-  const char* name;
-  const char* class_name;
-  char  ip[HOSTIPLEN];
-  int cnt=0;
+  const char *name = NULL;
+  const char *class_name = NULL;
+  char ip[HOSTIPLEN];
+  int cnt = 0;
 
   /* Should this be sockhost? - stu */
   irc_getnameinfo((struct sockaddr*)&target_p->localClient->ip, 
@@ -156,23 +156,21 @@ report_this_status(struct Client *source_p, struct Client *target_p)
   name = get_client_name(target_p, HIDE_IP);
   class_name = get_client_class(target_p);
 
-  set_time();
-
   switch(target_p->status)
-    {
+  {
     case STAT_CLIENT:
 
       if ((IsOper(source_p) &&
-	   (MyClient(source_p) || !IsInvisible(target_p)))
-	  || IsOper(target_p))
-	{
-          if (IsAdmin(target_p) && !ConfigFileEntry.hide_spoof_ips)
-	    sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
+          (MyClient(source_p) || !IsInvisible(target_p)))
+          || IsOper(target_p))
+      {
+        if (IsAdmin(target_p) && !ConfigFileEntry.hide_spoof_ips)
+          sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
                        me.name, source_p->name, class_name, name,
                        IsAdmin(source_p) ? ip : "255.255.255.255",
                        CurrentTime - target_p->lasttime,
-                       CurrentTime - target_p->localClient->last);	       
-	  else if (IsOper(target_p))
+                       CurrentTime - target_p->localClient->last);
+          else if (IsOper(target_p))
           {
             if (ConfigFileEntry.hide_spoof_ips)
 	      sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
@@ -203,7 +201,7 @@ report_this_status(struct Client *source_p, struct Client *target_p)
                          CurrentTime - target_p->localClient->last);
           }
 	  cnt++;
-	}
+        }
       break;
     case STAT_SERVER:
       if(!IsAdmin(source_p))
@@ -219,10 +217,10 @@ report_this_status(struct Client *source_p, struct Client *target_p)
       
     default: /* ...we actually shouldn't come here... --msa */
       sendto_one(source_p, form_str(RPL_TRACENEWTYPE), me.name,
-		 source_p->name, name);
+                 source_p->name, name);
       cnt++;
       break;
     }
 
-  return(cnt);
+  return cnt;
 }

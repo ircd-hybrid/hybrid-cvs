@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_change.c,v 1.8 2005/09/09 17:37:13 adx Exp $
+ *  $Id: m_change.c,v 1.9 2005/10/01 14:29:47 michael Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -78,18 +78,19 @@ _moddeinit(void)
   mod_del_cmd(&chgident_msgtab);
 }
 
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 #endif
 
 static void
 mo_chgident(struct Client *client_p, struct Client *source_p,
             int parc, char *parv[])
 {
-  struct Client *target_p;
+  struct Client *target_p = NULL;
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVS), me.name, parv[0], "CHGIDENT");
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
+               me.name, parv[0], "CHGIDENT");
     return;
   }
 
@@ -103,6 +104,7 @@ mo_chgident(struct Client *client_p, struct Client *source_p,
   }
   else {
     target_p = find_client(parv[1]);
+
     if (target_p == NULL || !IsClient(target_p))
     {
       sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name, parv[0], parv[1]);
@@ -122,7 +124,7 @@ mo_chgident(struct Client *client_p, struct Client *source_p,
   {
     sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
                   ":%s ENCAP * CHGIDENT %s %s",
-		  parv[0], target_p->name, parv[2]);
+                  parv[0], target_p->name, parv[2]);
     sendto_one(source_p, ":%s NOTICE %s :%s changed to %s@%s",
                me.name, parv[0], target_p->name, target_p->username,
                target_p->host);
@@ -133,14 +135,16 @@ mo_chgident(struct Client *client_p, struct Client *source_p,
                me.name, target_p->name, target_p->username, target_p->host);
 }
 
-static void mo_chghost(struct Client *client_p, struct Client *source_p,
-                       int parc, char *parv[])
+static void
+mo_chghost(struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
 {
-  struct Client *target_p;
+  struct Client *target_p = NULL;
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVS), me.name, parv[0], "CHGHOST");
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
+               me.name, parv[0], "CHGHOST");
     return;
   }
 
@@ -173,7 +177,7 @@ static void mo_chghost(struct Client *client_p, struct Client *source_p,
   {
     sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
                   ":%s ENCAP * CHGHOST %s %s",
-		  parv[0], target_p->name, parv[2]);
+                  parv[0], target_p->name, parv[2]);
     sendto_one(source_p, ":%s NOTICE %s :%s changed to %s@%s",
                me.name, parv[0], target_p->name, target_p->username,
                target_p->host);
@@ -184,14 +188,16 @@ static void mo_chghost(struct Client *client_p, struct Client *source_p,
                me.name, target_p->name, target_p->username, target_p->host);
 }
 
-static void mo_chgname(struct Client *client_p, struct Client *source_p,
-                       int parc, char *parv[])
+static void
+mo_chgname(struct Client *client_p, struct Client *source_p,
+          int parc, char *parv[])
 {
-  struct Client *target_p;
+  struct Client *target_p = NULL;
 
   if (MyConnect(source_p) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVS), me.name, parv[0], "CHGNAME");
+    sendto_one(source_p, form_str(ERR_NOPRIVS),
+               me.name, parv[0], "CHGNAME");
     return;
   }
 
@@ -223,7 +229,7 @@ static void mo_chgname(struct Client *client_p, struct Client *source_p,
   {
     sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
                   ":%s ENCAP * CHGNAME %s :%s",
-		  parv[0], target_p->name, parv[2]);
+                  parv[0], target_p->name, parv[2]);
     sendto_one(source_p, ":%s NOTICE %s :%s realname changed to [%s]",
                me.name, parv[0], target_p->name, target_p->info);
   }

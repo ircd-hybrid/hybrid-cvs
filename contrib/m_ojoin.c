@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ojoin.c,v 1.36 2005/08/30 18:28:39 adx Exp $
+ *  $Id: m_ojoin.c,v 1.37 2005/10/01 14:29:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
 #endif
 
 /* mo_ojoin()
@@ -114,13 +114,13 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
       case '&':
         prefix = "";
         flags = 0;
-	modeletter = '\0';
-	break;
+        modeletter = '\0';
+        break;
 
       default:
         sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
                    me.name, source_p->name, name);
-	continue;
+        continue;
     }
 
     /* Error checking here */

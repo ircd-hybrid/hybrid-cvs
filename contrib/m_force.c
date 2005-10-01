@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.42 2005/08/30 18:28:39 adx Exp $
+ * $Id: m_force.c,v 1.43 2005/10/01 14:29:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -47,8 +47,8 @@
 #include "channel.h"
 #include "channel_mode.h"
 
-static void mo_forcejoin(struct Client *, struct Client *, int parc, char **);
-static void mo_forcepart(struct Client *, struct Client *, int parc, char **);
+static void mo_forcejoin(struct Client *, struct Client *, int parc, char *[]);
+static void mo_forcepart(struct Client *, struct Client *, int parc, char *[]);
 
 struct Message forcejoin_msgtab = {
   "FORCEJOIN", 0, 0, 3, 0, MFLG_SLOW, 0,
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 
 /* m_forcejoin()
@@ -87,12 +87,12 @@ static void
 mo_forcejoin(struct Client *client_p, struct Client *source_p,
              int parc, char *parv[])
 {
-  struct Client *target_p;
-  struct Channel *chptr;
-  unsigned int type;
-  char mode;
-  char sjmode;
-  char *newch;
+  struct Client *target_p = NULL;
+  struct Channel *chptr = NULL;
+  unsigned int type = 0;
+  char mode = '\0';
+  char sjmode = '\0';
+  char *newch = NULL;
 
   if (!IsAdmin(source_p))
   {
@@ -101,9 +101,6 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  /* if target_p is not existent, print message
-   * to source_p and bail - scuzzy
-   */
   if ((target_p = find_client(parv[1])) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHNICK),
@@ -121,13 +118,14 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
                    target_p->name, parv[2]);
       else
         sendto_one(target_p, ":%s FORCEJOIN %s %s",
-	           source_p->name, target_p->name, parv[2]);
+                   source_p->name, target_p->name, parv[2]);
     }
+
     return;
   }
 
   /* select our modes from parv[2] if they exist... (chanop)*/
-  switch (parv[2][0])
+  switch (*parv[2])
   {
     case '@':
       type = CHFL_CHANOP;
@@ -184,8 +182,8 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
                       chptr->chname, sjmode, target_p->id);
         sendto_server(target_p, target_p, chptr, NOCAPS, CAP_TS6, LL_ICLIENT,
                       ":%s SJOIN %lu %s + :%c%s",
-	              me.name, (unsigned long)chptr->channelts,
-	              chptr->chname, sjmode, target_p->name);
+                      me.name, (unsigned long)chptr->channelts,
+                      chptr->chname, sjmode, target_p->name);
       }
       else
       {
@@ -294,9 +292,9 @@ static void
 mo_forcepart(struct Client *client_p, struct Client *source_p,
              int parc, char *parv[])
 {
-  struct Client *target_p;
-  struct Channel *chptr;
-  struct Membership *member;
+  struct Client *target_p = NULL;
+  struct Channel *chptr = NULL;
+  struct Membership *member = NULL;
 
   if (!IsAdmin(source_p))
   {
@@ -323,8 +321,9 @@ mo_forcepart(struct Client *client_p, struct Client *source_p,
                    target_p->name, parv[2]);
       else
         sendto_one(target_p, ":%s FORCEPART %s %s",
-	           source_p->name, target_p->name, parv[2]);
+                   source_p->name, target_p->name, parv[2]);
     }
+
     return;
   }
 
@@ -354,7 +353,7 @@ mo_forcepart(struct Client *client_p, struct Client *source_p,
 
   sendto_channel_local(ALL_MEMBERS, NO, chptr, ":%s!%s@%s PART %s :%s",
                        target_p->name, target_p->username,
- 	               target_p->host,chptr->chname,
-		       target_p->name);
+                       target_p->host, chptr->chname,
+                       target_p->name);
   remove_user_from_channel(member);
 }

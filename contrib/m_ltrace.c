@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.21 2005/09/27 12:43:33 adx Exp $
+ *  $Id: m_ltrace.c,v 1.22 2005/10/01 14:29:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,7 @@ struct Message ltrace_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-const char *_version = "$Revision: 1.21 $";
+const char *_version = "$Revision: 1.22 $";
 static struct Callback *ltrace_cb;
 
 static void *
@@ -100,7 +100,8 @@ m_ltrace(struct Client *client_p, struct Client *source_p,
     tname = parv[1];
   else
     tname = me.name;
-  sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name, parv[0], tname);
+  sendto_one(source_p, form_str(RPL_ENDOFTRACE),
+             me.name, parv[0], tname);
 }
 
 /*
@@ -264,8 +265,8 @@ static int
 report_this_status(struct Client *source_p, struct Client *target_p,
                    int dow, int link_u_p, int link_s_p)
 {
-  const char* name;
-  const char* class_name;
+  const char *name = NULL;
+  const char *class_name = NULL;
   char ip[HOSTIPLEN];
 
   /* Should this be sockhost? - stu */
@@ -276,38 +277,30 @@ report_this_status(struct Client *source_p, struct Client *target_p,
   name = get_client_name(target_p, HIDE_IP);
   class_name = get_client_class(target_p);
 
-  set_time();
-
-  switch(target_p->status)
-    {
+  switch (target_p->status)
+  {
     case STAT_CONNECTING:
       sendto_one(source_p, form_str(RPL_TRACECONNECTING), me.name,
                  source_p->name, class_name, 
-		 IsAdmin(source_p) ? name : target_p->name);
-		   
+                 IsAdmin(source_p) ? name : target_p->name);
       break;
 
     case STAT_HANDSHAKE:
       sendto_one(source_p, form_str(RPL_TRACEHANDSHAKE), me.name,
                  source_p->name, class_name, 
                  IsAdmin(source_p) ? name : target_p->name);
-		   
-      break;
-      
-    case STAT_ME:
-    case STAT_UNKNOWN:
       break;
 
     case STAT_CLIENT:
       if (IsAdmin(target_p))
       {
-	if (ConfigFileEntry.hide_spoof_ips)
-	  sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
+        if (ConfigFileEntry.hide_spoof_ips)
+          sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
                      me.name, source_p->name, class_name, name,
                      (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
                      CurrentTime - target_p->lasttime,
                      CurrentTime - target_p->localClient->last);
-	else
+        else
           sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
                      me.name, source_p->name, class_name, name,
                      IsAdmin(source_p) ? ip :
@@ -323,30 +316,35 @@ report_this_status(struct Client *source_p, struct Client *target_p,
                      (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
                      CurrentTime - target_p->lasttime,
                      CurrentTime - target_p->localClient->last);
-	else
-	  sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
-		     me.name, source_p->name, class_name, name, 
-		     (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
-		     CurrentTime - target_p->lasttime,
-		     CurrentTime - target_p->localClient->last);
+        else
+          sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
+                     me.name, source_p->name, class_name, name, 
+                     (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
+                     CurrentTime - target_p->lasttime,
+                     CurrentTime - target_p->localClient->last);
       }
       break;
+
     case STAT_SERVER:
       if(!IsAdmin(source_p))
         name = get_client_name(target_p, MASK_IP);
 
       sendto_one(source_p, form_str(RPL_TRACESERVER),
-		 me.name, source_p->name, class_name, link_s_p,
-		 link_u_p, name, *(target_p->serv->by) ?
-		 target_p->serv->by : "*", "*",
-		 me.name, CurrentTime - target_p->lasttime);
+                 me.name, source_p->name, class_name, link_s_p,
+                 link_u_p, name, *(target_p->serv->by) ?
+                 target_p->serv->by : "*", "*",
+                 me.name, CurrentTime - target_p->lasttime);
       break;
-      
+
+    case STAT_ME:
+    case STAT_UNKNOWN:
+      break;
+
     default: /* ...we actually shouldn't come here... --msa */
       sendto_one(source_p, form_str(RPL_TRACENEWTYPE), me.name,
-		 source_p->name, name);
+                 source_p->name, name);
       break;
-    }
+  }
 
   return 0;
 }

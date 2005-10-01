@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.21 2005/08/17 16:02:51 michael Exp $
+ *  $Id: m_killhost.c,v 1.22 2005/10/01 14:29:47 michael Exp $
  *
  */
 
@@ -39,7 +39,7 @@
 #include "sprintf_irc.h"
 #include "msg.h"
 #include "parse.h"
-#include "channel_mode.h"	/* needed only for split_nuh() */
+#include "channel_mode.h"    /* needed only for split_nuh() */
 #include "modules.h"
 
 static void mo_killhost(struct Client *, struct Client *, int, char *[]);
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&killhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.21 $";
+const char *_version = "$Revision: 1.22 $";
 #endif
 
 /* mo_killhost()
@@ -124,8 +124,8 @@ mo_killhost(struct Client *client_p, struct Client *source_p,
       continue;
       
     if (match(nick, target_p->name) &&
-	match(user, target_p->username) &&
-	match(host, target_p->host))
+        match(user, target_p->username) &&
+        match(host, target_p->host))
     {
       if (MyConnect(target_p))
         sendto_one(target_p, ":%s!%s@%s KILL %s :%s",
@@ -142,7 +142,7 @@ mo_killhost(struct Client *client_p, struct Client *source_p,
       if (!MyConnect(target_p))
       {
         kh_relay_kill(client_p, source_p, target_p, inpath, reason);
-	SetKilled(target_p);
+        SetKilled(target_p);
       }
 
       if (!count++)
@@ -154,7 +154,7 @@ mo_killhost(struct Client *client_p, struct Client *source_p,
 
   if (count > 0)
     sendto_wallops_flags(UMODE_OPERWALL, source_p, "OPERWALL - KILLHOST %s %s",
-			 host, reason);
+                         host, reason);
 
   sendto_one(source_p,":%s NOTICE %s :%u clients killed",
              me.name, source_p->name, count);

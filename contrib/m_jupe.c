@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.63 2005/07/30 22:37:03 metalrock Exp $
+ *  $Id: m_jupe.c,v 1.64 2005/10/01 14:29:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.63 $";
+const char *_version = "$Revision: 1.64 $";
 #endif
 
 /*
@@ -79,9 +79,9 @@ static void
 mo_jupe(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
-  struct Client *target_p;
-  struct Client *ajupe;
-  dlink_node *m;
+  struct Client *target_p = NULL;
+  struct Client *ajupe = NULL;
+  dlink_node *m = NULL;
   char reason[REALLEN + 1];
 
   if (!IsAdmin(source_p))
@@ -115,7 +115,7 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
   if (match(parv[1], me.name))
   {
     sendto_one(source_p, ":%s NOTICE %s :I can't jupe myself!",
-	       me.name, source_p->name);
+               me.name, source_p->name);
     return;
   }
 
@@ -143,7 +143,7 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
 
   sendto_realops_flags(UMODE_ALL, L_ALL,
                        "Link with %s established: (JUPED) link",
-		       parv[1]);
+                       parv[1]);
 
   ajupe = make_client(NULL);
 
@@ -192,7 +192,7 @@ bogus_host(char *host)
   for (; *s; s++)
   {
     if (!IsServChar(*s))  
-      return(1);
+      return 1;
 
     ++length;
 
@@ -200,5 +200,5 @@ bogus_host(char *host)
       ++dots;
   }
 
-  return(!dots || length > HOSTLEN);
+  return !dots || length > HOSTLEN;
 }

@@ -6,7 +6,7 @@
  *
  *  You can use this code in any way as long as these names remain.
  *
- *  $Id: m_mkpasswd.c,v 1.15 2005/09/11 08:04:41 adx Exp $
+ *  $Id: m_mkpasswd.c,v 1.16 2005/10/01 14:29:47 michael Exp $
  */
 
 #include "handlers.h"
@@ -18,14 +18,12 @@
 #include "send.h"
 #include "modules.h"
 
-static void m_mkpasswd(struct Client *client_p, struct Client *source_p,
-                       int parc, char *parv[]);
-static void mo_mkpasswd(struct Client *client_p, struct Client *source_p,
-                        int parc, char *parv[]);
+static void m_mkpasswd(struct Client *, struct Client *, int, char *[]);
+static void mo_mkpasswd(struct Client *, struct Client *, int, char *[]);
 static char *des(void);
 static char *md5(void);
 
-static char saltChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./";
+static const char saltChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./";
 
 struct Message mkpasswd_msgtab = {
   "MKPASSWD", 0, 0, 1, 2, MFLG_SLOW, 0,
@@ -33,17 +31,19 @@ struct Message mkpasswd_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-void _modinit(void)
+void
+_modinit(void)
 {
   mod_add_cmd(&mkpasswd_msgtab);
 }
 
-void _moddeinit(void)
+void
+_moddeinit(void)
 {
   mod_del_cmd(&mkpasswd_msgtab);
 }
 
-const char *_version = "$Revision: 1.15 $";
+const char *_version = "$Revision: 1.16 $";
 #endif
 
 static void
@@ -65,18 +65,18 @@ m_mkpasswd(struct Client *client_p, struct Client *source_p,
                me.name, source_p->name);
     return;
   }
-  else
-    last_used = CurrentTime;
+
+  last_used = CurrentTime;
 
   if (parv[2] == NULL)
     sendto_one(source_p, ":%s NOTICE %s :DES Encryption for [%s]: %s",
                me.name, source_p->name, parv[1], crypt(parv[1],
                des()));
-  else if (irccmp(parv[2], "DES") == 0)
+  else if (!irccmp(parv[2], "DES"))
     sendto_one(source_p, ":%s NOTICE %s :DES Encryption for [%s]: %s",
                me.name, source_p->name, parv[1], crypt(parv[1],
                des()));
-  else if (irccmp(parv[2], "MD5") == 0)
+  else if (!irccmp(parv[2], "MD5"))
     sendto_one(source_p, ":%s NOTICE %s :MD5 Encryption for [%s]: %s",
                me.name, source_p->name, parv[1], crypt(parv[1],
                md5()));
@@ -92,23 +92,24 @@ m_mkpasswd(struct Client *client_p, struct Client *source_p,
 */
 static void
 mo_mkpasswd(struct Client *client_p, struct Client *source_p,
-	    int parc, char *parv[])
-{		 
+            int parc, char *parv[])
+{
   if (parc < 1)
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                me.name, source_p->name, "MKPASSWD");
     return;
   }
+
   if (parv[2] == NULL)
     sendto_one(source_p, ":%s NOTICE %s :DES Encryption for [%s]: %s",
                me.name, source_p->name, parv[1], crypt(parv[1],
                des()));
-  else if (irccmp(parv[2], "DES") == 0)
+  else if (!irccmp(parv[2], "DES"))
     sendto_one(source_p, ":%s NOTICE %s :DES Encryption for [%s]: %s",
                me.name, source_p->name, parv[1], crypt(parv[1],
                des()));
-  else if (irccmp(parv[2], "MD5") == 0)
+  else if (!irccmp(parv[2], "MD5"))
     sendto_one(source_p, ":%s NOTICE %s :MD5 Encryption for [%s]: %s",
                me.name, source_p->name, parv[1], crypt(parv[1],
                md5()));
@@ -125,7 +126,8 @@ des(void)
   salt[0] = saltChars[rand() % 64];
   salt[1] = saltChars[rand() % 64];
   salt[2] = '\0';
-  return(salt);
+
+  return salt;
 }
 
 static char *
@@ -138,10 +140,11 @@ md5(void)
   salt[1] = '1';
   salt[2] = '$';
 
-  for (i=3; i<11; i++)
+  for (i = 3; i < 11; i++)
     salt[i] = saltChars[rand() % 64];
 
   salt[11] = '$';
   salt[12] = '\0';
-  return(salt);
+
+  return salt;
 }

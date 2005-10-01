@@ -27,7 +27,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_flags.c,v 1.20 2005/08/17 22:36:59 metalrock Exp $
+ *  $Id: m_flags.c,v 1.21 2005/10/01 14:29:47 michael Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -74,7 +74,7 @@ _moddeinit(void)
   mod_del_cmd(&flags_msgtab);
 }
 
-const char *_version = "$Revision: 1.20 $";
+const char *_version = "$Revision: 1.21 $";
 #endif
 
 /* FLAGS requires it's own mini parser, since the last parameter in it can
@@ -84,48 +84,45 @@ const char *_version = "$Revision: 1.20 $";
  * The best way to match a flag to a mode is with a simple table
  */
 
-struct FlagTable
+static struct FlagTable
 {
   const char *name;
   unsigned int mode;
   int oper;
-};
-
-static struct FlagTable flag_table[] =
-{
-  /* name		mode it represents	oper only? */
-  { "OWALLOPS",		UMODE_OPERWALL,		1 },
-  { "SWALLOPS",		UMODE_WALLOP,		0 },
-  { "STATSNOTICES",	UMODE_SPY,		1 },
+} flag_table[] = {
+  /* name              mode it represents oper only? */
+  { "OWALLOPS",         UMODE_OPERWALL,         1 },
+  { "SWALLOPS",         UMODE_WALLOP,           0 },
+  { "STATSNOTICES",     UMODE_SPY,              1 },
     /* We don't have a separate OKILL and SKILL modes */
-  { "OKILLS",		UMODE_SKILL,		0 },
-  { "SKILLS",		UMODE_SKILL,		0 },
-  { "SNOTICES",		UMODE_SERVNOTICE,	0 },
+  { "OKILLS",           UMODE_SKILL,            0 },
+  { "SKILLS",           UMODE_SKILL,            0 },
+  { "SNOTICES",         UMODE_SERVNOTICE,       0 },
     /* We don't have separate client connect and disconnect modes */
-  { "CLICONNECTS",	UMODE_CCONN,		1 },
-  { "CLIDISCONNECTS",	UMODE_CCONN,		1 },
+  { "CLICONNECTS",      UMODE_CCONN,            1 },
+  { "CLIDISCONNECTS",   UMODE_CCONN,            1 },
     /* I'm taking a wild guess here... */
-  { "THROTTLES",	UMODE_REJ,		1 },
+  { "THROTTLES",        UMODE_REJ,              1 },
 #if 0
     /* This one is special...controlled via an oper block option */
-  { "NICKCHANGES",	UMODE_NCHANGE,		1 },
+  { "NICKCHANGES",      UMODE_NCHANGE,          1 },
     /* NICKCHANGES must be checked for separately */
 #endif
     /* I'm assuming this is correct... */
-  { "IPMISMATCHES",	UMODE_UNAUTH,		1 },
-  { "LWALLOPS",		UMODE_LOCOPS,		1 },
+  { "IPMISMATCHES",     UMODE_UNAUTH,           1 },
+  { "LWALLOPS",         UMODE_LOCOPS,           1 },
     /* These aren't separate on Hybrid */
-  { "CONNECTS",		UMODE_EXTERNAL,		1 },
-  { "SQUITS",		UMODE_EXTERNAL,		1 },
+  { "CONNECTS",         UMODE_EXTERNAL,         1 },
+  { "SQUITS",           UMODE_EXTERNAL,         1 },
     /* Now we have our Hybrid specific flags */
-  { "FULL",		UMODE_FULL,		1 },
+  { "FULL",             UMODE_FULL,             1 },
     /* Not in CS, but we might as well put it here */
-  { "INVISIBLE",	UMODE_INVISIBLE,	0 },
-  { "BOTS",		UMODE_BOTS,		1 },
-  { "CALLERID",		UMODE_CALLERID,		0 },
-  { "UNAUTH",		UMODE_UNAUTH,		1 },
-  { "DEBUG",		UMODE_DEBUG,		1 },
-  { NULL,		0,			0 }
+  { "INVISIBLE",        UMODE_INVISIBLE,        0 },
+  { "BOTS",             UMODE_BOTS,             1 },
+  { "CALLERID",         UMODE_CALLERID,         0 },
+  { "UNAUTH",           UMODE_UNAUTH,           1 },
+  { "DEBUG",            UMODE_DEBUG,            1 },
+  { NULL,               0,                      0 }
 };
 
 /* We won't control CALLERID or INVISIBLE in here */
@@ -183,13 +180,13 @@ m_flags(struct Client *client_p, struct Client *source_p,
       /* We default to being in BAD mode */
       isgood = 0;
 
-      if (!isalpha(flag[0]))
+      if (!isalpha(*flag))
       {
-        if (flag[0] == '-')
+        if (*flag == '-')
           isadd = 0;
-        else if (flag[0] == '+')
+        else if (*flag == '+')
           isadd = 1;
-        flag++;
+        ++flag;
       }
 
       /* support ALL here */
@@ -214,7 +211,7 @@ m_flags(struct Client *client_p, struct Client *source_p,
           if (isadd)
             source_p->umodes |= flag_table[j].mode;
           else
-            source_p->umodes &= ~ (flag_table[j].mode);
+            source_p->umodes &= ~flag_table[j].mode;
           isgood = 1;
           continue;
         }
@@ -248,7 +245,7 @@ m_flags(struct Client *client_p, struct Client *source_p,
 static void 
 mo_flags(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
-{		 
+{
   int i,j;
   int isadd;
   int isgood;
@@ -284,13 +281,13 @@ mo_flags(struct Client *client_p, struct Client *source_p,
       /* We default to being in BAD mode */
       isgood = 0;
 
-      if (!isalpha(flag[0]))
+      if (!isalpha(*flag))
       {
-        if (flag[0] == '-')
+        if (*flag == '-')
           isadd = 0;
-        else if (flag[0] == '+')
+        else if (*flag == '+')
           isadd = 1;
-        flag++;
+        ++flag;
       }
 
       /* support ALL here */
@@ -430,5 +427,5 @@ unset_flags_to_string(struct Client *client_p)
     }
   }
 
-  return(setflags);
+  return setflags;
 }
