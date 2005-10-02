@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.460 2005/09/30 14:20:03 michael Exp $
+ *  $Id: ircd_parser.y,v 1.461 2005/10/02 14:57:16 michael Exp $
  */
 
 %{
@@ -1043,6 +1043,7 @@ oper_entry: OPERATOR
 oper_name_b: | oper_name_t;
 oper_items:     oper_items oper_item | oper_item;
 oper_item:      oper_name | oper_user | oper_password | oper_hidden_admin |
+                oper_hidden_oper |
 		oper_class | oper_global_kill | oper_remote |
                 oper_kline | oper_xline | oper_unkline |
 		oper_gline | oper_nick_changes | oper_remoteban |
@@ -1296,6 +1297,17 @@ oper_hidden_admin: HIDDEN_ADMIN '=' TBOOL ';'
       yy_aconf->port |= OPER_FLAG_HIDDEN_ADMIN;
     else
       yy_aconf->port &= ~OPER_FLAG_HIDDEN_ADMIN;
+  }
+};
+
+oper_hidden_oper: HIDDEN_OPER '=' TBOOL ';'
+{
+  if (ypass == 2)
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_HIDDEN_OPER;
+    else
+      yy_aconf->port &= ~OPER_FLAG_HIDDEN_OPER;
   }
 };
 
