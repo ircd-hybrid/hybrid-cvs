@@ -1,4 +1,5 @@
-# $Id: ltrace,v 1.1 2005/08/18 13:23:48 knight Exp $
-ETRACE <nickname|server|*>
+# $Id: ltrace,v 1.2 2005/10/02 19:14:54 adx Exp $
+LTRACE [nickname/server mask]
 
-The ETRACE command will do a trace of the path between a client or server.
+This command is similar to TRACE, but it doesn't display plain users
+or definitions of connection classes.

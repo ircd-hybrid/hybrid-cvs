@@ -1,8 +1,8 @@
-# $Id: ctrace,v 1.1 2005/08/18 13:23:48 knight Exp $
+# $Id: ctrace,v 1.2 2005/10/02 19:14:54 adx Exp $
 CTRACE <class>
 
 The CTRACE command will do a trace of users depending on class. Similar
-to TRACE but can be class specific.
+to TRACE but class specific.
 
 For example if you want to do a trace on the clients in the users class:
 
