@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.306 2005/10/02 12:42:58 adx Exp $
+ *  $Id: send.c,v 7.307 2005/10/02 12:45:07 adx Exp $
  */
 
 #include "stdinc.h"
@@ -84,24 +84,6 @@ send_format(char *lsendbuf, int bufsize, const char *pattern, va_list args)
   len = vsnprintf(lsendbuf, bufsize - 1, pattern, args);
   if (len > bufsize - 2)
     len = bufsize - 2;  /* required by some versions of vsnprintf */
-
-  /*
-   * We have to get a \r\n\0 onto sendbuf[] somehow to satisfy
-   * the rfc. We must assume sendbuf[] is defined to be 513
-   * bytes - a maximum of 510 characters, the CR-LF pair, and
-   * a trailing \0, as stated in the rfc. Now, if len is greater
-   * than the third-to-last slot in the buffer, an overflow will
-   * occur if we try to add three more bytes, if it has not
-   * already occured. In that case, simply set the last three
-   * bytes of the buffer to \r\n\0. Otherwise, we're ok. My goal
-   * is to get some sort of vsnprintf() function operational
-   * for this routine, so we never again have a possibility
-   * of an overflow.
-   * -wnder
-   * Exactly, vsnprintf() does the job and we don't need to check
-   * whether len > 510. We also don't need to terminate the buffer
-   * with a '\0', since the dbuf code is raw-oriented. --adx
-   */
 
   lsendbuf[len++] = '\r';
   lsendbuf[len++] = '\n';
