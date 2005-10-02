@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.82 2005/09/05 14:16:58 db Exp $
+ *  $Id: m_oper.c,v 1.83 2005/10/02 11:56:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -46,7 +46,6 @@ static void failed_oper_notice(struct Client *, const char *, const char *);
 static void m_oper(struct Client *, struct Client *, int, char *[]);
 static void mo_oper(struct Client *, struct Client *, int, char *[]);
 
-
 struct Message oper_msgtab = {
   "OPER", 0, 0, 3, 0, MFLG_SLOW, 0,
   { m_unregistered, m_oper, m_ignore, m_ignore, mo_oper, m_ignore }
@@ -65,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.82 $";
+const char *_version = "$Revision: 1.83 $";
 #endif
 
 /*

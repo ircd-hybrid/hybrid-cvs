@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.43 2005/08/04 23:53:43 metalrock Exp $
+ *  $Id: m_testline.c,v 1.44 2005/10/02 11:56:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&testgecos_msgtab);
 }
  
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 
 /* mo_testline()
@@ -98,7 +98,7 @@ mo_testline(struct Client *client_p, struct Client *source_p,
   int matches = 0;
   char userhost[HOSTLEN + USERLEN + 2];
 
-  if (parc < 2)
+  if (parc < 2 || EmptyString(parv[1]))
   {
     sendto_one(source_p, ":%s NOTICE %s :usage: user@host|ip [password]",
                me.name, source_p->name);
@@ -248,11 +248,11 @@ static void
 mo_testgecos(struct Client *client_p, struct Client *source_p,
             int parc, char *parv[])
 {
-  struct ConfItem *conf;
-  struct MatchItem *xconf=NULL;
-  const char *gecos_name;
+  struct ConfItem *conf = NULL;
+  struct MatchItem *xconf = NULL;
+  const char *gecos_name = NULL;
 
-  if (parc < 2)
+  if (parc < 2 || EmptyString(parv[1]))
   {
     sendto_one(source_p, ":%s NOTICE %s :usage: gecos",
                me.name, source_p->name);
