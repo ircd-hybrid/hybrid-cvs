@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.305 2005/10/02 11:56:08 michael Exp $
+ *  $Id: send.c,v 7.306 2005/10/02 12:42:58 adx Exp $
  */
 
 #include "stdinc.h"
@@ -81,9 +81,9 @@ send_format(char *lsendbuf, int bufsize, const char *pattern, va_list args)
    * continuation message lines.  See section 7 for more details about
    * current implementations.
    */
-  len = vsnprintf(lsendbuf, bufsize - 2, pattern, args);
-  if (len > bufsize - 3)
-    len = bufsize - 3;  /* required by some versions of vsnprintf */
+  len = vsnprintf(lsendbuf, bufsize - 1, pattern, args);
+  if (len > bufsize - 2)
+    len = bufsize - 2;  /* required by some versions of vsnprintf */
 
   /*
    * We have to get a \r\n\0 onto sendbuf[] somehow to satisfy
@@ -99,14 +99,13 @@ send_format(char *lsendbuf, int bufsize, const char *pattern, va_list args)
    * of an overflow.
    * -wnder
    * Exactly, vsnprintf() does the job and we don't need to check
-   * whether len > 510. --adx
+   * whether len > 510. We also don't need to terminate the buffer
+   * with a '\0', since the dbuf code is raw-oriented. --adx
    */
 
   lsendbuf[len++] = '\r';
   lsendbuf[len++] = '\n';
-  lsendbuf[len]   = '\0';
-
-  return len;
+  return (len);
 }
 
 /*
@@ -448,7 +447,7 @@ void
 sendto_one(struct Client *to, const char *pattern, ...)
 {
   va_list args;
-  char buffer[IRCD_BUFSIZE + 1];
+  char buffer[IRCD_BUFSIZE];
   int len;
 
   if (to->from != NULL)
@@ -457,7 +456,7 @@ sendto_one(struct Client *to, const char *pattern, ...)
     return; /* This socket has already been marked as dead */
 
   va_start(args, pattern);
-  len = send_format(buffer, sizeof(buffer), pattern, args);
+  len = send_format(buffer, IRCD_BUFSIZE, pattern, args);
   va_end(args);
 
   send_message(to, buffer, len);
@@ -480,9 +479,9 @@ sendto_channel_butone(struct Client *one, struct Client *from,
                       const char *pattern, ...)
 {
   va_list args;
-  char local_buf[IRCD_BUFSIZE + 1];
-  char remote_buf[IRCD_BUFSIZE + 1];
-  char uid_buf[IRCD_BUFSIZE + 1];
+  char local_buf[IRCD_BUFSIZE];
+  char remote_buf[IRCD_BUFSIZE];
+  char uid_buf[IRCD_BUFSIZE];
   int local_len, remote_len, uid_len;
   dlink_node *ptr;
   dlink_node *ptr_next;
@@ -501,11 +500,11 @@ sendto_channel_butone(struct Client *one, struct Client *from,
                        ID(from), command, chptr->chname);
 
   va_start(args, pattern);
-  local_len += send_format(&local_buf[local_len], sizeof(local_buf) - local_len,
+  local_len += send_format(&local_buf[local_len], IRCD_BUFSIZE - local_len,
                            pattern, args);
-  remote_len += send_format(&remote_buf[remote_len], sizeof(remote_buf) - remote_len,
+  remote_len += send_format(&remote_buf[remote_len], IRCD_BUFSIZE - remote_len,
                             pattern, args);
-  uid_len += send_format(&uid_buf[uid_len], sizeof(uid_buf) - uid_len, pattern,
+  uid_len += send_format(&uid_buf[uid_len], IRCD_BUFSIZE - uid_len, pattern,
                          args);
   va_end(args);
 
@@ -580,15 +579,17 @@ sendto_server(struct Client *one, struct Client *source_p,
   va_list args;
   struct Client *client_p;
   dlink_node *ptr;
-  char buffer[IRCD_BUFSIZE + 1];
+  char buffer[IRCD_BUFSIZE];
   int len;
 
   if (chptr != NULL)
+  {
     if (chptr->chname[0] != '#')
       return;
+  }
 
   va_start(args, format);
-  len = send_format(buffer, sizeof(buffer), format, args);
+  len = send_format(buffer, IRCD_BUFSIZE, format, args);
   va_end(args);
 
   DLINK_FOREACH(ptr, serv_list.head)
@@ -660,11 +661,11 @@ sendto_common_channels_local(struct Client *user, int touser,
   struct Channel *chptr;
   struct Membership *ms;
   struct Client *target_p;
-  char buffer[IRCD_BUFSIZE + 1];
+  char buffer[IRCD_BUFSIZE];
   int len;
 
   va_start(args, pattern);
-  len = send_format(buffer, sizeof(buffer), pattern, args);
+  len = send_format(buffer, IRCD_BUFSIZE, pattern, args);
   va_end(args);
 
   ++current_serial;
@@ -709,14 +710,14 @@ sendto_channel_local(int type, int nodeaf, struct Channel *chptr,
                      const char *pattern, ...)
 {
   va_list args;
-  char buffer[IRCD_BUFSIZE + 1];
+  char buffer[IRCD_BUFSIZE];
   int len;
   dlink_node *ptr;
   struct Membership *ms;
   struct Client *target_p;
 
   va_start(args, pattern);
-  len = send_format(buffer, sizeof(buffer), pattern, args);
+  len = send_format(buffer, IRCD_BUFSIZE, pattern, args);
   va_end(args);
 
   DLINK_FOREACH(ptr, chptr->locmembers.head)
@@ -751,14 +752,14 @@ sendto_channel_local_butone(struct Client *one, int type,
 			    struct Channel *chptr, const char *pattern, ...)
 {
   va_list args;
-  char buffer[IRCD_BUFSIZE + 1];
+  char buffer[IRCD_BUFSIZE];
   int len;
   struct Client *target_p;
   struct Membership *ms;
   dlink_node *ptr;
 
   va_start(args, pattern); 
-  len = send_format(buffer, sizeof(buffer), pattern, args);
+  len = send_format(buffer, IRCD_BUFSIZE, pattern, args);
   va_end(args);
 
   DLINK_FOREACH(ptr, chptr->locmembers.head)       
@@ -792,14 +793,14 @@ sendto_channel_remote(struct Client *one, struct Client *from, int type, int cap
                       int nocaps, struct Channel *chptr, const char *pattern, ...)
 {
   va_list args;
-  char buffer[IRCD_BUFSIZE + 1];
+  char buffer[IRCD_BUFSIZE];
   int len;
   dlink_node *ptr;
   struct Client *target_p;
   struct Membership *ms;
 
   va_start(args, pattern);
-  len = send_format(buffer, sizeof(buffer), pattern, args);
+  len = send_format(buffer, IRCD_BUFSIZE, pattern, args);
   va_end(args);
 
   DLINK_FOREACH(ptr, chptr->members.head)
@@ -844,9 +845,9 @@ static int
 match_it(const struct Client *one, const char *mask, int what)
 {
   if (what == MATCH_HOST)
-    return match(mask, one->host);
+    return(match(mask, one->host));
 
-  return match(mask, one->servptr->name);
+  return(match(mask, one->servptr->name));
 }
 
 /* sendto_match_butone()
@@ -863,15 +864,15 @@ sendto_match_butone(struct Client *one, struct Client *from, char *mask,
   va_list args;
   struct Client *client_p;
   dlink_node *ptr, *ptr_next;
-  char local_buf[IRCD_BUFSIZE + 1], remote_buf[IRCD_BUFSIZE + 1];
+  char local_buf[IRCD_BUFSIZE], remote_buf[IRCD_BUFSIZE];
   int local_len = ircsprintf(local_buf, ":%s!%s@%s ", from->name,
                              from->username, from->host);
   int remote_len = ircsprintf(remote_buf, ":%s ", from->name);
 
   va_start(args, pattern);
-  local_len += send_format(&local_buf[local_len], sizeof(local_buf) - local_len,
+  local_len += send_format(&local_buf[local_len], IRCD_BUFSIZE - local_len,
                            pattern, args);
-  remote_len += send_format(&remote_buf[remote_len], sizeof(remote_buf) - remote_len,
+  remote_len += send_format(&remote_buf[remote_len], IRCD_BUFSIZE - remote_len,
                             pattern, args);
   va_end(args);
 
@@ -986,7 +987,7 @@ sendto_anywhere(struct Client *to, struct Client *from,
                 const char *pattern, ...)
 {
   va_list args;
-  char buffer[IRCD_BUFSIZE + 1];
+  char buffer[IRCD_BUFSIZE];
   int len;
   struct Client *send_to = (to->from != NULL ? to->from : to);
 
@@ -1009,10 +1010,10 @@ sendto_anywhere(struct Client *to, struct Client *from,
   else len = ircsprintf(buffer, ":%s ", ID_or_name(from, send_to));
 
   va_start(args, pattern);
-  len += send_format(&buffer[len], sizeof(buffer) - len, pattern, args);
+  len += send_format(&buffer[len], IRCD_BUFSIZE - len, pattern, args);
   va_end(args);
 
-  if (MyClient(to))
+  if(MyClient(to))
     send_message(send_to, buffer, len);
   else
     send_message_remote(send_to, from, buffer, len);
@@ -1071,7 +1072,7 @@ sendto_wallops_flags(unsigned int flags, struct Client *source_p,
   struct Client *client_p;
   dlink_node *ptr;
   va_list args;
-  char buffer[IRCD_BUFSIZE + 1];
+  char buffer[IRCD_BUFSIZE];
   int len;
 
   if (IsClient(source_p))
@@ -1081,7 +1082,7 @@ sendto_wallops_flags(unsigned int flags, struct Client *source_p,
     len = ircsprintf(buffer, ":%s WALLOPS :", source_p->name);
 
   va_start(args, pattern);
-  len += send_format(&buffer[len], sizeof(buffer) - len, pattern, args);
+  len += send_format(&buffer[len], IRCD_BUFSIZE - len, pattern, args);
   va_end(args);
 
   DLINK_FOREACH(ptr, oper_list.head)
@@ -1148,7 +1149,7 @@ kill_client(struct Client *client_p, struct Client *diedie,
             const char *pattern, ...)
 {
   va_list args;
-  char buffer[IRCD_BUFSIZE + 1];
+  char buffer[IRCD_BUFSIZE];
   int len;
 
   if (client_p->from != NULL)
@@ -1160,7 +1161,7 @@ kill_client(struct Client *client_p, struct Client *diedie,
                    ID_or_name(diedie, client_p));
 
   va_start(args, pattern);
-  len += send_format(&buffer[len], sizeof(buffer) - len, pattern, args);
+  len += send_format(&buffer[len], IRCD_BUFSIZE - len, pattern, args);
   va_end(args);
 
   send_message(client_p, buffer, len);
@@ -1184,7 +1185,7 @@ kill_client_ll_serv_butone(struct Client *one, struct Client *source_p,
   int have_uid = 0;
   struct Client *client_p;
   dlink_node *ptr;
-  char buf_uid[IRCD_BUFSIZE + 1], buf_nick[IRCD_BUFSIZE + 1];
+  char buf_uid[IRCD_BUFSIZE], buf_nick[IRCD_BUFSIZE];
   int len_uid = 0, len_nick;
 
   va_start(args, pattern);
@@ -1192,12 +1193,11 @@ kill_client_ll_serv_butone(struct Client *one, struct Client *source_p,
   {
     have_uid = 1;
     len_uid = ircsprintf(buf_uid, ":%s KILL %s :", me.id, ID(source_p));
-    len_uid += send_format(&buf_uid[len_uid], sizeof(buf_uid) - len_uid, pattern,
+    len_uid += send_format(&buf_uid[len_uid], IRCD_BUFSIZE - len_uid, pattern,
                            args);
   }
-
   len_nick = ircsprintf(buf_nick, ":%s KILL %s :", me.name, source_p->name);
-  len_nick += send_format(&buf_nick[len_nick], sizeof(buf_nick) - len_nick, pattern,
+  len_nick += send_format(&buf_nick[len_nick], IRCD_BUFSIZE - len_nick, pattern,
                           args);
   va_end(args);
 
