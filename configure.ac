@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.97.2.2 2005/09/11 02:02:56 lusky Exp $
+dnl $Id: configure.ac,v 7.97.2.3 2005/10/09 17:40:24 michael Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.97.2.2 2005/09/11 02:02:56 lusky Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.97.2.3 2005/10/09 17:40:24 michael Exp $])
 
 AC_INIT([ircd-hybrid],[7.1])
 
@@ -882,7 +882,7 @@ AC_HELP_STRING([--with-nicklen=LENGTH],[Set the nick length to LENGTH (default 9
 	NICKLEN="$withval", NICKLEN="9")
 
 AC_ARG_WITH(topiclen,           
-AC_HELP_STRING([--with-topiclen=NUMBER],[Set the max topic length to NUMBER (default 120, max 390)]),
+AC_HELP_STRING([--with-topiclen=NUMBER],[Set the max topic length to NUMBER (default 160, max 390)]),
 [
  if test $withval -ge 390; then
 	TOPICLEN=390
