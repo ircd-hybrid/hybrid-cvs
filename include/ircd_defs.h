@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.39.2.1 2005/07/22 16:21:27 db Exp $
+ *  $Id: ircd_defs.h,v 7.39.2.2 2005/10/09 14:57:38 michael Exp $
  */
 
 /*
@@ -42,7 +42,8 @@
 #define USERLEN         10
 #define REALLEN         50
 #define KILLLEN         90
-#define CHANNELLEN      50
+#define CHANNELLEN      200
+#define LOCAL_CHANNELLEN 50
 #define REASONLEN       120
 
 /* 23+1 for \0 */
