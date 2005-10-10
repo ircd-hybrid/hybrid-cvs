@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.522.2.6 2005/08/11 15:33:20 adx Exp $
+ *  $Id: s_conf.c,v 7.522.2.7 2005/10/10 16:33:07 michael Exp $
  */
 
 #include "stdinc.h"
@@ -279,7 +279,7 @@ make_conf_item(ConfType type)
   case GDENY_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
                                        sizeof(struct AccessItem));
-    dlinkAddTail(conf, &conf->node, &gdeny_items);
+    dlinkAdd(conf, &conf->node, &gdeny_items);
     break;
 
   case XLINE_TYPE:

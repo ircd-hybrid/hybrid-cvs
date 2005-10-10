@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.393.2.8 2005/08/22 13:47:38 michael Exp $
+ *  $Id: ircd_parser.y,v 1.393.2.9 2005/10/10 16:33:07 michael Exp $
  */
 
 %{
@@ -3319,10 +3319,9 @@ gline_entry: GLINES
      * since we re-allocate yy_conf/yy_aconf after the end of action=, at the
      * end we will have one extra, so we should free it.
      */
-    if (yy_conf->name == NULL && gdeny_items.length)
+    if (yy_conf->name == NULL || yy_aconf->user == NULL)
     {
-      dlinkDelete(gdeny_items.tail, &gdeny_items);
-      MyFree(yy_conf);
+      delete_conf_item(yy_conf);
       yy_conf = NULL;
       yy_aconf = NULL;
     }
@@ -3435,9 +3434,12 @@ gline_action: ACTION
 
       dlinkDelete(&yy_tmp->node, &col_conf_list);
     }
+
+    if (yy_conf->name == NULL || yy_aconf->user == NULL)
+      delete_conf_item(yy_conf);
+
     yy_conf = make_conf_item(GDENY_TYPE);
     yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
-    yy_aconf->flags = 0;
   }
 };
 
