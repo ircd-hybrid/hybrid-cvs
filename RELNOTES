@@ -3,6 +3,7 @@ o) Don't show local channels in remote /WHOIS
 o) Allow SJOINs for channel names that are longer than
    50 chars (may be up to 200)
 o) Fixed a problem with glines{}
+o) Fixed /LINKS bug
 
 -- ircd-hybrid-7.1.2 RELNOTES
 o) Updated example configuration files
@@ -129,4 +130,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.105.2.17 2005/10/10 16:33:07 michael Exp $
+$Id: RELNOTES,v 1.105.2.18 2005/10/12 09:31:33 michael Exp $

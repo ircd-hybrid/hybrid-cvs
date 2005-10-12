@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_links.c,v 1.48 2005/06/29 23:42:34 metalrock Exp $
+ *  $Id: m_links.c,v 1.48.2.1 2005/10/12 09:31:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&links_msgtab);
 }
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.48.2.1 $";
 #endif
 
 /*
@@ -95,9 +95,10 @@ m_links(struct Client *client_p, struct Client *source_p,
              ID_or_name(&me, source_p->from),
 	     ID_or_name(source_p, source_p->from),
              me.name, me.name, 0, me.info);
-      
+
   sendto_one(source_p, form_str(RPL_ENDOFLINKS),
-             ID_or_name(&me, source_p->from), "*");
+             ID_or_name(&me, source_p->from),
+             ID_or_name(source_p, source_p->from), "*");
 }
 
 static void
