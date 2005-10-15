@@ -19,11 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.217.2.2 2005/07/28 16:57:54 db Exp $
+ *  $Id: s_bsd.c,v 7.217.2.3 2005/10/15 22:53:05 adx Exp $
  */
 
 #include "stdinc.h"
 #include <netinet/tcp.h>
+#include <netinet/in_systm.h>
+#include <netinet/ip.h>
 #include "fdlist.h"
 #include "s_bsd.h"
 #include "client.h"
@@ -227,6 +229,13 @@ set_non_blocking(int fd)
   res = fcntl(fd, F_GETFL, 0);
   if (-1 == res || fcntl(fd, F_SETFL, res | nonb) == -1)
     return 0;
+
+#ifdef IPTOS_LOWDELAY
+  {
+    int tos = IPTOS_LOWDELAY;
+    setsockopt(fd, IPPROTO_IP, IP_TOS, &tos, sizeof(tos));
+  }
+#endif
 
   fd_table[fd].flags.nonblocking = 1;
   return 1;
