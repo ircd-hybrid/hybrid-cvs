@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.127.2.5 2005/09/15 03:37:16 metalrock Exp $
+ *  $Id: m_whois.c,v 1.127.2.6 2005/10/15 11:06:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.127.2.5 $";
+const char *_version = "$Revision: 1.127.2.6 $";
 #endif
 
 /*
@@ -92,7 +92,7 @@ m_whois(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (parc > 2)
+  if (parc > 2 && !EmptyString(parv[2]))
   {
     /* seeing as this is going across servers, we should limit it */
     if ((last_used + ConfigFileEntry.pace_wait_simple) > CurrentTime)
@@ -137,7 +137,7 @@ mo_whois(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (parc > 2)
+  if (parc > 2 && !EmptyString(parv[2]))
   {
     if (hunt_server(client_p, source_p, ":%s WHOIS %s :%s", 1,
                     parc, parv) != HUNTED_ISME)
