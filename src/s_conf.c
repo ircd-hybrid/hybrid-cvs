@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.522.2.7 2005/10/10 16:33:07 michael Exp $
+ *  $Id: s_conf.c,v 7.522.2.8 2005/10/15 20:46:42 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2342,10 +2342,12 @@ static const struct oper_privs
   const unsigned char c;
 } flag_list[] = {
   { OPER_FLAG_ADMIN,       OPER_FLAG_HIDDEN_ADMIN,  'A' },
+  { OPER_FLAG_REMOTEBAN,   0,                       'B' },
   { OPER_FLAG_DIE,         0,                       'D' },
   { OPER_FLAG_GLINE,       0,                       'G' },
   { OPER_FLAG_REHASH,      0,                       'H' },
   { OPER_FLAG_K,           0,                       'K' },
+  { OPER_FLAG_OPERWALL,    0,                       'L' },
   { OPER_FLAG_N,           0,                       'N' },
   { OPER_FLAG_GLOBAL_KILL, 0,                       'O' },
   { OPER_FLAG_REMOTE,      0,                       'R' },
@@ -2357,7 +2359,7 @@ static const struct oper_privs
 char *
 oper_privs_as_string(const unsigned int port)
 {
-  static char privs_out[12];
+  static char privs_out[14];
   char *privs_ptr = privs_out;
   unsigned int i;
 
