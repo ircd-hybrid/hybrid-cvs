@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whowas.c,v 1.35.2.1 2005/10/16 09:51:16 michael Exp $
+ *  $Id: m_whowas.c,v 1.35.2.2 2005/10/16 10:07:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&whowas_msgtab);
 }
 
-const char *_version = "$Revision: 1.35.2.1 $";
+const char *_version = "$Revision: 1.35.2.2 $";
 #endif
 
 /*
@@ -122,7 +122,13 @@ whowas_do(struct Client *client_p, struct Client *source_p,
   char *p, *nick;
 
   if (parc > 2)
+  {
     max = atoi(parv[2]);
+
+    if (!MyConnect(source_p) && max > 20)
+      max = 20;
+  }
+
   if (parc > 3)
     if (hunt_server(client_p, source_p, ":%s WHOWAS %s %s :%s", 3,
                     parc, parv) != HUNTED_ISME)
