@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.522.2.8 2005/10/15 20:46:42 michael Exp $
+ *  $Id: s_conf.c,v 7.522.2.9 2005/10/16 18:01:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -2671,7 +2671,7 @@ flush_deleted_I_P(void)
   struct ConfItem *conf;
   struct AccessItem *aconf;
   dlink_list * free_items [] = {
-    &server_items, &oconf_items, &hub_items, &leaf_items, NULL
+    &server_items, &oconf_items, NULL
   };
   dlink_list ** iterator = free_items; /* C is dumb */
 
