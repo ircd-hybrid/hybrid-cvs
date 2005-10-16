@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.145 2005/06/12 21:47:22 michael Exp $
+ *  $Id: m_nick.c,v 1.145.2.1 2005/10/16 09:23:46 michael Exp $
  */
 
 #include "stdinc.h"
@@ -93,7 +93,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.145 $";
+const char *_version = "$Revision: 1.145.2.1 $";
 #endif
 
 /* mr_nick()
@@ -151,7 +151,7 @@ mr_nick(struct Client *client_p, struct Client *source_p,
       {
         uclient_p = ptr->data;
 
-	if (!strcmp(nick, uclient_p->llname))
+	if (!strcmp(nick, uclient_p->localClient->llname))
 	{
 	
 	  /* We're already waiting for a reply about this nick
@@ -163,7 +163,7 @@ mr_nick(struct Client *client_p, struct Client *source_p,
       }
 
       /* Set their llname so we can find them later */
-      strcpy(source_p->llname, nick);
+      strcpy(source_p->localClient->llname, nick);
 
       /* Ask the hub about their requested name */
       sendto_one(uplink, ":%s NBURST %s %s !%s", me.name, nick,

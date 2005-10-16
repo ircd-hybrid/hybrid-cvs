@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_llnick.c,v 1.24 2004/07/08 00:27:22 erik Exp $
+ *  $Id: m_llnick.c,v 1.24.2.1 2005/10/16 09:23:46 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&llnick_msgtab);
 }
 
-const char *_version = "$Revision: 1.24 $";
+const char *_version = "$Revision: 1.24.2.1 $";
 #endif
 /*
  * m_llnick
@@ -107,10 +107,10 @@ ms_llnick(struct Client *client_p, struct Client *source_p,
     /* New user -- find them */
     DLINK_FOREACH(ptr, unknown_list.head)
     {
-      if( !strcmp(nick_old, ((struct Client *)ptr->data)->llname) )
+      if( !strcmp(nick_old, ((struct Client *)ptr->data)->localClient->llname) )
       {
         target_p = ptr->data;
-        *target_p->llname = '\0'; /* unset their temp-nick */
+        *target_p->localClient->llname = '\0'; /* unset their temp-nick */
         break;
       }
     }

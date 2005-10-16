@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.450.2.3 2005/07/31 04:15:37 adx Exp $
+ *  $Id: client.c,v 7.450.2.4 2005/10/16 09:23:46 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1417,7 +1417,7 @@ set_initial_nick(struct Client *client_p, struct Client *source_p,
  fd_note(client_p->localClient->fd, "Nick: %s", nick);
   
  /* They have the nick they want now.. */
- client_p->llname[0] = '\0';
+ client_p->localClient->llname[0] = '\0';
 
  if (source_p->user != NULL)
  {

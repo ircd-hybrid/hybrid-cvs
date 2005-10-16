@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.235.2.2 2005/08/02 05:33:43 adx Exp $
+ *  $Id: client.h,v 7.235.2.3 2005/10/16 09:23:46 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -134,11 +134,6 @@ struct Client
    */
   char name[HOSTLEN + 1]; 
   char id[IDLEN + 1];       /* client ID, unique ID per client */
-  /*
-   * client->llname is used to store the clients requested nick
-   * temporarily for new connections.
-   */
-  char              llname[NICKLEN];
   /* 
    * client->username is the username from ident or the USER message, 
    * If the client is idented the USER message is ignored, otherwise 
@@ -269,6 +264,11 @@ struct LocalUser
   int sent_parsed;      /* how many messages we've parsed in this second */
   time_t last_knock;    /* time of last knock */
   unsigned long random_ping;
+  /*
+   * client->llname is used to store the clients requested nick
+   * temporarily for new connections.
+   */
+  char              llname[NICKLEN];
 };
 
 /*
