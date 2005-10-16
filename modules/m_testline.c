@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.42.2.1 2005/10/16 00:06:35 db Exp $
+ *  $Id: m_testline.c,v 1.42.2.2 2005/10/16 17:59:06 db Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&testgecos_msgtab);
 }
  
-const char *_version = "$Revision: 1.42.2.1 $";
+const char *_version = "$Revision: 1.42.2.2 $";
 #endif
 
 /* mo_testline()
@@ -209,6 +209,17 @@ mo_testline(struct Client *client_p, struct Client *source_p,
 		 me.name, source_p->name,
 		 'I', 0L, userhost,
 		 aconf->class_ptr ? aconf->class_ptr->name : "<default>", "");
+      ++matches;
+    }
+    else if (aconf->status & CONF_KILL)
+    {
+      sendto_one(source_p, form_str(RPL_TESTLINE),
+		 me.name, source_p->name,
+		 IsConfTemporary(aconf) ? 'k' : 'K',
+		 IsConfTemporary(aconf) ? ((aconf->hold - CurrentTime) / 60)
+		 : 0L,
+		 userhost, aconf->passwd ? aconf->passwd : "No reason",
+		 aconf->oper_reason ? aconf->oper_reason : "");
       ++matches;
     }
   }
