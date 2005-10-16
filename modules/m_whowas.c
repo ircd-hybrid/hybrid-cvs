@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whowas.c,v 1.35 2004/07/08 00:27:23 erik Exp $
+ *  $Id: m_whowas.c,v 1.35.2.1 2005/10/16 09:51:16 michael Exp $
  */
 
 #include "stdinc.h"
@@ -48,7 +48,7 @@ static void whowas_do(struct Client *client_p, struct Client *source_p,
 
 struct Message whowas_msgtab = {
   "WHOWAS", 0, 0, 0, 0, MFLG_SLOW, 0L,
-  { m_unregistered, m_whowas, m_error, m_ignore, mo_whowas, m_ignore }
+  { m_unregistered, m_whowas, mo_whowas, m_ignore, mo_whowas, m_ignore }
 };
 
 #ifndef STATIC_MODULES
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&whowas_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.35.2.1 $";
 #endif
 
 /*
@@ -124,7 +124,8 @@ whowas_do(struct Client *client_p, struct Client *source_p,
   if (parc > 2)
     max = atoi(parv[2]);
   if (parc > 3)
-    if (hunt_server(client_p, source_p, ":%s WHOWAS %s %s :%s", 3, parc, parv))
+    if (hunt_server(client_p, source_p, ":%s WHOWAS %s %s :%s", 3,
+                    parc, parv) != HUNTED_ISME)
       return;
 
   nick = parv[1];
