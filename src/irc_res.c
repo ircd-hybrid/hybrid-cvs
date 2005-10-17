@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.41 2005/07/03 19:32:41 db Exp $
+ * $Id: irc_res.c,v 7.41.2.1 2005/10/17 02:07:59 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -814,7 +814,14 @@ res_readreply(int fd, void *data)
   if ((header->rcode != NO_ERRORS) || (header->ancount == 0))
   {
     if (SERVFAIL == header->rcode)
-      resend_query(request);
+    {
+      /*
+       * If a bad error was returned, we stop here and dont send
+       * send any more (no retries granted).
+       */
+      (*request->query->callback)(request->query->ptr, NULL);
+      rem_request(request);
+    } 
     else
     {
       /* 
@@ -836,16 +843,7 @@ res_readreply(int fd, void *data)
 	request->retries--;
         resend_query(request);
       }
-      else
 #endif
-      {
-        /*
-         * If a bad error was returned, we stop here and dont send
-         * send any more (no retries granted).
-         */
-        (*request->query->callback)(request->query->ptr, NULL);
-	rem_request(request);
-      } 
     }
 
     return;
