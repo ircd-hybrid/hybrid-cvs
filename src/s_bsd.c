@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.217.2.3 2005/10/15 22:53:05 adx Exp $
+ *  $Id: s_bsd.c,v 7.217.2.4 2005/10/21 09:46:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -391,7 +391,6 @@ add_connection(struct Listener* listener, int fd)
    * copy address to 'sockhost' as a string, copy it to host too
    * so we have something valid to put into error messages...
    */
-  new_client->localClient->port = ntohs(irn.ss_port);
   memcpy(&new_client->localClient->ip, &irn, sizeof(struct irc_ssaddr));
   
   irc_getnameinfo((struct sockaddr*)&new_client->localClient->ip,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.235.2.3 2005/10/16 09:23:46 michael Exp $
+ *  $Id: client.h,v 7.235.2.4 2005/10/21 09:46:52 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -218,7 +218,6 @@ struct LocalUser
   dlink_list        confs;      /* Configuration record associated */
 
   struct irc_ssaddr ip;
-  unsigned short    port;       /* and the remote port# too :-) */
   int 		    aftype;	/* Makes life easier for DNS res in IPV6 */
   struct DNSQuery   *dns_query;  /* result returned from resolver query */
   unsigned long     serverMask; /* Only used for Lazy Links */

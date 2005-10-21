@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.41.2.1 2005/10/17 02:07:59 db Exp $
+ * $Id: irc_res.c,v 7.41.2.2 2005/10/21 09:46:52 michael Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -269,13 +269,11 @@ make_request(const struct DNSQuery* query)
   struct reslist *request;
 
   request = (struct reslist *)MyMalloc(sizeof(struct reslist));
-  memset(request, 0, sizeof(struct reslist));
 
   request->sentat  = CurrentTime;
   request->retries = 3;
   request->resend  = 1;
   request->timeout = 4;    /* start at 4 and exponential inc. */
-  memset(&request->addr, 0, sizeof(request->addr));
   request->query   = query;
   request->state   = REQ_IDLE;
 
