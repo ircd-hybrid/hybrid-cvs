@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_etrace.c,v 1.1.2.1 2005/07/11 15:57:06 metalrock Exp $
+ *  $Id: m_etrace.c,v 1.1.2.2 2005/10/21 22:05:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -49,7 +49,7 @@ static void etrace_spy(struct Client *);
 
 struct Message etrace_msgtab = {
   "ETRACE", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_ignore, m_ignore, m_ignore, mo_etrace, m_ignore}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_etrace, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -66,7 +66,7 @@ _moddeinit(void)
   hook_del_event("doing_etrace");
   mod_del_cmd(&etrace_msgtab);
 }
-const char *_version = "$Revision: 1.1.2.1 $";
+const char *_version = "$Revision: 1.1.2.2 $";
 #endif
 
 static void report_this_status(struct Client *, struct Client *);
