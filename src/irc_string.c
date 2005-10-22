@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.70 2005/06/23 03:52:38 db Exp $
+ *  $Id: irc_string.c,v 7.70.2.1 2005/10/22 00:02:01 michael Exp $
  */
 
 #include "stdinc.h"
@@ -340,7 +340,7 @@ inet_ntop6(const unsigned char *src, char *dst, unsigned int size)
 	 * to use pointer overlays.  All the world's not a VAX.
 	 */
 	char tmp[sizeof "ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255"], *tp;
-	struct { int base, len; } best, cur;
+	struct { int base, len; } best = {0,0}, cur = {0,0};
 	unsigned int words[IN6ADDRSZ / INT16SZ];
 	int i;
 
