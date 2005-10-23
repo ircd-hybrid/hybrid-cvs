@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.288.2.4 2005/08/22 13:47:38 michael Exp $
+ *  $Id: send.c,v 7.288.2.5 2005/10/23 21:48:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -770,6 +770,8 @@ sendto_channel_remote(struct Client *one, struct Client *from, int type, int cap
   len = send_format(buffer, IRCD_BUFSIZE, pattern, args);
   va_end(args);
 
+  ++current_serial;
+
   DLINK_FOREACH(ptr, chptr->members.head)
   {
     ms = ptr->data;
@@ -786,8 +788,11 @@ sendto_channel_remote(struct Client *one, struct Client *from, int type, int cap
         ((target_p->from->localClient->caps & caps) != caps) ||
         ((target_p->from->localClient->caps & nocaps) != 0))
       continue;
-
-    send_message(target_p, buffer, len);
+    if (target_p->from->serial != current_serial)
+    {
+      send_message(target_p, buffer, len);
+      target_p->from->serial = current_serial;
+    }
   } 
 }
 
