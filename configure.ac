@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.97.2.3 2005/10/09 17:40:24 michael Exp $
+dnl $Id: configure.ac,v 7.97.2.4 2005/11/13 11:27:08 michael Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.97.2.3 2005/10/09 17:40:24 michael Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.97.2.4 2005/11/13 11:27:08 michael Exp $])
 
 AC_INIT([ircd-hybrid],[7.1])
 
@@ -529,7 +529,7 @@ if test "$cf_enable_openssl" != no; then
 		AC_LANG_PROGRAM(
 	    	[#include <openssl/opensslv.h>
 		#include <stdlib.h>],
-		[[if ( (OPENSSL_VERSION_NUMBER & 0x00906000) == 0x00906000)
+		[[if (OPENSSL_VERSION_NUMBER >= 0x00906000)
 		exit(0); else exit(1);]]),
 	cf_openssl_version_ok=yes,
 	cf_openssl_version_ok=no,
